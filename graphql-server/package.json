@@ -1,0 +1,42 @@
+{
+  "name": "graphql-server",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "babel-watch src/index.js",
+    "build": "rm -rf build && babel src --out-dir build",
+    "serve": "node build/index.js",
+    "eslint": "eslint src --max-warnings=0",
+    "prettier": "prettier-eslint --write \"src/**/*.js\"",
+    "test": "yarn eslint"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "src/**/*.js": [
+      "yarn prettier",
+      "git add"
+    ]
+  },
+  "dependencies": {
+    "apollo-server": "^2.3.3",
+    "graphql": "^14.1.1"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.2.2",
+    "@babel/preset-env": "^7.3.1",
+    "babel-eslint": "^10.0.1",
+    "babel-watch": "^7.0.0",
+    "eslint-config-vacuumlabs": "^1.7.0",
+    "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-react": "^7.12.4",
+    "husky": "^1.3.1",
+    "lint-staged": "^8.1.3",
+    "prettier-eslint-cli": "^4.7.1"
+  }
+}

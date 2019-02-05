@@ -1,0 +1,14 @@
+{
+  "extends": ["vacuumlabs"],
+  "env": {
+    "es6": true,
+    "node": true,
+    "browser": false
+  },
+  "rules": {
+    "semi": [2, "never"],
+    "no-unexpected-multiline": 2,
+    "no-duplicate-imports": 0,
+    "import/no-duplicates": "error"
+  }
+}
