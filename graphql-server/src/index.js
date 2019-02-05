@@ -1,10 +1,12 @@
 import {ApolloServer, gql} from 'apollo-server'
 import {cardanoAPI} from './api'
+const BigInt = require('graphql-bigint')
 
 // TODO: global error handler
-// TODO: custom Timestamp type for (txTimeIssued, blockTimeIssued)
 
 const typeDefs = gql`
+  scalar Timestamp
+
   type TransactionInput {
     from: String
     amount: String
@@ -17,8 +19,8 @@ const typeDefs = gql`
 
   type Transaction {
     id: ID
-    txTimeIssued: Int
-    blockTimeIssued: Int
+    txTimeIssued: Timestamp
+    blockTimeIssued: Timestamp
     blockHeight: Int
     blockEpoch: Int
     blockSlot: Int
@@ -64,6 +66,7 @@ const transactionResolver = (parent, args, context) =>
   })
 
 const resolvers = {
+  Timestamp: BigInt,
   Query: {
     transaction: (...args) => transactionResolver(...args),
   },
