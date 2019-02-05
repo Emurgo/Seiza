@@ -42,7 +42,7 @@ const typeDefs = gql`
 const transactionResolver = (parent, args, context) =>
   context.cardanoAPI.get(`txs/summary/${args.id}`).then(({data}) => {
     const d = data.Right
-    const ret = {
+    return {
       id: d.ctsId,
       txTimeIssued: d.ctsTxTimeIssued,
       blockTimeIssued: d.ctsBlockTimeIssued,
@@ -62,7 +62,6 @@ const transactionResolver = (parent, args, context) =>
         amount: output[1].getCoin,
       })),
     }
-    return ret
   })
 
 const resolvers = {
