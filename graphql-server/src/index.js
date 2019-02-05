@@ -1,52 +1,84 @@
-const {ApolloServer, gql} = require('apollo-server')
+import {ApolloServer, gql} from 'apollo-server'
+import {cardanoAPI} from './api'
+const BigInt = require('graphql-bigint')
 
-// This is a (sample) collection of books we'll be able to query
-// the GraphQL server for.  A more complete example might fetch
-// from an existing data source like a REST API or database.
-const books = [
-  {
-    title: 'Harry Potter and the Chamber of Secrets',
-    author: 'J.K. Rowling',
-  },
-  {
-    title: 'Jurassic Park',
-    author: 'Michael Crichton',
-  },
-]
+// TODO: global error handler
 
-// Type definitions define the "shape" of your data and specify
-// which ways the data can be fetched from the GraphQL server.
 const typeDefs = gql`
-  # Comments in GraphQL are defined with the hash (#) symbol.
+  scalar Timestamp
 
-  # This "Book" type can be used in other type declarations.
-  type Book {
-    title: String
-    author: String
+  type TransactionInput {
+    from: String
+    amount: String
+  }
+
+  type TransactionOutput {
+    to: String
+    amount: String
+  }
+
+  type Transaction {
+    id: ID
+    txTimeIssued: Timestamp
+    blockTimeIssued: Timestamp
+    blockHeight: Int
+    blockEpoch: Int
+    blockSlot: Int
+    blockHash: String
+    totalInput: String
+    totalOutput: String
+    fees: String
+    inputs: [TransactionInput]
+    outputs: [TransactionOutput]
   }
 
   # The "Query" type is the root of all GraphQL queries.
-  # (A "Mutation" type will be covered later on.)
   type Query {
-    books: [Book]
+    transaction(id: String): Transaction
   }
 `
 
-// Resolvers define the technique for fetching the types in the
-// schema.  We'll retrieve books from the "books" array above.
+// TODO: move to suitable folder
+const transactionResolver = (parent, args, context) =>
+  context.cardanoAPI.get(`txs/summary/${args.id}`).then(({data}) => {
+    const d = data.Right
+    return {
+      id: d.ctsId,
+      txTimeIssued: d.ctsTxTimeIssued,
+      blockTimeIssued: d.ctsBlockTimeIssued,
+      blockHeight: d.ctsBlockHeight,
+      blockEpoch: d.ctsBlockEpoch,
+      blockSlot: d.ctsBlockSlot,
+      blockHash: d.ctsBlockHash,
+      totalInput: d.ctsTotalInput.getCoin,
+      totalOutput: d.ctsTotalOutput.getCoin,
+      fees: d.ctsFees.getCoin,
+      inputs: d.ctsInputs.map((input) => ({
+        from: input[0],
+        amount: input[1].getCoin,
+      })),
+      outputs: d.ctsInputs.map((output) => ({
+        to: output[0],
+        amount: output[1].getCoin,
+      })),
+    }
+  })
+
 const resolvers = {
+  Timestamp: BigInt,
   Query: {
-    books: () => books,
+    transaction: (...args) => transactionResolver(...args),
   },
 }
 
-// In the most basic sense, the ApolloServer can be started
-// by passing type definitions (typeDefs) and the resolvers
-// responsible for fetching the data for those types.
-const server = new ApolloServer({typeDefs, resolvers})
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  context: () => ({
+    cardanoAPI,
+  }),
+})
 
-// This `listen` method launches a web-server.  Existing apps
-// can utilize middleware options, which we'll discuss later.
 server.listen().then(({url}) => {
   console.log(`🚀  Server ready at ${url}`) // eslint-disable-line
 })

@@ -24,7 +24,9 @@
   },
   "dependencies": {
     "apollo-server": "^2.3.3",
-    "graphql": "^14.1.1"
+    "axios": "^0.18.0",
+    "graphql": "^14.1.1",
+    "graphql-bigint": "^1.0.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.2.3",
