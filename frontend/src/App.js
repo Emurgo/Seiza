@@ -5,7 +5,7 @@ import {BrowserRouter as Router, Route} from 'react-router-dom'
 import {compose} from 'redux'
 
 import {routeTo} from './helpers/routes'
-import {withIntl} from './components/HOC/intl'
+import {withIntl, withSetLocale} from './components/HOC/intl'
 import Navbar from './components/visual/Navbar'
 
 import Home from './screens/Home'
@@ -15,10 +15,23 @@ import More from './screens/More'
 
 import './App.css'
 
+// TODO: move elsewhere once there is folder structure
+const LanguageSwitch = withSetLocale(({setLocale}) => (
+  <React.Fragment>
+    <button type="button" onClick={() => setLocale('en')}>
+      EN
+    </button>
+    <button type="button" onClick={() => setLocale('es')}>
+      ES
+    </button>
+  </React.Fragment>
+))
+
 const App = () => {
   return (
     <Router>
       <React.Fragment>
+        <LanguageSwitch />
         <Navbar
           items={[
             {link: routeTo.home(), label: 'Home'},
@@ -35,6 +48,7 @@ const App = () => {
     </Router>
   )
 }
+
 
 export default compose(
   withIntl,
