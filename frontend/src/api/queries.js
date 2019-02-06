@@ -1,3 +1,5 @@
+// @flow
+
 import gql from 'graphql-tag'
 
 export const GET_TRANSACTION_BY_ID = gql`
