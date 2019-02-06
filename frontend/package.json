@@ -5,9 +5,10 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "prettier": "prettier-eslint --write \"src/**/*.js\""
+    "eslint": "eslint src --max-warnings=0",
+    "prettier": "prettier-eslint --write \"src/**/*.js\"",
+    "test": "yarn eslint"
   },
   "dependencies": {
     "apollo-cache-inmemory": "^1.4.2",
