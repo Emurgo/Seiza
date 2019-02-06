@@ -2,21 +2,36 @@
 
 import React from 'react'
 import {BrowserRouter as Router, Route} from 'react-router-dom'
-import './App.css'
+import {compose} from 'redux'
 
 import {routeTo} from './helpers/routes'
+import {withIntl, withSetLocale} from './components/HOC/intl'
+import Navbar from './components/visual/Navbar'
 
 import Home from './screens/Home'
 import Blockchain from './screens/Blockchain'
 import Staking from './screens/Staking'
 import More from './screens/More'
 
-import Navbar from './components/visual/Navbar'
+import './App.css'
+
+// TODO: move elsewhere once there is folder structure
+const LanguageSwitch = withSetLocale(({setLocale}) => (
+  <React.Fragment>
+    <button type="button" onClick={() => setLocale('en')}>
+      EN
+    </button>
+    <button type="button" onClick={() => setLocale('es')}>
+      ES
+    </button>
+  </React.Fragment>
+))
 
 const App = () => {
   return (
     <Router>
       <React.Fragment>
+        <LanguageSwitch />
         <Navbar
           items={[
             {link: routeTo.home(), label: 'Home'},
@@ -34,4 +49,4 @@ const App = () => {
   )
 }
 
-export default App
+export default compose(withIntl)(App)
