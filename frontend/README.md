@@ -1,3 +1,23 @@
+## Format on save with eslint-prettier in VSCode
+1. Install Prettier VSCode extension: [Prettier - Code formatter](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+
+2. Enable formatting on save in your User or Workspace settings.
+```javascript
+{
+  "editor.formatOnSave": false,
+  "[javascript]": {
+    "editor.formatOnSave": true
+  }
+}
+```
+
+3. Enable `eslint-prettier` in Prettier VSCode extension by adding this to your workspace settings in VSCode.
+```javascript
+{
+  "prettier.eslintIntegration": true
+}
+```
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
