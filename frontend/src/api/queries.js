@@ -9,7 +9,6 @@ export const GET_TRANSACTION_BY_ID = gql`
       blockTimeIssued
       blockHeight
       blockEpoch
-      blockEpoch
       blockSlot
       blockHash
       totalInput
