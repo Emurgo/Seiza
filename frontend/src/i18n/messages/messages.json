@@ -1,7 +1,7 @@
 [
   {
-    "id": "app.title",
-    "defaultMessage": "Welcome to Seiza!",
-    "filepath": "src/App.js"
+    "id": "blockchain.header",
+    "defaultMessage": "Blockchain",
+    "filepath": "src/screens/Blockchain/index.js"
   }
 ]

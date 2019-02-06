@@ -49,7 +49,4 @@ const App = () => {
   )
 }
 
-
-export default compose(
-  withIntl,
-)(App)
+export default compose(withIntl)(App)
