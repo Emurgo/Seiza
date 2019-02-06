@@ -16,15 +16,27 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 })
 
-const rootElement = document.getElementById('root')
-
-rootElement &&
-  ReactDOM.render(
-    <ApolloProvider client={client}>
-      <App />
-    </ApolloProvider>,
-    rootElement
+const render = (Component) => {
+  const root = document.getElementById('root')
+  return (
+    root &&
+    ReactDOM.render(
+      <ApolloProvider client={client}>
+        <App />
+      </ApolloProvider>,
+      root
+    )
   )
+}
+
+render(App)
+
+if (module.hot) {
+  module.hot.accept('./App', () => {
+    const NextApp = require('./App').default
+    render(NextApp)
+  })
+}
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
