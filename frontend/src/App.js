@@ -1,26 +1,35 @@
 import React from 'react'
+import {BrowserRouter as Router, Route} from 'react-router-dom'
 import './App.css'
-import {graphql} from 'react-apollo'
-import {GET_TRANSACTION_BY_ID} from './api/queries'
 
-const txId = 'ef90f4873a27fdb64d09d58447e39f6b855cecd6303188f9648349fdc876592b'
+import {routeTo} from './helpers/routes'
 
-const withTransactionById = graphql(GET_TRANSACTION_BY_ID, {
-  name: 'transaction',
-  options: () => ({
-    variables: {txId},
-  }),
-})
+import Home from './screens/Home'
+import Blockchain from './screens/Blockchain'
+import Staking from './screens/Staking'
+import More from './screens/More'
 
-const App = (props) => {
-  const {loading, transaction} = props.transaction
+import Navbar from './components/visual/Navbar'
+
+const App = () => {
   return (
-    <>
-      <h1>Welcome to Seiza!</h1>
-      <h2>Cardano's next generation blockchain explorer.</h2>
-      <p>{!loading && JSON.stringify(transaction, null, 4)}</p>
-    </>
+    <Router>
+      <React.Fragment>
+        <Navbar
+          items={[
+            {link: routeTo.home(), label: 'Home'},
+            {link: routeTo.blockchain(), label: 'Blockchain'},
+            {link: routeTo.staking(), label: 'Staking'},
+            {link: routeTo.more(), label: 'More'},
+          ]}
+        />
+        <Route exact path={routeTo.home()} component={Home} />
+        <Route path={routeTo.blockchain()} component={Blockchain} />
+        <Route path={routeTo.staking()} component={Staking} />
+        <Route path={routeTo.more()} component={More} />
+      </React.Fragment>
+    </Router>
   )
 }
 
-export default withTransactionById(App)
+export default App
