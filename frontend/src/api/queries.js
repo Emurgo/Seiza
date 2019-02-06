@@ -16,11 +16,11 @@ export const GET_TRANSACTION_BY_ID = gql`
       totalOutput
       fees
       inputs {
-        from
+        address58
         amount
       }
       outputs {
-        to
+        address58
         amount
       }
     }
