@@ -86,3 +86,12 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/de
 ### `npm run build` fails to minify
 
 This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+
+## React Intl
+
+Updating localisation:
+
+    yarn extract:messages
+    yarn manage:translations
+
+Note: React fragments in form of `<></>` are not parsable by `react-intl` scripts above. You can however use `<React.Fragment>` which works.
