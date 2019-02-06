@@ -1,4 +1,4 @@
-export const pathBuilder = {
+export const routeTo = {
   home: () => '/',
   blockchain: () => '/blockchain',
   more: () => '/more',
