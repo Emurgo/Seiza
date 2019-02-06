@@ -9,7 +9,7 @@ export const addressResolver = (parent, args, context) =>
     return {
       id: d.caAddress,
       type: d.caType,
-      txNum: d.caTxNum,
+      transactionsCount: d.caTxNum,
       balance: d.caBalance.getCoin,
       transactions: d.caTxList.map((transaction) =>
         transactionResolver(parent, {id: transaction.ctbId}, context)

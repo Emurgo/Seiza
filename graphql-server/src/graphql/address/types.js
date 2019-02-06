@@ -4,7 +4,7 @@ export default gql`
   type Address {
     id: ID
     type: String
-    txNum: Int
+    transactionsCount: Int
     balance: String
     transactions: [Transaction]
   }

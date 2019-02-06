@@ -2,12 +2,12 @@ import {gql} from 'apollo-server'
 
 export default gql`
   type TransactionInput {
-    from: String
+    address58: String
     amount: String
   }
 
   type TransactionOutput {
-    to: String
+    address58: String
     amount: String
   }
 

@@ -13,11 +13,11 @@ export const transactionResolver = (parent, args, context) =>
       totalOutput: d.ctsTotalOutput.getCoin,
       fees: d.ctsFees.getCoin,
       inputs: d.ctsInputs.map((input) => ({
-        from: input[0],
+        address58: input[0],
         amount: input[1].getCoin,
       })),
       outputs: d.ctsInputs.map((output) => ({
-        to: output[0],
+        address58: output[0],
         amount: output[1].getCoin,
       })),
     }
