@@ -9,13 +9,13 @@ import Blockchain from './screens/Blockchain'
 import Staking from './screens/Staking'
 import More from './screens/More'
 
-import Navigation from './components/visual/Navigation'
+import Navbar from './components/visual/Navbar'
 
 const App = () => {
   return (
     <Router>
       <React.Fragment>
-        <Navigation
+        <Navbar
           items={[
             {link: routeTo.home(), label: 'Home'},
             {link: routeTo.blockchain(), label: 'Blockchain'},

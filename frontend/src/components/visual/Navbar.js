@@ -1,7 +1,7 @@
 import React from 'react'
 import {Link} from 'react-router-dom'
 
-const Navigation = ({items = []}) => (
+const Navbar = ({items = []}) => (
   <nav>
     <ul>
       {items.map(({link, label}) => (
@@ -13,4 +13,4 @@ const Navigation = ({items = []}) => (
   </nav>
 )
 
-export default Navigation
+export default Navbar
