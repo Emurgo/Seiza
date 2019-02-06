@@ -2,16 +2,18 @@
 
 import React from 'react'
 import {BrowserRouter as Router, Route} from 'react-router-dom'
-import './App.css'
+import {compose} from 'redux'
 
 import {routeTo} from './helpers/routes'
+import {withIntl} from './components/HOC/intl'
+import Navbar from './components/visual/Navbar'
 
 import Home from './screens/Home'
 import Blockchain from './screens/Blockchain'
 import Staking from './screens/Staking'
 import More from './screens/More'
 
-import Navbar from './components/visual/Navbar'
+import './App.css'
 
 const App = () => {
   return (
@@ -34,4 +36,6 @@ const App = () => {
   )
 }
 
-export default App
+export default compose(
+  withIntl,
+)(App)
