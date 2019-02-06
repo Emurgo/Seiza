@@ -14,16 +14,6 @@ import {cardanoAPI} from './api'
 
 const globalTypes = gql`
   scalar Timestamp
-
-  type TransactionInput {
-    from: String
-    amount: String
-  }
-
-  type TransactionOutput {
-    to: String
-    amount: String
-  }
 `
 
 const resolvers = {

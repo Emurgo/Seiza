@@ -1,6 +1,16 @@
 import {gql} from 'apollo-server'
 
 export default gql`
+  type TransactionInput {
+    from: String
+    amount: String
+  }
+
+  type TransactionOutput {
+    to: String
+    amount: String
+  }
+
   type Transaction {
     id: ID
     txTimeIssued: Timestamp
