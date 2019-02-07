@@ -3,7 +3,7 @@ import moment from 'moment'
 import {GraphQLScalarType, GraphQLError, Kind} from 'graphql'
 
 module.exports = new GraphQLScalarType({
-  name: 'Date',
+  name: 'Timestamp',
   /**
    * Serialize date value into string
    * Called when returning value to client
@@ -37,8 +37,10 @@ module.exports = new GraphQLScalarType({
    * @return {moment} date value
    */
   parseLiteral(ast) {
-    if (ast.kind !== Kind.STRING) {
-      throw new GraphQLError(`Query error: Can only parse strings to date but got: ${ast.kind}`)
+    if (ast.kind !== Kind.STRING || ast.kind !== Kind.INT) {
+      throw new GraphQLError(
+        `Query error: Can only parse strings or integers to date but got: ${ast.kind}`
+      )
     }
     const date = moment(ast.value)
     if (!date.isValid()) {

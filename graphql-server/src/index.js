@@ -6,18 +6,18 @@ import {transactionResolver} from './graphql/transaction/resolvers'
 
 import transactionTypes from './graphql/transaction/types'
 import addressTypes from './graphql/address/types'
-import Date from './graphql/scalars/date'
+import Timestamp from './graphql/scalars/timestamp'
 
 import {cardanoAPI} from './api'
 
 // TODO: global error handler
 
 const globalTypes = gql`
-  scalar Date
+  scalar Timestamp
 `
 
 const resolvers = {
-  Date,
+  Timestamp,
   Query: {
     transaction: (...args) => transactionResolver(...args),
     address: (...args) => addressResolver(...args),
