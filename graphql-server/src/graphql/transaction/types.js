@@ -13,8 +13,8 @@ export default gql`
 
   type Transaction {
     id: ID
-    txTimeIssued: Moment
-    blockTimeIssued: Moment
+    txTimeIssued: Date
+    blockTimeIssued: Date
     blockHeight: Int
     blockEpoch: Int
     blockSlot: Int
