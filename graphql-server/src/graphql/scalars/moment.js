@@ -14,7 +14,7 @@ module.exports = new GraphQLScalarType({
     if (!date.isValid()) {
       throw new GraphQLError('Field serialize error: value is an invalid Date')
     }
-    return date.format()
+    return date.toISOString()
   },
   /**
    * Parse value into date
