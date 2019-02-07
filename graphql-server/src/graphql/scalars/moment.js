@@ -6,7 +6,8 @@ module.exports = new GraphQLScalarType({
   name: 'Date',
   /**
    * Serialize date value into string
-   * @param  {moment} value date value
+   * Called when returning value to client
+   * @param  {Number} value unix timestamp
    * @return {String} date as string
    */
   serialize(value) {
@@ -18,6 +19,7 @@ module.exports = new GraphQLScalarType({
   },
   /**
    * Parse value into date
+   * Called when server receives value from client (non JSON)
    * @param  {*} value serialized date value
    * @return {moment} date value
    */
@@ -30,6 +32,7 @@ module.exports = new GraphQLScalarType({
   },
   /**
    * Parse ast literal to date
+   * Called when server receives value from client (JSON)
    * @param  {Object} ast graphql ast
    * @return {moment} date value
    */
