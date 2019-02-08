@@ -1,3 +1,4 @@
+// @flow
 import axios from 'axios'
 
 const URL = 'https://cardanoexplorer.com/api/'

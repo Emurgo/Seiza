@@ -8,8 +8,10 @@
     "build": "rm -rf build && babel src --out-dir build",
     "serve": "node build/index.js",
     "eslint": "eslint src --max-warnings=0",
+    "flow": "flow",
+    "flow-coverage": "flow-coverage-report -i 'src/**/*.js'",
     "prettier": "prettier-eslint --write \"src/**/*.js\"",
-    "test": "yarn eslint"
+    "test": "yarn flow && yarn eslint"
   },
   "husky": {
     "hooks": {
@@ -25,6 +27,8 @@
   "dependencies": {
     "apollo-server": "^2.3.3",
     "axios": "^0.18.0",
+    "flow-bin": "^0.92.1",
+    "flow-coverage-report": "^0.6.1",
     "graphql": "^14.1.1",
     "graphql-bigint": "^1.0.0",
     "merge-graphql-schemas": "^1.5.8",
