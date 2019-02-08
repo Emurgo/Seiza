@@ -1,3 +1,4 @@
+import 'babel-polyfill'
 import {ApolloServer, gql} from 'apollo-server'
 import {mergeTypes} from 'merge-graphql-schemas'
 
@@ -22,9 +23,16 @@ const globalTypes = gql`
 const resolvers = {
   Timestamp,
   Query: {
-    transaction: (...args) => transactionResolver(...args),
-    address: (...args) => addressResolver(...args),
-    blocks: (...args) => blocksResolver(...args),
+    transaction: transactionResolver,
+    address: addressResolver,
+    blocks: async (_, args, context) => {
+      const result = await blocksResolver(_, args, context)
+      return {
+        blocks: result.data,
+        cursor: result.fetchedPage - 1,
+        hasMore: result.fetchedPage > 0,
+      }
+    },
   },
 }
 

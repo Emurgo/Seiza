@@ -1,6 +1,7 @@
 import {gql} from 'apollo-server'
 
-// TODO change Timestamp to moment
+// TODO: Fetch more detailed info about block using '/api/blocks/summary/{hash}'
+
 export default gql`
   type Block {
     epoch: Int
@@ -14,7 +15,13 @@ export default gql`
     fees: String
   }
 
+  type BlockConnection {
+    cursor: String!
+    hasMore: Boolean!
+    blocks: [Block]!
+  }
+
   type Query {
-    blocks: [Block]
+    blocks(after: String): BlockConnection!
   }
 `
