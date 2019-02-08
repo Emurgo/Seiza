@@ -3,7 +3,8 @@
   "env": {
     "es6": true,
     "node": true,
-    "browser": false
+    "browser": false,
+    "jest": true
   },
   "rules": {
     "semi": [2, "never"],
