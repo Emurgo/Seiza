@@ -32,6 +32,7 @@
   "devDependencies": {
     "eslint-config-vacuumlabs": "^1.7.0",
     "flow-bin": "^0.92.1",
+    "flow-coverage-report": "^0.6.1",
     "husky": "^1.3.1",
     "lint-staged": "^8.1.3",
     "prettier-eslint-cli": "^4.7.1",
@@ -57,5 +58,15 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "flow-coverage-report": {
+    "globIncludePatterns": [
+      "src/**/*.js"
+    ],
+    "reportTypes": [
+      "text",
+      "html",
+      "json"
+    ]
+  }
 }
