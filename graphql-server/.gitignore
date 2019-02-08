@@ -2,4 +2,5 @@ yarn-error.log
 build
 node_modules
 .env
+flow-coverage
 
