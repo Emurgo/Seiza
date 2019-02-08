@@ -12,16 +12,16 @@ export default gql`
     totalSend: String
     size: Int
     blockLead: String
-    fees: String
+    totalFees: String
   }
 
-  type BlockConnection {
+  type PagedBlocksResult {
     cursor: Int!
     hasMore: Boolean!
     blocks: [Block]!
   }
 
   type Query {
-    blocks(page: Int): BlockConnection!
+    blocks(page: Int): PagedBlocksResult!
   }
 `

@@ -26,7 +26,7 @@ const withBlocks = graphql(GET_BLOCKS, {
 
 // TODO: use some HOC to alter props names?
 // Note: 'fetchMore' is built-in apollo function
-const BlockList = (props) => {
+const RecentBlocks = (props) => {
   const {loading, blocks} = props.blocks
   const {
     intl: {formatMessage},
@@ -63,4 +63,4 @@ export default compose(
       })
     },
   })
-)(BlockList)
+)(RecentBlocks)

@@ -4,7 +4,7 @@ import {compose} from 'redux'
 import {injectIntl, defineMessages} from 'react-intl'
 
 import {GET_TRANSACTION_BY_ID} from '../../api/queries'
-import BlockList from './BlockList'
+import RecentBlocks from './RecentBlocks'
 
 const messages = defineMessages({
   header: {
@@ -31,7 +31,7 @@ const Blockchain = (props) => {
       <h1>{formatMessage(messages.header)}</h1>
       <h2>Enjoy looking on the json of the transaction.</h2>
       <p>{!loading && JSON.stringify(transaction, null, 4)}</p>
-      <BlockList />
+      <RecentBlocks />
     </React.Fragment>
   )
 }
