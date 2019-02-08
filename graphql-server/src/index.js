@@ -1,4 +1,3 @@
-import BigInt from 'graphql-bigint'
 import {ApolloServer, gql} from 'apollo-server'
 import {mergeTypes} from 'merge-graphql-schemas'
 
@@ -7,6 +6,7 @@ import {transactionResolver} from './graphql/transaction/resolvers'
 
 import transactionTypes from './graphql/transaction/types'
 import addressTypes from './graphql/address/types'
+import Timestamp from './graphql/scalars/timestamp'
 
 import {cardanoAPI} from './api'
 
@@ -17,7 +17,7 @@ const globalTypes = gql`
 `
 
 const resolvers = {
-  Timestamp: BigInt,
+  Timestamp,
   Query: {
     transaction: (...args) => transactionResolver(...args),
     address: (...args) => addressResolver(...args),
