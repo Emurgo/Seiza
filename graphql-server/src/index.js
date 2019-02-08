@@ -1,3 +1,4 @@
+// @flow
 import 'babel-polyfill'
 import {ApolloServer, gql} from 'apollo-server'
 import {mergeTypes} from 'merge-graphql-schemas'
@@ -43,6 +44,15 @@ const server = new ApolloServer({
     all: true,
   }),
   resolvers,
+  // TODO: replace with production-ready logger
+  formatError: (error: any): any => {
+    console.log(error)
+    return error
+  },
+  formatResponse: (response: any): any => {
+    console.log(response)
+    return response
+  },
   context: () => ({
     cardanoAPI,
   }),
