@@ -45,7 +45,7 @@ const MetricsCard = ({metric, value, icon}: PropTypes) => (
   <div style={styles.card}>
     <img src={ICONS[icon]} />
     <div style={styles.inner}>
-      <div style={styles.value}>{value != null ? value : '--'}</div>
+      <div style={styles.value}>{value}</div>
       <div style={styles.metric}>{metric}</div>
     </div>
   </div>
