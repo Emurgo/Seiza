@@ -6,8 +6,13 @@ import MetricsCard from '../../components/visual/MetricsCard'
 import {injectIntl, defineMessages} from 'react-intl'
 import {compose} from 'redux'
 import {graphql} from 'react-apollo'
+import {getIntlFormatters} from '../../i18n/helpers'
 
 const text = defineMessages({
+  not_available: {
+    id: 'overview.metrics.not_available',
+    defaultMessage: 'N/A',
+  },
   epochLabel: {
     id: 'overview.metrics.epoch.label',
     defaultMessage: 'Epoch',
@@ -30,34 +35,6 @@ const text = defineMessages({
   },
 })
 
-// TODO: move to helpers
-const getIntlFormatters = (intl) => {
-  const translate = intl.formatMessage
-  const formatNumber = intl.formatNumber
-  const _formatInt = (x) => formatNumber(x, {style: 'decimal', maximumFractionDigits: 0})
-  const _formatPercent = (x) => formatNumber(x, {style: 'percent'})
-  const _formatFiat = (x, currency, digits = 4) =>
-    formatNumber(x, {
-      style: 'currency',
-      currency,
-      minimumFractionDigits: digits,
-      maximumFractionDigits: digits,
-    })
-
-  const formatInt = (x, defaultValue = '') => (x != null ? _formatInt(x) : defaultValue)
-  const formatPercent = (x, defaultValue = '') => (x != null ? _formatPercent(x) : defaultValue)
-  const formatFiat = (x, currency, defaultValue = '') =>
-    x != null ? _formatFiat(x, currency) : defaultValue
-
-  return {
-    translate,
-    formatNumber,
-    formatInt,
-    formatPercent,
-    formatFiat,
-  }
-}
-
 // TODO: replace with idx
 // https://github.com/facebookincubator/idx
 const idx = (value, getter) => {
@@ -72,7 +49,7 @@ const _Status = ({intl, data}) => {
   const {translate, formatInt, formatPercent, formatFiat} = getIntlFormatters(intl)
   const status = data.currentStatus
 
-  const NA = 'N/A'
+  const NA = translate(text.not_available)
 
   const epochNumber = formatInt(idx(status, (s) => s.epochNumber), NA)
   const blockCount = formatInt(idx(status, (s) => s.blockCount), NA)
