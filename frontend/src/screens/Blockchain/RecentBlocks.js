@@ -19,8 +19,8 @@ const messages = defineMessages({
 
 const withBlocks = graphql(GET_BLOCKS, {
   name: 'blocks',
-  options: ({page}) => ({
-    variables: {page},
+  options: ({afterPosition}) => ({
+    variables: {afterPosition},
   }),
 })
 
@@ -34,6 +34,7 @@ const RecentBlocks = (props) => {
   const {onLoadMore} = props
   return (
     <React.Fragment>
+      {!loading && <div>Total count: {blocks.blocks.length} </div>}
       {!loading && blocks.blocks.map((block) => <div key={block.blockHash}>{block.blockHash}</div>)}
       {!loading && blocks.hasMore && (
         <button onClick={onLoadMore}>{formatMessage(messages.loadMore)}</button>
@@ -50,7 +51,7 @@ export default compose(
       const {blocks, fetchMore} = props.blocks
       fetchMore({
         variables: {
-          page: blocks.cursor,
+          afterPosition: blocks.cursor,
         },
         updateQuery: (prev, {fetchMoreResult, ...rest}) => {
           if (!fetchMoreResult) return prev
