@@ -1,3 +1,4 @@
+// @flow
 export const facadeTransaction = (data) => ({
   id: data.ctsId,
   txTimeIssued: data.ctsTxTimeIssued,

@@ -1,0 +1,15 @@
+[ignore]
+
+[include]
+
+[libs]
+./flow-typed/
+
+[lints]
+
+[options]
+
+suppress_type=$FlowFixMe
+module.file_ext=.js
+
+[strict]

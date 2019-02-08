@@ -1,3 +1,4 @@
+// @flow
 import {facadeTransaction} from './dataFacades'
 
 export const transactionResolver = (parent, args, context) =>
