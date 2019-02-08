@@ -16,12 +16,12 @@ export default gql`
   }
 
   type BlockConnection {
-    cursor: String!
+    cursor: Int!
     hasMore: Boolean!
     blocks: [Block]!
   }
 
   type Query {
-    blocks(after: String): BlockConnection!
+    blocks(page: Int): BlockConnection!
   }
 `
