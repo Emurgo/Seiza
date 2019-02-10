@@ -10,5 +10,9 @@
   },
   "dependencies": {
     "concurrently": "^4.1.0"
-  }
+  },
+  "cacheDirectories": [
+    "frontend/node_modules",
+    "graphql-server/node_modules"
+  ]
 }
