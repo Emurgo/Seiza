@@ -1,0 +1,23 @@
+{
+  "name": "Seiza",
+  "repository": "https://github.com/Emurgo/seiza",
+  "env": {
+    "NODE_ENV": {
+      "required": true
+    },
+    "NPM_CONFIG_PRODUCTION": {
+      "required": true
+    },
+    "PROJECT_PATH": {
+      "required": true
+    }
+  },
+  "buildpacks": [
+    {
+      "url": "https://github.com/timanovsky/subdir-heroku-buildpack"
+    },
+    {
+      "url": "heroku/nodejs"
+    }
+  ]
+}
