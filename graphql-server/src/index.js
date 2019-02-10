@@ -7,7 +7,6 @@ import {transactionResolver} from './graphql/transaction/resolvers'
 import {blocksResolver} from './graphql/block/resolvers'
 import {currentStatusResolver} from './graphql/status/resolvers'
 
-
 import transactionTypes from './graphql/transaction/types'
 import addressTypes from './graphql/address/types'
 import blockTypes from './graphql/block/types'
@@ -40,13 +39,15 @@ const resolvers = {
 }
 
 const server = new ApolloServer({
-  typeDefs: mergeTypes([globalTypes, addressTypes, transactionTypes, blockTypes, statusTypes], {all: true}),
+  typeDefs: mergeTypes([globalTypes, addressTypes, transactionTypes, blockTypes, statusTypes], {
+    all: true,
+  }),
   resolvers,
   context: () => ({
     cardanoAPI,
   }),
 })
 
-server.listen().then(({url}) => {
+server.listen({port: process.env.PORT || 4000}).then(({url}) => {
   console.log(`🚀  Server ready at ${url}`) // eslint-disable-line
 })
