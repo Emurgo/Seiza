@@ -1,0 +1,14 @@
+{
+  "name": "seiza",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "postinstall": "npm install --prefix graphql-server && npm install --prefix frontend",
+    "graphql": "npm run --prefix graphql-server start",
+    "frontend": "npm run --prefix frontend start",
+    "start": "concurrently \"npm run graphql\" \"npm run frontend\""
+  },
+  "dependencies": {
+    "concurrently": "^4.1.0"
+  }
+}
