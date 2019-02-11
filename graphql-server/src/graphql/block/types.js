@@ -22,6 +22,6 @@ export default gql`
   }
 
   type Query {
-    blocks(afterPosition: Int): PagedBlocksResult!
+    blocks(cursor: Int): PagedBlocksResult!
   }
 `

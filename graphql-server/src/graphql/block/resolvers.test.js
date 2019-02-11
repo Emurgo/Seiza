@@ -35,7 +35,7 @@ const mockApi = (responses, latestPage) => () => {
   }
 }
 
-test('No `afterPosition` supplied, latest page is full', async () => {
+test('No `cursor` supplied, latest page is full', async () => {
   const latestPage = 100
   const pageOneData = cbs(20, 10)
   const pageTwoData = cbs(10, 0)
@@ -50,7 +50,7 @@ test('No `afterPosition` supplied, latest page is full', async () => {
   expect(output).toEqual(expectedOutput)
 })
 
-test('No `afterPosition` supplied, latest page is "half-full"(four items) ', async () => {
+test('No `cursor` supplied, latest page is "half-full"(four items) ', async () => {
   const latestPage = 100
 
   const pageOneData = cbs(14, 10)
@@ -67,7 +67,7 @@ test('No `afterPosition` supplied, latest page is "half-full"(four items) ', asy
   expect(output).toEqual(expectedOutput)
 })
 
-test('No `afterPosition` supplied, latest page contains one item', async () => {
+test('No `cursor` supplied, latest page contains one item', async () => {
   const latestPage = 100
 
   const pageOneData = cbs(11, 10)
@@ -84,8 +84,8 @@ test('No `afterPosition` supplied, latest page contains one item', async () => {
   expect(output).toEqual(expectedOutput)
 })
 
-test('`afterPosition` supplied, one item to be taken from page one', async () => {
-  const afterPosition = 981
+test('`cursor` supplied, one item to be taken from page one', async () => {
+  const cursor = 981
   const latestPage = 100
 
   const pageOneData = cbs(20, 10)
@@ -98,12 +98,12 @@ test('`afterPosition` supplied, one item to be taken from page one', async () =>
     data: cbs(11, 1).map(facadeBlock),
     cursor: 971,
   }
-  const output = await blocksResolver(null, {afterPosition}, context)
+  const output = await blocksResolver(null, {cursor}, context)
   expect(output).toEqual(expectedOutput)
 })
 
-test('`afterPosition` four items to be taken from page one', async () => {
-  const afterPosition = 984
+test('`cursor` four items to be taken from page one', async () => {
+  const cursor = 984
   const latestPage = 100
 
   const pageOneData = cbs(20, 10)
@@ -116,12 +116,12 @@ test('`afterPosition` four items to be taken from page one', async () => {
     data: cbs(14, 4).map(facadeBlock),
     cursor: 974,
   }
-  const output = await blocksResolver(null, {afterPosition}, context)
+  const output = await blocksResolver(null, {cursor}, context)
   expect(output).toEqual(expectedOutput)
 })
 
-test('`afterPosition` ten items to be taken from page one', async () => {
-  const afterPosition = 990
+test('`cursor` ten items to be taken from page one', async () => {
+  const cursor = 990
   const latestPage = 100
 
   const pageOneData = cbs(20, 10)
@@ -134,7 +134,7 @@ test('`afterPosition` ten items to be taken from page one', async () => {
     data: cbs(20, 10).map(facadeBlock),
     cursor: 980,
   }
-  const output = await blocksResolver(null, {afterPosition}, context)
+  const output = await blocksResolver(null, {cursor}, context)
   expect(output).toEqual(expectedOutput)
 })
 
@@ -170,14 +170,14 @@ test('Multiple calls, latest page was full', async () => {
     data: cbs(30, 20).map(facadeBlock),
     cursor: 980,
   }
-  const output2 = await blocksResolver(null, {afterPosition: expectedOutput1.cursor}, context)
+  const output2 = await blocksResolver(null, {cursor: expectedOutput1.cursor}, context)
   expect(output2).toEqual(expectedOutput2)
 
   const expectedOutput3 = {
     data: cbs(20, 10).map(facadeBlock),
     cursor: 970,
   }
-  const output3 = await blocksResolver(null, {afterPosition: expectedOutput2.cursor}, context)
+  const output3 = await blocksResolver(null, {cursor: expectedOutput2.cursor}, context)
   expect(output3).toEqual(expectedOutput3)
 })
 
@@ -213,13 +213,13 @@ test('Multiple calls, latest page was not full', async () => {
     data: cbs(24, 14).map(facadeBlock),
     cursor: 974,
   }
-  const output2 = await blocksResolver(null, {afterPosition: expectedOutput1.cursor}, context)
+  const output2 = await blocksResolver(null, {cursor: expectedOutput1.cursor}, context)
   expect(output2).toEqual(expectedOutput2)
 
   const expectedOutput3 = {
     data: cbs(14, 4).map(facadeBlock),
     cursor: 964,
   }
-  const output3 = await blocksResolver(null, {afterPosition: expectedOutput2.cursor}, context)
+  const output3 = await blocksResolver(null, {cursor: expectedOutput2.cursor}, context)
   expect(output3).toEqual(expectedOutput3)
 })

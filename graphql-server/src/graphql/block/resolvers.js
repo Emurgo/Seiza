@@ -21,14 +21,14 @@ const _getNextPages = async (pageOne, context) => {
   return _nextPages.reduce((res, page) => res.concat(page), [])
 }
 
-const _mergePages = (initialPage, nextPages, afterPosition) => {
+const _mergePages = (initialPage, nextPages, cursor) => {
   const blocksCountFromPageOne = (initialPage.fetchedPage - 1) * PAGE_SIZE + initialPage.data.length
-  const cursor = afterPosition ? afterPosition - PAGE_SIZE : blocksCountFromPageOne - PAGE_SIZE
+  const nextCursor = cursor ? cursor - PAGE_SIZE : blocksCountFromPageOne - PAGE_SIZE
 
-  if (afterPosition) {
-    const blocksfromFirstPageCount = PAGE_SIZE - (blocksCountFromPageOne - afterPosition)
+  if (cursor) {
+    const blocksfromFirstPageCount = PAGE_SIZE - (blocksCountFromPageOne - cursor)
     return {
-      cursor,
+      cursor: nextCursor,
       data: [
         ...initialPage.data.slice(-blocksfromFirstPageCount),
         ...nextPages.slice(0, PAGE_SIZE - blocksfromFirstPageCount),
@@ -36,19 +36,19 @@ const _mergePages = (initialPage, nextPages, afterPosition) => {
     }
   } else {
     return {
-      cursor,
+      cursor: nextCursor,
       data: [...initialPage.data, ...nextPages.slice(0, PAGE_SIZE - initialPage.data.length)],
     }
   }
 }
 
 // Note: 'pages' are indexed from 1 in cardano API
-// Note: 'afterPosition' means including the position
+// Note: 'cursor' means including the position
 export const blocksResolver = async (parent, args, context) => {
-  const initialPageId = args.afterPosition && Math.ceil(args.afterPosition / PAGE_SIZE)
+  const initialPageId = args.cursor && Math.ceil(args.cursor / PAGE_SIZE)
   if (initialPageId < 1) return []
 
-  const initialPageQuery = args.afterPosition
+  const initialPageQuery = args.cursor
     ? `?pageSize=${PAGE_SIZE}&page=${initialPageId}`
     : `?pageSize=${PAGE_SIZE}`
 
@@ -60,5 +60,5 @@ export const blocksResolver = async (parent, args, context) => {
     })
   const nextPages = await _getNextPages(initialPage, context)
 
-  return _mergePages(initialPage, nextPages, args.afterPosition)
+  return _mergePages(initialPage, nextPages, args.cursor)
 }

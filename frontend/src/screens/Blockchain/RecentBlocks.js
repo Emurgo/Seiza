@@ -19,8 +19,8 @@ const messages = defineMessages({
 
 const withBlocks = graphql(GET_BLOCKS, {
   name: 'blocks',
-  options: ({afterPosition}) => ({
-    variables: {afterPosition},
+  options: ({cursor}) => ({
+    variables: {cursor},
   }),
 })
 
@@ -57,7 +57,7 @@ export default compose(
       const {blocks, fetchMore} = props.blocks
       fetchMore({
         variables: {
-          afterPosition: blocks.cursor,
+          cursor: blocks.cursor,
         },
         updateQuery: (prev, {fetchMoreResult, ...rest}) => {
           if (!fetchMoreResult) return prev

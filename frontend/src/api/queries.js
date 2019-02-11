@@ -28,8 +28,8 @@ export const GET_TRANSACTION_BY_ID = gql`
 `
 
 export const GET_BLOCKS = gql`
-  query($afterPosition: Int) {
-    blocks(afterPosition: $afterPosition) {
+  query($cursor: Int) {
+    blocks(cursor: $cursor) {
       blocks {
         blockHash
       }
