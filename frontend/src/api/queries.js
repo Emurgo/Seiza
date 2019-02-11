@@ -38,3 +38,17 @@ export const GET_BLOCKS = gql`
     }
   }
 `
+
+export const GET_ADDRESS_BY_ID = gql`
+  query($addressId: String!) {
+    address(id: $addressId) {
+      id
+      type
+      transactionsCount
+      balance
+      transactions {
+        id
+      }
+    }
+  }
+`

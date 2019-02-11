@@ -16,6 +16,7 @@ import Staking from './screens/Staking'
 import More from './screens/More'
 import PageNotFound from './screens/PageNotFound'
 import Transaction from './screens/Transaction'
+import Address from './screens/Address'
 
 import './App.css'
 import seizaLogo from './seiza-logo.png'
@@ -78,6 +79,7 @@ const App = () => {
             <Route path={routeTo.staking()} component={Staking} />
             <Route path={routeTo.more()} component={More} />
             <Route path={routeTo.transaction(':id')} component={Transaction} />
+            <Route path={routeTo.address(':id')} component={Address} />
             <Route component={PageNotFound} />
           </Switch>
         </React.Fragment>

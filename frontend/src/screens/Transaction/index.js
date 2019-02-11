@@ -76,18 +76,19 @@ const withTransactionById = graphql(GET_TRANSACTION_BY_ID, {
   }),
 })
 
-const TransactionMovements = ({movements}) => movements.map((move, index) => (
-  <div key={index}>
-    <div style={styles.movementField}>
-      <div>Address</div>
-      <div>{move.address58}</div>
+const TransactionMovements = ({movements}) =>
+  movements.map((move, index) => (
+    <div key={index}>
+      <div style={styles.movementField}>
+        <div>Address</div>
+        <div>{move.address58}</div>
+      </div>
+      <div style={styles.movementField}>
+        <div>Amount</div>
+        <div>{move.amount}</div>
+      </div>
     </div>
-    <div style={styles.movementField}>
-      <div>Amount</div>
-      <div>{move.amount}</div>
-    </div>
-  </div>
-))
+  ))
 
 const Transaction = (props) => {
   const {loading, transaction} = props.transaction
