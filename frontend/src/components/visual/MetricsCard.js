@@ -11,7 +11,7 @@ import IconDecentralization from './tmp_assets/MetricsCard-icon-decentralization
 import IconPrice from './tmp_assets/MetricsCard-icon-price.png'
 import IconPools from './tmp_assets/MetricsCard-icon-pools.png'
 
-import styles from './MetricsCard.module.css'
+import styles from './MetricsCard.module.scss'
 
 const ICONS = {
   epoch: IconEpoch,
