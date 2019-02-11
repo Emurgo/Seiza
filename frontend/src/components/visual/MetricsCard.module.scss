@@ -1,0 +1,24 @@
+.card {
+  min-width: 150px;
+  min-height: 50px;
+  display: flex;
+  padding: 5px;
+  margin: 5px;
+  flex-direction: row;
+  box-shadow: none;
+}
+
+.inner {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  justify-content: center;
+}
+
+.value {
+  font-size: 20;
+}
+
+.metric {
+  color: gray;
+}

@@ -3,6 +3,7 @@
 import React from 'react'
 import {BrowserRouter as Router, Route} from 'react-router-dom'
 import {compose} from 'redux'
+import CssBaseline from '@material-ui/core/CssBaseline'
 
 import {routeTo} from './helpers/routes'
 import {withIntl, withSetLocale} from './components/HOC/intl'
@@ -56,6 +57,7 @@ const App = () => {
   return (
     <Router>
       <React.Fragment>
+        <CssBaseline />
         <TopBar />
         <Route exact path={routeTo.home()} component={Home} />
         <Route path={routeTo.blockchain()} component={Blockchain} />

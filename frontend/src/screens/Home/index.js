@@ -58,7 +58,7 @@ const _Status = ({intl, data}) => {
   const pools = formatInt(idx(status, (s) => s.stakePoolCount), NA)
 
   return (
-    <div style={{display: 'flex'}}>
+    <div className="gradient-bg" style={{display: 'flex', justifyContent: 'center'}}>
       <MetricsCard icon="epoch" metric={translate(text.epochLabel)} value={epochNumber} />
       <MetricsCard icon="blocks" metric={translate(text.blocksLabel)} value={blockCount} />
       <MetricsCard
