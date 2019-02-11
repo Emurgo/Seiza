@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import {BrowserRouter as Router, Route} from 'react-router-dom'
+import {BrowserRouter as Router, Route, Switch} from 'react-router-dom'
 import {compose} from 'redux'
 
 import {routeTo} from './helpers/routes'
@@ -12,6 +12,7 @@ import Home from './screens/Home'
 import Blockchain from './screens/Blockchain'
 import Staking from './screens/Staking'
 import More from './screens/More'
+import PageNotFound from './screens/PageNotFound'
 
 import './App.css'
 import seizaLogo from './seiza-logo.png'
@@ -57,10 +58,13 @@ const App = () => {
     <Router>
       <React.Fragment>
         <TopBar />
-        <Route exact path={routeTo.home()} component={Home} />
-        <Route path={routeTo.blockchain()} component={Blockchain} />
-        <Route path={routeTo.staking()} component={Staking} />
-        <Route path={routeTo.more()} component={More} />
+        <Switch>
+          <Route exact path={routeTo.home()} component={Home} />
+          <Route path={routeTo.blockchain()} component={Blockchain} />
+          <Route path={routeTo.staking()} component={Staking} />
+          <Route path={routeTo.more()} component={More} />
+          <Route component={PageNotFound} />
+        </Switch>
       </React.Fragment>
     </Router>
   )
