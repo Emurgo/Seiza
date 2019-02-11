@@ -1,9 +1,15 @@
 // @flow
 import axios from 'axios'
 
-const URL = 'https://cardanoexplorer.com/api/'
+const URL: string = 'https://cardanoexplorer.com/api/'
+
+export type CardanoAPI = {
+  get: (endpoint: string) => Promise<any>,
+}
 
 // Note: Later we could have some separate api facade, but for its seems to be an overhead
-export default {
+const cardanoAPI: CardanoAPI = {
   get: (endpoint) => axios.get(`${URL}${endpoint}`).then(({data}) => data.Right),
 }
+
+export default cardanoAPI

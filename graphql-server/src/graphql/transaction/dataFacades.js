@@ -1,5 +1,37 @@
 // @flow
-export const facadeTransaction = (data) => ({
+type GetCoin = {
+  getCoin: string,
+}
+type TxAPIType = {
+  ctsId: string,
+  ctsTxTimeIssued: number,
+  ctsBlockTimeIssued: number,
+  ctsBlockHeight: number,
+  ctsBlockEpoch: number,
+  ctsBlockSlot: number,
+  ctsBlockHash: string,
+  ctsRelayedBy: null,
+  ctsTotalInput: GetCoin,
+  ctsTotalOutput: GetCoin,
+  ctsFees: GetCoin,
+  ctsInputs: Array<[string, GetCoin]>,
+  ctsOutputs: Array<[string, GetCoin]>,
+}
+export type FacadeTransaction = {
+  id: string,
+  txTimeIssued: number,
+  blockTimeIssued: number,
+  blockHeight: number,
+  blockEpoch: number,
+  blockSlot: number,
+  blockHash: string,
+  totalInput: string,
+  totalOutput: string,
+  fees: string,
+  inputs: Array<{|address58: string, amount: string|}>,
+  outputs: Array<{|address58: string, amount: string|}>,
+}
+export const facadeTransaction = (data: TxAPIType): FacadeTransaction => ({
   id: data.ctsId,
   txTimeIssued: data.ctsTxTimeIssued,
   blockTimeIssued: data.ctsBlockTimeIssued,

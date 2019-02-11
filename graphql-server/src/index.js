@@ -1,3 +1,4 @@
+// @flow
 import 'babel-polyfill'
 import {ApolloServer, gql} from 'apollo-server'
 import {mergeTypes} from 'merge-graphql-schemas'
@@ -14,6 +15,7 @@ import blockTypes from './graphql/block/types'
 import Timestamp from './graphql/scalars/timestamp'
 import statusTypes from './graphql/status/types'
 import {cardanoAPI} from './api'
+import type {CardanoAPI} from './api'
 
 // TODO: global error handler
 
@@ -38,12 +40,28 @@ const resolvers = {
   },
 }
 
+export type ApolloContext = {
+  cardanoAPI: CardanoAPI,
+}
+
+// TODO:
+export type Parent = any
+
 const server = new ApolloServer({
   typeDefs: mergeTypes([globalTypes, addressTypes, transactionTypes, blockTypes, statusTypes], {
     all: true,
   }),
   resolvers,
-  context: () => ({
+  // TODO: replace with production-ready logger
+  formatError: (error: any): any => {
+    console.log(error) // eslint-disable-line
+    return error
+  },
+  formatResponse: (response: any): any => {
+    console.log(response) // eslint-disable-line
+    return response
+  },
+  context: (): ApolloContext => ({
     cardanoAPI,
   }),
 })
