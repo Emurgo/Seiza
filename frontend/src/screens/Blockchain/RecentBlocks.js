@@ -34,10 +34,16 @@ const RecentBlocks = (props) => {
   const {onLoadMore} = props
   return (
     <React.Fragment>
-      {!loading && <div>Total count: {blocks.blocks.length} </div>}
-      {!loading && blocks.blocks.map((block) => <div key={block.blockHash}>{block.blockHash}</div>)}
-      {!loading && blocks.hasMore && (
-        <button onClick={onLoadMore}>{formatMessage(messages.loadMore)}</button>
+      {!loading && (
+        <React.Fragment>
+          <div>Total count: {blocks.blocks.length} </div>
+          {blocks.blocks.map((block) => (
+            <div key={block.blockHash}>{block.blockHash}</div>
+          ))}
+          {blocks.hasMore && (
+            <button onClick={onLoadMore}>{formatMessage(messages.loadMore)}</button>
+          )}
+        </React.Fragment>
       )}
     </React.Fragment>
   )

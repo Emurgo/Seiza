@@ -3,44 +3,62 @@ import {facadeBlock} from './dataFacades'
 // TODO: consider variable page size
 const PAGE_SIZE = 10
 
-// TODO: make more readable
-// Note: 'pages' are indexed from 1 in cardano API
-// Note: 'afterPosition' means including the position
-// Note: In most cases when a user wants to fetch `{PAGE_SIZE}` latest blocks two calls are needed
-export const blocksResolver = async (parent, args, context) => {
-  const pageOneID = args.afterPosition && Math.ceil(args.afterPosition / PAGE_SIZE)
-  const pageOneQuery = args.afterPosition
-    ? `?pageSize=${PAGE_SIZE}&page=${pageOneID}`
-    : `?pageSize=${PAGE_SIZE}`
+const _getNextPages = async (pageOne, context) => {
+  const fetchedPage = pageOne.fetchedPage
+  const nextPagesCount = Math.ceil(pageOne.data.length / 10)
+  const nextPagesIDs = new Array(nextPagesCount)
+    .fill(0)
+    .map((_, i) => fetchedPage - i - 1)
+    .filter((page) => page >= 1)
 
-  const pageOne = await context.cardanoAPI.get(`blocks/pages${pageOneQuery}`).then((data) => {
-    // Note: data[0] contain the number of the latest page
-    return {fetchedPage: pageOneID || data[0], data: data[1].map(facadeBlock)}
+  const nextPagePromises = nextPagesIDs.map((nextPageID) => {
+    const nextPageQuery = `?pageSize=${PAGE_SIZE}&page=${nextPageID}`
+    return context.cardanoAPI.get(`blocks/pages${nextPageQuery}`).then((data) => {
+      return data[1].map(facadeBlock)
+    })
   })
+  const _nextPages = await Promise.all(nextPagePromises)
+  return _nextPages.reduce((res, page) => res.concat(page), [])
+}
 
-  const pageTwoQuery = `?pageSize=${PAGE_SIZE}&page=${pageOne.fetchedPage - 1}`
-  const pageTwo = await context.cardanoAPI.get(`blocks/pages${pageTwoQuery}`).then((data) => {
-    return {data: data[1].map(facadeBlock)}
-  })
+const _mergePages = (initialPage, nextPages, afterPosition) => {
+  const blocksCountFromPageOne = (initialPage.fetchedPage - 1) * PAGE_SIZE + initialPage.data.length
+  const cursor = afterPosition ? afterPosition - PAGE_SIZE : blocksCountFromPageOne - PAGE_SIZE
 
-  const blocksCountToPageOne = (pageOne.fetchedPage - 1) * PAGE_SIZE + pageOne.data.length
-  const cursor = args.afterPosition
-    ? args.afterPosition - PAGE_SIZE
-    : blocksCountToPageOne - PAGE_SIZE
-
-  if (args.afterPosition) {
-    const blocksfromPageFirstCount = PAGE_SIZE - (blocksCountToPageOne - args.afterPosition)
+  if (afterPosition) {
+    const blocksfromFirstPageCount = PAGE_SIZE - (blocksCountFromPageOne - afterPosition)
     return {
       cursor,
       data: [
-        ...pageOne.data.slice(-blocksfromPageFirstCount),
-        ...pageTwo.data.slice(0, PAGE_SIZE - blocksfromPageFirstCount),
+        ...initialPage.data.slice(-blocksfromFirstPageCount),
+        ...nextPages.slice(0, PAGE_SIZE - blocksfromFirstPageCount),
       ],
     }
   } else {
     return {
       cursor,
-      data: [...pageOne.data, ...pageTwo.data.slice(0, PAGE_SIZE - pageOne.data.length)],
+      data: [...initialPage.data, ...nextPages.slice(0, PAGE_SIZE - initialPage.data.length)],
     }
   }
+}
+
+// Note: 'pages' are indexed from 1 in cardano API
+// Note: 'afterPosition' means including the position
+export const blocksResolver = async (parent, args, context) => {
+  const initialPageId = args.afterPosition && Math.ceil(args.afterPosition / PAGE_SIZE)
+  if (initialPageId < 1) return []
+
+  const initialPageQuery = args.afterPosition
+    ? `?pageSize=${PAGE_SIZE}&page=${initialPageId}`
+    : `?pageSize=${PAGE_SIZE}`
+
+  const initialPage = await context.cardanoAPI
+    .get(`blocks/pages${initialPageQuery}`)
+    .then((data) => {
+      // Note: data[0] contain the number of the latest page
+      return {fetchedPage: initialPageId || data[0], data: data[1].map(facadeBlock)}
+    })
+  const nextPages = await _getNextPages(initialPage, context)
+
+  return _mergePages(initialPage, nextPages, args.afterPosition)
 }
