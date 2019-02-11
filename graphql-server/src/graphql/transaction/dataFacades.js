@@ -17,7 +17,21 @@ type TxAPIType = {
   ctsInputs: Array<[string, GetCoin]>,
   ctsOutputs: Array<[string, GetCoin]>,
 }
-export const facadeTransaction = (data: TxAPIType) => ({
+export type FacadeTransaction = {
+  id: string,
+  txTimeIssued: number,
+  blockTimeIssued: number,
+  blockHeight: number,
+  blockEpoch: number,
+  blockSlot: number,
+  blockHash: string,
+  totalInput: string,
+  totalOutput: string,
+  fees: string,
+  inputs: Array<{|address58: string, amount: string|}>,
+  outputs: Array<{|address58: string, amount: string|}>,
+}
+export const facadeTransaction = (data: TxAPIType): FacadeTransaction => ({
   id: data.ctsId,
   txTimeIssued: data.ctsTxTimeIssued,
   blockTimeIssued: data.ctsBlockTimeIssued,

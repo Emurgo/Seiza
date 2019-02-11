@@ -1,11 +1,16 @@
 // @flow
 import {facadeTransaction} from './dataFacades'
 
-import type {ApolloContext} from '../../'
+import type {ApolloContext, Parent} from '../../'
+import type {FacadeTransaction} from './dataFacades'
 
 type TxResolverArgs = {
   id: string,
 }
 
-export const transactionResolver = (parent, args: TxResolverArgs, context: ApolloContext) =>
+export const transactionResolver = (
+  parent: Parent,
+  args: TxResolverArgs,
+  context: ApolloContext
+): Promise<FacadeTransaction> =>
   context.cardanoAPI.get(`txs/summary/${args.id}`).then(facadeTransaction)

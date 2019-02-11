@@ -44,6 +44,9 @@ export type ApolloContext = {
   cardanoAPI: CardanoAPI,
 }
 
+// TODO:
+export type Parent = any
+
 const server = new ApolloServer({
   typeDefs: mergeTypes([globalTypes, addressTypes, transactionTypes, blockTypes, statusTypes], {
     all: true,
@@ -51,11 +54,11 @@ const server = new ApolloServer({
   resolvers,
   // TODO: replace with production-ready logger
   formatError: (error: any): any => {
-    console.log(error)
+    console.log(error) // eslint-disable-line
     return error
   },
   formatResponse: (response: any): any => {
-    console.log(response)
+    console.log(response) // eslint-disable-line
     return response
   },
   context: (): ApolloContext => ({
