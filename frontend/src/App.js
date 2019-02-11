@@ -15,9 +15,12 @@ import Blockchain from './screens/Blockchain'
 import Staking from './screens/Staking'
 import More from './screens/More'
 import PageNotFound from './screens/PageNotFound'
+import Transaction from './screens/Transaction'
 
 import './App.css'
 import seizaLogo from './seiza-logo.png'
+
+// TODO: error handling
 
 // TODO: define and store themes in proper place
 const theme = createMuiTheme({
@@ -74,6 +77,7 @@ const App = () => {
             <Route path={routeTo.blockchain()} component={Blockchain} />
             <Route path={routeTo.staking()} component={Staking} />
             <Route path={routeTo.more()} component={More} />
+            <Route path={routeTo.transaction(':id')} component={Transaction} />
             <Route component={PageNotFound} />
           </Switch>
         </React.Fragment>
