@@ -45,12 +45,7 @@ type PropTypes = {
   metric: string,
   value: string,
   icon: $Keys<typeof ICONS>,
-  classes: {
-    card: {},
-    inner: {},
-    value: {},
-    metric: {},
-  }
+  classes: any,
 }
 
 const MetricsCard = ({metric, value, icon, classes}: PropTypes) => (
