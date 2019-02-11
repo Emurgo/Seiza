@@ -223,3 +223,38 @@ test('Multiple calls, latest page was not full', async () => {
   const output3 = await blocksResolver(null, {cursor: expectedOutput2.cursor}, context)
   expect(output3).toEqual(expectedOutput3)
 })
+
+test('Invalid cursor', async () => {
+  const cursor = 0
+  const latestPage = 100
+
+  const pageOneData = cbs(20, 10)
+  const pageTwoData = cbs(10, 0)
+
+  const context = {
+    cardanoAPI: mockApi({1: pageOneData, 2: pageTwoData}, latestPage)(),
+  }
+  const expectedOutput = {data: [], cursor: 0}
+  const output = await blocksResolver(null, {cursor}, context)
+  expect(output).toEqual(expectedOutput)
+})
+
+test('End of pages', async () => {
+  const latestPage = 1
+  const pageOneData = cbs(4, 0)
+
+  const context = {
+    cardanoAPI: mockApi(
+      {
+        1: pageOneData,
+      },
+      latestPage
+    )(),
+  }
+  const expectedOutput = {
+    data: cbs(4, 0).map(facadeBlock),
+    cursor: 0,
+  }
+  const output = await blocksResolver(null, {}, context)
+  expect(output).toEqual(expectedOutput)
+})
