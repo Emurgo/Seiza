@@ -4,6 +4,7 @@ import React from 'react'
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom'
 import {compose} from 'redux'
 import CssBaseline from '@material-ui/core/CssBaseline'
+import {MuiThemeProvider, createMuiTheme} from '@material-ui/core/styles'
 
 import {routeTo} from './helpers/routes'
 import {withIntl, withSetLocale} from './components/HOC/intl'
@@ -17,6 +18,13 @@ import PageNotFound from './screens/PageNotFound'
 
 import './App.css'
 import seizaLogo from './seiza-logo.png'
+
+// TODO: define and store themes in proper place
+const theme = createMuiTheme({
+  typography: {
+    useNextVariants: true,
+  },
+})
 
 // TODO: move elsewhere once there is folder structure
 const LanguageSwitch = withSetLocale(({setLocale}) => (
@@ -56,19 +64,21 @@ const TopBar = () => (
 
 const App = () => {
   return (
-    <Router>
-      <React.Fragment>
-        <CssBaseline />
-        <TopBar />
-        <Switch>
-          <Route exact path={routeTo.home()} component={Home} />
-          <Route path={routeTo.blockchain()} component={Blockchain} />
-          <Route path={routeTo.staking()} component={Staking} />
-          <Route path={routeTo.more()} component={More} />
-          <Route component={PageNotFound} />
-        </Switch>
-      </React.Fragment>
-    </Router>
+    <MuiThemeProvider theme={theme}>
+      <Router>
+        <React.Fragment>
+          <CssBaseline />
+          <TopBar />
+          <Switch>
+            <Route exact path={routeTo.home()} component={Home} />
+            <Route path={routeTo.blockchain()} component={Blockchain} />
+            <Route path={routeTo.staking()} component={Staking} />
+            <Route path={routeTo.more()} component={More} />
+            <Route component={PageNotFound} />
+          </Switch>
+        </React.Fragment>
+      </Router>
+    </MuiThemeProvider>
   )
 }
 
