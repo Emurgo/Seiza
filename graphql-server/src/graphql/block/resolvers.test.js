@@ -24,26 +24,23 @@ const cb = (hash) => ({
 const cbs = (from, to) => _.range(from, to).map((item) => cb(item))
 
 // TODO: consider mock strategy based on url and query string
-const mockApi = (responses, latestPage) => () => {
-  let apiCallOrder = 1
+const mockApi = (blockCount) => {
   return {
-    get: (pathname) => {
-      const result = [latestPage, responses[apiCallOrder]]
-      apiCallOrder += 1
+    get: (pathname, {page}) => {
+      const PAGE_SIZE = 10
+      page = page != null ? page : Math.ceil(blockCount / PAGE_SIZE)
+      const result = [page, cbs(Math.min(page * PAGE_SIZE, blockCount), (page - 1) * PAGE_SIZE)]
       return Promise.resolve(result)
     },
   }
 }
 
 test('No `cursor` supplied, latest page is full', async () => {
-  const latestPage = 100
-  const pageOneData = cbs(20, 10)
-  const pageTwoData = cbs(10, 0)
   const context = {
-    cardanoAPI: mockApi({1: pageOneData, 2: pageTwoData}, latestPage)(),
+    cardanoAPI: mockApi(1000),
   }
   const expectedOutput = {
-    data: cbs(20, 10).map(facadeBlock),
+    data: cbs(1000, 990).map(facadeBlock),
     cursor: 990,
   }
   const output = await blocksResolver(null, {}, context)
@@ -51,16 +48,12 @@ test('No `cursor` supplied, latest page is full', async () => {
 })
 
 test('No `cursor` supplied, latest page is "half-full"(four items) ', async () => {
-  const latestPage = 100
-
-  const pageOneData = cbs(14, 10)
-  const pageTwoData = cbs(10, 0)
-
   const context = {
-    cardanoAPI: mockApi({1: pageOneData, 2: pageTwoData}, latestPage)(),
+    cardanoAPI: mockApi(994),
   }
+
   const expectedOutput = {
-    data: cbs(14, 4).map(facadeBlock),
+    data: cbs(994, 984).map(facadeBlock),
     cursor: 984,
   }
   const output = await blocksResolver(null, {}, context)
@@ -68,16 +61,11 @@ test('No `cursor` supplied, latest page is "half-full"(four items) ', async () =
 })
 
 test('No `cursor` supplied, latest page contains one item', async () => {
-  const latestPage = 100
-
-  const pageOneData = cbs(11, 10)
-  const pageTwoData = cbs(10, 0)
-
   const context = {
-    cardanoAPI: mockApi({1: pageOneData, 2: pageTwoData}, latestPage)(),
+    cardanoAPI: mockApi(991),
   }
   const expectedOutput = {
-    data: cbs(11, 1).map(facadeBlock),
+    data: cbs(991, 981).map(facadeBlock),
     cursor: 981,
   }
   const output = await blocksResolver(null, {}, context)
@@ -85,17 +73,13 @@ test('No `cursor` supplied, latest page contains one item', async () => {
 })
 
 test('`cursor` supplied, one item to be taken from page one', async () => {
-  const cursor = 981
-  const latestPage = 100
-
-  const pageOneData = cbs(20, 10)
-  const pageTwoData = cbs(10, 0)
-
   const context = {
-    cardanoAPI: mockApi({1: pageOneData, 2: pageTwoData}, latestPage)(),
+    cardanoAPI: mockApi(1000),
   }
+  const cursor = 981
+
   const expectedOutput = {
-    data: cbs(11, 1).map(facadeBlock),
+    data: cbs(981, 971).map(facadeBlock),
     cursor: 971,
   }
   const output = await blocksResolver(null, {cursor}, context)
@@ -104,16 +88,13 @@ test('`cursor` supplied, one item to be taken from page one', async () => {
 
 test('`cursor` four items to be taken from page one', async () => {
   const cursor = 984
-  const latestPage = 100
-
-  const pageOneData = cbs(20, 10)
-  const pageTwoData = cbs(10, 0)
 
   const context = {
-    cardanoAPI: mockApi({1: pageOneData, 2: pageTwoData}, latestPage)(),
+    cardanoAPI: mockApi(1000),
   }
+
   const expectedOutput = {
-    data: cbs(14, 4).map(facadeBlock),
+    data: cbs(984, 974).map(facadeBlock),
     cursor: 974,
   }
   const output = await blocksResolver(null, {cursor}, context)
@@ -122,16 +103,13 @@ test('`cursor` four items to be taken from page one', async () => {
 
 test('`cursor` ten items to be taken from page one', async () => {
   const cursor = 990
-  const latestPage = 100
-
-  const pageOneData = cbs(20, 10)
-  const pageTwoData = cbs(10, 0)
 
   const context = {
-    cardanoAPI: mockApi({1: pageOneData, 2: pageTwoData}, latestPage)(),
+    cardanoAPI: mockApi(1000),
   }
+
   const expectedOutput = {
-    data: cbs(20, 10).map(facadeBlock),
+    data: cbs(990, 980).map(facadeBlock),
     cursor: 980,
   }
   const output = await blocksResolver(null, {cursor}, context)
@@ -139,42 +117,26 @@ test('`cursor` ten items to be taken from page one', async () => {
 })
 
 test('Multiple calls, latest page was full', async () => {
-  const latestPage = 100
-
-  const pageOneData = cbs(40, 30)
-  const pageTwoData = cbs(30, 20)
-  const pageThreeData = cbs(20, 10)
-  const pageFourData = cbs(10, 0)
-
   const context = {
-    cardanoAPI: mockApi(
-      {
-        1: pageOneData,
-        2: pageTwoData,
-        3: pageTwoData,
-        4: pageThreeData,
-        5: pageThreeData,
-        6: pageFourData,
-      },
-      latestPage
-    )(),
+    cardanoAPI: mockApi(1000),
   }
+
   const expectedOutput1 = {
-    data: cbs(40, 30).map(facadeBlock),
+    data: cbs(1000, 990).map(facadeBlock),
     cursor: 990,
   }
   const output1 = await blocksResolver(null, {}, context)
   expect(output1).toEqual(expectedOutput1)
 
   const expectedOutput2 = {
-    data: cbs(30, 20).map(facadeBlock),
+    data: cbs(990, 980).map(facadeBlock),
     cursor: 980,
   }
   const output2 = await blocksResolver(null, {cursor: expectedOutput1.cursor}, context)
   expect(output2).toEqual(expectedOutput2)
 
   const expectedOutput3 = {
-    data: cbs(20, 10).map(facadeBlock),
+    data: cbs(980, 970).map(facadeBlock),
     cursor: 970,
   }
   const output3 = await blocksResolver(null, {cursor: expectedOutput2.cursor}, context)
@@ -182,42 +144,26 @@ test('Multiple calls, latest page was full', async () => {
 })
 
 test('Multiple calls, latest page was not full', async () => {
-  const latestPage = 100
-
-  const pageOneData = cbs(34, 30)
-  const pageTwoData = cbs(30, 20)
-  const pageThreeData = cbs(20, 10)
-  const pageFourData = cbs(10, 0)
-
   const context = {
-    cardanoAPI: mockApi(
-      {
-        1: pageOneData,
-        2: pageTwoData,
-        3: pageTwoData,
-        4: pageThreeData,
-        5: pageThreeData,
-        6: pageFourData,
-      },
-      latestPage
-    )(),
+    cardanoAPI: mockApi(994),
   }
+
   const expectedOutput1 = {
-    data: cbs(34, 24).map(facadeBlock),
+    data: cbs(994, 984).map(facadeBlock),
     cursor: 984,
   }
   const output1 = await blocksResolver(null, {}, context)
   expect(output1).toEqual(expectedOutput1)
 
   const expectedOutput2 = {
-    data: cbs(24, 14).map(facadeBlock),
+    data: cbs(984, 974).map(facadeBlock),
     cursor: 974,
   }
   const output2 = await blocksResolver(null, {cursor: expectedOutput1.cursor}, context)
   expect(output2).toEqual(expectedOutput2)
 
   const expectedOutput3 = {
-    data: cbs(14, 4).map(facadeBlock),
+    data: cbs(974, 964).map(facadeBlock),
     cursor: 964,
   }
   const output3 = await blocksResolver(null, {cursor: expectedOutput2.cursor}, context)
@@ -226,30 +172,19 @@ test('Multiple calls, latest page was not full', async () => {
 
 test('Invalid cursor', async () => {
   const cursor = 0
-  const latestPage = 100
-
-  const pageOneData = cbs(20, 10)
-  const pageTwoData = cbs(10, 0)
 
   const context = {
-    cardanoAPI: mockApi({1: pageOneData, 2: pageTwoData}, latestPage)(),
+    cardanoAPI: mockApi(1000),
   }
+
   const expectedOutput = {data: [], cursor: null}
   const output = await blocksResolver(null, {cursor}, context)
   expect(output).toEqual(expectedOutput)
 })
 
 test('End of pages', async () => {
-  const latestPage = 1
-  const pageOneData = cbs(4, 0)
-
   const context = {
-    cardanoAPI: mockApi(
-      {
-        1: pageOneData,
-      },
-      latestPage
-    )(),
+    cardanoAPI: mockApi(4),
   }
   const expectedOutput = {
     data: cbs(4, 0).map(facadeBlock),
