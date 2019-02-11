@@ -1,6 +1,7 @@
 // @flow
 import React from 'react'
 import Card from '@material-ui/core/Card'
+import {withStyles, createStyles} from '@material-ui/core'
 
 import IconEpoch from './tmp_assets/MetricsCard-icon-epoch.png'
 import IconBlocks from './tmp_assets/MetricsCard-icon-blocks.png'
@@ -8,7 +9,29 @@ import IconDecentralization from './tmp_assets/MetricsCard-icon-decentralization
 import IconPrice from './tmp_assets/MetricsCard-icon-price.png'
 import IconPools from './tmp_assets/MetricsCard-icon-pools.png'
 
-import styles from './MetricsCard.module.scss'
+const styles = (theme) => createStyles({
+  card: {
+    minWidth: '150px',
+    minHeight: '50px',
+    display: 'flex',
+    padding: '5px',
+    margin: '5px',
+    flexDirection: 'row',
+    boxShadow: 'none',
+  },
+  inner: {
+    display: 'flex',
+    flexDirection: 'column',
+    flexGrow: 1,
+    justifyContent: 'center',
+  },
+  value: {
+    fontSize: 20,
+  },
+  metric: {
+    color: 'grey',
+  },
+})
 
 const ICONS = {
   epoch: IconEpoch,
@@ -22,16 +45,17 @@ type PropTypes = {
   metric: string,
   value: string,
   icon: $Keys<typeof ICONS>,
+  classes: any,
 }
 
-const MetricsCard = ({metric, value, icon}: PropTypes) => (
-  <Card className={styles.card}>
+const MetricsCard = ({metric, value, icon, classes}: PropTypes) => (
+  <Card className={classes.card}>
     <img src={ICONS[icon]} />
-    <div className={styles.inner}>
-      <div className={styles.value}>{value}</div>
-      <div className={styles.metric}>{metric}</div>
+    <div className={classes.inner}>
+      <div className={classes.value}>{value}</div>
+      <div className={classes.metric}>{metric}</div>
     </div>
   </Card>
 )
 
-export default MetricsCard
+export default withStyles(styles)(MetricsCard)
