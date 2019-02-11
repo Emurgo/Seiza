@@ -11,6 +11,8 @@ import IconDecentralization from './tmp_assets/MetricsCard-icon-decentralization
 import IconPrice from './tmp_assets/MetricsCard-icon-price.png'
 import IconPools from './tmp_assets/MetricsCard-icon-pools.png'
 
+import styles from './MetricsCard.module.css'
+
 const ICONS = {
   epoch: IconEpoch,
   blocks: IconBlocks,
@@ -23,38 +25,16 @@ type PropTypes = {
   metric: string,
   value: string,
   icon: $Keys<typeof ICONS>,
-  classes: Object,
 }
 
-const styles: Object = {
-  card: {
-    // border: 'solid 1px gray',
-    minWidth: '150px',
-    minHeight: '50px',
-    display: 'flex',
-    padding: '5px',
-    margin: '5px',
-    flexDirection: 'row',
-    boxShadow: 'none',
-  },
-  inner: {
-    display: 'flex',
-    flexDirection: 'column',
-    flexGrow: '1',
-    justifyContent: 'center',
-  },
-  value: {fontSize: 20},
-  metric: {color: 'gray'},
-}
-
-const MetricsCard = ({metric, value, icon, classes}: PropTypes) => (
-  <Card className={classes.card}>
+const MetricsCard = ({metric, value, icon}: PropTypes) => (
+  <Card className={styles.card}>
     <img src={ICONS[icon]} />
-    <div className={classes.inner}>
-      <div className={classes.value}>{value}</div>
-      <div className={classes.metric}>{metric}</div>
+    <div className={styles.inner}>
+      <div className={styles.value}>{value}</div>
+      <div className={styles.metric}>{metric}</div>
     </div>
   </Card>
 )
 
-export default compose(withStyles(styles))(MetricsCard)
+export default MetricsCard
