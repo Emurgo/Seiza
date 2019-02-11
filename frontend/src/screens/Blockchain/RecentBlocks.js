@@ -35,7 +35,9 @@ const RecentBlocks = (props) => {
   return (
     <React.Fragment>
       {!loading && blocks.blocks.map((block) => <div key={block.blockHash}>{block.blockHash}</div>)}
-      {!loading && blocks.hasMore && <button onClick={onLoadMore}>{formatMessage(messages.loadMore)}</button>}
+      {!loading && blocks.hasMore && (
+        <button onClick={onLoadMore}>{formatMessage(messages.loadMore)}</button>
+      )}
     </React.Fragment>
   )
 }
