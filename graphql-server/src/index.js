@@ -33,8 +33,8 @@ const resolvers = {
       const result = await blocksResolver(_, args, context)
       return {
         blocks: result.data,
-        cursor: result.fetchedPage - 1,
-        hasMore: result.fetchedPage > 0,
+        cursor: result.cursor,
+        hasMore: result.cursor > 0,
       }
     },
   },

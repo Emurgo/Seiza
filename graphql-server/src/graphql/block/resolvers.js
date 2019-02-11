@@ -1,12 +1,85 @@
 import {facadeBlock} from './dataFacades'
+import _ from 'lodash'
+import assert from 'assert'
 
-// TODO: consider using blockHash as 'cursor' instead of 'page'
-// TODO: smarter fetching (if fetching the latest block, fetch also the next one)
-// TODO: page size
-export const blocksResolver = (parent, args, context) => {
-  const query = args.page ? `?page=${args.page}` : ''
-  return context.cardanoAPI.get(`blocks/pages${query}`).then((data) => {
-    // Note: data[0] contain the number of the latest page
-    return {fetchedPage: args.page || data[0], data: data[1].map(facadeBlock)}
-  })
+// TODO: consider variable page size
+const PAGE_SIZE = 10
+
+const _fetchPage = async (pageId, context) => {
+  const queryParams = {
+    pageSize: PAGE_SIZE,
+  }
+
+  // ugly mutation
+  if (pageId) queryParams.page = pageId
+
+  const [resultPageId, blocks] = await context.cardanoAPI.get('blocks/pages', queryParams)
+
+  if (pageId) assert(resultPageId === pageId)
+
+  return {
+    pageId: resultPageId,
+    blocks: blocks.map(facadeBlock),
+  }
+}
+
+// Note: 'pages' are indexed from 1 in cardano API
+// Note: 'cursor' means including the position
+
+const INVALID_CURSOR = {data: [], cursor: null}
+
+const _fetchInitial = async (args, context) => {
+  const pageId = args.cursor && Math.ceil(args.cursor / PAGE_SIZE)
+  if (pageId < 1) throw new Error('Invalid cursor value')
+
+  const initialPage = await _fetchPage(pageId, context)
+
+  const sizeToKeep = args.cursor
+    ? args.cursor - (pageId - 1) * PAGE_SIZE
+    : initialPage.blocks.length
+
+  assert(initialPage.blocks.length >= sizeToKeep)
+
+  return {
+    nextPageId: initialPage.pageId - 1,
+    blocks: initialPage.blocks.slice(-sizeToKeep),
+  }
+}
+
+// countDown(5, 4) => 5,4,3,2
+const countDown = (start, count) => _.range(start, start - count, -1)
+
+const _fetchSubsequent = async (startPageId, count, context) => {
+  const pageIds = countDown(startPageId, Math.min(startPageId, Math.ceil(count / PAGE_SIZE)))
+
+  const subsequentData = await Promise.all(
+    pageIds.map((id) =>
+      _fetchPage(id, context).then(({blocks}) => {
+        assert(blocks.length === PAGE_SIZE)
+        return blocks
+      })
+    )
+  )
+
+  return _.flatten(subsequentData).slice(0, count)
+}
+
+export const blocksResolver = async (parent, args, context) => {
+  const pageId = args.cursor && Math.ceil(args.cursor / PAGE_SIZE)
+  if (pageId < 1) return INVALID_CURSOR
+
+  const resultPageSize = PAGE_SIZE // hardcoded for now
+
+  const {nextPageId, blocks: initialBlocks} = await _fetchInitial(args, context)
+
+  const remainingCount = Math.max(0, resultPageSize - initialBlocks.length)
+
+  const subsequentBlocks = await _fetchSubsequent(nextPageId, remainingCount, context)
+
+  const nextCursor = nextPageId * PAGE_SIZE - remainingCount
+
+  return {
+    cursor: nextCursor > 0 ? nextCursor : null,
+    data: [...initialBlocks, ...subsequentBlocks],
+  }
 }
