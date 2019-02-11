@@ -38,28 +38,26 @@ const styles = {
 const Spacer = () => <div style={{flexGrow: 1}} />
 
 const TopBar = () => (
-  <React.Fragment>
-    <CssBaseline />
-    <div style={styles.topbar}>
-      <img src={seizaLogo} />
-      <Spacer />
-      <Navbar
-        items={[
-          {link: routeTo.home(), label: 'Home'},
-          {link: routeTo.blockchain(), label: 'Blockchain'},
-          {link: routeTo.staking(), label: 'Staking'},
-          {link: routeTo.more(), label: 'More'},
-        ]}
-      />
-      <LanguageSwitch />
-    </div>
-  </React.Fragment>
+  <div style={styles.topbar}>
+    <img src={seizaLogo} />
+    <Spacer />
+    <Navbar
+      items={[
+        {link: routeTo.home(), label: 'Home'},
+        {link: routeTo.blockchain(), label: 'Blockchain'},
+        {link: routeTo.staking(), label: 'Staking'},
+        {link: routeTo.more(), label: 'More'},
+      ]}
+    />
+    <LanguageSwitch />
+  </div>
 )
 
 const App = () => {
   return (
     <Router>
       <React.Fragment>
+        <CssBaseline />
         <TopBar />
         <Route exact path={routeTo.home()} component={Home} />
         <Route path={routeTo.blockchain()} component={Blockchain} />
