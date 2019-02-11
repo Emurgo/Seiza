@@ -15,6 +15,7 @@ import blockTypes from './graphql/block/types'
 import Timestamp from './graphql/scalars/timestamp'
 import statusTypes from './graphql/status/types'
 import {cardanoAPI} from './api'
+import type {CardanoAPI} from './api'
 
 // TODO: global error handler
 
@@ -39,6 +40,10 @@ const resolvers = {
   },
 }
 
+export type ApolloContext = {
+  cardanoAPI: CardanoAPI,
+}
+
 const server = new ApolloServer({
   typeDefs: mergeTypes([globalTypes, addressTypes, transactionTypes, blockTypes, statusTypes], {
     all: true,
@@ -53,7 +58,7 @@ const server = new ApolloServer({
     console.log(response)
     return response
   },
-  context: () => ({
+  context: (): ApolloContext => ({
     cardanoAPI,
   }),
 })
