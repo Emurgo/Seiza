@@ -1,9 +1,6 @@
 // @flow
-
 import React from 'react'
 import Card from '@material-ui/core/Card'
-import {withStyles} from '@material-ui/core/styles'
-import {compose} from 'redux'
 
 import IconEpoch from './tmp_assets/MetricsCard-icon-epoch.png'
 import IconBlocks from './tmp_assets/MetricsCard-icon-blocks.png'
