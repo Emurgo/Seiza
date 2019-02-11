@@ -1,6 +1,9 @@
 // @flow
 
 import React from 'react'
+import Card from '@material-ui/core/Card'
+import {withStyles} from '@material-ui/core/styles'
+import {compose} from 'redux'
 
 import IconEpoch from './tmp_assets/MetricsCard-icon-epoch.png'
 import IconBlocks from './tmp_assets/MetricsCard-icon-blocks.png'
@@ -20,35 +23,38 @@ type PropTypes = {
   metric: string,
   value: string,
   icon: $Keys<typeof ICONS>,
+  classes: Object,
 }
 
-const styles = {
+const styles: Object = {
   card: {
-    border: 'solid 1px gray',
-    width: '150px',
-    height: '50px',
+    // border: 'solid 1px gray',
+    minWidth: '150px',
+    minHeight: '50px',
     display: 'flex',
     padding: '5px',
     margin: '5px',
     flexDirection: 'row',
+    boxShadow: 'none',
   },
   inner: {
     display: 'flex',
     flexDirection: 'column',
     flexGrow: '1',
+    justifyContent: 'center',
   },
-  value: {fontSize: 20, textAlign: 'center'},
-  metric: {color: 'gray', textAlign: 'center'},
+  value: {fontSize: 20},
+  metric: {color: 'gray'},
 }
 
-const MetricsCard = ({metric, value, icon}: PropTypes) => (
-  <div style={styles.card}>
+const MetricsCard = ({metric, value, icon, classes}: PropTypes) => (
+  <Card className={classes.card}>
     <img src={ICONS[icon]} />
-    <div style={styles.inner}>
-      <div style={styles.value}>{value}</div>
-      <div style={styles.metric}>{metric}</div>
+    <div className={classes.inner}>
+      <div className={classes.value}>{value}</div>
+      <div className={classes.metric}>{metric}</div>
     </div>
-  </div>
+  </Card>
 )
 
-export default MetricsCard
+export default compose(withStyles(styles))(MetricsCard)

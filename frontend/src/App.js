@@ -3,6 +3,7 @@
 import React from 'react'
 import {BrowserRouter as Router, Route} from 'react-router-dom'
 import {compose} from 'redux'
+import CssBaseline from '@material-ui/core/CssBaseline'
 
 import {routeTo} from './helpers/routes'
 import {withIntl, withSetLocale} from './components/HOC/intl'
@@ -37,19 +38,22 @@ const styles = {
 const Spacer = () => <div style={{flexGrow: 1}} />
 
 const TopBar = () => (
-  <div style={styles.topbar}>
-    <img src={seizaLogo} />
-    <Spacer />
-    <Navbar
-      items={[
-        {link: routeTo.home(), label: 'Home'},
-        {link: routeTo.blockchain(), label: 'Blockchain'},
-        {link: routeTo.staking(), label: 'Staking'},
-        {link: routeTo.more(), label: 'More'},
-      ]}
-    />
-    <LanguageSwitch />
-  </div>
+  <React.Fragment>
+    <CssBaseline />
+    <div style={styles.topbar}>
+      <img src={seizaLogo} />
+      <Spacer />
+      <Navbar
+        items={[
+          {link: routeTo.home(), label: 'Home'},
+          {link: routeTo.blockchain(), label: 'Blockchain'},
+          {link: routeTo.staking(), label: 'Staking'},
+          {link: routeTo.more(), label: 'More'},
+        ]}
+      />
+      <LanguageSwitch />
+    </div>
+  </React.Fragment>
 )
 
 const App = () => {
