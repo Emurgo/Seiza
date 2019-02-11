@@ -23,7 +23,8 @@ const _getNextPages = async (pageOne, context) => {
 
 const _mergePages = (initialPage, nextPages, cursor) => {
   const blocksCountFromPageOne = (initialPage.fetchedPage - 1) * PAGE_SIZE + initialPage.data.length
-  const nextCursor = Math.max(0, cursor ? cursor - PAGE_SIZE : blocksCountFromPageOne - PAGE_SIZE)
+  const _nextCursor = cursor ? cursor - PAGE_SIZE : blocksCountFromPageOne - PAGE_SIZE
+  const nextCursor = _nextCursor > 0 ? _nextCursor : null
 
   if (cursor) {
     const blocksfromFirstPageCount = PAGE_SIZE - (blocksCountFromPageOne - cursor)
@@ -46,7 +47,7 @@ const _mergePages = (initialPage, nextPages, cursor) => {
 // Note: 'cursor' means including the position
 export const blocksResolver = async (parent, args, context) => {
   const initialPageId = args.cursor && Math.ceil(args.cursor / PAGE_SIZE)
-  if (initialPageId < 1) return {data: [], cursor: 0}
+  if (initialPageId < 1) return {data: [], cursor: null}
 
   const initialPageQuery = args.cursor
     ? `?pageSize=${PAGE_SIZE}&page=${initialPageId}`

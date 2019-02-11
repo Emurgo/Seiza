@@ -234,7 +234,7 @@ test('Invalid cursor', async () => {
   const context = {
     cardanoAPI: mockApi({1: pageOneData, 2: pageTwoData}, latestPage)(),
   }
-  const expectedOutput = {data: [], cursor: 0}
+  const expectedOutput = {data: [], cursor: null}
   const output = await blocksResolver(null, {cursor}, context)
   expect(output).toEqual(expectedOutput)
 })
@@ -253,7 +253,7 @@ test('End of pages', async () => {
   }
   const expectedOutput = {
     data: cbs(4, 0).map(facadeBlock),
-    cursor: 0,
+    cursor: null,
   }
   const output = await blocksResolver(null, {}, context)
   expect(output).toEqual(expectedOutput)
