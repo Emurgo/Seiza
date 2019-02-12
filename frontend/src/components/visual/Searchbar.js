@@ -39,8 +39,6 @@ const styles = (theme) =>
 
 type PropTypes = {
   classes: Object,
-  // TODO: what should be type of intl?
-  intl: Object,
   value: string,
   onChange: (str: string) => void,
   onSearch: (str: string) => void,
@@ -54,7 +52,6 @@ type PropTypes = {
 
 const Searchbar = ({
   classes,
-  intl,
   value,
   onChange,
   onSearch,
