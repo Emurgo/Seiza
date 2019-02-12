@@ -28,7 +28,7 @@ import seizaLogo from './seiza-logo.png'
 // TODO: define and store themes in proper place
 const theme = createMuiTheme({
   typography: {
-    useNextVariants: true,
+    useNextVariants: true, // TODO
   },
   palette: {
     primary: indigo,
