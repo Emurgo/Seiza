@@ -49,12 +49,17 @@ const text = defineMessages({
 
 type PropTypes = {
   classes: Object,
+  // TODO: what should be type of intl?
+  intl: Object,
   value: string,
   onChange: (str: string) => void,
   onSearch: (str: string) => void,
   searchText: string,
   setSearchText: (str: string) => Object,
   clearInput: () => Object,
+  // TODO: what should be type of inputRef?
+  inputRef: any,
+  setInputRef: (inputRef: any) => void,
 }
 
 const Searchbar = ({
