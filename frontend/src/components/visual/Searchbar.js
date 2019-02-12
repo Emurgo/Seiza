@@ -1,7 +1,6 @@
 // @flow
 import React from 'react'
 import {withStateHandlers, defaultProps} from 'recompose'
-import {injectIntl, defineMessages} from 'react-intl'
 import {compose} from 'redux'
 
 import {withStyles, createStyles} from '@material-ui/core'
@@ -11,8 +10,6 @@ import IconButton from '@material-ui/core/IconButton'
 import Close from '@material-ui/icons/Close'
 import Button from './Button'
 import Search from '@material-ui/icons/Search'
-
-import {getIntlFormatters} from '../../i18n/helpers'
 
 const styles = (theme) =>
   createStyles({
@@ -39,13 +36,6 @@ const styles = (theme) =>
       flex: 1,
     },
   })
-
-const text = defineMessages({
-  searchPlaceholder: {
-    id: 'searchbar.placeholder',
-    defaultMessage: 'Search addresses, epochs & slots on the Cardano network',
-  },
-})
 
 type PropTypes = {
   classes: Object,
@@ -75,7 +65,6 @@ const Searchbar = ({
   setInputRef,
   ...props
 }: PropTypes) => {
-  const {translate} = getIntlFormatters(intl)
   const targetOnChange = onChange || setSearchText
 
   return (
@@ -85,7 +74,6 @@ const Searchbar = ({
         type="text"
         className={classes.textField}
         variant="outlined"
-        placeholder={translate(text.searchPlaceholder)}
         value={value || searchText}
         onChange={(event) => targetOnChange(event.target.value)}
         inputRef={setInputRef}
@@ -96,7 +84,7 @@ const Searchbar = ({
                 aria-label="Toggle password visibility"
                 onClick={() => {
                   onChange ? onChange('') : clearInput()
-                  inputRef.focus()
+                  inputRef && inputRef.focus()
                 }}
               >
                 <Close />
@@ -136,6 +124,5 @@ export default compose(
     search: () => {},
   }),
   enhance,
-  injectIntl,
   withStyles(styles)
 )(Searchbar)

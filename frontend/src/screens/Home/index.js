@@ -34,6 +34,10 @@ const text = defineMessages({
     id: 'overview.metrics.poolCount.label',
     defaultMessage: 'Pools',
   },
+  searchPlaceholder: {
+    id: 'overview.search.placeholder',
+    defaultMessage: 'Search addresses, epochs & slots on the Cardano network',
+  },
 })
 
 // TODO: replace with idx
@@ -72,7 +76,7 @@ const _Status = ({intl, data}) => {
         <MetricsCard icon="pools" metric={translate(text.poolsLabel)} value={pools} />
       </div>
       <div style={{width: '45%', margin: '0 auto'}}>
-        <Searchbar />
+        <Searchbar placeholder={translate(text.searchPlaceholder)} />
       </div>
     </div>
   )
