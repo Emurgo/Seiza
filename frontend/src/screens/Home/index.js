@@ -7,6 +7,7 @@ import {injectIntl, defineMessages} from 'react-intl'
 import {compose} from 'redux'
 import {graphql} from 'react-apollo'
 import {getIntlFormatters} from '../../i18n/helpers'
+import Searchbar from '../../components/visual/Searchbar'
 
 const text = defineMessages({
   not_available: {
@@ -58,16 +59,21 @@ const _Status = ({intl, data}) => {
   const pools = formatInt(idx(status, (s) => s.stakePoolCount), NA)
 
   return (
-    <div className="gradient-bg" style={{display: 'flex', justifyContent: 'center'}}>
-      <MetricsCard icon="epoch" metric={translate(text.epochLabel)} value={epochNumber} />
-      <MetricsCard icon="blocks" metric={translate(text.blocksLabel)} value={blockCount} />
-      <MetricsCard
-        icon="decentralization"
-        metric={translate(text.decentralizationLabel)}
-        value={decentralization}
-      />
-      <MetricsCard icon="price" metric={translate(text.priceLabel)} value={price} />
-      <MetricsCard icon="pools" metric={translate(text.poolsLabel)} value={pools} />
+    <div className="gradient-bg">
+      <div style={{display: 'flex', justifyContent: 'center'}}>
+        <MetricsCard icon="epoch" metric={translate(text.epochLabel)} value={epochNumber} />
+        <MetricsCard icon="blocks" metric={translate(text.blocksLabel)} value={blockCount} />
+        <MetricsCard
+          icon="decentralization"
+          metric={translate(text.decentralizationLabel)}
+          value={decentralization}
+        />
+        <MetricsCard icon="price" metric={translate(text.priceLabel)} value={price} />
+        <MetricsCard icon="pools" metric={translate(text.poolsLabel)} value={pools} />
+      </div>
+      <div style={{display: 'flex', justifyContent: 'center'}}>
+        <Searchbar />
+      </div>
     </div>
   )
 }
