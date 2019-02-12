@@ -7,5 +7,5 @@ export const facadeBlock = (data) => ({
   totalSend: data.cbeTotalSent.getCoin,
   size: data.cbeSize,
   blockLead: data.cbeBlockLead,
-  fees: data.cbeFees,
+  totalFees: data.cbeFees.getCoin,
 })
