@@ -8,7 +8,7 @@ import type {FacadeTransaction} from '../transaction/dataFacades'
 // Note: for now this always fetche all transaction data, we
 // may consider optimization later if required
 type AddrArgs = {
-  id: string,
+  address58: string,
 }
 
 type FacadeAddress = {
@@ -21,9 +21,9 @@ export const addressResolver = (
   args: AddrArgs,
   context: ApolloContext
 ): Promise<FacadeAddress> =>
-  context.cardanoAPI.get(`addresses/summary/${args.id}`).then((data: AddressAPIType) => ({
+  context.cardanoAPI.get(`addresses/summary/${args.address58}`).then((data: AddressAPIType) => ({
     ...facadeAddress(data),
     transactions: data.caTxList.map((transaction) =>
-      transactionResolver(parent, {id: transaction.ctbId}, context)
+      transactionResolver(parent, {txHash: transaction.ctbId}, context)
     ),
   }))

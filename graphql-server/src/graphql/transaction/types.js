@@ -13,7 +13,7 @@ export default gql`
   }
 
   type Transaction {
-    id: ID
+    txHash: ID!
     txTimeIssued: Timestamp
     blockTimeIssued: Timestamp
     blockHeight: Int
@@ -28,6 +28,6 @@ export default gql`
   }
 
   type Query {
-    transaction(id: String): Transaction
+    transaction(txHash: String): Transaction
   }
 `

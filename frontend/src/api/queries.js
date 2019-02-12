@@ -2,10 +2,10 @@
 
 import gql from 'graphql-tag'
 
-export const GET_TRANSACTION_BY_ID = gql`
-  query($txId: String!) {
-    transaction(id: $txId) {
-      id
+export const GET_TRANSACTION_BY_HASH = gql`
+  query($txHash: String!) {
+    transaction(txHash: $txHash) {
+      txHash
       txTimeIssued
       blockTimeIssued
       blockHeight
@@ -35,6 +35,20 @@ export const GET_BLOCKS = gql`
       }
       cursor
       hasMore
+    }
+  }
+`
+
+export const GET_ADDRESS_BY_ADDRESS58 = gql`
+  query($address58: String!) {
+    address(address58: $address58) {
+      address58
+      type
+      transactionsCount
+      balance
+      transactions {
+        txHash
+      }
     }
   }
 `
