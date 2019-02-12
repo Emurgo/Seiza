@@ -1,5 +1,6 @@
 // @flow
 import axios from 'axios'
+import _ from 'lodash'
 
 const URL: string = 'https://cardanoexplorer.com/api/'
 
@@ -11,7 +12,14 @@ export type CardanoAPI = {
 const cardanoAPI: CardanoAPI = {
   get: (path, query) => {
     const url = `${URL}${path}`
-    return axios.get(url, {params: query}).then(({data}) => data.Right)
+    // remove entries with null/undefined value
+    const params = _(query)
+      .toPairs()
+      .filter(([k, v]) => v != null)
+      .fromPairs()
+      .value()
+
+    return axios.get(url, {params}).then(({data}) => data.Right)
   },
 }
 
