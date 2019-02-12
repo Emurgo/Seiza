@@ -2,7 +2,6 @@
 import React from 'react'
 import {withStateHandlers, defaultProps} from 'recompose'
 import {injectIntl, defineMessages} from 'react-intl'
-import classNames from 'classnames'
 import {compose} from 'redux'
 
 import {withStyles, createStyles} from '@material-ui/core'
@@ -10,7 +9,7 @@ import InputAdornment from '@material-ui/core/InputAdornment'
 import TextField from '@material-ui/core/TextField'
 import IconButton from '@material-ui/core/IconButton'
 import Close from '@material-ui/icons/Close'
-import Button from '@material-ui/core/Button'
+import Button from './Button'
 import Search from '@material-ui/icons/Search'
 
 import {getIntlFormatters} from '../../i18n/helpers'
@@ -30,8 +29,6 @@ const styles = (theme) =>
       },
     },
     searchButton: {
-      background: 'linear-gradient(97deg, #715BD3 0%, #95BAF7 100%)',
-      color: 'white',
       borderBottomLeftRadius: 0,
       borderTopLeftRadius: 0,
       height: 56, // Note: in sync with textField style
@@ -106,6 +103,7 @@ const Searchbar = ({
         {...props}
       />
       <Button
+        primary
         variant="contained"
         className={classes.searchButton}
         onClick={() => onSearch(searchText)}

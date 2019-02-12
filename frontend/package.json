@@ -21,6 +21,7 @@
     "apollo-client": "^2.4.12",
     "apollo-link-http": "^1.5.11",
     "bignumber.js": "^8.0.2",
+    "classnames": "^2.2.6",
     "graphql": "^14.1.1",
     "graphql-tag": "^2.10.1",
     "react": "^16.8.0",
