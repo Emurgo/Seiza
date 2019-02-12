@@ -8,17 +8,13 @@ const PAGE_SIZE = 10
 const _fetchPage = async (pageId, context) => {
   const queryParams = {
     pageSize: PAGE_SIZE,
+    page: pageId,
   }
 
-  // ugly mutation
-  if (pageId) queryParams.page = pageId
-
-  const [resultPageId, blocks] = await context.cardanoAPI.get('blocks/pages', queryParams)
-
-  if (pageId) assert(resultPageId === pageId)
+  const [lastPageId, blocks] = await context.cardanoAPI.get('blocks/pages', queryParams)
 
   return {
-    pageId: resultPageId,
+    pageId: pageId != null ? pageId : lastPageId,
     blocks: blocks.map(facadeBlock),
   }
 }

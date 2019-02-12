@@ -28,8 +28,9 @@ const mockApi = (blockCount) => {
   return {
     get: (pathname, {page}) => {
       const PAGE_SIZE = 10
-      page = page != null ? page : Math.ceil(blockCount / PAGE_SIZE)
-      const result = [page, cbs(Math.min(page * PAGE_SIZE, blockCount), (page - 1) * PAGE_SIZE)]
+      const lastPage = Math.ceil(blockCount / PAGE_SIZE)
+      page = page != null ? page : lastPage
+      const result = [lastPage, cbs(Math.min(page * PAGE_SIZE, blockCount), (page - 1) * PAGE_SIZE)]
       return Promise.resolve(result)
     },
   }
