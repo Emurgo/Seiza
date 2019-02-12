@@ -1,11 +1,6 @@
 // @flow
 import React from 'react'
-import Table from '@material-ui/core/Table'
-import TableBody from '@material-ui/core/TableBody'
-import TableCell from '@material-ui/core/TableCell'
-import TableHead from '@material-ui/core/TableHead'
-import TableRow from '@material-ui/core/TableRow'
-import Paper from '@material-ui/core/Paper'
+import {Table, TableBody, TableCell, TableHead, TableRow, Paper} from '@material-ui/core'
 import {graphql} from 'react-apollo'
 import {compose} from 'redux'
 import {withHandlers} from 'recompose'
@@ -108,11 +103,12 @@ const HeaderCell = withStyles(headerCellStyles)(({children, classes}) => (
 
 const BodyCell = ({children}) => <TableCell align="left">{children}</TableCell>
 
+// TODO: use formatAda where appropriate
 const BlocksTable = compose(
   withStyles(tableStyles),
   injectIntl
 )(({blocks, intl, classes}) => {
-  const {translate, formatInt, formatAda} = getIntlFormatters(intl)
+  const {translate, formatInt} = getIntlFormatters(intl)
   return (
     <Paper className={classes.root}>
       <Table>
@@ -142,8 +138,8 @@ const BlocksTable = compose(
               </BodyCell>
               <BodyCell>{block.timeIssued}</BodyCell>
               <BodyCell>{formatInt(block.transactionsCount)}</BodyCell>
-              <BodyCell>{formatAda(block.totalSend)}</BodyCell>
-              <BodyCell>{formatAda(block.totalFees)}</BodyCell>
+              <BodyCell>{formatInt(block.totalSend)}</BodyCell>
+              <BodyCell>{formatInt(block.totalFees)}</BodyCell>
               <BodyCell>{formatInt(block.size)}</BodyCell>
             </TableRow>
           ))}
