@@ -10,7 +10,7 @@ import Search from '@material-ui/icons/Search'
 import {injectIntl, defineMessages} from 'react-intl'
 import {compose} from 'redux'
 import {getIntlFormatters} from '../../i18n/helpers'
-import {withStateHandlers, withHandlers, defaultProps} from 'recompose'
+import {withStateHandlers, defaultProps} from 'recompose'
 
 const styles = (theme) =>
   createStyles({
@@ -120,6 +120,7 @@ const enhance = withStateHandlers(
 )
 export default compose(
   defaultProps({
+    // eslint-disable-next-line
     search: () => {},
   }),
   enhance,
