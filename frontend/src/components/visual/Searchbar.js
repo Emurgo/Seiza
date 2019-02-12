@@ -10,6 +10,7 @@ import Search from '@material-ui/icons/Search'
 import {injectIntl, defineMessages} from 'react-intl'
 import {compose} from 'redux'
 import {getIntlFormatters} from '../../i18n/helpers'
+import {withStateHandlers, withHandlers, defaultProps} from 'recompose'
 
 const styles = (theme) =>
   createStyles({
@@ -46,7 +47,16 @@ type PropTypes = {
   classes: Object,
 }
 
-const Searchbar = ({classes, intl}: PropTypes) => {
+const Searchbar = ({
+  classes,
+  intl,
+  search,
+  searchText,
+  setSearchText,
+  clearInput,
+  setInputRef,
+  inputRef,
+}: PropTypes) => {
   const {translate} = getIntlFormatters(intl)
   return (
     <div>
@@ -56,10 +66,19 @@ const Searchbar = ({classes, intl}: PropTypes) => {
         className={classes.textField}
         variant="outlined"
         placeholder={translate(text.searchPlaceholder)}
+        value={searchText}
+        onChange={(event) => setSearchText(event.target.value)}
+        inputRef={setInputRef}
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">
-              <IconButton aria-label="Toggle password visibility">
+              <IconButton
+                aria-label="Toggle password visibility"
+                onClick={() => {
+                  clearInput()
+                  inputRef.focus()
+                }}
+              >
                 <Close />
               </IconButton>
             </InputAdornment>
@@ -67,14 +86,33 @@ const Searchbar = ({classes, intl}: PropTypes) => {
           className: classes.input,
         }}
       />
-      <Button variant="contained" className={classes.searchButton}>
+      <Button
+        variant="contained"
+        className={classes.searchButton}
+        onClick={() => search(searchText)}
+      >
         <Search fontSize="large" />
       </Button>
     </div>
   )
 }
 
+const enhance = withStateHandlers(
+  ({initialSearchText = ''}) => ({
+    searchText: initialSearchText,
+    inputRef: null,
+  }),
+  {
+    clearInput: ({searchText}) => () => ({searchText: ''}),
+    setSearchText: () => (value) => ({searchText: value}),
+    setInputRef: () => (ref) => ({inputRef: ref}),
+  }
+)
 export default compose(
+  defaultProps({
+    search: () => {},
+  }),
+  enhance,
   injectIntl,
   withStyles(styles)
 )(Searchbar)
