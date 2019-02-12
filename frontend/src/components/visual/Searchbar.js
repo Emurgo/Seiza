@@ -45,19 +45,29 @@ const text = defineMessages({
 
 type PropTypes = {
   classes: Object,
+  value: string,
+  onChange: (str: string) => void,
+  onSearch: (str: string) => void,
+  searchText: string,
+  setSearchText: (str: string) => Object,
+  clearInput: () => Object,
 }
 
 const Searchbar = ({
   classes,
   intl,
-  search,
+  value,
+  onChange,
+  onSearch,
   searchText,
   setSearchText,
   clearInput,
-  setInputRef,
   inputRef,
+  setInputRef,
 }: PropTypes) => {
   const {translate} = getIntlFormatters(intl)
+  const targetOnChange = onChange || setSearchText
+
   return (
     <div>
       <TextField
@@ -66,8 +76,8 @@ const Searchbar = ({
         className={classes.textField}
         variant="outlined"
         placeholder={translate(text.searchPlaceholder)}
-        value={searchText}
-        onChange={(event) => setSearchText(event.target.value)}
+        value={value || searchText}
+        onChange={(event) => targetOnChange(event.target.value)}
         inputRef={setInputRef}
         InputProps={{
           endAdornment: (
@@ -75,7 +85,7 @@ const Searchbar = ({
               <IconButton
                 aria-label="Toggle password visibility"
                 onClick={() => {
-                  clearInput()
+                  onChange ? onChange('') : clearInput()
                   inputRef.focus()
                 }}
               >
@@ -89,7 +99,7 @@ const Searchbar = ({
       <Button
         variant="contained"
         className={classes.searchButton}
-        onClick={() => search(searchText)}
+        onClick={() => onSearch(searchText)}
       >
         <Search fontSize="large" />
       </Button>
