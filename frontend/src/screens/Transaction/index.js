@@ -6,7 +6,7 @@ import {compose} from 'redux'
 import {withProps} from 'recompose'
 import {withRouter} from 'react-router'
 
-import {GET_TRANSACTION_BY_ID} from '../../api/queries'
+import {GET_TRANSACTION_BY_HASH} from '../../api/queries'
 
 // TODO: flow
 // TODO: very temporary styles
@@ -28,8 +28,8 @@ const styles = {
 
 const generalTransactionInfoConfig = [
   {
-    title: 'ID',
-    getValue: (transaction) => transaction.id,
+    title: 'hash',
+    getValue: (transaction) => transaction.txHash,
   },
   {
     title: 'txTimeIssued',
@@ -69,26 +69,38 @@ const generalTransactionInfoConfig = [
   },
 ]
 
-const withTransactionById = graphql(GET_TRANSACTION_BY_ID, {
+const withTransactionByHash = graphql(GET_TRANSACTION_BY_HASH, {
   name: 'transaction',
-  options: ({txId}) => ({
-    variables: {txId},
+  options: ({txHash}) => ({
+    variables: {txHash},
   }),
 })
 
-const TransactionMovements = ({movements}) =>
-  movements.map((move, index) => (
-    <div key={index}>
-      <div style={styles.movementField}>
-        <div>Address</div>
-        <div>{move.address58}</div>
-      </div>
-      <div style={styles.movementField}>
-        <div>Amount</div>
-        <div>{move.amount}</div>
-      </div>
+const TransactionInput = ({txInput}) => (
+  <React.Fragment>
+    <div style={styles.movementField}>
+      <div>Address</div>
+      <div>{txInput.address58}</div>
     </div>
-  ))
+    <div style={styles.movementField}>
+      <div>Amount</div>
+      <div>{txInput.amount}</div>
+    </div>
+  </React.Fragment>
+)
+
+const TransactionOutput = ({txOutput}) => (
+  <React.Fragment>
+    <div style={styles.movementField}>
+      <div>Address</div>
+      <div>{txOutput.address58}</div>
+    </div>
+    <div style={styles.movementField}>
+      <div>Amount</div>
+      <div>{txOutput.amount}</div>
+    </div>
+  </React.Fragment>
+)
 
 const Transaction = (props) => {
   const {loading, transaction} = props.transaction
@@ -107,10 +119,14 @@ const Transaction = (props) => {
       ))}
 
       <h4>Inputs</h4>
-      <TransactionMovements movements={transaction.inputs} />
+      {transaction.inputs.map((input, index) => (
+        <TransactionInput key={index} txInput={input} />
+      ))}
 
       <h4>Outputs</h4>
-      <TransactionMovements movements={transaction.outputs} />
+      {transaction.outputs.map((output, index) => (
+        <TransactionOutput key={index} txOutput={output} />
+      ))}
     </div>
   )
 }
@@ -118,7 +134,7 @@ const Transaction = (props) => {
 export default compose(
   withRouter,
   withProps((props) => ({
-    txId: props.match.params.id,
+    txHash: props.match.params.txHash,
   })),
-  withTransactionById
+  withTransactionByHash
 )(Transaction)

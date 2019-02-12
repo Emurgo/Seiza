@@ -5,7 +5,7 @@ import type {ApolloContext, Parent} from '../../'
 import type {FacadeTransaction} from './dataFacades'
 
 type TxResolverArgs = {
-  id: string,
+  txHash: string,
 }
 
 export const transactionResolver = (
@@ -13,4 +13,4 @@ export const transactionResolver = (
   args: TxResolverArgs,
   context: ApolloContext
 ): Promise<FacadeTransaction> =>
-  context.cardanoAPI.get(`txs/summary/${args.id}`).then(facadeTransaction)
+  context.cardanoAPI.get(`txs/summary/${args.txHash}`).then(facadeTransaction)

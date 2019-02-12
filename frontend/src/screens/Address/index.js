@@ -8,7 +8,7 @@ import {withRouter} from 'react-router'
 import {Link} from 'react-router-dom'
 
 import {routeTo} from '../../helpers/routes'
-import {GET_ADDRESS_BY_ID} from '../../api/queries'
+import {GET_ADDRESS_BY_ADDRESS58} from '../../api/queries'
 
 // TODO: flow
 // TODO: very temporary styles
@@ -25,8 +25,8 @@ const styles = {
 
 const generalAddressInfoConfig = [
   {
-    title: 'ID',
-    getValue: (address) => address.id,
+    title: 'address58',
+    getValue: (address) => address.address58,
   },
   {
     title: 'type',
@@ -42,17 +42,17 @@ const generalAddressInfoConfig = [
   },
 ]
 
-const withAddressById = graphql(GET_ADDRESS_BY_ID, {
+const withAddressByAddress58 = graphql(GET_ADDRESS_BY_ADDRESS58, {
   name: 'address',
-  options: ({addressId}) => ({
-    variables: {addressId},
+  options: ({address58}) => ({
+    variables: {address58},
   }),
 })
 
 const TransactionsList = ({transactions}) =>
-  transactions.map(({id}) => (
-    <Link key={id} to={routeTo.transaction(id)}>
-      {id}
+  transactions.map(({txHash}) => (
+    <Link key={txHash} to={routeTo.transaction(txHash)}>
+      {txHash}
     </Link>
   ))
 
@@ -81,7 +81,7 @@ const Address = (props) => {
 export default compose(
   withRouter,
   withProps((props) => ({
-    addressId: props.match.params.id,
+    address58: props.match.params.address58,
   })),
-  withAddressById
+  withAddressByAddress58
 )(Address)

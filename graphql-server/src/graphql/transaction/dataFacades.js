@@ -18,7 +18,7 @@ type TxAPIType = {
   ctsOutputs: Array<[string, GetCoin]>,
 }
 export type FacadeTransaction = {
-  id: string,
+  txHash: string,
   txTimeIssued: number,
   blockTimeIssued: number,
   blockHeight: number,
@@ -32,7 +32,7 @@ export type FacadeTransaction = {
   outputs: Array<{|address58: string, amount: string|}>,
 }
 export const facadeTransaction = (data: TxAPIType): FacadeTransaction => ({
-  id: data.ctsId,
+  txHash: data.ctsId,
   txTimeIssued: data.ctsTxTimeIssued,
   blockTimeIssued: data.ctsBlockTimeIssued,
   blockHeight: data.ctsBlockHeight,

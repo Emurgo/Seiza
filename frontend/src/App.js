@@ -78,8 +78,8 @@ const App = () => {
             <Route path={routeTo.blockchain()} component={Blockchain} />
             <Route path={routeTo.staking()} component={Staking} />
             <Route path={routeTo.more()} component={More} />
-            <Route path={routeTo.transaction(':id')} component={Transaction} />
-            <Route path={routeTo.address(':id')} component={Address} />
+            <Route path={routeTo.transaction(':txHash')} component={Transaction} />
+            <Route path={routeTo.address(':address58')} component={Address} />
             <Route component={PageNotFound} />
           </Switch>
         </React.Fragment>

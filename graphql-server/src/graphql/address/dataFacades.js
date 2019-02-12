@@ -18,14 +18,14 @@ export type AddressAPIType = {
   caTxList: Array<Tx>,
 }
 export type PartialFacadeAddress = {
-  id: string,
+  address58: string,
   type: string,
   transactionsCount: number,
   balance: string,
 }
 
 export const facadeAddress = (data: AddressAPIType): PartialFacadeAddress => ({
-  id: data.caAddress,
+  address58: data.caAddress,
   type: data.caType,
   transactionsCount: data.caTxNum,
   balance: data.caBalance.getCoin,

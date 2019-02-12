@@ -9,29 +9,30 @@ import IconDecentralization from './tmp_assets/MetricsCard-icon-decentralization
 import IconPrice from './tmp_assets/MetricsCard-icon-price.png'
 import IconPools from './tmp_assets/MetricsCard-icon-pools.png'
 
-const styles = (theme) => createStyles({
-  card: {
-    minWidth: '150px',
-    minHeight: '50px',
-    display: 'flex',
-    padding: '5px',
-    margin: '5px',
-    flexDirection: 'row',
-    boxShadow: 'none',
-  },
-  inner: {
-    display: 'flex',
-    flexDirection: 'column',
-    flexGrow: 1,
-    justifyContent: 'center',
-  },
-  value: {
-    fontSize: 20,
-  },
-  metric: {
-    color: 'grey',
-  },
-})
+const styles = (theme) =>
+  createStyles({
+    card: {
+      minWidth: '150px',
+      minHeight: '50px',
+      display: 'flex',
+      padding: '5px',
+      margin: '5px',
+      flexDirection: 'row',
+      boxShadow: 'none',
+    },
+    inner: {
+      display: 'flex',
+      flexDirection: 'column',
+      flexGrow: 1,
+      justifyContent: 'center',
+    },
+    value: {
+      fontSize: 20,
+    },
+    metric: {
+      color: 'grey',
+    },
+  })
 
 const ICONS = {
   epoch: IconEpoch,
