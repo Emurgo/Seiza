@@ -1,22 +1,25 @@
 // @flow
 import React from 'react'
+import {withStateHandlers, defaultProps} from 'recompose'
+import {injectIntl, defineMessages} from 'react-intl'
+import classNames from 'classnames'
+import {compose} from 'redux'
+
+import {withStyles, createStyles} from '@material-ui/core'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import TextField from '@material-ui/core/TextField'
-import {withStyles, createStyles} from '@material-ui/core'
 import IconButton from '@material-ui/core/IconButton'
 import Close from '@material-ui/icons/Close'
 import Button from '@material-ui/core/Button'
 import Search from '@material-ui/icons/Search'
-import {injectIntl, defineMessages} from 'react-intl'
-import {compose} from 'redux'
+
 import {getIntlFormatters} from '../../i18n/helpers'
-import {withStateHandlers, defaultProps} from 'recompose'
 
 const styles = (theme) =>
   createStyles({
     textField: {
-      flexBasis: 200,
-      width: 500,
+      flex: 1,
+      flexBasis: 500,
       background: 'white',
       borderRadius: 5,
     },
@@ -31,8 +34,12 @@ const styles = (theme) =>
       color: 'white',
       borderBottomLeftRadius: 0,
       borderTopLeftRadius: 0,
-      height: 56,
+      height: 56, // Note: in sync with textField style
       boxShadow: 'none',
+    },
+    container: {
+      display: 'flex',
+      flex: 1,
     },
   })
 
@@ -64,12 +71,13 @@ const Searchbar = ({
   clearInput,
   inputRef,
   setInputRef,
+  ...props
 }: PropTypes) => {
   const {translate} = getIntlFormatters(intl)
   const targetOnChange = onChange || setSearchText
 
   return (
-    <div>
+    <div className={classes.container}>
       <TextField
         id="outlined-adornment-password"
         type="text"
@@ -95,6 +103,7 @@ const Searchbar = ({
           ),
           className: classes.input,
         }}
+        {...props}
       />
       <Button
         variant="contained"

@@ -71,7 +71,7 @@ const _Status = ({intl, data}) => {
         <MetricsCard icon="price" metric={translate(text.priceLabel)} value={price} />
         <MetricsCard icon="pools" metric={translate(text.poolsLabel)} value={pools} />
       </div>
-      <div style={{display: 'flex', justifyContent: 'center'}}>
+      <div style={{width: '45%', margin: '0 auto'}}>
         <Searchbar />
       </div>
     </div>
