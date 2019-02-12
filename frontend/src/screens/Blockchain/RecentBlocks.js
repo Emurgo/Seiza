@@ -5,6 +5,7 @@ import {graphql} from 'react-apollo'
 import {compose} from 'redux'
 import {withHandlers} from 'recompose'
 import {injectIntl, defineMessages} from 'react-intl'
+import {Link} from 'react-router-dom'
 import {withStyles} from '@material-ui/core/styles'
 
 import {getIntlFormatters} from '../../i18n/helpers'
@@ -91,8 +92,8 @@ const headerCellStyles = () => ({
   },
 })
 
-const LinkField = withStyles(linkFieldStyles)(({children, classes}) => (
-  <span className={classes.linkField}>{children}</span>
+const LinkField = withStyles(linkFieldStyles)(({children, to, classes}) => (
+  <Link to={to} className={classes.linkField}>{children}</Link>
 ))
 
 const HeaderCell = withStyles(headerCellStyles)(({children, classes}) => (
@@ -128,13 +129,13 @@ const BlocksTable = compose(
           {blocks.map((block) => (
             <TableRow key={block.blockHash} className={classes.row}>
               <BodyCell>
-                <LinkField>{formatInt(block.epoch)}</LinkField>
+                <LinkField to="/todo">{formatInt(block.epoch)}</LinkField>
               </BodyCell>
               <BodyCell>
-                <LinkField>{formatInt(block.slot)}</LinkField>
+                <LinkField to="/todo">{formatInt(block.slot)}</LinkField>
               </BodyCell>
               <BodyCell>
-                <LinkField>{block.blockLead}</LinkField>
+                <LinkField to="/todo">{block.blockLead}</LinkField>
               </BodyCell>
               <BodyCell>{block.timeIssued}</BodyCell>
               <BodyCell>{formatInt(block.transactionsCount)}</BodyCell>
