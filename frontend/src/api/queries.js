@@ -32,6 +32,14 @@ export const GET_BLOCKS = gql`
     blocks(cursor: $cursor) {
       blocks {
         blockHash
+        epoch
+        slot
+        timeIssued
+        transactionsCount
+        totalSend
+        size
+        blockLead
+        totalFees
       }
       cursor
       hasMore

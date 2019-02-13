@@ -5,6 +5,8 @@ import {BrowserRouter as Router, Route, Switch} from 'react-router-dom'
 import {compose} from 'redux'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import {MuiThemeProvider, createMuiTheme} from '@material-ui/core/styles'
+import indigo from '@material-ui/core/colors/indigo'
+import red from '@material-ui/core/colors/red'
 
 import {routeTo} from './helpers/routes'
 import {withIntl, withSetLocale} from './components/HOC/intl'
@@ -26,7 +28,11 @@ import seizaLogo from './seiza-logo.png'
 // TODO: define and store themes in proper place
 const theme = createMuiTheme({
   typography: {
-    useNextVariants: true,
+    useNextVariants: true, // TODO
+  },
+  palette: {
+    primary: indigo,
+    error: red,
   },
 })
 

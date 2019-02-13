@@ -1,3 +1,18 @@
 {
-  "blockchain.header": "Blockchain"
+  "blockchain.blockList.loadMore": "Load more",
+  "blockchain.blockList.table.epoch": "epoch",
+  "blockchain.blockList.table.fees": "fees (ADA)",
+  "blockchain.blockList.table.size": "size (B)",
+  "blockchain.blockList.table.slot": "slot",
+  "blockchain.blockList.table.slotLeader": "slot leader",
+  "blockchain.blockList.table.time": "time",
+  "blockchain.blockList.table.totalSent": "total sent (ADA)",
+  "blockchain.blockList.table.transactions": "transactions",
+  "blockchain.header": "Blockchain",
+  "overview.metrics.blocks.label": "Blocks",
+  "overview.metrics.decentralization.label": "Decentralization",
+  "overview.metrics.epoch.label": "Epoch",
+  "overview.metrics.not_available": "N/A",
+  "overview.metrics.poolCount.label": "Pools",
+  "overview.metrics.price.label": "Price"
 }

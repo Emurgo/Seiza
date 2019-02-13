@@ -4,15 +4,15 @@ import {gql} from 'apollo-server'
 
 export default gql`
   type Block {
-    epoch: Int
-    slot: Int
-    blockHash: String
-    timeIssued: Timestamp
-    transactionsCount: Int
-    totalSend: String
-    size: Int
-    blockLead: String
-    totalFees: String
+    epoch: Int!
+    slot: Int!
+    blockHash: String!
+    timeIssued: Timestamp!
+    transactionsCount: Int!
+    totalSend: String!
+    size: Int!
+    blockLead: String!
+    totalFees: String!
   }
 
   type PagedBlocksResult {
