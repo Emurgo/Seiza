@@ -1,6 +1,6 @@
 // @flow
 import React from 'react'
-import {withState, defaultProps, withHandlers} from 'recompose'
+import {withState, withHandlers} from 'recompose'
 import {compose} from 'redux'
 
 import {withStyles, createStyles} from '@material-ui/core'
