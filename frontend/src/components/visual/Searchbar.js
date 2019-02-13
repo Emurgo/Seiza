@@ -56,7 +56,7 @@ const Searchbar = (props: PropTypes) => {
     onChange,
     clearInput,
     onSearch,
-    setInputRef,
+    inputRef,
     classes,
     textFieldProps,
   } = props
@@ -70,7 +70,7 @@ const Searchbar = (props: PropTypes) => {
         value={value}
         placeholder={placeholder}
         onChange={onChange}
-        inputRef={setInputRef}
+        inputRef={inputRef}
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">
@@ -101,11 +101,10 @@ export default compose(
   withStateHandlers(
     ({initialSearchText = ''}) => ({
       searchText: initialSearchText,
-      inputRef: null,
+      inputRef: React.createRef(),
     }),
     {
       setSearchText: () => (value) => ({searchText: value}),
-      setInputRef: () => (ref) => ({inputRef: ref}),
     }
   ),
   withProps((props) => ({
@@ -122,7 +121,7 @@ export default compose(
     clearInput: ({onChange, setSearchText, inputRef}) => () => {
       onChange('')
       setSearchText('')
-      inputRef && inputRef.focus()
+      inputRef.current && inputRef.current.focus()
     },
   }),
   withStyles(styles)
