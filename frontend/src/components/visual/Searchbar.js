@@ -56,7 +56,6 @@ const Searchbar = (props: PropTypes) => {
     onChange,
     clearInput,
     onSearch,
-    inputRef,
     setInputRef,
     classes,
     textFieldProps,
@@ -75,13 +74,7 @@ const Searchbar = (props: PropTypes) => {
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">
-              <IconButton
-                aria-label="Toggle password visibility"
-                onClick={() => {
-                  clearInput()
-                  inputRef && inputRef.focus()
-                }}
-              >
+              <IconButton aria-label="Toggle password visibility" onClick={clearInput}>
                 <Close />
               </IconButton>
             </InputAdornment>
@@ -90,12 +83,7 @@ const Searchbar = (props: PropTypes) => {
         }}
         {...textFieldProps}
       />
-      <Button
-        primary
-        variant="contained"
-        className={classes.searchButton}
-        onClick={() => onSearch(value)}
-      >
+      <Button primary variant="contained" className={classes.searchButton} onClick={onSearch}>
         <Search fontSize="large" />
       </Button>
     </div>
@@ -120,18 +108,22 @@ export default compose(
       setInputRef: () => (ref) => ({inputRef: ref}),
     }
   ),
+  withProps((props) => ({
+    value: props.value || props.searchText,
+  })),
   withHandlers({
+    onSearch: ({value, onSearch}) => () => {
+      onSearch(value)
+    },
     onChange: ({onChange, setSearchText}) => (event) => {
       onChange(event)
       setSearchText(event.target.value)
     },
-    clearInput: ({onChange, setSearchText}) => () => {
+    clearInput: ({onChange, setSearchText, inputRef}) => () => {
       onChange('')
       setSearchText('')
+      inputRef && inputRef.focus()
     },
   }),
-  withProps((props) => ({
-    value: props.value || props.searchText,
-  })),
   withStyles(styles)
 )(Searchbar)
