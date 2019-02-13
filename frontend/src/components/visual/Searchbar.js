@@ -1,6 +1,6 @@
 // @flow
 import React from 'react'
-import {withStateHandlers, defaultProps, withHandlers, withProps} from 'recompose'
+import {withState, defaultProps, withHandlers} from 'recompose'
 import {compose} from 'redux'
 
 import {withStyles, createStyles} from '@material-ui/core'
@@ -40,11 +40,10 @@ const styles = (theme) =>
 type PropTypes = {
   placeholder: string,
   value: string,
-  onChange: (str: string) => any,
+  handleOnChangeEvent: (str: string) => any,
   clearInput: () => Object,
   onSearch: (str: string) => any,
   inputRef: any,
-  setInputRef: (inputRef: any) => any,
   classes: Object,
   textFieldProps: Object,
 }
@@ -53,7 +52,7 @@ const Searchbar = (props: PropTypes) => {
   const {
     placeholder,
     value,
-    onChange,
+    handleOnChangeEvent,
     clearInput,
     onSearch,
     inputRef,
@@ -69,7 +68,7 @@ const Searchbar = (props: PropTypes) => {
         variant="outlined"
         value={value}
         placeholder={placeholder}
-        onChange={onChange}
+        onChange={handleOnChangeEvent}
         inputRef={inputRef}
         InputProps={{
           endAdornment: (
@@ -98,31 +97,14 @@ export default compose(
     onChange: () => {},
     textFieldProps: {},
   }),
-  withStateHandlers(
-    ({initialSearchText = ''}) => ({
-      searchText: initialSearchText,
-      inputRef: React.createRef(),
-    }),
-    {
-      setSearchText: () => (value) => ({searchText: value}),
-    }
-  ),
-  withProps((props) => ({
-    value: props.value || props.searchText,
-  })),
+  withState('inputRef', 'setInputRef', React.createRef()),
   withHandlers({
-    onSearch: ({value, onSearch}) => () => {
-      onSearch(value)
-    },
-    onChange: ({onChange, setSearchText}) => (event) => {
-      onChange(event)
-      setSearchText(event.target.value)
-    },
-    clearInput: ({onChange, setSearchText, inputRef}) => () => {
+    onSearch: ({value, onSearch}) => () => onSearch(value),
+    clearInput: ({onChange, inputRef}) => () => {
       onChange('')
-      setSearchText('')
       inputRef.current && inputRef.current.focus()
     },
+    handleOnChangeEvent: ({onChange}) => (event) => onChange(event.target.value),
   }),
   withStyles(styles)
 )(Searchbar)

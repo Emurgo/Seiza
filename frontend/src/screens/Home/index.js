@@ -5,6 +5,7 @@ import gql from 'graphql-tag'
 import MetricsCard from '../../components/visual/MetricsCard'
 import {injectIntl, defineMessages} from 'react-intl'
 import {compose} from 'redux'
+import {withState} from 'recompose'
 import {graphql} from 'react-apollo'
 import {getIntlFormatters} from '../../i18n/helpers'
 import Searchbar from '../../components/visual/Searchbar'
@@ -63,21 +64,16 @@ const _Status = ({intl, data}) => {
   const pools = formatInt(idx(status, (s) => s.stakePoolCount), NA)
 
   return (
-    <div className="gradient-bg">
-      <div style={{display: 'flex', justifyContent: 'center'}}>
-        <MetricsCard icon="epoch" metric={translate(text.epochLabel)} value={epochNumber} />
-        <MetricsCard icon="blocks" metric={translate(text.blocksLabel)} value={blockCount} />
-        <MetricsCard
-          icon="decentralization"
-          metric={translate(text.decentralizationLabel)}
-          value={decentralization}
-        />
-        <MetricsCard icon="price" metric={translate(text.priceLabel)} value={price} />
-        <MetricsCard icon="pools" metric={translate(text.poolsLabel)} value={pools} />
-      </div>
-      <div style={{width: '45%', margin: '0 auto'}}>
-        <Searchbar placeholder={translate(text.searchPlaceholder)} />
-      </div>
+    <div style={{display: 'flex', justifyContent: 'center'}}>
+      <MetricsCard icon="epoch" metric={translate(text.epochLabel)} value={epochNumber} />
+      <MetricsCard icon="blocks" metric={translate(text.blocksLabel)} value={blockCount} />
+      <MetricsCard
+        icon="decentralization"
+        metric={translate(text.decentralizationLabel)}
+        value={decentralization}
+      />
+      <MetricsCard icon="price" metric={translate(text.priceLabel)} value={price} />
+      <MetricsCard icon="pools" metric={translate(text.poolsLabel)} value={pools} />
     </div>
   )
 }
@@ -109,11 +105,29 @@ const OverviewMetrics = compose(
   withOverviewMetricsData
 )(_Status)
 
+const Search = compose(
+  injectIntl,
+  withState('searchText', 'setSearchText', '')
+)(({intl, searchText, setSearchText, onChange}) => {
+  const {translate} = getIntlFormatters(intl)
+  return (
+    <div style={{width: '45%', margin: '0 auto'}}>
+      <Searchbar
+        placeholder={translate(text.searchPlaceholder)}
+        value={searchText}
+        onChange={setSearchText}
+      />
+    </div>
+  )
+})
 const Blockchain = () => {
   return (
     <React.Fragment>
-      <h1>Home</h1>
-      <OverviewMetrics />
+      <div className="gradient-bg">
+        <h1>Home</h1>
+        <OverviewMetrics />
+        <Search />
+      </div>
     </React.Fragment>
   )
 }
