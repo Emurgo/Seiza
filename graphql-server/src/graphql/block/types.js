@@ -16,7 +16,7 @@ export default gql`
   }
 
   type PagedBlocksResult {
-    cursor: Int!
+    cursor: Int
     hasMore: Boolean!
     blocks: [Block]!
   }

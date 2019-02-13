@@ -8,7 +8,7 @@
   "blockchain.blockList.table.time": "time",
   "blockchain.blockList.table.totalSent": "total sent (ADA)",
   "blockchain.blockList.table.transactions": "transactions",
-  "blockchain.header": "Blockchain (spain)",
+  "blockchain.header": "Blockchain",
   "overview.metrics.blocks.label": "Blocks",
   "overview.metrics.decentralization.label": "Decentralization",
   "overview.metrics.epoch.label": "Epoch",
