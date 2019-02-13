@@ -9,10 +9,10 @@ export default gql`
     blockHash: String!
     timeIssued: Timestamp!
     transactionsCount: Int!
-    totalSend: String!
+    totalSend: AdaAmount!
     size: Int!
     blockLead: String!
-    totalFees: String!
+    totalFees: AdaAmount!
   }
 
   type PagedBlocksResult {

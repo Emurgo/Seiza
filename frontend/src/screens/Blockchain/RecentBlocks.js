@@ -93,7 +93,9 @@ const headerCellStyles = () => ({
 })
 
 const LinkField = withStyles(linkFieldStyles)(({children, to, classes}) => (
-  <Link to={to} className={classes.linkField}>{children}</Link>
+  <Link to={to} className={classes.linkField}>
+    {children}
+  </Link>
 ))
 
 const HeaderCell = withStyles(headerCellStyles)(({children, classes}) => (
@@ -109,7 +111,7 @@ const BlocksTable = compose(
   withStyles(tableStyles),
   injectIntl
 )(({blocks, intl, classes}) => {
-  const {translate, formatInt} = getIntlFormatters(intl)
+  const {translate, formatInt, formatAda} = getIntlFormatters(intl)
   return (
     <Paper className={classes.root}>
       <Table>
@@ -139,8 +141,8 @@ const BlocksTable = compose(
               </BodyCell>
               <BodyCell>{block.timeIssued}</BodyCell>
               <BodyCell>{formatInt(block.transactionsCount)}</BodyCell>
-              <BodyCell>{formatInt(block.totalSend)}</BodyCell>
-              <BodyCell>{formatInt(block.totalFees)}</BodyCell>
+              <BodyCell>{formatAda(block.totalSend)}</BodyCell>
+              <BodyCell>{formatAda(block.totalFees)}</BodyCell>
               <BodyCell>{formatInt(block.size)}</BodyCell>
             </TableRow>
           ))}
@@ -155,6 +157,7 @@ const BlocksTable = compose(
 const RecentBlocks = (props) => {
   const {loading, blocks} = props.blocks
   const {translate} = getIntlFormatters(props.intl)
+
   const {onLoadMore} = props
   return (
     <React.Fragment>

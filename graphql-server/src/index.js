@@ -13,6 +13,7 @@ import addressTypes from './graphql/address/types'
 import blockTypes from './graphql/block/types'
 
 import Timestamp from './graphql/scalars/timestamp'
+import AdaAmount from './graphql/scalars/adaAmount'
 import statusTypes from './graphql/status/types'
 import {cardanoAPI} from './api'
 import type {CardanoAPI} from './api'
@@ -21,10 +22,12 @@ import type {CardanoAPI} from './api'
 
 const globalTypes = gql`
   scalar Timestamp
+  scalar AdaAmount
 `
 
 const resolvers = {
   Timestamp,
+  AdaAmount,
   Query: {
     transaction: transactionResolver,
     address: addressResolver,
