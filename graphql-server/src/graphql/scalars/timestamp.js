@@ -12,12 +12,13 @@ module.exports = new GraphQLScalarType({
    * @return {String} date as string
    */
   serialize(value) {
-    const date = moment(value)
-    if (!date.isValid()) {
-      throw new GraphQLError('Field serialize error: value is an invalid Date')
+    if (!moment.isMoment(value)) {
+      throw new GraphQLError('Field serialize error: value is an invalid Moment')
     }
-    return date.toISOString()
+    // $FlowFixMe flow doesn't know value is moment
+    return value.toISOString()
   },
+
   /**
    * Parse value into date
    * Called when server receives value from client (non JSON)
@@ -25,12 +26,10 @@ module.exports = new GraphQLScalarType({
    * @return {moment} date value
    */
   parseValue(value) {
-    const date = moment(value)
-    if (!date.isValid()) {
-      throw new GraphQLError('Field parse error: value is an invalid Date')
-    }
-    return date
+    // Figure out what to do with UNIX timestamps
+    throw new Error('Not implemented for now')
   },
+
   /**
    * Parse ast literal to date
    * Called when server receives value from client (JSON)
@@ -38,10 +37,8 @@ module.exports = new GraphQLScalarType({
    * @return {moment} date value
    */
   parseLiteral(ast) {
-    if (ast.kind !== Kind.STRING || ast.kind !== Kind.INT) {
-      throw new GraphQLError(
-        `Query error: Can only parse strings or integers to date but got: ${ast.kind}`
-      )
+    if (ast.kind !== Kind.STRING) {
+      throw new GraphQLError(`Query error: Can only parse strings to date but got: ${ast.kind}`)
     }
     const date = moment(ast.value)
     if (!date.isValid()) {

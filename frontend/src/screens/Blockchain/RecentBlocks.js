@@ -111,7 +111,7 @@ const BlocksTable = compose(
   withStyles(tableStyles),
   injectIntl
 )(({blocks, intl, classes}) => {
-  const {translate, formatInt, formatAda} = getIntlFormatters(intl)
+  const {translate, formatInt, formatAda, formatTimestampFull} = getIntlFormatters(intl)
   return (
     <Paper className={classes.root}>
       <Table>
@@ -139,7 +139,7 @@ const BlocksTable = compose(
               <BodyCell>
                 <LinkField to="/todo">{block.blockLead}</LinkField>
               </BodyCell>
-              <BodyCell>{block.timeIssued}</BodyCell>
+              <BodyCell>{formatTimestampFull(block.timeIssued)}</BodyCell>
               <BodyCell>{formatInt(block.transactionsCount)}</BodyCell>
               <BodyCell>{formatAda(block.totalSend)}</BodyCell>
               <BodyCell>{formatAda(block.totalFees)}</BodyCell>

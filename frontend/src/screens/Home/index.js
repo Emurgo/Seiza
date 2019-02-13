@@ -51,11 +51,11 @@ const _Status = ({intl, data}) => {
 
   const NA = translate(text.not_available)
 
-  const epochNumber = formatInt(idx(status, (s) => s.epochNumber), NA)
-  const blockCount = formatInt(idx(status, (s) => s.blockCount), NA)
-  const decentralization = formatPercent(idx(status, (s) => s.decentralization), NA)
-  const price = formatFiat(idx(status, (s) => s.price.usd), 'USD', NA)
-  const pools = formatInt(idx(status, (s) => s.stakePoolCount), NA)
+  const epochNumber = formatInt(idx(status, (s) => s.epochNumber), {defaultValue: NA})
+  const blockCount = formatInt(idx(status, (s) => s.blockCount), {defaultValue: NA})
+  const decentralization = formatPercent(idx(status, (s) => s.decentralization), {defaultValue: NA})
+  const price = formatFiat(idx(status, (s) => s.price.usd), {currency: 'USD', defaultValue: NA})
+  const pools = formatInt(idx(status, (s) => s.stakePoolCount), {defaultValue: NA})
 
   return (
     <div className="gradient-bg" style={{display: 'flex', justifyContent: 'center'}}>
