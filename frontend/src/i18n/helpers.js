@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import moment from 'moment'
 
 const defaultNumberFmt = {
   prefix: '',
@@ -18,26 +19,45 @@ BigNumber.config({
 export const getIntlFormatters = (intl) => {
   const translate = intl.formatMessage
   const formatNumber = intl.formatNumber
-  const _formatInt = (x) => formatNumber(x, {style: 'decimal', maximumFractionDigits: 0})
-  const _formatPercent = (x) => formatNumber(x, {style: 'percent'})
-  const _formatFiat = (x, currency, digits = 4) =>
+  const _formatInt = (x, options = {}) =>
     formatNumber(x, {
+      style: 'decimal',
+      maximumFractionDigits: 0,
+      ...options,
+    })
+  const _formatPercent = (x, options) => formatNumber(x, {style: 'percent', ...options})
+  const _formatFiat = (x, options = {}) => {
+    const {currency, digits = 4} = options
+    return formatNumber(x, {
       style: 'currency',
       currency,
       minimumFractionDigits: digits,
       maximumFractionDigits: digits,
     })
+  }
 
   const _formatAda = (x) => {
     const value = new BigNumber(x, 10)
     return value.dividedBy(1000000).toFormat(6)
   }
 
-  const formatInt = (x, defaultValue = '') => (x != null ? _formatInt(x) : defaultValue)
-  const formatPercent = (x, defaultValue = '') => (x != null ? _formatPercent(x) : defaultValue)
-  const formatAda = (x, defaultValue = '') => (x != null ? _formatAda(x) : defaultValue)
-  const formatFiat = (x, currency, defaultValue = '') =>
-    x != null ? _formatFiat(x, currency) : defaultValue
+  const _formatTimestampFull = (x, options) => {
+    const ts = moment(x)
+    if (!ts.isValid) throw new Error('bad timestamp')
+    return ts.format('LL LTS')
+  }
+
+  const withDefaultValue = (formatter) => (x, options = {}) => {
+    const {defaultValue, ...restOptions} = options
+    if (x == null) return defaultValue || ''
+    return formatter(x, restOptions)
+  }
+
+  const formatInt = withDefaultValue(_formatInt)
+  const formatPercent = withDefaultValue(_formatPercent)
+  const formatAda = withDefaultValue(_formatAda)
+  const formatFiat = withDefaultValue(_formatFiat)
+  const formatTimestampFull = withDefaultValue(_formatTimestampFull)
 
   return {
     translate,
@@ -46,5 +66,6 @@ export const getIntlFormatters = (intl) => {
     formatPercent,
     formatFiat,
     formatAda,
+    formatTimestampFull,
   }
 }
