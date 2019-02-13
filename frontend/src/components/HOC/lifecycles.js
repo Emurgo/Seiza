@@ -1,0 +1,12 @@
+// @flow
+import {lifecycle} from 'recompose'
+import type {HOC} from 'recompose'
+
+export const onDidUpdate = <Props: {}, PrevProps: {}>(
+  didUpdate: (Props, PrevProps) => any
+): HOC<Props, Props> =>
+    lifecycle({
+      componentDidUpdate(prevProps) {
+        didUpdate(this.props, prevProps)
+      },
+    })
