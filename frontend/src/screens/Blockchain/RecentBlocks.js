@@ -11,47 +11,47 @@ import {withStyles} from '@material-ui/core/styles'
 import {getIntlFormatters} from '../../i18n/helpers'
 import {GET_BLOCKS} from '../../api/queries'
 
-const MESSAGES_PATH = 'blockchain.blockList'
-const TABLE_MESSAGES_PATH = `${MESSAGES_PATH}.table`
+const I18N_PREFIX = 'blockchain.blockList'
+const TABLE_I18N_PREFIX = `${I18N_PREFIX}.table`
 
 const messages = defineMessages({
   loadMore: {
-    id: `${MESSAGES_PATH}.loadMore`,
+    id: `${I18N_PREFIX}.loadMore`,
     defaultMessage: 'Load more',
   },
 })
 
 const tableMessages = defineMessages({
   epoch: {
-    id: `${TABLE_MESSAGES_PATH}.epoch`,
+    id: `${TABLE_I18N_PREFIX}.epoch`,
     defaultMessage: 'epoch',
   },
   slot: {
-    id: `${TABLE_MESSAGES_PATH}.slot`,
+    id: `${TABLE_I18N_PREFIX}.slot`,
     defaultMessage: 'slot',
   },
   slotLeader: {
-    id: `${TABLE_MESSAGES_PATH}.slotLeader`,
+    id: `${TABLE_I18N_PREFIX}.slotLeader`,
     defaultMessage: 'slot leader',
   },
   time: {
-    id: `${TABLE_MESSAGES_PATH}.time`,
+    id: `${TABLE_I18N_PREFIX}.time`,
     defaultMessage: 'time',
   },
   transactions: {
-    id: `${TABLE_MESSAGES_PATH}.transactions`,
+    id: `${TABLE_I18N_PREFIX}.transactions`,
     defaultMessage: 'transactions',
   },
   totalSent: {
-    id: `${TABLE_MESSAGES_PATH}.totalSent`,
+    id: `${TABLE_I18N_PREFIX}.totalSent`,
     defaultMessage: 'total sent (ADA)',
   },
   fees: {
-    id: `${TABLE_MESSAGES_PATH}.fees`,
+    id: `${TABLE_I18N_PREFIX}.fees`,
     defaultMessage: 'fees (ADA)',
   },
   size: {
-    id: `${TABLE_MESSAGES_PATH}.size`,
+    id: `${TABLE_I18N_PREFIX}.size`,
     defaultMessage: 'size (B)',
   },
 })

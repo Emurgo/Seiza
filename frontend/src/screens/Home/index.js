@@ -40,7 +40,7 @@ const text = defineMessages({
 const idx = (value, getter) => {
   try {
     return getter(value)
-  } catch {
+  } catch (err) {
     return null
   }
 }

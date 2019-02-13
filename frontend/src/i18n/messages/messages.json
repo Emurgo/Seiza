@@ -3,5 +3,80 @@
     "id": "blockchain.header",
     "defaultMessage": "Blockchain",
     "filepath": "src/screens/Blockchain/index.js"
+  },
+  {
+    "id": "blockchain.blockList.loadMore",
+    "defaultMessage": "Load more",
+    "filepath": "src/screens/Blockchain/RecentBlocks.js"
+  },
+  {
+    "id": "blockchain.blockList.table.epoch",
+    "defaultMessage": "epoch",
+    "filepath": "src/screens/Blockchain/RecentBlocks.js"
+  },
+  {
+    "id": "blockchain.blockList.table.slot",
+    "defaultMessage": "slot",
+    "filepath": "src/screens/Blockchain/RecentBlocks.js"
+  },
+  {
+    "id": "blockchain.blockList.table.slotLeader",
+    "defaultMessage": "slot leader",
+    "filepath": "src/screens/Blockchain/RecentBlocks.js"
+  },
+  {
+    "id": "blockchain.blockList.table.time",
+    "defaultMessage": "time",
+    "filepath": "src/screens/Blockchain/RecentBlocks.js"
+  },
+  {
+    "id": "blockchain.blockList.table.transactions",
+    "defaultMessage": "transactions",
+    "filepath": "src/screens/Blockchain/RecentBlocks.js"
+  },
+  {
+    "id": "blockchain.blockList.table.totalSent",
+    "defaultMessage": "total sent (ADA)",
+    "filepath": "src/screens/Blockchain/RecentBlocks.js"
+  },
+  {
+    "id": "blockchain.blockList.table.fees",
+    "defaultMessage": "fees (ADA)",
+    "filepath": "src/screens/Blockchain/RecentBlocks.js"
+  },
+  {
+    "id": "blockchain.blockList.table.size",
+    "defaultMessage": "size (B)",
+    "filepath": "src/screens/Blockchain/RecentBlocks.js"
+  },
+  {
+    "id": "overview.metrics.not_available",
+    "defaultMessage": "N/A",
+    "filepath": "src/screens/Home/index.js"
+  },
+  {
+    "id": "overview.metrics.epoch.label",
+    "defaultMessage": "Epoch",
+    "filepath": "src/screens/Home/index.js"
+  },
+  {
+    "id": "overview.metrics.blocks.label",
+    "defaultMessage": "Blocks",
+    "filepath": "src/screens/Home/index.js"
+  },
+  {
+    "id": "overview.metrics.decentralization.label",
+    "defaultMessage": "Decentralization",
+    "filepath": "src/screens/Home/index.js"
+  },
+  {
+    "id": "overview.metrics.price.label",
+    "defaultMessage": "Price",
+    "filepath": "src/screens/Home/index.js"
+  },
+  {
+    "id": "overview.metrics.poolCount.label",
+    "defaultMessage": "Pools",
+    "filepath": "src/screens/Home/index.js"
   }
 ]
