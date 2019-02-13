@@ -21,7 +21,7 @@ import {
 import {compose} from 'redux'
 import {injectIntl, defineMessages} from 'react-intl'
 import {Link} from 'react-router-dom'
-import {withHandlers} from 'recompose'
+import {withHandlers, withProps} from 'recompose'
 
 import {getIntlFormatters} from '../../../i18n/helpers'
 import {I18N_PREFIX} from './'
@@ -119,25 +119,30 @@ const HeaderCell = withStyles(headerCellStyles)(({children, classes}) => (
 
 const BodyCell = ({children}) => <TableCell align="left">{children}</TableCell>
 
-const TablePaginationActions = compose(
+const getPageCount = (itemsCount, rowsPerPage) => Math.ceil(itemsCount / rowsPerPage)
+
+const PaginationControlsComponent = compose(
+  withProps((props) => ({
+    pageCount: getPageCount(props.count, props.rowsPerPage),
+  })),
   withHandlers({
     onFirstPageButtonClick: ({onChangePage}) => (event) => onChangePage(0),
     onBackButtonClick: ({onChangePage, page}) => (event) => onChangePage(page - 1),
     onNextButtonClick: ({onChangePage, page}) => (event) => onChangePage(page + 1),
-    onLastPageButtonClick: ({onChangePage, count, rowsPerPage}) => (event) =>
-      onChangePage(Math.max(0, Math.ceil(count / rowsPerPage) - 1)),
-  })
+    onLastPageButtonClick: ({onChangePage, pageCount}) => (event) =>
+      onChangePage(Math.max(0, pageCount - 1)),
+  }),
+  withStyles(actionsStyles, {withTheme: true}),
 )(
   ({
     classes,
-    count,
-    page,
-    rowsPerPage,
     theme,
     onFirstPageButtonClick,
     onBackButtonClick,
     onNextButtonClick,
     onLastPageButtonClick,
+    pageCount,
+    page,
   }) => (
     <div className={classes.root}>
       <IconButton onClick={onFirstPageButtonClick} disabled={page === 0} aria-label="First Page">
@@ -148,14 +153,14 @@ const TablePaginationActions = compose(
       </IconButton>
       <IconButton
         onClick={onNextButtonClick}
-        disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+        disabled={page >= pageCount - 1}
         aria-label="Next Page"
       >
         {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
       </IconButton>
       <IconButton
         onClick={onLastPageButtonClick}
-        disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+        disabled={page >= pageCount - 1}
         aria-label="Last Page"
       >
         {theme.direction === 'rtl' ? <FirstPageArrow /> : <LastPageArrow />}
@@ -164,15 +169,15 @@ const TablePaginationActions = compose(
   )
 )
 
-const TablePaginationActionsWrapped = withStyles(actionsStyles, {withTheme: true})(
-  TablePaginationActions
-)
-
 export default compose(
   withStyles(tableStyles),
+  withProps((props) => ({
+    pageCount: getPageCount(props.totalCount, props.rowsPerPage),
+  })),
   withHandlers({
-    labelDisplayedRows: ({rowsPerPage}) => ({page, count}) =>
-      `${page + 1}/${Math.ceil(count / rowsPerPage)}`,
+    // Note: this is because MaterailUI calls this formatter with predefined set of props
+    // which do not contain 'pageCount'
+    paggingInfoFormatter: ({pageCount}) => ({page}) => `${page + 1}/${pageCount}`,
   }),
   injectIntl
 )(
@@ -184,7 +189,7 @@ export default compose(
     onChangePage,
     totalCount,
     rowsPerPage,
-    labelDisplayedRows,
+    paggingInfoFormatter,
     rowsPerPageOptions,
   }) => {
     const {translate, formatInt, formatAda} = getIntlFormatters(intl)
@@ -232,9 +237,9 @@ export default compose(
                 page={page}
                 rowsPerPageOptions={rowsPerPageOptions}
                 SelectProps={{native: true}}
-                labelDisplayedRows={labelDisplayedRows}
+                labelDisplayedRows={paggingInfoFormatter}
                 onChangePage={onChangePage}
-                ActionsComponent={TablePaginationActionsWrapped}
+                ActionsComponent={PaginationControlsComponent}
               />
             </TableRow>
           </TableFooter>

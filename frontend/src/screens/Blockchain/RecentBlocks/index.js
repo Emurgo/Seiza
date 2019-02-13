@@ -67,16 +67,11 @@ export default compose(
 
       // Note: 'fetchMore' is built-in apollo function
       fetchMore({
+        // TODO: in case the 'cursor' is null disable caching and also update 'totalCount'
         variables: cursor ? {cursor} : {},
         updateQuery: (prev, {fetchMoreResult, ...rest}) => {
           if (!fetchMoreResult) return prev
-          return {
-            ...fetchMoreResult,
-            blocks: {
-              ...fetchMoreResult.blocks,
-              blocks: [...fetchMoreResult.blocks.blocks],
-            },
-          }
+          return fetchMoreResult
         },
       })
       return setPage(newPage)
