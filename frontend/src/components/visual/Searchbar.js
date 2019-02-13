@@ -90,13 +90,6 @@ const Searchbar = (props: PropTypes) => {
 }
 
 export default compose(
-  defaultProps({
-    // eslint-disable-next-line
-    onSearch: () => {},
-    // eslint-disable-next-line
-    onChange: () => {},
-    textFieldProps: {},
-  }),
   withState('inputRef', 'setInputRef', React.createRef()),
   withHandlers({
     onSearch: ({value, onSearch}) => () => onSearch(value),
