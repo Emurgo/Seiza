@@ -1,6 +1,6 @@
 // @flow
 import React from 'react'
-import {withStateHandlers, defaultProps} from 'recompose'
+import {withStateHandlers, defaultProps, withHandlers, withProps} from 'recompose'
 import {compose} from 'redux'
 
 import {withStyles, createStyles} from '@material-ui/core'
@@ -38,41 +38,39 @@ const styles = (theme) =>
   })
 
 type PropTypes = {
-  classes: Object,
+  placeholder: string,
   value: string,
-  onChange: (str: string) => void,
-  onSearch: (str: string) => void,
-  searchText: string,
-  setSearchText: (str: string) => Object,
+  onChange: (str: string) => any,
   clearInput: () => Object,
-  // TODO: what should be type of inputRef?
+  onSearch: (str: string) => any,
   inputRef: any,
-  setInputRef: (inputRef: any) => void,
+  setInputRef: (inputRef: any) => any,
+  classes: Object,
+  textFieldProps: Object,
 }
 
-const Searchbar = ({
-  classes,
-  value,
-  onChange,
-  onSearch,
-  searchText,
-  setSearchText,
-  clearInput,
-  inputRef,
-  setInputRef,
-  ...props
-}: PropTypes) => {
-  const targetOnChange = onChange || setSearchText
+const Searchbar = (props: PropTypes) => {
+  const {
+    placeholder,
+    value,
+    onChange,
+    clearInput,
+    onSearch,
+    inputRef,
+    setInputRef,
+    classes,
+    textFieldProps,
+  } = props
 
   return (
     <div className={classes.container}>
       <TextField
-        id="outlined-adornment-password"
         type="text"
         className={classes.textField}
         variant="outlined"
-        value={value || searchText}
-        onChange={(event) => targetOnChange(event.target.value)}
+        value={value}
+        placeholder={placeholder}
+        onChange={onChange}
         inputRef={setInputRef}
         InputProps={{
           endAdornment: (
@@ -80,7 +78,7 @@ const Searchbar = ({
               <IconButton
                 aria-label="Toggle password visibility"
                 onClick={() => {
-                  onChange ? onChange('') : clearInput()
+                  clearInput()
                   inputRef && inputRef.focus()
                 }}
               >
@@ -90,13 +88,13 @@ const Searchbar = ({
           ),
           className: classes.input,
         }}
-        {...props}
+        {...textFieldProps}
       />
       <Button
         primary
         variant="contained"
         className={classes.searchButton}
-        onClick={() => onSearch(searchText)}
+        onClick={() => onSearch(value)}
       >
         <Search fontSize="large" />
       </Button>
@@ -104,22 +102,36 @@ const Searchbar = ({
   )
 }
 
-const enhance = withStateHandlers(
-  ({initialSearchText = ''}) => ({
-    searchText: initialSearchText,
-    inputRef: null,
-  }),
-  {
-    clearInput: ({searchText}) => () => ({searchText: ''}),
-    setSearchText: () => (value) => ({searchText: value}),
-    setInputRef: () => (ref) => ({inputRef: ref}),
-  }
-)
 export default compose(
   defaultProps({
     // eslint-disable-next-line
-    search: () => {},
+    onSearch: () => {},
+    // eslint-disable-next-line
+    onChange: () => {},
+    textFieldProps: {},
   }),
-  enhance,
+  withStateHandlers(
+    ({initialSearchText = ''}) => ({
+      searchText: initialSearchText,
+      inputRef: null,
+    }),
+    {
+      setSearchText: () => (value) => ({searchText: value}),
+      setInputRef: () => (ref) => ({inputRef: ref}),
+    }
+  ),
+  withHandlers({
+    onChange: ({onChange, setSearchText}) => (event) => {
+      onChange(event)
+      setSearchText(event.target.value)
+    },
+    clearInput: ({onChange, setSearchText}) => () => {
+      onChange('')
+      setSearchText('')
+    },
+  }),
+  withProps((props) => ({
+    value: props.value || props.searchText,
+  })),
   withStyles(styles)
 )(Searchbar)

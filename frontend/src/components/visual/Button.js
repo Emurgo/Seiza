@@ -1,7 +1,7 @@
 // @flow
 import React from 'react'
 import classNames from 'classnames'
-import Button from '@material-ui/core/Button'
+import MaterialButton from '@material-ui/core/Button'
 import {withStyles, createStyles} from '@material-ui/core'
 
 const styles = (theme) =>
@@ -12,8 +12,11 @@ const styles = (theme) =>
     },
   })
 
-const SeizaButton = ({primary, classes, className, ...props}) => (
-  <Button className={classNames({[className]: className, [classes.primary]: primary})} {...props} />
+const Button = ({primary, classes, className, ...props}) => (
+  <MaterialButton
+    className={classNames({[className]: className, [classes.primary]: primary})}
+    {...props}
+  />
 )
 
-export default withStyles(styles)(SeizaButton)
+export default withStyles(styles)(Button)
