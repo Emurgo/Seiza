@@ -1,0 +1,21 @@
+type Block {
+  epoch: Int!
+  slot: Int!
+  blockHash: String!
+  timeIssued: Timestamp!
+  transactionsCount: Int!
+  totalSend: AdaAmount!
+  size: Int!
+  blockLead: String!
+  totalFees: AdaAmount!
+}
+
+type PagedBlocksResult {
+  cursor: Int
+  hasMore: Boolean!
+  blocks: [Block]!
+}
+
+type Query {
+  blocks(cursor: Int): PagedBlocksResult!
+}
