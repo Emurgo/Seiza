@@ -5,49 +5,44 @@
     "filepath": "src/screens/Blockchain/index.js"
   },
   {
-    "id": "blockchain.blockList.loadMore",
-    "defaultMessage": "Load more",
-    "filepath": "src/screens/Blockchain/RecentBlocks.js"
-  },
-  {
     "id": "blockchain.blockList.table.epoch",
     "defaultMessage": "epoch",
-    "filepath": "src/screens/Blockchain/RecentBlocks.js"
+    "filepath": "src/screens/Blockchain/RecentBlocks/PaginatedTable.js"
   },
   {
     "id": "blockchain.blockList.table.slot",
     "defaultMessage": "slot",
-    "filepath": "src/screens/Blockchain/RecentBlocks.js"
+    "filepath": "src/screens/Blockchain/RecentBlocks/PaginatedTable.js"
   },
   {
     "id": "blockchain.blockList.table.slotLeader",
     "defaultMessage": "slot leader",
-    "filepath": "src/screens/Blockchain/RecentBlocks.js"
+    "filepath": "src/screens/Blockchain/RecentBlocks/PaginatedTable.js"
   },
   {
     "id": "blockchain.blockList.table.time",
     "defaultMessage": "time",
-    "filepath": "src/screens/Blockchain/RecentBlocks.js"
+    "filepath": "src/screens/Blockchain/RecentBlocks/PaginatedTable.js"
   },
   {
     "id": "blockchain.blockList.table.transactions",
     "defaultMessage": "transactions",
-    "filepath": "src/screens/Blockchain/RecentBlocks.js"
+    "filepath": "src/screens/Blockchain/RecentBlocks/PaginatedTable.js"
   },
   {
     "id": "blockchain.blockList.table.totalSent",
     "defaultMessage": "total sent (ADA)",
-    "filepath": "src/screens/Blockchain/RecentBlocks.js"
+    "filepath": "src/screens/Blockchain/RecentBlocks/PaginatedTable.js"
   },
   {
     "id": "blockchain.blockList.table.fees",
     "defaultMessage": "fees (ADA)",
-    "filepath": "src/screens/Blockchain/RecentBlocks.js"
+    "filepath": "src/screens/Blockchain/RecentBlocks/PaginatedTable.js"
   },
   {
     "id": "blockchain.blockList.table.size",
     "defaultMessage": "size (B)",
-    "filepath": "src/screens/Blockchain/RecentBlocks.js"
+    "filepath": "src/screens/Blockchain/RecentBlocks/PaginatedTable.js"
   },
   {
     "id": "overview.metrics.not_available",
