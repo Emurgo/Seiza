@@ -116,6 +116,7 @@ const Search = compose(
         placeholder={translate(text.searchPlaceholder)}
         value={searchText}
         onChange={setSearchText}
+        onSearch={() => null}
       />
     </div>
   )
