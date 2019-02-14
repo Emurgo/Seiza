@@ -60,3 +60,11 @@ export const GET_ADDRESS_BY_ADDRESS58 = gql`
     }
   }
 `
+
+export const GET_CURRENT_BLOCK_COUNT = gql`
+  query {
+    currentStatus {
+      blockCount
+    }
+  }
+`
