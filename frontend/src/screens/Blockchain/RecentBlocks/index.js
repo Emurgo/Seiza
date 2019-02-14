@@ -15,7 +15,6 @@ import {GET_BLOCKS} from '../../../api/queries'
 // TODO: for now this is hardcoded both in client and server
 // TODO: flow or typescript?
 const PAGE_SIZE = 10
-export const I18N_PREFIX = 'blockchain.blockList'
 
 const withBlocks = graphql(GET_BLOCKS, {
   name: 'blocks',

@@ -24,10 +24,8 @@ import {Link} from 'react-router-dom'
 import {withHandlers, withProps} from 'recompose'
 
 import {getIntlFormatters} from '../../../i18n/helpers'
-import {I18N_PREFIX} from './'
 
-const TABLE_I18N_PREFIX = `${I18N_PREFIX}.table`
-
+const TABLE_I18N_PREFIX = 'blockchain.blockList.table'
 // TODO?: aria-label messages
 const tableMessages = defineMessages({
   epoch: {
@@ -132,7 +130,7 @@ const PaginationControlsComponent = compose(
     onLastPageButtonClick: ({onChangePage, pageCount}) => (event) =>
       onChangePage(Math.max(0, pageCount - 1)),
   }),
-  withStyles(actionsStyles, {withTheme: true}),
+  withStyles(actionsStyles, {withTheme: true})
 )(
   ({
     classes,
