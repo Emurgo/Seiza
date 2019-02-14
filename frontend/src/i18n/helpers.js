@@ -18,6 +18,9 @@ BigNumber.config({
   FORMAT: defaultNumberFmt,
 })
 
+export const monthNumeralFormat = 'L LTS'
+export const standardReadableFormat = 'LL LTS'
+
 export const getIntlFormatters = (intl) => {
   const translate = intl.formatMessage
   const formatNumber = intl.formatNumber
@@ -43,12 +46,12 @@ export const getIntlFormatters = (intl) => {
     return value.dividedBy(1000000).toFormat(6)
   }
 
-  const _formatTimestampFull = (x, options) => {
+  const _formatTimestamp = (x, options) => {
+    const desiredFormat = options.format || standardReadableFormat
     const ts = moment(x)
     if (!ts.isValid) throw new Error('bad timestamp')
-    return ts.format('LL LTS')
+    return ts.format(desiredFormat)
   }
-
   const withDefaultValue = (formatter) => (x, options = {}) => {
     const {defaultValue, ...restOptions} = options
     if (x == null) return defaultValue || ''
@@ -59,7 +62,7 @@ export const getIntlFormatters = (intl) => {
   const formatPercent = withDefaultValue(_formatPercent)
   const formatAda = withDefaultValue(_formatAda)
   const formatFiat = withDefaultValue(_formatFiat)
-  const formatTimestampFull = withDefaultValue(_formatTimestampFull)
+  const formatTimestamp = withDefaultValue(_formatTimestamp)
 
   return {
     translate,
@@ -68,7 +71,7 @@ export const getIntlFormatters = (intl) => {
     formatPercent,
     formatFiat,
     formatAda,
-    formatTimestampFull,
+    formatTimestamp,
   }
 }
 

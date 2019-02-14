@@ -1,4 +1,5 @@
 // @flow
+import moment from 'moment'
 type GetCoin = {
   getCoin: string,
 }
@@ -31,22 +32,22 @@ export type FacadeTransaction = {
   inputs: Array<{|address58: string, amount: string|}>,
   outputs: Array<{|address58: string, amount: string|}>,
 }
-export const facadeTransaction = (data: TxAPIType): FacadeTransaction => ({
-  txHash: data.ctsId,
-  txTimeIssued: data.ctsTxTimeIssued,
-  blockTimeIssued: data.ctsBlockTimeIssued,
-  blockHeight: data.ctsBlockHeight,
-  blockEpoch: data.ctsBlockEpoch,
-  blockSlot: data.ctsBlockSlot,
-  blockHash: data.ctsBlockHash,
-  totalInput: data.ctsTotalInput.getCoin,
-  totalOutput: data.ctsTotalOutput.getCoin,
-  fees: data.ctsFees.getCoin,
-  inputs: data.ctsInputs.map((input) => ({
+export const facadeTransaction = (txData: TxAPIType): FacadeTransaction => ({
+  txHash: txData.ctsId,
+  txTimeIssued: moment.unix(txData.ctsTxTimeIssued),
+  blockTimeIssued: moment.unix(txData.ctsBlockTimeIssued),
+  blockHeight: txData.ctsBlockHeight,
+  blockEpoch: txData.ctsBlockEpoch,
+  blockSlot: txData.ctsBlockSlot,
+  blockHash: txData.ctsBlockHash,
+  totalInput: txData.ctsTotalInput.getCoin,
+  totalOutput: txData.ctsTotalOutput.getCoin,
+  fees: txData.ctsFees.getCoin,
+  inputs: txData.ctsInputs.map((input) => ({
     address58: input[0],
     amount: input[1].getCoin,
   })),
-  outputs: data.ctsInputs.map((output) => ({
+  outputs: txData.ctsInputs.map((output) => ({
     address58: output[0],
     amount: output[1].getCoin,
   })),

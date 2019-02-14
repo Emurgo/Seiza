@@ -25,6 +25,7 @@ export default gql`
     fees: String
     inputs: [TransactionInput]
     outputs: [TransactionOutput]
+    confirmationsCount: Int
   }
 
   type Query {

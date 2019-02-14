@@ -5,17 +5,15 @@ import {graphql} from 'react-apollo'
 import {compose} from 'redux'
 import {withProps} from 'recompose'
 import {withRouter} from 'react-router'
-import moment from 'moment'
 import {injectIntl, defineMessages} from 'react-intl'
-import Card from '@material-ui/core/Card'
-import Chip from '@material-ui/core/Chip'
-import {withStyles, createStyles} from '@material-ui/core'
+import {withStyles, createStyles, Card, Typography, Grid, Chip} from '@material-ui/core'
+import classNames from 'classnames'
 
 import AdaIcon from '../../components/visual/tmp_assets/ada-icon.png'
 import CopyIcon from '../../components/visual/tmp_assets/copy-icon.png'
 
-import {GET_TRANSACTION_BY_HASH, GET_CURRENT_BLOCK_COUNT} from '../../api/queries'
-import {getIntlFormatters} from '../../i18n/helpers'
+import {GET_TRANSACTION_BY_HASH} from '../../api/queries'
+import {getIntlFormatters, monthNumeralFormat} from '../../i18n/helpers'
 
 const messages = defineMessages({
   header: {
@@ -32,7 +30,7 @@ const messages = defineMessages({
   },
   confirmations: {
     id: 'transaction.confirmations',
-    defaultMessage: 'confirmation',
+    defaultMessage: '{count, plural, =0 {confirmations} one {confirmation} other {confirmations}}',
   },
   epoch: {
     id: 'transaction.epoch',
@@ -70,18 +68,7 @@ const styles = (theme) =>
       paddingRight: '10%',
       background: '#F4F6FC',
     },
-    generalField: {
-      display: 'flex',
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-    },
-    movementField: {
-      display: 'flex',
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-    },
     card: {
-      display: 'flex',
       margin: theme.spacing.unit * 2,
       padding: theme.spacing.unit * 2,
     },
@@ -89,11 +76,6 @@ const styles = (theme) =>
       flex: 1,
       paddingLeft: theme.spacing.unit * 2,
       paddingRight: theme.spacing.unit * 2,
-    },
-    cardRow: {
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
     },
     listRow: {
       'paddingTop': theme.spacing.unit * 2.5,
@@ -109,20 +91,8 @@ const styles = (theme) =>
         paddingTop: 0,
       },
     },
-    rowItem: {
+    flex: {
       display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-    },
-    listWrapper: {
-      display: 'flex',
-      flex: 1,
-      flexDirection: 'column',
-    },
-    adaIcon: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
     },
     chip: {
       maxHeight: theme.spacing.unit * 2,
@@ -131,6 +101,10 @@ const styles = (theme) =>
       background: '#8AE8D4',
       color: 'white',
       marginRight: theme.spacing.unit * 1.5,
+    },
+    centeredFlex: {
+      alignItems: 'center',
+      justifyContent: 'center',
     },
   })
 
@@ -141,133 +115,87 @@ const withTransactionByHash = graphql(GET_TRANSACTION_BY_HASH, {
   }),
 })
 
-const withCurrentBlockCount = graphql(GET_CURRENT_BLOCK_COUNT, {
-  name: 'blockCount',
+// TODO: extract to own reusable component in next PR
+const List = withStyles(styles)(({children, classes}) => {
+  return (
+    <Grid container direction="column">
+      {children}
+    </Grid>
+  )
 })
 
-// TODO: Ignore commented code, Inputs and Outputs will be done in next PR
-// const TransactionInput = ({txInput}) => (
-//   <React.Fragment>
-//     <div className={classes.movementField}>
-//       <div>Address</div>
-//       <div>{txInput.address58}</div>
-//     </div>
-//     <div className={classes.movementField}>
-//       <div>Amount</div>
-//       <div>{txInput.amount}</div>
-//     </div>
-//   </React.Fragment>
-// )
-
-// const TransactionOutput = ({txOutput}) => (
-//   <React.Fragment>
-//     <div className={classes.movementField}>
-//       <div>Address</div>
-//       <div>{txOutput.address58}</div>
-//     </div>
-//     <div className={classes.movementField}>
-//       <div>Amount</div>
-//       <div>{txOutput.amount}</div>
-//     </div>
-//   </React.Fragment>
-// )
-// <h4>General</h4>
-// {generalTransactionInfoConfig.map((field) => (
-//   <div key={field.title} className={classes.generalField}>
-//     <div>{field.title}</div>
-//     <div>{field.getValue(transaction)}</div>
-//   </div>
-// ))}
-
-// <h4>Inputs</h4>
-// {transaction.inputs.map((input, index) => (
-//   <TransactionInput key={index} txInput={input} />
-// ))}
-
-// <h4>Outputs</h4>
-// {transaction.outputs.map((output, index) => (
-//   <TransactionOutput key={index} txOutput={output} />
-// ))}
-
-// TODO: extract to own reusable component in next PR
-
-const HrSeparatedList = withStyles(styles)(({children, classes}) => {
+const ListItem = withStyles(styles)(({label, children, classes}) => {
   return (
-    <div className={classes.listWrapper}>
-      {children.map((row) => {
-        return (
-          <div key={row.toString()} className={classes.listRow}>
-            {row}
-          </div>
-        )
-      })}
-    </div>
+    <Grid
+      container
+      direction="row"
+      justify="space-between"
+      alignItems="center"
+      className={classes.listRow}
+    >
+      <Grid item>
+        <Typography variant="caption">{label}</Typography>
+      </Grid>
+      <Grid item>{children}</Grid>
+    </Grid>
   )
 })
 
 const Transaction = (props) => {
   const {classes} = props
   const {loading, transaction} = props.transaction
-  const {loading: blockCountLoading, currentStatus} = props.blockCount
-  const {translate, formatAda, formatInt} = getIntlFormatters(props.intl)
+  const {translate, formatAda, formatInt, formatTimestamp} = getIntlFormatters(props.intl)
   // TODO: 'loading' check inside 'compose' once we have loading component
-  if (loading || blockCountLoading) {
+  if (loading) {
     return null
   }
 
   return (
     <div className={classes.wrapper}>
-      <h1>{translate(messages.header)}</h1>
+      <Typography variant="h1">{translate(messages.header)}</Typography>
 
-      <Card className={classes.card}>
-        <div className={classes.adaIcon}>
+      <Card className={classNames(classes.card, classes.flex)}>
+        <Grid item className={classNames(classes.flex, classes.centeredFlex)}>
           <img src={AdaIcon} width={40} height={40} />
-        </div>
+        </Grid>
+
         <div className={classes.cardContent}>
-          <div>{translate(messages.transactionId)}</div>
-          <div className={classes.cardRow}>
+          <Typography variant="caption">{translate(messages.transactionId)}</Typography>
+          <Grid container direction="row" justify="space-between" alignItems="center">
             <span>{transaction.txHash}</span>
             <span>
               <img src={CopyIcon} width={30} height={30} />
             </span>
-          </div>
+          </Grid>
         </div>
       </Card>
 
       <Card className={classes.card}>
-        <HrSeparatedList>
-          <div className={classes.rowItem}>
-            <div>{translate(messages.assuranceLevel)}</div>
+        <List>
+          <ListItem label={translate(messages.assuranceLevel)}>
             <div>
               {/* TODO finish possible labels high/medium/low */}
               <Chip label="High" className={classes.chip} />
               <span>
-                {currentStatus && formatInt(currentStatus.blockCount - transaction.blockSlot)}{' '}
-                {translate(messages.confirmations)}
+                {formatInt(transaction.confirmationsCount)}{' '}
+                {translate(messages.confirmations, {
+                  count: transaction.confirmationsCount,
+                })}
               </span>
             </div>
-          </div>
-          <div className={classes.rowItem}>
-            <div>{translate(messages.epoch)}</div>
-            <div>{formatInt(transaction.blockEpoch)}</div>
-          </div>
-          <div className={classes.rowItem}>
-            <div>{translate(messages.slot)}</div>
-            <div>{formatInt(transaction.blockSlot)}</div>
-          </div>
-          <div className={classes.rowItem}>
-            <div>{translate(messages.date)}</div>
-            <div>{moment(transaction.txTimeIssued).format('l LTS')}</div>
-          </div>
-          <div className={classes.rowItem}>
-            <div>{translate(messages.size)}</div>
-            <div>{transaction.size || 'TODO'}</div>
-          </div>
-          <div className={classes.rowItem}>
-            <div>{translate(messages.fees)}</div>
-            <div>{`${formatAda(transaction.fees)} ADA`}</div>
-          </div>
-        </HrSeparatedList>
+          </ListItem>
+          <ListItem label={translate(messages.epoch)}>{formatInt(transaction.blockEpoch)}</ListItem>
+          <ListItem label={translate(messages.slot)}>{formatInt(transaction.blockSlot)}</ListItem>
+          <ListItem label={translate(messages.date)}>
+            {formatTimestamp(transaction.txTimeIssued, {format: monthNumeralFormat})}
+          </ListItem>
+          <ListItem label={translate(messages.size)}>
+            {formatInt(transaction.size, {defaultValue: 'TODO'})}
+          </ListItem>
+          <ListItem label={translate(messages.fees)}>
+            {`${formatAda(transaction.fees)} ADA`}
+          </ListItem>
+        </List>
       </Card>
     </div>
   )
@@ -277,10 +205,8 @@ export default compose(
   withRouter,
   withProps((props) => ({
     txHash: props.match.params.txHash,
-    // blockCount: props.blockCount.currentStatus.blockCount,
   })),
   withTransactionByHash,
-  withCurrentBlockCount,
   injectIntl,
   withStyles(styles)
 )(Transaction)

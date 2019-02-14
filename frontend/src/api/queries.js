@@ -23,6 +23,7 @@ export const GET_TRANSACTION_BY_HASH = gql`
         address58
         amount
       }
+      confirmationsCount
     }
   }
 `
@@ -57,14 +58,6 @@ export const GET_ADDRESS_BY_ADDRESS58 = gql`
       transactions {
         txHash
       }
-    }
-  }
-`
-
-export const GET_CURRENT_BLOCK_COUNT = gql`
-  query {
-    currentStatus {
-      blockCount
     }
   }
 `
