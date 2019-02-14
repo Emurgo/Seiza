@@ -5,8 +5,10 @@ import gql from 'graphql-tag'
 import MetricsCard from '../../components/visual/MetricsCard'
 import {injectIntl, defineMessages} from 'react-intl'
 import {compose} from 'redux'
+import {withState} from 'recompose'
 import {graphql} from 'react-apollo'
 import {getIntlFormatters} from '../../i18n/helpers'
+import Searchbar from '../../components/visual/Searchbar'
 
 const text = defineMessages({
   not_available: {
@@ -33,6 +35,10 @@ const text = defineMessages({
     id: 'overview.metrics.poolCount.label',
     defaultMessage: 'Pools',
   },
+  searchPlaceholder: {
+    id: 'overview.search.placeholder',
+    defaultMessage: 'Search addresses, epochs & slots on the Cardano network',
+  },
 })
 
 // TODO: replace with idx
@@ -58,7 +64,7 @@ const _Status = ({intl, data}) => {
   const pools = formatInt(idx(status, (s) => s.stakePoolCount), {defaultValue: NA})
 
   return (
-    <div className="gradient-bg" style={{display: 'flex', justifyContent: 'center'}}>
+    <div style={{display: 'flex', justifyContent: 'center'}}>
       <MetricsCard icon="epoch" metric={translate(text.epochLabel)} value={epochNumber} />
       <MetricsCard icon="blocks" metric={translate(text.blocksLabel)} value={blockCount} />
       <MetricsCard
@@ -99,11 +105,30 @@ const OverviewMetrics = compose(
   withOverviewMetricsData
 )(_Status)
 
+const Search = compose(
+  injectIntl,
+  withState('searchText', 'setSearchText', '')
+)(({intl, searchText, setSearchText, onChange}) => {
+  const {translate} = getIntlFormatters(intl)
+  return (
+    <div style={{width: '45%', margin: '0 auto'}}>
+      <Searchbar
+        placeholder={translate(text.searchPlaceholder)}
+        value={searchText}
+        onChange={setSearchText}
+        onSearch={() => null}
+      />
+    </div>
+  )
+})
 const Blockchain = () => {
   return (
     <React.Fragment>
-      <h1>Home</h1>
-      <OverviewMetrics />
+      <div className="gradient-bg">
+        <h1>Home</h1>
+        <OverviewMetrics />
+        <Search />
+      </div>
     </React.Fragment>
   )
 }
