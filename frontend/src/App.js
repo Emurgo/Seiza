@@ -9,7 +9,7 @@ import indigo from '@material-ui/core/colors/indigo'
 import red from '@material-ui/core/colors/red'
 
 import {routeTo} from './helpers/routes'
-import {withIntl, withSetLocale} from './components/HOC/intl'
+import {provideIntl, withSetLocale} from './components/HOC/intl'
 import Navbar from './components/visual/Navbar'
 
 import Home from './screens/Home'
@@ -94,4 +94,4 @@ const App = () => {
   )
 }
 
-export default compose(withIntl)(App)
+export default compose(provideIntl)(App)

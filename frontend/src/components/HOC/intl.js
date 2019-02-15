@@ -19,7 +19,7 @@ const Context = React.createContext({
   setLanguage: null,
 })
 
-export const withIntl = (WrappedComponent) =>
+export const provideIntl = (WrappedComponent) =>
   compose(
     withState('locale', 'setLocale', storage.getItem('locale') || 'en'),
     withHandlers({
