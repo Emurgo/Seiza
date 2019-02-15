@@ -1,7 +1,7 @@
 import 'babel-polyfill'
 import _ from 'lodash'
 
-import {blocksResolver} from './resolvers'
+import {pagedBlocksResolver} from './resolvers'
 import {facadeBlock} from './dataFacades'
 
 const cb = (hash) => ({
@@ -44,7 +44,7 @@ test('No `cursor` supplied, latest page is full', async () => {
     data: cbs(1000, 990).map(facadeBlock),
     cursor: 990,
   }
-  const output = await blocksResolver(null, {}, context)
+  const output = await pagedBlocksResolver(null, {}, context)
   expect(output).toEqual(expectedOutput)
 })
 
@@ -57,7 +57,7 @@ test('No `cursor` supplied, latest page is "half-full"(four items) ', async () =
     data: cbs(994, 984).map(facadeBlock),
     cursor: 984,
   }
-  const output = await blocksResolver(null, {}, context)
+  const output = await pagedBlocksResolver(null, {}, context)
   expect(output).toEqual(expectedOutput)
 })
 
@@ -69,7 +69,7 @@ test('No `cursor` supplied, latest page contains one item', async () => {
     data: cbs(991, 981).map(facadeBlock),
     cursor: 981,
   }
-  const output = await blocksResolver(null, {}, context)
+  const output = await pagedBlocksResolver(null, {}, context)
   expect(output).toEqual(expectedOutput)
 })
 
@@ -83,7 +83,7 @@ test('`cursor` supplied, one item to be taken from page one', async () => {
     data: cbs(981, 971).map(facadeBlock),
     cursor: 971,
   }
-  const output = await blocksResolver(null, {cursor}, context)
+  const output = await pagedBlocksResolver(null, {cursor}, context)
   expect(output).toEqual(expectedOutput)
 })
 
@@ -98,7 +98,7 @@ test('`cursor` four items to be taken from page one', async () => {
     data: cbs(984, 974).map(facadeBlock),
     cursor: 974,
   }
-  const output = await blocksResolver(null, {cursor}, context)
+  const output = await pagedBlocksResolver(null, {cursor}, context)
   expect(output).toEqual(expectedOutput)
 })
 
@@ -113,7 +113,7 @@ test('`cursor` ten items to be taken from page one', async () => {
     data: cbs(990, 980).map(facadeBlock),
     cursor: 980,
   }
-  const output = await blocksResolver(null, {cursor}, context)
+  const output = await pagedBlocksResolver(null, {cursor}, context)
   expect(output).toEqual(expectedOutput)
 })
 
@@ -126,21 +126,21 @@ test('Multiple calls, latest page was full', async () => {
     data: cbs(1000, 990).map(facadeBlock),
     cursor: 990,
   }
-  const output1 = await blocksResolver(null, {}, context)
+  const output1 = await pagedBlocksResolver(null, {}, context)
   expect(output1).toEqual(expectedOutput1)
 
   const expectedOutput2 = {
     data: cbs(990, 980).map(facadeBlock),
     cursor: 980,
   }
-  const output2 = await blocksResolver(null, {cursor: expectedOutput1.cursor}, context)
+  const output2 = await pagedBlocksResolver(null, {cursor: expectedOutput1.cursor}, context)
   expect(output2).toEqual(expectedOutput2)
 
   const expectedOutput3 = {
     data: cbs(980, 970).map(facadeBlock),
     cursor: 970,
   }
-  const output3 = await blocksResolver(null, {cursor: expectedOutput2.cursor}, context)
+  const output3 = await pagedBlocksResolver(null, {cursor: expectedOutput2.cursor}, context)
   expect(output3).toEqual(expectedOutput3)
 })
 
@@ -153,21 +153,21 @@ test('Multiple calls, latest page was not full', async () => {
     data: cbs(994, 984).map(facadeBlock),
     cursor: 984,
   }
-  const output1 = await blocksResolver(null, {}, context)
+  const output1 = await pagedBlocksResolver(null, {}, context)
   expect(output1).toEqual(expectedOutput1)
 
   const expectedOutput2 = {
     data: cbs(984, 974).map(facadeBlock),
     cursor: 974,
   }
-  const output2 = await blocksResolver(null, {cursor: expectedOutput1.cursor}, context)
+  const output2 = await pagedBlocksResolver(null, {cursor: expectedOutput1.cursor}, context)
   expect(output2).toEqual(expectedOutput2)
 
   const expectedOutput3 = {
     data: cbs(974, 964).map(facadeBlock),
     cursor: 964,
   }
-  const output3 = await blocksResolver(null, {cursor: expectedOutput2.cursor}, context)
+  const output3 = await pagedBlocksResolver(null, {cursor: expectedOutput2.cursor}, context)
   expect(output3).toEqual(expectedOutput3)
 })
 
@@ -179,7 +179,7 @@ test('Invalid cursor', async () => {
   }
 
   const expectedOutput = {data: [], cursor: null}
-  const output = await blocksResolver(null, {cursor}, context)
+  const output = await pagedBlocksResolver(null, {cursor}, context)
   expect(output).toEqual(expectedOutput)
 })
 
@@ -191,6 +191,6 @@ test('End of pages', async () => {
     data: cbs(4, 0).map(facadeBlock),
     cursor: null,
   }
-  const output = await blocksResolver(null, {}, context)
+  const output = await pagedBlocksResolver(null, {}, context)
   expect(output).toEqual(expectedOutput)
 })

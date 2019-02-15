@@ -5,7 +5,7 @@ import {mergeTypes} from 'merge-graphql-schemas'
 
 import {addressResolver} from './graphql/address/resolvers'
 import {transactionResolver} from './graphql/transaction/resolvers'
-import {blocksResolver} from './graphql/block/resolvers'
+import {pagedBlocksResolver, blockResolver} from './graphql/block/resolvers'
 import {currentStatusResolver} from './graphql/status/resolvers'
 
 import transactionTypes from './graphql/transaction/types'
@@ -33,14 +33,15 @@ const resolvers = {
     transaction: transactionResolver,
     address: addressResolver,
     currentStatus: currentStatusResolver,
-    blocks: async (_, args, context) => {
-      const result = await blocksResolver(_, args, context)
+    pagedBlocks: async (_, args, context) => {
+      const result = await pagedBlocksResolver(_, args, context)
       return {
         blocks: result.data,
         cursor: result.cursor,
         hasMore: result.cursor > 0,
       }
     },
+    block: blockResolver,
   },
 }
 
