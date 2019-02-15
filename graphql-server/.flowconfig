@@ -11,5 +11,6 @@
 
 suppress_type=$FlowFixMe
 module.file_ext=.js
+module.name_mapper.extension='gql' -> '<PROJECT_ROOT>/src/gqlFlowShim'
 
 [strict]

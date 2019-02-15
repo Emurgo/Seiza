@@ -9,12 +9,13 @@ import {blocksResolver} from './graphql/block/resolvers'
 import {currentStatusResolver} from './graphql/status/resolvers'
 
 import transactionTypes from './graphql/transaction/types'
-import addressTypes from './graphql/address/types'
-import blockTypes from './graphql/block/types'
+import addressTypes from './graphql/address/schema.gql'
+import blockTypes from './graphql/block/schema.gql'
+import statusTypes from './graphql/status/schema.gql'
 
 import Timestamp from './graphql/scalars/timestamp'
 import AdaAmount from './graphql/scalars/adaAmount'
-import statusTypes from './graphql/status/types'
+
 import {cardanoAPI} from './api'
 import type {CardanoAPI} from './api'
 
