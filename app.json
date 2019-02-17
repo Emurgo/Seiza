@@ -4,6 +4,9 @@
   ],
   "buildpacks": [
     {
+      "url": "https://github.com/timanovsky/subdir-heroku-buildpack"
+    },
+    {
       "url": "heroku/nodejs"
     }
   ],
@@ -16,6 +19,9 @@
     },
     "PROJECT_PATH": {
       "required": true
+    },
+    "REACT_APP_GRAPHQL_SERVER_URL": {
+      "required": true 
     }
   },
   "formation": {
