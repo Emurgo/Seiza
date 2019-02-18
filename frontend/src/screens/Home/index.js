@@ -1,12 +1,13 @@
 // @flow
 import React from 'react'
 import gql from 'graphql-tag'
-
-import MetricsCard from '../../components/visual/MetricsCard'
+import idx from 'idx'
 import {injectIntl, defineMessages} from 'react-intl'
 import {compose} from 'redux'
 import {withState} from 'recompose'
 import {graphql} from 'react-apollo'
+
+import MetricsCard from '../../components/visual/MetricsCard'
 import {getIntlFormatters} from '../../i18n/helpers'
 import Searchbar from '../../components/visual/Searchbar'
 
@@ -40,16 +41,6 @@ const text = defineMessages({
     defaultMessage: 'Search addresses, epochs & slots on the Cardano network',
   },
 })
-
-// TODO: replace with idx
-// https://github.com/facebookincubator/idx
-const idx = (value, getter) => {
-  try {
-    return getter(value)
-  } catch (err) {
-    return null
-  }
-}
 
 const _Status = ({intl, data}) => {
   const {translate, formatInt, formatPercent, formatFiat} = getIntlFormatters(intl)
