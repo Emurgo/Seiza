@@ -9,8 +9,8 @@ import {injectIntl, defineMessages} from 'react-intl'
 import {withStyles, createStyles, Card, Typography, Grid, Chip} from '@material-ui/core'
 import classNames from 'classnames'
 
-import AdaIcon from '../../components/visual/tmp_assets/ada-icon.png'
-import CopyIcon from '../../components/visual/tmp_assets/copy-icon.png'
+import AdaIcon from '../../tmp_assets/ada-icon.png'
+import CopyIcon from '../../tmp_assets/copy-icon.png'
 
 import {GET_TRANSACTION_BY_HASH} from '../../api/queries'
 import {getIntlFormatters, monthNumeralFormat} from '../../i18n/helpers'
