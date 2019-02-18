@@ -23,6 +23,7 @@ export const GET_TRANSACTION_BY_HASH = gql`
         address58
         amount
       }
+      confirmationsCount
     }
   }
 `
