@@ -1,5 +1,7 @@
 import BigNumber from 'bignumber.js'
 import moment from 'moment'
+import {injectIntl} from 'react-intl'
+import React from 'react'
 
 const defaultNumberFmt = {
   prefix: '',
@@ -69,3 +71,9 @@ export const getIntlFormatters = (intl) => {
     formatTimestampFull,
   }
 }
+
+export const withI18n = (BaseComponent) =>
+  injectIntl(({intl, ...restProps}) => (
+    <BaseComponent i18n={getIntlFormatters(intl)} {...restProps} />
+  ))
+
