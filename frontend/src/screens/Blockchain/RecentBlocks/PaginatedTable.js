@@ -117,9 +117,11 @@ const HeaderCell = withStyles(headerCellStyles)(({children, classes}) => (
 
 const BodyCell = ({children}) => <TableCell align="left">{children}</TableCell>
 
-const getPageCount = (itemsCount, rowsPerPage) => Math.ceil(itemsCount / rowsPerPage)
+export const getPageCount = (itemsCount: number, rowsPerPage: number) =>
+  Math.ceil(itemsCount / rowsPerPage)
 
 const PaginationControlsComponent = compose(
+  // TODO: find way how to inject custom props into TablePagination->ActionsComponent
   withProps((props) => ({
     pageCount: getPageCount(props.count, props.rowsPerPage),
   })),
