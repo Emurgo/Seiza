@@ -3,11 +3,11 @@ import React from 'react'
 import Card from '@material-ui/core/Card'
 import {withStyles, createStyles} from '@material-ui/core'
 
-import IconEpoch from './tmp_assets/MetricsCard-icon-epoch.png'
-import IconBlocks from './tmp_assets/MetricsCard-icon-blocks.png'
-import IconDecentralization from './tmp_assets/MetricsCard-icon-decentralization.png'
-import IconPrice from './tmp_assets/MetricsCard-icon-price.png'
-import IconPools from './tmp_assets/MetricsCard-icon-pools.png'
+import IconEpoch from '../../tmp_assets/MetricsCard-icon-epoch.png'
+import IconBlocks from '../../tmp_assets/MetricsCard-icon-blocks.png'
+import IconDecentralization from '../../tmp_assets/MetricsCard-icon-decentralization.png'
+import IconPrice from '../../tmp_assets/MetricsCard-icon-price.png'
+import IconPools from '../../tmp_assets/MetricsCard-icon-pools.png'
 
 const styles = (theme) =>
   createStyles({
