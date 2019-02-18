@@ -4,7 +4,6 @@ import idx from 'idx'
 import {graphql} from 'react-apollo'
 import {compose} from 'redux'
 import {withHandlers, withStateHandlers, withProps} from 'recompose'
-import {injectIntl} from 'react-intl'
 
 import PaginatedTable, {getPageCount} from './PaginatedTable'
 import {onDidUpdate} from '../../../components/HOC/lifecycles'
@@ -42,7 +41,6 @@ const RecentBlocks = (props) => {
 }
 
 export default compose(
-  injectIntl,
   withBlocks,
   withProps(() => ({
     rowsPerPage: PAGE_SIZE,
