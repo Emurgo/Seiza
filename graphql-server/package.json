@@ -4,7 +4,7 @@
   "main": "src/index.js",
   "license": "MIT",
   "scripts": {
-    "start": "babel-watch src/index.js",
+    "start": "babel-watch src/index.js -w src/graphql",
     "build": "rm -rf build && babel src --out-dir build",
     "serve": "node build/index.js",
     "eslint": "eslint src --max-warnings=0",
