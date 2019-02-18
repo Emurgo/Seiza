@@ -1,13 +1,20 @@
 type Block {
+  blockHash: String!
   epoch: Int!
   slot: Int!
-  blockHash: String!
+  # TODO: bad naming, should be issuedAt
   timeIssued: Timestamp!
   transactionsCount: Int!
+
+  # TODO: bad naming, should be totalSent
   totalSend: AdaAmount!
-  size: Int!
-  blockLead: String!
   totalFees: AdaAmount!
+
+  # TODO: bad naming, should be sizeInBytes
+  size: Int!
+
+  # TODO: bad naming, should be blockLeader
+  blockLead: String!
 }
 
 type PagedBlocksResult {
@@ -17,5 +24,6 @@ type PagedBlocksResult {
 }
 
 type Query {
-  blocks(cursor: Int): PagedBlocksResult!
+  pagedBlocks(cursor: Int): PagedBlocksResult!
+  block(blockHash: String!): Block
 }

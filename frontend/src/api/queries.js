@@ -28,24 +28,31 @@ export const GET_TRANSACTION_BY_HASH = gql`
   }
 `
 
-export const GET_BLOCKS = gql`
+export const BLOCK_INFO_FRAGMENT = gql`
+  fragment BasicBlockInfo on Block {
+    blockHash
+    epoch
+    slot
+    timeIssued
+    transactionsCount
+    totalSend
+    size
+    blockLead
+    totalFees
+  }
+`
+
+export const GET_PAGED_BLOCKS = gql`
   query($cursor: Int) {
-    blocks(cursor: $cursor) {
+    pagedBlocks(cursor: $cursor) {
       blocks {
-        blockHash
-        epoch
-        slot
-        timeIssued
-        transactionsCount
-        totalSend
-        size
-        blockLead
-        totalFees
+        ...BasicBlockInfo
       }
       cursor
       hasMore
     }
   }
+  ${BLOCK_INFO_FRAGMENT}
 `
 
 export const GET_ADDRESS_BY_ADDRESS58 = gql`

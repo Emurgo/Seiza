@@ -60,7 +60,7 @@ const _fetchSubsequent = async (startPageId, count, context) => {
   return _.flatten(subsequentData).slice(0, count)
 }
 
-export const blocksResolver = async (parent, args, context) => {
+export const pagedBlocksResolver = async (parent, args, context) => {
   const pageId = args.cursor && Math.ceil(args.cursor / PAGE_SIZE)
   if (pageId < 1) return INVALID_CURSOR
 
@@ -78,4 +78,10 @@ export const blocksResolver = async (parent, args, context) => {
     cursor: nextCursor > 0 ? nextCursor : null,
     data: [...initialBlocks, ...subsequentBlocks],
   }
+}
+
+export const blockResolver = async (parent, args, context) => {
+  const blockHash = args.blockHash
+  const rawResponse = await context.cardanoAPI.get(`blocks/summary/${blockHash}`)
+  return facadeBlock(rawResponse.cbsEntry)
 }
