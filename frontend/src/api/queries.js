@@ -55,6 +55,16 @@ export const GET_PAGED_BLOCKS = gql`
   ${BLOCK_INFO_FRAGMENT}
 `
 
+export const GET_BLOCK_BY_HASH = gql`
+  query($blockHash: String!) {
+    block(blockHash: $blockHash) {
+      ...BasicBlockInfo
+      # TODO: Tx info?
+    }
+  }
+  ${BLOCK_INFO_FRAGMENT}
+`
+
 export const GET_ADDRESS_BY_ADDRESS58 = gql`
   query($address58: String!) {
     address(address58: $address58) {
