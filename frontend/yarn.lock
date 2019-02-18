@@ -5924,6 +5924,11 @@ identity-obj-proxy@3.0.0:
   dependencies:
     harmony-reflect "^1.4.6"
 
+idx@^2.5.3:
+  version "2.5.3"
+  resolved "https://registry.yarnpkg.com/idx/-/idx-2.5.3.tgz#adb160a3b39f93cac9079c210137b03cabc2fdb3"
+  integrity sha512-1mS+/MaROFRZzQs2eMjt/AX7lnrxYDPzqMvkqgbt+XxylePcSaw0B+/ovY+aH6lsh84Ku6Zfkw562genhrM3aQ==
+
 ieee754@^1.1.4:
   version "1.1.12"
   resolved "https://registry.yarnpkg.com/ieee754/-/ieee754-1.1.12.tgz#50bf24e5b9c8bb98af4964c941cdb0918da7b60b"
