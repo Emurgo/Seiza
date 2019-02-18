@@ -2,8 +2,11 @@ type Address {
   address58: ID!
   type: String!
   transactionsCount: Int
-  balance: String
   transactions: [Transaction]
+
+  totalAdaSent: AdaAmount
+  totalAdaReceived: AdaAmount
+  balance: AdaAmount
 }
 
 type Query {

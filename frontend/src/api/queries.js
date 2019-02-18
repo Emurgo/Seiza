@@ -62,6 +62,8 @@ export const GET_ADDRESS_BY_ADDRESS58 = gql`
       type
       transactionsCount
       balance
+      totalAdaSent
+      totalAdaReceived
       transactions {
         txHash
       }
