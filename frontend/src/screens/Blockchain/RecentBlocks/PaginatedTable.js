@@ -19,11 +19,11 @@ import {
   LastPage as LastPageArrow,
 } from '@material-ui/icons'
 import {compose} from 'redux'
-import {injectIntl, defineMessages} from 'react-intl'
+import {defineMessages} from 'react-intl'
 import {Link} from 'react-router-dom'
 import {withHandlers, withProps} from 'recompose'
 
-import {getIntlFormatters} from '../../../i18n/helpers'
+import {withI18n} from '../../../i18n/helpers'
 
 const TABLE_I18N_PREFIX = 'blockchain.blockList.table'
 // TODO?: aria-label messages
@@ -179,11 +179,11 @@ export default compose(
     // which do not contain 'pageCount'
     paggingInfoFormatter: ({pageCount}) => ({page}) => `${page + 1}/${pageCount}`,
   }),
-  injectIntl
+  withI18n
 )(
   ({
     blocks,
-    intl,
+    i18n,
     classes,
     page,
     onChangePage,
@@ -192,7 +192,7 @@ export default compose(
     paggingInfoFormatter,
     rowsPerPageOptions,
   }) => {
-    const {translate, formatInt, formatAda} = getIntlFormatters(intl)
+    const {translate, formatInt, formatAda, formatTimestampFull} = i18n
     return (
       <Paper className={classes.root}>
         <Table>
@@ -220,7 +220,7 @@ export default compose(
                 <BodyCell>
                   <LinkField to="/todo">{block.blockLead}</LinkField>
                 </BodyCell>
-                <BodyCell>{block.timeIssued}</BodyCell>
+                <BodyCell>{formatTimestampFull(block.timeIssued)}</BodyCell>
                 <BodyCell>{formatInt(block.transactionsCount)}</BodyCell>
                 <BodyCell>{formatAda(block.totalSend)}</BodyCell>
                 <BodyCell>{formatAda(block.totalFees)}</BodyCell>
