@@ -192,7 +192,7 @@ export default compose(
     paggingInfoFormatter,
     rowsPerPageOptions,
   }) => {
-    const {translate, formatInt, formatAda, formatTimestampFull} = i18n
+    const {translate, formatInt, formatAda, formatTimestamp} = i18n
     return (
       <Paper className={classes.root}>
         <Table>
@@ -220,7 +220,7 @@ export default compose(
                 <BodyCell>
                   <LinkField to="/todo">{block.blockLead}</LinkField>
                 </BodyCell>
-                <BodyCell>{formatTimestampFull(block.timeIssued)}</BodyCell>
+                <BodyCell>{formatTimestamp(block.timeIssued)}</BodyCell>
                 <BodyCell>{formatInt(block.transactionsCount)}</BodyCell>
                 <BodyCell>{formatAda(block.totalSend)}</BodyCell>
                 <BodyCell>{formatAda(block.totalFees)}</BodyCell>
