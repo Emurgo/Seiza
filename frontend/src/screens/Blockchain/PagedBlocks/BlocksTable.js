@@ -53,20 +53,10 @@ const linkFieldStyles = (theme) => ({
   },
 })
 
-const headerCellStyles = () => ({
-  text: {
-    textTransform: 'uppercase',
-  },
-})
-
 const LinkField = withStyles(linkFieldStyles)(({children, to, classes}) => (
   <Link to={to} className={classes.linkField}>
     {children}
   </Link>
-))
-
-const HeaderCell = withStyles(headerCellStyles)(({children, classes}) => (
-  <span className={classes.text}>{children}</span>
 ))
 
 const BlocksTable = (props) => (
@@ -87,14 +77,14 @@ export default compose(
     const {translate, formatInt, formatAda, formatTimestamp} = i18n
 
     const headerData = [
-      <HeaderCell key={0}>{translate(tableMessages.epoch)}</HeaderCell>,
-      <HeaderCell key={1}>{translate(tableMessages.slot)}</HeaderCell>,
-      <HeaderCell key={2}>{translate(tableMessages.slotLeader)}</HeaderCell>,
-      <HeaderCell key={3}>{translate(tableMessages.time)}</HeaderCell>,
-      <HeaderCell key={4}>{translate(tableMessages.transactions)}</HeaderCell>,
-      <HeaderCell key={4}>{translate(tableMessages.totalSent)}</HeaderCell>,
-      <HeaderCell key={5}>{translate(tableMessages.fees)}</HeaderCell>,
-      <HeaderCell key={6}>{translate(tableMessages.size)}</HeaderCell>,
+      translate(tableMessages.epoch),
+      translate(tableMessages.slot),
+      translate(tableMessages.slotLeader),
+      translate(tableMessages.time),
+      translate(tableMessages.transactions),
+      translate(tableMessages.totalSent),
+      translate(tableMessages.fees),
+      translate(tableMessages.size),
     ]
 
     const bodyData = blocks.map((block, index) => (

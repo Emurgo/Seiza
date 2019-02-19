@@ -4,8 +4,8 @@ import {
   Table,
   TableBody,
   TableHead,
-  TableRow,
-  TableCell,
+  TableRow as TR,
+  TableCell as TD,
   Paper,
   TablePagination,
   IconButton,
@@ -43,6 +43,9 @@ const tableStyles = (theme) => ({
       backgroundColor: theme.palette.grey[200],
     },
     'cursor': 'pointer',
+  },
+  head: {
+    textTransform: 'uppercase',
   },
 })
 
@@ -124,24 +127,24 @@ export default compose(
     return (
       <Paper className={classes.root}>
         <Table>
-          <TableHead>
-            <TableRow>
+          <TableHead className={classes.head}>
+            <TR>
               {headerData.map((item, index) => (
-                <TableCell key={index} align="left">{item}</TableCell>
+                <TD key={index} align="left">{item}</TD>
               ))}
-            </TableRow>
+            </TR>
           </TableHead>
           <TableBody>
             {bodyData.map((row, index) => (
-              <TableRow key={index} className={classes.row}>
+              <TR key={index} className={classes.row}>
                 {row.map((item) => (
-                  <TableCell key={index} align="left">{item}</TableCell>
+                  <TD key={index} align="left">{item}</TD>
                 ))}
-              </TableRow>
+              </TR>
             ))}
           </TableBody>
           <TableFooter>
-            <TableRow>
+            <TR>
               <TablePagination
                 colSpan={3}
                 count={totalCount}
@@ -153,7 +156,7 @@ export default compose(
                 onChangePage={onChangePage}
                 ActionsComponent={PaginationControlsComponent}
               />
-            </TableRow>
+            </TR>
           </TableFooter>
         </Table>
       </Paper>
