@@ -24,7 +24,7 @@ export default compose(
     onLastPageButtonClick: ({onChangePage, pageCount}) => (event) =>
       onChangePage(Math.max(0, pageCount - 1)),
   }),
-  withTheme(),
+  withTheme()
 )(
   ({
     theme,
@@ -37,7 +37,9 @@ export default compose(
   }) => (
     <Grid container direction="row" justify="center" alignItems="center" spacing={24}>
       <Grid item>
-        <Typography variant="caption">{page + 1}/{pageCount}</Typography>
+        <Typography variant="caption">
+          {page + 1}/{pageCount}
+        </Typography>
       </Grid>
       <Grid item>
         <IconButton onClick={onFirstPageButtonClick} disabled={page === 0} aria-label="First Page">

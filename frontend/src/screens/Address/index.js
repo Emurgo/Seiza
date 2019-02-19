@@ -5,15 +5,14 @@ import {graphql} from 'react-apollo'
 import {compose} from 'redux'
 import {withProps} from 'recompose'
 import {withRouter} from 'react-router'
-import {Link} from 'react-router-dom'
 import QRCode from 'qrcode.react'
 import {defineMessages} from 'react-intl'
 
 import {Button, Grid, Modal, Card, Typography} from '@material-ui/core'
 
-import {routeTo} from '../../helpers/routes'
 import {GET_ADDRESS_BY_ADDRESS58} from '../../api/queries'
 import {withI18n} from '../../i18n/helpers'
+import PagedTransactions from './PagedTransactions'
 
 import WithModalState from '../../components/headless/modalState'
 import WithCopyToClipboard from '../../components/headless/copyToClipboard'
@@ -78,18 +77,6 @@ const QRModal = ({isOpen, onClose, value}: QRModalProps) => (
   <Modal open={isOpen} onClose={onClose}>
     <QRCode value={value} size={128} />
   </Modal>
-)
-
-const TransactionsList = ({transactions}: any) => (
-  <Card>
-    <Grid container direction="row">
-      {transactions.map(({txHash}: any) => (
-        <Link key={txHash} to={routeTo.transaction(txHash)}>
-          {txHash}
-        </Link>
-      ))}
-    </Grid>
-  </Card>
 )
 
 const AddressValueCard = ({label, value}) => (
@@ -157,7 +144,7 @@ const Address = (props) => {
         </Grid>
       </Card>
       <Heading>_Transactions_</Heading>
-      <TransactionsList transactions={address.transactions} />
+      <PagedTransactions transactions={address.transactions} />
     </Grid>
   )
 }

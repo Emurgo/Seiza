@@ -34,9 +34,7 @@ const tableStyles = (theme) => ({
   },
 })
 
-export default compose(
-  withStyles(tableStyles),
-)(
+export default compose(withStyles(tableStyles))(
   ({
     i18n,
     classes,
@@ -56,7 +54,9 @@ export default compose(
         <TableHead className={classes.head}>
           <TR>
             {headerData.map((item, index) => (
-              <TD key={index} align="left">{item}</TD>
+              <TD key={index} align="left">
+                {item}
+              </TD>
             ))}
           </TR>
         </TableHead>
@@ -64,7 +64,9 @@ export default compose(
           {bodyData.map((row, outerIndex) => (
             <TR key={outerIndex} className={classes.row}>
               {row.map((item, innerIndex) => (
-                <TD key={innerIndex} align="left">{item}</TD>
+                <TD key={innerIndex} align="left">
+                  {item}
+                </TD>
               ))}
             </TR>
           ))}
