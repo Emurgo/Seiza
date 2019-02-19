@@ -7,7 +7,7 @@ import {withHandlers, withStateHandlers, withProps} from 'recompose'
 import {defineMessages} from 'react-intl'
 import {Switch, Typography, Grid} from '@material-ui/core'
 
-import {getPageCount} from '../../../components/visual/PaginatedTable'
+import {getPageCount} from '../../../components/visual/Pagination'
 import BlocksTable from './BlocksTable'
 import {onDidUpdate} from '../../../components/HOC/lifecycles'
 import {GET_PAGED_BLOCKS} from '../../../api/queries'
