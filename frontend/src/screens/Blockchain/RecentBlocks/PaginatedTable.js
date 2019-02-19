@@ -9,7 +9,10 @@ import {
   Paper,
   TablePagination,
   IconButton,
+  Typography,
   TableFooter,
+  Input,
+  Grid,
   withStyles,
 } from '@material-ui/core'
 import {
@@ -21,9 +24,10 @@ import {
 import {compose} from 'redux'
 import {defineMessages} from 'react-intl'
 import {Link} from 'react-router-dom'
-import {withHandlers, withProps} from 'recompose'
+import {withHandlers, withProps, withStateHandlers} from 'recompose'
 
 import {withI18n} from '../../../i18n/helpers'
+import {isInRange} from '../../../helpers/validators'
 
 const TABLE_I18N_PREFIX = 'blockchain.blockList.table'
 // TODO?: aria-label messages
@@ -63,10 +67,14 @@ const tableMessages = defineMessages({
 })
 
 const actionsStyles = (theme) => ({
-  root: {
-    flexShrink: 0,
-    color: theme.palette.text.secondary,
-    marginLeft: theme.spacing.unit * 2.5,
+  goToPage: {
+    marginLeft: '30px',
+  },
+  goToPageInput: {
+    width: '100px',
+  },
+  goToPageLabel: {
+    paddingRight: '10px',
   },
 })
 
@@ -87,28 +95,24 @@ const tableStyles = (theme) => ({
   },
 })
 
-// TODO: extract to separate file after having two separate tables
 const linkFieldStyles = (theme) => ({
   linkField: {
     color: theme.palette.primary.dark,
   },
 })
 
-// TODO: extract to separate file after having two separate tables
 const headerCellStyles = () => ({
   text: {
     textTransform: 'uppercase',
   },
 })
 
-// TODO: extract to separate file after having two separate tables
 const LinkField = withStyles(linkFieldStyles)(({children, to, classes}) => (
   <Link to={to} className={classes.linkField}>
     {children}
   </Link>
 ))
 
-// TODO: extract to separate file after having two separate tables
 const HeaderCell = withStyles(headerCellStyles)(({children, classes}) => (
   <TableCell align="left">
     <span className={classes.text}>{children}</span>
@@ -125,12 +129,27 @@ const PaginationControlsComponent = compose(
   withProps((props) => ({
     pageCount: getPageCount(props.count, props.rowsPerPage),
   })),
+  withStateHandlers(
+    {goToPage: ''},
+    {
+      setGoToPage: () => (goToPage) => ({goToPage}),
+    }
+  ),
   withHandlers({
     onFirstPageButtonClick: ({onChangePage}) => (event) => onChangePage(0),
     onBackButtonClick: ({onChangePage, page}) => (event) => onChangePage(page - 1),
     onNextButtonClick: ({onChangePage, page}) => (event) => onChangePage(page + 1),
     onLastPageButtonClick: ({onChangePage, pageCount}) => (event) =>
       onChangePage(Math.max(0, pageCount - 1)),
+    onGoToPageChange: ({setGoToPage, pageCount, goToPage, jozo}) => (event) => {
+      const value = event.target.value
+      return setGoToPage(value === '' || isInRange(value, 1, pageCount + 1) ? value : goToPage)
+    },
+    onGoToPageSubmit: ({onChangePage, goToPage}) => (e) => {
+      e.preventDefault()
+      if (goToPage === '') return
+      onChangePage(goToPage - 1)
+    },
   }),
   withStyles(actionsStyles, {withTheme: true})
 )(
@@ -143,29 +162,55 @@ const PaginationControlsComponent = compose(
     onLastPageButtonClick,
     pageCount,
     page,
+    goToPage,
+    onGoToPageChange,
+    onGoToPageSubmit,
   }) => (
-    <div className={classes.root}>
-      <IconButton onClick={onFirstPageButtonClick} disabled={page === 0} aria-label="First Page">
-        {theme.direction === 'rtl' ? <LastPageArrow /> : <FirstPageArrow />}
-      </IconButton>
-      <IconButton onClick={onBackButtonClick} disabled={page === 0} aria-label="Previous Page">
-        {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
-      </IconButton>
-      <IconButton
-        onClick={onNextButtonClick}
-        disabled={page >= pageCount - 1}
-        aria-label="Next Page"
-      >
-        {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
-      </IconButton>
-      <IconButton
-        onClick={onLastPageButtonClick}
-        disabled={page >= pageCount - 1}
-        aria-label="Last Page"
-      >
-        {theme.direction === 'rtl' ? <FirstPageArrow /> : <LastPageArrow />}
-      </IconButton>
-    </div>
+    <Grid container direction="row" justify="center" alignItems="center">
+      <Grid item>
+        <IconButton onClick={onFirstPageButtonClick} disabled={page === 0} aria-label="First Page">
+          {theme.direction === 'rtl' ? <LastPageArrow /> : <FirstPageArrow />}
+        </IconButton>
+      </Grid>
+      <Grid item>
+        <IconButton onClick={onBackButtonClick} disabled={page === 0} aria-label="Previous Page">
+          {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
+        </IconButton>
+      </Grid>
+      <Grid item>
+        <IconButton
+          onClick={onNextButtonClick}
+          disabled={page >= pageCount - 1}
+          aria-label="Next Page"
+        >
+          {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
+        </IconButton>
+      </Grid>
+      <Grid item>
+        <IconButton
+          onClick={onLastPageButtonClick}
+          disabled={page >= pageCount - 1}
+          aria-label="Last Page"
+        >
+          {theme.direction === 'rtl' ? <FirstPageArrow /> : <LastPageArrow />}
+        </IconButton>
+      </Grid>
+      <Grid item>
+        <Grid
+          container
+          className={classes.goToPage}
+          direction="row"
+          justify="center"
+          alignItems="center"
+        >
+          {/* TODO: intl and better design: consider directly changing current page */}
+          <Typography className={classes.goToPageLabel}>Go to page:</Typography>
+          <form onSubmit={onGoToPageSubmit}>
+            <Input className={classes.goToPageInput} value={goToPage} onChange={onGoToPageChange} />
+          </form>
+        </Grid>
+      </Grid>
+    </Grid>
   )
 )
 
@@ -231,7 +276,7 @@ export default compose(
           <TableFooter>
             <TableRow>
               <TablePagination
-                colSpan={3}
+                colSpan={5}
                 count={totalCount}
                 rowsPerPage={rowsPerPage}
                 page={page}

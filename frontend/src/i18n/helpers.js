@@ -79,4 +79,3 @@ export const withI18n = (BaseComponent) =>
   injectIntl(({intl, ...restProps}) => (
     <BaseComponent i18n={getIntlFormatters(intl)} {...restProps} />
   ))
-
