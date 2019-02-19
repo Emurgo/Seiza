@@ -1,5 +1,9 @@
 {
-  "blockchain.blockList.loadMore": "Load more",
+  "block.fields.blockHash": "Block hash",
+  "block.fields.epoch": "Epoch",
+  "block.fields.issuedAt": "Timestamp",
+  "block.fields.slot": "Slot",
+  "blockchain.blockList.refreshState": "Refresh state",
   "blockchain.blockList.table.epoch": "epoch",
   "blockchain.blockList.table.fees": "fees (ADA)",
   "blockchain.blockList.table.size": "size (B)",
@@ -14,5 +18,15 @@
   "overview.metrics.epoch.label": "Epoch",
   "overview.metrics.not_available": "N/A",
   "overview.metrics.poolCount.label": "Pools",
-  "overview.metrics.price.label": "Price"
+  "overview.metrics.price.label": "Price",
+  "overview.search.placeholder": "Search addresses, epochs & slots on the Cardano network",
+  "transaction.assuranceLevel": "Assurance Level:",
+  "transaction.confirmations": "{count, plural, =0 {confirmations} one {confirmation} other {confirmations}}",
+  "transaction.date": "Date:",
+  "transaction.epoch": "Epoch:",
+  "transaction.fees": "Transaction Fees:",
+  "transaction.header": "Transaction",
+  "transaction.size": "Size:",
+  "transaction.slot": "Slot:",
+  "transaction.transactionId": "Transaction Id"
 }
