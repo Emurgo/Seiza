@@ -14,8 +14,8 @@ import {withI18n} from '../../../i18n/helpers'
 
 // TODO: for now `PAGE_SIZE` is hardcoded both in client and server
 const PAGE_SIZE = 10
-const LATEST_BLOCKS_REFRESH_INTERVAL = 2 * 1000
-const POLLING_OFF = 0
+const AUTOUPDATE_REFRESH_INTERVAL = 10 * 1000
+const AUTOUPDATE_REFRESH_INTERVAL_OFF = 0
 
 const I18N_PREFIX = 'blockchain.blockList'
 
@@ -30,7 +30,7 @@ const withBlocks = graphql(GET_PAGED_BLOCKS, {
   name: 'pagedBlocksResult',
   options: (props) => ({
     variables: {cursor: props.cursor},
-    pollInterval: props.autoUpdate ? LATEST_BLOCKS_REFRESH_INTERVAL : POLLING_OFF,
+    pollInterval: props.autoUpdate ? AUTOUPDATE_REFRESH_INTERVAL : AUTOUPDATE_REFRESH_INTERVAL_OFF,
   }),
 })
 
@@ -98,9 +98,10 @@ export default compose(
     }
   ),
   withHandlers({
-    onChangeAutoUpdate: ({setAutoUpdate}) => (event) => {
-      // Note: calling graphQL `refresh` here causes unmount of whole element
-      setAutoUpdate(event.target.checked)
+    onChangeAutoUpdate: ({setAutoUpdate, pagedBlocksResult}) => (event) => {
+      const checked = event.target.checked
+      setAutoUpdate(checked)
+      checked && pagedBlocksResult.refetch()
     },
     onChangePage: ({
       setPage,
