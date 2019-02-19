@@ -7,6 +7,7 @@ import {withStyles} from '@material-ui/core'
 
 import PaginatedTable from '../../../components/visual/PaginatedTable'
 import {withI18n} from '../../../i18n/helpers'
+import {routeTo} from '../../../helpers/routes'
 import {withProps} from 'recompose'
 
 const I18N_PREFIX = 'blockchain.blockList.table'
@@ -91,7 +92,7 @@ export default compose(
       <LinkField key={0} to="/todo">
         {formatInt(block.epoch)}
       </LinkField>,
-      <LinkField key={1} to="/todo">
+      <LinkField key={1} to={routeTo.block(block.blockHash)}>
         {formatInt(block.slot)}
       </LinkField>,
       <LinkField key={2} to="/todo">
