@@ -3,9 +3,9 @@ import React from 'react'
 import {
   Table,
   TableBody,
-  TableCell,
   TableHead,
   TableRow,
+  TableCell,
   Paper,
   TablePagination,
   IconButton,
@@ -19,48 +19,7 @@ import {
   LastPage as LastPageArrow,
 } from '@material-ui/icons'
 import {compose} from 'redux'
-import {defineMessages} from 'react-intl'
-import {Link} from 'react-router-dom'
 import {withHandlers, withProps} from 'recompose'
-
-import {withI18n} from '../../../i18n/helpers'
-
-const TABLE_I18N_PREFIX = 'blockchain.blockList.table'
-// TODO?: aria-label messages
-const tableMessages = defineMessages({
-  epoch: {
-    id: `${TABLE_I18N_PREFIX}.epoch`,
-    defaultMessage: 'epoch',
-  },
-  slot: {
-    id: `${TABLE_I18N_PREFIX}.slot`,
-    defaultMessage: 'slot',
-  },
-  slotLeader: {
-    id: `${TABLE_I18N_PREFIX}.slotLeader`,
-    defaultMessage: 'slot leader',
-  },
-  time: {
-    id: `${TABLE_I18N_PREFIX}.time`,
-    defaultMessage: 'time',
-  },
-  transactions: {
-    id: `${TABLE_I18N_PREFIX}.transactions`,
-    defaultMessage: 'transactions',
-  },
-  totalSent: {
-    id: `${TABLE_I18N_PREFIX}.totalSent`,
-    defaultMessage: 'total sent (ADA)',
-  },
-  fees: {
-    id: `${TABLE_I18N_PREFIX}.fees`,
-    defaultMessage: 'fees (ADA)',
-  },
-  size: {
-    id: `${TABLE_I18N_PREFIX}.size`,
-    defaultMessage: 'size (B)',
-  },
-})
 
 const actionsStyles = (theme) => ({
   root: {
@@ -86,36 +45,6 @@ const tableStyles = (theme) => ({
     'cursor': 'pointer',
   },
 })
-
-// TODO: extract to separate file after having two separate tables
-const linkFieldStyles = (theme) => ({
-  linkField: {
-    color: theme.palette.primary.dark,
-  },
-})
-
-// TODO: extract to separate file after having two separate tables
-const headerCellStyles = () => ({
-  text: {
-    textTransform: 'uppercase',
-  },
-})
-
-// TODO: extract to separate file after having two separate tables
-const LinkField = withStyles(linkFieldStyles)(({children, to, classes}) => (
-  <Link to={to} className={classes.linkField}>
-    {children}
-  </Link>
-))
-
-// TODO: extract to separate file after having two separate tables
-const HeaderCell = withStyles(headerCellStyles)(({children, classes}) => (
-  <TableCell align="left">
-    <span className={classes.text}>{children}</span>
-  </TableCell>
-))
-
-const BodyCell = ({children}) => <TableCell align="left">{children}</TableCell>
 
 export const getPageCount = (itemsCount: number, rowsPerPage: number) =>
   Math.ceil(itemsCount / rowsPerPage)
@@ -179,10 +108,8 @@ export default compose(
     // which do not contain 'pageCount'
     paggingInfoFormatter: ({pageCount}) => ({page}) => `${page + 1}/${pageCount}`,
   }),
-  withI18n
 )(
   ({
-    blocks,
     i18n,
     classes,
     page,
@@ -191,40 +118,25 @@ export default compose(
     rowsPerPage,
     paggingInfoFormatter,
     rowsPerPageOptions,
+    headerData,
+    bodyData,
   }) => {
-    const {translate, formatInt, formatAda, formatTimestamp} = i18n
     return (
       <Paper className={classes.root}>
         <Table>
           <TableHead>
             <TableRow>
-              <HeaderCell>{translate(tableMessages.epoch)}</HeaderCell>
-              <HeaderCell>{translate(tableMessages.slot)}</HeaderCell>
-              <HeaderCell>{translate(tableMessages.slotLeader)}</HeaderCell>
-              <HeaderCell>{translate(tableMessages.time)}</HeaderCell>
-              <HeaderCell>{translate(tableMessages.transactions)}</HeaderCell>
-              <HeaderCell>{translate(tableMessages.totalSent)}</HeaderCell>
-              <HeaderCell>{translate(tableMessages.fees)}</HeaderCell>
-              <HeaderCell>{translate(tableMessages.size)}</HeaderCell>
+              {headerData.map((item, index) => (
+                <TableCell key={index} align="left">{item}</TableCell>
+              ))}
             </TableRow>
           </TableHead>
           <TableBody>
-            {blocks.map((block) => (
-              <TableRow key={block.blockHash} className={classes.row}>
-                <BodyCell>
-                  <LinkField to="/todo">{formatInt(block.epoch)}</LinkField>
-                </BodyCell>
-                <BodyCell>
-                  <LinkField to="/todo">{formatInt(block.slot)}</LinkField>
-                </BodyCell>
-                <BodyCell>
-                  <LinkField to="/todo">{block.blockLead}</LinkField>
-                </BodyCell>
-                <BodyCell>{formatTimestamp(block.timeIssued)}</BodyCell>
-                <BodyCell>{formatInt(block.transactionsCount)}</BodyCell>
-                <BodyCell>{formatAda(block.totalSend)}</BodyCell>
-                <BodyCell>{formatAda(block.totalFees)}</BodyCell>
-                <BodyCell>{formatInt(block.size)}</BodyCell>
+            {bodyData.map((row, index) => (
+              <TableRow key={index} className={classes.row}>
+                {row.map((item) => (
+                  <TableCell key={index} align="left">{item}</TableCell>
+                ))}
               </TableRow>
             ))}
           </TableBody>
