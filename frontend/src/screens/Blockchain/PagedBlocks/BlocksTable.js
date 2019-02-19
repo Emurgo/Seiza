@@ -87,18 +87,22 @@ export default compose(
       translate(tableMessages.size),
     ]
 
-    const bodyData = blocks.map((block, index) => (
-      [
-        <LinkField key={0} to="/todo">{formatInt(block.epoch)}</LinkField>,
-        <LinkField key={1} to="/todo">{formatInt(block.slot)}</LinkField>,
-        <LinkField key={2} to="/todo">{block.blockLead}</LinkField>,
-        formatTimestamp(block.timeIssued),
-        formatInt(block.transactionsCount),
-        formatAda(block.totalSend),
-        formatAda(block.totalFees),
-        formatInt(block.size),
-      ]
-    ))
+    const bodyData = blocks.map((block, index) => [
+      <LinkField key={0} to="/todo">
+        {formatInt(block.epoch)}
+      </LinkField>,
+      <LinkField key={1} to="/todo">
+        {formatInt(block.slot)}
+      </LinkField>,
+      <LinkField key={2} to="/todo">
+        {block.blockLead}
+      </LinkField>,
+      formatTimestamp(block.timeIssued),
+      formatInt(block.transactionsCount),
+      formatAda(block.totalSend),
+      formatAda(block.totalFees),
+      formatInt(block.size),
+    ])
     return {headerData, bodyData}
   })
 )(BlocksTable)
