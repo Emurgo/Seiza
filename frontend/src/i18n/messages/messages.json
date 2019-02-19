@@ -1,8 +1,33 @@
 [
   {
+    "id": "block.fields.blockHash",
+    "defaultMessage": "Block hash",
+    "filepath": "src/screens/Block/index.js"
+  },
+  {
+    "id": "block.fields.epoch",
+    "defaultMessage": "Epoch",
+    "filepath": "src/screens/Block/index.js"
+  },
+  {
+    "id": "block.fields.slot",
+    "defaultMessage": "Slot",
+    "filepath": "src/screens/Block/index.js"
+  },
+  {
+    "id": "block.fields.issuedAt",
+    "defaultMessage": "Timestamp",
+    "filepath": "src/screens/Block/index.js"
+  },
+  {
     "id": "blockchain.header",
     "defaultMessage": "Blockchain",
     "filepath": "src/screens/Blockchain/index.js"
+  },
+  {
+    "id": "blockchain.blockList.refreshState",
+    "defaultMessage": "Refresh state",
+    "filepath": "src/screens/Blockchain/RecentBlocks/index.js"
   },
   {
     "id": "blockchain.blockList.table.epoch",
@@ -73,5 +98,55 @@
     "id": "overview.metrics.poolCount.label",
     "defaultMessage": "Pools",
     "filepath": "src/screens/Home/index.js"
+  },
+  {
+    "id": "overview.search.placeholder",
+    "defaultMessage": "Search addresses, epochs & slots on the Cardano network",
+    "filepath": "src/screens/Home/index.js"
+  },
+  {
+    "id": "transaction.header",
+    "defaultMessage": "Transaction",
+    "filepath": "src/screens/Transaction/index.js"
+  },
+  {
+    "id": "transaction.transactionId",
+    "defaultMessage": "Transaction Id",
+    "filepath": "src/screens/Transaction/index.js"
+  },
+  {
+    "id": "transaction.assuranceLevel",
+    "defaultMessage": "Assurance Level:",
+    "filepath": "src/screens/Transaction/index.js"
+  },
+  {
+    "id": "transaction.confirmations",
+    "defaultMessage": "{count, plural, =0 {confirmations} one {confirmation} other {confirmations}}",
+    "filepath": "src/screens/Transaction/index.js"
+  },
+  {
+    "id": "transaction.epoch",
+    "defaultMessage": "Epoch:",
+    "filepath": "src/screens/Transaction/index.js"
+  },
+  {
+    "id": "transaction.slot",
+    "defaultMessage": "Slot:",
+    "filepath": "src/screens/Transaction/index.js"
+  },
+  {
+    "id": "transaction.date",
+    "defaultMessage": "Date:",
+    "filepath": "src/screens/Transaction/index.js"
+  },
+  {
+    "id": "transaction.size",
+    "defaultMessage": "Size:",
+    "filepath": "src/screens/Transaction/index.js"
+  },
+  {
+    "id": "transaction.fees",
+    "defaultMessage": "Transaction Fees:",
+    "filepath": "src/screens/Transaction/index.js"
   }
 ]

@@ -4,16 +4,27 @@ import idx from 'idx'
 import {graphql} from 'react-apollo'
 import {compose} from 'redux'
 import {withHandlers, withStateHandlers, withProps} from 'recompose'
-import {Switch} from '@material-ui/core'
+import {defineMessages} from 'react-intl'
+import {Switch, Typography, Grid} from '@material-ui/core'
 
 import PaginatedTable, {getPageCount} from './PaginatedTable'
 import {onDidUpdate} from '../../../components/HOC/lifecycles'
 import {GET_PAGED_BLOCKS} from '../../../api/queries'
+import {withI18n} from '../../../i18n/helpers'
 
 // TODO: for now `PAGE_SIZE` is hardcoded both in client and server
 const PAGE_SIZE = 10
 const LATEST_BLOCKS_REFRESH_INTERVAL = 2 * 1000
 const POLLING_OFF = 0
+
+const I18N_PREFIX = 'blockchain.blockList'
+
+const messages = defineMessages({
+  refreshState: {
+    id: `${I18N_PREFIX}.refreshState`,
+    defaultMessage: 'Refresh state',
+  },
+})
 
 const withBlocks = graphql(GET_PAGED_BLOCKS, {
   name: 'pagedBlocksResult',
@@ -23,14 +34,16 @@ const withBlocks = graphql(GET_PAGED_BLOCKS, {
   }),
 })
 
-// TODO: intl
-// TODO: Grid && typography
-const AutoUpdateSwitch = ({checked, onChange}) => (
-  <div>
-    <span>Refresh state</span>
-    <Switch color="primary" checked={checked} onChange={onChange} />
-  </div>
-)
+const AutoUpdateSwitch = withI18n(({checked, onChange, i18n: {translate}}) => (
+  <Grid container direction="row" justify="flex-start" alignItems="center">
+    <Grid item>
+      <Typography>{translate(messages.refreshState)}</Typography>
+    </Grid>
+    <Grid item>
+      <Switch color="primary" checked={checked} onChange={onChange} />
+    </Grid>
+  </Grid>
+))
 
 const RecentBlocks = (props) => {
   const {loading, pagedBlocks} = props.pagedBlocksResult
