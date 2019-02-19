@@ -1,7 +1,7 @@
 import React from 'react'
 import {injectIntl, defineMessages} from 'react-intl'
 
-import RecentBlocks from './RecentBlocks'
+import RecentBlocks from './PagedBlocks'
 
 const messages = defineMessages({
   header: {
