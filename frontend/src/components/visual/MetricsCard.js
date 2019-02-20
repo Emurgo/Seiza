@@ -51,7 +51,7 @@ type PropTypes = {
 
 const MetricsCard = ({metric, value, icon, classes}: PropTypes) => (
   <Card className={classes.card}>
-    <img src={ICONS[icon]} />
+    <img alt="" src={ICONS[icon]} />
     <div className={classes.inner}>
       <div className={classes.value}>{value}</div>
       <div className={classes.metric}>{metric}</div>

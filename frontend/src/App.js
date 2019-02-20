@@ -44,7 +44,7 @@ const TopBar = withRouter(({location: {pathname}}) => {
   return (
     <Grid container direction="row" justify="space-between" alignItems="center">
       <Grid item>
-        <img src={seizaLogo} />
+        <img alt="" src={seizaLogo} />
       </Grid>
       <Grid item>
         <Grid container direction="row" alignItems="center">

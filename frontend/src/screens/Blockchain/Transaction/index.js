@@ -211,15 +211,16 @@ const Transaction = (props) => {
 
       <Card className={classNames(classes.card, classes.flex)}>
         <Grid item className={classNames(classes.flex, classes.centeredFlex)}>
-          <img src={AdaIcon} width={40} height={40} />
+          <img alt="" src={AdaIcon} width={40} height={40} />
         </Grid>
 
         <div className={classes.cardContent}>
           <Typography variant="caption">{translate(messages.transactionId)}</Typography>
           <Grid container direction="row" justify="space-between" alignItems="center">
             <span>{transaction.txHash}</span>
+            {/* TODO: copy to icon wrapper */}
             <span>
-              <img src={CopyIcon} width={30} height={30} />
+              <img alt="copy to clipboard" src={CopyIcon} width={30} height={30} />
             </span>
           </Grid>
         </div>
