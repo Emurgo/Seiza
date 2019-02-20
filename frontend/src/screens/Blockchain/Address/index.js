@@ -10,15 +10,15 @@ import {defineMessages} from 'react-intl'
 
 import {Button, Grid, Modal, Card, Typography} from '@material-ui/core'
 
-import {GET_ADDRESS_BY_ADDRESS58} from '../../api/queries'
-import {withI18n} from '../../i18n/helpers'
+import {GET_ADDRESS_BY_ADDRESS58} from '../../../api/queries'
+import {withI18n} from '../../../i18n/helpers'
 import PagedTransactions from './PagedTransactions'
 
-import WithModalState from '../../components/headless/modalState'
-import WithCopyToClipboard from '../../components/headless/copyToClipboard'
+import WithModalState from '../../../components/headless/modalState'
+import WithCopyToClipboard from '../../../components/headless/copyToClipboard'
 
-import addressIcon from '../../tmp_assets/tmp-icon-address.png'
-import copyIcon from '../../tmp_assets/tmp-icon-copy.png'
+import addressIcon from '../../../tmp_assets/tmp-icon-address.png'
+import copyIcon from '../../../tmp_assets/tmp-icon-copy.png'
 
 const I18N_PREFIX = 'blockchain.address'
 
