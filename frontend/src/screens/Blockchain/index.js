@@ -1,15 +1,15 @@
 import React from 'react'
 import {Switch, Route} from 'react-router-dom'
 
-import {routeTo} from '../../helpers/routes'
+import {routeTo} from '@/helpers/routes'
 
 import Transaction from './Transaction'
 import Address from './Address'
 import Block from './Block'
 import PagedBlocks from './PagedBlocks'
 
-import OverviewMetrics from '../Home/OverviewMetrics'
-import Search from '../Home/Search'
+import OverviewMetrics from '@/screens/Home/OverviewMetrics'
+import Search from '@/screens/Home/Search'
 
 export default (props) => (
   <React.Fragment>

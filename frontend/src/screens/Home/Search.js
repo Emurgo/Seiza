@@ -4,8 +4,8 @@ import {injectIntl, defineMessages} from 'react-intl'
 import {compose} from 'redux'
 import {withState} from 'recompose'
 
-import {getIntlFormatters} from '../../i18n/helpers'
-import Searchbar from '../../components/visual/Searchbar'
+import {getIntlFormatters} from '@/i18n/helpers'
+import Searchbar from '@/components/visual/Searchbar'
 
 const text = defineMessages({
   searchPlaceholder: {

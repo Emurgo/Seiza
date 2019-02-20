@@ -6,8 +6,8 @@ import {injectIntl, defineMessages} from 'react-intl'
 import {compose} from 'redux'
 import {graphql} from 'react-apollo'
 
-import MetricsCard from '../../components/visual/MetricsCard'
-import {getIntlFormatters} from '../../i18n/helpers'
+import MetricsCard from '@/components/visual/MetricsCard'
+import {getIntlFormatters} from '@/i18n/helpers'
 
 const text = defineMessages({
   not_available: {

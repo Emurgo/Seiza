@@ -9,8 +9,8 @@ import {defineMessages} from 'react-intl'
 
 import {Grid, Card, Typography} from '@material-ui/core'
 
-import {withI18n} from '../../../i18n/helpers'
-import {GET_BLOCK_BY_HASH} from '../../../api/queries'
+import {withI18n} from '@/i18n/helpers'
+import {GET_BLOCK_BY_HASH} from '@/api/queries'
 
 const withBlockByHash = graphql(GET_BLOCK_BY_HASH, {
   name: 'blockResult',

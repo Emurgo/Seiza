@@ -6,8 +6,8 @@ import {compose} from 'redux'
 import {withStateHandlers, withProps} from 'recompose'
 import {Card} from '@material-ui/core'
 
-import {routeTo} from '../../../helpers/routes'
-import Pagination, {getPageCount} from '../../../components/visual/Pagination'
+import {routeTo} from '@/helpers/routes'
+import Pagination, {getPageCount} from '@/components/visual/Pagination'
 
 const ROWS_PER_PARGE = 3
 

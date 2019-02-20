@@ -9,12 +9,12 @@ import {defineMessages} from 'react-intl'
 import {withStyles, createStyles, Card, Typography, Grid, Chip} from '@material-ui/core'
 import classNames from 'classnames'
 
-import AdaIcon from '../../../tmp_assets/ada-icon.png'
-import CopyIcon from '../../../tmp_assets/copy-icon.png'
+import AdaIcon from '@/tmp_assets/ada-icon.png'
+import CopyIcon from '@/tmp_assets/copy-icon.png'
 
-import {GET_TRANSACTION_BY_HASH} from '../../../api/queries'
-import {monthNumeralFormat, withI18n} from '../../../i18n/helpers'
-import {ASSURANCE_LEVELS_VALUES} from '../../../config'
+import {GET_TRANSACTION_BY_HASH} from '@/api/queries'
+import {monthNumeralFormat, withI18n} from '@/i18n/helpers'
+import {ASSURANCE_LEVELS_VALUES} from '@/config'
 
 const messages = defineMessages({
   header: {
