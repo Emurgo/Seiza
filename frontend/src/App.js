@@ -2,15 +2,14 @@
 
 import React from 'react'
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom'
+import {withRouter} from 'react-router'
 import {compose} from 'redux'
-import CssBaseline from '@material-ui/core/CssBaseline'
+import {CssBaseline, Grid} from '@material-ui/core'
 import {MuiThemeProvider, createMuiTheme} from '@material-ui/core/styles'
-import {Grid} from '@material-ui/core'
-import indigo from '@material-ui/core/colors/indigo'
 import red from '@material-ui/core/colors/red'
 
 import {routeTo} from './helpers/routes'
-import {provideIntl, withSetLocale} from './components/HOC/intl'
+import {provideIntl} from './components/HOC/intl'
 import Navbar from './components/visual/Navbar'
 import Footer from './components/visual/Footer'
 
@@ -19,58 +18,51 @@ import Blockchain from './screens/Blockchain'
 import Staking from './screens/Staking'
 import More from './screens/More'
 import PageNotFound from './screens/PageNotFound'
+import LanguageSelect from '@/components/common/LanguageSelect'
 
 import './App.css'
 import seizaLogo from './seiza-logo.png'
 
 // TODO: error handling
 
-// TODO: define and store themes in proper place
 const theme = createMuiTheme({
   typography: {
-    useNextVariants: true, // TODO
+    useNextVariants: true,
   },
   palette: {
-    primary: indigo,
+    primary: {
+      main: '#6300C1',
+    },
+    secondary: {
+      main: '#EAF1FF',
+    },
     error: red,
   },
 })
 
-// TODO: move elsewhere once there is folder structure
-const LanguageSwitch = withSetLocale(({setLocale}) => (
-  <React.Fragment>
-    <button type="button" onClick={() => setLocale('en')}>
-      EN
-    </button>
-    <button type="button" onClick={() => setLocale('es')}>
-      ES
-    </button>
-  </React.Fragment>
-))
-
-const styles = {
-  topbar: {
-    display: 'flex',
-    borderBottom: '1px solid gray',
-  },
-}
-const Spacer = () => <div style={{flexGrow: 1}} />
-
-const TopBar = () => (
-  <div style={styles.topbar}>
-    <img src={seizaLogo} />
-    <Spacer />
-    <Navbar
-      items={[
-        {link: routeTo.home(), label: 'Home'},
-        {link: routeTo.blockchain(), label: 'Blockchain'},
-        {link: routeTo.staking(), label: 'Staking'},
-        {link: routeTo.more(), label: 'More'},
-      ]}
-    />
-    <LanguageSwitch />
-  </div>
-)
+const TopBar = withRouter(({location: {pathname}}) => {
+  return (
+    <Grid container direction="row" justify="space-between" alignItems="center">
+      <Grid item>
+        <img src={seizaLogo} />
+      </Grid>
+      <Grid item>
+        <Grid container direction="row" alignItems="center">
+          <Navbar
+            currentPathname={pathname}
+            items={[
+              {link: routeTo.home(), label: 'Home'},
+              {link: routeTo.blockchain(), label: 'Blockchain'},
+              {link: routeTo.staking(), label: 'Staking'},
+              {link: routeTo.more(), label: 'More'},
+            ]}
+          />
+          <LanguageSelect />
+        </Grid>
+      </Grid>
+    </Grid>
+  )
+})
 
 const App = () => {
   return (

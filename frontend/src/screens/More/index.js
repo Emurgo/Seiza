@@ -1,9 +1,10 @@
 import React from 'react'
+import {Typography} from '@material-ui/core'
 
 const More = () => {
   return (
     <React.Fragment>
-      <h1>More</h1>
+      <Typography variant="h4">More</Typography>
     </React.Fragment>
   )
 }

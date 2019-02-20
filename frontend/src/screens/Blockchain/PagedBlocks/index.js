@@ -59,7 +59,7 @@ const RecentBlocks = (props) => {
     <React.Fragment>
       {!loading && (
         <React.Fragment>
-          <h1>{translate(messages.header)}</h1>
+          <Typography variant="h4">{translate(messages.header)}</Typography>
           <AutoUpdateSwitch checked={props.autoUpdate} onChange={props.onChangeAutoUpdate} />
           <BlocksTable
             rowsPerPage={props.rowsPerPage}
