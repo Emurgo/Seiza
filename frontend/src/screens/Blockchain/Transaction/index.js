@@ -4,8 +4,10 @@ import {graphql} from 'react-apollo'
 import {compose} from 'redux'
 import {withProps} from 'recompose'
 import {withRouter} from 'react-router'
+import {Link} from 'react-router-dom'
 import {defineMessages} from 'react-intl'
-import {withStyles, createStyles, Card, Typography, Grid, Chip} from '@material-ui/core'
+import {withStyles, createStyles, Card, Typography, Grid, Chip, Divider} from '@material-ui/core'
+
 import classNames from 'classnames'
 
 import AdaIcon from '@/tmp_assets/ada-icon.png'
@@ -14,6 +16,7 @@ import CopyIcon from '@/tmp_assets/copy-icon.png'
 import {ASSURANCE_LEVELS_VALUES} from '@/config'
 import {GET_TRANSACTION_BY_HASH} from '@/api/queries'
 import {withI18n, monthNumeralFormat} from '@/i18n/helpers'
+import {routeTo} from '@/helpers/routes'
 import ExpandableCard from '@/components/visual/ExpandableCard'
 import WithModalState from '@/components/headless/modalState'
 
@@ -53,6 +56,26 @@ const messages = defineMessages({
   fees: {
     id: 'transaction.fees',
     defaultMessage: 'Transaction Fees:',
+  },
+  addressCount: {
+    id: 'transaction.addressCount',
+    defaultMessage: '{count, plural, =0 {# addresses} one {# address} other {# addresses}}',
+  },
+  from: {
+    id: 'transaction.from',
+    defaultMessage: 'From:',
+  },
+  to: {
+    id: 'transaction.to',
+    defaultMessage: 'To:',
+  },
+  seeAll: {
+    id: 'transaction.seeAll',
+    defaultMessage: 'See all addresses',
+  },
+  hideAll: {
+    id: 'transaction.hideAll',
+    defaultMessage: 'Hide all addresses',
   },
 })
 
@@ -196,6 +219,111 @@ const Assurance = compose(
   return <Chip label={text} className={classNames(className, classes.uppercase)} />
 })
 
+const Summary = withI18n(({i18n, caption, value}) => (
+  <Grid container justify="space-between" alignItems="center">
+    <Grid item>
+      <Typography variant="caption">{caption}</Typography>
+    </Grid>
+    <Grid item>
+      <Typography variant="body1">{value}</Typography>
+    </Grid>
+  </Grid>
+))
+
+const AddressesSummary = withI18n(({transaction, i18n}) => {
+  const {translate, formatAda} = i18n
+  return (
+    <Grid container>
+      <Grid item xs={6}>
+        <Summary
+          caption={
+            <React.Fragment>
+              {translate(messages.from)}{' '}
+              {translate(messages.addressCount, {count: transaction.inputs.length})}
+            </React.Fragment>
+          }
+          value={<React.Fragment>- {formatAda(transaction.totalInput)} ADA</React.Fragment>}
+        />
+      </Grid>
+      <Grid item xs={6}>
+        <Summary
+          caption={
+            <React.Fragment>
+              {translate(messages.to)}{' '}
+              {translate(messages.addressCount, {count: transaction.outputs.length})}
+            </React.Fragment>
+          }
+          value={<React.Fragment>+ {formatAda(transaction.totalOutput)} ADA</React.Fragment>}
+        />
+      </Grid>
+    </Grid>
+  )
+})
+
+const breakdownStyles = (theme) =>
+  createStyles({
+    truncate: {
+      textOverflow: 'ellipsis',
+      overflow: 'hidden',
+      whiteSpace: 'nowrap',
+    },
+  })
+
+const Breakdown = compose(
+  withI18n,
+  withStyles(breakdownStyles)
+)((props) => {
+  const {i18n, valuePrefix, captionPrefix, classes, target} = props
+  const {formatAda} = i18n
+  const {address58, amount} = target
+
+  return (
+    <React.Fragment>
+      <Grid container justify="space-between" alignItems="center">
+        <Grid item xs={6}>
+          <Typography variant="caption" className={classes.truncate}>
+            {captionPrefix} <Link to={routeTo.address(address58)}>{address58}</Link>
+          </Typography>
+        </Grid>
+        <Grid item xs={6}>
+          <Grid container justify="flex-end">
+            {valuePrefix} {formatAda(amount)} ADA
+          </Grid>
+        </Grid>
+      </Grid>
+      <Divider />
+    </React.Fragment>
+  )
+})
+
+const AddressesBreakdown = withI18n(({transaction, i18n}) => {
+  const {formatInt} = i18n
+  return (
+    <Grid container>
+      <Grid item xs={6}>
+        {transaction.inputs.map((input, index) => (
+          <Breakdown
+            key={input.address58}
+            target={input}
+            captionPrefix={`# ${formatInt(index + 1)}`}
+            valuePrefix={'-'}
+          />
+        ))}
+      </Grid>
+      <Grid item xs={6}>
+        {transaction.outputs.map((output, index) => (
+          <Breakdown
+            key={output.address58}
+            target={output}
+            captionPrefix={`# ${formatInt(index + 1)}`}
+            valuePrefix={'+'}
+          />
+        ))}
+      </Grid>
+    </Grid>
+  )
+})
+
 const Transaction = (props) => {
   const {classes} = props
   const {loading, transaction} = props.transaction
@@ -258,9 +386,9 @@ const Transaction = (props) => {
           <ExpandableCard
             expanded={isOpen}
             onChange={toggle}
-            renderHeader={() => 'HEADER AREA'}
-            renderExpandedArea={() => 'EXPANDED AREA - shown with animation'}
-            footer={'FOOTER'}
+            renderHeader={() => <AddressesSummary transaction={transaction} />}
+            renderExpandedArea={() => <AddressesBreakdown transaction={transaction} />}
+            footer={isOpen ? translate(messages.hideAll) : translate(messages.seeAll)}
           />
         )}
       </WithModalState>
