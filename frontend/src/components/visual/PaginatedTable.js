@@ -7,7 +7,6 @@ import {
   TableRow as TR,
   TableCell as TD,
   Paper,
-  TableFooter,
   withStyles,
 } from '@material-ui/core'
 import {compose} from 'redux'
@@ -71,19 +70,13 @@ export default compose(withStyles(tableStyles))(
             </TR>
           ))}
         </TableBody>
-        <TableFooter>
-          <TR>
-            <TD colSpan={headerData.length}>
-              <Pagination
-                count={totalCount}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onChangePage={onChangePage}
-              />
-            </TD>
-          </TR>
-        </TableFooter>
       </Table>
+      <Pagination
+        count={totalCount}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onChangePage={onChangePage}
+      />
     </Paper>
   )
 )
