@@ -10,3 +10,10 @@ export const onDidUpdate = <Props: {}, PrevProps: {}>(
         didUpdate(this.props, prevProps)
       },
     })
+
+export const onDidMount = <Props: {}>(didMount: (Props) => any): HOC<Props, Props> =>
+  lifecycle({
+    componentDidMount() {
+      didMount(this.props)
+    },
+  })
