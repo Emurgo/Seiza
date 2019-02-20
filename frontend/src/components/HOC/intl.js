@@ -17,6 +17,7 @@ addLocaleData(esLocaleData)
 
 const Context = React.createContext({
   setLanguage: null,
+  locale: null,
 })
 
 export const provideIntl = (WrappedComponent) =>
@@ -33,6 +34,7 @@ export const provideIntl = (WrappedComponent) =>
       <Context.Provider
         value={{
           setLocale,
+          locale,
         }}
       >
         <WrappedComponent {...props} />
@@ -42,6 +44,6 @@ export const provideIntl = (WrappedComponent) =>
 
 export const withSetLocale = (WrappedComponent) => (props) => (
   <Context.Consumer>
-    {({setLocale}) => <WrappedComponent {...props} setLocale={setLocale} />}
+    {({setLocale, locale}) => <WrappedComponent {...props} setLocale={setLocale} locale={locale} />}
   </Context.Consumer>
 )

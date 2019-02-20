@@ -9,7 +9,7 @@ import {MuiThemeProvider, createMuiTheme} from '@material-ui/core/styles'
 import red from '@material-ui/core/colors/red'
 
 import {routeTo} from './helpers/routes'
-import {provideIntl, withSetLocale} from './components/HOC/intl'
+import {provideIntl} from './components/HOC/intl'
 import Navbar from './components/visual/Navbar'
 import Footer from './components/visual/Footer'
 
@@ -18,6 +18,7 @@ import Blockchain from './screens/Blockchain'
 import Staking from './screens/Staking'
 import More from './screens/More'
 import PageNotFound from './screens/PageNotFound'
+import LanguageSelect from '@/components/common/LanguageSelect'
 
 import './App.css'
 import seizaLogo from './seiza-logo.png'
@@ -39,18 +40,6 @@ const theme = createMuiTheme({
   },
 })
 
-// TODO: move elsewhere once there is folder structure
-const LanguageSwitch = withSetLocale(({setLocale}) => (
-  <React.Fragment>
-    <button type="button" onClick={() => setLocale('en')}>
-      EN
-    </button>
-    <button type="button" onClick={() => setLocale('es')}>
-      ES
-    </button>
-  </React.Fragment>
-))
-
 const TopBar = withRouter(({location: {pathname}}) => {
   return (
     <Grid container direction="row" justify="space-between" alignItems="center">
@@ -58,7 +47,7 @@ const TopBar = withRouter(({location: {pathname}}) => {
         <img src={seizaLogo} />
       </Grid>
       <Grid item>
-        <Grid container direction="row">
+        <Grid container direction="row" alignItems="center">
           <Navbar
             currentPathname={pathname}
             items={[
@@ -68,7 +57,7 @@ const TopBar = withRouter(({location: {pathname}}) => {
               {link: routeTo.more(), label: 'More'},
             ]}
           />
-          <LanguageSwitch />
+          <LanguageSelect />
         </Grid>
       </Grid>
     </Grid>
