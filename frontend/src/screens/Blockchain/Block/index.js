@@ -5,9 +5,12 @@ import {graphql} from 'react-apollo'
 import {compose} from 'redux'
 import {withProps} from 'recompose'
 import {withRouter} from 'react-router'
-import {defineMessages} from 'react-intl'
 
+import {defineMessages} from 'react-intl'
 import {Grid, Card, Typography} from '@material-ui/core'
+import {Link} from 'react-router-dom'
+
+import {routeTo} from '@/helpers/routes'
 
 import {withI18n} from '@/i18n/helpers'
 import {GET_BLOCK_BY_HASH} from '@/api/queries'
@@ -59,7 +62,11 @@ const fieldLabels = defineMessages({
   },
 })
 
-const TransactionCard = ({transaction}) => <Card>{transaction.txHash}</Card>
+const TransactionCard = ({transaction}) => (
+  <Card>
+    <Link to={routeTo.transaction(transaction.txHash)}>{transaction.txHash}</Link>
+  </Card>
+)
 
 const TransactionList = ({transactions}) => (
   <React.Fragment>
