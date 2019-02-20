@@ -9,7 +9,7 @@ import {Switch, Typography, Grid} from '@material-ui/core'
 
 import {getPageCount} from '../../../components/visual/Pagination'
 import BlocksTable from './BlocksTable'
-import {onDidUpdate} from '../../../components/HOC/lifecycles'
+import {onDidUpdate, onDidMount} from '../../../components/HOC/lifecycles'
 import {GET_PAGED_BLOCKS} from '../../../api/queries'
 import {withI18n} from '../../../i18n/helpers'
 
@@ -67,6 +67,15 @@ const RecentBlocks = (props) => {
   )
 }
 
+const _updateTotalCount = ({pagedBlocksResult, rowsPerPage, setTotalCount, setPage}) => {
+  const blocksCount = idx(pagedBlocksResult, (_) => _.pagedBlocks.blocks.length)
+  if (blocksCount) {
+    const itemsCount = blocksCount + pagedBlocksResult.pagedBlocks.cursor
+    setTotalCount(itemsCount)
+    setPage(getPageCount(itemsCount, rowsPerPage) - 1)
+  }
+}
+
 export default compose(
   withProps(() => ({
     rowsPerPage: PAGE_SIZE,
@@ -80,24 +89,16 @@ export default compose(
     }
   ),
   withBlocks,
-  onDidUpdate(
-    (
-      {autoUpdate, setTotalCount, setPage, rowsPerPage, totalCount, pagedBlocksResult},
-      prevProps
-    ) => {
-      const blocksCount = idx(pagedBlocksResult, (_) => _.pagedBlocks.blocks.length)
-      if (
-        blocksCount &&
-        ((autoUpdate &&
-          prevProps.pagedBlocksResult.pagedBlocks !== pagedBlocksResult.pagedBlocks) ||
-          !totalCount)
-      ) {
-        const itemsCount = blocksCount + pagedBlocksResult.pagedBlocks.cursor
-        setTotalCount(itemsCount)
-        setPage(getPageCount(itemsCount, rowsPerPage) - 1)
-      }
+  onDidMount(_updateTotalCount),
+  onDidUpdate((props, prevProps) => {
+    if (
+      (props.autoUpdate &&
+        prevProps.pagedBlocksResult.pagedBlocks !== props.pagedBlocksResult.pagedBlocks) ||
+      !props.totalCount
+    ) {
+      _updateTotalCount(props)
     }
-  ),
+  }),
   withHandlers({
     onChangeAutoUpdate: ({setAutoUpdate, pagedBlocksResult}) => (event) => {
       const checked = event.target.checked
