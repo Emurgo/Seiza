@@ -5,6 +5,7 @@ type Block {
   # TODO: bad naming, should be issuedAt
   timeIssued: Timestamp!
   transactionsCount: Int!
+  transactions: [Transaction!]
 
   # TODO: bad naming, should be totalSent
   totalSend: AdaAmount!

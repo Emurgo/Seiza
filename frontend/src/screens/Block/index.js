@@ -53,7 +53,19 @@ const fieldLabels = defineMessages({
     id: `${I18N_PREFIX}.issuedAt`,
     defaultMessage: 'Timestamp',
   },
+  transactionsCount: {
+    id: `${I18N_PREFIX}.transactionsCount`,
+    defaultMessage: '# Transactions',
+  },
 })
+
+const TransactionCard = ({transaction}) => <Card>{transaction.txHash}</Card>
+
+const TransactionList = ({transactions}) => (
+  <React.Fragment>
+    {transactions && transactions.map((tx) => <TransactionCard key={tx.txHash} transaction={tx} />)}
+  </React.Fragment>
+)
 
 const Block = (props) => {
   const {loading, block, error} = props.blockResult
@@ -79,7 +91,11 @@ const Block = (props) => {
         <Item label={translate(fieldLabels.issuedAt)}>
           <Value value={formatTimestamp(block.timeIssued)} />
         </Item>
+        <Item label={translate(fieldLabels.transactionsCount)}>
+          <Value value={formatInt(block.transactionsCount)} />
+        </Item>
       </Card>
+      <TransactionList transactions={block.transactions} />
     </div>
   )
 }

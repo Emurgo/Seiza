@@ -1,6 +1,7 @@
 import {facadeBlock} from './dataFacades'
 import _ from 'lodash'
 import assert from 'assert'
+import {facadeTransaction} from '../transaction/dataFacades'
 
 // TODO: consider variable page size
 const PAGE_SIZE = 10
@@ -80,8 +81,18 @@ export const pagedBlocksResolver = async (parent, args, context) => {
   }
 }
 
+export const blockTransactionsResolver = async (blockHash, context) => {
+  const rawData = await context.cardanoAPI.get(`blocks/txs/${blockHash}`)
+  return Promise.all(
+    rawData.map((tx) => context.cardanoAPI.get(`txs/summary/${tx.ctbId}`).then(facadeTransaction))
+  )
+}
+
 export const blockResolver = async (parent, args, context) => {
   const blockHash = args.blockHash
   const rawResponse = await context.cardanoAPI.get(`blocks/summary/${blockHash}`)
-  return facadeBlock(rawResponse.cbsEntry)
+  return {
+    ...facadeBlock(rawResponse.cbsEntry),
+    transactions: () => blockTransactionsResolver(blockHash, context),
+  }
 }
