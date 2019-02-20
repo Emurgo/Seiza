@@ -16,6 +16,8 @@ import WithModalState from '@/components/headless/modalState'
 import WithCopyToClipboard from '@/components/headless/copyToClipboard'
 import PagedTransactions from './PagedTransactions'
 
+import SimpleLayout from '@/components/visual/SimpleLayout'
+
 import addressIcon from '@/tmp_assets/tmp-icon-address.png'
 import copyIcon from '@/tmp_assets/tmp-icon-copy.png'
 
@@ -120,8 +122,7 @@ const Address = (props) => {
   }
 
   return (
-    <Grid container direction="column">
-      <Heading>{translate(generalSection.heading)}</Heading>
+    <SimpleLayout title={translate(generalSection.heading)}>
       <AddressValueCard label={translate(generalSection.address)} value={address.address58} />
       <Card>
         <Grid container direction="column">
@@ -144,7 +145,7 @@ const Address = (props) => {
       </Card>
       <Heading>_Transactions_</Heading>
       <PagedTransactions transactions={address.transactions} />
-    </Grid>
+    </SimpleLayout>
   )
 }
 
