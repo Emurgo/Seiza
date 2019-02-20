@@ -47,7 +47,7 @@ export const facadeTransaction = (txData: TxAPIType): FacadeTransaction => ({
     address58: input[0],
     amount: input[1].getCoin,
   })),
-  outputs: txData.ctsInputs.map((output) => ({
+  outputs: txData.ctsOutputs.map((output) => ({
     address58: output[0],
     amount: output[1].getCoin,
   })),
