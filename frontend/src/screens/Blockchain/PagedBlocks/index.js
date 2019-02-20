@@ -51,7 +51,10 @@ const AutoUpdateSwitch = withI18n(({checked, onChange, i18n: {translate}}) => (
 ))
 
 const RecentBlocks = (props) => {
-  const {i18n: {translate}, pagedBlocksResult: {loading, pagedBlocks}} = props
+  const {
+    i18n: {translate},
+    pagedBlocksResult: {loading, pagedBlocks},
+  } = props
   return (
     <React.Fragment>
       {!loading && (
