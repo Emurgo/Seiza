@@ -80,8 +80,8 @@ export default compose(
     const headerData = [
       translate(tableMessages.epoch),
       translate(tableMessages.slot),
-      translate(tableMessages.slotLeader),
       translate(tableMessages.time),
+      translate(tableMessages.slotLeader),
       translate(tableMessages.transactions),
       translate(tableMessages.totalSent),
       translate(tableMessages.fees),
@@ -95,10 +95,10 @@ export default compose(
       <LinkField key={1} to={routeTo.block(block.blockHash)}>
         {formatInt(block.slot)}
       </LinkField>,
+      formatTimestamp(block.timeIssued),
       <LinkField key={2} to="/todo">
         {block.blockLead}
       </LinkField>,
-      formatTimestamp(block.timeIssued),
       formatInt(block.transactionsCount),
       formatAda(block.totalSend),
       formatAda(block.totalFees),
