@@ -12,11 +12,14 @@ const styles = ({palette}) => ({
 })
 
 // Note: as we do not except inner navigation, for simplicity we only check first level
-const Navbar = ({items = [], currentPathname, classes}) => {
-  const firstLevelPathname = currentPathname
+const getFirstLevelUrl = (pathname) =>
+  pathname
     .split('/')
     .slice(0, 2)
     .join('/')
+
+const Navbar = ({items = [], currentPathname, classes}) => {
+  const firstLevelPathname = getFirstLevelUrl(currentPathname)
   return (
     <nav>
       <ul className={classes.list}>

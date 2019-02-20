@@ -16,16 +16,14 @@ const styles = (theme) => ({
 // TODO: use images instead of names
 export default compose(
   withStyles(styles),
-  withSetLocale,
+  withSetLocale
 )(({setLocale, locale, classes}) => (
   <Select
     native
     className={classes.select}
     value={locale}
     onChange={(e) => setLocale(e.target.value)}
-    input={
-      <OutlinedInput />
-    }
+    input={<OutlinedInput />}
   >
     <option value={'en'}>En</option>
     <option value={'es'}>Es</option>
