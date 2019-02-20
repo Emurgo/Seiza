@@ -1,3 +1,7 @@
 .gradient-bg {
   background: linear-gradient(97deg, #BFADE7 0%, #E0F1F8 100%);
 }
+
+html, body, #root {
+  height: 100%;
+}
