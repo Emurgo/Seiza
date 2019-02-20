@@ -1,9 +1,11 @@
+const BLOCKCHAIN_ROUTE = '/blockchain'
+
 export const routeTo = {
   home: () => '/',
-  blockchain: () => '/blockchain',
-  transaction: (txHash) => `/transaction/${txHash}`,
-  block: (blockHash) => `/block/${blockHash}`,
-  address: (address58) => `/address/${address58}`,
+  blockchain: () => BLOCKCHAIN_ROUTE,
+  transaction: (txHash) => `${BLOCKCHAIN_ROUTE}/transaction/${txHash}`,
+  block: (blockHash) => `${BLOCKCHAIN_ROUTE}/block/${blockHash}`,
+  address: (address58) => `${BLOCKCHAIN_ROUTE}/address/${address58}`,
   more: () => '/more',
   staking: () => '/staking',
 }

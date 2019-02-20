@@ -17,9 +17,6 @@ import Blockchain from './screens/Blockchain'
 import Staking from './screens/Staking'
 import More from './screens/More'
 import PageNotFound from './screens/PageNotFound'
-import Transaction from './screens/Transaction'
-import Address from './screens/Address'
-import Block from './screens/Block'
 
 import './App.css'
 import seizaLogo from './seiza-logo.png'
@@ -85,9 +82,6 @@ const App = () => {
             <Route path={routeTo.blockchain()} component={Blockchain} />
             <Route path={routeTo.staking()} component={Staking} />
             <Route path={routeTo.more()} component={More} />
-            <Route path={routeTo.transaction(':txHash')} component={Transaction} />
-            <Route path={routeTo.block(':blockHash')} component={Block} />
-            <Route path={routeTo.address(':address58')} component={Address} />
             <Route component={PageNotFound} />
           </Switch>
         </React.Fragment>

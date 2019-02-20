@@ -1,127 +1,13 @@
 // @flow
 import React from 'react'
-import gql from 'graphql-tag'
-import idx from 'idx'
-import {injectIntl, defineMessages} from 'react-intl'
-import {compose} from 'redux'
-import {withState} from 'recompose'
-import {graphql} from 'react-apollo'
 
-import MetricsCard from '../../components/visual/MetricsCard'
-import {getIntlFormatters} from '../../i18n/helpers'
-import Searchbar from '../../components/visual/Searchbar'
+import OverviewMetrics from './OverviewMetrics'
+import Search from './Search'
 
-const text = defineMessages({
-  not_available: {
-    id: 'overview.metrics.not_available',
-    defaultMessage: 'N/A',
-  },
-  epochLabel: {
-    id: 'overview.metrics.epoch.label',
-    defaultMessage: 'Epoch',
-  },
-  blocksLabel: {
-    id: 'overview.metrics.blocks.label',
-    defaultMessage: 'Blocks',
-  },
-  decentralizationLabel: {
-    id: 'overview.metrics.decentralization.label',
-    defaultMessage: 'Decentralization',
-  },
-  priceLabel: {
-    id: 'overview.metrics.price.label',
-    defaultMessage: 'Price',
-  },
-  poolsLabel: {
-    id: 'overview.metrics.poolCount.label',
-    defaultMessage: 'Pools',
-  },
-  searchPlaceholder: {
-    id: 'overview.search.placeholder',
-    defaultMessage: 'Search addresses, epochs & slots on the Cardano network',
-  },
-})
-
-const _Status = ({intl, data}) => {
-  const {translate, formatInt, formatPercent, formatFiat} = getIntlFormatters(intl)
-  const status = data.currentStatus
-
-  const NA = translate(text.not_available)
-
-  const epochNumber = formatInt(idx(status, (s) => s.epochNumber), {defaultValue: NA})
-  const blockCount = formatInt(idx(status, (s) => s.blockCount), {defaultValue: NA})
-  const decentralization = formatPercent(idx(status, (s) => s.decentralization), {defaultValue: NA})
-  const price = formatFiat(idx(status, (s) => s.price.usd), {currency: 'USD', defaultValue: NA})
-  const pools = formatInt(idx(status, (s) => s.stakePoolCount), {defaultValue: NA})
-
-  return (
-    <div style={{display: 'flex', justifyContent: 'center'}}>
-      <MetricsCard icon="epoch" metric={translate(text.epochLabel)} value={epochNumber} />
-      <MetricsCard icon="blocks" metric={translate(text.blocksLabel)} value={blockCount} />
-      <MetricsCard
-        icon="decentralization"
-        metric={translate(text.decentralizationLabel)}
-        value={decentralization}
-      />
-      <MetricsCard icon="price" metric={translate(text.priceLabel)} value={price} />
-      <MetricsCard icon="pools" metric={translate(text.poolsLabel)} value={pools} />
-    </div>
-  )
-}
-
-const OVERVIEW_METRICS_QUERY = gql`
-  query {
-    currentStatus {
-      epochNumber
-      blockCount
-      decentralization
-      price {
-        usd
-      }
-      stakePoolCount
-    }
-  }
-`
-
-const STATUS_REFRESH_INTERVAL = 20 * 1000
-
-const withOverviewMetricsData = graphql(OVERVIEW_METRICS_QUERY, {
-  options: (props) => ({
-    pollInterval: STATUS_REFRESH_INTERVAL,
-  }),
-})
-
-const OverviewMetrics = compose(
-  injectIntl,
-  withOverviewMetricsData
-)(_Status)
-
-const Search = compose(
-  injectIntl,
-  withState('searchText', 'setSearchText', '')
-)(({intl, searchText, setSearchText, onChange}) => {
-  const {translate} = getIntlFormatters(intl)
-  return (
-    <div style={{width: '45%', margin: '0 auto'}}>
-      <Searchbar
-        placeholder={translate(text.searchPlaceholder)}
-        value={searchText}
-        onChange={setSearchText}
-        onSearch={() => null}
-      />
-    </div>
-  )
-})
-const Blockchain = () => {
-  return (
-    <React.Fragment>
-      <div className="gradient-bg">
-        <h1>Home</h1>
-        <OverviewMetrics />
-        <Search />
-      </div>
-    </React.Fragment>
-  )
-}
-
-export default Blockchain
+// TODO (rethink): it might be more appropriate to store Search in a Blockchain folder
+export default () => (
+  <div className="gradient-bg">
+    <OverviewMetrics />
+    <Search />
+  </div>
+)
