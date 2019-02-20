@@ -59,7 +59,27 @@ export const GET_BLOCK_BY_HASH = gql`
   query($blockHash: String!) {
     block(blockHash: $blockHash) {
       ...BasicBlockInfo
-      # TODO: Tx info?
+      transactions {
+        txHash
+        txTimeIssued
+        blockTimeIssued
+        blockHeight
+        blockEpoch
+        blockSlot
+        blockHash
+        totalInput
+        totalOutput
+        fees
+        inputs {
+          address58
+          amount
+        }
+        outputs {
+          address58
+          amount
+        }
+        confirmationsCount
+      }
     }
   }
   ${BLOCK_INFO_FRAGMENT}
