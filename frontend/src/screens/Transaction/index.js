@@ -5,7 +5,7 @@ import {graphql} from 'react-apollo'
 import {compose} from 'redux'
 import {withProps} from 'recompose'
 import {withRouter} from 'react-router'
-import {injectIntl, defineMessages} from 'react-intl'
+import {defineMessages} from 'react-intl'
 import {withStyles, createStyles, Card, Typography, Grid, Chip} from '@material-ui/core'
 import classNames from 'classnames'
 
@@ -13,7 +13,8 @@ import AdaIcon from '../../tmp_assets/ada-icon.png'
 import CopyIcon from '../../tmp_assets/copy-icon.png'
 
 import {GET_TRANSACTION_BY_HASH} from '../../api/queries'
-import {getIntlFormatters, monthNumeralFormat} from '../../i18n/helpers'
+import {monthNumeralFormat, withI18n} from '../../i18n/helpers'
+import {ASSURANCE_LEVELS_VALUES} from '../../config'
 
 const messages = defineMessages({
   header: {
@@ -141,10 +142,63 @@ const ListItem = withStyles(styles)(({label, children, classes}) => {
   )
 })
 
+const assuranceLevelStyles = (theme) =>
+  createStyles({
+    LOW: {
+      color: 'white',
+      backgroundColor: '#FF3860',
+    },
+    MEDIUM: {
+      color: 'black',
+      backgroundColor: '#FFDD57',
+    },
+    HIGH: {
+      color: 'white',
+      backgroundColor: '#87E6D4',
+    },
+    uppercase: {
+      textTransform: 'uppercase',
+    },
+  })
+
+type AssuranceLevel = 'LOW' | 'MEDIUM' | 'HIGH'
+const assuranceFromConfirmations = (cnt: number): AssuranceLevel => {
+  if (cnt <= ASSURANCE_LEVELS_VALUES.LOW) {
+    return 'LOW'
+  } else if (cnt <= ASSURANCE_LEVELS_VALUES.MEDIUM) {
+    return 'MEDIUM'
+  } else {
+    return 'HIGH'
+  }
+}
+const assuranceMessages = defineMessages({
+  LOW: {
+    id: 'transaction.lowAssurance',
+    defaultMessage: 'Low',
+  },
+  MEDIUM: {
+    id: 'transaction.lowAssurance',
+    defaultMessage: 'Medium',
+  },
+  HIGH: {
+    id: 'transaction.lowAssurance',
+    defaultMessage: 'High',
+  },
+})
+const Assurance = compose(
+  withStyles(assuranceLevelStyles),
+  withI18n
+)(({classes, txConfirmationsCount, i18n}) => {
+  const assurance = assuranceFromConfirmations(txConfirmationsCount)
+  const text = assuranceMessages[assurance]
+  const className = classes[assurance]
+  return <Chip label={text} className={classNames(className, classes.uppercase)} />
+})
+
 const Transaction = (props) => {
   const {classes} = props
   const {loading, transaction} = props.transaction
-  const {translate, formatAda, formatInt, formatTimestamp} = getIntlFormatters(props.intl)
+  const {translate, formatAda, formatInt, formatTimestamp} = props.i18n
   // TODO: 'loading' check inside 'compose' once we have loading component
   if (loading) {
     return null
@@ -175,7 +229,7 @@ const Transaction = (props) => {
           <ListItem label={translate(messages.assuranceLevel)}>
             <div>
               {/* TODO finish possible labels high/medium/low */}
-              <Chip label="High" className={classes.chip} />
+              <Assurance txConfirmationsCount={transaction.confirmationsCount} />{' '}
               <span>
                 {formatInt(transaction.confirmationsCount)}{' '}
                 {translate(messages.confirmations, {
@@ -207,6 +261,6 @@ export default compose(
     txHash: props.match.params.txHash,
   })),
   withTransactionByHash,
-  injectIntl,
+  withI18n,
   withStyles(styles)
 )(Transaction)
