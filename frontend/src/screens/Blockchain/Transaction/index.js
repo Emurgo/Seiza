@@ -1,5 +1,4 @@
 // @flow
-
 import React from 'react'
 import {graphql} from 'react-apollo'
 import {compose} from 'redux'
@@ -12,9 +11,11 @@ import classNames from 'classnames'
 import AdaIcon from '@/tmp_assets/ada-icon.png'
 import CopyIcon from '@/tmp_assets/copy-icon.png'
 
-import {GET_TRANSACTION_BY_HASH} from '@/api/queries'
-import {monthNumeralFormat, withI18n} from '@/i18n/helpers'
 import {ASSURANCE_LEVELS_VALUES} from '@/config'
+import {GET_TRANSACTION_BY_HASH} from '@/api/queries'
+import {withI18n, monthNumeralFormat} from '@/i18n/helpers'
+import ExpandableCard from '@/components/visual/ExpandableCard'
+import WithModalState from '@/components/headless/modalState'
 
 const messages = defineMessages({
   header: {
@@ -251,6 +252,18 @@ const Transaction = (props) => {
           </ListItem>
         </List>
       </Card>
+
+      <WithModalState>
+        {({isOpen, toggle}) => (
+          <ExpandableCard
+            expanded={isOpen}
+            onChange={toggle}
+            renderHeader={() => 'HEADER AREA'}
+            renderExpandedArea={() => 'EXPANDED AREA - shown with animation'}
+            footer={'FOOTER'}
+          />
+        )}
+      </WithModalState>
     </div>
   )
 }

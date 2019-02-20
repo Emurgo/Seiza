@@ -7,8 +7,11 @@ const WithModalState = withStateHandlers(
   {
     openModal: () => () => ({isOpen: true}),
     closeModal: () => () => ({isOpen: false}),
+    toggle: ({isOpen}) => () => ({isOpen: !isOpen}),
   }
-)(({children, isOpen, openModal, closeModal}) => children({isOpen, openModal, closeModal}))
+)(({children, isOpen, openModal, closeModal, toggle}) =>
+  children({isOpen, openModal, closeModal, toggle})
+)
 
 // Example usage:
 // <WithModalState>{
