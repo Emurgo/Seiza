@@ -190,7 +190,7 @@ const Assurance = compose(
   withI18n
 )(({classes, txConfirmationsCount, i18n}) => {
   const assurance = assuranceFromConfirmations(txConfirmationsCount)
-  const text = assuranceMessages[assurance]
+  const text = i18n.translate(assuranceMessages[assurance])
   const className = classes[assurance]
   return <Chip label={text} className={classNames(className, classes.uppercase)} />
 })
