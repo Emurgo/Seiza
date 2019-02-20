@@ -1,9 +1,10 @@
 import React from 'react'
+import {Typography} from '@material-ui/core'
 
 const Staking = () => {
   return (
     <React.Fragment>
-      <h1>Staking</h1>
+      <Typography variant="h4">Staking</Typography>
     </React.Fragment>
   )
 }

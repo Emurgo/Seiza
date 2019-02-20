@@ -11,6 +11,7 @@ import PagedBlocks from './PagedBlocks'
 import OverviewMetrics from '@/screens/Home/OverviewMetrics'
 import Search from '@/screens/Home/Search'
 
+
 export default (props) => (
   <React.Fragment>
     <div className="gradient-bg">
