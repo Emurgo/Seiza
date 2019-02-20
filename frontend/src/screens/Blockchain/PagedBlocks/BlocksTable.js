@@ -5,9 +5,9 @@ import {defineMessages} from 'react-intl'
 import {Link} from 'react-router-dom'
 import {withStyles} from '@material-ui/core'
 
-import PaginatedTable from '../../../components/visual/PaginatedTable'
-import {withI18n} from '../../../i18n/helpers'
-import {routeTo} from '../../../helpers/routes'
+import PaginatedTable from '@/components/visual/PaginatedTable'
+import {withI18n} from '@/i18n/helpers'
+import {routeTo} from '@/helpers/routes'
 import {withProps} from 'recompose'
 
 const I18N_PREFIX = 'blockchain.blockList.table'
