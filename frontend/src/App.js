@@ -5,12 +5,14 @@ import {BrowserRouter as Router, Route, Switch} from 'react-router-dom'
 import {compose} from 'redux'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import {MuiThemeProvider, createMuiTheme} from '@material-ui/core/styles'
+import {Grid} from '@material-ui/core'
 import indigo from '@material-ui/core/colors/indigo'
 import red from '@material-ui/core/colors/red'
 
 import {routeTo} from './helpers/routes'
 import {provideIntl, withSetLocale} from './components/HOC/intl'
 import Navbar from './components/visual/Navbar'
+import Footer from './components/visual/Footer'
 
 import Home from './screens/Home'
 import Blockchain from './screens/Blockchain'
@@ -74,17 +76,20 @@ const App = () => {
   return (
     <MuiThemeProvider theme={theme}>
       <Router>
-        <React.Fragment>
+        <Grid container direction="column">
           <CssBaseline />
           <TopBar />
-          <Switch>
-            <Route exact path={routeTo.home()} component={Home} />
-            <Route path={routeTo.blockchain()} component={Blockchain} />
-            <Route path={routeTo.staking()} component={Staking} />
-            <Route path={routeTo.more()} component={More} />
-            <Route component={PageNotFound} />
-          </Switch>
-        </React.Fragment>
+          <Grid item>
+            <Switch>
+              <Route exact path={routeTo.home()} component={Home} />
+              <Route path={routeTo.blockchain()} component={Blockchain} />
+              <Route path={routeTo.staking()} component={Staking} />
+              <Route path={routeTo.more()} component={More} />
+              <Route component={PageNotFound} />
+            </Switch>
+          </Grid>
+          <Footer />
+        </Grid>
       </Router>
     </MuiThemeProvider>
   )
