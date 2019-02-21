@@ -8,6 +8,8 @@ import {defineMessages} from 'react-intl'
 import {withStyles, createStyles, Card, Typography, Grid, Chip} from '@material-ui/core'
 import classNames from 'classnames'
 
+import SimpleLayout from '@/components/visual/SimpleLayout'
+
 import AdaIcon from '@/tmp_assets/ada-icon.png'
 import CopyIcon from '@/tmp_assets/copy-icon.png'
 
@@ -63,12 +65,6 @@ const styles = (theme) =>
   createStyles({
     title: {
       fontSize: theme.typography.fontSize * 3,
-    },
-    wrapper: {
-      width: '100%',
-      paddingLeft: '10%',
-      paddingRight: '10%',
-      background: '#F4F6FC',
     },
     card: {
       margin: theme.spacing.unit * 2,
@@ -206,9 +202,7 @@ const Transaction = (props) => {
   }
 
   return (
-    <div className={classes.wrapper}>
-      <Typography variant="h1">{translate(messages.header)}</Typography>
-
+    <SimpleLayout title={translate(messages.header)}>
       <Card className={classNames(classes.card, classes.flex)}>
         <Grid item className={classNames(classes.flex, classes.centeredFlex)}>
           <img src={AdaIcon} width={40} height={40} />
@@ -252,7 +246,6 @@ const Transaction = (props) => {
           </ListItem>
         </List>
       </Card>
-
       <WithModalState>
         {({isOpen, toggle}) => (
           <ExpandableCard
@@ -264,7 +257,7 @@ const Transaction = (props) => {
           />
         )}
       </WithModalState>
-    </div>
+    </SimpleLayout>
   )
 }
 

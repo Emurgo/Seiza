@@ -8,6 +8,7 @@ import {withRouter} from 'react-router'
 
 import {defineMessages} from 'react-intl'
 import {Grid, Card, Typography} from '@material-ui/core'
+import SimpleLayout from '@/components/visual/SimpleLayout'
 import {Link} from 'react-router-dom'
 
 import {routeTo} from '@/helpers/routes'
@@ -39,7 +40,7 @@ const Heading = ({children}) => <Typography variant="h4">{children}</Typography>
 
 const I18N_PREFIX = 'block.fields'
 
-const fieldLabels = defineMessages({
+const blockSummaryLabels = defineMessages({
   blockHash: {
     id: `${I18N_PREFIX}.blockHash`,
     defaultMessage: 'Block hash',
@@ -74,36 +75,59 @@ const TransactionList = ({transactions}) => (
   </React.Fragment>
 )
 
-const Block = (props) => {
-  const {loading, block, error} = props.blockResult
-  const {translate, formatInt, formatTimestamp} = props.i18n
-  if (loading) {
-    return null
-  }
-  if (error) return <ErrorComponent error={error} />
+const _BlockSummaryCard = ({i18n, block}) => {
+  const {translate, formatInt, formatTimestamp} = i18n
 
   return (
-    <div>
+    <Card>
+      <Item label={translate(blockSummaryLabels.blockHash)}>
+        <Value value={block.blockHash} />
+      </Item>
+      <Item label={translate(blockSummaryLabels.epoch)}>
+        <Value value={formatInt(block.epoch)} />
+      </Item>
+      <Item label={translate(blockSummaryLabels.slot)}>
+        <Value value={formatInt(block.slot)} />
+      </Item>
+      <Item label={translate(blockSummaryLabels.issuedAt)}>
+        <Value value={formatTimestamp(block.timeIssued)} />
+      </Item>
+      <Item label={translate(blockSummaryLabels.transactionsCount)}>
+        <Value value={formatInt(block.transactionsCount)} />
+      </Item>
+    </Card>
+  )
+}
+
+const BlockSummaryCard = compose(withI18n)(_BlockSummaryCard)
+
+const Loading = () => <div>Loading...</div>
+
+const blockMessages = defineMessages({
+  title: {
+    id: 'blockchain.block.title',
+    defaultMessage: '<Block>',
+  },
+})
+
+const Block = ({blockResult, i18n}) => {
+  const {loading, block, error} = blockResult
+  const {translate} = i18n
+
+  return (
+    <SimpleLayout title={translate(blockMessages.title)}>
       <Heading>General</Heading>
-      <Card>
-        <Item label={translate(fieldLabels.blockHash)}>
-          <Value value={block.blockHash} />
-        </Item>
-        <Item label={translate(fieldLabels.epoch)}>
-          <Value value={formatInt(block.epoch)} />
-        </Item>
-        <Item label={translate(fieldLabels.slot)}>
-          <Value value={formatInt(block.slot)} />
-        </Item>
-        <Item label={translate(fieldLabels.issuedAt)}>
-          <Value value={formatTimestamp(block.timeIssued)} />
-        </Item>
-        <Item label={translate(fieldLabels.transactionsCount)}>
-          <Value value={formatInt(block.transactionsCount)} />
-        </Item>
-      </Card>
-      <TransactionList transactions={block.transactions} />
-    </div>
+      {error ? (
+        <ErrorComponent error={error} />
+      ) : loading ? (
+        <Loading />
+      ) : (
+        <React.Fragment>
+          <BlockSummaryCard block={block} />
+          <TransactionList transactions={block.transactions} />
+        </React.Fragment>
+      )}
+    </SimpleLayout>
   )
 }
 
