@@ -7,12 +7,12 @@ const Footer = () => (
   <div>
     <div className="gradient-bg">
       <Grid container direction="row" justify="space-around">
-        <img src={stayInTouch} />
+        <img alt="" src={stayInTouch} />
       </Grid>
     </div>
     <div style={{background: '#120547'}}>
       <Grid container direction="row" justify="space-around">
-        <img src={footerContent} />
+        <img alt="" src={footerContent} />
       </Grid>
     </div>
   </div>

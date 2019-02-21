@@ -87,7 +87,7 @@ const AddressValueCard = ({label, value}) => (
         <Grid container direction="row" justify="space-between">
           <Grid item>
             <Button onClick={openModal}>
-              <img src={addressIcon} />
+              <img alt="show qr code" src={addressIcon} />
             </Button>
           </Grid>
           <Grid item xs container direction="column">
@@ -98,7 +98,7 @@ const AddressValueCard = ({label, value}) => (
             {({copy, isCopied}) => (
               <React.Fragment>
                 <Button onClick={copy}>
-                  <img src={copyIcon} />
+                  <img alt="copy to clipboard" src={copyIcon} />
                 </Button>
                 {isCopied && 'copied'}
               </React.Fragment>

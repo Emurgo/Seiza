@@ -23,7 +23,7 @@ export default compose(
     className={classes.select}
     value={locale}
     onChange={(e) => setLocale(e.target.value)}
-    input={<OutlinedInput />}
+    input={<OutlinedInput labelWidth={0} />}
   >
     <option value={'en'}>En</option>
     <option value={'es'}>Es</option>
