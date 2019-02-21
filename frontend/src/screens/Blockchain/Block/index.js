@@ -7,35 +7,15 @@ import {withProps} from 'recompose'
 import {withRouter} from 'react-router'
 
 import {defineMessages} from 'react-intl'
-import {Grid, Card, Typography} from '@material-ui/core'
-import SimpleLayout from '@/components/visual/SimpleLayout'
+import {Card, Typography} from '@material-ui/core'
 import {Link} from 'react-router-dom'
 
 import {routeTo} from '@/helpers/routes'
+import {SummaryCard, SimpleLayout, LoadingInProgress, DebugApolloError} from '@/components/visual'
 
 import {withI18n} from '@/i18n/helpers'
 import {GET_BLOCK_BY_HASH} from '@/api/queries'
 
-const withBlockByHash = graphql(GET_BLOCK_BY_HASH, {
-  name: 'blockResult',
-  options: ({blockHash}) => {
-    return {
-      variables: {blockHash},
-    }
-  },
-})
-
-const ErrorComponent = (error) => `Error${JSON.stringify(error)}`
-
-const Item = ({label, children}) => (
-  <Grid container direction="row" justify="space-between" alignItems="center">
-    <Grid item>
-      <Typography variant="caption">{label}</Typography>
-    </Grid>
-    <Grid item>{children}</Grid>
-  </Grid>
-)
-const Value = ({value}) => <Typography>{value}</Typography>
 const Heading = ({children}) => <Typography variant="h4">{children}</Typography>
 
 const I18N_PREFIX = 'block.fields'
@@ -78,30 +58,27 @@ const TransactionList = ({transactions}) => (
 const _BlockSummaryCard = ({i18n, block}) => {
   const {translate, formatInt, formatTimestamp} = i18n
 
+  const label = blockSummaryLabels
+
+  const Item = ({label, children}) => (
+    <SummaryCard.Row>
+      <SummaryCard.Label>{translate(label)}</SummaryCard.Label>
+      <SummaryCard.Value>{children}</SummaryCard.Value>
+    </SummaryCard.Row>
+  )
+
   return (
-    <Card>
-      <Item label={translate(blockSummaryLabels.blockHash)}>
-        <Value value={block.blockHash} />
-      </Item>
-      <Item label={translate(blockSummaryLabels.epoch)}>
-        <Value value={formatInt(block.epoch)} />
-      </Item>
-      <Item label={translate(blockSummaryLabels.slot)}>
-        <Value value={formatInt(block.slot)} />
-      </Item>
-      <Item label={translate(blockSummaryLabels.issuedAt)}>
-        <Value value={formatTimestamp(block.timeIssued)} />
-      </Item>
-      <Item label={translate(blockSummaryLabels.transactionsCount)}>
-        <Value value={formatInt(block.transactionsCount)} />
-      </Item>
-    </Card>
+    <SummaryCard>
+      <Item label={label.blockHash}>{block.blockHash} </Item>
+      <Item label={label.epoch}>{formatInt(block.epoch)}</Item>
+      <Item label={label.slot}>{formatInt(block.slot)}</Item>
+      <Item label={label.issuedAt}>{formatTimestamp(block.timeIssued)}</Item>
+      <Item label={label.transactionsCount}>{formatInt(block.transactionsCount)}</Item>
+    </SummaryCard>
   )
 }
 
 const BlockSummaryCard = compose(withI18n)(_BlockSummaryCard)
-
-const Loading = () => <div>Loading...</div>
 
 const blockMessages = defineMessages({
   title: {
@@ -110,17 +87,17 @@ const blockMessages = defineMessages({
   },
 })
 
-const Block = ({blockResult, i18n}) => {
-  const {loading, block, error} = blockResult
+const Block = ({blockDataProvider, i18n}) => {
+  const {loading, block, error} = blockDataProvider
   const {translate} = i18n
 
   return (
     <SimpleLayout title={translate(blockMessages.title)}>
       <Heading>General</Heading>
-      {error ? (
-        <ErrorComponent error={error} />
-      ) : loading ? (
-        <Loading />
+      {loading ? (
+        <LoadingInProgress />
+      ) : error ? (
+        <DebugApolloError error={error} />
       ) : (
         <React.Fragment>
           <BlockSummaryCard block={block} />
@@ -136,6 +113,13 @@ export default compose(
   withProps((props) => ({
     blockHash: props.match.params.blockHash,
   })),
-  withBlockByHash,
+  graphql(GET_BLOCK_BY_HASH, {
+    name: 'blockDataProvider',
+    options: ({blockHash}) => {
+      return {
+        variables: {blockHash},
+      }
+    },
+  }),
   withI18n
 )(Block)
