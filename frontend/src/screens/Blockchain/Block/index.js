@@ -7,24 +7,24 @@ import {withProps} from 'recompose'
 import {withRouter} from 'react-router'
 
 import {defineMessages} from 'react-intl'
-import {Card, Typography} from '@material-ui/core'
+import {Card} from '@material-ui/core'
 import {Link} from 'react-router-dom'
 
 import {routeTo} from '@/helpers/routes'
-import {SummaryCard, SimpleLayout, LoadingInProgress, DebugApolloError} from '@/components/visual'
+import {
+  EntityIdCard,
+  SummaryCard,
+  SimpleLayout,
+  LoadingInProgress,
+  DebugApolloError,
+} from '@/components/visual'
 
 import {withI18n} from '@/i18n/helpers'
 import {GET_BLOCK_BY_HASH} from '@/api/queries'
 
-const Heading = ({children}) => <Typography variant="h4">{children}</Typography>
-
 const I18N_PREFIX = 'block.fields'
 
 const blockSummaryLabels = defineMessages({
-  blockHash: {
-    id: `${I18N_PREFIX}.blockHash`,
-    defaultMessage: 'Block hash',
-  },
   epoch: {
     id: `${I18N_PREFIX}.epoch`,
     defaultMessage: 'Epoch',
@@ -69,7 +69,6 @@ const _BlockSummaryCard = ({i18n, block}) => {
 
   return (
     <SummaryCard>
-      <Item label={label.blockHash}>{block.blockHash} </Item>
       <Item label={label.epoch}>{formatInt(block.epoch)}</Item>
       <Item label={label.slot}>{formatInt(block.slot)}</Item>
       <Item label={label.issuedAt}>{formatTimestamp(block.timeIssued)}</Item>
@@ -85,6 +84,10 @@ const blockMessages = defineMessages({
     id: 'blockchain.block.title',
     defaultMessage: '<Block>',
   },
+  blockHash: {
+    id: 'blockchain.block.blockHash',
+    defaultMessage: 'Block ID',
+  },
 })
 
 const Block = ({blockDataProvider, i18n}) => {
@@ -93,13 +96,17 @@ const Block = ({blockDataProvider, i18n}) => {
 
   return (
     <SimpleLayout title={translate(blockMessages.title)}>
-      <Heading>General</Heading>
       {loading ? (
         <LoadingInProgress />
       ) : error ? (
         <DebugApolloError error={error} />
       ) : (
         <React.Fragment>
+          <EntityIdCard
+            iconRenderer={() => ''}
+            label={translate(blockMessages.blockHash)}
+            value={block.blockHash}
+          />
           <BlockSummaryCard block={block} />
           <TransactionList transactions={block.transactions} />
         </React.Fragment>
