@@ -21,11 +21,7 @@ type TxAPIType = {
 export type FacadeTransaction = {
   txHash: string,
   txTimeIssued: number,
-  blockTimeIssued: number,
-  blockHeight: number,
-  blockEpoch: number,
-  blockSlot: number,
-  blockHash: string,
+  _blockHash: string,
   totalInput: string,
   totalOutput: string,
   fees: string,
@@ -35,10 +31,7 @@ export type FacadeTransaction = {
 export const facadeTransaction = (txData: TxAPIType): FacadeTransaction => ({
   txHash: txData.ctsId,
   txTimeIssued: moment.unix(txData.ctsTxTimeIssued),
-  blockTimeIssued: moment.unix(txData.ctsBlockTimeIssued),
-  blockHeight: txData.ctsBlockHeight,
-  blockEpoch: txData.ctsBlockEpoch,
-  blockSlot: txData.ctsBlockSlot,
+  _blockHash: txData.ctsBlockHash,
   blockHash: txData.ctsBlockHash,
   totalInput: txData.ctsTotalInput.getCoin,
   totalOutput: txData.ctsTotalOutput.getCoin,
@@ -52,3 +45,8 @@ export const facadeTransaction = (txData: TxAPIType): FacadeTransaction => ({
     amount: output[1].getCoin,
   })),
 })
+
+export const fetchTransaction = async (api: any, txHash: string) => {
+  const rawTx = await api.get(`txs/summary/${txHash}`)
+  return facadeTransaction(rawTx)
+}

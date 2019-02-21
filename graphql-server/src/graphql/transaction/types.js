@@ -14,12 +14,7 @@ export default gql`
 
   type Transaction {
     txHash: ID!
-    txTimeIssued: Timestamp
-    blockTimeIssued: Timestamp
-    blockHeight: Int
-    blockEpoch: Int
-    blockSlot: Int
-    blockHash: String
+    block: Block
     totalInput: String
     totalOutput: String
     fees: String

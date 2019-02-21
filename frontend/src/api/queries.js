@@ -6,12 +6,13 @@ export const GET_TRANSACTION_BY_HASH = gql`
   query($txHash: String!) {
     transaction(txHash: $txHash) {
       txHash
-      txTimeIssued
-      blockTimeIssued
-      blockHeight
-      blockEpoch
-      blockSlot
-      blockHash
+      block {
+        timeIssued
+        blockHeight
+        epoch
+        slot
+        blockHash
+      }
       totalInput
       totalOutput
       fees
@@ -61,12 +62,6 @@ export const GET_BLOCK_BY_HASH = gql`
       ...BasicBlockInfo
       transactions {
         txHash
-        txTimeIssued
-        blockTimeIssued
-        blockHeight
-        blockEpoch
-        blockSlot
-        blockHash
         totalInput
         totalOutput
         fees

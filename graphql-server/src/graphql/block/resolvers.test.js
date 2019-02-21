@@ -2,7 +2,7 @@ import 'babel-polyfill'
 import _ from 'lodash'
 
 import {pagedBlocksResolver} from './resolvers'
-import {facadeBlock} from './dataFacades'
+import {facadeBlock} from './dataProviders'
 
 const cb = (hash) => ({
   cbeEpoch: 100,
