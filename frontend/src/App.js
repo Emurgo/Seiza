@@ -10,8 +10,7 @@ import red from '@material-ui/core/colors/red'
 
 import {routeTo} from './helpers/routes'
 import {provideIntl} from './components/HOC/intl'
-import Navbar from './components/visual/Navbar'
-import Footer from './components/visual/Footer'
+import {Navbar, Footer} from './components/visual'
 
 import Home from './screens/Home'
 import Blockchain from './screens/Blockchain'
@@ -34,11 +33,19 @@ const theme = createMuiTheme({
       main: '#6300C1',
     },
     secondary: {
-      main: '#EAF1FF',
+      main: '#220049',
     },
     error: red,
   },
 })
+
+// TODO: intl
+const navItems = [
+  {link: routeTo.home(), label: 'Home'},
+  {link: routeTo.blockchain(), label: 'Blockchain'},
+  {link: routeTo.staking(), label: 'Staking'},
+  {link: routeTo.more(), label: 'More'},
+]
 
 const TopBar = withRouter(({location: {pathname}}) => {
   return (
@@ -48,15 +55,7 @@ const TopBar = withRouter(({location: {pathname}}) => {
       </Grid>
       <Grid item>
         <Grid container direction="row" alignItems="center">
-          <Navbar
-            currentPathname={pathname}
-            items={[
-              {link: routeTo.home(), label: 'Home'},
-              {link: routeTo.blockchain(), label: 'Blockchain'},
-              {link: routeTo.staking(), label: 'Staking'},
-              {link: routeTo.more(), label: 'More'},
-            ]}
-          />
+          <Navbar currentPathname={pathname} items={navItems} />
           <LanguageSelect />
         </Grid>
       </Grid>
@@ -109,7 +108,7 @@ const App = ({classes}) => {
             </Grid>
           </div>
           <div className={classes.noShrinkWrapper}>
-            <Footer />
+            <Footer navItems={navItems} />
           </div>
         </div>
       </Router>

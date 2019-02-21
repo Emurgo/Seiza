@@ -1,5 +1,25 @@
 [
   {
+    "id": "footer.subscribe.header",
+    "defaultMessage": "Let's stay in touch!",
+    "filepath": "src/components/visual/Footer.js"
+  },
+  {
+    "id": "footer.subscribe.text",
+    "defaultMessage": "Get access to subscriber and be the first to know when we launch something new!",
+    "filepath": "src/components/visual/Footer.js"
+  },
+  {
+    "id": "footer.subscribe.email",
+    "defaultMessage": "Email",
+    "filepath": "src/components/visual/Footer.js"
+  },
+  {
+    "id": "footer.subscribe.subscribe",
+    "defaultMessage": "Subscribe",
+    "filepath": "src/components/visual/Footer.js"
+  },
+  {
     "id": "blockchain.address.address",
     "defaultMessage": "Address ID",
     "filepath": "src/screens/Blockchain/Address/index.js"
