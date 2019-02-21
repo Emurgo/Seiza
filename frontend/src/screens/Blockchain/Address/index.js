@@ -7,7 +7,15 @@ import {withProps} from 'recompose'
 import {withRouter} from 'react-router'
 import QRCode from 'qrcode.react'
 import {defineMessages} from 'react-intl'
-import {Button, Modal, Typography} from '@material-ui/core'
+import {
+  withStyles,
+  createStyles,
+  Grid,
+  Tooltip,
+  IconButton,
+  Modal,
+  Typography,
+} from '@material-ui/core'
 
 import {GET_ADDRESS_BY_ADDRESS58} from '@/api/queries'
 import {withI18n} from '@/i18n/helpers'
@@ -56,13 +64,33 @@ const summaryMessages = defineMessages({
 
 const Heading = ({children}) => <Typography variant="h4">{children}</Typography>
 
-type QRModalProps = {isOpen: boolean, onClose: () => any, value: string}
+const modalStyles = (theme) =>
+  createStyles({
+    paper: {
+      position: 'absolute',
+      width: theme.spacing.unit * 50,
+      backgroundColor: theme.palette.background.paper,
+      boxShadow: theme.shadows[5],
+      padding: theme.spacing.unit * 4,
+      outline: 'none',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+    },
+  })
 
-const QRModal = ({isOpen, onClose, value}: QRModalProps) => (
+type QRModalProps = {isOpen: boolean, onClose: () => any, value: string, classes: any}
+
+const QRModal = withStyles(modalStyles)(({classes, isOpen, onClose, value}: QRModalProps) => (
   <Modal open={isOpen} onClose={onClose}>
-    <QRCode value={value} size={128} />
+    <div className={classes.paper}>
+      <Grid container justify="center">
+        <QRCode value={value} size={128} />
+        {value}
+      </Grid>
+    </div>
   </Modal>
-)
+))
 
 const _AddressSummaryCard = ({addressSummary, i18n}) => {
   const {translate, formatInt, formatAda} = i18n
@@ -94,6 +122,10 @@ const messages = defineMessages({
     id: `${I18N_PREFIX}.title`,
     defaultMessage: 'Address',
   },
+  showQRCode: {
+    id: `${I18N_PREFIX}.showQRCode`,
+    defaultMessage: 'Show QR code',
+  },
   transactionsHeading: {
     id: `${I18N_PREFIX}.transactionsHeading`,
     defaultMessage: 'Transactions',
@@ -118,9 +150,11 @@ const AddressScreen = ({addressDataProvider, i18n}) => {
               <WithModalState>
                 {({isOpen, openModal, closeModal}) => (
                   <React.Fragment>
-                    <Button onClick={openModal}>
-                      <img alt="show qr code" src={addressIcon} />
-                    </Button>
+                    <Tooltip title={translate(messages.showQRCode)}>
+                      <IconButton onClick={openModal}>
+                        <img alt="show qr code" src={addressIcon} />
+                      </IconButton>
+                    </Tooltip>
                     <QRModal value={address.address58} isOpen={isOpen} onClose={closeModal} />
                   </React.Fragment>
                 )}
