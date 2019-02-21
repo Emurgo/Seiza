@@ -107,7 +107,7 @@ const _AddressSummaryCard = ({addressSummary, i18n}) => {
   return (
     <SummaryCard>
       <Item label={label.addressType}>{addressSummary.type}</Item>
-      <Item label={label.transactionsCount}>{formatInt(addressSummary.transactionsCount)}></Item>
+      <Item label={label.transactionsCount}>{formatInt(addressSummary.transactionsCount)}</Item>
       <Item label={label.balance}>{formatAda(addressSummary.balance)}</Item>
       <Item label={label.totalAdaReceived}>{formatAda(addressSummary.totalAdaReceived)}</Item>
       <Item label={label.totalAdaSent}>{formatAda(addressSummary.totalAdaSent)}</Item>

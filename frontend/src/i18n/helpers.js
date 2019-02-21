@@ -30,6 +30,7 @@ export const getIntlFormatters = (intl) => {
       maximumFractionDigits: 0,
       ...options,
     })
+
   const _formatPercent = (x, options) => formatNumber(x, {style: 'percent', ...options})
   const _formatFiat = (x, options = {}) => {
     const {currency, digits = 4} = options
