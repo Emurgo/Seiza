@@ -1,4 +1,5 @@
 // @flow
+
 import React from 'react'
 import {graphql} from 'react-apollo'
 import {compose} from 'redux'
@@ -10,17 +11,17 @@ import {withStyles, createStyles, Card, Typography, Grid, Chip, Divider} from '@
 
 import classNames from 'classnames'
 
-import SimpleLayout from '@/components/visual/SimpleLayout'
+import {SummaryCard, SimpleLayout, LoadingInProgress, DebugApolloError} from '@/components/visual'
+import WithModalState from '@/components/headless/modalState'
+import ExpandableCard from '@/components/visual/ExpandableCard'
 
 import AdaIcon from '@/tmp_assets/ada-icon.png'
 import CopyIcon from '@/tmp_assets/copy-icon.png'
 
 import {ASSURANCE_LEVELS_VALUES} from '@/config'
 import {GET_TRANSACTION_BY_HASH} from '@/api/queries'
-import {withI18n, monthNumeralFormat} from '@/i18n/helpers'
+import {monthNumeralFormat, withI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
-import ExpandableCard from '@/components/visual/ExpandableCard'
-import WithModalState from '@/components/headless/modalState'
 
 const messages = defineMessages({
   header: {
@@ -59,6 +60,10 @@ const messages = defineMessages({
     id: 'transaction.fees',
     defaultMessage: 'Transaction Fees:',
   },
+  notAvailable: {
+    id: 'transaction.field.notAvailable',
+    defaultMessage: 'N/A',
+  },
   addressCount: {
     id: 'transaction.addressCount',
     defaultMessage: '{count, plural, =0 {# addresses} one {# address} other {# addresses}}',
@@ -86,9 +91,6 @@ const messages = defineMessages({
 
 const styles = (theme) =>
   createStyles({
-    title: {
-      fontSize: theme.typography.fontSize * 3,
-    },
     card: {
       margin: theme.spacing.unit * 2,
       padding: theme.spacing.unit * 2,
@@ -97,20 +99,6 @@ const styles = (theme) =>
       flex: 1,
       paddingLeft: theme.spacing.unit * 2,
       paddingRight: theme.spacing.unit * 2,
-    },
-    listRow: {
-      'paddingTop': theme.spacing.unit * 2.5,
-      'paddingBottom': theme.spacing.unit * 2.5,
-
-      '&:not(:last-child)': {
-        borderBottom: '0.5px solid gray',
-      },
-      '&:last-child': {
-        paddingBottom: 0,
-      },
-      '&:first-child': {
-        paddingTop: 0,
-      },
     },
     flex: {
       display: 'flex',
@@ -128,39 +116,6 @@ const styles = (theme) =>
       justifyContent: 'center',
     },
   })
-
-const withTransactionByHash = graphql(GET_TRANSACTION_BY_HASH, {
-  name: 'transaction',
-  options: ({txHash}) => ({
-    variables: {txHash},
-  }),
-})
-
-// TODO: extract to own reusable component in next PR
-const List = withStyles(styles)(({children, classes}) => {
-  return (
-    <Grid container direction="column">
-      {children}
-    </Grid>
-  )
-})
-
-const ListItem = withStyles(styles)(({label, children, classes}) => {
-  return (
-    <Grid
-      container
-      direction="row"
-      justify="space-between"
-      alignItems="center"
-      className={classes.listRow}
-    >
-      <Grid item>
-        <Typography variant="caption">{label}</Typography>
-      </Grid>
-      <Grid item>{children}</Grid>
-    </Grid>
-  )
-})
 
 const assuranceLevelStyles = (theme) =>
   createStyles({
@@ -320,17 +275,19 @@ const AddressesBreakdown = withI18n(({transaction, i18n}) => {
   )
 })
 
-const Transaction = (props) => {
-  const {classes} = props
-  const {loading, transaction} = props.transaction
-  const {translate, formatAda, formatInt, formatTimestamp} = props.i18n
-  // TODO: 'loading' check inside 'compose' once we have loading component
-  if (loading) {
-    return null
-  }
+const _Transaction = ({transaction, classes, i18n}) => {
+  const {translate, formatAda, formatInt, formatTimestamp} = i18n
 
+  const N_A = translate(messages.notAvailable)
+
+  const Item = ({label, children}) => (
+    <SummaryCard.Row>
+      <SummaryCard.Label>{translate(label)}</SummaryCard.Label>
+      <SummaryCard.Value>{children}</SummaryCard.Value>
+    </SummaryCard.Row>
+  )
   return (
-    <SimpleLayout title={translate(messages.header)}>
+    <React.Fragment>
       <Card className={classNames(classes.card, classes.flex)}>
         <Grid item className={classNames(classes.flex, classes.centeredFlex)}>
           <img alt="" src={AdaIcon} width={40} height={40} />
@@ -348,44 +305,76 @@ const Transaction = (props) => {
         </div>
       </Card>
 
-      <Card className={classes.card}>
-        <List>
-          <ListItem label={translate(messages.assuranceLevel)}>
-            <div>
-              {/* TODO finish possible labels high/medium/low */}
-              <Assurance txConfirmationsCount={transaction.confirmationsCount} />{' '}
-              <span>
-                {formatInt(transaction.confirmationsCount)}{' '}
-                {translate(messages.confirmations, {
-                  count: transaction.confirmationsCount,
-                })}
-              </span>
-            </div>
-          </ListItem>
-          <ListItem label={translate(messages.epoch)}>{formatInt(transaction.blockEpoch)}</ListItem>
-          <ListItem label={translate(messages.slot)}>{formatInt(transaction.blockSlot)}</ListItem>
-          <ListItem label={translate(messages.date)}>
-            {formatTimestamp(transaction.txTimeIssued, {format: monthNumeralFormat})}
-          </ListItem>
-          <ListItem label={translate(messages.size)}>
-            {formatInt(transaction.size, {defaultValue: 'TODO'})}
-          </ListItem>
-          <ListItem label={translate(messages.fees)}>
-            {`${formatAda(transaction.fees)} ADA`}
-          </ListItem>
-        </List>
-      </Card>
-      <WithModalState>
-        {({isOpen, toggle}) => (
-          <ExpandableCard
-            expanded={isOpen}
-            onChange={toggle}
-            renderHeader={() => <AddressesSummary transaction={transaction} />}
-            renderExpandedArea={() => <AddressesBreakdown transaction={transaction} />}
-            footer={isOpen ? translate(messages.hideAll) : translate(messages.seeAll)}
-          />
-        )}
-      </WithModalState>
+      <SummaryCard>
+        <Item label={messages.assuranceLevel}>
+          <div>
+            {/* TODO finish possible labels high/medium/low */}
+            <Assurance txConfirmationsCount={transaction.confirmationsCount} />{' '}
+            <span>
+              {formatInt(transaction.confirmationsCount)}{' '}
+              {translate(messages.confirmations, {
+                count: transaction.confirmationsCount,
+              })}
+            </span>
+          </div>
+        </Item>
+        <Item label={messages.epoch}>
+          {/* Note(ppershing): idx prepared due to upcoming backend change */}
+          {/*formatInt(idx(transaction, (_) => _.block.epoch), {defaultValue: N_A})*/}
+          {formatInt(transaction.blockEpoch, {defaultValue: N_A})}
+        </Item>
+
+        <Item label={messages.slot}>
+          {/*formatInt(idx(transaction, (_) => _.block.slot), {defaultValue: N_A})*/}
+          {formatInt(transaction.blockSlot, {defaultValue: N_A})}
+        </Item>
+        <Item label={messages.date}>
+          {/*formatTimestamp(idx(transaction, (_) => _.block.timeIssued), {
+            defaultValue: N_A,
+            format: monthNumeralFormat,
+          })*/}
+          {formatTimestamp(transaction.blockTimeIssued, {
+            defaultValue: N_A,
+            format: monthNumeralFormat,
+          })}
+        </Item>
+        <Item label={messages.size}>{formatInt(transaction.size, {defaultValue: N_A})}</Item>
+        <Item label={messages.fees}>{`${formatAda(transaction.fees)} ADA`}</Item>
+      </SummaryCard>
+    </React.Fragment>
+  )
+}
+
+const Transaction = compose(
+  withI18n,
+  withStyles(styles)
+)(_Transaction)
+
+const TransactionScreen = ({i18n, transactionDataProvider}) => {
+  const {translate} = i18n
+  const {loading, transaction, error} = transactionDataProvider
+  return (
+    <SimpleLayout title={translate(messages.header)}>
+      {loading ? (
+        <LoadingInProgress />
+      ) : error ? (
+        <DebugApolloError error={error} />
+      ) : (
+        <React.Fragment>
+          <Transaction transaction={transaction} />
+          <WithModalState>
+            {({isOpen, toggle}) => (
+              <ExpandableCard
+                expanded={isOpen}
+                onChange={toggle}
+                renderHeader={() => <AddressesSummary transaction={transaction} />}
+                renderExpandedArea={() => <AddressesBreakdown transaction={transaction} />}
+                footer={isOpen ? translate(messages.hideAll) : translate(messages.seeAll)}
+              />
+            )}
+          </WithModalState>
+        </React.Fragment>
+      )}
     </SimpleLayout>
   )
 }
@@ -395,7 +384,11 @@ export default compose(
   withProps((props) => ({
     txHash: props.match.params.txHash,
   })),
-  withTransactionByHash,
   withI18n,
-  withStyles(styles)
-)(Transaction)
+  graphql(GET_TRANSACTION_BY_HASH, {
+    name: 'transactionDataProvider',
+    options: ({txHash}) => ({
+      variables: {txHash},
+    }),
+  })
+)(TransactionScreen)

@@ -16,18 +16,14 @@ import WithModalState from '@/components/headless/modalState'
 import WithCopyToClipboard from '@/components/headless/copyToClipboard'
 import PagedTransactions from './PagedTransactions'
 
-import SimpleLayout from '@/components/visual/SimpleLayout'
+import {SimpleLayout, LoadingInProgress, DebugApolloError, SummaryCard} from '@/components/visual'
 
 import addressIcon from '@/tmp_assets/tmp-icon-address.png'
 import copyIcon from '@/tmp_assets/tmp-icon-copy.png'
 
 const I18N_PREFIX = 'blockchain.address'
 
-const generalSection = defineMessages({
-  heading: {
-    id: `${I18N_PREFIX}.heading`,
-    defaultMessage: 'General',
-  },
+const summaryMessages = defineMessages({
   address: {
     id: `${I18N_PREFIX}.address`,
     defaultMessage: 'Address ID',
@@ -54,22 +50,6 @@ const generalSection = defineMessages({
   },
 })
 
-const withAddressByAddress58: any = graphql(GET_ADDRESS_BY_ADDRESS58, {
-  name: 'address',
-  options: ({address58}: any) => ({
-    variables: {address58},
-  }),
-})
-
-const Item = ({label, children}) => (
-  <Grid container direction="row" justify="space-between" alignItems="center">
-    <Grid item>
-      <Typography variant="caption">{label}</Typography>
-    </Grid>
-    <Grid item>{children}</Grid>
-  </Grid>
-)
-const Value = ({value}) => <Typography>{value}</Typography>
 const Heading = ({children}) => <Typography variant="h4">{children}</Typography>
 
 type QRModalProps = {isOpen: boolean, onClose: () => any, value: string}
@@ -111,40 +91,59 @@ const AddressValueCard = ({label, value}) => (
   </WithModalState>
 )
 
-const Address = (props) => {
-  const {loading, address} = props.address
-  const {
-    i18n: {translate, formatInt, formatAda},
-  } = props
-  // TODO: 'loading' check inside 'compose' once we have loading component
-  if (loading) {
-    return null
-  }
+const _AddressSummaryCard = ({addressSummary, i18n}) => {
+  const {translate, formatInt, formatAda} = i18n
+
+  const label = summaryMessages
+
+  const Item = ({label, children}) => (
+    <SummaryCard.Row>
+      <SummaryCard.Label>{translate(label)}</SummaryCard.Label>
+      <SummaryCard.Value>{children}</SummaryCard.Value>
+    </SummaryCard.Row>
+  )
 
   return (
-    <SimpleLayout title={translate(generalSection.heading)}>
-      <AddressValueCard label={translate(generalSection.address)} value={address.address58} />
-      <Card>
-        <Grid container direction="column">
-          <Item label={translate(generalSection.addressType)}>
-            <Value value={address.type} />
-          </Item>
-          <Item label={translate(generalSection.transactionsCount)}>
-            <Value value={formatInt(address.transactionsCount)} />
-          </Item>
-          <Item label={translate(generalSection.balance)}>
-            <Value value={formatAda(address.balance)} />
-          </Item>
-          <Item label={translate(generalSection.totalAdaReceived)}>
-            <Value value={formatAda(address.totalAdaReceived)} />
-          </Item>
-          <Item label={translate(generalSection.totalAdaSent)}>
-            <Value value={formatAda(address.totalAdaSent)} />
-          </Item>
-        </Grid>
-      </Card>
-      <Heading>_Transactions_</Heading>
-      <PagedTransactions transactions={address.transactions} />
+    <SummaryCard>
+      <Item label={label.addressType}>{addressSummary.type}</Item>
+      <Item label={label.transactionsCount}>{formatInt(addressSummary.transactionsCount)}></Item>
+      <Item label={label.balance}>{formatAda(addressSummary.balance)}</Item>
+      <Item label={label.totalAdaReceived}>{formatAda(addressSummary.totalAdaReceived)}</Item>
+      <Item label={label.totalAdaSent}>{formatAda(addressSummary.totalAdaSent)}</Item>
+    </SummaryCard>
+  )
+}
+
+const AddressSummaryCard = withI18n(_AddressSummaryCard)
+
+const messages = defineMessages({
+  title: {
+    id: `${I18N_PREFIX}.title`,
+    defaultMessage: 'Address',
+  },
+  transactionsHeading: {
+    id: `${I18N_PREFIX}.transactionsHeading`,
+    defaultMessage: 'Transactions',
+  },
+})
+
+const AddressScreen = ({addressDataProvider, i18n}) => {
+  const {loading, address, error} = addressDataProvider
+  const {translate} = i18n
+  return (
+    <SimpleLayout title={translate(summaryMessages.title)}>
+      {loading ? (
+        <LoadingInProgress />
+      ) : error ? (
+        <DebugApolloError error={error} />
+      ) : (
+        <React.Fragment>
+          <AddressValueCard label={translate(summaryMessages.address)} value={address.address58} />
+          <AddressSummaryCard addressSummary={address} />
+          <Heading>{translate(messages.transactionsHeading)}</Heading>
+          <PagedTransactions transactions={address.transactions} />
+        </React.Fragment>
+      )}
     </SimpleLayout>
   )
 }
@@ -154,6 +153,11 @@ export default compose(
   withProps((props) => ({
     address58: props.match.params.address58,
   })),
-  withAddressByAddress58,
+  graphql(GET_ADDRESS_BY_ADDRESS58, {
+    name: 'addressDataProvider',
+    options: ({address58}: any) => ({
+      variables: {address58},
+    }),
+  }),
   withI18n
-)(Address)
+)(AddressScreen)

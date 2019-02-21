@@ -1,8 +1,8 @@
 import React from 'react'
+import {SimpleLayout} from '@/components/visual'
 
 export default () => (
-  <React.Fragment>
-    <h1>404</h1>
+  <SimpleLayout title="404">
     <h4>We are sorry, but the requested url could not be found</h4>
-  </React.Fragment>
+  </SimpleLayout>
 )

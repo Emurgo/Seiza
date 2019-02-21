@@ -11,7 +11,7 @@ const styles = (theme) =>
 const SimpleLayout = ({title, classes, children}) => (
   <Grid container direction="row" justify="space-around">
     <div className={classes.content}>
-      <Grid container direction="row" justify="space-around">
+      <Grid container direction="row" justify="center">
         <Typography align="justify" variant="h2">
           {title}
         </Typography>
