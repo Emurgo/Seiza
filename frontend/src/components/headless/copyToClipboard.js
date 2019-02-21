@@ -9,6 +9,7 @@ const WithCopyToClipboard = compose(
     },
     {
       registerCopy: () => (copiedValue) => ({copiedValue}),
+      reset: () => () => ({copiedValue: {}}),
     }
   ),
   withProps(({copiedValue, value}) => ({
@@ -20,7 +21,7 @@ const WithCopyToClipboard = compose(
       registerCopy(value)
     },
   })
-)(({children, copy, isCopied}) => children({copy, isCopied}))
+)(({children, copy, isCopied, reset}) => children({copy, isCopied, reset}))
 
 // Example usage:
 // <WithCopyToClipboard value={value}>{
