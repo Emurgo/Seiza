@@ -21,10 +21,6 @@ const AUTOUPDATE_REFRESH_INTERVAL_OFF = 0
 const I18N_PREFIX = 'blockchain.blockList'
 
 const messages = defineMessages({
-  header: {
-    id: 'blockchain.header',
-    defaultMessage: 'Blockchain',
-  },
   refreshState: {
     id: `${I18N_PREFIX}.refreshState`,
     defaultMessage: 'Refresh state',
@@ -52,14 +48,12 @@ const AutoUpdateSwitch = withI18n(({checked, onChange, i18n: {translate}}) => (
 
 const RecentBlocks = (props) => {
   const {
-    i18n: {translate},
     pagedBlocksResult: {loading, pagedBlocks},
   } = props
   return (
     <React.Fragment>
       {!loading && (
         <React.Fragment>
-          <Typography variant="h4">{translate(messages.header)}</Typography>
           <AutoUpdateSwitch checked={props.autoUpdate} onChange={props.onChangeAutoUpdate} />
           <BlocksTable
             rowsPerPage={props.rowsPerPage}
@@ -85,7 +79,6 @@ const _updateTotalCount = ({pagedBlocksResult, rowsPerPage, setTotalCount, setPa
 }
 
 export default compose(
-  withI18n,
   withProps(() => ({
     rowsPerPage: PAGE_SIZE,
   })),

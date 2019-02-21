@@ -1,6 +1,7 @@
 // @flow
 import React from 'react'
 import Card from '@material-ui/core/Card'
+import classnames from 'classnames'
 import {withStyles, createStyles} from '@material-ui/core'
 
 import IconEpoch from '../../tmp_assets/MetricsCard-icon-epoch.png'
@@ -47,10 +48,11 @@ type PropTypes = {
   value: string,
   icon: $Keys<typeof ICONS>,
   classes: any,
+  className: any,
 }
 
-const MetricsCard = ({metric, value, icon, classes}: PropTypes) => (
-  <Card className={classes.card}>
+const MetricsCard = ({metric, value, icon, classes, className}: PropTypes) => (
+  <Card className={classnames(classes.card, className)}>
     <img alt="" src={ICONS[icon]} />
     <div className={classes.inner}>
       <div className={classes.value}>{value}</div>

@@ -7,16 +7,11 @@ import Transaction from './Transaction'
 import Address from './Address'
 import Block from './Block'
 import PagedBlocks from './PagedBlocks'
-
-import OverviewMetrics from '@/screens/Home/OverviewMetrics'
-import Search from '@/screens/Home/Search'
+import BlockchainHeader from './BlockchainHeader'
 
 export default (props) => (
   <React.Fragment>
-    <div className="gradient-bg">
-      <OverviewMetrics />
-      <Search />
-    </div>
+    <BlockchainHeader />
     <Switch>
       <Route exact path={routeTo.blockchain()} component={PagedBlocks} />
       <Route path={routeTo.transaction(':txHash')} component={Transaction} />

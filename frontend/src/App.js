@@ -117,4 +117,7 @@ const App = ({classes}) => {
   )
 }
 
-export default compose(provideIntl, withStyles(mainLayoutStyles))(App)
+export default compose(
+  provideIntl,
+  withStyles(mainLayoutStyles)
+)(App)
