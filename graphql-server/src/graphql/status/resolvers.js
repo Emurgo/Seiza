@@ -1,4 +1,4 @@
-export const currentStatusResolver = (parent, args, context) => {
+export const currentStatusResolver = (root, args, context) => {
   const epochNumberResolver = () =>
     context.cardanoAPI.get('blocks/pages').then((response) => response[1][0].cbeEpoch)
 
@@ -7,7 +7,7 @@ export const currentStatusResolver = (parent, args, context) => {
     context.cardanoAPI.get('blocks/pages').then((response) => response[1][0].cbeSlot)
 
   // TODO: get this info
-  const decentralizationResolver = () => null
+  const decentralizationResolver = () => 0
 
   // TODO: get this info
   const priceResolver = () => ({
