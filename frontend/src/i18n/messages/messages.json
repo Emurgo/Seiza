@@ -1,10 +1,5 @@
 [
   {
-    "id": "blockchain.address.heading",
-    "defaultMessage": "General",
-    "filepath": "src/screens/Blockchain/Address/index.js"
-  },
-  {
     "id": "blockchain.address.address",
     "defaultMessage": "Address ID",
     "filepath": "src/screens/Blockchain/Address/index.js"
@@ -32,6 +27,16 @@
   {
     "id": "blockchain.address.totalAdaSent",
     "defaultMessage": "Total sent ADA",
+    "filepath": "src/screens/Blockchain/Address/index.js"
+  },
+  {
+    "id": "blockchain.address.title",
+    "defaultMessage": "Address",
+    "filepath": "src/screens/Blockchain/Address/index.js"
+  },
+  {
+    "id": "blockchain.address.transactionsHeading",
+    "defaultMessage": "Transactions",
     "filepath": "src/screens/Blockchain/Address/index.js"
   },
   {
@@ -63,6 +68,51 @@
     "id": "blockchain.block.title",
     "defaultMessage": "<Block>",
     "filepath": "src/screens/Blockchain/Block/index.js"
+  },
+  {
+    "id": "blockchain.header",
+    "defaultMessage": "Ada Blockchain Explorer",
+    "filepath": "src/screens/Blockchain/BlockchainHeader/index.js"
+  },
+  {
+    "id": "overview.metrics.not_available",
+    "defaultMessage": "N/A",
+    "filepath": "src/screens/Blockchain/BlockchainHeader/OverviewMetrics.js"
+  },
+  {
+    "id": "overview.metrics.epoch.label",
+    "defaultMessage": "Epoch",
+    "filepath": "src/screens/Blockchain/BlockchainHeader/OverviewMetrics.js"
+  },
+  {
+    "id": "overview.metrics.blocks.label",
+    "defaultMessage": "Blocks",
+    "filepath": "src/screens/Blockchain/BlockchainHeader/OverviewMetrics.js"
+  },
+  {
+    "id": "overview.metrics.decentralization.label",
+    "defaultMessage": "Decentralization",
+    "filepath": "src/screens/Blockchain/BlockchainHeader/OverviewMetrics.js"
+  },
+  {
+    "id": "overview.metrics.price.label",
+    "defaultMessage": "Price",
+    "filepath": "src/screens/Blockchain/BlockchainHeader/OverviewMetrics.js"
+  },
+  {
+    "id": "overview.metrics.poolCount.label",
+    "defaultMessage": "Pools",
+    "filepath": "src/screens/Blockchain/BlockchainHeader/OverviewMetrics.js"
+  },
+  {
+    "id": "overview.search.placeholder",
+    "defaultMessage": "Search addresses, epochs & slots on the Cardano network",
+    "filepath": "src/screens/Blockchain/BlockchainHeader/OverviewMetrics.js"
+  },
+  {
+    "id": "overview.search.placeholder",
+    "defaultMessage": "Search addresses, epochs & slots on the Cardano network",
+    "filepath": "src/screens/Blockchain/BlockchainHeader/Search.js"
   },
   {
     "id": "blockchain.blockList.table.epoch",
@@ -106,7 +156,12 @@
   },
   {
     "id": "blockchain.blockList.refreshState",
-    "defaultMessage": "Refresh state",
+    "defaultMessage": "Refresh state:",
+    "filepath": "src/screens/Blockchain/PagedBlocks/index.js"
+  },
+  {
+    "id": "blockchain.blockList.header",
+    "defaultMessage": "Recent blocks",
     "filepath": "src/screens/Blockchain/PagedBlocks/index.js"
   },
   {
@@ -155,6 +210,36 @@
     "filepath": "src/screens/Blockchain/Transaction/index.js"
   },
   {
+    "id": "transaction.field.notAvailable",
+    "defaultMessage": "N/A",
+    "filepath": "src/screens/Blockchain/Transaction/index.js"
+  },
+  {
+    "id": "transaction.addressCount",
+    "defaultMessage": "{count, plural, =0 {# addresses} one {# address} other {# addresses}}",
+    "filepath": "src/screens/Blockchain/Transaction/index.js"
+  },
+  {
+    "id": "transaction.from",
+    "defaultMessage": "From:",
+    "filepath": "src/screens/Blockchain/Transaction/index.js"
+  },
+  {
+    "id": "transaction.to",
+    "defaultMessage": "To:",
+    "filepath": "src/screens/Blockchain/Transaction/index.js"
+  },
+  {
+    "id": "transaction.seeAll",
+    "defaultMessage": "See all addresses",
+    "filepath": "src/screens/Blockchain/Transaction/index.js"
+  },
+  {
+    "id": "transaction.hideAll",
+    "defaultMessage": "Hide all addresses",
+    "filepath": "src/screens/Blockchain/Transaction/index.js"
+  },
+  {
     "id": "transaction.lowAssurance",
     "defaultMessage": "Low",
     "filepath": "src/screens/Blockchain/Transaction/index.js"
@@ -168,50 +253,5 @@
     "id": "transaction.highAssurance",
     "defaultMessage": "High",
     "filepath": "src/screens/Blockchain/Transaction/index.js"
-  },
-  {
-    "id": "blockchain.header",
-    "defaultMessage": "Ada Blockchain Explorer",
-    "filepath": "src/screens/Home/index.js"
-  },
-  {
-    "id": "overview.metrics.not_available",
-    "defaultMessage": "N/A",
-    "filepath": "src/screens/Home/OverviewMetrics.js"
-  },
-  {
-    "id": "overview.metrics.epoch.label",
-    "defaultMessage": "Epoch",
-    "filepath": "src/screens/Home/OverviewMetrics.js"
-  },
-  {
-    "id": "overview.metrics.blocks.label",
-    "defaultMessage": "Blocks",
-    "filepath": "src/screens/Home/OverviewMetrics.js"
-  },
-  {
-    "id": "overview.metrics.decentralization.label",
-    "defaultMessage": "Decentralization",
-    "filepath": "src/screens/Home/OverviewMetrics.js"
-  },
-  {
-    "id": "overview.metrics.price.label",
-    "defaultMessage": "Price",
-    "filepath": "src/screens/Home/OverviewMetrics.js"
-  },
-  {
-    "id": "overview.metrics.poolCount.label",
-    "defaultMessage": "Pools",
-    "filepath": "src/screens/Home/OverviewMetrics.js"
-  },
-  {
-    "id": "overview.search.placeholder",
-    "defaultMessage": "Search addresses, epochs & slots on the Cardano network",
-    "filepath": "src/screens/Home/OverviewMetrics.js"
-  },
-  {
-    "id": "overview.search.placeholder",
-    "defaultMessage": "Search addresses, epochs & slots on the Cardano network",
-    "filepath": "src/screens/Home/Search.js"
   }
 ]

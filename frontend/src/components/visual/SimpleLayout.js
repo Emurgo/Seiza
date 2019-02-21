@@ -1,18 +1,23 @@
 import React from 'react'
 import {Grid, Typography, withStyles, createStyles} from '@material-ui/core'
 
-const styles = (theme) =>
+const styles = ({palette}) =>
   createStyles({
-    content: {
-      width: '1000px',
+    container: {
+      paddingTop: '20px',
+      paddingBottom: '20px',
+    },
+    title: {
+      color: palette.grey[600],
+      borderBottom: `1px solid ${palette.grey[600]}`,
     },
   })
 
-const SimpleLayout = ({title, classes, children}) => (
-  <Grid container direction="row" justify="space-around">
-    <div className={classes.content}>
+const SimpleLayout = ({title, classes, children, width = '1500px'}) => (
+  <Grid container className={classes.container} direction="row" justify="space-around">
+    <div style={{width}}>
       <Grid container direction="row" justify="center">
-        <Typography align="justify" variant="h2">
+        <Typography className={classes.title} align="justify" variant="h4">
           {title}
         </Typography>
       </Grid>
