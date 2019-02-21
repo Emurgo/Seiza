@@ -5,6 +5,7 @@ import idx from 'idx'
 import {injectIntl, defineMessages} from 'react-intl'
 import {compose} from 'redux'
 import {graphql} from 'react-apollo'
+import {createStyles, withStyles} from '@material-ui/core'
 
 import MetricsCard from '@/components/visual/MetricsCard'
 import {getIntlFormatters} from '@/i18n/helpers'
@@ -40,7 +41,20 @@ const text = defineMessages({
   },
 })
 
-const OverviewMetrics = ({intl, data}) => {
+const styles = (theme) =>
+  createStyles({
+    wrapper: {
+      display: 'flex',
+      justifyContent: 'center',
+    },
+    card: {
+      width: '200px',
+      marginRight: '20px',
+      marginLeft: '20px',
+    },
+  })
+
+const OverviewMetrics = ({intl, data, classes}) => {
   const {translate, formatInt, formatPercent, formatFiat} = getIntlFormatters(intl)
   const status = data.currentStatus
 
@@ -53,16 +67,37 @@ const OverviewMetrics = ({intl, data}) => {
   const pools = formatInt(idx(status, (s) => s.stakePoolCount), {defaultValue: NA})
 
   return (
-    <div style={{display: 'flex', justifyContent: 'center'}}>
-      <MetricsCard icon="epoch" metric={translate(text.epochLabel)} value={epochNumber} />
-      <MetricsCard icon="blocks" metric={translate(text.blocksLabel)} value={blockCount} />
+    <div className={classes.wrapper}>
       <MetricsCard
+        className={classes.card}
+        icon="epoch"
+        metric={translate(text.epochLabel)}
+        value={epochNumber}
+      />
+      <MetricsCard
+        className={classes.card}
+        icon="blocks"
+        metric={translate(text.blocksLabel)}
+        value={blockCount}
+      />
+      <MetricsCard
+        className={classes.card}
         icon="decentralization"
         metric={translate(text.decentralizationLabel)}
         value={decentralization}
       />
-      <MetricsCard icon="price" metric={translate(text.priceLabel)} value={price} />
-      <MetricsCard icon="pools" metric={translate(text.poolsLabel)} value={pools} />
+      <MetricsCard
+        className={classes.card}
+        icon="price"
+        metric={translate(text.priceLabel)}
+        value={price}
+      />
+      <MetricsCard
+        className={classes.card}
+        icon="pools"
+        metric={translate(text.poolsLabel)}
+        value={pools}
+      />
     </div>
   )
 }
@@ -91,5 +126,6 @@ const withOverviewMetricsData = graphql(OVERVIEW_METRICS_QUERY, {
 
 export default compose(
   injectIntl,
+  withStyles(styles),
   withOverviewMetricsData
 )(OverviewMetrics)

@@ -1,152 +1,217 @@
 [
   {
+    "id": "blockchain.address.heading",
+    "defaultMessage": "General",
+    "filepath": "src/screens/Blockchain/Address/index.js"
+  },
+  {
+    "id": "blockchain.address.address",
+    "defaultMessage": "Address ID",
+    "filepath": "src/screens/Blockchain/Address/index.js"
+  },
+  {
+    "id": "blockchain.address.addressType",
+    "defaultMessage": "Address type",
+    "filepath": "src/screens/Blockchain/Address/index.js"
+  },
+  {
+    "id": "blockchain.address.transactionsCount",
+    "defaultMessage": "Total transactions for address",
+    "filepath": "src/screens/Blockchain/Address/index.js"
+  },
+  {
+    "id": "blockchain.address.balance",
+    "defaultMessage": "Address Balance",
+    "filepath": "src/screens/Blockchain/Address/index.js"
+  },
+  {
+    "id": "blockchain.address.totalAdaReceived",
+    "defaultMessage": "Total received ADA",
+    "filepath": "src/screens/Blockchain/Address/index.js"
+  },
+  {
+    "id": "blockchain.address.totalAdaSent",
+    "defaultMessage": "Total sent ADA",
+    "filepath": "src/screens/Blockchain/Address/index.js"
+  },
+  {
     "id": "block.fields.blockHash",
     "defaultMessage": "Block hash",
-    "filepath": "src/screens/Block/index.js"
+    "filepath": "src/screens/Blockchain/Block/index.js"
   },
   {
     "id": "block.fields.epoch",
     "defaultMessage": "Epoch",
-    "filepath": "src/screens/Block/index.js"
+    "filepath": "src/screens/Blockchain/Block/index.js"
   },
   {
     "id": "block.fields.slot",
     "defaultMessage": "Slot",
-    "filepath": "src/screens/Block/index.js"
+    "filepath": "src/screens/Blockchain/Block/index.js"
   },
   {
     "id": "block.fields.issuedAt",
     "defaultMessage": "Timestamp",
-    "filepath": "src/screens/Block/index.js"
+    "filepath": "src/screens/Blockchain/Block/index.js"
   },
   {
-    "id": "blockchain.header",
-    "defaultMessage": "Blockchain",
-    "filepath": "src/screens/Blockchain/index.js"
+    "id": "block.fields.transactionsCount",
+    "defaultMessage": "# Transactions",
+    "filepath": "src/screens/Blockchain/Block/index.js"
   },
   {
-    "id": "blockchain.blockList.refreshState",
-    "defaultMessage": "Refresh state",
-    "filepath": "src/screens/Blockchain/RecentBlocks/index.js"
+    "id": "blockchain.block.title",
+    "defaultMessage": "<Block>",
+    "filepath": "src/screens/Blockchain/Block/index.js"
   },
   {
     "id": "blockchain.blockList.table.epoch",
     "defaultMessage": "epoch",
-    "filepath": "src/screens/Blockchain/RecentBlocks/PaginatedTable.js"
+    "filepath": "src/screens/Blockchain/PagedBlocks/BlocksTable.js"
   },
   {
     "id": "blockchain.blockList.table.slot",
     "defaultMessage": "slot",
-    "filepath": "src/screens/Blockchain/RecentBlocks/PaginatedTable.js"
+    "filepath": "src/screens/Blockchain/PagedBlocks/BlocksTable.js"
   },
   {
     "id": "blockchain.blockList.table.slotLeader",
     "defaultMessage": "slot leader",
-    "filepath": "src/screens/Blockchain/RecentBlocks/PaginatedTable.js"
+    "filepath": "src/screens/Blockchain/PagedBlocks/BlocksTable.js"
   },
   {
     "id": "blockchain.blockList.table.time",
     "defaultMessage": "time",
-    "filepath": "src/screens/Blockchain/RecentBlocks/PaginatedTable.js"
+    "filepath": "src/screens/Blockchain/PagedBlocks/BlocksTable.js"
   },
   {
     "id": "blockchain.blockList.table.transactions",
     "defaultMessage": "transactions",
-    "filepath": "src/screens/Blockchain/RecentBlocks/PaginatedTable.js"
+    "filepath": "src/screens/Blockchain/PagedBlocks/BlocksTable.js"
   },
   {
     "id": "blockchain.blockList.table.totalSent",
     "defaultMessage": "total sent (ADA)",
-    "filepath": "src/screens/Blockchain/RecentBlocks/PaginatedTable.js"
+    "filepath": "src/screens/Blockchain/PagedBlocks/BlocksTable.js"
   },
   {
     "id": "blockchain.blockList.table.fees",
     "defaultMessage": "fees (ADA)",
-    "filepath": "src/screens/Blockchain/RecentBlocks/PaginatedTable.js"
+    "filepath": "src/screens/Blockchain/PagedBlocks/BlocksTable.js"
   },
   {
     "id": "blockchain.blockList.table.size",
     "defaultMessage": "size (B)",
-    "filepath": "src/screens/Blockchain/RecentBlocks/PaginatedTable.js"
+    "filepath": "src/screens/Blockchain/PagedBlocks/BlocksTable.js"
   },
   {
-    "id": "overview.metrics.not_available",
-    "defaultMessage": "N/A",
-    "filepath": "src/screens/Home/index.js"
-  },
-  {
-    "id": "overview.metrics.epoch.label",
-    "defaultMessage": "Epoch",
-    "filepath": "src/screens/Home/index.js"
-  },
-  {
-    "id": "overview.metrics.blocks.label",
-    "defaultMessage": "Blocks",
-    "filepath": "src/screens/Home/index.js"
-  },
-  {
-    "id": "overview.metrics.decentralization.label",
-    "defaultMessage": "Decentralization",
-    "filepath": "src/screens/Home/index.js"
-  },
-  {
-    "id": "overview.metrics.price.label",
-    "defaultMessage": "Price",
-    "filepath": "src/screens/Home/index.js"
-  },
-  {
-    "id": "overview.metrics.poolCount.label",
-    "defaultMessage": "Pools",
-    "filepath": "src/screens/Home/index.js"
-  },
-  {
-    "id": "overview.search.placeholder",
-    "defaultMessage": "Search addresses, epochs & slots on the Cardano network",
-    "filepath": "src/screens/Home/index.js"
+    "id": "blockchain.blockList.refreshState",
+    "defaultMessage": "Refresh state",
+    "filepath": "src/screens/Blockchain/PagedBlocks/index.js"
   },
   {
     "id": "transaction.header",
     "defaultMessage": "Transaction",
-    "filepath": "src/screens/Transaction/index.js"
+    "filepath": "src/screens/Blockchain/Transaction/index.js"
   },
   {
     "id": "transaction.transactionId",
     "defaultMessage": "Transaction Id",
-    "filepath": "src/screens/Transaction/index.js"
+    "filepath": "src/screens/Blockchain/Transaction/index.js"
   },
   {
     "id": "transaction.assuranceLevel",
     "defaultMessage": "Assurance Level:",
-    "filepath": "src/screens/Transaction/index.js"
+    "filepath": "src/screens/Blockchain/Transaction/index.js"
   },
   {
     "id": "transaction.confirmations",
     "defaultMessage": "{count, plural, =0 {confirmations} one {confirmation} other {confirmations}}",
-    "filepath": "src/screens/Transaction/index.js"
+    "filepath": "src/screens/Blockchain/Transaction/index.js"
   },
   {
     "id": "transaction.epoch",
     "defaultMessage": "Epoch:",
-    "filepath": "src/screens/Transaction/index.js"
+    "filepath": "src/screens/Blockchain/Transaction/index.js"
   },
   {
     "id": "transaction.slot",
     "defaultMessage": "Slot:",
-    "filepath": "src/screens/Transaction/index.js"
+    "filepath": "src/screens/Blockchain/Transaction/index.js"
   },
   {
     "id": "transaction.date",
     "defaultMessage": "Date:",
-    "filepath": "src/screens/Transaction/index.js"
+    "filepath": "src/screens/Blockchain/Transaction/index.js"
   },
   {
     "id": "transaction.size",
     "defaultMessage": "Size:",
-    "filepath": "src/screens/Transaction/index.js"
+    "filepath": "src/screens/Blockchain/Transaction/index.js"
   },
   {
     "id": "transaction.fees",
     "defaultMessage": "Transaction Fees:",
-    "filepath": "src/screens/Transaction/index.js"
+    "filepath": "src/screens/Blockchain/Transaction/index.js"
+  },
+  {
+    "id": "transaction.lowAssurance",
+    "defaultMessage": "Low",
+    "filepath": "src/screens/Blockchain/Transaction/index.js"
+  },
+  {
+    "id": "transaction.mediumAssurance",
+    "defaultMessage": "Medium",
+    "filepath": "src/screens/Blockchain/Transaction/index.js"
+  },
+  {
+    "id": "transaction.highAssurance",
+    "defaultMessage": "High",
+    "filepath": "src/screens/Blockchain/Transaction/index.js"
+  },
+  {
+    "id": "blockchain.header",
+    "defaultMessage": "Ada Blockchain Explorer",
+    "filepath": "src/screens/Home/index.js"
+  },
+  {
+    "id": "overview.metrics.not_available",
+    "defaultMessage": "N/A",
+    "filepath": "src/screens/Home/OverviewMetrics.js"
+  },
+  {
+    "id": "overview.metrics.epoch.label",
+    "defaultMessage": "Epoch",
+    "filepath": "src/screens/Home/OverviewMetrics.js"
+  },
+  {
+    "id": "overview.metrics.blocks.label",
+    "defaultMessage": "Blocks",
+    "filepath": "src/screens/Home/OverviewMetrics.js"
+  },
+  {
+    "id": "overview.metrics.decentralization.label",
+    "defaultMessage": "Decentralization",
+    "filepath": "src/screens/Home/OverviewMetrics.js"
+  },
+  {
+    "id": "overview.metrics.price.label",
+    "defaultMessage": "Price",
+    "filepath": "src/screens/Home/OverviewMetrics.js"
+  },
+  {
+    "id": "overview.metrics.poolCount.label",
+    "defaultMessage": "Pools",
+    "filepath": "src/screens/Home/OverviewMetrics.js"
+  },
+  {
+    "id": "overview.search.placeholder",
+    "defaultMessage": "Search addresses, epochs & slots on the Cardano network",
+    "filepath": "src/screens/Home/OverviewMetrics.js"
+  },
+  {
+    "id": "overview.search.placeholder",
+    "defaultMessage": "Search addresses, epochs & slots on the Cardano network",
+    "filepath": "src/screens/Home/Search.js"
   }
 ]

@@ -152,11 +152,11 @@ const assuranceMessages = defineMessages({
     defaultMessage: 'Low',
   },
   MEDIUM: {
-    id: 'transaction.lowAssurance',
+    id: 'transaction.mediumAssurance',
     defaultMessage: 'Medium',
   },
   HIGH: {
-    id: 'transaction.lowAssurance',
+    id: 'transaction.highAssurance',
     defaultMessage: 'High',
   },
 })
