@@ -5,7 +5,7 @@ import {defineMessages} from 'react-intl'
 import {Link} from 'react-router-dom'
 import {withStyles} from '@material-ui/core'
 
-import PaginatedTable from '@/components/visual/PaginatedTable'
+import Table from '@/components/visual/Table'
 import {withI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
 import {withProps} from 'recompose'
@@ -60,17 +60,7 @@ const LinkField = withStyles(linkFieldStyles)(({children, to, classes}) => (
   </Link>
 ))
 
-const BlocksTable = (props) => (
-  <PaginatedTable
-    rowsPerPage={props.rowsPerPage}
-    page={props.page}
-    totalCount={props.totalCount}
-    onChangePage={props.onChangePage}
-    rowsPerPageOptions={[props.rowsPerPage]}
-    bodyData={props.bodyData}
-    headerData={props.headerData}
-  />
-)
+const BlocksTable = (props) => <Table bodyData={props.bodyData} headerData={props.headerData} />
 
 export default compose(
   withI18n,

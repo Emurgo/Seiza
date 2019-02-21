@@ -131,7 +131,7 @@ const AddressScreen = ({addressDataProvider, i18n}) => {
   const {loading, address, error} = addressDataProvider
   const {translate} = i18n
   return (
-    <SimpleLayout title={translate(summaryMessages.title)}>
+    <SimpleLayout title={translate(messages.title)}>
       {loading ? (
         <LoadingInProgress />
       ) : error ? (

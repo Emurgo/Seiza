@@ -5,9 +5,10 @@ import {graphql} from 'react-apollo'
 import {compose} from 'redux'
 import {withHandlers, withStateHandlers, withProps} from 'recompose'
 import {defineMessages} from 'react-intl'
-import {Switch, Typography, Grid} from '@material-ui/core'
+import {Switch, Typography, Grid, withStyles, createStyles} from '@material-ui/core'
 
-import {getPageCount} from '../../../components/visual/Pagination'
+import Pagination, {getPageCount} from '../../../components/visual/Pagination'
+import {SimpleLayout} from '@/components/visual'
 import BlocksTable from './BlocksTable'
 import {onDidUpdate, onDidMount} from '../../../components/HOC/lifecycles'
 import {GET_PAGED_BLOCKS} from '../../../api/queries'
@@ -23,7 +24,11 @@ const I18N_PREFIX = 'blockchain.blockList'
 const messages = defineMessages({
   refreshState: {
     id: `${I18N_PREFIX}.refreshState`,
-    defaultMessage: 'Refresh state',
+    defaultMessage: 'Refresh state:',
+  },
+  header: {
+    id: `${I18N_PREFIX}.header`,
+    defaultMessage: 'Recent blocks',
   },
 })
 
@@ -35,10 +40,20 @@ const withBlocks = graphql(GET_PAGED_BLOCKS, {
   }),
 })
 
-const AutoUpdateSwitch = withI18n(({checked, onChange, i18n: {translate}}) => (
+const autoUpdateStyles = (theme) =>
+  createStyles({
+    text: {
+      textTransform: 'uppercase',
+    },
+  })
+
+const AutoUpdateSwitch = compose(
+  withStyles(autoUpdateStyles),
+  withI18n
+)(({checked, onChange, classes, i18n: {translate}}) => (
   <Grid container direction="row" justify="flex-start" alignItems="center">
     <Grid item>
-      <Typography>{translate(messages.refreshState)}</Typography>
+      <Typography className={classes.text}>{translate(messages.refreshState)}&nbsp;</Typography>
     </Grid>
     <Grid item>
       <Switch color="primary" checked={checked} onChange={onChange} />
@@ -46,24 +61,44 @@ const AutoUpdateSwitch = withI18n(({checked, onChange, i18n: {translate}}) => (
   </Grid>
 ))
 
+const styles = (theme) =>
+  createStyles({
+    wrapper: {
+      padding: '5px 10px',
+    },
+  })
+
 const RecentBlocks = (props) => {
   const {
     pagedBlocksResult: {loading, pagedBlocks},
+    classes,
+    i18n: {translate},
   } = props
   return (
     <React.Fragment>
       {!loading && (
-        <React.Fragment>
-          <AutoUpdateSwitch checked={props.autoUpdate} onChange={props.onChangeAutoUpdate} />
-          <BlocksTable
-            rowsPerPage={props.rowsPerPage}
-            page={props.page}
-            totalCount={props.totalCount}
-            onChangePage={props.onChangePage}
-            blocks={pagedBlocks.blocks}
-            rowsPerPageOptions={[props.rowsPerPage]}
-          />
-        </React.Fragment>
+        <SimpleLayout title={translate(messages.header)}>
+          <Grid
+            className={classes.wrapper}
+            container
+            direction="row"
+            alignItems="center"
+            justify="space-between"
+          >
+            <Grid item>
+              <AutoUpdateSwitch checked={props.autoUpdate} onChange={props.onChangeAutoUpdate} />
+            </Grid>
+            <Grid item>
+              <Pagination
+                count={props.totalCount}
+                rowsPerPage={props.rowsPerPage}
+                page={props.page}
+                onChangePage={props.onChangePage}
+              />
+            </Grid>
+          </Grid>
+          <BlocksTable blocks={pagedBlocks.blocks} />
+        </SimpleLayout>
       )}
     </React.Fragment>
   )
@@ -79,6 +114,8 @@ const _updateTotalCount = ({pagedBlocksResult, rowsPerPage, setTotalCount, setPa
 }
 
 export default compose(
+  withStyles(styles),
+  withI18n,
   withProps(() => ({
     rowsPerPage: PAGE_SIZE,
   })),

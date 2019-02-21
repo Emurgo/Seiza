@@ -1,5 +1,6 @@
 // @flow
 import React from 'react'
+import classnames from 'classnames'
 import {IconButton, Grid, Input, withStyles, withTheme} from '@material-ui/core'
 import {
   FirstPage as FirstPageArrow,
@@ -13,9 +14,27 @@ import {withHandlers, withStateHandlers, withProps} from 'recompose'
 import {onDidUpdate} from '../../components/HOC/lifecycles'
 import {isInRange} from '../../helpers/validators'
 
-const styles = (theme) => ({
+// TODO? intl for aria-labels
+
+const styles = ({palette}) => ({
   input: {
-    width: '80px',
+    paddingLeft: '10px',
+    paddingRight: '10px',
+    width: '100px', // Note: Could be set from outside if needed
+  },
+  editableInput: {
+    border: `1px solid ${palette.grey[500]}`,
+    borderRadius: '5px',
+  },
+  arrow: {
+    color: palette.primary.dark,
+  },
+  arrowWrapper: {
+    padding: '4px !important',
+  },
+  divider: {
+    color: palette.grey[500],
+    paddingLeft: '10px',
   },
 })
 
@@ -65,26 +84,43 @@ export default compose(
     onGoToPageSubmit,
   }) => (
     <Grid container direction="row" justify="center" alignItems="center" spacing={24}>
-      <Grid item>
-        <IconButton onClick={onFirstPageButtonClick} disabled={page === 0} aria-label="First Page">
+      <Grid item className={classes.arrowWrapper}>
+        <IconButton
+          className={classes.arrow}
+          onClick={onFirstPageButtonClick}
+          disabled={page === 0}
+          aria-label="First Page"
+        >
           {theme.direction === 'rtl' ? <LastPageArrow /> : <FirstPageArrow />}
         </IconButton>
       </Grid>
-      <Grid item>
-        <IconButton onClick={onBackButtonClick} disabled={page === 0} aria-label="Previous Page">
+      <Grid item className={classes.arrowWrapper}>
+        <IconButton
+          className={classes.arrow}
+          onClick={onBackButtonClick}
+          disabled={page === 0}
+          aria-label="Previous Page"
+        >
           {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
         </IconButton>
       </Grid>
       <Grid item>
-        <Grid container direction="row">
+        <Grid container direction="row" alignItems="center" justify="center">
           <form onSubmit={onGoToPageSubmit}>
-            <Input value={goToPage} onChange={onGoToPageChange} className={classes.input} />
+            <Input
+              disableUnderline
+              value={goToPage}
+              onChange={onGoToPageChange}
+              className={classnames(classes.input, classes.editableInput)}
+            />
           </form>
-          <Input disabled value={`/ ${pageCount}`} className={classes.input} />
+          <span className={classes.divider}>/</span>
+          <Input disableUnderline readOnly value={pageCount} className={classes.input} />
         </Grid>
       </Grid>
-      <Grid item>
+      <Grid item className={classes.arrowWrapper}>
         <IconButton
+          className={classes.arrow}
           onClick={onNextButtonClick}
           disabled={page >= pageCount - 1}
           aria-label="Next Page"
@@ -92,8 +128,9 @@ export default compose(
           {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
         </IconButton>
       </Grid>
-      <Grid item>
+      <Grid item className={classes.arrowWrapper}>
         <IconButton
+          className={classes.arrow}
           onClick={onLastPageButtonClick}
           disabled={page >= pageCount - 1}
           aria-label="Last Page"
