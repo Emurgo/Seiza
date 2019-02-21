@@ -7,16 +7,20 @@ import {withProps} from 'recompose'
 import {withRouter} from 'react-router'
 import {Link} from 'react-router-dom'
 import {defineMessages} from 'react-intl'
-import {withStyles, createStyles, Card, Typography, Grid, Chip, Divider} from '@material-ui/core'
+import {withStyles, createStyles, Typography, Grid, Divider} from '@material-ui/core'
 
-import classNames from 'classnames'
-
-import {SummaryCard, SimpleLayout, LoadingInProgress, DebugApolloError} from '@/components/visual'
+import {
+  SummaryCard,
+  SimpleLayout,
+  LoadingInProgress,
+  DebugApolloError,
+  EntityIdCard,
+  ExpandableCard,
+} from '@/components/visual'
 import WithModalState from '@/components/headless/modalState'
-import ExpandableCard from '@/components/visual/ExpandableCard'
+import AssuranceChip from '@/components/common/AssuranceChip'
 
 import AdaIcon from '@/tmp_assets/ada-icon.png'
-import CopyIcon from '@/tmp_assets/copy-icon.png'
 
 import {ASSURANCE_LEVELS_VALUES} from '@/config'
 import {GET_TRANSACTION_BY_HASH} from '@/api/queries'
@@ -86,58 +90,8 @@ const messages = defineMessages({
   },
 })
 
-// TODO: flow
-// TODO: very temporary styles
-
-const styles = (theme) =>
-  createStyles({
-    card: {
-      margin: theme.spacing.unit * 2,
-      padding: theme.spacing.unit * 2,
-    },
-    cardContent: {
-      flex: 1,
-      paddingLeft: theme.spacing.unit * 2,
-      paddingRight: theme.spacing.unit * 2,
-    },
-    flex: {
-      display: 'flex',
-    },
-    chip: {
-      maxHeight: theme.spacing.unit * 2,
-      fontSize: theme.typography.fontSize * 0.8,
-      textTransform: 'uppercase',
-      background: '#8AE8D4',
-      color: 'white',
-      marginRight: theme.spacing.unit * 1.5,
-    },
-    centeredFlex: {
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-  })
-
-const assuranceLevelStyles = (theme) =>
-  createStyles({
-    LOW: {
-      color: 'white',
-      backgroundColor: '#FF3860',
-    },
-    MEDIUM: {
-      color: 'black',
-      backgroundColor: '#FFDD57',
-    },
-    HIGH: {
-      color: 'white',
-      backgroundColor: '#87E6D4',
-    },
-    uppercase: {
-      textTransform: 'uppercase',
-    },
-  })
-
-type AssuranceLevel = 'LOW' | 'MEDIUM' | 'HIGH'
-const assuranceFromConfirmations = (cnt: number): AssuranceLevel => {
+type AssuranceEnum = 'LOW' | 'MEDIUM' | 'HIGH'
+const assuranceFromConfirmations = (cnt: number): AssuranceEnum => {
   if (cnt <= ASSURANCE_LEVELS_VALUES.LOW) {
     return 'LOW'
   } else if (cnt <= ASSURANCE_LEVELS_VALUES.MEDIUM) {
@@ -146,29 +100,6 @@ const assuranceFromConfirmations = (cnt: number): AssuranceLevel => {
     return 'HIGH'
   }
 }
-const assuranceMessages = defineMessages({
-  LOW: {
-    id: 'transaction.lowAssurance',
-    defaultMessage: 'Low',
-  },
-  MEDIUM: {
-    id: 'transaction.mediumAssurance',
-    defaultMessage: 'Medium',
-  },
-  HIGH: {
-    id: 'transaction.highAssurance',
-    defaultMessage: 'High',
-  },
-})
-const Assurance = compose(
-  withStyles(assuranceLevelStyles),
-  withI18n
-)(({classes, txConfirmationsCount, i18n}) => {
-  const assurance = assuranceFromConfirmations(txConfirmationsCount)
-  const text = i18n.translate(assuranceMessages[assurance])
-  const className = classes[assurance]
-  return <Chip label={text} className={classNames(className, classes.uppercase)} />
-})
 
 const Summary = withI18n(({i18n, caption, value}) => (
   <Grid container justify="space-between" alignItems="center">
@@ -275,7 +206,7 @@ const AddressesBreakdown = withI18n(({transaction, i18n}) => {
   )
 })
 
-const _Transaction = ({transaction, classes, i18n}) => {
+const _TransactionSummary = ({transaction, i18n}) => {
   const {translate, formatAda, formatInt, formatTimestamp} = i18n
 
   const N_A = translate(messages.notAvailable)
@@ -286,69 +217,47 @@ const _Transaction = ({transaction, classes, i18n}) => {
       <SummaryCard.Value>{children}</SummaryCard.Value>
     </SummaryCard.Row>
   )
+
   return (
-    <React.Fragment>
-      <Card className={classNames(classes.card, classes.flex)}>
-        <Grid item className={classNames(classes.flex, classes.centeredFlex)}>
-          <img alt="" src={AdaIcon} width={40} height={40} />
-        </Grid>
-
-        <div className={classes.cardContent}>
-          <Typography variant="caption">{translate(messages.transactionId)}</Typography>
-          <Grid container direction="row" justify="space-between" alignItems="center">
-            <span>{transaction.txHash}</span>
-            {/* TODO: copy to icon wrapper */}
-            <span>
-              <img alt="copy to clipboard" src={CopyIcon} width={30} height={30} />
-            </span>
-          </Grid>
+    <SummaryCard>
+      <Item label={messages.assuranceLevel}>
+        <div>
+          <AssuranceChip level={assuranceFromConfirmations(transaction.confirmationsCount)} />{' '}
+          <span>
+            {formatInt(transaction.confirmationsCount)}{' '}
+            {translate(messages.confirmations, {
+              count: transaction.confirmationsCount,
+            })}
+          </span>
         </div>
-      </Card>
+      </Item>
+      <Item label={messages.epoch}>
+        {/* Note(ppershing): idx prepared due to upcoming backend change */}
+        {/*formatInt(idx(transaction, (_) => _.block.epoch), {defaultValue: N_A})*/}
+        {formatInt(transaction.blockEpoch, {defaultValue: N_A})}
+      </Item>
 
-      <SummaryCard>
-        <Item label={messages.assuranceLevel}>
-          <div>
-            {/* TODO finish possible labels high/medium/low */}
-            <Assurance txConfirmationsCount={transaction.confirmationsCount} />{' '}
-            <span>
-              {formatInt(transaction.confirmationsCount)}{' '}
-              {translate(messages.confirmations, {
-                count: transaction.confirmationsCount,
-              })}
-            </span>
-          </div>
-        </Item>
-        <Item label={messages.epoch}>
-          {/* Note(ppershing): idx prepared due to upcoming backend change */}
-          {/*formatInt(idx(transaction, (_) => _.block.epoch), {defaultValue: N_A})*/}
-          {formatInt(transaction.blockEpoch, {defaultValue: N_A})}
-        </Item>
-
-        <Item label={messages.slot}>
-          {/*formatInt(idx(transaction, (_) => _.block.slot), {defaultValue: N_A})*/}
-          {formatInt(transaction.blockSlot, {defaultValue: N_A})}
-        </Item>
-        <Item label={messages.date}>
-          {/*formatTimestamp(idx(transaction, (_) => _.block.timeIssued), {
+      <Item label={messages.slot}>
+        {/*formatInt(idx(transaction, (_) => _.block.slot), {defaultValue: N_A})*/}
+        {formatInt(transaction.blockSlot, {defaultValue: N_A})}
+      </Item>
+      <Item label={messages.date}>
+        {/*formatTimestamp(idx(transaction, (_) => _.block.timeIssued), {
             defaultValue: N_A,
             format: monthNumeralFormat,
           })*/}
-          {formatTimestamp(transaction.blockTimeIssued, {
-            defaultValue: N_A,
-            format: monthNumeralFormat,
-          })}
-        </Item>
-        <Item label={messages.size}>{formatInt(transaction.size, {defaultValue: N_A})}</Item>
-        <Item label={messages.fees}>{`${formatAda(transaction.fees)} ADA`}</Item>
-      </SummaryCard>
-    </React.Fragment>
+        {formatTimestamp(transaction.blockTimeIssued, {
+          defaultValue: N_A,
+          format: monthNumeralFormat,
+        })}
+      </Item>
+      <Item label={messages.size}>{formatInt(transaction.size, {defaultValue: N_A})}</Item>
+      <Item label={messages.fees}>{`${formatAda(transaction.fees)} ADA`}</Item>
+    </SummaryCard>
   )
 }
 
-const Transaction = compose(
-  withI18n,
-  withStyles(styles)
-)(_Transaction)
+const TransactionSummary = compose(withI18n)(_TransactionSummary)
 
 const TransactionScreen = ({i18n, transactionDataProvider}) => {
   const {translate} = i18n
@@ -361,7 +270,12 @@ const TransactionScreen = ({i18n, transactionDataProvider}) => {
         <DebugApolloError error={error} />
       ) : (
         <React.Fragment>
-          <Transaction transaction={transaction} />
+          <EntityIdCard
+            label={translate(messages.transactionId)}
+            value={transaction.txHash}
+            iconRenderer={<img alt="" src={AdaIcon} width={40} height={40} />}
+          />
+          <TransactionSummary transaction={transaction} />
           <WithModalState>
             {({isOpen, toggle}) => (
               <ExpandableCard

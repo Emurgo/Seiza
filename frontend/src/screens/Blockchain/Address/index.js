@@ -7,19 +7,31 @@ import {withProps} from 'recompose'
 import {withRouter} from 'react-router'
 import QRCode from 'qrcode.react'
 import {defineMessages} from 'react-intl'
-import {Button, Grid, Modal, Card, Typography} from '@material-ui/core'
+import {
+  withStyles,
+  createStyles,
+  Grid,
+  Tooltip,
+  IconButton,
+  Modal,
+  Typography,
+} from '@material-ui/core'
 
 import {GET_ADDRESS_BY_ADDRESS58} from '@/api/queries'
 import {withI18n} from '@/i18n/helpers'
 
 import WithModalState from '@/components/headless/modalState'
-import WithCopyToClipboard from '@/components/headless/copyToClipboard'
 import PagedTransactions from './PagedTransactions'
 
-import {SimpleLayout, LoadingInProgress, DebugApolloError, SummaryCard} from '@/components/visual'
+import {
+  EntityIdCard,
+  SimpleLayout,
+  LoadingInProgress,
+  DebugApolloError,
+  SummaryCard,
+} from '@/components/visual'
 
 import addressIcon from '@/tmp_assets/tmp-icon-address.png'
-import copyIcon from '@/tmp_assets/tmp-icon-copy.png'
 
 const I18N_PREFIX = 'blockchain.address'
 
@@ -52,44 +64,33 @@ const summaryMessages = defineMessages({
 
 const Heading = ({children}) => <Typography variant="h4">{children}</Typography>
 
-type QRModalProps = {isOpen: boolean, onClose: () => any, value: string}
+const modalStyles = (theme) =>
+  createStyles({
+    paper: {
+      position: 'absolute',
+      width: theme.spacing.unit * 50,
+      backgroundColor: theme.palette.background.paper,
+      boxShadow: theme.shadows[5],
+      padding: theme.spacing.unit * 4,
+      outline: 'none',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+    },
+  })
 
-const QRModal = ({isOpen, onClose, value}: QRModalProps) => (
+type QRModalProps = {isOpen: boolean, onClose: () => any, value: string, classes: any}
+
+const QRModal = withStyles(modalStyles)(({classes, isOpen, onClose, value}: QRModalProps) => (
   <Modal open={isOpen} onClose={onClose}>
-    <QRCode value={value} size={128} />
+    <div className={classes.paper}>
+      <Grid container justify="center">
+        <QRCode value={value} size={128} />
+        {value}
+      </Grid>
+    </div>
   </Modal>
-)
-
-const AddressValueCard = ({label, value}) => (
-  <WithModalState>
-    {({isOpen, openModal, closeModal}) => (
-      <Card>
-        <Grid container direction="row" justify="space-between">
-          <Grid item>
-            <Button onClick={openModal}>
-              <img alt="show qr code" src={addressIcon} />
-            </Button>
-          </Grid>
-          <Grid item xs container direction="column">
-            <Typography variant="caption">{label}</Typography>
-            <Typography>{value}</Typography>
-          </Grid>
-          <WithCopyToClipboard value={value}>
-            {({copy, isCopied}) => (
-              <React.Fragment>
-                <Button onClick={copy}>
-                  <img alt="copy to clipboard" src={copyIcon} />
-                </Button>
-                {isCopied && 'copied'}
-              </React.Fragment>
-            )}
-          </WithCopyToClipboard>
-        </Grid>
-        <QRModal value={value} isOpen={isOpen} onClose={closeModal} />
-      </Card>
-    )}
-  </WithModalState>
-)
+))
 
 const _AddressSummaryCard = ({addressSummary, i18n}) => {
   const {translate, formatInt, formatAda} = i18n
@@ -121,6 +122,10 @@ const messages = defineMessages({
     id: `${I18N_PREFIX}.title`,
     defaultMessage: 'Address',
   },
+  showQRCode: {
+    id: `${I18N_PREFIX}.showQRCode`,
+    defaultMessage: 'Show QR code',
+  },
   transactionsHeading: {
     id: `${I18N_PREFIX}.transactionsHeading`,
     defaultMessage: 'Transactions',
@@ -138,7 +143,24 @@ const AddressScreen = ({addressDataProvider, i18n}) => {
         <DebugApolloError error={error} />
       ) : (
         <React.Fragment>
-          <AddressValueCard label={translate(summaryMessages.address)} value={address.address58} />
+          <EntityIdCard
+            label={translate(summaryMessages.address)}
+            value={address.address58}
+            iconRenderer={
+              <WithModalState>
+                {({isOpen, openModal, closeModal}) => (
+                  <React.Fragment>
+                    <Tooltip title={translate(messages.showQRCode)}>
+                      <IconButton onClick={openModal}>
+                        <img alt="show qr code" src={addressIcon} />
+                      </IconButton>
+                    </Tooltip>
+                    <QRModal value={address.address58} isOpen={isOpen} onClose={closeModal} />
+                  </React.Fragment>
+                )}
+              </WithModalState>
+            }
+          />
           <AddressSummaryCard addressSummary={address} />
           <Heading>{translate(messages.transactionsHeading)}</Heading>
           <PagedTransactions transactions={address.transactions} />
