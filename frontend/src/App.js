@@ -65,7 +65,7 @@ const TopBar = withRouter(({location: {pathname}}) => {
 })
 
 const mainLayoutStyles = {
-  themeProvider: {
+  maxHeight: {
     height: '100%',
   },
   pageWrapper: {
@@ -83,7 +83,7 @@ const mainLayoutStyles = {
 
 const App = ({classes}) => {
   return (
-    <MuiThemeProvider className={classes.themeProvider} theme={theme}>
+    <MuiThemeProvider className={classes.maxHeight} theme={theme}>
       <Router>
         <div className={classes.pageWrapper}>
           <div className={classes.noShrinkWrapper}>
@@ -96,8 +96,8 @@ const App = ({classes}) => {
                 Note: Custom flex layout is used to make screen view span all width expect
                 topBar and footer (when using Grid for it, it behaves strange when shrinked).
             */}
-            <Grid container direction="column">
-              <Grid item>
+            <Grid container direction="column" className={classes.maxHeight}>
+              <Grid item className={classes.maxHeight}>
                 <Switch>
                   <Route exact path={routeTo.home()} component={Home} />
                   <Route path={routeTo.blockchain()} component={Blockchain} />
