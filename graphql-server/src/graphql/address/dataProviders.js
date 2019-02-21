@@ -59,4 +59,11 @@ export const facadeAddress = (data: AddressAPIType): PartialFacadeAddress => ({
   balance: data.caBalance.getCoin,
   totalAdaReceived: getTotalAdaReceived(data.caAddress, data.caTxList),
   totalAdaSent: getTotalAdaSent(data.caAddress, data.caTxList),
+  _transactionIds: data.caTxList.map((tx) => tx.ctbId),
 })
+
+export const fetchAddress = async (api: any, address58: string) => {
+  const rawAddress = await api.get(`addresses/summary/${address58}`)
+
+  return facadeAddress(rawAddress)
+}

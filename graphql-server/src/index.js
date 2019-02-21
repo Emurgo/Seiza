@@ -3,9 +3,10 @@ import 'babel-polyfill'
 import {ApolloServer, gql} from 'apollo-server'
 import {mergeTypes} from 'merge-graphql-schemas'
 
-import {addressResolver} from './graphql/address/resolvers'
-import {transactionResolver} from './graphql/transaction/resolvers'
-import {pagedBlocksResolver, blockResolver} from './graphql/block/resolvers'
+import {fetchAddress} from './graphql/address/dataProviders'
+import {fetchBlockSummary, fetchBlockTransactionIds} from './graphql/block/dataProviders'
+import {fetchTransaction} from './graphql/transaction/dataProviders'
+import {pagedBlocksResolver} from './graphql/block/resolvers'
 import {currentStatusResolver} from './graphql/status/resolvers'
 
 import transactionTypes from './graphql/transaction/types'
@@ -30,8 +31,9 @@ const resolvers = {
   Timestamp,
   AdaAmount,
   Query: {
-    transaction: transactionResolver,
-    address: addressResolver,
+    transaction: (root, args, context) => fetchTransaction(context.cardanoAPI, args.txHash),
+    address: (root, args, context) => fetchAddress(context.cardanoAPI, args.address58),
+
     currentStatus: currentStatusResolver,
     pagedBlocks: async (_, args, context) => {
       const result = await pagedBlocksResolver(_, args, context)
@@ -41,7 +43,20 @@ const resolvers = {
         hasMore: result.cursor > 0,
       }
     },
-    block: blockResolver,
+    block: (root, args, context) => fetchBlockSummary(context.cardanoAPI, args.blockHash),
+  },
+  Block: {
+    transactions: (block, args, context) =>
+      fetchBlockTransactionIds(context.cardanoAPI, block.blockHash).then((ids) =>
+        Promise.all(ids.map((id) => fetchTransaction(context.cardanoAPI, id)))
+      ),
+  },
+  Transaction: {
+    block: (tx, args, context) => fetchBlockSummary(context.cardanoAPI, tx._blockHash),
+  },
+  Address: {
+    transactions: (address, args, context) =>
+      Promise.all(address._transactionIds.map((id) => fetchTransaction(context.cardanoAPI, id))),
   },
 }
 

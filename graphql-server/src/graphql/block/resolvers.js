@@ -1,24 +1,6 @@
-import {facadeBlock} from './dataFacades'
+import {_fetchPage, PAGE_SIZE} from './dataProviders'
 import _ from 'lodash'
 import assert from 'assert'
-import {facadeTransaction} from '../transaction/dataFacades'
-
-// TODO: consider variable page size
-const PAGE_SIZE = 10
-
-const _fetchPage = async (pageId, context) => {
-  const queryParams = {
-    pageSize: PAGE_SIZE,
-    page: pageId,
-  }
-
-  const [lastPageId, blocks] = await context.cardanoAPI.get('blocks/pages', queryParams)
-
-  return {
-    pageId: pageId != null ? pageId : lastPageId,
-    blocks: blocks.map(facadeBlock),
-  }
-}
 
 // Note: 'pages' are indexed from 1 in cardano API
 // Note: 'cursor' means including the position
@@ -78,21 +60,5 @@ export const pagedBlocksResolver = async (parent, args, context) => {
   return {
     cursor: nextCursor > 0 ? nextCursor : null,
     data: [...initialBlocks, ...subsequentBlocks],
-  }
-}
-
-export const blockTransactionsResolver = async (blockHash, context) => {
-  const rawData = await context.cardanoAPI.get(`blocks/txs/${blockHash}`)
-  return Promise.all(
-    rawData.map((tx) => context.cardanoAPI.get(`txs/summary/${tx.ctbId}`).then(facadeTransaction))
-  )
-}
-
-export const blockResolver = async (parent, args, context) => {
-  const blockHash = args.blockHash
-  const rawResponse = await context.cardanoAPI.get(`blocks/summary/${blockHash}`)
-  return {
-    ...facadeBlock(rawResponse.cbsEntry),
-    transactions: () => blockTransactionsResolver(blockHash, context),
   }
 }

@@ -16,6 +16,9 @@ type Block {
 
   # TODO: bad naming, should be blockLeader
   blockLead: String!
+
+  blockHeight: Int #TODO: get real number
+  blockConfirmations: Int #TODO: get real number
 }
 
 type PagedBlocksResult {
