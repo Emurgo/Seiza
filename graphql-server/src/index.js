@@ -8,11 +8,13 @@ import {fetchBlockSummary, fetchBlockTransactionIds} from './graphql/block/dataP
 import {fetchTransaction} from './graphql/transaction/dataProviders'
 import {pagedBlocksResolver} from './graphql/block/resolvers'
 import {currentStatusResolver} from './graphql/status/resolvers'
+import {blockChainSearchResolver} from './graphql/search/resolvers'
 
 import transactionTypes from './graphql/transaction/types'
 import addressTypes from './graphql/address/schema.gql'
 import blockTypes from './graphql/block/schema.gql'
 import statusTypes from './graphql/status/schema.gql'
+import searchTypes from './graphql/search/schema.gql'
 
 import Timestamp from './graphql/scalars/timestamp'
 import AdaAmount from './graphql/scalars/adaAmount'
@@ -44,6 +46,7 @@ const resolvers = {
       }
     },
     block: (root, args, context) => fetchBlockSummary(context.cardanoAPI, args.blockHash),
+    blockChainSearch: blockChainSearchResolver,
   },
   Block: {
     transactions: (block, args, context) =>
@@ -58,6 +61,9 @@ const resolvers = {
     transactions: (address, args, context) =>
       Promise.all(address._transactionIds.map((id) => fetchTransaction(context.cardanoAPI, id))),
   },
+  BlockChainSearchItem: {
+    __resolveType: (obj, context, info) => obj._type,
+  },
 }
 
 export type ApolloContext = {
@@ -68,9 +74,12 @@ export type ApolloContext = {
 export type Parent = any
 
 const server = new ApolloServer({
-  typeDefs: mergeTypes([globalTypes, addressTypes, transactionTypes, blockTypes, statusTypes], {
-    all: true,
-  }),
+  typeDefs: mergeTypes(
+    [globalTypes, addressTypes, transactionTypes, blockTypes, statusTypes, searchTypes],
+    {
+      all: true,
+    }
+  ),
   resolvers,
   // TODO: replace with production-ready logger
   formatError: (error: any): any => {

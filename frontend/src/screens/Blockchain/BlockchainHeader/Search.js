@@ -1,11 +1,13 @@
 // @flow
 import React from 'react'
-import {injectIntl, defineMessages} from 'react-intl'
+import {defineMessages} from 'react-intl'
 import {compose} from 'redux'
-import {withState} from 'recompose'
+import {withStateHandlers, withHandlers} from 'recompose'
+import {withRouter} from 'react-router'
 
-import {getIntlFormatters} from '@/i18n/helpers'
+import {withI18n} from '@/i18n/helpers'
 import Searchbar from '@/components/visual/Searchbar'
+import {routeTo} from '@/helpers/routes'
 
 const text = defineMessages({
   searchPlaceholder: {
@@ -15,17 +17,28 @@ const text = defineMessages({
 })
 
 export default compose(
-  injectIntl,
-  withState('searchText', 'setSearchText', '')
-)(({intl, searchText, setSearchText, onChange}) => {
-  const {translate} = getIntlFormatters(intl)
+  withRouter,
+  withI18n,
+  withStateHandlers(
+    {
+      searchText: '',
+    },
+    {
+      setSearchText: () => (searchText) => ({searchText}),
+    }
+  ),
+  withHandlers({
+    onSearch: ({history}) => (query) => history.push(routeTo.search(query)),
+  })
+)(({i18n, searchText, setSearchText, onChange, onSearch}) => {
+  const {translate} = i18n
   return (
     <div style={{width: '45%', margin: '0 auto'}}>
       <Searchbar
         placeholder={translate(text.searchPlaceholder)}
         value={searchText}
         onChange={setSearchText}
-        onSearch={() => null}
+        onSearch={onSearch}
       />
     </div>
   )

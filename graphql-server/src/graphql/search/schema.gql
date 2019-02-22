@@ -1,0 +1,13 @@
+#enum BlockChainSearchType {
+#
+#}
+
+union BlockChainSearchItem = Block | Transaction | Address
+
+type BlockChainSearchResult {
+    items: [BlockChainSearchItem!]!
+}
+
+type Query {
+  blockChainSearch(query: String!): BlockChainSearchResult!
+}
