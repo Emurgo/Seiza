@@ -48,7 +48,10 @@ const styles = (theme) =>
       justifyContent: 'center',
     },
     card: {
-      width: '200px',
+      minWidth: '200px',
+      minHeight: '75px',
+    },
+    cardDimensions: {
       marginRight: '20px',
       marginLeft: '20px',
     },
@@ -68,36 +71,60 @@ const OverviewMetrics = ({intl, data, classes}) => {
 
   return (
     <div className={classes.wrapper}>
-      <MetricsCard
-        className={classes.card}
-        icon="epoch"
-        metric={translate(text.epochLabel)}
-        value={epochNumber}
-      />
-      <MetricsCard
-        className={classes.card}
-        icon="blocks"
-        metric={translate(text.blocksLabel)}
-        value={blockCount}
-      />
-      <MetricsCard
-        className={classes.card}
-        icon="decentralization"
-        metric={translate(text.decentralizationLabel)}
-        value={decentralization}
-      />
-      <MetricsCard
-        className={classes.card}
-        icon="price"
-        metric={translate(text.priceLabel)}
-        value={price}
-      />
-      <MetricsCard
-        className={classes.card}
-        icon="pools"
-        metric={translate(text.poolsLabel)}
-        value={pools}
-      />
+      <div className={classes.cardDimensions}>
+        <MetricsCard
+          className={classes.card}
+          icon="epoch"
+          metric={translate(text.epochLabel)}
+          value={epochNumber}
+        />
+      </div>
+      <div className={classes.cardDimensions}>
+        <MetricsCard
+          className={classes.card}
+          icon="blocks"
+          metric={translate(text.blocksLabel)}
+          value={blockCount}
+        />
+      </div>
+      <div className={classes.cardDimensions}>
+        <MetricsCard
+          className={classes.card}
+          icon="decentralization"
+          metric={translate(text.decentralizationLabel)}
+          value={decentralization}
+        />
+      </div>
+      <div className={classes.cardDimensions}>
+        <MetricsCard
+          className={classes.card}
+          icon="price"
+          metric={translate(text.priceLabel)}
+          value={price}
+          options={[
+            {
+              label: 'USD/ADA',
+              onClick: () => 'TODO usd',
+            },
+            {
+              label: 'EUR/ADA',
+              onClick: () => 'TODO eur',
+            },
+            {
+              label: 'YEN/ADA',
+              onClick: () => 'TODO yen',
+            },
+          ]}
+        />
+      </div>
+      <div className={classes.cardDimensions}>
+        <MetricsCard
+          className={classes.card}
+          icon="pools"
+          metric={translate(text.poolsLabel)}
+          value={pools}
+        />
+      </div>
     </div>
   )
 }
