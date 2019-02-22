@@ -6,15 +6,20 @@ import {mergeTypes} from 'merge-graphql-schemas'
 import {fetchAddress} from './graphql/address/dataProviders'
 import {fetchBlockSummary, fetchBlockTransactionIds} from './graphql/block/dataProviders'
 import {fetchTransaction} from './graphql/transaction/dataProviders'
+import {fetchBootstrapEraPool} from './graphql/stakepool/dataProviders'
+
 import {pagedBlocksResolver} from './graphql/block/resolvers'
 import {currentStatusResolver} from './graphql/status/resolvers'
 import {blockChainSearchResolver} from './graphql/search/resolvers'
 
-import transactionTypes from './graphql/transaction/types'
-import addressTypes from './graphql/address/schema.gql'
-import blockTypes from './graphql/block/schema.gql'
-import statusTypes from './graphql/status/schema.gql'
-import searchTypes from './graphql/search/schema.gql'
+import stakePoolResolvers from './graphql/stakepool/resolvers'
+
+import transactionSchema from './graphql/transaction/types'
+import addressSchema from './graphql/address/schema.gql'
+import blockSchema from './graphql/block/schema.gql'
+import statusSchema from './graphql/status/schema.gql'
+import searchSchema from './graphql/search/schema.gql'
+import stakePoolSchema from './graphql/stakepool/schema.gql'
 
 import Timestamp from './graphql/scalars/timestamp'
 import AdaAmount from './graphql/scalars/adaAmount'
@@ -29,7 +34,7 @@ const globalTypes = gql`
   scalar AdaAmount
 `
 
-const resolvers = {
+const _resolvers = {
   Timestamp,
   AdaAmount,
   Query: {
@@ -53,6 +58,7 @@ const resolvers = {
       fetchBlockTransactionIds(context.cardanoAPI, block.blockHash).then((ids) =>
         Promise.all(ids.map((id) => fetchTransaction(context.cardanoAPI, id)))
       ),
+    blockLeader: (block, args, context) => fetchBootstrapEraPool(null, block._blockLeader),
   },
   Transaction: {
     block: (tx, args, context) => fetchBlockSummary(context.cardanoAPI, tx._blockHash),
@@ -75,12 +81,20 @@ export type Parent = any
 
 const server = new ApolloServer({
   typeDefs: mergeTypes(
-    [globalTypes, addressTypes, transactionTypes, blockTypes, statusTypes, searchTypes],
+    [
+      globalTypes,
+      addressSchema,
+      transactionSchema,
+      blockSchema,
+      statusSchema,
+      searchSchema,
+      stakePoolSchema,
+    ],
     {
       all: true,
     }
   ),
-  resolvers,
+  resolvers: [_resolvers, stakePoolResolvers],
   // TODO: replace with production-ready logger
   formatError: (error: any): any => {
     console.log(error) // eslint-disable-line

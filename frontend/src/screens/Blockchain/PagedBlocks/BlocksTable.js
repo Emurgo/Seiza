@@ -80,8 +80,8 @@ export default compose(
         {formatInt(block.slot)}
       </Link>,
       formatTimestamp(block.timeIssued),
-      <Link key={2} to="/todo">
-        {block.blockLead}
+      <Link key={2} to={routeTo.stakepool(block.blockLeader.poolHash)}>
+        {block.blockLeader.name}
       </Link>,
       formatInt(block.transactionsCount),
       formatAda(block.totalSend),

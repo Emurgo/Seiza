@@ -14,8 +14,7 @@ type Block {
   # TODO: bad naming, should be sizeInBytes
   size: Int!
 
-  # TODO: bad naming, should be blockLeader
-  blockLead: String!
+  blockLeader: BootstrapEraStakePool!
 
   blockHeight: Int #TODO: get real number
   blockConfirmations: Int #TODO: get real number

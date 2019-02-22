@@ -1,0 +1,11 @@
+#TODO: these are preliminary
+type BootstrapEraStakePool {
+  poolHash: ID!
+  name: String
+  description: String
+}
+
+type Query {
+  stakePoolList: [BootstrapEraStakePool]
+  stakePool(poolHash: String!): BootstrapEraStakePool
+}

@@ -38,7 +38,10 @@ export const BLOCK_INFO_FRAGMENT = gql`
     transactionsCount
     totalSend
     size
-    blockLead
+    blockLeader {
+      poolHash
+      name
+    }
     totalFees
   }
 `
