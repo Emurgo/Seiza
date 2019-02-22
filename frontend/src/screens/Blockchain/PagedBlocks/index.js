@@ -8,7 +8,7 @@ import {defineMessages} from 'react-intl'
 import {Switch, Typography, Grid, withStyles, createStyles} from '@material-ui/core'
 
 import Pagination, {getPageCount} from '../../../components/visual/Pagination'
-import {SimpleLayout} from '@/components/visual'
+import {SimpleLayout, LoadingInProgress, DebugApolloError} from '@/components/visual'
 import BlocksTable from './BlocksTable'
 import {onDidUpdate, onDidMount} from '../../../components/HOC/lifecycles'
 import {GET_PAGED_BLOCKS} from '../../../api/queries'
@@ -70,38 +70,40 @@ const styles = (theme) =>
 
 const RecentBlocks = (props) => {
   const {
-    pagedBlocksResult: {loading, pagedBlocks},
+    pagedBlocksResult: {loading, error, pagedBlocks},
     classes,
     i18n: {translate},
   } = props
   return (
-    <React.Fragment>
-      {!loading && (
-        <SimpleLayout title={translate(messages.header)}>
-          <Grid
-            className={classes.wrapper}
-            container
-            direction="row"
-            alignItems="center"
-            justify="space-between"
-          >
-            <Grid item>
-              <AutoUpdateSwitch checked={props.autoUpdate} onChange={props.onChangeAutoUpdate} />
-            </Grid>
-            <Grid item>
-              <Pagination
-                count={props.totalCount}
-                rowsPerPage={props.rowsPerPage}
-                page={props.page}
-                onChangePage={props.onChangePage}
-                reverseDirection
-              />
-            </Grid>
-          </Grid>
-          <BlocksTable blocks={pagedBlocks.blocks} />
-        </SimpleLayout>
+    <SimpleLayout title={translate(messages.header)}>
+      <Grid
+        className={classes.wrapper}
+        container
+        direction="row"
+        alignItems="center"
+        justify="space-between"
+      >
+        <Grid item>
+          <AutoUpdateSwitch checked={props.autoUpdate} onChange={props.onChangeAutoUpdate} />
+        </Grid>
+        <Grid item>
+          <Pagination
+            count={props.totalCount}
+            rowsPerPage={props.rowsPerPage}
+            page={props.page}
+            onChangePage={props.onChangePage}
+            reverseDirection
+          />
+        </Grid>
+      </Grid>
+      {loading ? (
+        <LoadingInProgress />
+      ) : error ? (
+        <DebugApolloError error={error} />
+      ) : (
+        <BlocksTable blocks={pagedBlocks.blocks} />
       )}
-    </React.Fragment>
+    </SimpleLayout>
   )
 }
 
