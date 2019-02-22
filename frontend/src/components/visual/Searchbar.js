@@ -82,7 +82,12 @@ const Searchbar = (props: PropTypes) => {
         }}
         {...textFieldProps}
       />
-      <Button primary variant="contained" className={classes.searchButton} onClick={onSearch}>
+      <Button
+        color="primary"
+        variant="contained"
+        className={classes.searchButton}
+        onClick={onSearch}
+      >
         <Search fontSize="large" />
       </Button>
     </div>
