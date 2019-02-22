@@ -94,6 +94,7 @@ const RecentBlocks = (props) => {
                 rowsPerPage={props.rowsPerPage}
                 page={props.page}
                 onChangePage={props.onChangePage}
+                reverseDirection
               />
             </Grid>
           </Grid>

@@ -10,17 +10,39 @@ import {
 } from '@material-ui/icons'
 import {compose} from 'redux'
 import {withHandlers, withStateHandlers, withProps} from 'recompose'
+import {defineMessages} from 'react-intl'
 
-import {onDidUpdate} from '../../components/HOC/lifecycles'
-import {isInRange} from '../../helpers/validators'
+import {onDidUpdate} from '@/components/HOC/lifecycles'
+import {isInRange} from '@/helpers/validators'
+import {withI18n} from '@/i18n/helpers'
 
-// TODO? intl for aria-labels
+const INPUT_PADDING = 10
+
+const I18N_PREFIX = 'pagination'
+
+const ariaLabels = defineMessages({
+  lastPage: {
+    id: `${I18N_PREFIX}.lastPage`,
+    defaultMessage: 'Last Page',
+  },
+  firstPage: {
+    id: `${I18N_PREFIX}.firstPage`,
+    defaultMessage: 'First Page',
+  },
+  nextPage: {
+    id: `${I18N_PREFIX}.nextPage`,
+    defaultMessage: 'Next Page',
+  },
+  prevPage: {
+    id: `${I18N_PREFIX}.prevPage`,
+    defaultMessage: 'Previous Page',
+  },
+})
 
 const styles = ({palette}) => ({
   input: {
-    paddingLeft: '10px',
-    paddingRight: '10px',
-    width: '100px', // Note: Could be set from outside if needed
+    paddingLeft: `${INPUT_PADDING}px`,
+    paddingRight: `${INPUT_PADDING}px`,
   },
   editableInput: {
     border: `1px solid ${palette.grey[500]}`,
@@ -38,10 +60,18 @@ const styles = ({palette}) => ({
   },
 })
 
+const getEstimatedInputWidth = (pageCount: number): number => {
+  // Note: those values are quite ad-hoc
+  const baseWidth = INPUT_PADDING * 2 + 5
+  const charSize = 10
+  return String(pageCount).length * charSize + baseWidth
+}
+
 export const getPageCount = (itemsCount: number, rowsPerPage: number) =>
   Math.ceil(itemsCount / rowsPerPage)
 
 export default compose(
+  withI18n,
   withProps((props) => ({
     pageCount: getPageCount(props.count, props.rowsPerPage),
   })),
@@ -59,7 +89,9 @@ export default compose(
       onChangePage(Math.max(0, pageCount - 1)),
     onGoToPageChange: ({setGoToPage, pageCount, goToPage, jozo}) => (event) => {
       const value = event.target.value
-      return setGoToPage(value === '' || isInRange(value, 1, pageCount + 1) ? value : goToPage)
+      return setGoToPage(
+        value === '' || isInRange(value, 1, pageCount + 1) ? parseInt(value, 10) : goToPage
+      )
     },
     onGoToPageSubmit: ({onChangePage, goToPage}) => (e) => {
       e.preventDefault()
@@ -82,62 +114,84 @@ export default compose(
     goToPage,
     onGoToPageChange,
     onGoToPageSubmit,
-  }) => (
-    <Grid container direction="row" justify="center" alignItems="center" spacing={24}>
-      <Grid item className={classes.arrowWrapper}>
-        <IconButton
-          className={classes.arrow}
-          onClick={onFirstPageButtonClick}
-          disabled={page === 0}
-          aria-label="First Page"
-        >
-          {theme.direction === 'rtl' ? <LastPageArrow /> : <FirstPageArrow />}
-        </IconButton>
-      </Grid>
-      <Grid item className={classes.arrowWrapper}>
-        <IconButton
-          className={classes.arrow}
-          onClick={onBackButtonClick}
-          disabled={page === 0}
-          aria-label="Previous Page"
-        >
-          {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
-        </IconButton>
-      </Grid>
-      <Grid item>
-        <Grid container direction="row" alignItems="center" justify="center">
-          <form onSubmit={onGoToPageSubmit}>
+    reverseDirection,
+    i18n: {translate},
+  }) => {
+    const inputStyle = {width: `${getEstimatedInputWidth(pageCount)}px`}
+    const isFirstPage = page === 0
+    const isLastPage = page >= pageCount - 1
+    return (
+      <Grid container direction="row" justify="center" alignItems="center" spacing={24}>
+        <Grid item className={classes.arrowWrapper}>
+          <IconButton
+            className={classes.arrow}
+            onClick={reverseDirection ? onLastPageButtonClick : onFirstPageButtonClick}
+            disabled={reverseDirection ? isLastPage : isFirstPage}
+            aria-label={
+              reverseDirection ? translate(ariaLabels.lastPage) : translate(ariaLabels.firstPage)
+            }
+          >
+            {theme.direction === 'rtl' ? <LastPageArrow /> : <FirstPageArrow />}
+          </IconButton>
+        </Grid>
+        <Grid item className={classes.arrowWrapper}>
+          <IconButton
+            className={classes.arrow}
+            onClick={reverseDirection ? onNextButtonClick : onBackButtonClick}
+            disabled={reverseDirection ? isLastPage : isFirstPage}
+            aria-label={
+              reverseDirection ? translate(ariaLabels.nextPage) : translate(ariaLabels.prevPage)
+            }
+          >
+            {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
+          </IconButton>
+        </Grid>
+        <Grid item>
+          <Grid container direction="row" alignItems="center" justify="center">
+            <form onSubmit={onGoToPageSubmit}>
+              <Input
+                style={inputStyle}
+                disableUnderline
+                value={goToPage}
+                onChange={onGoToPageChange}
+                className={classnames(classes.input, classes.editableInput)}
+              />
+            </form>
+            <span className={classes.divider}>/</span>
             <Input
+              style={inputStyle}
               disableUnderline
-              value={goToPage}
-              onChange={onGoToPageChange}
-              className={classnames(classes.input, classes.editableInput)}
+              readOnly
+              value={pageCount}
+              className={classes.input}
             />
-          </form>
-          <span className={classes.divider}>/</span>
-          <Input disableUnderline readOnly value={pageCount} className={classes.input} />
+          </Grid>
+        </Grid>
+        <Grid item className={classes.arrowWrapper}>
+          <IconButton
+            className={classes.arrow}
+            onClick={reverseDirection ? onBackButtonClick : onNextButtonClick}
+            disabled={reverseDirection ? isFirstPage : isLastPage}
+            aria-label={
+              reverseDirection ? translate(ariaLabels.prevPage) : translate(ariaLabels.nextPage)
+            }
+          >
+            {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
+          </IconButton>
+        </Grid>
+        <Grid item className={classes.arrowWrapper}>
+          <IconButton
+            className={classes.arrow}
+            onClick={reverseDirection ? onFirstPageButtonClick : onLastPageButtonClick}
+            disabled={reverseDirection ? isFirstPage : isLastPage}
+            aria-label={
+              reverseDirection ? translate(ariaLabels.firstPage) : translate(ariaLabels.lastPage)
+            }
+          >
+            {theme.direction === 'rtl' ? <FirstPageArrow /> : <LastPageArrow />}
+          </IconButton>
         </Grid>
       </Grid>
-      <Grid item className={classes.arrowWrapper}>
-        <IconButton
-          className={classes.arrow}
-          onClick={onNextButtonClick}
-          disabled={page >= pageCount - 1}
-          aria-label="Next Page"
-        >
-          {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
-        </IconButton>
-      </Grid>
-      <Grid item className={classes.arrowWrapper}>
-        <IconButton
-          className={classes.arrow}
-          onClick={onLastPageButtonClick}
-          disabled={page >= pageCount - 1}
-          aria-label="Last Page"
-        >
-          {theme.direction === 'rtl' ? <FirstPageArrow /> : <LastPageArrow />}
-        </IconButton>
-      </Grid>
-    </Grid>
-  )
+    )
+  }
 )
