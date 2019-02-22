@@ -16,11 +16,19 @@ import {isInRange} from '../../helpers/validators'
 
 // TODO? intl for aria-labels
 
+const INPUT_PADDING = 10
+
+const getInputWidth = (pageCount: number): string => {
+  // Note: those values are quite ad-hoc
+  const baseWidth = INPUT_PADDING * 2 + 5
+  const charSize = 10
+  return `${String(pageCount).length * charSize + baseWidth}px`
+}
+
 const styles = ({palette}) => ({
   input: {
-    paddingLeft: '10px',
-    paddingRight: '10px',
-    width: '100px', // Note: Could be set from outside if needed
+    paddingLeft: `${INPUT_PADDING}px`,
+    paddingRight: `${INPUT_PADDING}px`,
   },
   editableInput: {
     border: `1px solid ${palette.grey[500]}`,
@@ -59,7 +67,9 @@ export default compose(
       onChangePage(Math.max(0, pageCount - 1)),
     onGoToPageChange: ({setGoToPage, pageCount, goToPage, jozo}) => (event) => {
       const value = event.target.value
-      return setGoToPage(value === '' || isInRange(value, 1, pageCount + 1) ? value : goToPage)
+      return setGoToPage(
+        value === '' || isInRange(value, 1, pageCount + 1) ? value : goToPage
+      )
     },
     onGoToPageSubmit: ({onChangePage, goToPage}) => (e) => {
       e.preventDefault()
@@ -108,6 +118,7 @@ export default compose(
         <Grid container direction="row" alignItems="center" justify="center">
           <form onSubmit={onGoToPageSubmit}>
             <Input
+              style={{width: getInputWidth(pageCount)}}
               disableUnderline
               value={goToPage}
               onChange={onGoToPageChange}
@@ -115,7 +126,13 @@ export default compose(
             />
           </form>
           <span className={classes.divider}>/</span>
-          <Input disableUnderline readOnly value={pageCount} className={classes.input} />
+          <Input
+            style={{width: getInputWidth(pageCount)}}
+            disableUnderline
+            readOnly
+            value={pageCount}
+            className={classes.input}
+          />
         </Grid>
       </Grid>
       <Grid item className={classes.arrowWrapper}>
