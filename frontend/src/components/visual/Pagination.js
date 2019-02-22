@@ -97,9 +97,9 @@ export default compose(
       <Grid item className={classes.arrowWrapper}>
         <IconButton
           className={classes.arrow}
-          onClick={onFirstPageButtonClick}
-          disabled={page === 0}
-          aria-label="First Page"
+          onClick={onLastPageButtonClick}
+          disabled={page >= pageCount - 1}
+          aria-label="Last Page"
         >
           {theme.direction === 'rtl' ? <LastPageArrow /> : <FirstPageArrow />}
         </IconButton>
@@ -107,9 +107,9 @@ export default compose(
       <Grid item className={classes.arrowWrapper}>
         <IconButton
           className={classes.arrow}
-          onClick={onBackButtonClick}
-          disabled={page === 0}
-          aria-label="Previous Page"
+          onClick={onNextButtonClick}
+          disabled={page >= pageCount - 1}
+          aria-label="Next Page"
         >
           {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
         </IconButton>
@@ -138,9 +138,9 @@ export default compose(
       <Grid item className={classes.arrowWrapper}>
         <IconButton
           className={classes.arrow}
-          onClick={onNextButtonClick}
-          disabled={page >= pageCount - 1}
-          aria-label="Next Page"
+          onClick={onBackButtonClick}
+          disabled={page === 0}
+          aria-label="Previous Page"
         >
           {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
         </IconButton>
@@ -148,9 +148,9 @@ export default compose(
       <Grid item className={classes.arrowWrapper}>
         <IconButton
           className={classes.arrow}
-          onClick={onLastPageButtonClick}
-          disabled={page >= pageCount - 1}
-          aria-label="Last Page"
+          onClick={onFirstPageButtonClick}
+          disabled={page === 0}
+          aria-label="First Page"
         >
           {theme.direction === 'rtl' ? <FirstPageArrow /> : <LastPageArrow />}
         </IconButton>
