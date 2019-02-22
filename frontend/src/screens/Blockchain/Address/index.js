@@ -82,7 +82,10 @@ const modalStyles = (theme) =>
 type QRModalProps = {isOpen: boolean, onClose: () => any, value: string, classes: any}
 
 const QRModal = withStyles(modalStyles)(({classes, isOpen, onClose, value}: QRModalProps) => (
-  <Modal open={isOpen} onClose={onClose}>
+  /* For disableRestoreFocus see
+   * https://github.com/mui-org/material-ui/issues/9343#issuecomment-377772257
+   */
+  <Modal open={isOpen} onClose={onClose} disableRestoreFocus>
     <div className={classes.paper}>
       <Grid container justify="center">
         <QRCode value={value} size={128} />

@@ -2,8 +2,8 @@
 import React from 'react'
 import {compose} from 'redux'
 import {defineMessages} from 'react-intl'
-import {Link} from 'react-router-dom'
-import {withStyles} from '@material-ui/core'
+import {Link as RouterLink} from 'react-router-dom'
+import {Link as MuiLink} from '@material-ui/core'
 
 import Table from '@/components/visual/Table'
 import {withI18n} from '@/i18n/helpers'
@@ -48,17 +48,11 @@ const tableMessages = defineMessages({
   },
 })
 
-const linkFieldStyles = (theme) => ({
-  linkField: {
-    color: theme.palette.primary.dark,
-  },
-})
-
-const LinkField = withStyles(linkFieldStyles)(({children, to, classes}) => (
-  <Link to={to} className={classes.linkField}>
+const Link = ({to, children}) => (
+  <MuiLink component={RouterLink} to={to}>
     {children}
-  </Link>
-))
+  </MuiLink>
+)
 
 const BlocksTable = (props) => <Table bodyData={props.bodyData} headerData={props.headerData} />
 
@@ -79,16 +73,16 @@ export default compose(
     ]
 
     const bodyData = blocks.map((block, index) => [
-      <LinkField key={0} to="/todo">
+      <Link key={0} to="/todo">
         {formatInt(block.epoch)}
-      </LinkField>,
-      <LinkField key={1} to={routeTo.block(block.blockHash)}>
+      </Link>,
+      <Link key={1} to={routeTo.block(block.blockHash)}>
         {formatInt(block.slot)}
-      </LinkField>,
+      </Link>,
       formatTimestamp(block.timeIssued),
-      <LinkField key={2} to="/todo">
+      <Link key={2} to="/todo">
         {block.blockLead}
-      </LinkField>,
+      </Link>,
       formatInt(block.transactionsCount),
       formatAda(block.totalSend),
       formatAda(block.totalFees),
