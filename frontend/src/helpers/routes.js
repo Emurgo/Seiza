@@ -8,4 +8,5 @@ export const routeTo = {
   address: (address58) => `${BLOCKCHAIN_ROUTE}/address/${address58}`,
   more: () => '/more',
   staking: () => '/staking',
+  search: (query) => `${BLOCKCHAIN_ROUTE}/search/${query}`,
 }
