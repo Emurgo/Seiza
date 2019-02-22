@@ -68,7 +68,7 @@ export default compose(
     onGoToPageChange: ({setGoToPage, pageCount, goToPage, jozo}) => (event) => {
       const value = event.target.value
       return setGoToPage(
-        value === '' || isInRange(value, 1, pageCount + 1) ? value : goToPage
+        value === '' || isInRange(value, 1, pageCount + 1) ? parseInt(value, 10) : goToPage
       )
     },
     onGoToPageSubmit: ({onChangePage, goToPage}) => (e) => {
