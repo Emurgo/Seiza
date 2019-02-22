@@ -4,6 +4,7 @@ import gql from 'graphql-tag'
 import idx from 'idx'
 import {injectIntl, defineMessages} from 'react-intl'
 import {compose} from 'redux'
+import {withStateHandlers} from 'recompose'
 import {graphql} from 'react-apollo'
 import {createStyles, withStyles} from '@material-ui/core'
 
@@ -57,7 +58,7 @@ const styles = (theme) =>
     },
   })
 
-const OverviewMetrics = ({intl, data, classes}) => {
+const OverviewMetrics = ({intl, data, classes, currency, setCurrency}) => {
   const {translate, formatInt, formatPercent, formatFiat} = getIntlFormatters(intl)
   const status = data.currentStatus
 
@@ -66,7 +67,7 @@ const OverviewMetrics = ({intl, data, classes}) => {
   const epochNumber = formatInt(idx(status, (s) => s.epochNumber), {defaultValue: NA})
   const blockCount = formatInt(idx(status, (s) => s.blockCount), {defaultValue: NA})
   const decentralization = formatPercent(idx(status, (s) => s.decentralization), {defaultValue: NA})
-  const price = formatFiat(idx(status, (s) => s.price.usd), {currency: 'USD', defaultValue: NA})
+  const price = formatFiat(idx(status, (s) => s.price), {currency, defaultValue: NA})
   const pools = formatInt(idx(status, (s) => s.stakePoolCount), {defaultValue: NA})
 
   return (
@@ -104,15 +105,15 @@ const OverviewMetrics = ({intl, data, classes}) => {
           options={[
             {
               label: 'USD/ADA',
-              onClick: () => 'TODO usd',
+              onClick: () => setCurrency('USD'),
             },
             {
               label: 'EUR/ADA',
-              onClick: () => 'TODO eur',
+              onClick: () => setCurrency('EUR'),
             },
             {
               label: 'YEN/ADA',
-              onClick: () => 'TODO yen',
+              onClick: () => setCurrency('JPY'),
             },
           ]}
         />
@@ -130,14 +131,12 @@ const OverviewMetrics = ({intl, data, classes}) => {
 }
 
 const OVERVIEW_METRICS_QUERY = gql`
-  query {
+  query($currency: CurrencyEnum!) {
     currentStatus {
       epochNumber
       blockCount
       decentralization
-      price {
-        usd
-      }
+      price(currency: $currency)
       stakePoolCount
     }
   }
@@ -146,13 +145,24 @@ const OVERVIEW_METRICS_QUERY = gql`
 const STATUS_REFRESH_INTERVAL = 20 * 1000
 
 const withOverviewMetricsData = graphql(OVERVIEW_METRICS_QUERY, {
-  options: (props) => ({
+  options: ({currency}) => ({
     pollInterval: STATUS_REFRESH_INTERVAL,
+    variables: {
+      currency,
+    },
   }),
 })
 
 export default compose(
   injectIntl,
   withStyles(styles),
+  withStateHandlers(
+    {
+      currency: 'USD',
+    },
+    {
+      setCurrency: () => (currency) => ({currency}),
+    }
+  ),
   withOverviewMetricsData
 )(OverviewMetrics)

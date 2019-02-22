@@ -1,3 +1,11 @@
+import axios from 'axios'
+
+const fetchCurrentPrice = async (api, currency) => {
+  const url = `https://min-api.cryptocompare.com/data/price?fsym=ADA&tsyms=${currency}`
+  const result = await axios.get(url)
+  return result.data[currency]
+}
+
 export const currentStatusResolver = (root, args, context) => {
   const epochNumberResolver = () =>
     context.cardanoAPI.get('blocks/pages').then((response) => response[1][0].cbeEpoch)
@@ -10,10 +18,9 @@ export const currentStatusResolver = (root, args, context) => {
   const decentralizationResolver = () => 0
 
   // TODO: get this info
-  const priceResolver = () => ({
-    usd: 0.031,
-    eur: 0.042,
-  })
+  const priceResolver = (args, context) => {
+    return fetchCurrentPrice(null, args.currency)
+  }
 
   // TODO: get this info
   const stakePoolCountResolver = () => null
