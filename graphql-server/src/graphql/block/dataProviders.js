@@ -8,7 +8,7 @@ export const facadeBlock = (data) => ({
   transactionsCount: data.cbeTxNum,
   totalSend: data.cbeTotalSent.getCoin,
   size: data.cbeSize,
-  blockLead: data.cbeBlockLead,
+  _blockLeader: data.cbeBlockLead,
   totalFees: data.cbeFees.getCoin,
 })
 
