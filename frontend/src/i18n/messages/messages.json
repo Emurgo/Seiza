@@ -1,5 +1,35 @@
 [
   {
+    "id": "assuranceLevels.low",
+    "defaultMessage": "Low",
+    "filepath": "src/components/common/AssuranceChip.js"
+  },
+  {
+    "id": "assuranceLevels.medium",
+    "defaultMessage": "Medium",
+    "filepath": "src/components/common/AssuranceChip.js"
+  },
+  {
+    "id": "assuranceLevels.high",
+    "defaultMessage": "High",
+    "filepath": "src/components/common/AssuranceChip.js"
+  },
+  {
+    "id": "ui_elements.copy_to_clipboard.altText",
+    "defaultMessage": "Copy to clipboard",
+    "filepath": "src/components/common/CopyToClipboard.js"
+  },
+  {
+    "id": "ui_elements.copy_to_clipboard.tooltipCopy",
+    "defaultMessage": "Copy to clipboard",
+    "filepath": "src/components/common/CopyToClipboard.js"
+  },
+  {
+    "id": "ui_elements.copy_to_clipboard.tooltipCopied",
+    "defaultMessage": "Copied!",
+    "filepath": "src/components/common/CopyToClipboard.js"
+  },
+  {
     "id": "footer.subscribe.header",
     "defaultMessage": "Let's stay in touch!",
     "filepath": "src/components/visual/Footer.js"
@@ -18,6 +48,26 @@
     "id": "footer.subscribe.subscribe",
     "defaultMessage": "Subscribe",
     "filepath": "src/components/visual/Footer.js"
+  },
+  {
+    "id": "pagination.lastPage",
+    "defaultMessage": "Last Page",
+    "filepath": "src/components/visual/Pagination.js"
+  },
+  {
+    "id": "pagination.firstPage",
+    "defaultMessage": "First Page",
+    "filepath": "src/components/visual/Pagination.js"
+  },
+  {
+    "id": "pagination.nextPage",
+    "defaultMessage": "Next Page",
+    "filepath": "src/components/visual/Pagination.js"
+  },
+  {
+    "id": "pagination.prevPage",
+    "defaultMessage": "Previous Page",
+    "filepath": "src/components/visual/Pagination.js"
   },
   {
     "id": "blockchain.address.address",
@@ -55,14 +105,14 @@
     "filepath": "src/screens/Blockchain/Address/index.js"
   },
   {
-    "id": "blockchain.address.transactionsHeading",
-    "defaultMessage": "Transactions",
+    "id": "blockchain.address.showQRCode",
+    "defaultMessage": "Show QR code",
     "filepath": "src/screens/Blockchain/Address/index.js"
   },
   {
-    "id": "block.fields.blockHash",
-    "defaultMessage": "Block hash",
-    "filepath": "src/screens/Blockchain/Block/index.js"
+    "id": "blockchain.address.transactionsHeading",
+    "defaultMessage": "Transactions",
+    "filepath": "src/screens/Blockchain/Address/index.js"
   },
   {
     "id": "block.fields.epoch",
@@ -87,6 +137,11 @@
   {
     "id": "blockchain.block.title",
     "defaultMessage": "<Block>",
+    "filepath": "src/screens/Blockchain/Block/index.js"
+  },
+  {
+    "id": "blockchain.block.blockHash",
+    "defaultMessage": "Block ID",
     "filepath": "src/screens/Blockchain/Block/index.js"
   },
   {
@@ -185,6 +240,56 @@
     "filepath": "src/screens/Blockchain/PagedBlocks/index.js"
   },
   {
+    "id": "blockchain.search.title",
+    "defaultMessage": "Search results",
+    "filepath": "src/screens/Blockchain/Search/index.js"
+  },
+  {
+    "id": "blockchain.search.query",
+    "defaultMessage": "Query:",
+    "filepath": "src/screens/Blockchain/Search/index.js"
+  },
+  {
+    "id": "blockchain.search.noResults",
+    "defaultMessage": "Nothing found!",
+    "filepath": "src/screens/Blockchain/Search/index.js"
+  },
+  {
+    "id": "blockchain.search.address",
+    "defaultMessage": "Address:",
+    "filepath": "src/screens/Blockchain/Search/index.js"
+  },
+  {
+    "id": "blockchain.search.transaction",
+    "defaultMessage": "Transaction:",
+    "filepath": "src/screens/Blockchain/Search/index.js"
+  },
+  {
+    "id": "blockchain.search.block",
+    "defaultMessage": "Block:",
+    "filepath": "src/screens/Blockchain/Search/index.js"
+  },
+  {
+    "id": "stakepool.fields.name",
+    "defaultMessage": "Name",
+    "filepath": "src/screens/Blockchain/StakePool/index.js"
+  },
+  {
+    "id": "stakepool.fields.description",
+    "defaultMessage": "Description",
+    "filepath": "src/screens/Blockchain/StakePool/index.js"
+  },
+  {
+    "id": "blockchain.stakepool.title",
+    "defaultMessage": "<Stake pool>",
+    "filepath": "src/screens/Blockchain/StakePool/index.js"
+  },
+  {
+    "id": "blockchain.stakepool.blockHash",
+    "defaultMessage": "Pool ID",
+    "filepath": "src/screens/Blockchain/StakePool/index.js"
+  },
+  {
     "id": "transaction.header",
     "defaultMessage": "Transaction",
     "filepath": "src/screens/Blockchain/Transaction/index.js"
@@ -260,18 +365,93 @@
     "filepath": "src/screens/Blockchain/Transaction/index.js"
   },
   {
-    "id": "transaction.lowAssurance",
-    "defaultMessage": "Low",
-    "filepath": "src/screens/Blockchain/Transaction/index.js"
+    "id": "home.generalInfo.header",
+    "defaultMessage": "General info",
+    "filepath": "src/screens/Home/GeneralInfo.js"
   },
   {
-    "id": "transaction.mediumAssurance",
-    "defaultMessage": "Medium",
-    "filepath": "src/screens/Blockchain/Transaction/index.js"
+    "id": "home.generalInfo.generalInfoCard.blocks",
+    "defaultMessage": "Blocks",
+    "filepath": "src/screens/Home/GeneralInfo.js"
   },
   {
-    "id": "transaction.highAssurance",
-    "defaultMessage": "High",
-    "filepath": "src/screens/Blockchain/Transaction/index.js"
+    "id": "home.generalInfo.generalInfoCard.transactions",
+    "defaultMessage": "Txs",
+    "filepath": "src/screens/Home/GeneralInfo.js"
+  },
+  {
+    "id": "home.generalInfo.generalInfoCard.movements",
+    "defaultMessage": "Movements",
+    "filepath": "src/screens/Home/GeneralInfo.js"
+  },
+  {
+    "id": "home.generalInfo.generalInfoCard.fees",
+    "defaultMessage": "Fees",
+    "filepath": "src/screens/Home/GeneralInfo.js"
+  },
+  {
+    "id": "home.generalInfo.generalInfoCard.addresses",
+    "defaultMessage": "Addresses",
+    "filepath": "src/screens/Home/GeneralInfo.js"
+  },
+  {
+    "id": "home.generalInfo.generalInfoCard.emptySlotsCount",
+    "defaultMessage": "Empty slots",
+    "filepath": "src/screens/Home/GeneralInfo.js"
+  },
+  {
+    "id": "home.generalInfo.slotInfoCard.supply",
+    "defaultMessage": "Supply",
+    "filepath": "src/screens/Home/GeneralInfo.js"
+  },
+  {
+    "id": "home.generalInfo.slotInfoCard.transactions",
+    "defaultMessage": "Txs",
+    "filepath": "src/screens/Home/GeneralInfo.js"
+  },
+  {
+    "id": "home.generalInfo.slotInfoCard.totalSent",
+    "defaultMessage": "Sent",
+    "filepath": "src/screens/Home/GeneralInfo.js"
+  },
+  {
+    "id": "home.generalInfo.slotInfoCard.totalFees",
+    "defaultMessage": "Fees",
+    "filepath": "src/screens/Home/GeneralInfo.js"
+  },
+  {
+    "id": "home.generalInfo.cardHeaders.totalLabel",
+    "defaultMessage": "Total",
+    "filepath": "src/screens/Home/GeneralInfo.js"
+  },
+  {
+    "id": "home.generalInfo.cardHeaders.totalValue",
+    "defaultMessage": "From Genesis",
+    "filepath": "src/screens/Home/GeneralInfo.js"
+  },
+  {
+    "id": "home.generalInfo.cardHeaders.epochLabel",
+    "defaultMessage": "Epoch",
+    "filepath": "src/screens/Home/GeneralInfo.js"
+  },
+  {
+    "id": "home.generalInfo.cardHeaders.last24HoursLabel",
+    "defaultMessage": "Last",
+    "filepath": "src/screens/Home/GeneralInfo.js"
+  },
+  {
+    "id": "home.generalInfo.cardHeaders.last24HoursValue",
+    "defaultMessage": "24 Hours",
+    "filepath": "src/screens/Home/GeneralInfo.js"
+  },
+  {
+    "id": "home.generalInfo.cardHeaders.slotLabel",
+    "defaultMessage": "Slot",
+    "filepath": "src/screens/Home/GeneralInfo.js"
+  },
+  {
+    "id": "notFound.notFound",
+    "defaultMessage": "We are sorry, but the requested url could not be found.",
+    "filepath": "src/screens/PageNotFound.js"
   }
 ]

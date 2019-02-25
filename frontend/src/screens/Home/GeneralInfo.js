@@ -28,46 +28,46 @@ const messages = defineMessages({
 const generalInfoMessages = defineMessages({
   blocks: {
     id: `${GENERAL_INFO}.blocks`,
-    defaultMessage: 'Blocks',
+    defaultMessage: 'Blocks:',
   },
   transactions: {
     id: `${GENERAL_INFO}.transactions`,
-    defaultMessage: 'Txs',
+    defaultMessage: 'Txs:',
   },
   movements: {
     id: `${GENERAL_INFO}.movements`,
-    defaultMessage: 'Movements',
+    defaultMessage: 'Movements:',
   },
   totalFees: {
     id: `${GENERAL_INFO}.fees`,
-    defaultMessage: 'Fees',
+    defaultMessage: 'Fees:',
   },
   addresses: {
     id: `${GENERAL_INFO}.addresses`,
-    defaultMessage: 'Addresses',
+    defaultMessage: 'Addresses:',
   },
   emptySlotsCount: {
     id: `${GENERAL_INFO}.emptySlotsCount`,
-    defaultMessage: 'Empty slots',
+    defaultMessage: 'Empty slots:',
   },
 })
 
 const slotInfoMessages = defineMessages({
   supply: {
     id: `${SLOT_INFO}.supply`,
-    defaultMessage: 'Supply',
+    defaultMessage: 'Supply:',
   },
   transactions: {
     id: `${SLOT_INFO}.transactions`,
-    defaultMessage: 'Txs',
+    defaultMessage: 'Txs:',
   },
   totalSent: {
     id: `${SLOT_INFO}.totalSent`,
-    defaultMessage: 'Sent',
+    defaultMessage: 'Sent:',
   },
   totalFees: {
     id: `${SLOT_INFO}.totalFees`,
-    defaultMessage: 'Fees',
+    defaultMessage: 'Fees:',
   },
 })
 
@@ -228,7 +228,7 @@ const _InfoCard = ({data, fields, cardLabel, cardValue, loading, error}) => {
   if (error) return <DebugApolloError error={error} />
 
   const items = fields.map((fieldDesc) => ({
-    label: `${fieldDesc.label}:`,
+    label: fieldDesc.label,
     value: fieldDesc.getValue(data[fieldDesc.id]),
   }))
   return (
