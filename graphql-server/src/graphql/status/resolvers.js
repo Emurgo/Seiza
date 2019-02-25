@@ -1,9 +1,7 @@
-import axios from 'axios'
+const fetchCurrentPrice = async ({pricingAPI}, currency) => {
+  const result = await pricingAPI.get('price', {fsym: 'ADA', tsyms: currency})
 
-const fetchCurrentPrice = async (api, currency) => {
-  const url = `https://min-api.cryptocompare.com/data/price?fsym=ADA&tsyms=${currency}`
-  const result = await axios.get(url)
-  return result.data[currency]
+  return result[currency]
 }
 
 export const currentStatusResolver = (root, args, context) => {
@@ -18,9 +16,7 @@ export const currentStatusResolver = (root, args, context) => {
   const decentralizationResolver = () => 0
 
   // TODO: get this info
-  const priceResolver = (args, context) => {
-    return fetchCurrentPrice(null, args.currency)
-  }
+  const priceResolver = (args, context) => fetchCurrentPrice(context, args.currency)
 
   // TODO: get this info
   const stakePoolCountResolver = () => null
