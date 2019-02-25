@@ -3,15 +3,9 @@ import React from 'react'
 import type {ElementRef} from 'react'
 import {withHandlers} from 'recompose'
 import {compose} from 'redux'
-import {
-  withStyles,
-  createStyles,
-  InputAdornment,
-  TextField,
-  IconButton,
-  Button,
-} from '@material-ui/core'
+import {withStyles, createStyles, InputAdornment, TextField, IconButton} from '@material-ui/core'
 import {Close, Search} from '@material-ui/icons'
+import {Button} from '@/components/visual'
 
 const styles = (theme) =>
   createStyles({
