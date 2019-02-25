@@ -1,0 +1,16 @@
+schema: http://localhost:4000/graphql
+overwrite: true
+config: {}
+generates:
+  ./src/__generated__/schema.flow.js:
+    #config:
+    #  noNamespaces: true
+    #  scalars:
+    #    DateTime: Date
+    plugins:
+      - "flow"
+      - "flow-documents"
+      #- "flow-client"
+      #- "flow-react-apollo"
+      #- "fragment-matcher"
+require: []

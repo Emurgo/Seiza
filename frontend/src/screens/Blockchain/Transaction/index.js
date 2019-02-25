@@ -27,6 +27,8 @@ import {ASSURANCE_LEVELS_VALUES} from '@/config'
 import {monthNumeralFormat, withI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
 
+import type {Transaction} from '@/__generated__/schema.flow'
+
 const messages = defineMessages({
   header: {
     id: 'transaction.header',
@@ -206,7 +208,7 @@ const AddressesBreakdown = withI18n(({transaction, i18n}) => {
   )
 })
 
-const _TransactionSummary = ({transaction, i18n}) => {
+const _TransactionSummary = ({transaction, i18n}: {transaction: Transaction, i18n: any}) => {
   const {translate, formatAda, formatInt, formatTimestamp} = i18n
 
   const N_A = translate(messages.notAvailable)
@@ -222,7 +224,9 @@ const _TransactionSummary = ({transaction, i18n}) => {
     <SummaryCard>
       <Item label={messages.assuranceLevel}>
         <div>
-          <AssuranceChip level={assuranceFromConfirmations(transaction.confirmationsCount)} />{' '}
+          {transaction.confirmationsCount != null && (
+            <AssuranceChip level={assuranceFromConfirmations(transaction.confirmationsCount)} />
+          )}{' '}
           <span>
             {formatInt(transaction.confirmationsCount)}{' '}
             {translate(messages.confirmations, {
