@@ -6,8 +6,7 @@ import {compose} from 'redux'
 import {Link} from 'react-router-dom'
 import {defineMessages} from 'react-intl'
 import {Grid, withStyles, createStyles, Typography, Input} from '@material-ui/core'
-
-import Button from './Button'
+import {Button} from '@/components/visual'
 import {withI18n} from '@/i18n/helpers'
 import logo from '@/tmp_assets/tmp-seiza-footer-icon.png'
 
@@ -66,7 +65,6 @@ const styles = ({palette}) =>
     subscribe: {
       marginLeft: '10px',
       marginRight: '10px',
-      borderRadius: '30px',
       width: '200px',
     },
     email: {
@@ -102,7 +100,7 @@ const Footer = ({classes, navItems, i18n: {translate}}) => (
             placeholder={translate(subscribeMessages.emailButton)}
             type="email"
           />
-          <Button className={classnames(classes.subscribe, 'gradient-bg')} primary>
+          <Button rounded gradient className={classnames(classes.subscribe)}>
             {translate(subscribeMessages.subscribeButton)}
           </Button>
         </Grid>

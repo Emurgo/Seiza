@@ -1,15 +1,11 @@
 // @flow
 import React from 'react'
-import {withState, withHandlers} from 'recompose'
+import type {ElementRef} from 'react'
+import {withHandlers} from 'recompose'
 import {compose} from 'redux'
-
-import {withStyles, createStyles} from '@material-ui/core'
-import InputAdornment from '@material-ui/core/InputAdornment'
-import TextField from '@material-ui/core/TextField'
-import IconButton from '@material-ui/core/IconButton'
-import Close from '@material-ui/icons/Close'
-import Button from './Button'
-import Search from '@material-ui/icons/Search'
+import {withStyles, createStyles, InputAdornment, TextField, IconButton} from '@material-ui/core'
+import {Close, Search} from '@material-ui/icons'
+import {Button} from '@/components/visual'
 
 const styles = (theme) =>
   createStyles({
@@ -41,61 +37,63 @@ type PropTypes = {
   placeholder: string,
   value: string,
   handleOnChangeEvent: (str: string) => any,
-  clearInput: () => Object,
   onSearch: (str: string) => any,
-  inputRef: any,
+  onSubmit: (event: Object) => any,
   classes: Object,
   textFieldProps: Object,
 }
 
-const Searchbar = (props: PropTypes) => {
-  const {
-    placeholder,
-    value,
-    handleOnChangeEvent,
-    clearInput,
-    onSearch,
-    inputRef,
-    classes,
-    textFieldProps,
-  } = props
+class Searchbar extends React.Component<PropTypes> {
+  inputRef: {current: null | ElementRef<'input'>}
 
-  return (
-    <div className={classes.container}>
-      <TextField
-        type="text"
-        className={classes.textField}
-        variant="outlined"
-        value={value}
-        placeholder={placeholder}
-        onChange={handleOnChangeEvent}
-        inputRef={inputRef}
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <IconButton aria-label="Toggle password visibility" onClick={clearInput}>
-                <Close />
-              </IconButton>
-            </InputAdornment>
-          ),
-          className: classes.input,
-        }}
-        {...textFieldProps}
-      />
-      <Button primary variant="contained" className={classes.searchButton} onClick={onSearch}>
-        <Search fontSize="large" />
-      </Button>
-    </div>
-  )
+  constructor(props) {
+    super(props)
+    this.inputRef = React.createRef()
+  }
+
+  clearInput = () => {
+    this.props.handleOnChangeEvent('')
+    this.inputRef.current && this.inputRef.current.focus()
+  }
+
+  render() {
+    const {placeholder, value, handleOnChangeEvent, onSubmit, classes, textFieldProps} = this.props
+
+    return (
+      <form className={classes.container} onSubmit={onSubmit}>
+        <TextField
+          type="text"
+          className={classes.textField}
+          variant="outlined"
+          value={value}
+          placeholder={placeholder}
+          onChange={handleOnChangeEvent}
+          inputRef={this.inputRef}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton aria-label="Toggle password visibility" onClick={this.clearInput}>
+                  <Close />
+                </IconButton>
+              </InputAdornment>
+            ),
+            className: classes.input,
+          }}
+          {...textFieldProps}
+        />
+        <Button color="primary" type="submit" variant="contained" className={classes.searchButton}>
+          <Search fontSize="large" />
+        </Button>
+      </form>
+    )
+  }
 }
 
 export default compose(
-  withState('inputRef', 'setInputRef', React.createRef()),
   withHandlers({
-    onSearch: ({value, onSearch}) => () => onSearch(value),
-    clearInput: ({onChange, inputRef}) => () => {
-      onChange('')
-      inputRef.current && inputRef.current.focus()
+    onSubmit: ({onSearch, value}) => (event) => {
+      event.preventDefault()
+      onSearch(value)
     },
     handleOnChangeEvent: ({onChange}) => (event) => onChange(event.target.value),
   }),

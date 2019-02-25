@@ -6,15 +6,22 @@ import {withStyles, createStyles} from '@material-ui/core'
 
 const styles = (theme) =>
   createStyles({
-    primary: {
+    gradient: {
       background: 'linear-gradient(97deg, #715BD3 0%, #95BAF7 100%)',
-      color: 'white',
+      color: theme.palette.primary.contrastText,
+    },
+    rounded: {
+      borderRadius: '30px',
     },
   })
 
-const Button = ({primary, classes, className, ...props}) => (
+const Button = ({gradient, rounded, classes, className, ...props}) => (
   <MaterialButton
-    className={classNames({[className]: className, [classes.primary]: primary})}
+    className={classNames({
+      [classes.gradient]: gradient,
+      [classes.rounded]: rounded,
+      [className]: className,
+    })}
     {...props}
   />
 )
