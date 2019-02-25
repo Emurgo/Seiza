@@ -43,6 +43,7 @@ type PropTypes = {
   handleOnChangeEvent: (str: string) => any,
   clearInput: () => Object,
   onSearch: (str: string) => any,
+  searchOnEnter: (event: Object) => any,
   inputRef: any,
   classes: Object,
   textFieldProps: Object,
@@ -55,6 +56,7 @@ const Searchbar = (props: PropTypes) => {
     handleOnChangeEvent,
     clearInput,
     onSearch,
+    searchOnEnter,
     inputRef,
     classes,
     textFieldProps,
@@ -80,6 +82,7 @@ const Searchbar = (props: PropTypes) => {
           ),
           className: classes.input,
         }}
+        onKeyPress={searchOnEnter}
         {...textFieldProps}
       />
       <Button
@@ -98,6 +101,12 @@ export default compose(
   withState('inputRef', 'setInputRef', React.createRef()),
   withHandlers({
     onSearch: ({value, onSearch}) => () => onSearch(value),
+    searchOnEnter: ({onSearch}) => (event) => {
+      if (event.key === 'Enter') {
+        onSearch()
+        event.preventDefault()
+      }
+    },
     clearInput: ({onChange, inputRef}) => () => {
       onChange('')
       inputRef.current && inputRef.current.focus()
