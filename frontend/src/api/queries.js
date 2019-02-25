@@ -2,33 +2,6 @@
 
 import gql from 'graphql-tag'
 
-export const GET_TRANSACTION_BY_HASH = gql`
-  query($txHash: String!) {
-    transaction(txHash: $txHash) {
-      txHash
-      block {
-        timeIssued
-        blockHeight
-        epoch
-        slot
-        blockHash
-      }
-      totalInput
-      totalOutput
-      fees
-      inputs {
-        address58
-        amount
-      }
-      outputs {
-        address58
-        amount
-      }
-      confirmationsCount
-    }
-  }
-`
-
 export const BLOCK_INFO_FRAGMENT = gql`
   fragment BasicBlockInfo on Block {
     blockHash

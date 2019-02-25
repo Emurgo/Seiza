@@ -21,6 +21,7 @@ export default gql`
     inputs: [TransactionInput]
     outputs: [TransactionOutput]
     confirmationsCount: Int
+    size: Int
   }
 
   type Query {

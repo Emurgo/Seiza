@@ -44,6 +44,7 @@ export const facadeTransaction = (txData: TxAPIType): FacadeTransaction => ({
     address58: output[0],
     amount: output[1].getCoin,
   })),
+  size: -1, // No data right now
 })
 
 export const fetchTransaction = async (api: any, txHash: string) => {
