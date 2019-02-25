@@ -1,0 +1,25 @@
+type OHLCVTimePeriod {
+  open: Timestamp!
+  close: Timestamp!
+}
+
+type OHLCVPrice {
+  open: Float
+  close: Float
+  low: Float
+  high: Float
+}
+
+type OHLCV {
+  timePeriod: OHLCVTimePeriod!
+  price: OHLCVPrice
+}
+
+type MarketHistoryResult {
+  data: [OHLCV!]!
+}
+
+type Query {
+
+  marketHistory(currency: CurrencyEnum!): MarketHistoryResult
+}
