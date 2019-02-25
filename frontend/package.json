@@ -12,7 +12,8 @@
     "prettier": "prettier-eslint --write \"src/**/*.js\"",
     "extract:messages": "react-intl-cra 'src/**/*.{js,jsx}' -o 'src/i18n/messages/messages.json'",
     "manage:translations": "node ./translationRunner.js",
-    "test": "yarn flow && yarn eslint"
+    "test": "yarn flow && yarn eslint",
+    "update-schema-type": "yarn gql-gen"
   },
   "dependencies": {
     "@material-ui/core": "^3.9.2",
@@ -42,6 +43,10 @@
     "eslint-import-resolver-alias": "^1.1.2",
     "flow-bin": "^0.92.1",
     "flow-coverage-report": "^0.6.1",
+    "graphql-code-generator": "^0.17.0",
+    "graphql-codegen-flow": "^0.17.0",
+    "graphql-codegen-flow-common": "^0.15.0-alpha.1885b0cc",
+    "graphql-codegen-flow-documents": "^0.17.0",
     "node-sass": "^4.11.0",
     "prettier-eslint-cli": "^4.7.1",
     "react-app-rewired": "^2.1.0",
