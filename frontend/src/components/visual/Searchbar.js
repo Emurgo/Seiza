@@ -43,7 +43,7 @@ type PropTypes = {
   handleOnChangeEvent: (str: string) => any,
   clearInput: () => Object,
   onSearch: (str: string) => any,
-  searchOnEnter: (event: Object) => any,
+  onSubmit: (event: Object) => any,
   inputRef: any,
   classes: Object,
   textFieldProps: Object,
@@ -55,15 +55,14 @@ const Searchbar = (props: PropTypes) => {
     value,
     handleOnChangeEvent,
     clearInput,
-    onSearch,
-    searchOnEnter,
+    onSubmit,
     inputRef,
     classes,
     textFieldProps,
   } = props
 
   return (
-    <div className={classes.container}>
+    <form className={classes.container} onSubmit={onSubmit}>
       <TextField
         type="text"
         className={classes.textField}
@@ -82,30 +81,21 @@ const Searchbar = (props: PropTypes) => {
           ),
           className: classes.input,
         }}
-        onKeyPress={searchOnEnter}
         {...textFieldProps}
       />
-      <Button
-        color="primary"
-        variant="contained"
-        className={classes.searchButton}
-        onClick={onSearch}
-      >
+      <Button type="submit" color="primary" variant="contained" className={classes.searchButton}>
         <Search fontSize="large" />
       </Button>
-    </div>
+    </form>
   )
 }
 
 export default compose(
   withState('inputRef', 'setInputRef', React.createRef()),
   withHandlers({
-    onSearch: ({value, onSearch}) => () => onSearch(value),
-    searchOnEnter: ({onSearch}) => (event) => {
-      if (event.key === 'Enter') {
-        onSearch()
-        event.preventDefault()
-      }
+    onSubmit: ({onSearch, value}) => (event) => {
+      event.preventDefault()
+      onSearch(value)
     },
     clearInput: ({onChange, inputRef}) => () => {
       onChange('')
