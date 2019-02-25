@@ -1,3 +1,9 @@
+const fetchCurrentPrice = async ({pricingAPI}, currency) => {
+  const result = await pricingAPI.get('price', {fsym: 'ADA', tsyms: currency})
+
+  return result[currency]
+}
+
 export const currentStatusResolver = (root, args, context) => {
   const epochNumberResolver = () =>
     context.cardanoAPI.get('blocks/pages').then((response) => response[1][0].cbeEpoch)
@@ -10,10 +16,7 @@ export const currentStatusResolver = (root, args, context) => {
   const decentralizationResolver = () => 0
 
   // TODO: get this info
-  const priceResolver = () => ({
-    usd: 0.031,
-    eur: 0.042,
-  })
+  const priceResolver = (args, context) => fetchCurrentPrice(context, args.currency)
 
   // TODO: get this info
   const stakePoolCountResolver = () => null

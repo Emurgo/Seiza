@@ -24,7 +24,7 @@ import stakePoolSchema from './graphql/stakepool/schema.gql'
 import Timestamp from './graphql/scalars/timestamp'
 import AdaAmount from './graphql/scalars/adaAmount'
 
-import {cardanoAPI} from './api'
+import {cardanoAPI, pricingAPI} from './api'
 import type {CardanoAPI} from './api'
 
 // TODO: global error handler
@@ -106,6 +106,7 @@ const server = new ApolloServer({
   },
   context: (): ApolloContext => ({
     cardanoAPI,
+    pricingAPI,
   }),
 })
 

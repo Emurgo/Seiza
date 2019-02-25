@@ -1,6 +1,6 @@
 // @flow
 import axios from 'axios'
-import _ from 'lodash'
+import {objStripNullValues} from './utils'
 
 const URL: string = 'https://cardanoexplorer.com/api/'
 
@@ -13,12 +13,7 @@ const cardanoAPI: CardanoAPI = {
   get: (path, query) => {
     const url = `${URL}${path}`
     // remove entries with null/undefined value
-    const params = _(query)
-      .toPairs()
-      .filter(([k, v]) => v != null)
-      .fromPairs()
-      .value()
-
+    const params = objStripNullValues(query)
     return axios.get(url, {params}).then(({data}) => data.Right)
   },
 }
