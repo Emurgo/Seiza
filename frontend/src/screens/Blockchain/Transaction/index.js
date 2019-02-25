@@ -7,8 +7,10 @@ import {withProps} from 'recompose'
 import {withRouter} from 'react-router'
 import {Link} from 'react-router-dom'
 import {defineMessages} from 'react-intl'
-import {withStyles, createStyles, Typography, Grid, Divider} from '@material-ui/core'
+import idx from 'idx'
+import gql from 'graphql-tag'
 
+import {withStyles, createStyles, Typography, Grid, Divider} from '@material-ui/core'
 import {
   SummaryCard,
   SimpleLayout,
@@ -19,11 +21,9 @@ import {
 } from '@/components/visual'
 import WithModalState from '@/components/headless/modalState'
 import AssuranceChip from '@/components/common/AssuranceChip'
-
 import AdaIcon from '@/tmp_assets/ada-icon.png'
 
 import {ASSURANCE_LEVELS_VALUES} from '@/config'
-import {GET_TRANSACTION_BY_HASH} from '@/api/queries'
 import {monthNumeralFormat, withI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
 
@@ -232,21 +232,14 @@ const _TransactionSummary = ({transaction, i18n}) => {
         </div>
       </Item>
       <Item label={messages.epoch}>
-        {/* Note(ppershing): idx prepared due to upcoming backend change */}
-        {/*formatInt(idx(transaction, (_) => _.block.epoch), {defaultValue: N_A})*/}
-        {formatInt(transaction.blockEpoch, {defaultValue: N_A})}
+        {formatInt(idx(transaction, (_) => _.block.epoch), {defaultValue: N_A})}
       </Item>
 
       <Item label={messages.slot}>
-        {/*formatInt(idx(transaction, (_) => _.block.slot), {defaultValue: N_A})*/}
-        {formatInt(transaction.blockSlot, {defaultValue: N_A})}
+        {formatInt(idx(transaction, (_) => _.block.slot), {defaultValue: N_A})}
       </Item>
       <Item label={messages.date}>
-        {/*formatTimestamp(idx(transaction, (_) => _.block.timeIssued), {
-            defaultValue: N_A,
-            format: monthNumeralFormat,
-          })*/}
-        {formatTimestamp(transaction.blockTimeIssued, {
+        {formatTimestamp(idx(transaction, (_) => _.block.timeIssued), {
           defaultValue: N_A,
           format: monthNumeralFormat,
         })}
@@ -299,10 +292,39 @@ export default compose(
     txHash: props.match.params.txHash,
   })),
   withI18n,
-  graphql(GET_TRANSACTION_BY_HASH, {
-    name: 'transactionDataProvider',
-    options: ({txHash}) => ({
-      variables: {txHash},
-    }),
-  })
+  graphql(
+    gql`
+      query($txHash: String!) {
+        transaction(txHash: $txHash) {
+          txHash
+          block {
+            timeIssued
+            blockHeight
+            epoch
+            slot
+            blockHash
+          }
+          totalInput
+          totalOutput
+          fees
+          inputs {
+            address58
+            amount
+          }
+          outputs {
+            address58
+            amount
+          }
+          confirmationsCount
+          size
+        }
+      }
+    `,
+    {
+      name: 'transactionDataProvider',
+      options: ({txHash}) => ({
+        variables: {txHash},
+      }),
+    }
+  )
 )(TransactionScreen)
