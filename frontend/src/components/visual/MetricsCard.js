@@ -2,6 +2,7 @@
 import React from 'react'
 import type {ElementRef} from 'react'
 import classnames from 'classnames'
+import {withProps} from 'recompose'
 import {
   Card,
   withStyles,
@@ -70,8 +71,14 @@ type DropdownListProps = {
   options: Array<Option>,
   isOpen: boolean,
   close: (event: any) => any,
+  buildOnClickHandler: (onClick: () => any) => any,
 }
-const DropdownList = ({options, isOpen, anchorEl, close, className}: DropdownListProps) => (
+const DropdownList = withProps(({close}) => ({
+  buildOnClickHandler: (onClick) => (...args) => {
+    close(...args)
+    onClick(...args)
+  },
+}))(({options, isOpen, anchorEl, close, buildOnClickHandler, className}: DropdownListProps) => (
   <Popper open={isOpen} anchorEl={anchorEl} transition placement="bottom-end">
     {({TransitionProps}) => (
       <Grow {...TransitionProps}>
@@ -79,7 +86,7 @@ const DropdownList = ({options, isOpen, anchorEl, close, className}: DropdownLis
           <ClickAwayListener onClickAway={close}>
             <MenuList>
               {options.map(({label, onClick}) => (
-                <MenuItem key={label} onClick={onClick}>
+                <MenuItem key={label} onClick={buildOnClickHandler(onClick)}>
                   {label}
                 </MenuItem>
               ))}
@@ -89,7 +96,7 @@ const DropdownList = ({options, isOpen, anchorEl, close, className}: DropdownLis
       </Grow>
     )}
   </Popper>
-)
+))
 
 type MetricsCardProps = {
   metric: string,
