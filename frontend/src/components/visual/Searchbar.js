@@ -2,14 +2,15 @@
 import React from 'react'
 import {withState, withHandlers} from 'recompose'
 import {compose} from 'redux'
-
-import {withStyles, createStyles} from '@material-ui/core'
-import InputAdornment from '@material-ui/core/InputAdornment'
-import TextField from '@material-ui/core/TextField'
-import IconButton from '@material-ui/core/IconButton'
-import Close from '@material-ui/icons/Close'
-import Button from './Button'
-import Search from '@material-ui/icons/Search'
+import {
+  withStyles,
+  createStyles,
+  InputAdornment,
+  TextField,
+  IconButton,
+  Button,
+} from '@material-ui/core'
+import {Close, Search} from '@material-ui/icons'
 
 const styles = (theme) =>
   createStyles({
@@ -83,7 +84,7 @@ const Searchbar = (props: PropTypes) => {
         }}
         {...textFieldProps}
       />
-      <Button type="submit" color="primary" variant="contained" className={classes.searchButton}>
+      <Button color="primary" type="submit" variant="contained" className={classes.searchButton}>
         <Search fontSize="large" />
       </Button>
     </form>
