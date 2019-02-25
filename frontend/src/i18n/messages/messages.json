@@ -30,6 +30,16 @@
     "filepath": "src/components/common/CopyToClipboard.js"
   },
   {
+    "id": "themes.bright",
+    "defaultMessage": "Bright",
+    "filepath": "src/components/HOC/theme.js"
+  },
+  {
+    "id": "themes.dark",
+    "defaultMessage": "Dark",
+    "filepath": "src/components/HOC/theme.js"
+  },
+  {
     "id": "footer.subscribe.header",
     "defaultMessage": "Let's stay in touch!",
     "filepath": "src/components/visual/Footer.js"
@@ -371,52 +381,52 @@
   },
   {
     "id": "home.generalInfo.generalInfoCard.blocks",
-    "defaultMessage": "Blocks",
+    "defaultMessage": "Blocks:",
     "filepath": "src/screens/Home/GeneralInfo.js"
   },
   {
     "id": "home.generalInfo.generalInfoCard.transactions",
-    "defaultMessage": "Txs",
+    "defaultMessage": "Txs:",
     "filepath": "src/screens/Home/GeneralInfo.js"
   },
   {
     "id": "home.generalInfo.generalInfoCard.movements",
-    "defaultMessage": "Movements",
+    "defaultMessage": "Movements:",
     "filepath": "src/screens/Home/GeneralInfo.js"
   },
   {
     "id": "home.generalInfo.generalInfoCard.fees",
-    "defaultMessage": "Fees",
+    "defaultMessage": "Fees:",
     "filepath": "src/screens/Home/GeneralInfo.js"
   },
   {
     "id": "home.generalInfo.generalInfoCard.addresses",
-    "defaultMessage": "Addresses",
+    "defaultMessage": "Addresses:",
     "filepath": "src/screens/Home/GeneralInfo.js"
   },
   {
     "id": "home.generalInfo.generalInfoCard.emptySlotsCount",
-    "defaultMessage": "Empty slots",
+    "defaultMessage": "Empty slots:",
     "filepath": "src/screens/Home/GeneralInfo.js"
   },
   {
     "id": "home.generalInfo.slotInfoCard.supply",
-    "defaultMessage": "Supply",
+    "defaultMessage": "Supply:",
     "filepath": "src/screens/Home/GeneralInfo.js"
   },
   {
     "id": "home.generalInfo.slotInfoCard.transactions",
-    "defaultMessage": "Txs",
+    "defaultMessage": "Txs:",
     "filepath": "src/screens/Home/GeneralInfo.js"
   },
   {
     "id": "home.generalInfo.slotInfoCard.totalSent",
-    "defaultMessage": "Sent",
+    "defaultMessage": "Sent:",
     "filepath": "src/screens/Home/GeneralInfo.js"
   },
   {
     "id": "home.generalInfo.slotInfoCard.totalFees",
-    "defaultMessage": "Fees",
+    "defaultMessage": "Fees:",
     "filepath": "src/screens/Home/GeneralInfo.js"
   },
   {
