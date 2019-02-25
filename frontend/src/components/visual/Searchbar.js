@@ -1,6 +1,7 @@
 // @flow
 import React from 'react'
-import {withState, withHandlers} from 'recompose'
+import type {ElementRef} from 'react'
+import {withHandlers} from 'recompose'
 import {compose} from 'redux'
 import {
   withStyles,
@@ -42,65 +43,63 @@ type PropTypes = {
   placeholder: string,
   value: string,
   handleOnChangeEvent: (str: string) => any,
-  clearInput: () => Object,
   onSearch: (str: string) => any,
   onSubmit: (event: Object) => any,
-  inputRef: any,
   classes: Object,
   textFieldProps: Object,
 }
 
-const Searchbar = (props: PropTypes) => {
-  const {
-    placeholder,
-    value,
-    handleOnChangeEvent,
-    clearInput,
-    onSubmit,
-    inputRef,
-    classes,
-    textFieldProps,
-  } = props
+class Searchbar extends React.Component<PropTypes> {
+  inputRef: {current: null | ElementRef<'input'>}
 
-  return (
-    <form className={classes.container} onSubmit={onSubmit}>
-      <TextField
-        type="text"
-        className={classes.textField}
-        variant="outlined"
-        value={value}
-        placeholder={placeholder}
-        onChange={handleOnChangeEvent}
-        inputRef={inputRef}
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <IconButton aria-label="Toggle password visibility" onClick={clearInput}>
-                <Close />
-              </IconButton>
-            </InputAdornment>
-          ),
-          className: classes.input,
-        }}
-        {...textFieldProps}
-      />
-      <Button color="primary" type="submit" variant="contained" className={classes.searchButton}>
-        <Search fontSize="large" />
-      </Button>
-    </form>
-  )
+  constructor(props) {
+    super(props)
+    this.inputRef = React.createRef()
+  }
+
+  clearInput = () => {
+    this.props.handleOnChangeEvent('')
+    this.inputRef.current && this.inputRef.current.focus()
+  }
+
+  render() {
+    const {placeholder, value, handleOnChangeEvent, onSubmit, classes, textFieldProps} = this.props
+
+    return (
+      <form className={classes.container} onSubmit={onSubmit}>
+        <TextField
+          type="text"
+          className={classes.textField}
+          variant="outlined"
+          value={value}
+          placeholder={placeholder}
+          onChange={handleOnChangeEvent}
+          inputRef={this.inputRef}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton aria-label="Toggle password visibility" onClick={this.clearInput}>
+                  <Close />
+                </IconButton>
+              </InputAdornment>
+            ),
+            className: classes.input,
+          }}
+          {...textFieldProps}
+        />
+        <Button color="primary" type="submit" variant="contained" className={classes.searchButton}>
+          <Search fontSize="large" />
+        </Button>
+      </form>
+    )
+  }
 }
 
 export default compose(
-  withState('inputRef', 'setInputRef', React.createRef()),
   withHandlers({
     onSubmit: ({onSearch, value}) => (event) => {
       event.preventDefault()
       onSearch(value)
-    },
-    clearInput: ({onChange, inputRef}) => () => {
-      onChange('')
-      inputRef.current && inputRef.current.focus()
     },
     handleOnChangeEvent: ({onChange}) => (event) => onChange(event.target.value),
   }),
