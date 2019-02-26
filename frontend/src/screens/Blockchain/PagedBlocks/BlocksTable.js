@@ -6,6 +6,7 @@ import {Link as RouterLink} from 'react-router-dom'
 import {Link as MuiLink} from '@material-ui/core'
 
 import Table from '@/components/visual/Table'
+import AdaValue from '@/components/visual/AdaValue'
 import {withI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
 import {withProps} from 'recompose'
@@ -59,7 +60,7 @@ const BlocksTable = (props) => <Table bodyData={props.bodyData} headerData={prop
 export default compose(
   withI18n,
   withProps(({blocks, i18n}) => {
-    const {translate, formatInt, formatAda, formatTimestamp} = i18n
+    const {translate, formatInt, formatTimestamp} = i18n
 
     const headerData = [
       translate(tableMessages.epoch),
@@ -72,6 +73,11 @@ export default compose(
       translate(tableMessages.size),
     ]
 
+    // Hotfix before we support proper table column formatting
+    const FixWidth = ({width, children}) => (
+      <div style={{width, textAlign: 'right'}}>{children}</div>
+    )
+
     const bodyData = blocks.map((block, index) => [
       <Link key={0} to="/todo">
         {formatInt(block.epoch)}
@@ -80,12 +86,16 @@ export default compose(
         {formatInt(block.slot)}
       </Link>,
       formatTimestamp(block.timeIssued),
-      <Link key={2} to={routeTo.stakepool(block.blockLeader.poolHash)}>
+      <Link key={3} to={routeTo.stakepool(block.blockLeader.poolHash)}>
         {block.blockLeader.name}
       </Link>,
       formatInt(block.transactionsCount),
-      formatAda(block.totalSend),
-      formatAda(block.totalFees),
+      <FixWidth key={5} width={100}>
+        <AdaValue value={block.totalSend} />
+      </FixWidth>,
+      <FixWidth key={6} width={100}>
+        <AdaValue value={block.totalFees} />
+      </FixWidth>,
       formatInt(block.size),
     ])
     return {headerData, bodyData}

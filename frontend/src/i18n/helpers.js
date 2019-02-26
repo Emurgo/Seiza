@@ -21,6 +21,39 @@ BigNumber.config({
 export const monthNumeralFormat = 'L LTS'
 export const standardReadableFormat = 'LL LTS'
 
+const MICRO = 1000000
+
+const _formatAda = (x) => {
+  const value = new BigNumber(x, 10)
+  return value.dividedBy(MICRO).toFormat(6)
+}
+
+const _formatAdaInteger = (x) => {
+  const value = new BigNumber(x, 10)
+  const integral = value.dividedToIntegerBy(MICRO)
+  if (value.lt(0) && value.gt(-MICRO)) {
+    // -0 needs special handling
+    return '-0'
+  } else {
+    return integral.toFormat(0)
+  }
+}
+
+const _formatAdaFractional = (x) => {
+  const value = new BigNumber(x, 10)
+  const fractional = value
+    .abs()
+    .modulo(MICRO)
+    .dividedBy(MICRO)
+  // remove leading '0'
+  return fractional.toFormat(6).substring(1)
+}
+
+const _formatAdaSplit = (x) => ({
+  integral: _formatAdaInteger(x),
+  fractional: _formatAdaFractional(x),
+})
+
 export const getIntlFormatters = (intl) => {
   const translate = intl.formatMessage
   const formatNumber = intl.formatNumber
@@ -42,11 +75,6 @@ export const getIntlFormatters = (intl) => {
     })
   }
 
-  const _formatAda = (x) => {
-    const value = new BigNumber(x, 10)
-    return value.dividedBy(1000000).toFormat(6)
-  }
-
   const _formatTimestamp = (x, options) => {
     const desiredFormat = options.format || standardReadableFormat
     const ts = moment(x)
@@ -63,6 +91,7 @@ export const getIntlFormatters = (intl) => {
   const formatInt = withDefaultValue(_formatInt)
   const formatPercent = withDefaultValue(_formatPercent)
   const formatAda = withDefaultValue(_formatAda)
+  const formatAdaSplit = withDefaultValue(_formatAdaSplit)
   const formatFiat = withDefaultValue(_formatFiat)
 
   const formatTimestamp = withDefaultValue(_formatTimestamp)
@@ -75,6 +104,7 @@ export const getIntlFormatters = (intl) => {
     formatPercent,
     formatFiat,
     formatAda,
+    formatAdaSplit,
     formatTimestamp,
   }
 }
