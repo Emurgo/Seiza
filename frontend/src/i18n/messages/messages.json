@@ -463,5 +463,50 @@
     "id": "notFound.notFound",
     "defaultMessage": "We are sorry, but the requested url could not be found.",
     "filepath": "src/screens/PageNotFound.js"
+  },
+  {
+    "id": "staking.navigation.list",
+    "defaultMessage": "Stake pools list",
+    "filepath": "src/screens/Staking/SideMenu/NavigationBar.js"
+  },
+  {
+    "id": "staking.navigation.comparison",
+    "defaultMessage": "Comparison matric",
+    "filepath": "src/screens/Staking/SideMenu/NavigationBar.js"
+  },
+  {
+    "id": "staking.navigation.history",
+    "defaultMessage": "Stake pools history",
+    "filepath": "src/screens/Staking/SideMenu/NavigationBar.js"
+  },
+  {
+    "id": "staking.navigation.charts",
+    "defaultMessage": "Charts",
+    "filepath": "src/screens/Staking/SideMenu/NavigationBar.js"
+  },
+  {
+    "id": "staking.navigation.location",
+    "defaultMessage": "Location",
+    "filepath": "src/screens/Staking/SideMenu/NavigationBar.js"
+  },
+  {
+    "id": "staking.poolsToCompare.header",
+    "defaultMessage": "Stake pools to compare:",
+    "filepath": "src/screens/Staking/SideMenu/PoolsToCompare.js"
+  },
+  {
+    "id": "staking.poolsToCompare.share",
+    "defaultMessage": "Share",
+    "filepath": "src/screens/Staking/SideMenu/PoolsToCompare.js"
+  },
+  {
+    "id": "staking.poolsToCompare.import",
+    "defaultMessage": "Import",
+    "filepath": "src/screens/Staking/SideMenu/PoolsToCompare.js"
+  },
+  {
+    "id": "staking.poolsToCompare.export",
+    "defaultMessage": "Export",
+    "filepath": "src/screens/Staking/SideMenu/PoolsToCompare.js"
   }
 ]

@@ -29,7 +29,7 @@ import seizaLogo from './seiza-logo.png'
 const navItems = [
   {link: routeTo.home(), label: 'Home'},
   {link: routeTo.blockchain(), label: 'Blockchain'},
-  {link: routeTo.staking(), label: 'Staking'},
+  {link: routeTo.staking.home(), label: 'Staking'},
   {link: routeTo.more(), label: 'More'},
 ]
 
@@ -92,7 +92,7 @@ const App = compose(withStyles(mainLayoutStyles))(({classes}) => (
             <Switch>
               <Route exact path={routeTo.home()} component={Home} />
               <Route path={routeTo.blockchain()} component={Blockchain} />
-              <Route path={routeTo.staking()} component={Staking} />
+              <Route path={routeTo.staking.home()} component={Staking} />
               <Route path={routeTo.more()} component={More} />
               <Route component={PageNotFound} />
             </Switch>
