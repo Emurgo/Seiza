@@ -1,5 +1,7 @@
+// @flow
+
 import React from 'react'
-import {Switch, Route} from 'react-router-dom'
+import {Switch, Route, Redirect} from 'react-router-dom'
 import {compose} from 'redux'
 import {Grid, createStyles, withStyles} from '@material-ui/core'
 
@@ -28,7 +30,8 @@ export default compose(withStyles(layoutStyles))(({classes}) => (
       </Grid>
       <Grid item className={classes.content}>
         <Switch>
-          <Route exact path={routeTo.staking()} component={StakePoolList} />
+          <Redirect exact from={routeTo.staking.home()} to={routeTo.staking.poolList()} />
+          <Route exact path={routeTo.staking.poolList()} component={StakePoolList} />
           <Route component={PageNotFound} />
         </Switch>
       </Grid>

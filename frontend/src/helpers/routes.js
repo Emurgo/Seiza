@@ -1,5 +1,6 @@
 // @flow
 const BLOCKCHAIN_ROUTE = '/blockchain'
+const STAKING_ROUTE = '/staking'
 
 export const routeTo = {
   home: () => '/',
@@ -9,6 +10,13 @@ export const routeTo = {
   address: (address58: string) => `${BLOCKCHAIN_ROUTE}/address/${address58}`,
   stakepool: (poolHash: string) => `${BLOCKCHAIN_ROUTE}/stakepool/${poolHash}`,
   more: () => '/more',
-  staking: () => '/staking',
+  staking: {
+    home: () => STAKING_ROUTE,
+    poolList: () => `${STAKING_ROUTE}/list`,
+    poolComparison: () => `${STAKING_ROUTE}/comparison`,
+    history: () => `${STAKING_ROUTE}/history`,
+    charts: () => `${STAKING_ROUTE}/charts`,
+    location: () => `${STAKING_ROUTE}/location`,
+  },
   search: (query: string) => `${BLOCKCHAIN_ROUTE}/search/${query}`,
 }
