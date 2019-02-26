@@ -8,6 +8,7 @@
     "eject": "react-app-rewired eject",
     "eslint": "eslint src --max-warnings=0",
     "flow": "flow",
+    "flow-stop": "flow stop",
     "flow-coverage": "flow-coverage-report || exit 0",
     "prettier": "prettier-eslint --write \"src/**/*.js\"",
     "extract:messages": "react-intl-cra 'src/**/*.{js,jsx}' -o 'src/i18n/messages/messages.json'",
