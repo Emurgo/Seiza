@@ -53,6 +53,7 @@ export const getIntlFormatters = (intl) => {
     if (!ts.isValid) throw new Error('bad timestamp')
     return ts.format(desiredFormat)
   }
+
   const withDefaultValue = (formatter) => (x, options = {}) => {
     const {defaultValue, ...restOptions} = options
     if (x == null) return defaultValue || ''
@@ -63,7 +64,9 @@ export const getIntlFormatters = (intl) => {
   const formatPercent = withDefaultValue(_formatPercent)
   const formatAda = withDefaultValue(_formatAda)
   const formatFiat = withDefaultValue(_formatFiat)
+
   const formatTimestamp = withDefaultValue(_formatTimestamp)
+  formatTimestamp.FMT_SHORT_DATE = 'L'
 
   return {
     translate,
