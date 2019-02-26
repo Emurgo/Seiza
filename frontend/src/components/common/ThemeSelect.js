@@ -28,7 +28,6 @@ export default compose(
     onChange={(e) => setTheme(e.target.value)}
     input={<OutlinedInput labelWidth={0} />}
   >
-    <option value="" />
     {themes.map((theme) => (
       <option key={theme} value={theme}>
         {translate(themeMessages[theme])}

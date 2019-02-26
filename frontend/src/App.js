@@ -74,51 +74,47 @@ const themeProviderStyles = createStyles({
   },
 })
 
-const _App = compose(withStyles(mainLayoutStyles))(({classes}) => {
-  return (
-    <Router>
-      <div className={classes.pageWrapper}>
-        <div className={classes.noShrinkWrapper}>
-          <CssBaseline />
-          <TopBar />
-        </div>
-        <div className={classes.contentWrapper}>
-          {/* Note: when the screens are not wrapped inside 'Grid' there are
+const App = compose(withStyles(mainLayoutStyles))(({classes}) => (
+  <Router>
+    <div className={classes.pageWrapper}>
+      <div className={classes.noShrinkWrapper}>
+        <CssBaseline />
+        <TopBar />
+      </div>
+      <div className={classes.contentWrapper}>
+        {/* Note: when the screens are not wrapped inside 'Grid' there are
                 strange overflow issues.
                 Note: Custom flex layout is used to make screen view span all width expect
                 topBar and footer (when using Grid for it, it behaves strange when shrinked).
             */}
-          <Grid container direction="column" className={classes.maxHeight}>
-            <Grid item className={classes.maxHeight}>
-              <Switch>
-                <Route exact path={routeTo.home()} component={Home} />
-                <Route path={routeTo.blockchain()} component={Blockchain} />
-                <Route path={routeTo.staking()} component={Staking} />
-                <Route path={routeTo.more()} component={More} />
-                <Route component={PageNotFound} />
-              </Switch>
-            </Grid>
+        <Grid container direction="column" className={classes.maxHeight}>
+          <Grid item className={classes.maxHeight}>
+            <Switch>
+              <Route exact path={routeTo.home()} component={Home} />
+              <Route path={routeTo.blockchain()} component={Blockchain} />
+              <Route path={routeTo.staking()} component={Staking} />
+              <Route path={routeTo.more()} component={More} />
+              <Route component={PageNotFound} />
+            </Switch>
           </Grid>
-        </div>
-        <div className={classes.noShrinkWrapper}>
-          <Footer navItems={navItems} />
-        </div>
+        </Grid>
       </div>
-    </Router>
-  )
-})
+      <div className={classes.noShrinkWrapper}>
+        <Footer navItems={navItems} />
+      </div>
+    </div>
+  </Router>
+))
 
-const App = ({classes, currentTheme, themeDefinitions}) => {
-  return (
-    <MuiThemeProvider className={classes.maxHeight} theme={themeDefinitions[currentTheme]}>
-      <_App />
-    </MuiThemeProvider>
-  )
-}
+const ThemeWrapper = ({classes, currentTheme, themeDefinitions}) => (
+  <MuiThemeProvider className={classes.maxHeight} theme={themeDefinitions[currentTheme]}>
+    <App />
+  </MuiThemeProvider>
+)
 
 export default compose(
   provideIntl,
   provideTheme,
   withTheme,
   withStyles(themeProviderStyles)
-)(App)
+)(ThemeWrapper)
