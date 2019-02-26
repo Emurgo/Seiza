@@ -1,11 +1,14 @@
 import React from 'react'
-import {Typography} from '@material-ui/core'
+import {SimpleLayout} from '@/components/visual'
+import MarketHistory from './MarketData'
 
 const More = () => {
   return (
-    <React.Fragment>
-      <Typography variant="h4">More</Typography>
-    </React.Fragment>
+    <SimpleLayout title="Market data i18n">
+      <div style={{height: 600}}>
+        <MarketHistory />
+      </div>
+    </SimpleLayout>
   )
 }
 

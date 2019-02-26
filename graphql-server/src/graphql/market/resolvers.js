@@ -15,7 +15,7 @@ const facadeMarketHistory = (data: any) => ({
 })
 
 const fetchMarketHistory = async ({pricingAPI}, currency) => {
-  const limit = 20 // TODO: Support start & end timestamps
+  const limit = 365 // TODO: Support start & end timestamps
   const rawResult = await pricingAPI.get('histoday', {
     fsym: 'ADA',
     tsym: currency,
