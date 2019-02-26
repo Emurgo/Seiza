@@ -15,7 +15,10 @@ import {
   ClickAwayListener,
   Grid,
   IconButton,
+  ButtonBase,
+  Typography,
 } from '@material-ui/core'
+import {fade} from '@material-ui/core/styles/colorManipulator'
 import {ArrowDropDown} from '@material-ui/icons'
 
 import WithModalState from '@/components/headless/modalState'
@@ -30,7 +33,6 @@ const styles = (theme) =>
     card: {
       display: 'flex',
       flexDirection: 'row',
-      padding: '5px',
       boxShadow: 'none',
     },
     dropdownArrow: {
@@ -38,6 +40,9 @@ const styles = (theme) =>
       flexDirection: 'column',
       justifyContent: 'center',
       alignItems: 'center',
+    },
+    icon: {
+      width: 50,
     },
     value: {
       fontSize: 20,
@@ -50,6 +55,23 @@ const styles = (theme) =>
     },
     popper: {
       minWidth: '150px',
+    },
+    noButton: {
+      padding: '4px',
+      width: '100%',
+      display: 'flex',
+    },
+    button: {
+      'padding': '4px',
+      'width': '100%',
+      'display': 'flex',
+      '&:hover': {
+        'backgroundColor': fade(theme.palette.action.active, theme.palette.action.hoverOpacity),
+        // Reset on touch devices, it doesn't add specificity
+        '@media (hover: none)': {
+          backgroundColor: 'transparent',
+        },
+      },
     },
   })
 
@@ -121,26 +143,38 @@ class MetricsCard extends React.Component<MetricsCardProps> {
   render() {
     const {metric, value, icon, classes, className, options, onClick} = this.props
 
+    const Wrapper = onClick
+      ? ({children}) => (
+        <ButtonBase onClick={onClick} className={classes.button}>
+          {children}
+        </ButtonBase>
+      )
+      : ({children}) => <div className={classes.noButton}>{children}</div>
+
     return (
       <WithModalState>
         {({isOpen, closeModal: closePopper, toggle: togglePopper}) => (
           <React.Fragment>
             <Card className={classnames(classes.card, className)}>
-              <img alt="" src={ICONS[icon]} />
-              <Grid container direction="column" justify="center" alignItems="center">
-                <Grid item>
-                  <div className={classes.value}>{value}</div>
+              <Wrapper>
+                {/* just to center the image */}
+                <Grid container direction="column" justify="space-around" className={classes.icon}>
+                  <img alt="" src={ICONS[icon]} />
                 </Grid>
-                <Grid item>
-                  <div className={classes.metric}>{metric}</div>
+                <Grid container direction="column" justify="center" alignItems="center" item>
+                  <Grid item>
+                    <Typography className={classes.value}>{value}</Typography>
+                  </Grid>
+                  <Grid item>
+                    <Typography className={classes.metric}>{metric}</Typography>
+                  </Grid>
                 </Grid>
-              </Grid>
+              </Wrapper>
               {options && (
                 <div className={classes.dropdownArrow}>
                   <IconButton
                     onClick={(event) => {
                       options && togglePopper()
-                      onClick && onClick()
                     }}
                     buttonRef={this.buttonRef}
                   >
