@@ -4,12 +4,12 @@ import React from 'react'
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom'
 import {withRouter} from 'react-router'
 import {compose} from 'redux'
-import {CssBaseline, Grid, withStyles} from '@material-ui/core'
-import {MuiThemeProvider, createMuiTheme} from '@material-ui/core/styles'
-import red from '@material-ui/core/colors/red'
+import {CssBaseline, Grid, withStyles, createStyles} from '@material-ui/core'
+import {MuiThemeProvider} from '@material-ui/core/styles'
 
 import {routeTo} from './helpers/routes'
 import {provideIntl} from './components/HOC/intl'
+import {provideTheme, withTheme} from './components/HOC/theme'
 import {Navbar, Footer} from './components/visual'
 
 import Home from './screens/Home'
@@ -18,26 +18,12 @@ import Staking from './screens/Staking'
 import More from './screens/More'
 import PageNotFound from './screens/PageNotFound'
 import LanguageSelect from '@/components/common/LanguageSelect'
+import ThemeSelect from '@/components/common/ThemeSelect'
 
 import './App.css'
 import seizaLogo from './seiza-logo.png'
 
 // TODO: error handling
-
-const theme = createMuiTheme({
-  typography: {
-    useNextVariants: true,
-  },
-  palette: {
-    primary: {
-      main: '#6300C1',
-    },
-    secondary: {
-      main: '#220049',
-    },
-    error: red,
-  },
-})
 
 // TODO: intl
 const navItems = [
@@ -57,66 +43,78 @@ const TopBar = withRouter(({location: {pathname}}) => {
         <Grid container direction="row" alignItems="center">
           <Navbar currentPathname={pathname} items={navItems} />
           <LanguageSelect />
+          <ThemeSelect />
         </Grid>
       </Grid>
     </Grid>
   )
 })
 
-const mainLayoutStyles = {
+const mainLayoutStyles = ({palette}) =>
+  createStyles({
+    maxHeight: {
+      height: '100%',
+    },
+    pageWrapper: {
+      height: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+    },
+    contentWrapper: {
+      flex: 1,
+    },
+    noShrinkWrapper: {
+      flexShrink: 0,
+    },
+  })
+
+const themeProviderStyles = createStyles({
   maxHeight: {
     height: '100%',
   },
-  pageWrapper: {
-    height: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  contentWrapper: {
-    flex: 1,
-  },
-  noShrinkWrapper: {
-    flexShrink: 0,
-  },
-}
+})
 
-const App = ({classes}) => {
-  return (
-    <MuiThemeProvider className={classes.maxHeight} theme={theme}>
-      <Router>
-        <div className={classes.pageWrapper}>
-          <div className={classes.noShrinkWrapper}>
-            <CssBaseline />
-            <TopBar />
-          </div>
-          <div className={classes.contentWrapper}>
-            {/* Note: when the screens are not wrapped inside 'Grid' there are
+const App = compose(withStyles(mainLayoutStyles))(({classes}) => (
+  <Router>
+    <div className={classes.pageWrapper}>
+      <div className={classes.noShrinkWrapper}>
+        <CssBaseline />
+        <TopBar />
+      </div>
+      <div className={classes.contentWrapper}>
+        {/* Note: when the screens are not wrapped inside 'Grid' there are
                 strange overflow issues.
                 Note: Custom flex layout is used to make screen view span all width expect
                 topBar and footer (when using Grid for it, it behaves strange when shrinked).
             */}
-            <Grid container direction="column" className={classes.maxHeight}>
-              <Grid item className={classes.maxHeight}>
-                <Switch>
-                  <Route exact path={routeTo.home()} component={Home} />
-                  <Route path={routeTo.blockchain()} component={Blockchain} />
-                  <Route path={routeTo.staking()} component={Staking} />
-                  <Route path={routeTo.more()} component={More} />
-                  <Route component={PageNotFound} />
-                </Switch>
-              </Grid>
-            </Grid>
-          </div>
-          <div className={classes.noShrinkWrapper}>
-            <Footer navItems={navItems} />
-          </div>
-        </div>
-      </Router>
-    </MuiThemeProvider>
-  )
-}
+        <Grid container direction="column" className={classes.maxHeight}>
+          <Grid item className={classes.maxHeight}>
+            <Switch>
+              <Route exact path={routeTo.home()} component={Home} />
+              <Route path={routeTo.blockchain()} component={Blockchain} />
+              <Route path={routeTo.staking()} component={Staking} />
+              <Route path={routeTo.more()} component={More} />
+              <Route component={PageNotFound} />
+            </Switch>
+          </Grid>
+        </Grid>
+      </div>
+      <div className={classes.noShrinkWrapper}>
+        <Footer navItems={navItems} />
+      </div>
+    </div>
+  </Router>
+))
+
+const ThemeWrapper = ({classes, currentTheme, themeDefinitions}) => (
+  <MuiThemeProvider className={classes.maxHeight} theme={themeDefinitions[currentTheme]}>
+    <App />
+  </MuiThemeProvider>
+)
 
 export default compose(
   provideIntl,
-  withStyles(mainLayoutStyles)
-)(App)
+  provideTheme,
+  withTheme,
+  withStyles(themeProviderStyles)
+)(ThemeWrapper)
