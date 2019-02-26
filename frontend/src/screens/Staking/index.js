@@ -11,17 +11,29 @@ import StakePoolList from './StakeList'
 import StakePoolHeader from './Header'
 import PageNotFound from '../PageNotFound'
 
-const layoutStyles = () =>
+const SIDEBAR_WIDTH = 400
+
+const styles = () =>
   createStyles({
     sidebar: {
-      width: '400px',
+      width: `${SIDEBAR_WIDTH}px`,
     },
     content: {
       flex: 1,
+      paddingRight: `${SIDEBAR_WIDTH}px`,
+    },
+    notFound: {
+      marginTop: '100px',
     },
   })
 
-export default compose(withStyles(layoutStyles))(({classes}) => (
+const NotFound = withStyles(styles)(({classes}) => (
+  <div className={classes.notFound}>
+    <PageNotFound />
+  </div>
+))
+
+export default compose(withStyles(styles))(({classes}) => (
   <Grid container direction="column">
     <StakePoolHeader />
     <Grid container direction="row">
@@ -32,7 +44,7 @@ export default compose(withStyles(layoutStyles))(({classes}) => (
         <Switch>
           <Redirect exact from={routeTo.staking.home()} to={routeTo.staking.poolList()} />
           <Route exact path={routeTo.staking.poolList()} component={StakePoolList} />
-          <Route component={PageNotFound} />
+          <Route component={NotFound} />
         </Switch>
       </Grid>
     </Grid>
