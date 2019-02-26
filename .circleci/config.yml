@@ -21,7 +21,7 @@ test_task_defaults: &test_task_defaults
           - node_modules
         key: v1-dependencies-{{ checksum "package.json" }}
 
-    - run: yarn test
+    - run: yarn flow-stop && yarn test
 
 version: 2
 jobs:

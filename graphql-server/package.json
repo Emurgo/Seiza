@@ -8,6 +8,7 @@
     "build": "rm -rf build && babel src --out-dir build",
     "serve": "node build/index.js",
     "eslint": "eslint src --max-warnings=0",
+    "flow-stop": "flow stop",
     "flow": "flow",
     "flow-coverage": "flow-coverage-report || exit 0",
     "prettier": "prettier-eslint --write \"src/**/*.js\"",
