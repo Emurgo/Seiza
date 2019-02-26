@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import {BrowserRouter as Router, Route, Switch} from 'react-router-dom'
+import {BrowserRouter as Router, Route, Switch, Redirect} from 'react-router-dom'
 import {withRouter} from 'react-router'
 import {compose} from 'redux'
 import {CssBaseline, Grid, withStyles, createStyles} from '@material-ui/core'
@@ -90,6 +90,7 @@ const App = compose(withStyles(mainLayoutStyles))(({classes}) => (
         <Grid container direction="column" className={classes.maxHeight}>
           <Grid item className={classes.maxHeight}>
             <Switch>
+              <Redirect exact from="/" to={routeTo.home()} />
               <Route exact path={routeTo.home()} component={Home} />
               <Route path={routeTo.blockchain()} component={Blockchain} />
               <Route path={routeTo.staking.home()} component={Staking} />
