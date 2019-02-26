@@ -1,0 +1,26 @@
+type SlotInfo {
+  supply: AdaAmount!
+  txCount: Int!
+  totalSent: AdaAmount!
+  totalFees: AdaAmount!
+}
+
+type GeneralInfo {
+  blocksCount: Int!
+  txCount: Int!
+  movements: AdaAmount!
+  totalFees: AdaAmount!
+  emptySlotsCount: Int!
+  addresses: AdaAmount!
+}
+
+enum InfoPeriod {
+  ALL_TIME
+  LAST_24_HOURS
+}
+
+type Query {
+  generalInfo(infoPeriod: InfoPeriod): GeneralInfo!
+  epochInfo(epoch: Int!): GeneralInfo!
+  slotInfo(epoch: Int!, slot: Int!): SlotInfo!
+}
