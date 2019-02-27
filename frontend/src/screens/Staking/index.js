@@ -25,6 +25,9 @@ const styles = () =>
     notFound: {
       marginTop: '100px',
     },
+    wrapper: {
+      overflow: 'auto',
+    },
   })
 
 const NotFound = withStyles(styles)(({classes}) => (
@@ -36,7 +39,7 @@ const NotFound = withStyles(styles)(({classes}) => (
 export default compose(withStyles(styles))(({classes}) => (
   <Grid container direction="column">
     <StakePoolHeader />
-    <Grid container direction="row">
+    <Grid container direction="row" wrap="nowrap" className={classes.wrapper}>
       <Grid item className={classes.sidebar}>
         <SideMenu />
       </Grid>

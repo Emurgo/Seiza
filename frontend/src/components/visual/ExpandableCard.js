@@ -30,8 +30,6 @@ const styles = (theme) => ({
     color: 'gray',
   },
   mainContent: {
-    paddingLeft: theme.spacing.unit * 3,
-    paddingRight: theme.spacing.unit * 3,
     borderBottomRightRadius: 0,
     borderBottomLeftRadius: 0,
   },

@@ -114,10 +114,21 @@ const Summary = withI18n(({i18n, caption, value}) => (
   </Grid>
 ))
 
-const AddressesSummary = withI18n(({transaction, i18n}) => {
+const addressSummaryStyles = (theme) =>
+  createStyles({
+    wrapper: {
+      paddingLeft: theme.spacing.unit * 3,
+      paddingRight: theme.spacing.unit * 3,
+    },
+  })
+
+const AddressesSummary = compose(
+  withI18n,
+  withStyles(addressSummaryStyles)
+)(({transaction, i18n, classes}) => {
   const {translate, formatAda} = i18n
   return (
-    <Grid container>
+    <Grid container className={classes.wrapper}>
       <Grid item xs={6}>
         <Summary
           caption={
