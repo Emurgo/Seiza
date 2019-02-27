@@ -1,7 +1,6 @@
 // @flow
 
 import React from 'react'
-import classnames from 'classnames'
 import {compose} from 'redux'
 import {Grid, Typography, createStyles, withStyles} from '@material-ui/core'
 import {defineMessages} from 'react-intl'
@@ -32,10 +31,11 @@ const messages = defineMessages({
   },
 })
 
-const styles = () =>
+const styles = ({palette}) =>
   createStyles({
     wrapper: {
       height: '250px',
+      background: palette.gradient,
     },
     card: {
       maxWidth: '250px',
@@ -47,7 +47,7 @@ const styles = () =>
 const Header = ({classes, i18n: {translate}}) => (
   <Grid
     container
-    className={classnames(classes.wrapper, 'gradient-bg')}
+    className={classes.wrapper}
     direction="column"
     justify="space-evenly"
     alignItems="center"

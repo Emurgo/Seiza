@@ -1,6 +1,5 @@
 // @flow
 import React from 'react'
-import classnames from 'classnames'
 import {Typography, createStyles, withStyles} from '@material-ui/core'
 import {defineMessages} from 'react-intl'
 import {compose} from 'redux'
@@ -16,7 +15,7 @@ const messages = defineMessages({
   },
 })
 
-const styles = (theme) =>
+const styles = ({palette}) =>
   createStyles({
     wrapper: {
       display: 'flex',
@@ -24,11 +23,12 @@ const styles = (theme) =>
       alignItems: 'center',
       flexDirection: 'column',
       height: '300px',
+      background: palette.gradient,
     },
   })
 
 const BlockchainHeader = ({classes, i18n: {translate}}) => (
-  <div className={classnames('gradient-bg', classes.wrapper)}>
+  <div className={classes.wrapper}>
     <OverviewMetrics />
     <Typography variant="h4">{translate(messages.header)}</Typography>
     <Search />
