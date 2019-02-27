@@ -32,6 +32,19 @@ export const GET_PAGED_BLOCKS = gql`
   ${BLOCK_INFO_FRAGMENT}
 `
 
+export const GET_PAGED_BLOCKS_IN_EPOCH = gql`
+  query($epochNumber: Int!, $cursor: Int) {
+    pagedBlocksInEpoch(epochNumber: $epochNumber, cursor: $cursor) {
+      blocks {
+        ...BasicBlockInfo
+      }
+      cursor
+      hasMore
+    }
+  }
+  ${BLOCK_INFO_FRAGMENT}
+`
+
 export const GET_BLOCK_BY_HASH = gql`
   query($blockHash: String!) {
     block(blockHash: $blockHash) {

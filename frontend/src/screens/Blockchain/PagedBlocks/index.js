@@ -1,23 +1,19 @@
 // @flow
 import React from 'react'
-import idx from 'idx'
 import {graphql} from 'react-apollo'
 import {compose} from 'redux'
-import {withHandlers, withStateHandlers, withProps} from 'recompose'
 import {defineMessages} from 'react-intl'
+import {withProps} from 'recompose'
+import idx from 'idx'
 import {Switch, Typography, Grid, withStyles, createStyles} from '@material-ui/core'
 
-import Pagination, {getPageCount} from '../../../components/visual/Pagination'
+import {onDidUpdate, onDidMount} from '@/components/HOC/lifecycles'
+import Pagination, {getPageCount} from '@/components/visual/Pagination'
 import {SimpleLayout, LoadingInProgress, DebugApolloError} from '@/components/visual'
-import BlocksTable from './BlocksTable'
-import {onDidUpdate, onDidMount} from '../../../components/HOC/lifecycles'
-import {GET_PAGED_BLOCKS} from '../../../api/queries'
-import {withI18n} from '../../../i18n/helpers'
-
-// TODO: for now `PAGE_SIZE` is hardcoded both in client and server
-const PAGE_SIZE = 10
-const AUTOUPDATE_REFRESH_INTERVAL = 10 * 1000
-const AUTOUPDATE_REFRESH_INTERVAL_OFF = 0
+import BlocksTable, {ALL_COLUMNS} from './BlocksTable'
+import {GET_PAGED_BLOCKS} from '@/api/queries'
+import {withI18n} from '@/i18n/helpers'
+import withPagedData from '@/components/HOC/withPagedData'
 
 const I18N_PREFIX = 'blockchain.blockList'
 
@@ -30,14 +26,6 @@ const messages = defineMessages({
     id: `${I18N_PREFIX}.header`,
     defaultMessage: 'Recent blocks',
   },
-})
-
-const withBlocks = graphql(GET_PAGED_BLOCKS, {
-  name: 'pagedBlocksResult',
-  options: (props) => ({
-    variables: {cursor: props.cursor},
-    pollInterval: props.autoUpdate ? AUTOUPDATE_REFRESH_INTERVAL : AUTOUPDATE_REFRESH_INTERVAL_OFF,
-  }),
 })
 
 const autoUpdateStyles = (theme) =>
@@ -70,7 +58,7 @@ const styles = (theme) =>
 
 const RecentBlocks = (props) => {
   const {
-    pagedBlocksResult: {loading, error, pagedBlocks},
+    pagedDataResult: {loading, error, pagedData: pagedBlocks},
     classes,
     i18n: {translate},
   } = props
@@ -101,78 +89,56 @@ const RecentBlocks = (props) => {
       ) : error ? (
         <DebugApolloError error={error} />
       ) : (
-        <BlocksTable blocks={pagedBlocks.blocks} />
+        <BlocksTable blocks={pagedBlocks.blocks} columns={ALL_COLUMNS} />
       )}
     </SimpleLayout>
   )
 }
 
-const _updateTotalCount = ({pagedBlocksResult, rowsPerPage, setTotalCount, setPage}) => {
-  const blocksCount = idx(pagedBlocksResult, (_) => _.pagedBlocks.blocks.length)
+const AUTOUPDATE_REFRESH_INTERVAL = 10 * 1000
+const AUTOUPDATE_REFRESH_INTERVAL_OFF = 0
+const withData = compose(
+  graphql(GET_PAGED_BLOCKS, {
+    name: 'pagedDataResult',
+    options: (props) => ({
+      variables: {cursor: props.cursor},
+      pollInterval: props.autoUpdate
+        ? AUTOUPDATE_REFRESH_INTERVAL
+        : AUTOUPDATE_REFRESH_INTERVAL_OFF,
+    }),
+  }),
+  withProps(({pagedDataResult}) => ({
+    pagedDataResult: {
+      ...pagedDataResult,
+      pagedData: idx(pagedDataResult, (_) => _.pagedBlocks),
+    },
+  }))
+)
+
+const _updateTotalPageCount = ({pagedDataResult, rowsPerPage, setTotalCount, setPage}) => {
+  const blocksCount = idx(pagedDataResult, (_) => _.pagedData.blocks.length)
   if (blocksCount) {
-    const itemsCount = blocksCount + pagedBlocksResult.pagedBlocks.cursor
+    const itemsCount = blocksCount + pagedDataResult.pagedData.cursor
     setTotalCount(itemsCount)
     setPage(getPageCount(itemsCount, rowsPerPage) - 1)
   }
 }
 
-export default compose(
-  withStyles(styles),
-  withI18n,
-  withProps(() => ({
-    rowsPerPage: PAGE_SIZE,
-  })),
-  withStateHandlers(
-    {page: 0, totalCount: 0, autoUpdate: true},
-    {
-      setPage: () => (page) => ({page}),
-      setTotalCount: () => (totalCount) => ({totalCount}),
-      setAutoUpdate: () => (autoUpdate) => ({autoUpdate}),
-    }
-  ),
-  withBlocks,
-  onDidMount(_updateTotalCount),
+const withSetTotalPageCount = compose(
+  onDidMount(_updateTotalPageCount),
   onDidUpdate((props, prevProps) => {
     if (
       (props.autoUpdate &&
-        prevProps.pagedBlocksResult.pagedBlocks !== props.pagedBlocksResult.pagedBlocks) ||
+        prevProps.pagedDataResult.pagedData !== props.pagedDataResult.pagedData) ||
       !props.totalCount
     ) {
-      _updateTotalCount(props)
+      _updateTotalPageCount(props)
     }
-  }),
-  withHandlers({
-    onChangeAutoUpdate: ({setAutoUpdate, pagedBlocksResult}) => (event) => {
-      const checked = event.target.checked
-      setAutoUpdate(checked)
-      checked && pagedBlocksResult.refetch()
-    },
-    onChangePage: ({
-      setPage,
-      totalCount,
-      pagedBlocksResult,
-      rowsPerPage,
-      setAutoUpdate,
-      autoUpdate,
-    }) => (newPage) => {
-      const {fetchMore} = pagedBlocksResult
-
-      const cursor =
-        newPage === getPageCount(totalCount, rowsPerPage) - 1
-          ? totalCount
-          : rowsPerPage * newPage + rowsPerPage
-
-      // We set auto-update off everytime user changes page (even when he goes to latest one)
-      autoUpdate && setAutoUpdate(false)
-
-      // Note: 'fetchMore' is built-in apollo function
-      return fetchMore({
-        variables: {cursor},
-        updateQuery: (prev, {fetchMoreResult, ...rest}) => {
-          if (!fetchMoreResult) return prev
-          return fetchMoreResult
-        },
-      }).then(() => setPage(newPage))
-    },
   })
+)
+
+export default compose(
+  withStyles(styles),
+  withI18n,
+  withPagedData({withData, withSetTotalPageCount, initialAutoUpdate: true})
 )(RecentBlocks)
