@@ -6,11 +6,13 @@ import {withRouter} from 'react-router'
 import {compose} from 'redux'
 import {CssBaseline, Grid, withStyles, createStyles} from '@material-ui/core'
 import {MuiThemeProvider} from '@material-ui/core/styles'
+import {defineMessages} from 'react-intl'
 
 import {routeTo} from './helpers/routes'
 import {provideIntl} from './components/HOC/intl'
 import {provideTheme, withTheme} from './components/HOC/theme'
 import {Navbar, Footer} from './components/visual'
+import {withI18n} from '@/i18n/helpers'
 
 import Home from './screens/Home'
 import Blockchain from './screens/Blockchain'
@@ -23,32 +25,51 @@ import ThemeSelect from '@/components/common/ThemeSelect'
 import './App.css'
 import seizaLogo from './seiza-logo.png'
 
-// TODO: error handling
+const I18N_PREFIX = 'mainNavigation'
 
-// TODO: intl
-const navItems = [
-  {link: routeTo.home(), label: 'Home'},
-  {link: routeTo.blockchain(), label: 'Blockchain'},
-  {link: routeTo.staking.home(), label: 'Staking'},
-  {link: routeTo.more(), label: 'More'},
+const navigationMessages = defineMessages({
+  home: {
+    id: `${I18N_PREFIX}.home`,
+    defaultMessage: 'Home',
+  },
+  blockchain: {
+    id: `${I18N_PREFIX}.blockchain`,
+    defaultMessage: 'Blockchain',
+  },
+  staking: {
+    id: `${I18N_PREFIX}.staking`,
+    defaultMessage: 'Staking',
+  },
+  more: {
+    id: `${I18N_PREFIX}.more`,
+    defaultMessage: 'More',
+  },
+})
+
+const getTranslatedNavItems = (translate) => [
+  {link: routeTo.home(), label: translate(navigationMessages.home)},
+  {link: routeTo.blockchain(), label: translate(navigationMessages.blockchain)},
+  {link: routeTo.staking.home(), label: translate(navigationMessages.staking)},
+  {link: routeTo.more(), label: translate(navigationMessages.more)},
 ]
 
-const TopBar = withRouter(({location: {pathname}}) => {
-  return (
-    <Grid container direction="row" justify="space-between" alignItems="center">
-      <Grid item>
-        <img alt="" src={seizaLogo} />
-      </Grid>
-      <Grid item>
-        <Grid container direction="row" alignItems="center">
-          <Navbar currentPathname={pathname} items={navItems} />
-          <LanguageSelect />
-          <ThemeSelect />
-        </Grid>
+const TopBar = compose(
+  withRouter,
+  withI18n
+)(({location: {pathname}, i18n: {translate}}) => (
+  <Grid container direction="row" justify="space-between" alignItems="center">
+    <Grid item>
+      <img alt="" src={seizaLogo} />
+    </Grid>
+    <Grid item>
+      <Grid container direction="row" alignItems="center">
+        <Navbar currentPathname={pathname} items={getTranslatedNavItems(translate)} />
+        <LanguageSelect />
+        <ThemeSelect />
       </Grid>
     </Grid>
-  )
-})
+  </Grid>
+))
 
 const styles = createStyles({
   maxHeight: {
@@ -59,7 +80,10 @@ const styles = createStyles({
   },
 })
 
-const App = compose(withStyles(styles))(({classes}) => (
+const App = compose(
+  withI18n,
+  withStyles(styles)
+)(({classes, i18n: {translate}}) => (
   <Router>
     <Grid container direction="column" className={classes.maxHeight} wrap="nowrap">
       <Grid item>
@@ -77,7 +101,7 @@ const App = compose(withStyles(styles))(({classes}) => (
         </Switch>
       </Grid>
       <Grid item>
-        <Footer navItems={navItems} />
+        <Footer navItems={getTranslatedNavItems(translate)} />
       </Grid>
     </Grid>
   </Router>
