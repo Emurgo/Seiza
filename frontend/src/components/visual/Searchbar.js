@@ -81,7 +81,7 @@ class Searchbar extends React.Component<PropTypes> {
           }}
           {...textFieldProps}
         />
-        <Button color="primary" type="submit" variant="contained" className={classes.searchButton}>
+        <Button primary type="submit" variant="contained" className={classes.searchButton}>
           <Search fontSize="large" />
         </Button>
       </form>

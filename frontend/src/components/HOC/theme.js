@@ -26,18 +26,30 @@ export const themeMessages = defineMessages({
   },
 })
 
+// Note: Footer design does not play well with primary or secondary color
+
 const themeDefinitions = {
   [THEMES.BRIGHT]: createMuiTheme({
     typography: {
       useNextVariants: true,
     },
     palette: {
+      gradient: 'linear-gradient(97deg, #BFADE7 0%, #E0F1F8 100%)',
+      buttonsGradient: {
+        direction: 97,
+        start: '#715BD3',
+        end: '#95BAF7',
+        startPercent: 0,
+        endPercent: 100,
+        gradient: 'linear-gradient(97deg, #715BD3 0%, #95BAF7 100%)',
+      },
       primary: {
         main: '#6300C1',
       },
       secondary: {
-        main: '#220049',
+        main: '#EFE5F9',
       },
+      footer: '#220049',
       error: red,
     },
   }),
@@ -47,12 +59,22 @@ const themeDefinitions = {
     },
     palette: {
       type: 'dark',
+      gradient: 'linear-gradient(97deg, #00050c 0%, #5a5c60 100%)',
+      buttonsGradient: {
+        direction: 97,
+        start: '#3a404c',
+        end: '#b7b9bc',
+        startPercent: 0,
+        endPercent: 100,
+        gradient: 'linear-gradient(97deg, #3a404c 0%, #b7b9bc 100%)',
+      },
       primary: {
         main: '#c5d9f9',
       },
       secondary: {
         main: '#153363',
       },
+      footer: '#220049',
       error: red,
     },
   }),

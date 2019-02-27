@@ -48,13 +48,14 @@ const styles = ({palette}) =>
       paddingLeft: '50px',
     },
     navText: {
-      color: palette.secondary.contrastText,
+      color: palette.getContrastText(palette.footer),
     },
     topNav: {
       padding: '10px',
+      background: palette.gradient,
     },
     bottomNav: {
-      backgroundColor: palette.secondary.dark,
+      backgroundColor: palette.footer,
     },
     bottomNavRow: {
       padding: '5px',
@@ -70,7 +71,7 @@ const styles = ({palette}) =>
     email: {
       marginLeft: '10px',
       marginRight: '10px',
-      border: `1px solid ${palette.secondary.light}`,
+      border: `1px solid ${palette.primary.dark}`,
       borderRadius: '35px',
       padding: '3px 10px',
       width: '200px',
@@ -80,7 +81,7 @@ const styles = ({palette}) =>
 const Footer = ({classes, navItems, i18n: {translate}}) => (
   <React.Fragment>
     <Grid
-      className={classnames('gradient-bg', classes.topNav)}
+      className={classes.topNav}
       container
       direction="column"
       justify="center"
