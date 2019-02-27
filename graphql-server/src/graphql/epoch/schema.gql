@@ -1,0 +1,22 @@
+type EpochSummary {
+  slotCount: Int!
+  blocksCreated: Int!
+  transactionCount: Int!
+  totalAdaSupply: AdaAmount!
+  epochFees: AdaAmount!
+  totalAdaStaked: AdaAmount!
+  stakingRewards: AdaAmount!
+  delegatingStakingKeysCount: Int!
+  activeStakingPoolCount: Int!
+}
+
+type Epoch {
+  startTime: Timestamp!
+  endTime: Timestamp!
+  progress: Int!
+  summary: EpochSummary
+}
+
+type Query {
+  epoch(epochNumber: Int!): Epoch!
+}

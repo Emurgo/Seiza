@@ -27,7 +27,7 @@ const _SummaryCard = ({classes, children}) => {
   return <Card className={classes.card}>{children}</Card>
 }
 
-const Row = withStyles(styles)(({children, classes}) => {
+const Row = ({children, classes}) => {
   return (
     <Grid
       container
@@ -39,7 +39,7 @@ const Row = withStyles(styles)(({children, classes}) => {
       {children}
     </Grid>
   )
-})
+}
 
 const Label = ({children}) => (
   <Grid item>

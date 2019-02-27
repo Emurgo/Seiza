@@ -9,6 +9,7 @@ export const routeTo = {
   block: (blockHash: string) => `${BLOCKCHAIN_ROUTE}/block/${blockHash}`,
   address: (address58: string) => `${BLOCKCHAIN_ROUTE}/address/${address58}`,
   stakepool: (poolHash: string) => `${BLOCKCHAIN_ROUTE}/stakepool/${poolHash}`,
+  epoch: (epochNumber: number) => `${BLOCKCHAIN_ROUTE}/epoch/${epochNumber}`,
   more: () => '/more',
   staking: {
     home: () => STAKING_ROUTE,

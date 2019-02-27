@@ -15,6 +15,7 @@ import {blockChainSearchResolver} from './graphql/search/resolvers'
 import stakePoolResolvers from './graphql/stakepool/resolvers'
 import marketDataResolvers from './graphql/market/resolvers'
 import generalInfoResolvers from './graphql/general/resolvers'
+import epochResolvers from './graphql/epoch/resolvers'
 
 import transactionSchema from './graphql/transaction/types'
 import addressSchema from './graphql/address/schema.gql'
@@ -24,6 +25,7 @@ import searchSchema from './graphql/search/schema.gql'
 import stakePoolSchema from './graphql/stakepool/schema.gql'
 import marketSchema from './graphql/market/schema.gql'
 import generalInfoSchema from './graphql/general/schema.gql'
+import epochSchema from './graphql/epoch/schema.gql'
 
 import Timestamp from './graphql/scalars/timestamp'
 import AdaAmount from './graphql/scalars/adaAmount'
@@ -95,12 +97,19 @@ const server = new ApolloServer({
       stakePoolSchema,
       marketSchema,
       generalInfoSchema,
+      epochSchema,
     ],
     {
       all: true,
     }
   ),
-  resolvers: [_resolvers, stakePoolResolvers, marketDataResolvers, generalInfoResolvers],
+  resolvers: [
+    _resolvers,
+    stakePoolResolvers,
+    marketDataResolvers,
+    generalInfoResolvers,
+    epochResolvers,
+  ],
   // TODO: replace with production-ready logger
   formatError: (error: any): any => {
     console.log(error) // eslint-disable-line
