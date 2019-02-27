@@ -465,6 +465,26 @@
     "filepath": "src/screens/PageNotFound.js"
   },
   {
+    "id": "staking.header.header",
+    "defaultMessage": "Explore Stake Pools",
+    "filepath": "src/screens/Staking/Header.js"
+  },
+  {
+    "id": "staking.header.card1",
+    "defaultMessage": "You can search for stake pool you like",
+    "filepath": "src/screens/Staking/Header.js"
+  },
+  {
+    "id": "staking.header.card2",
+    "defaultMessage": "You can download or share it",
+    "filepath": "src/screens/Staking/Header.js"
+  },
+  {
+    "id": "staking.header.card3",
+    "defaultMessage": "You can compare it by diff features",
+    "filepath": "src/screens/Staking/Header.js"
+  },
+  {
     "id": "staking.navigation.list",
     "defaultMessage": "Stake pools list",
     "filepath": "src/screens/Staking/SideMenu/NavigationBar.js"
