@@ -8,7 +8,7 @@ import {fetchBlockSummary, fetchBlockTransactionIds} from './graphql/block/dataP
 import {fetchTransaction} from './graphql/transaction/dataProviders'
 import {fetchBootstrapEraPool} from './graphql/stakepool/dataProviders'
 
-import {pagedBlocksResolver} from './graphql/block/resolvers'
+import {pagedBlocksResolver, pagedBlocksInEpochResolver} from './graphql/block/resolvers'
 import {currentStatusResolver} from './graphql/status/resolvers'
 import {blockChainSearchResolver} from './graphql/search/resolvers'
 
@@ -50,6 +50,14 @@ const _resolvers = {
     currentStatus: currentStatusResolver,
     pagedBlocks: async (_, args, context) => {
       const result = await pagedBlocksResolver(_, args, context)
+      return {
+        blocks: result.data,
+        cursor: result.cursor,
+        hasMore: result.cursor > 0,
+      }
+    },
+    pagedBlocksInEpoch: async (_, args, context) => {
+      const result = await pagedBlocksInEpochResolver(_, args, context)
       return {
         blocks: result.data,
         cursor: result.cursor,

@@ -202,7 +202,7 @@ const EpochScreen = ({i18n, epochNumber, epochDataProvider, match, tab, tabOrder
                     <Tab label={translate(messages.blocksTab)} />
                     <Tab label={translate(messages.stakingPoolsTab)} />
                   </Tabs>
-                  <TabContent />
+                  <TabContent epochNumber={epochNumber} />
                 </Paper>
               )
             }}
@@ -216,12 +216,12 @@ const EpochScreen = ({i18n, epochNumber, epochDataProvider, match, tab, tabOrder
 export default compose(
   withRouter,
   withProps((props) => ({
-    epochNumber: props.match.params.epoch,
+    epochNumber: parseInt(props.match.params.epoch, 10),
   })),
   graphql(GET_EPOCH_BY_NUMBER, {
     name: 'epochDataProvider',
     options: ({epochNumber}) => ({
-      variables: {epochNumber: parseInt(epochNumber, 10)},
+      variables: {epochNumber},
     }),
   }),
   withI18n

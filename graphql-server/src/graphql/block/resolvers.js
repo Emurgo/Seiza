@@ -62,3 +62,8 @@ export const pagedBlocksResolver = async (parent, args, context) => {
     data: [...initialBlocks, ...subsequentBlocks],
   }
 }
+
+export const pagedBlocksInEpochResolver = (parent, args, context) => {
+  // TODO: Add logic to query blocks in target epoch
+  return pagedBlocksResolver(parent, args, context)
+}

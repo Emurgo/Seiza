@@ -28,5 +28,6 @@ type PagedBlocksResult {
 
 type Query {
   pagedBlocks(cursor: Int): PagedBlocksResult!
+  pagedBlocksInEpoch(epochNumber: Int!, cursor: Int): PagedBlocksResult!
   block(blockHash: String!): Block
 }
