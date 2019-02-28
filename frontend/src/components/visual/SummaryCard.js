@@ -4,7 +4,6 @@ import {withStyles, createStyles, Card, Typography, Grid} from '@material-ui/cor
 const styles = (theme) =>
   createStyles({
     card: {
-      margin: theme.spacing.unit * 2,
       padding: theme.spacing.unit * 2,
     },
     listRow: {

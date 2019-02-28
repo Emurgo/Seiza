@@ -9,7 +9,6 @@ import CopyToClipboard from '@/components/common/CopyToClipboard'
 const styles = (theme) =>
   createStyles({
     card: {
-      margin: theme.spacing.unit * 2,
       padding: theme.spacing.unit * 2,
     },
     cardContent: {

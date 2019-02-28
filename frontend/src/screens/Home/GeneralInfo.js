@@ -1,7 +1,7 @@
 // @flow
 import React from 'react'
 import gql from 'graphql-tag'
-import {Grid, createStyles, withStyles} from '@material-ui/core'
+import {Grid} from '@material-ui/core'
 import {defineMessages} from 'react-intl'
 import {compose} from 'redux'
 import {withProps} from 'recompose'
@@ -97,14 +97,6 @@ const cardHeaders = defineMessages({
     defaultMessage: 'Slot',
   },
 })
-
-const styles = () =>
-  createStyles({
-    row: {
-      paddingTop: '20px',
-      paddingBottom: '20px',
-    },
-  })
 
 const getGeneralFields = ({translate, formatAda, formatInt}) => [
   {
@@ -202,11 +194,11 @@ const GET_SLOT_INFO = gql`
   }
 `
 
-const Row = withStyles(styles)(({children, classes}) => (
-  <Grid container direction="row" justify="space-around" className={classes.row} spacing={24}>
+const Row = ({children}) => (
+  <Grid container direction="row" justify="space-around" spacing={24}>
     {children}
   </Grid>
-))
+)
 
 const facadeQueryData = (queryData, dataKey) => ({
   data: queryData[dataKey],
@@ -315,8 +307,7 @@ export default compose(
     options: () => ({
       pollInterval: POLL_INTERVAL,
     }),
-  }),
-  withStyles(styles)
+  })
 )(({classes, i18n: {translate}, currentStatusProvider: {loading, error, currentStatus}}) => {
   if (loading) return <LoadingInProgress />
   if (error) return <DebugApolloError error={error} />
@@ -326,7 +317,7 @@ export default compose(
   // Leaving Slot for now, probably will change
 
   return (
-    <SimpleLayout title={translate(messages.header)} width="1200px">
+    <SimpleLayout title={translate(messages.header)}>
       <Row>
         <Grid item xs={6}>
           <GeneralInfoGenesis />
