@@ -26,5 +26,6 @@ type PagedStakePoolsResult {
 type Query {
   stakePoolList(epochNumber: Int): BootstrapEraStakePool!
   pagedStakePoolList(cursor: String, pageSize: Int): PagedStakePoolsResult!
-  stakePool(poolHash: String!, epochNumber: Int): BootstrapEraStakePool
+  stakePool(poolHash: String!, epochNumber: Int): BootstrapEraStakePool,
+  stakePools(poolHashes: [String!]!, epochNumber: Int): [BootstrapEraStakePool]
 }

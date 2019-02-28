@@ -1,13 +1,17 @@
 // @flow
 
 import React from 'react'
+import _ from 'lodash'
+import gql from 'graphql-tag'
+import {graphql} from 'react-apollo'
 import {compose} from 'redux'
 import {IconButton, Grid, Chip, Typography, createStyles, withStyles} from '@material-ui/core'
 import {defineMessages} from 'react-intl'
-
 import {Share, CallMade, CallReceived} from '@material-ui/icons'
 
+import {LoadingInProgress, DebugApolloError} from '@/components/visual'
 import {withI18n} from '@/i18n/helpers'
+import {withSelectedPools} from '../withSelectedPools'
 
 const I18N_PREFIX = 'staking.poolsToCompare'
 
@@ -52,13 +56,12 @@ const poolsStyles = ({palette}) =>
     },
   })
 
-// TODO: implement handlers once there are real data
-const _StakePoolItem = ({classes, label}) => (
+const _StakePoolItem = ({classes, label, onDelete}) => (
   <React.Fragment>
     <Chip
       label={label}
       onClick={() => null}
-      onDelete={() => null}
+      onDelete={onDelete}
       className={classes.chip}
       variant="outlined"
       color="primary"
@@ -79,16 +82,26 @@ const Action = withStyles(poolsStyles)(({classes, label, Icon, onClick}) => (
   </Grid>
 ))
 
-const PoolsToCompare = ({stakePools, classes, i18n: {translate}}) => {
+const PoolsToCompare = ({
+  classes,
+  onDelete,
+  i18n: {translate},
+  poolsProvider: {loading, error, stakePools},
+}) => {
+  if (loading) return <LoadingInProgress />
+  if (error) return <DebugApolloError error={error} />
+
+  const sortedSelectedPools = _.sortBy(stakePools, (pool) => pool.name)
+
   return (
     <Grid container className={classes.wrapper}>
       <Grid container direction="row" alignItems="center" className={classes.header}>
         <Typography className={classes.text}>{translate(messages.header)}</Typography>&nbsp;
-        <Typography>{stakePools.length}</Typography>
+        <Typography>{sortedSelectedPools.length}</Typography>
       </Grid>
       <Grid className={classes.stakePools}>
-        {stakePools.map((pool, index) => (
-          <StakePoolItem key={index} label={pool} />
+        {sortedSelectedPools.map(({name, poolHash}) => (
+          <StakePoolItem key={poolHash} label={name} onDelete={() => onDelete(poolHash)} />
         ))}
       </Grid>
       {/* TODO: onClick handling and real work */}
@@ -107,7 +120,25 @@ const PoolsToCompare = ({stakePools, classes, i18n: {translate}}) => {
   )
 }
 
+// TODO: we may want some other strategy for getting pools names
 export default compose(
   withI18n,
-  withStyles(poolsStyles)
+  withStyles(poolsStyles),
+  withSelectedPools,
+  graphql(
+    gql`
+      query($poolHashes: [String!]!) {
+        stakePools(poolHashes: $poolHashes) {
+          name
+          poolHash
+        }
+      }
+    `,
+    {
+      name: 'poolsProvider',
+      options: (props) => ({
+        variables: {poolHashes: props.selectedPools},
+      }),
+    }
+  )
 )(PoolsToCompare)

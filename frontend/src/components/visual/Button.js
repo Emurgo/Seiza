@@ -47,16 +47,30 @@ const styles = (theme) => {
         background: fade(theme.palette.primary.dark, FADE_FACTOR),
       },
     },
+    disabled: {
+      pointerEvents: 'none',
+      opacity: 0.7,
+    },
   })
 }
 
-const Button = ({gradient, rounded, secondary, primary, classes, className, ...props}) => (
+const Button = ({
+  gradient,
+  rounded,
+  secondary,
+  primary,
+  disabled,
+  classes,
+  className,
+  ...props
+}) => (
   <MaterialButton
     className={classNames({
       [classes.gradient]: gradient,
       [classes.rounded]: rounded,
       [classes.secondary]: secondary,
       [classes.primary]: primary,
+      [classes.disabled]: disabled,
       [className]: className,
     })}
     {...props}

@@ -30,6 +30,8 @@ export default {
   Query: {
     stakePool: (root, args, context) =>
       fetchBootstrapEraPool(null, args.poolHash, args.epochNumber),
+    stakePools: (root, args, context) =>
+      args.poolHashes.map((poolHash) => fetchBootstrapEraPool(null, poolHash, args.epochNumber)),
     stakePoolList: (root, args, context) => fetchBootstrapEraPoolList(null, args.epochNumber),
     pagedStakePoolList: (_, args, context) =>
       pagedStakePoolListResolver(null, args.cursor, args.pageSize),

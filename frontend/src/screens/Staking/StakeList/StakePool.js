@@ -2,10 +2,12 @@ import React from 'react'
 import {compose} from 'redux'
 import {Grid, createStyles, withStyles, Typography} from '@material-ui/core'
 import {defineMessages} from 'react-intl'
+import {withHandlers, withProps} from 'recompose'
 
 import {ExpandableCard, Button, AdaValue, CircularProgressBar} from '@/components/visual'
 import WithModalState from '@/components/headless/modalState'
 import {withI18n} from '@/i18n/helpers'
+import {withSelectedPools} from '../withSelectedPools'
 
 const I18N_PREFIX = 'staking.stakePool'
 
@@ -46,6 +48,10 @@ const messages = defineMessages({
     id: `${I18N_PREFIX}.addPool`,
     defaultMessage: 'Add',
   },
+  removePool: {
+    id: `${I18N_PREFIX}.removePool`,
+    defaultMessage: 'Remove',
+  },
 })
 
 const headerStyles = ({palette}) =>
@@ -64,6 +70,9 @@ const headerStyles = ({palette}) =>
     },
     info: {
       paddingLeft: '10px',
+    },
+    button: {
+      width: '120px',
     },
   })
 
@@ -85,10 +94,25 @@ const contentStyles = ({palette}) =>
     },
   })
 
+const cardStyles = ({pallete}) =>
+  createStyles({
+    wrapper: {
+      opacity: 0.6,
+    },
+  })
+
 const Header = compose(
   withI18n,
-  withStyles(headerStyles)
-)(({classes, name, hash, i18n: {translate}}) => (
+  withStyles(headerStyles),
+  withSelectedPools,
+  withProps((props) => ({
+    selected: props.selectedPools.includes(props.hash),
+  })),
+  withHandlers({
+    onAddPool: ({addPool, hash}) => () => addPool(hash),
+    onRemovePool: ({removePool, hash}) => () => removePool(hash),
+  })
+)(({classes, name, hash, i18n: {translate}, onAddPool, onRemovePool, selected}) => (
   <Grid
     className={classes.wrapper}
     container
@@ -110,9 +134,15 @@ const Header = compose(
       </Grid>
     </Grid>
     <Grid item>
-      <Button rounded secondary>
-        {translate(messages.addPool)}
-      </Button>
+      {selected ? (
+        <Button rounded primary onClick={onRemovePool} className={classes.button}>
+          {translate(messages.removePool)}
+        </Button>
+      ) : (
+        <Button rounded secondary onClick={onAddPool} className={classes.button}>
+          {translate(messages.addPool)}
+        </Button>
+      )}
     </Grid>
   </Grid>
 ))
@@ -207,4 +237,7 @@ const StakePool = ({classes, data, i18n: {translate}}) => (
   </WithModalState>
 )
 
-export default compose(withI18n)(StakePool)
+export default compose(
+  withI18n,
+  withStyles(cardStyles)
+)(StakePool)
