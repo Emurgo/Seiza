@@ -1,4 +1,5 @@
 import assert from 'assert'
+import moment from 'moment'
 
 const bootstrapPools = [
   'af2800c124e599d6dec188a75f8bfde397ebb778163a18240371f2d1',
@@ -17,6 +18,7 @@ export const fetchBootstrapEraPool = (api, poolHash, epochNumber) => {
     poolHash,
     name: `Bootstrap era pool #${idx + 1}`,
     description: 'Pool used before decentralization',
+    createdAt: moment(),
     _epochNumber: epochNumber,
   }
 }
@@ -25,9 +27,12 @@ export const fetchBootstrapEraPoolSummary = (api, poolHash, epochNumber) => {
   // TODO: consider poolHash and epochNumber
   return {
     performance: 0.7,
-    adaStaked: 1413135,
-    rewards: 5135534,
+    adaStaked: '1413135',
+    pledge: '142432243',
+    rewards: '5135534',
     keysDelegating: 100,
+    fullness: 0.6,
+    margins: 0.3,
   }
 }
 
