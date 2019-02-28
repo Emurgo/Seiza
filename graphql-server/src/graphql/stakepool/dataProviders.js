@@ -1,7 +1,7 @@
 import assert from 'assert'
 import moment from 'moment'
 
-const bootstrapPools = [
+export const BOOTSTRAP_POOLS = [
   'af2800c124e599d6dec188a75f8bfde397ebb778163a18240371f2d1',
   '1deb82908402c7ee3efeb16f369d97fba316ee621d09b32b8969e54b',
   '43011479a595b300e0726910d0b602ffcdd20466a3b8ceeacd3fbc26',
@@ -12,7 +12,7 @@ const bootstrapPools = [
 ]
 
 export const fetchBootstrapEraPool = (api, poolHash, epochNumber) => {
-  const idx = bootstrapPools.indexOf(poolHash)
+  const idx = BOOTSTRAP_POOLS.indexOf(poolHash)
   assert(idx !== -1)
   return {
     poolHash,
@@ -37,5 +37,5 @@ export const fetchBootstrapEraPoolSummary = (api, poolHash, epochNumber) => {
 }
 
 export const fetchBootstrapEraPoolList = (api, epochNumber) => {
-  return bootstrapPools.map((poolHash) => fetchBootstrapEraPool(api, poolHash, epochNumber))
+  return BOOTSTRAP_POOLS.map((poolHash) => fetchBootstrapEraPool(api, poolHash, epochNumber))
 }

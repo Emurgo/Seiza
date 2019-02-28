@@ -17,7 +17,14 @@ type BootstrapEraStakePool {
   createdAt: Timestamp!
 }
 
+type PagedStakePoolsResult {
+  cursor: String
+  hasMore: Boolean!
+  stakePools: [BootstrapEraStakePool]!
+}
+
 type Query {
-  stakePoolList(epochNumber: Int): [BootstrapEraStakePool]
+  stakePoolList(epochNumber: Int): BootstrapEraStakePool!
+  pagedStakePoolList(cursor: String, pageSize: Int): PagedStakePoolsResult!
   stakePool(poolHash: String!, epochNumber: Int): BootstrapEraStakePool
 }
