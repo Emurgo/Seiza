@@ -10,9 +10,9 @@ import {withI18n} from '@/i18n/helpers'
 const I18N_PREFIX = 'staking.stakePool'
 
 const messages = defineMessages({
-  blocksCreated: {
-    id: `${I18N_PREFIX}.blocksCreated`,
-    defaultMessage: 'Blocks created:',
+  performance: {
+    id: `${I18N_PREFIX}.performance`,
+    defaultMessage: 'Performance:',
   },
   pledge: {
     id: `${I18N_PREFIX}.pledge`,
@@ -22,8 +22,8 @@ const messages = defineMessages({
     id: `${I18N_PREFIX}.margins`,
     defaultMessage: 'Margins:',
   },
-  creationDate: {
-    id: `${I18N_PREFIX}.creationTime`,
+  createdAt: {
+    id: `${I18N_PREFIX}.createdAt`,
     defaultMessage: 'Creation time:',
   },
   fullness: {
@@ -156,12 +156,12 @@ const Content = compose(
       <Grid item>
         <DataGrid
           labels={[
-            translate(messages.blocksCreated),
+            translate(messages.performance),
             translate(messages.pledge),
             translate(messages.margins),
           ]}
           values={[
-            <Typography key={0}>{formatPercent(data.blocksCreated)}</Typography>,
+            <Typography key={0}>{formatPercent(data.performance)}</Typography>,
             <AdaValue key={1} value={data.pledge} />,
             <Typography key={2}>{formatPercent(data.margins)}</Typography>,
           ]}
@@ -171,12 +171,12 @@ const Content = compose(
       <Grid item>
         <DataGrid
           labels={[
-            translate(messages.creationDate),
+            translate(messages.createdAt),
             translate(messages.fullness),
             translate(messages.stake),
           ]}
           values={[
-            <Typography key={0}>{formatTimestamp(data.creationDate)}</Typography>,
+            <Typography key={0}>{formatTimestamp(data.createdAt)}</Typography>,
             <Typography key={1}>{formatPercent(data.fullness)}</Typography>,
             <AdaValue key={2} value={data.stake} />,
           ]}
@@ -186,7 +186,7 @@ const Content = compose(
   </React.Fragment>
 ))
 
-const ExtraContent = ({data}) => <div>{data.desc}</div>
+const ExtraContent = ({data}) => <div>{data.description}</div>
 
 const StakePool = ({classes, data, i18n: {translate}}) => (
   <WithModalState>

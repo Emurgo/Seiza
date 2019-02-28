@@ -4,6 +4,9 @@ type StakePoolSummary {
   adaStaked: AdaAmount
   rewards: AdaAmount
   keysDelegating: Int
+  fullness: Float
+  margins: Float
+  pledge: AdaAmount
 }
 
 type BootstrapEraStakePool {
@@ -11,6 +14,7 @@ type BootstrapEraStakePool {
   name: String
   description: String
   summary: StakePoolSummary
+  createdAt: Timestamp!
 }
 
 type Query {
