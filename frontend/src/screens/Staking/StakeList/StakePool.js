@@ -110,8 +110,7 @@ const Header = compose(
       </Grid>
     </Grid>
     <Grid item>
-      {/* TODO: Style and unify buttons */}
-      <Button rounded color="primary">
+      <Button rounded secondary>
         {translate(messages.addPool)}
       </Button>
     </Grid>
