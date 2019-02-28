@@ -50,60 +50,36 @@ const TopBar = withRouter(({location: {pathname}}) => {
   )
 })
 
-const mainLayoutStyles = ({palette}) =>
-  createStyles({
-    maxHeight: {
-      height: '100%',
-    },
-    pageWrapper: {
-      height: '100%',
-      display: 'flex',
-      flexDirection: 'column',
-    },
-    contentWrapper: {
-      flex: 1,
-    },
-    noShrinkWrapper: {
-      flexShrink: 0,
-    },
-  })
-
-const themeProviderStyles = createStyles({
+const styles = createStyles({
   maxHeight: {
     height: '100%',
   },
+  contentWrapper: {
+    flex: 1,
+  },
 })
 
-const App = compose(withStyles(mainLayoutStyles))(({classes}) => (
+const App = compose(withStyles(styles))(({classes}) => (
   <Router>
-    <div className={classes.pageWrapper}>
-      <div className={classes.noShrinkWrapper}>
+    <Grid container direction="column" className={classes.maxHeight} wrap="nowrap">
+      <Grid item>
         <CssBaseline />
         <TopBar />
-      </div>
-      <div className={classes.contentWrapper}>
-        {/* Note: when the screens are not wrapped inside 'Grid' there are
-                strange overflow issues.
-                Note: Custom flex layout is used to make screen view span all width expect
-                topBar and footer (when using Grid for it, it behaves strange when shrinked).
-            */}
-        <Grid container direction="column" className={classes.maxHeight}>
-          <Grid item className={classes.maxHeight}>
-            <Switch>
-              <Redirect exact from="/" to={routeTo.home()} />
-              <Route exact path={routeTo.home()} component={Home} />
-              <Route path={routeTo.blockchain()} component={Blockchain} />
-              <Route path={routeTo.staking.home()} component={Staking} />
-              <Route path={routeTo.more()} component={More} />
-              <Route component={PageNotFound} />
-            </Switch>
-          </Grid>
-        </Grid>
-      </div>
-      <div className={classes.noShrinkWrapper}>
+      </Grid>
+      <Grid item className={classes.contentWrapper}>
+        <Switch>
+          <Redirect exact from="/" to={routeTo.home()} />
+          <Route exact path={routeTo.home()} component={Home} />
+          <Route path={routeTo.blockchain()} component={Blockchain} />
+          <Route path={routeTo.staking.home()} component={Staking} />
+          <Route path={routeTo.more()} component={More} />
+          <Route component={PageNotFound} />
+        </Switch>
+      </Grid>
+      <Grid item>
         <Footer navItems={navItems} />
-      </div>
-    </div>
+      </Grid>
+    </Grid>
   </Router>
 ))
 
@@ -117,5 +93,5 @@ export default compose(
   provideIntl,
   provideTheme,
   withTheme,
-  withStyles(themeProviderStyles)
+  withStyles(styles)
 )(ThemeWrapper)
