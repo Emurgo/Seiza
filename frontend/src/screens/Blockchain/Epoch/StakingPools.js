@@ -23,7 +23,7 @@ const messages = defineMessages({
     defaultMessage: 'Rewards Received',
   },
   keysDelegating: {
-    id: `${I18N_PREFIX}.adaStakedColumn`,
+    id: `${I18N_PREFIX}.keysDelegating`,
     defaultMessage: 'Keys Delegating',
   },
 })
