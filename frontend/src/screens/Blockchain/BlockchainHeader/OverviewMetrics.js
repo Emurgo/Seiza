@@ -7,9 +7,10 @@ import {compose} from 'redux'
 import {withStateHandlers} from 'recompose'
 import {graphql} from 'react-apollo'
 import {createStyles, withStyles} from '@material-ui/core'
-
 import MetricsCard from '@/components/visual/MetricsCard'
 import {getIntlFormatters} from '@/i18n/helpers'
+import {routeTo} from '@/helpers/routes'
+import WithNavigateTo from '@/components/headless/navigateTo'
 
 const text = defineMessages({
   not_available: {
@@ -97,34 +98,44 @@ const OverviewMetrics = ({intl, data, classes, currency, setCurrency}) => {
         />
       </div>
       <div className={classes.cardDimensions}>
-        <MetricsCard
-          className={classes.card}
-          icon="price"
-          metric={translate(text.priceLabel)}
-          value={price}
-          options={[
-            {
-              label: 'USD/ADA',
-              onClick: () => setCurrency('USD'),
-            },
-            {
-              label: 'EUR/ADA',
-              onClick: () => setCurrency('EUR'),
-            },
-            {
-              label: 'YEN/ADA',
-              onClick: () => setCurrency('JPY'),
-            },
-          ]}
-        />
+        <WithNavigateTo to={routeTo.more()}>
+          {({navigate}) => (
+            <MetricsCard
+              className={classes.card}
+              icon="price"
+              metric={translate(text.priceLabel)}
+              value={price}
+              onClick={navigate}
+              options={[
+                {
+                  label: 'USD/ADA',
+                  onClick: () => setCurrency('USD'),
+                },
+                {
+                  label: 'EUR/ADA',
+                  onClick: () => setCurrency('EUR'),
+                },
+                {
+                  label: 'YEN/ADA',
+                  onClick: () => setCurrency('JPY'),
+                },
+              ]}
+            />
+          )}
+        </WithNavigateTo>
       </div>
       <div className={classes.cardDimensions}>
-        <MetricsCard
-          className={classes.card}
-          icon="pools"
-          metric={translate(text.poolsLabel)}
-          value={pools}
-        />
+        <WithNavigateTo to={routeTo.staking.home()}>
+          {({navigate}) => (
+            <MetricsCard
+              className={classes.card}
+              icon="pools"
+              metric={translate(text.poolsLabel)}
+              value={pools}
+              onClick={navigate}
+            />
+          )}
+        </WithNavigateTo>
       </div>
     </div>
   )
