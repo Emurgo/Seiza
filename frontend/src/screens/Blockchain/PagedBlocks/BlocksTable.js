@@ -1,11 +1,9 @@
 // @flow
 import React from 'react'
 import {defineMessages} from 'react-intl'
-import {Link as RouterLink} from 'react-router-dom'
-import {Link as MuiLink} from '@material-ui/core'
 
 import Table from '@/components/visual/Table'
-import AdaValue from '@/components/visual/AdaValue'
+import {AdaValue, Link} from '@/components/visual'
 import {withI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
 
@@ -46,12 +44,6 @@ const tableMessages = defineMessages({
     defaultMessage: 'size (B)',
   },
 })
-
-const Link = ({to, children}) => (
-  <MuiLink component={RouterLink} to={to}>
-    {children}
-  </MuiLink>
-)
 
 export const COLUMNS_MAP = {
   EPOCH: 'EPOCH',

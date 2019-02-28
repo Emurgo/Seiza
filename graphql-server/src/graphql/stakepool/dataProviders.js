@@ -10,12 +10,27 @@ const bootstrapPools = [
   '6c9e14978b9d6629b8703f4f25e9df6ed4814b930b8403b0d45350ea',
 ]
 
-export const fetchBootstrapEraPool = (api, poolHash) => {
+export const fetchBootstrapEraPool = (api, poolHash, epochNumber) => {
   const idx = bootstrapPools.indexOf(poolHash)
   assert(idx !== -1)
   return {
     poolHash,
     name: `Bootstrap era pool #${idx + 1}`,
     description: 'Pool used before decentralization',
+    _epochNumber: epochNumber,
   }
+}
+
+export const fetchBootstrapEraPoolSummary = (api, poolHash, epochNumber) => {
+  // TODO: consider poolHash and epochNumber
+  return {
+    performance: 0.7,
+    adaStaked: 1413135,
+    rewards: 5135534,
+    keysDelegating: 100,
+  }
+}
+
+export const fetchBootstrapEraPoolList = (api, epochNumber) => {
+  return bootstrapPools.map((poolHash) => fetchBootstrapEraPool(api, poolHash, epochNumber))
 }

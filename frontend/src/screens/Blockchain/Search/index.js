@@ -6,16 +6,15 @@ import {compose} from 'redux'
 import {withProps} from 'recompose'
 import {withRouter} from 'react-router'
 import {defineMessages} from 'react-intl'
-import {Typography, Link as MuiLink} from '@material-ui/core'
+import {Typography} from '@material-ui/core'
 
 import {withI18n} from '@/i18n/helpers'
 
 import gql from 'graphql-tag'
-import {Link as RouterLink} from 'react-router-dom'
 
 import {routeTo} from '@/helpers/routes'
 
-import {SimpleLayout, LoadingInProgress, DebugApolloError} from '@/components/visual'
+import {SimpleLayout, LoadingInProgress, DebugApolloError, Link} from '@/components/visual'
 
 const messages = defineMessages({
   title: {
@@ -43,12 +42,6 @@ const messages = defineMessages({
     defaultMessage: 'Block: ',
   },
 })
-
-const Link = ({to, children}) => (
-  <MuiLink component={RouterLink} to={to}>
-    {children}
-  </MuiLink>
-)
 
 const Address = ({item, i18n}) => (
   <div>

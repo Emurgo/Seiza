@@ -6,7 +6,10 @@ import {mergeTypes} from 'merge-graphql-schemas'
 import {fetchAddress} from './graphql/address/dataProviders'
 import {fetchBlockSummary, fetchBlockTransactionIds} from './graphql/block/dataProviders'
 import {fetchTransaction} from './graphql/transaction/dataProviders'
-import {fetchBootstrapEraPool} from './graphql/stakepool/dataProviders'
+import {
+  fetchBootstrapEraPool,
+  fetchBootstrapEraPoolSummary,
+} from './graphql/stakepool/dataProviders'
 
 import {pagedBlocksResolver, pagedBlocksInEpochResolver} from './graphql/block/resolvers'
 import {currentStatusResolver} from './graphql/status/resolvers'
@@ -83,6 +86,10 @@ const _resolvers = {
   },
   BlockChainSearchItem: {
     __resolveType: (obj, context, info) => obj._type,
+  },
+  BootstrapEraStakePool: {
+    summary: (pool, args, context) =>
+      fetchBootstrapEraPoolSummary(null, pool.poolHash, pool._epochNumber),
   },
 }
 
