@@ -5,6 +5,8 @@ import {compose} from 'redux'
 import {graphql} from 'react-apollo'
 import moment from 'moment'
 
+import {LoadingInProgress, DebugApolloError} from '@/components/visual'
+
 import {withI18n} from '@/i18n/helpers'
 
 const CONFIG = {
@@ -70,7 +72,9 @@ const CONFIG = {
 }
 
 const _MarketHistory = ({i18n, data}) => {
-  if (data.loading) return null
+  if (data.loading) return <LoadingInProgress />
+  if (data.error) return <DebugApolloError error={data.error} />
+
   const rawData = data.marketHistory.data
 
   const seriesOpen = {

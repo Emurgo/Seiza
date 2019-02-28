@@ -10,5 +10,5 @@ type Address {
 }
 
 type Query {
-  address(address58: String): Address
+  address(address58: String!): Address
 }
