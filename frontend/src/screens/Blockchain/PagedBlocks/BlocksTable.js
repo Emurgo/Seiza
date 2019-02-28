@@ -73,7 +73,7 @@ const BlocksTable = ({blocks, columns, i18n}) => {
     [EPOCH]: {
       header: translate(tableMessages.epoch),
       cell: (block) => (
-        <Link key={0} to="/todo">
+        <Link key={0} to={routeTo.epoch(block.epoch)}>
           {formatInt(block.epoch)}
         </Link>
       ),
