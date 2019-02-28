@@ -317,7 +317,7 @@ export default compose(
   // Leaving Slot for now, probably will change
 
   return (
-    <SimpleLayout title={translate(messages.header)}>
+    <SimpleLayout title={translate(messages.header)} maxWidth="1200px">
       <Row>
         <Grid item xs={6}>
           <GeneralInfoGenesis />

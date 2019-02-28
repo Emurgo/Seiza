@@ -19,9 +19,9 @@ const styles = ({palette, spacing}) =>
     },
   })
 
-const SimpleLayout = ({title, classes, children, width = '85%'}) => (
+const SimpleLayout = ({title, classes, children, maxWidth = '1500px'}) => (
   <Grid container className={classes.container} direction="row" justify="space-around">
-    <div style={{width}}>
+    <div style={{width: '85%', maxWidth}}>
       <Grid container direction="row" justify="center">
         <Typography className={classes.title} align="justify" variant="h4">
           {title}
