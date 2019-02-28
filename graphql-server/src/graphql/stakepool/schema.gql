@@ -1,11 +1,19 @@
 #TODO: these are preliminary
+type StakePoolSummary {
+  performance: Float
+  adaStaked: AdaAmount
+  rewards: AdaAmount
+  keysDelegating: Int
+}
+
 type BootstrapEraStakePool {
   poolHash: ID!
   name: String
   description: String
+  summary: StakePoolSummary
 }
 
 type Query {
-  stakePoolList: [BootstrapEraStakePool]
-  stakePool(poolHash: String!): BootstrapEraStakePool
+  stakePoolList(epochNumber: Int): [BootstrapEraStakePool]
+  stakePool(poolHash: String!, epochNumber: Int): BootstrapEraStakePool
 }
