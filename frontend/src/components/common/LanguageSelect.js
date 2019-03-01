@@ -2,14 +2,15 @@
 
 import React from 'react'
 import {compose} from 'redux'
-import {Select, OutlinedInput, withStyles} from '@material-ui/core'
+import {withStyles} from '@material-ui/core'
 
-import {withSetLocale} from '../HOC/intl'
+import {withSetLocale} from '@/components/HOC/intl'
+import {Select} from '@/components/visual'
 
 const styles = (theme) => ({
   select: {
     marginRight: '40px',
-    height: '40px',
+    width: '60px',
   },
 })
 
@@ -19,13 +20,9 @@ export default compose(
   withSetLocale
 )(({setLocale, locale, classes}) => (
   <Select
-    native
     className={classes.select}
     value={locale}
     onChange={(e) => setLocale(e.target.value)}
-    input={<OutlinedInput labelWidth={0} />}
-  >
-    <option value={'en'}>En</option>
-    <option value={'es'}>Es</option>
-  </Select>
+    options={[{value: 'en', label: 'En'}, {value: 'es', label: 'Es'}]}
+  />
 ))
