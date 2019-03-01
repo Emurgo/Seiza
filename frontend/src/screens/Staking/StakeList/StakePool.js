@@ -3,7 +3,7 @@ import {compose} from 'redux'
 import {Grid, createStyles, withStyles, Typography} from '@material-ui/core'
 import {defineMessages} from 'react-intl'
 
-import {ExpandableCard, Button, AdaValue} from '@/components/visual'
+import {ExpandableCard, Button, AdaValue, CircularProgressBar} from '@/components/visual'
 import WithModalState from '@/components/headless/modalState'
 import {withI18n} from '@/i18n/helpers'
 
@@ -153,7 +153,12 @@ const Content = compose(
   <React.Fragment>
     <Header className={classes.wrapper} name={data.name} hash={data.hash} />
     <Grid className={classes.innerWrapper} container justify="space-between" direction="row">
-      <Grid item>
+      <Grid item xs={1} container justify="space-around" direction="column">
+        <div>
+          <CircularProgressBar label="Revenue" value={0.25} />
+        </div>
+      </Grid>
+      <Grid item xs={5}>
         <DataGrid
           labels={[
             translate(messages.performance),
@@ -168,7 +173,7 @@ const Content = compose(
         />
       </Grid>
 
-      <Grid item>
+      <Grid item xs={5}>
         <DataGrid
           labels={[
             translate(messages.createdAt),
