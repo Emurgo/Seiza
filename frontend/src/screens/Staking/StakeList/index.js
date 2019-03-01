@@ -7,11 +7,16 @@ import {Grid, createStyles, withStyles} from '@material-ui/core'
 import {DebugApolloError, LoadingInProgress} from '@/components/visual'
 import StakePool from './StakePool'
 
-const styles = () =>
+const styles = (theme) =>
   createStyles({
     rowWrapper: {
       padding: '15px 30px',
-      width: '1000px',
+      maxWidth: '1000px',
+    },
+    wrapper: {
+      [theme.breakpoints.up('xl')]: {
+        alignItems: 'center',
+      },
     },
   })
 
@@ -32,7 +37,7 @@ const StakeList = ({classes, poolsDataProvider: {loading, error, stakePoolList}}
   if (error) return <DebugApolloError error={error} />
   const _stakePoolList = stakePoolList.map(stakePoolFacade)
   return (
-    <Grid container direction="column" alignItems="center">
+    <Grid container direction="column" alignItems="flex-start" className={classes.wrapper}>
       {_stakePoolList.map((pool) => (
         <Grid item key={pool.hash} className={classes.rowWrapper}>
           <StakePool data={pool} />
