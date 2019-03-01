@@ -36,6 +36,10 @@ const styles = (theme) =>
       marginBottom: '50px',
       minWidth: '120px',
     },
+    loadMoreWrapper: {
+      width: '100%',
+      maxWidth: '1000px',
+    },
   })
 
 const stakePoolFacade = (data) => ({
@@ -68,10 +72,12 @@ const StakeList = ({
         </Grid>
       ))}
       {hasMore && (
-        <Grid item>
-          <Button className={classes.loadMore} gradient rounded onClick={onLoadMore}>
-            {translate(messages.loadMore)}
-          </Button>
+        <Grid item className={classes.loadMoreWrapper}>
+          <Grid container justify="center">
+            <Button className={classes.loadMore} gradient rounded onClick={onLoadMore}>
+              {translate(messages.loadMore)}
+            </Button>
+          </Grid>
         </Grid>
       )}
     </Grid>
