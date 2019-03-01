@@ -15,7 +15,7 @@ const styles = (theme) =>
   })
 
 // TODO: once needed, add variant prop
-const AdaValue = ({value, i18n, classes, options}) => {
+const AdaValue = ({value, i18n, classes, options, showCurrency}) => {
   if (value == null) {
     return options.defaultValue
   }
@@ -24,6 +24,7 @@ const AdaValue = ({value, i18n, classes, options}) => {
     <React.Fragment>
       <span className={classes.integral}>{formatted.integral}</span>
       <span className={classes.fractional}>{formatted.fractional}</span>
+      {showCurrency && <span> ADA</span>}
     </React.Fragment>
   )
 }

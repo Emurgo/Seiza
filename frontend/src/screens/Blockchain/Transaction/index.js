@@ -24,7 +24,7 @@ import AssuranceChip from '@/components/common/AssuranceChip'
 import AdaIcon from '@/tmp_assets/ada-icon.png'
 
 import {ASSURANCE_LEVELS_VALUES} from '@/config'
-import {monthNumeralFormat, withI18n} from '@/i18n/helpers'
+import {withI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
 
 import type {Transaction} from '@/__generated__/schema.flow'
@@ -256,7 +256,7 @@ const _TransactionSummary = ({transaction, i18n}: {transaction: Transaction, i18
       <Item label={messages.date}>
         {formatTimestamp(idx(transaction, (_) => _.block.timeIssued), {
           defaultValue: N_A,
-          format: monthNumeralFormat,
+          format: formatTimestamp.FMT_MONTH_NUMERAL,
         })}
       </Item>
       <Item label={messages.size}>{formatInt(transaction.size, {defaultValue: N_A})}</Item>

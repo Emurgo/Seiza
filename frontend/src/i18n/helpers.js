@@ -18,8 +18,7 @@ BigNumber.config({
   FORMAT: defaultNumberFmt,
 })
 
-export const monthNumeralFormat = 'L LTS'
-export const standardReadableFormat = 'LL LTS'
+const STANDARD_READABLE_FORMAT = 'LL LTS'
 
 const MICRO = 1000000
 
@@ -76,7 +75,7 @@ export const getIntlFormatters = (intl) => {
   }
 
   const _formatTimestamp = (x, options) => {
-    const desiredFormat = options.format || standardReadableFormat
+    const desiredFormat = options.format || STANDARD_READABLE_FORMAT
     const ts = moment(x)
     if (!ts.isValid) throw new Error('bad timestamp')
     return ts.format(desiredFormat)
@@ -96,6 +95,8 @@ export const getIntlFormatters = (intl) => {
 
   const formatTimestamp = withDefaultValue(_formatTimestamp)
   formatTimestamp.FMT_SHORT_DATE = 'L'
+  formatTimestamp.FMT_MONTH_NUMERAL = 'L LTS'
+  formatTimestamp.FMT_STANDARD = STANDARD_READABLE_FORMAT
 
   return {
     translate,
