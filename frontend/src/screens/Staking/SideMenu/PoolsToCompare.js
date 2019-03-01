@@ -2,8 +2,10 @@
 
 import React from 'react'
 import {compose} from 'redux'
-import {Grid, Chip, Typography, createStyles, withStyles} from '@material-ui/core'
+import {IconButton, Grid, Chip, Typography, createStyles, withStyles} from '@material-ui/core'
 import {defineMessages} from 'react-intl'
+
+import {Share, CallMade, CallReceived} from '@material-ui/icons'
 
 import {withI18n} from '@/i18n/helpers'
 
@@ -68,6 +70,15 @@ const _StakePoolItem = ({classes, label}) => (
 
 const StakePoolItem = withStyles(poolsStyles)(_StakePoolItem)
 
+const Action = withStyles(poolsStyles)(({classes, label, Icon, onClick}) => (
+  <Grid container direction="row" alignItems="center">
+    <Typography className={classes.text}>{label}</Typography>
+    <IconButton onClick={onClick} aria-label={label}>
+      <Icon />
+    </IconButton>
+  </Grid>
+))
+
 const PoolsToCompare = ({stakePools, classes, i18n: {translate}}) => {
   return (
     <Grid container className={classes.wrapper}>
@@ -80,11 +91,17 @@ const PoolsToCompare = ({stakePools, classes, i18n: {translate}}) => {
           <StakePoolItem key={index} label={pool} />
         ))}
       </Grid>
-      {/* TODO: icons */}
-      <Grid container direction="row" alignItems="center" justify="space-between">
-        <Typography className={classes.text}>{translate(messages.share)}</Typography>
-        <Typography className={classes.text}>{translate(messages.import)}</Typography>
-        <Typography className={classes.text}>{translate(messages.export)}</Typography>
+      {/* TODO: onClick handling and real work */}
+      <Grid container direction="row" alignItems="center" justify="space-between" wrap="nowrap">
+        <Grid item>
+          <Action label={translate(messages.share)} Icon={Share} onClick={() => null} />
+        </Grid>
+        <Grid item>
+          <Action label={translate(messages.import)} Icon={CallReceived} onClick={() => null} />
+        </Grid>
+        <Grid item>
+          <Action label={translate(messages.export)} Icon={CallMade} onClick={() => null} />
+        </Grid>
       </Grid>
     </Grid>
   )

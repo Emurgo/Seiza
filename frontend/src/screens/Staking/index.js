@@ -14,7 +14,7 @@ import PageNotFound from '../PageNotFound'
 const styles = () =>
   createStyles({
     sidebar: {
-      maxWidth: '400px',
+      maxWidth: '450px',
     },
     notFound: {
       marginTop: '100px',
