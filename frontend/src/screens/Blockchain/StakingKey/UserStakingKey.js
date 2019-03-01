@@ -1,9 +1,9 @@
 import React from 'react'
 import {compose} from 'redux'
-import idx from 'idx'
-import {defineMessages} from 'react-intl'
-import {withI18n} from '@/i18n/helpers'
 
+import {defineMessages} from 'react-intl'
+
+import {withI18n} from '@/i18n/helpers'
 import {AdaValue, SummaryCard} from '@/components/visual'
 
 const I18N_PREFIX = 'blockchain.stakingKey.user'
@@ -71,7 +71,7 @@ const UserStakingKey = ({stakingKey, i18n: {translate, formatTimestamp, formatIn
         </Row>
         <Row>
           <Label>{translate(messages.creationDate)}</Label>
-          <Value>{formatTimestamp(idx(stakingKey, (_) => _.createdAt))}</Value>
+          <Value>{formatTimestamp(stakingKey.createdAt)}</Value>
         </Row>
         <Row>
           <Label>{translate(messages.stakedAda)}</Label>
