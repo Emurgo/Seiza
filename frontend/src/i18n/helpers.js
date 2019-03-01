@@ -1,7 +1,8 @@
+// @flow
 import BigNumber from 'bignumber.js'
 import moment from 'moment'
 import {injectIntl} from 'react-intl'
-import React from 'react'
+import React, {useContext} from 'react'
 
 const defaultNumberFmt = {
   prefix: '',
@@ -23,12 +24,12 @@ export const standardReadableFormat = 'LL LTS'
 
 const MICRO = 1000000
 
-const _formatAda = (x) => {
+const _formatAda = (x, options) => {
   const value = new BigNumber(x, 10)
   return value.dividedBy(MICRO).toFormat(6)
 }
 
-const _formatAdaInteger = (x) => {
+const _formatAdaInteger = (x, options) => {
   const value = new BigNumber(x, 10)
   const integral = value.dividedToIntegerBy(MICRO)
   if (value.lt(0) && value.gt(-MICRO)) {
@@ -39,7 +40,7 @@ const _formatAdaInteger = (x) => {
   }
 }
 
-const _formatAdaFractional = (x) => {
+const _formatAdaFractional = (x, options) => {
   const value = new BigNumber(x, 10)
   const fractional = value
     .abs()
@@ -49,12 +50,30 @@ const _formatAdaFractional = (x) => {
   return fractional.toFormat(6).substring(1)
 }
 
-const _formatAdaSplit = (x) => ({
+const _formatAdaSplit = (x, options) => ({
   integral: _formatAdaInteger(x),
   fractional: _formatAdaFractional(x),
 })
 
-export const getIntlFormatters = (intl) => {
+type Msg = {
+  id: string,
+  defaultMessage: string,
+}
+
+type Formatters = {
+  translate: (msg: Msg, args?: any) => string,
+  formatNumber: (x: ?number, options?: any) => string,
+  formatInt: (x: ?number, options?: any) => string,
+  formatPercent: (x: ?number, options?: any) => string,
+  formatFiat: (x: ?number, options?: any) => string,
+  // Ada is always as string
+  formatAda: (x: ?string, options?: any) => string,
+  formatAdaSplit: (x: ?string, options?: any) => {integral: string, fractional: string},
+  // Timestamp is always as string
+  formatTimestamp: (x: ?string, options?: any) => string,
+}
+
+export const getIntlFormatters = (intl: any): Formatters => {
   const translate = intl.formatMessage
   const formatNumber = intl.formatNumber
   const _formatInt = (x, options = {}) =>
@@ -82,7 +101,7 @@ export const getIntlFormatters = (intl) => {
     return ts.format(desiredFormat)
   }
 
-  const withDefaultValue = (formatter) => (x, options = {}) => {
+  const withDefaultValue = (formatter): any => (x, options = {}) => {
     const {defaultValue, ...restOptions} = options
     if (x == null) return defaultValue || ''
     return formatter(x, restOptions)
@@ -109,7 +128,23 @@ export const getIntlFormatters = (intl) => {
   }
 }
 
+// $FlowFixMe
 export const withI18n = (BaseComponent) =>
   injectIntl(({intl, ...restProps}) => (
     <BaseComponent i18n={getIntlFormatters(intl)} {...restProps} />
   ))
+
+// Experimental hook
+
+// $FlowFixMe
+export const IntlContext = React.createContext({})
+
+// turn the old context into the new context
+export const InjectHookIntlContext = injectIntl(({intl, children}) => {
+  return <IntlContext.Provider value={intl}>{children}</IntlContext.Provider>
+})
+
+export const useI18n = (): Formatters => {
+  const intl = useContext(IntlContext)
+  return getIntlFormatters(intl)
+}
