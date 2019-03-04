@@ -6,7 +6,7 @@ import {injectIntl, defineMessages} from 'react-intl'
 import {compose} from 'redux'
 import {withStateHandlers} from 'recompose'
 import {graphql} from 'react-apollo'
-import {createStyles, withStyles} from '@material-ui/core'
+import {Grid, createStyles, withStyles} from '@material-ui/core'
 import MetricsCard from '@/components/visual/MetricsCard'
 import {getIntlFormatters} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
@@ -45,10 +45,6 @@ const text = defineMessages({
 
 const styles = (theme) =>
   createStyles({
-    wrapper: {
-      display: 'flex',
-      justifyContent: 'center',
-    },
     card: {
       minWidth: '200px',
       minHeight: '75px',
@@ -58,6 +54,12 @@ const styles = (theme) =>
       marginLeft: '20px',
     },
   })
+
+const GridItem = withStyles(styles)(({children, classes}) => (
+  <Grid item className={classes.cardDimensions}>
+    {children}
+  </Grid>
+))
 
 const OverviewMetrics = ({intl, data, classes, currency, setCurrency}) => {
   const {translate, formatInt, formatPercent, formatFiat} = getIntlFormatters(intl)
@@ -72,32 +74,32 @@ const OverviewMetrics = ({intl, data, classes, currency, setCurrency}) => {
   const pools = formatInt(idx(status, (s) => s.stakePoolCount), {defaultValue: NA})
 
   return (
-    <div className={classes.wrapper}>
-      <div className={classes.cardDimensions}>
+    <Grid container justify="center" wrap="wrap">
+      <Grid item className={classes.cardDimensions}>
         <MetricsCard
           className={classes.card}
           icon="epoch"
           metric={translate(text.epochLabel)}
           value={epochNumber}
         />
-      </div>
-      <div className={classes.cardDimensions}>
+      </Grid>
+      <GridItem>
         <MetricsCard
           className={classes.card}
           icon="blocks"
           metric={translate(text.blocksLabel)}
           value={blockCount}
         />
-      </div>
-      <div className={classes.cardDimensions}>
+      </GridItem>
+      <GridItem>
         <MetricsCard
           className={classes.card}
           icon="decentralization"
           metric={translate(text.decentralizationLabel)}
           value={decentralization}
         />
-      </div>
-      <div className={classes.cardDimensions}>
+      </GridItem>
+      <GridItem>
         <WithNavigateTo to={routeTo.more()}>
           {({navigate}) => (
             <MetricsCard
@@ -123,8 +125,8 @@ const OverviewMetrics = ({intl, data, classes, currency, setCurrency}) => {
             />
           )}
         </WithNavigateTo>
-      </div>
-      <div className={classes.cardDimensions}>
+      </GridItem>
+      <GridItem>
         <WithNavigateTo to={routeTo.staking.home()}>
           {({navigate}) => (
             <MetricsCard
@@ -136,8 +138,8 @@ const OverviewMetrics = ({intl, data, classes, currency, setCurrency}) => {
             />
           )}
         </WithNavigateTo>
-      </div>
-    </div>
+      </GridItem>
+    </Grid>
   )
 }
 
