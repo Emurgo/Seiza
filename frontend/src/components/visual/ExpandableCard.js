@@ -1,6 +1,7 @@
 // @flow
 import React from 'react'
 import type {Node} from 'react'
+import classnames from 'classnames'
 import {
   ExpansionPanel,
   ExpansionPanelSummary,
@@ -8,10 +9,11 @@ import {
   Paper,
   Typography,
   Grid,
+  IconButton,
   withStyles,
 } from '@material-ui/core'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
-import {withHandlers} from 'recompose'
+import {withHandlers, withState} from 'recompose'
 import {compose} from 'redux'
 
 const styles = (theme) => ({
@@ -25,13 +27,21 @@ const styles = (theme) => ({
     'borderTopRightRadius': '0 !important',
     'borderTopLeftRadius': '0 !important',
   },
-  // TODO: animation for flipping icon upside down when expanding
   icon: {
     color: 'gray',
+  },
+  iconAnimationSetting: {
+    transition: 'transform 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
+  },
+  iconAnimation: {
+    transform: 'rotate(180deg)',
   },
   mainContent: {
     borderBottomRightRadius: 0,
     borderBottomLeftRadius: 0,
+  },
+  spacing: {
+    marginRight: theme.spacing.unit * 0.5,
   },
 })
 
@@ -43,10 +53,21 @@ type ExpandableCardPT = {
   renderHeader: () => Node,
   footer: Node,
   className?: string,
+  iconAnimating: boolean,
 }
 
 const ExpandableCard = (props: ExpandableCardPT) => {
-  const {classes, expanded, onChange, renderExpandedArea, renderHeader, footer, className} = props
+  const {
+    classes,
+    expanded,
+    onChange,
+    renderExpandedArea,
+    renderHeader,
+    footer,
+    className,
+    iconAnimating,
+  } = props
+
   return (
     <Grid container className={className}>
       <Grid item xs={12}>
@@ -63,11 +84,19 @@ const ExpandableCard = (props: ExpandableCardPT) => {
           <ExpansionPanelDetails>{renderExpandedArea()}</ExpansionPanelDetails>
           <ExpansionPanelSummary>
             <Grid container justify="center" alignItems="center">
-              <Grid item>
+              <Grid item className={classes.spacing}>
                 <Typography>{footer}</Typography>
               </Grid>
               <Grid item>
-                <ExpandMoreIcon className={classes.icon} />
+                <IconButton>
+                  <ExpandMoreIcon
+                    className={classnames(
+                      classes.icon,
+                      classes.iconAnimationSetting,
+                      iconAnimating && classes.iconAnimation
+                    )}
+                  />
+                </IconButton>
               </Grid>
             </Grid>
           </ExpansionPanelSummary>
@@ -78,8 +107,12 @@ const ExpandableCard = (props: ExpandableCardPT) => {
 }
 
 export default compose(
+  withState('iconAnimating', 'setIconAnimating', false),
   withHandlers({
-    onChange: (props) => (event, expanded) => props.onChange(expanded),
+    onChange: ({setIconAnimating, iconAnimating, onChange}) => (event, expanded) => {
+      setIconAnimating(!iconAnimating)
+      onChange(expanded)
+    },
   }),
   withStyles(styles)
 )(ExpandableCard)
