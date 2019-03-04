@@ -37,25 +37,21 @@ export default compose(
   initSelectedPools
 )(({classes}) => (
   <Grid container direction="column" className={classes.wrapper}>
-    <Grid item>
-      <StakePoolHeader />
-    </Grid>
-    <Grid item>
-      <Grid container direction="row" wrap="nowrap" spacing={24}>
-        <Grid item lg={3} xl={3}>
-          <div className={classes.sidebar}>
-            <SideMenu />
-          </div>
-        </Grid>
-        <Grid item lg={9} xl={6} className={classes.mainContent}>
-          <Switch>
-            <Redirect exact from={routeTo.staking.home()} to={routeTo.staking.poolList()} />
-            <Route exact path={routeTo.staking.poolList()} component={StakePoolList} />
-            <Route component={NotFound} />
-          </Switch>
-        </Grid>
-        <Grid item lg={0} xl={3} />
+    <StakePoolHeader />
+    <Grid container direction="row" wrap="nowrap" spacing={24}>
+      <Grid item lg={3} xl={3}>
+        <div className={classes.sidebar}>
+          <SideMenu />
+        </div>
       </Grid>
+      <Grid item lg={9} xl={6} className={classes.mainContent}>
+        <Switch>
+          <Redirect exact from={routeTo.staking.home()} to={routeTo.staking.poolList()} />
+          <Route exact path={routeTo.staking.poolList()} component={StakePoolList} />
+          <Route component={NotFound} />
+        </Switch>
+      </Grid>
+      <Grid item lg={0} xl={3} />
     </Grid>
   </Grid>
 ))
