@@ -11,7 +11,7 @@ import {Share, CallMade, CallReceived} from '@material-ui/icons'
 
 import {LoadingInProgress, DebugApolloError} from '@/components/visual'
 import {withI18n} from '@/i18n/helpers'
-import {withSelectedPools} from '../withSelectedPools'
+import {withSelectedPoolsContext} from '../context'
 
 const I18N_PREFIX = 'staking.poolsToCompare'
 
@@ -84,7 +84,7 @@ const Action = withStyles(poolsStyles)(({classes, label, Icon, onClick}) => (
 
 const PoolsToCompare = ({
   classes,
-  removePool,
+  selectedPoolsContext: {removePool},
   i18n: {translate},
   poolsProvider: {loading, error, stakePools},
 }) => {
@@ -124,7 +124,7 @@ const PoolsToCompare = ({
 export default compose(
   withI18n,
   withStyles(poolsStyles),
-  withSelectedPools,
+  withSelectedPoolsContext,
   graphql(
     gql`
       query($poolHashes: [String!]!) {
@@ -137,7 +137,7 @@ export default compose(
     {
       name: 'poolsProvider',
       options: (props) => ({
-        variables: {poolHashes: props.selectedPools},
+        variables: {poolHashes: props.selectedPoolsContext.selectedPools},
       }),
     }
   )
