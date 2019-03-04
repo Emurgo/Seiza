@@ -84,7 +84,7 @@ const Action = withStyles(poolsStyles)(({classes, label, Icon, onClick}) => (
 
 const PoolsToCompare = ({
   classes,
-  onDelete,
+  removePool,
   i18n: {translate},
   poolsProvider: {loading, error, stakePools},
 }) => {
@@ -101,7 +101,7 @@ const PoolsToCompare = ({
       </Grid>
       <Grid className={classes.stakePools}>
         {sortedSelectedPools.map(({name, poolHash}) => (
-          <StakePoolItem key={poolHash} label={name} onDelete={() => onDelete(poolHash)} />
+          <StakePoolItem key={poolHash} label={name} onDelete={() => removePool(poolHash)} />
         ))}
       </Grid>
       {/* TODO: onClick handling and real work */}
