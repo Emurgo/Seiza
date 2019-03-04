@@ -55,6 +55,12 @@ const styles = (theme) =>
     },
   })
 
+const GridItem = withStyles(styles)(({children, classes}) => (
+  <Grid item className={classes.cardDimensions}>
+    {children}
+  </Grid>
+))
+
 const OverviewMetrics = ({intl, data, classes, currency, setCurrency}) => {
   const {translate, formatInt, formatPercent, formatFiat} = getIntlFormatters(intl)
   const status = data.currentStatus
@@ -77,23 +83,23 @@ const OverviewMetrics = ({intl, data, classes, currency, setCurrency}) => {
           value={epochNumber}
         />
       </Grid>
-      <Grid item className={classes.cardDimensions}>
+      <GridItem>
         <MetricsCard
           className={classes.card}
           icon="blocks"
           metric={translate(text.blocksLabel)}
           value={blockCount}
         />
-      </Grid>
-      <Grid item className={classes.cardDimensions}>
+      </GridItem>
+      <GridItem>
         <MetricsCard
           className={classes.card}
           icon="decentralization"
           metric={translate(text.decentralizationLabel)}
           value={decentralization}
         />
-      </Grid>
-      <Grid item className={classes.cardDimensions}>
+      </GridItem>
+      <GridItem>
         <WithNavigateTo to={routeTo.more()}>
           {({navigate}) => (
             <MetricsCard
@@ -119,8 +125,8 @@ const OverviewMetrics = ({intl, data, classes, currency, setCurrency}) => {
             />
           )}
         </WithNavigateTo>
-      </Grid>
-      <Grid item className={classes.cardDimensions}>
+      </GridItem>
+      <GridItem>
         <WithNavigateTo to={routeTo.staking.home()}>
           {({navigate}) => (
             <MetricsCard
@@ -132,7 +138,7 @@ const OverviewMetrics = ({intl, data, classes, currency, setCurrency}) => {
             />
           )}
         </WithNavigateTo>
-      </Grid>
+      </GridItem>
     </Grid>
   )
 }
