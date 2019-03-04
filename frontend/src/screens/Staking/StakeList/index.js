@@ -9,6 +9,7 @@ import {defineMessages} from 'react-intl'
 import {withI18n} from '@/i18n/helpers'
 import {Button, DebugApolloError, LoadingInProgress} from '@/components/visual'
 import StakePool from './StakePool'
+import Filters from './Filters'
 
 const I18N_PREFIX = 'staking'
 const PAGE_SIZE = 3
@@ -25,6 +26,7 @@ const styles = (theme) =>
     rowWrapper: {
       padding: '15px 30px',
       maxWidth: '1000px',
+      width: '100%',
     },
     wrapper: {
       [theme.breakpoints.up('xl')]: {
@@ -65,22 +67,27 @@ const StakeList = ({
   const {hasMore} = pagedStakePoolList
   const _stakePoolList = pagedStakePoolList.stakePools.map(stakePoolFacade)
   return (
-    <Grid container direction="column" alignItems="flex-start" className={classes.wrapper}>
-      {_stakePoolList.map((pool) => (
-        <Grid item key={pool.hash} className={classes.rowWrapper}>
-          <StakePool data={pool} />
+    <React.Fragment>
+      <Grid container direction="column" alignItems="flex-start" className={classes.wrapper}>
+        <Grid item className={classes.rowWrapper}>
+          <Filters />
         </Grid>
-      ))}
-      {hasMore && (
-        <Grid item className={classes.loadMoreWrapper}>
-          <Grid container justify="center">
-            <Button className={classes.loadMore} gradient rounded onClick={onLoadMore}>
-              {translate(messages.loadMore)}
-            </Button>
+        {_stakePoolList.map((pool) => (
+          <Grid item key={pool.hash} className={classes.rowWrapper}>
+            <StakePool data={pool} />
           </Grid>
-        </Grid>
-      )}
-    </Grid>
+        ))}
+        {hasMore && (
+          <Grid item className={classes.loadMoreWrapper}>
+            <Grid container justify="center">
+              <Button className={classes.loadMore} gradient rounded onClick={onLoadMore}>
+                {translate(messages.loadMore)}
+              </Button>
+            </Grid>
+          </Grid>
+        )}
+      </Grid>
+    </React.Fragment>
   )
 }
 
