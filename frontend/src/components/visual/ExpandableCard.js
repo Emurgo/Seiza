@@ -42,12 +42,13 @@ type ExpandableCardPT = {
   renderExpandedArea: () => Node,
   renderHeader: () => Node,
   footer: Node,
+  className?: string,
 }
 
 const ExpandableCard = (props: ExpandableCardPT) => {
-  const {classes, expanded, onChange, renderExpandedArea, renderHeader, footer} = props
+  const {classes, expanded, onChange, renderExpandedArea, renderHeader, footer, className} = props
   return (
-    <Grid container>
+    <Grid container className={className}>
       <Grid item xs={12}>
         <Paper className={classes.mainContent}>{renderHeader()}</Paper>
       </Grid>

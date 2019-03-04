@@ -6,8 +6,7 @@ import NavigationBar from './NavigationBar'
 
 export default () => (
   <React.Fragment>
-    {/* TODO: use real data, probably stored in context */}
-    <PoolsToCompare stakePools={['poolname1', 'poolname2', 'poolname3']} />
+    <PoolsToCompare />
     <NavigationBar />
   </React.Fragment>
 )
