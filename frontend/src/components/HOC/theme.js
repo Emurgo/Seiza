@@ -26,12 +26,24 @@ export const themeMessages = defineMessages({
   },
 })
 
-// Note: Footer design does not play well with primary or secondary color
+// TODO: Which font families to fallback to?
+const fontFamilies = [
+  'Montserrat',
+  '-apple-system',
+  'BlinkMacSystemFont',
+  '"Segoe UI"',
+  'Roboto',
+  '"Helvetica Neue"',
+  'Arial',
+  'sans-serif',
+].join(',')
 
+// Note: Footer design does not play well with primary or secondary color
 const themeDefinitions = {
   [THEMES.BRIGHT]: createMuiTheme({
     typography: {
       useNextVariants: true,
+      fontFamily: fontFamilies,
     },
     palette: {
       gradient: 'linear-gradient(97deg, #BFADE7 0%, #E0F1F8 100%)',
@@ -56,6 +68,7 @@ const themeDefinitions = {
   [THEMES.DARK]: createMuiTheme({
     typography: {
       useNextVariants: true,
+      fontFamily: fontFamilies,
     },
     palette: {
       type: 'dark',
