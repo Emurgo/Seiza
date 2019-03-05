@@ -31,7 +31,7 @@ import {
   SummaryCard,
 } from '@/components/visual'
 
-import addressIcon from '@/tmp_assets/tmp-icon-address.png'
+import addressIcon from '@/assets/icons/qrcode.svg'
 
 const I18N_PREFIX = 'blockchain.address'
 

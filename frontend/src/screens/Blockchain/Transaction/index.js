@@ -21,7 +21,7 @@ import {
 } from '@/components/visual'
 import WithModalState from '@/components/headless/modalState'
 import AssuranceChip from '@/components/common/AssuranceChip'
-import AdaIcon from '@/tmp_assets/ada-icon.png'
+import AdaIcon from '@/assets/icons/transaction-id.svg'
 
 import {ASSURANCE_LEVELS_VALUES} from '@/config'
 import {withI18n} from '@/i18n/helpers'

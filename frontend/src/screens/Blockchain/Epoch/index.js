@@ -16,7 +16,7 @@ import {
   AdaValue,
 } from '@/components/visual'
 import {withI18n} from '@/i18n/helpers'
-import EpochIcon from '@/tmp_assets/MetricsCard-icon-epoch.png'
+import EpochIcon from '@/assets/icons/metrics-epoch.svg'
 import WithTabState from '@/components/headless/tabState'
 import BlocksTab from './Blocks'
 import StakingPoolsTab from './StakingPools'

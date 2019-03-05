@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="48px" height="48px" viewBox="0 0 48 48" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.6 (67491) - http://www.bohemiancoding.com/sketch -->
+    <title>icon/startpage-blocks</title>
+    <desc>Created with Sketch.</desc>
+    <g id="icon/startpage-blocks" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="icon/bg-for-icon" fill="#4D20C0" opacity="0.1">
+            <circle id="Oval-Copy-4" cx="24" cy="24" r="24"></circle>
+        </g>
+        <g id="icon/blocks" transform="translate(8.000000, 8.000000)">
+            <g id="Group-2" stroke-width="1" transform="translate(5.000000, 5.000000)">
+                <rect id="Rectangle-Copy-2" stroke="#4D20C0" stroke-width="1.4" x="0.7" y="13.9" width="7.4" height="7.4" rx="2"></rect>
+                <rect id="Rectangle-Copy-8" stroke="#4D20C0" stroke-width="1.4" x="0.7" y="0.7" width="7.4" height="7.4" rx="2"></rect>
+                <polygon id="Path-5" fill="#92B9FC" fill-rule="nonzero" points="13.6936494 3.3 13.6936494 4.84 4.4 4.84 4.4 3.3"></polygon>
+                <rect id="Rectangle-Copy" stroke="#4D20C0" stroke-width="1.4" x="13.9" y="0.7" width="7.4" height="7.4" rx="2"></rect>
+                <polygon id="Path-5-Copy-3" fill="#92B9FC" fill-rule="nonzero" transform="translate(4.310784, 13.429957) rotate(-90.000000) translate(-4.310784, -13.429957) " points="8.95760852 12.6599568 8.95760852 14.1999568 -0.336040866 14.1999568 -0.336040866 12.6599568"></polygon>
+                <polygon id="Path-5-Copy-2" fill="#92B9FC" fill-rule="nonzero" transform="translate(17.820000, 9.046825) rotate(-90.000000) translate(-17.820000, -9.046825) " points="22.4668247 8.27682469 22.4668247 9.81682469 13.1731753 9.81682469 13.1731753 8.27682469"></polygon>
+                <rect id="Rectangle" stroke="#4D20C0" stroke-width="1.4" x="13.9" y="13.9" width="7.4" height="7.4" rx="2"></rect>
+                <polygon id="Path-5-Copy" fill="#92B9FC" fill-rule="nonzero" points="18.0936494 16.5 18.0936494 18.04 8.8 18.04 8.8 16.5"></polygon>
+            </g>
+            <rect id="Rectangle-Copy-10" fill="#FFFFFF" opacity="0" x="0" y="0" width="32" height="32"></rect>
+        </g>
+    </g>
+</svg>

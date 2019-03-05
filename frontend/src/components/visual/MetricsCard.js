@@ -22,11 +22,11 @@ import {fade} from '@material-ui/core/styles/colorManipulator'
 import {ArrowDropDown} from '@material-ui/icons'
 
 import WithModalState from '@/components/headless/modalState'
-import IconEpoch from '@/tmp_assets/MetricsCard-icon-epoch.png'
-import IconBlocks from '@/tmp_assets/MetricsCard-icon-blocks.png'
-import IconDecentralization from '@/tmp_assets/MetricsCard-icon-decentralization.png'
-import IconPrice from '@/tmp_assets/MetricsCard-icon-price.png'
-import IconPools from '@/tmp_assets/MetricsCard-icon-pools.png'
+import IconEpoch from '@/assets/icons/metrics-epoch.svg'
+import IconBlocks from '@/assets/icons/metrics-blocks.svg'
+import IconDecentralization from '@/assets/icons/metrics-decentralization.svg'
+import IconPrice from '@/assets/icons/metrics-currency.svg'
+import IconPools from '@/assets/icons/metrics-stakepools.svg'
 
 const styles = (theme) =>
   createStyles({

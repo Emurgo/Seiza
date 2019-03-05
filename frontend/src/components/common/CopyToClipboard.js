@@ -5,7 +5,8 @@ import {defineMessages} from 'react-intl'
 import {withI18n} from '@/i18n/helpers'
 import WithCopyToClipboard from '../headless/copyToClipboard'
 
-import copyIcon from '@/tmp_assets/copy-icon.png'
+import copyIcon from '@/assets/icons/copy.svg'
+import copiedIcon from '@/assets/icons/copied.svg'
 
 const I18N_PREFIX = 'ui_elements.copy_to_clipboard'
 
@@ -37,7 +38,7 @@ const _CopyToClipboard = ({value, i18n}) => {
             }}
           >
             <IconButton onClick={copy}>
-              <img alt={messages.altText} src={copyIcon} />
+              <img alt={messages.altText} src={isCopied ? copiedIcon : copyIcon} />
             </IconButton>
           </Tooltip>
         </React.Fragment>
