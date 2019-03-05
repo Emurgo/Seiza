@@ -17,7 +17,7 @@ export const initialSelectedPoolsContext = {
 
 const getInitialState = () => {
   try {
-    return JSON.parse(storage.getItem(STORAGE_KEY))
+    return JSON.parse(storage.getItem(STORAGE_KEY)) || []
   } catch (err) {
     return []
   }
