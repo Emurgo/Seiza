@@ -21,6 +21,7 @@ type PagedStakePoolsResult {
   cursor: String
   hasMore: Boolean!
   stakePools: [BootstrapEraStakePool]!
+  totalCount: Int!
 }
 
 type Query {

@@ -1,5 +1,6 @@
 import React from 'react'
 import gql from 'graphql-tag'
+import classnames from 'classnames'
 import {compose} from 'redux'
 import {graphql} from 'react-apollo'
 import {Grid, createStyles, withStyles} from '@material-ui/core'
@@ -9,7 +10,8 @@ import {defineMessages} from 'react-intl'
 import {withI18n} from '@/i18n/helpers'
 import {Button, DebugApolloError, LoadingInProgress} from '@/components/visual'
 import StakePool from './StakePool'
-import Filters from './Filters'
+import SearchAndFilterBar from './SearchAndFilterBar'
+import SortByBar from './SortByBar'
 
 const I18N_PREFIX = 'staking'
 const PAGE_SIZE = 3
@@ -42,6 +44,10 @@ const styles = (theme) =>
       width: '100%',
       maxWidth: '1000px',
     },
+    sortByBar: {
+      marginTop: '20px',
+      marginBottom: '-15px',
+    },
   })
 
 const stakePoolFacade = (data) => ({
@@ -64,15 +70,18 @@ const StakeList = ({
 }) => {
   if (loading) return <LoadingInProgress />
   if (error) return <DebugApolloError error={error} />
-  const {hasMore} = pagedStakePoolList
-  const _stakePoolList = pagedStakePoolList.stakePools.map(stakePoolFacade)
+  const {hasMore, totalCount} = pagedStakePoolList
+  const stakePoolList = pagedStakePoolList.stakePools.map(stakePoolFacade)
   return (
     <React.Fragment>
       <Grid container direction="column" alignItems="flex-start" className={classes.wrapper}>
         <Grid item className={classes.rowWrapper}>
-          <Filters />
+          <SearchAndFilterBar />
         </Grid>
-        {_stakePoolList.map((pool) => (
+        <Grid item className={classnames(classes.rowWrapper, classes.sortByBar)}>
+          <SortByBar totalPoolsCount={totalCount} shownPoolsCount={stakePoolList.length} />
+        </Grid>
+        {stakePoolList.map((pool) => (
           <Grid item key={pool.hash} className={classes.rowWrapper}>
             <StakePool data={pool} />
           </Grid>
@@ -114,6 +123,7 @@ export default compose(
           }
           cursor
           hasMore
+          totalCount
         }
       }
     `,
