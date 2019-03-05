@@ -7,7 +7,7 @@ import {withHandlers, withProps} from 'recompose'
 import {ExpandableCard, Button, AdaValue, CircularProgressBar} from '@/components/visual'
 import WithModalState from '@/components/headless/modalState'
 import {withI18n} from '@/i18n/helpers'
-import {withSelectedPools} from '../withSelectedPools'
+import {withSelectedPoolsContext} from '../context'
 
 const I18N_PREFIX = 'staking.stakePool'
 
@@ -104,13 +104,13 @@ const cardStyles = ({pallete}) =>
 const Header = compose(
   withI18n,
   withStyles(headerStyles),
-  withSelectedPools,
+  withSelectedPoolsContext,
   withProps((props) => ({
-    selected: props.selectedPools.includes(props.hash),
+    selected: props.selectedPoolsContext.selectedPools.includes(props.hash),
   })),
   withHandlers({
-    onAddPool: ({addPool, hash}) => () => addPool(hash),
-    onRemovePool: ({removePool, hash}) => () => removePool(hash),
+    onAddPool: ({selectedPoolsContext: {addPool}, hash}) => () => addPool(hash),
+    onRemovePool: ({selectedPoolsContext: {removePool}, hash}) => () => removePool(hash),
   })
 )(({classes, name, hash, i18n: {translate}, onAddPool, onRemovePool, selected}) => (
   <Grid

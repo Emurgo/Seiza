@@ -6,7 +6,7 @@ import {compose} from 'redux'
 import {Grid, createStyles, withStyles} from '@material-ui/core'
 
 import {routeTo} from '@/helpers/routes'
-import {initSelectedPools} from './withSelectedPools'
+import {stakingContextProvider} from './context'
 import SideMenu from './SideMenu'
 import StakePoolList from './StakeList'
 import StakePoolHeader from './Header'
@@ -34,7 +34,7 @@ const NotFound = withStyles(styles)(({classes}) => (
 
 export default compose(
   withStyles(styles),
-  initSelectedPools
+  stakingContextProvider
 )(({classes}) => (
   <Grid container direction="column" className={classes.wrapper}>
     <StakePoolHeader />
