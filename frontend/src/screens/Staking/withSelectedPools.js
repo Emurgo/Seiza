@@ -17,9 +17,17 @@ const Context = React.createContext({
 
 const STORAGE_KEY = 'selectedPools'
 
+const getInitialState = () => {
+  try {
+    return JSON.parse(storage.getItem(STORAGE_KEY))
+  } catch (err) {
+    return []
+  }
+}
+
 export const initSelectedPools = (WrappedComponent) =>
   compose(
-    withState('selectedPools', 'setPools', JSON.parse(storage.getItem(STORAGE_KEY) || [])),
+    withState('selectedPools', 'setPools', getInitialState()),
     withHandlers({
       setPools: ({setPools}) => (newPools) => {
         setPools(newPools)
