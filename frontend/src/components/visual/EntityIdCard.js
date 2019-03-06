@@ -36,9 +36,11 @@ const styles = (theme) =>
 
 const EntityIdCard = ({classes, iconRenderer, label, value}) => (
   <Card className={classNames(classes.card, classes.flex)}>
-    <Grid item className={classNames(classes.flex, classes.centeredFlex)}>
-      {iconRenderer}
-    </Grid>
+    {iconRenderer && (
+      <Grid item className={classNames(classes.flex, classes.centeredFlex)}>
+        {iconRenderer}
+      </Grid>
+    )}
 
     <div className={classes.cardContent}>
       <Typography variant="caption">{label}</Typography>

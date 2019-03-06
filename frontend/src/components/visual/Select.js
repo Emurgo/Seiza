@@ -25,12 +25,7 @@ const Select = ({classes, value, onChange, options, label, className}) => (
         {label}
       </FormLabel>
     )}
-    <StyledNativeSelect
-      native
-      value={value}
-      onChange={onChange}
-      input={<OutlinedInput labelWidth={0} />}
-    >
+    <StyledNativeSelect value={value} onChange={onChange} input={<OutlinedInput labelWidth={0} />}>
       {options.map(({value, label}) => (
         <option key={value} value={value}>
           {label}

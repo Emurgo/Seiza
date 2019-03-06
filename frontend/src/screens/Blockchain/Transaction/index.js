@@ -104,7 +104,7 @@ const assuranceFromConfirmations = (cnt: number): AssuranceEnum => {
 }
 
 const Summary = withI18n(({i18n, caption, value}) => (
-  <Grid container justify="space-between" alignItems="center">
+  <Grid container justify="space-between" alignItems="center" direction="row">
     <Grid item>
       <Typography variant="caption">{caption}</Typography>
     </Grid>
@@ -128,7 +128,7 @@ const AddressesSummary = compose(
 )(({transaction, i18n, classes}) => {
   const {translate, formatAda} = i18n
   return (
-    <Grid container className={classes.wrapper}>
+    <Grid container className={classes.wrapper} direction="row">
       <Grid item xs={6}>
         <Summary
           caption={
@@ -174,14 +174,14 @@ const Breakdown = compose(
 
   return (
     <React.Fragment>
-      <Grid container justify="space-between" alignItems="center">
+      <Grid container justify="space-between" alignItems="center" direction="row">
         <Grid item xs={6}>
           <Typography variant="caption" className={classes.truncate}>
             {captionPrefix} <Link to={routeTo.address(address58)}>{address58}</Link>
           </Typography>
         </Grid>
         <Grid item xs={6}>
-          <Grid container justify="flex-end">
+          <Grid container justify="flex-end" direction="row">
             {valuePrefix} {formatAda(amount)} ADA
           </Grid>
         </Grid>
@@ -194,11 +194,11 @@ const Breakdown = compose(
 const AddressesBreakdown = withI18n(({transaction, i18n}) => {
   const {formatInt} = i18n
   return (
-    <Grid container>
+    <Grid container direction="row">
       <Grid item xs={6}>
         {transaction.inputs.map((input, index) => (
           <Breakdown
-            key={input.address58}
+            key={index}
             target={input}
             captionPrefix={`# ${formatInt(index + 1)}`}
             valuePrefix={'-'}
@@ -208,7 +208,7 @@ const AddressesBreakdown = withI18n(({transaction, i18n}) => {
       <Grid item xs={6}>
         {transaction.outputs.map((output, index) => (
           <Breakdown
-            key={output.address58}
+            key={index}
             target={output}
             captionPrefix={`# ${formatInt(index + 1)}`}
             valuePrefix={'+'}
@@ -234,7 +234,7 @@ const _TransactionSummary = ({transaction, i18n}: {transaction: Transaction, i18
   return (
     <SummaryCard>
       <Item label={messages.assuranceLevel}>
-        <div>
+        <span>
           {transaction.confirmationsCount != null && (
             <AssuranceChip level={assuranceFromConfirmations(transaction.confirmationsCount)} />
           )}{' '}
@@ -244,7 +244,7 @@ const _TransactionSummary = ({transaction, i18n}: {transaction: Transaction, i18
               count: transaction.confirmationsCount,
             })}
           </span>
-        </div>
+        </span>
       </Item>
       <Item label={messages.epoch}>
         {formatInt(idx(transaction, (_) => _.block.epoch), {defaultValue: N_A})}

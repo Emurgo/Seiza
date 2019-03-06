@@ -109,16 +109,13 @@ const App = () => {
   )
 }
 
-const ThemeWrapper = ({currentTheme, themeDefinitions}) => {
-  const classes = useAppStyles()
-  return (
-    <MuiThemeProvider className={classes.maxHeight} theme={themeDefinitions[currentTheme]}>
-      <InjectHookIntlContext>
-        <App />
-      </InjectHookIntlContext>
-    </MuiThemeProvider>
-  )
-}
+const ThemeWrapper = ({currentTheme, themeDefinitions}) => (
+  <MuiThemeProvider theme={themeDefinitions[currentTheme]}>
+    <InjectHookIntlContext>
+      <App />
+    </InjectHookIntlContext>
+  </MuiThemeProvider>
+)
 
 export default compose(
   provideIntl,

@@ -45,7 +45,7 @@ export default compose(
 )(({classes, setRange: onRangeChange, range, onLanguageChange, language}) => (
   <Card>
     <CardContent>
-      <Grid container className={classes.wrapper}>
+      <Grid container className={classes.wrapper} direction="row">
         <Grid item>
           <Select
             value={language}

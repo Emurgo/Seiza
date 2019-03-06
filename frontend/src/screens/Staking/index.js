@@ -51,7 +51,7 @@ export default compose(
           <Route component={NotFound} />
         </Switch>
       </Grid>
-      <Grid item lg={0} xl={3} />
+      <Grid item lg={false} xl={3} />
     </Grid>
   </Grid>
 ))

@@ -57,12 +57,12 @@ const getHandle = (className, tipFormatter) => (props) => {
     position: 'absolute',
     top: -(22 + PADDING),
   }
-
-  const {value, ...restProps} = props
+  // Note: `dragging` must be removed to avoid strange console warnings
+  const {value, dragging, index, ...restProps} = props // eslint-disable-line
   const _value = tipFormatter(value)
   const width = estimateTooltipWidth(_value)
   return (
-    <div>
+    <div key={index}>
       <div
         style={{...handleStyle, width, left: `calc(${props.offset}% - ${width / 2}px)`}}
         className={className}

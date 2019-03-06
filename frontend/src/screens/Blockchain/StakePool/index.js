@@ -64,7 +64,7 @@ const messages = defineMessages({
   },
 })
 
-const Block = ({poolDataProvider, i18n}) => {
+const StakePool = ({poolDataProvider, i18n}) => {
   const {loading, stakePool, error} = poolDataProvider
   const {translate} = i18n
 
@@ -76,11 +76,7 @@ const Block = ({poolDataProvider, i18n}) => {
         <DebugApolloError error={error} />
       ) : (
         <React.Fragment>
-          <EntityIdCard
-            iconRenderer={() => ''}
-            label={translate(messages.poolHash)}
-            value={stakePool.poolHash}
-          />
+          <EntityIdCard label={translate(messages.poolHash)} value={stakePool.poolHash} />
           <PoolSummaryCard pool={stakePool} />
         </React.Fragment>
       )}
@@ -112,4 +108,4 @@ export default compose(
     },
   }),
   withI18n
-)(Block)
+)(StakePool)

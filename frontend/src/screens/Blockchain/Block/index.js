@@ -102,11 +102,7 @@ const Block = ({blockDataProvider, i18n}) => {
         <DebugApolloError error={error} />
       ) : (
         <React.Fragment>
-          <EntityIdCard
-            iconRenderer={() => ''}
-            label={translate(blockMessages.blockHash)}
-            value={block.blockHash}
-          />
+          <EntityIdCard label={translate(blockMessages.blockHash)} value={block.blockHash} />
           <BlockSummaryCard block={block} />
           <TransactionList transactions={block.transactions} />
         </React.Fragment>

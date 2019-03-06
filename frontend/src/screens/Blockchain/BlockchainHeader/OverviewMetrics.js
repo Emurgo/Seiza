@@ -74,7 +74,7 @@ const OverviewMetrics = ({intl, data, classes, currency, setCurrency}) => {
   const pools = formatInt(idx(status, (s) => s.stakePoolCount), {defaultValue: NA})
 
   return (
-    <Grid container justify="center" wrap="wrap">
+    <Grid container justify="center" wrap="wrap" direction="row">
       <Grid item className={classes.cardDimensions}>
         <MetricsCard
           className={classes.card}

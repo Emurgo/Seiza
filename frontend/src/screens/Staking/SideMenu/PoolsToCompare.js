@@ -94,7 +94,7 @@ const PoolsToCompare = ({
   const sortedSelectedPools = _.sortBy(stakePools, (pool) => pool.name)
 
   return (
-    <Grid container className={classes.wrapper}>
+    <Grid container className={classes.wrapper} direction="row">
       <Grid container direction="row" alignItems="center" className={classes.header}>
         <Typography className={classes.text}>{translate(messages.header)}</Typography>&nbsp;
         <Typography>{sortedSelectedPools.length}</Typography>

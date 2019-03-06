@@ -79,7 +79,7 @@ const StakeList = ({
         ))}
         {hasMore && (
           <Grid item className={classes.loadMoreWrapper}>
-            <Grid container justify="center">
+            <Grid container justify="center" direction="row">
               <Button className={classes.loadMore} gradient rounded onClick={onLoadMore}>
                 {translate(messages.loadMore)}
               </Button>

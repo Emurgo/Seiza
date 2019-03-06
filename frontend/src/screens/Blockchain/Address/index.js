@@ -87,7 +87,7 @@ const QRModal = withStyles(modalStyles)(({classes, isOpen, onClose, value}: QRMo
    */
   <Modal open={isOpen} onClose={onClose} disableRestoreFocus>
     <div className={classes.paper}>
-      <Grid container justify="center">
+      <Grid container justify="center" direction="row">
         <QRCode value={value} size={128} />
         {value}
       </Grid>

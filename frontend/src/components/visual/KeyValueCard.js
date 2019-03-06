@@ -59,7 +59,13 @@ const _KeyValueCard = ({classes, children, header}) => (
 const KeyValueCard = withStyles(mainStyles)(_KeyValueCard)
 
 const _Header = ({classes, logo, label, value}) => (
-  <Grid container alignItems="center" className={classes.wrapper} justify="space-between">
+  <Grid
+    container
+    alignItems="center"
+    className={classes.wrapper}
+    justify="space-between"
+    direction="row"
+  >
     {logo && (
       <Grid item className={classes.logo}>
         {logo}
@@ -77,7 +83,7 @@ const _Header = ({classes, logo, label, value}) => (
 KeyValueCard.Header = withStyles(headerStyles)(_Header)
 
 const _Body = ({items, classes}) => (
-  <Grid container className={classes.wrapper}>
+  <Grid container className={classes.wrapper} direction="row">
     {items.map(({label, value}) => (
       <Grid
         container
@@ -85,6 +91,7 @@ const _Body = ({items, classes}) => (
         justify="space-between"
         alignItems="center"
         className={classes.row}
+        direction="row"
       >
         <Grid item>
           <Typography className={classes.label}>{label}</Typography>
