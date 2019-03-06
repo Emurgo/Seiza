@@ -1,12 +1,12 @@
 // @flow
 
+import './initMaterialUI'
 import React from 'react'
 import {BrowserRouter as Router, Route, Switch, Redirect} from 'react-router-dom'
 import {withRouter} from 'react-router'
 import {compose} from 'redux'
 import {CssBaseline, Grid} from '@material-ui/core'
-import {MuiThemeProvider} from '@material-ui/core/styles'
-import {makeStyles} from '@material-ui/styles'
+import {makeStyles, ThemeProvider} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
 
 import {routeTo} from './helpers/routes'
@@ -24,7 +24,7 @@ import LanguageSelect from '@/components/common/LanguageSelect'
 import ThemeSelect from '@/components/common/ThemeSelect'
 
 import './App.css'
-import seizaLogo from './seiza-logo.png'
+import seizaLogo from './assets/icons/logo-seiza.svg'
 
 const I18N_PREFIX = 'mainNavigation'
 
@@ -47,6 +47,18 @@ const navigationMessages = defineMessages({
   },
 })
 
+const useAppStyles = makeStyles((theme) => ({
+  maxHeight: {
+    height: '100%',
+  },
+  contentWrapper: {
+    flex: 1,
+  },
+  topBar: {
+    padding: theme.spacing.unit,
+  },
+}))
+
 const getTranslatedNavItems = (translate) => [
   {link: routeTo.home(), label: translate(navigationMessages.home)},
   {link: routeTo.blockchain(), label: translate(navigationMessages.blockchain)},
@@ -56,8 +68,15 @@ const getTranslatedNavItems = (translate) => [
 
 const TopBar = compose(withRouter)(({location: {pathname}}) => {
   const {translate} = useI18n()
+  const classes = useAppStyles()
   return (
-    <Grid container direction="row" justify="space-between" alignItems="center">
+    <Grid
+      container
+      direction="row"
+      justify="space-between"
+      alignItems="center"
+      className={classes.topBar}
+    >
       <Grid item>
         <img alt="" src={seizaLogo} />
       </Grid>
@@ -70,15 +89,6 @@ const TopBar = compose(withRouter)(({location: {pathname}}) => {
       </Grid>
     </Grid>
   )
-})
-
-const useAppStyles = makeStyles({
-  maxHeight: {
-    height: '100%',
-  },
-  contentWrapper: {
-    flex: 1,
-  },
 })
 
 const App = () => {
@@ -110,11 +120,11 @@ const App = () => {
 }
 
 const ThemeWrapper = ({currentTheme, themeDefinitions}) => (
-  <MuiThemeProvider theme={themeDefinitions[currentTheme]}>
+  <ThemeProvider theme={themeDefinitions[currentTheme]}>
     <InjectHookIntlContext>
       <App />
     </InjectHookIntlContext>
-  </MuiThemeProvider>
+  </ThemeProvider>
 )
 
 export default compose(

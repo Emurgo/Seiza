@@ -6,9 +6,10 @@ import {compose} from 'redux'
 import {Link} from 'react-router-dom'
 import {defineMessages} from 'react-intl'
 import {Grid, withStyles, createStyles, Typography, Input} from '@material-ui/core'
+
 import {Button} from '@/components/visual'
 import {withI18n} from '@/i18n/helpers'
-import logo from '@/tmp_assets/tmp-seiza-footer-icon.png'
+import logo from '../../assets/icons/logo-seiza-white.svg'
 
 // TODO: add flow types
 
