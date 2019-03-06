@@ -198,7 +198,7 @@ const AddressesBreakdown = withI18n(({transaction, i18n}) => {
       <Grid item xs={6}>
         {transaction.inputs.map((input, index) => (
           <Breakdown
-            key={input.address58}
+            key={index}
             target={input}
             captionPrefix={`# ${formatInt(index + 1)}`}
             valuePrefix={'-'}
@@ -208,7 +208,7 @@ const AddressesBreakdown = withI18n(({transaction, i18n}) => {
       <Grid item xs={6}>
         {transaction.outputs.map((output, index) => (
           <Breakdown
-            key={output.address58}
+            key={index}
             target={output}
             captionPrefix={`# ${formatInt(index + 1)}`}
             valuePrefix={'+'}
@@ -234,7 +234,7 @@ const _TransactionSummary = ({transaction, i18n}: {transaction: Transaction, i18
   return (
     <SummaryCard>
       <Item label={messages.assuranceLevel}>
-        <div>
+        <span>
           {transaction.confirmationsCount != null && (
             <AssuranceChip level={assuranceFromConfirmations(transaction.confirmationsCount)} />
           )}{' '}
@@ -244,7 +244,7 @@ const _TransactionSummary = ({transaction, i18n}: {transaction: Transaction, i18
               count: transaction.confirmationsCount,
             })}
           </span>
-        </div>
+        </span>
       </Item>
       <Item label={messages.epoch}>
         {formatInt(idx(transaction, (_) => _.block.epoch), {defaultValue: N_A})}
