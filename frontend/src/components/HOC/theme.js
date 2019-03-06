@@ -39,11 +39,15 @@ const fontFamilies = [
 ].join(',')
 
 // Note: Footer design does not play well with primary or secondary color
+// TODO: create common theme properties
 const themeDefinitions = {
   [THEMES.BRIGHT]: createMuiTheme({
     typography: {
       useNextVariants: true,
       fontFamily: fontFamilies,
+      opaqueText: {
+        opacity: 0.54,
+      },
     },
     palette: {
       gradient: 'linear-gradient(97deg, #BFADE7 0%, #E0F1F8 100%)',
@@ -73,6 +77,9 @@ const themeDefinitions = {
     typography: {
       useNextVariants: true,
       fontFamily: fontFamilies,
+      opaqueText: {
+        opacity: 0.54,
+      },
     },
     palette: {
       type: 'dark',

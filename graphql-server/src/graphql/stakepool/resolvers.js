@@ -23,6 +23,7 @@ export const pagedStakePoolListResolver = (api, cursor, pageSize) => {
     cursor: nextCursor,
     stakePools: data,
     hasMore: nextCursor != null,
+    totalCount: BOOTSTRAP_POOLS.length, // TODO: calculate with respect to filters
   }
 }
 
