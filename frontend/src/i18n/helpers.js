@@ -3,6 +3,8 @@ import BigNumber from 'bignumber.js'
 import moment from 'moment'
 import {injectIntl} from 'react-intl'
 import React, {useContext} from 'react'
+import {compose} from 'redux'
+import _ from 'lodash'
 
 const defaultNumberFmt = {
   prefix: '',
@@ -54,6 +56,12 @@ const _formatAdaSplit = (x, options) => ({
   fractional: _formatAdaFractional(x),
 })
 
+// TODO: fix this function for all cases
+const _isNumeric = (n) => {
+  const _parsed = parseFloat(n)
+  return `${n}` === `${_parsed}` && _.isNumber(_parsed) && _.isFinite(_parsed)
+}
+
 type Msg = {
   id: string,
   defaultMessage: string,
@@ -75,6 +83,10 @@ type Formatters = {
 export const getIntlFormatters = (intl: any): Formatters => {
   const translate = intl.formatMessage
   const formatNumber = intl.formatNumber
+
+  // Note: no sign for '-' because negative number is rendered with '-' automatically
+  const _formatSign = (x) => (Math.sign(parseFloat(x)) >= 0 ? '+' : '')
+
   const _formatInt = (x, options = {}) =>
     formatNumber(x, {
       style: 'decimal',
@@ -106,11 +118,25 @@ export const getIntlFormatters = (intl: any): Formatters => {
     return formatter(x, restOptions)
   }
 
-  const formatInt = withDefaultValue(_formatInt)
-  const formatPercent = withDefaultValue(_formatPercent)
-  const formatAda = withDefaultValue(_formatAda)
-  const formatAdaSplit = withDefaultValue(_formatAdaSplit)
-  const formatFiat = withDefaultValue(_formatFiat)
+  // TODO: we should compare ADA values to zero as BigNumbers, not directly
+  const withFormatSign = (formatter): any => (x, options = {}) => {
+    const {withSign, ...restOptions} = options
+    if (withSign && _isNumeric(x)) {
+      return `${_formatSign(x)}${formatter(x, restOptions)}`
+    }
+    return formatter(x, restOptions)
+  }
+
+  const withSignAndDefaultValue = compose(
+    withFormatSign,
+    withDefaultValue
+  )
+
+  const formatInt = withSignAndDefaultValue(_formatInt)
+  const formatPercent = withSignAndDefaultValue(_formatPercent)
+  const formatAda = withSignAndDefaultValue(_formatAda)
+  const formatAdaSplit = withSignAndDefaultValue(_formatAdaSplit)
+  const formatFiat = withSignAndDefaultValue(_formatFiat)
 
   const formatTimestamp = withDefaultValue(_formatTimestamp)
   formatTimestamp.FMT_SHORT_DATE = 'L'

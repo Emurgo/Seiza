@@ -63,6 +63,10 @@ const themeDefinitions = {
       },
       footer: '#220049',
       error: red,
+      warning: {
+        color: '#856404',
+        background: '#fff3cd',
+      },
     },
   }),
   [THEMES.DARK]: createMuiTheme({
@@ -89,6 +93,10 @@ const themeDefinitions = {
       },
       footer: '#220049',
       error: red,
+      warning: {
+        color: '#fff3cd',
+        background: '#856404',
+      },
     },
   }),
 }

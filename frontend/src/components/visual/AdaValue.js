@@ -15,11 +15,11 @@ const styles = (theme) =>
   })
 
 // TODO: once needed, add variant prop
-const AdaValue = ({value, i18n, classes, options, showCurrency}) => {
+const AdaValue = ({value, i18n, classes, options, showCurrency, withSign = false}) => {
   if (value == null) {
     return options.defaultValue
   }
-  const formatted = i18n.formatAdaSplit(value)
+  const formatted = i18n.formatAdaSplit(value, {withSign: false})
   return (
     <React.Fragment>
       <span className={classes.integral}>{formatted.integral}</span>
