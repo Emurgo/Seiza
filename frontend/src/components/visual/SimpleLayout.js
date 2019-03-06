@@ -27,7 +27,7 @@ const SimpleLayout = ({title, classes, children, maxWidth = '1500px'}) => (
           {title}
         </Typography>
       </Grid>
-      <Grid className={classes.childrenContainer} direction="column" spacing={16}>
+      <Grid container className={classes.childrenContainer} direction="column" spacing={16}>
         {children}
       </Grid>
     </div>

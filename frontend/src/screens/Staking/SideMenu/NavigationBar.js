@@ -57,7 +57,7 @@ const menuItemStyles = ({palette}) =>
 // TODO: icon
 const _MenuItem = ({classes, active, label}) => (
   <div className={classnames(classes.link, active && classes.active)}>
-    <Typography className={active && classes.activeText}>{label}</Typography>
+    <Typography className={classnames(active && classes.activeText)}>{label}</Typography>
   </div>
 )
 

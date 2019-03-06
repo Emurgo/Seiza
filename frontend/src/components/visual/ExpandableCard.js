@@ -69,7 +69,7 @@ const ExpandableCard = (props: ExpandableCardPT) => {
   } = props
 
   return (
-    <Grid container className={className}>
+    <Grid container className={className} direction="row">
       <Grid item xs={12}>
         <Paper className={classes.mainContent}>{renderHeader()}</Paper>
       </Grid>
@@ -83,7 +83,7 @@ const ExpandableCard = (props: ExpandableCardPT) => {
         >
           <ExpansionPanelDetails>{renderExpandedArea()}</ExpansionPanelDetails>
           <ExpansionPanelSummary>
-            <Grid container justify="center" alignItems="center">
+            <Grid container justify="center" alignItems="center" direction="row">
               <Grid item className={classes.spacing}>
                 <Typography>{footer}</Typography>
               </Grid>

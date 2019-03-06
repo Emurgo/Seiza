@@ -56,7 +56,7 @@ const styles = (theme) =>
     },
   })
 
-const RecentBlocks = (props) => {
+const PagedBlocks = (props) => {
   const {
     pagedDataResult: {loading, error, pagedData: pagedBlocks},
     classes,
@@ -141,4 +141,4 @@ export default compose(
   withStyles(styles),
   withI18n,
   withPagedData({withData, withSetTotalPageCount, initialAutoUpdate: true})
-)(RecentBlocks)
+)(PagedBlocks)
