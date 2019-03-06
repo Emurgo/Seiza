@@ -5,7 +5,7 @@ import {withRouter} from 'react-router'
 import {withProps} from 'recompose'
 import {EntityIdCard, SimpleLayout} from '@/components/visual'
 import {withI18n} from '@/i18n/helpers'
-import AdaIcon from '@/tmp_assets/ada-icon.png'
+import AdaIcon from '@/assets/icons/transaction-id.svg'
 
 import StakePoolStakingKey from './StakePoolStakingKey'
 import UserStakingKey from './UserStakingKey'
