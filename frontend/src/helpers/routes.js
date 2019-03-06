@@ -1,6 +1,7 @@
 // @flow
 const BLOCKCHAIN_ROUTE = '/blockchain'
 const STAKING_ROUTE = '/staking'
+const STAKING_KEY_ROUTE = `${BLOCKCHAIN_ROUTE}/staking-key`
 
 export const routeTo = {
   home: () => '/home',
@@ -8,10 +9,14 @@ export const routeTo = {
   transaction: (txHash: string) => `${BLOCKCHAIN_ROUTE}/transaction/${txHash}`,
   block: (blockHash: string) => `${BLOCKCHAIN_ROUTE}/block/${blockHash}`,
   address: (address58: string) => `${BLOCKCHAIN_ROUTE}/address/${address58}`,
-  stakingKey: (stakingKey: string) => `${BLOCKCHAIN_ROUTE}/staking-key/${stakingKey}`,
   stakepool: (poolHash: string) => `${BLOCKCHAIN_ROUTE}/stakepool/${poolHash}`,
   epoch: (epochNumber: number) => `${BLOCKCHAIN_ROUTE}/epoch/${epochNumber}`,
   more: () => '/more',
+  stakingKey: {
+    home: (stakingKey: string) => `${STAKING_KEY_ROUTE}/${stakingKey}`,
+    user: (stakingKey: string) => `${STAKING_KEY_ROUTE}/${stakingKey}/user`,
+    stakePool: (stakingKey: string) => `${STAKING_KEY_ROUTE}/${stakingKey}/pool`,
+  },
   staking: {
     home: () => STAKING_ROUTE,
     poolList: () => `${STAKING_ROUTE}/list`,

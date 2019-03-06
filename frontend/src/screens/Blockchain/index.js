@@ -34,7 +34,7 @@ export default (props) => (
       <Route path={routeTo.address(':address58')} component={Address} />
       <Route path={routeTo.epoch(':epoch')} component={Epoch} />
       <Route path={routeTo.search(':query')} component={Search} />
-      <Route path={routeTo.stakingKey(':stakingKey')} component={StakingKey} />
+      <Route path={routeTo.stakingKey.home(':stakingKey')} component={StakingKey} />
       <Route path={routeTo.stakepool(':poolHash')} component={StakePool} />
       <Route component={NotFound} />
     </Switch>
