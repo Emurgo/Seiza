@@ -1,6 +1,10 @@
 import React from 'react'
+import {compose} from 'redux'
+import {withProps, withHandlers} from 'recompose'
 
 import * as storage from '@/helpers/localStorage'
+
+import {withUrlManager, objToQueryString} from './utils'
 
 // TODO: consider moving `JSON.stringify` to storage module
 // TODO: dont allow adding more than 'n' pools
@@ -12,10 +16,34 @@ export const initialSelectedPoolsContext = {
     selectedPools: [],
     addPool: null,
     removePool: null,
+    syncSelectedPoolsWithUrl: null,
+    selectedPoolsStorageToUrl: null,
   },
 }
 
-const getInitialState = () => {
+const mergeProps = (BaseComponent) => ({
+  selectedPools,
+  removePool,
+  addPool,
+  _syncSelectedPoolsWithUrl,
+  _selectedPoolsStorageToUrl,
+  ...restProps
+}) => {
+  return (
+    <BaseComponent
+      selectedPoolsContext={{
+        addPool,
+        removePool,
+        selectedPools,
+        _syncSelectedPoolsWithUrl,
+        _selectedPoolsStorageToUrl,
+      }}
+      {...restProps}
+    />
+  )
+}
+
+const getStorageData = () => {
   try {
     return JSON.parse(storage.getItem(STORAGE_KEY)) || []
   } catch (err) {
@@ -23,52 +51,42 @@ const getInitialState = () => {
   }
 }
 
-export const selectedPoolsProvider = (BaseComponent) =>
-  class SelectedPoolsProvider extends React.Component {
-    constructor(props) {
-      super(props)
-      this.state = {
-        selectedPools: getInitialState(),
-      }
-    }
-
-    _setPools = (newPools) => {
-      this.setState({selectedPools: newPools})
+export const selectedPoolsProvider = compose(
+  withUrlManager,
+  withProps((props) => ({
+    selectedPools: props.getQueryParam(STORAGE_KEY) || [],
+  })),
+  withHandlers({
+    setPools: ({setQueryParam}) => (newPools) => {
       storage.setItem(STORAGE_KEY, JSON.stringify(newPools))
-    }
-
-    removePool = (poolHash) => {
-      if (!this.state.selectedPools.includes(poolHash)) {
+      setQueryParam(STORAGE_KEY, newPools)
+    },
+  }),
+  withHandlers({
+    removePool: ({selectedPools, setPools}) => (poolHash) => {
+      if (!selectedPools.includes(poolHash)) {
         throw new Error(`Could not remove pool ${poolHash}`)
       }
-      const newSelectedPools = this.state.selectedPools.filter(
-        (_poolHash) => _poolHash !== poolHash
-      )
-      this._setPools(newSelectedPools)
-    }
-
-    addPool = (poolHash) => {
-      if (this.state.selectedPools.includes(poolHash)) {
+      const newSelectedPools = selectedPools.filter((_poolHash) => _poolHash !== poolHash)
+      setPools(newSelectedPools)
+    },
+    addPool: ({selectedPools, setPools}) => (poolHash) => {
+      if (selectedPools.includes(poolHash)) {
         throw new Error(`Pool ${poolHash} is already added.`)
       }
-      const newSelectedPools = [...this.state.selectedPools, poolHash]
-      this._setPools(newSelectedPools)
-    }
-
-    render() {
-      const {
-        state: {selectedPools},
-        removePool,
-        addPool,
-      } = this
-      return (
-        <BaseComponent
-          {...this.props}
-          selectedPoolsContext={{addPool, removePool, selectedPools}}
-        />
-      )
-    }
-  }
+      const newSelectedPools = [...selectedPools, poolHash]
+      setPools(newSelectedPools)
+    },
+    _syncSelectedPoolsWithUrl: ({setPools, getQueryParam}) => (query) => {
+      setPools(getQueryParam(STORAGE_KEY) || [])
+    },
+    _selectedPoolsStorageToUrl: () => () => {
+      const selectedPools = getStorageData()
+      return selectedPools.length ? objToQueryString({selectedPools}) : null
+    },
+  }),
+  mergeProps
+)
 
 export const getSelectedPoolsConsumer = (Context) => (WrappedComponent) => (props) => (
   <Context.Consumer>

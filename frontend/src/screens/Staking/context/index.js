@@ -22,4 +22,27 @@ export const stakingContextProvider = (WrappedComponent) =>
     </Context.Provider>
   ))
 
+export const withSyncListScreenWithUrl = (WrappedComponent) => (props) => (
+  <Context.Consumer>
+    {({selectedPoolsContext: {_syncSelectedPoolsWithUrl, _selectedPoolsStorageToUrl}}) => {
+      const getListScreenUrlQuery = () => {
+        const selectedPoolsUrl = _selectedPoolsStorageToUrl()
+        return selectedPoolsUrl ? `?${selectedPoolsUrl}` : ''
+      }
+
+      const syncListScreenWithUrl = (query) => {
+        _syncSelectedPoolsWithUrl(query)
+      }
+
+      return (
+        <WrappedComponent
+          {...props}
+          syncListScreenWithUrl={syncListScreenWithUrl}
+          getListScreenUrlQuery={getListScreenUrlQuery}
+        />
+      )
+    }}
+  </Context.Consumer>
+)
+
 export const withSelectedPoolsContext = getSelectedPoolsConsumer(Context)
