@@ -49,14 +49,14 @@ const styles = ({palette}) =>
       paddingLeft: '50px',
     },
     navText: {
-      color: palette.getContrastText(palette.footer),
+      color: palette.footer.contrastText,
     },
     topNav: {
       padding: '10px',
       background: palette.gradient,
     },
     bottomNav: {
-      backgroundColor: palette.footer,
+      backgroundColor: palette.footer.main,
     },
     bottomNavRow: {
       padding: '5px',

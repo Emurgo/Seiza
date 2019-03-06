@@ -4,7 +4,6 @@ import {defineMessages} from 'react-intl'
 import {compose} from 'redux'
 import {withState, withHandlers} from 'recompose'
 import {createMuiTheme} from '@material-ui/core/styles'
-import red from '@material-ui/core/colors/red'
 
 import * as storage from '../../helpers/localStorage'
 
@@ -38,17 +37,21 @@ const fontFamilies = [
   'sans-serif',
 ].join(',')
 
+const commonThemeObj = {
+  typography: {
+    useNextVariants: true,
+    fontFamily: fontFamilies,
+    opaqueText: {
+      opacity: 0.54,
+    },
+  },
+}
+
 // Note: Footer design does not play well with primary or secondary color
 // TODO: create common theme properties
 const themeDefinitions = {
   [THEMES.BRIGHT]: createMuiTheme({
-    typography: {
-      useNextVariants: true,
-      fontFamily: fontFamilies,
-      opaqueText: {
-        opacity: 0.54,
-      },
-    },
+    ...commonThemeObj,
     palette: {
       gradient: 'linear-gradient(97deg, #BFADE7 0%, #E0F1F8 100%)',
       buttonsGradient: {
@@ -60,27 +63,43 @@ const themeDefinitions = {
         gradient: 'linear-gradient(97deg, #715BD3 0%, #95BAF7 100%)',
       },
       primary: {
-        main: '#6300C1',
+        main: '#4D20C0',
       },
       secondary: {
-        main: '#EFE5F9',
+        main: 'rgba(77, 32, 192, 0.1)', // or #E7E4F8 ?
       },
-      footer: '#220049',
-      error: red,
+      tertiary: {
+        main: '#92B9FC', // underscore of navbar, icons have it
+      },
+      quaternary: {
+        main: '#B1E1F2', // color of one of lines in graph
+      },
+      footer: {
+        main: '#120546',
+        link: '#6F7290',
+        contrastText: '#FFFFFF',
+      },
       warning: {
-        color: '#856404',
-        background: '#fff3cd',
+        color: '#FF805D',
+        background: '#FFE2DA',
       },
+      alertWeak: '#F9D8E6', // TODO: confirm with Marta
+      alertStrong: {
+        color: '#FF1755',
+        background: '#F9E9F2',
+      },
+      emphasis: {
+        color: '#8AE8D4',
+        background: '#EAF8F9',
+      },
+      contentFocus: '#8791AD',
+      contentUnfocus: '#BFC5D2',
+      unobtrusiveContentHighlight: '#F4F6FC',
+      disabled: 'rgba(146, 185, 252, 0.05)',
     },
   }),
   [THEMES.DARK]: createMuiTheme({
-    typography: {
-      useNextVariants: true,
-      fontFamily: fontFamilies,
-      opaqueText: {
-        opacity: 0.54,
-      },
-    },
+    ...commonThemeObj,
     palette: {
       type: 'dark',
       gradient: 'linear-gradient(97deg, #00050c 0%, #5a5c60 100%)',
@@ -98,12 +117,34 @@ const themeDefinitions = {
       secondary: {
         main: '#153363',
       },
-      footer: '#220049',
-      error: red,
-      warning: {
-        color: '#fff3cd',
-        background: '#856404',
+      tertiary: {
+        main: '#92B9FC', // underscore of navbar, icons have it
       },
+      quaternary: {
+        main: '#B1E1F2', // color of one of lines in graph
+      },
+      footer: {
+        main: '#120546',
+        link: '#6F7290',
+        contrastText: '#FFFFFF',
+      },
+      warning: {
+        color: '#FF805D',
+        background: '#FFE2DA',
+      },
+      alertWeak: '#F9D8E6', // TODO: confirm with Marta
+      alertStrong: {
+        color: '#FF1755',
+        background: '#F9E9F2',
+      },
+      emphasis: {
+        color: '#8AE8D4',
+        background: '#EAF8F9',
+      },
+      contentFocus: '#8791AD',
+      contentUnfocus: '#BFC5D2',
+      unobtrusiveContentHighlight: '#F4F6FC',
+      disabled: 'rgba(146, 185, 252, 0.05)',
     },
   }),
 }
