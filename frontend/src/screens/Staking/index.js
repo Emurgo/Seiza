@@ -6,7 +6,7 @@ import {compose} from 'redux'
 import {Grid, createStyles, withStyles} from '@material-ui/core'
 
 import {routeTo} from '@/helpers/routes'
-import {stakingContextProvider} from './context'
+import {stakingContextProvider, withSyncListScreenWithUrl} from './context'
 import SideMenu from './SideMenu'
 import StakePoolList from './StakeList'
 import StakePoolHeader from './Header'
@@ -32,6 +32,24 @@ const NotFound = withStyles(styles)(({classes}) => (
   </div>
 ))
 
+// Note: URL vs Storage: no merging: either url or localStorage wins
+const ListScreenRoute = compose(withSyncListScreenWithUrl)(
+  ({location: {search: urlQuery}, syncListScreenWithUrl, getListScreenUrlQuery}) => {
+    const storageQuery = getListScreenUrlQuery()
+    if (urlQuery) {
+      // TODO: consider better than equality check to avoid unnecessary sync
+      urlQuery !== storageQuery && syncListScreenWithUrl(urlQuery)
+      return <StakePoolList />
+    } else {
+      return storageQuery ? (
+        <Redirect exact to={`${routeTo.staking.poolList()}${storageQuery}`} />
+      ) : (
+        <StakePoolList />
+      )
+    }
+  }
+)
+
 export default compose(
   withStyles(styles),
   stakingContextProvider
@@ -47,7 +65,7 @@ export default compose(
       <Grid item lg={9} xl={6} className={classes.mainContent}>
         <Switch>
           <Redirect exact from={routeTo.staking.home()} to={routeTo.staking.poolList()} />
-          <Route exact path={routeTo.staking.poolList()} component={StakePoolList} />
+          <Route exact path={routeTo.staking.poolList()} render={ListScreenRoute} />
           <Route component={NotFound} />
         </Switch>
       </Grid>
