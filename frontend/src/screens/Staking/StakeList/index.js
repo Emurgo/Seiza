@@ -12,6 +12,7 @@ import {Button, DebugApolloError, LoadingInProgress} from '@/components/visual'
 import StakePool from './StakePool'
 import SearchAndFilterBar from './SearchAndFilterBar'
 import SortByBar from './SortByBar'
+import {withSortByContext} from '../context'
 
 const I18N_PREFIX = 'staking'
 const PAGE_SIZE = 3
@@ -103,10 +104,11 @@ const StakeList = ({
 export default compose(
   withI18n,
   withStyles(styles),
+  withSortByContext,
   graphql(
     gql`
-      query($cursor: String, $pageSize: Int) {
-        pagedStakePoolList(cursor: $cursor, pageSize: $pageSize) {
+      query($cursor: String, $pageSize: Int, $sortBy: StakePoolSortByEnum!) {
+        pagedStakePoolList(cursor: $cursor, pageSize: $pageSize, sortBy: $sortBy) {
           stakePools {
             poolHash
             description
@@ -129,20 +131,20 @@ export default compose(
     `,
     {
       name: 'poolsDataProvider',
-      options: (props) => ({
-        variables: {cursor: props.cursor, pageSize: PAGE_SIZE},
+      options: ({cursor, sortByContext: {sortBy}}) => ({
+        variables: {cursor, sortBy, pageSize: PAGE_SIZE},
       }),
     }
   ),
   withHandlers({
-    onLoadMore: ({poolsDataProvider}) => () => {
+    onLoadMore: ({poolsDataProvider, sortByContext: {sortBy}}) => () => {
       const {
         fetchMore,
         pagedStakePoolList: {cursor},
       } = poolsDataProvider
 
       return fetchMore({
-        variables: {cursor, pageSize: PAGE_SIZE},
+        variables: {cursor, pageSize: PAGE_SIZE, sortBy},
         updateQuery: (prev, {fetchMoreResult, ...rest}) => {
           if (!fetchMoreResult) return prev
           // TODO: currently taken from graphql docs, consider doing it nicer

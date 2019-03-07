@@ -7,6 +7,7 @@ type StakePoolSummary {
   fullness: Float
   margins: Float
   pledge: AdaAmount
+  revenue: Float
 }
 
 type BootstrapEraStakePool {
@@ -24,9 +25,18 @@ type PagedStakePoolsResult {
   totalCount: Int!
 }
 
+enum StakePoolSortByEnum {
+  REVENUE
+  PERFORMANCE
+  FULLNESS
+  PLEDGE
+  MARGINS
+  STAKE
+}
+
 type Query {
   stakePoolList(epochNumber: Int): BootstrapEraStakePool!
-  pagedStakePoolList(cursor: String, pageSize: Int): PagedStakePoolsResult!
+  pagedStakePoolList(cursor: String, pageSize: Int, sortBy: StakePoolSortByEnum!): PagedStakePoolsResult!
   stakePool(poolHash: String!, epochNumber: Int): BootstrapEraStakePool,
   stakePools(poolHashes: [String!]!, epochNumber: Int): [BootstrapEraStakePool]
 }

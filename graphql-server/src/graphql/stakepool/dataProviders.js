@@ -11,6 +11,30 @@ export const BOOTSTRAP_POOLS = [
   '6c9e14978b9d6629b8703f4f25e9df6ed4814b930b8403b0d45350ea',
 ]
 
+export const fetchBootstrapEraPoolSummary = (api, poolHash, epochNumber) => {
+  // TODO: consider poolHash and epochNumber
+  // Note (temporary): `randomFactor` is used to mock different data for sortBy actions etc,
+  // but to produce same `randomFactor` for same hash
+  const prefixLength = 5
+  const maxBase58CharValue = 122
+  const randomFactor = poolHash
+    .slice(0, prefixLength)
+    .split('')
+    .reduce((res, value, index, src) => res + src[index].charCodeAt(0) / maxBase58CharValue, 1)
+  const normalizedFactor = randomFactor / prefixLength
+
+  return {
+    adaStaked: '1413135',
+    keysDelegating: 100,
+    performance: 0.7 * normalizedFactor,
+    pledge: `${Math.ceil(142432243 * normalizedFactor)}`,
+    rewards: `${Math.ceil(5135534 * normalizedFactor)}`,
+    fullness: 0.6 * normalizedFactor,
+    margins: 0.3 * normalizedFactor,
+    revenue: 0.25 * normalizedFactor,
+  }
+}
+
 export const fetchBootstrapEraPool = (api, poolHash, epochNumber) => {
   const idx = BOOTSTRAP_POOLS.indexOf(poolHash)
   assert(idx !== -1)
@@ -20,19 +44,6 @@ export const fetchBootstrapEraPool = (api, poolHash, epochNumber) => {
     description: 'Pool used before decentralization',
     createdAt: moment(),
     _epochNumber: epochNumber,
-  }
-}
-
-export const fetchBootstrapEraPoolSummary = (api, poolHash, epochNumber) => {
-  // TODO: consider poolHash and epochNumber
-  return {
-    performance: 0.7,
-    adaStaked: '1413135',
-    pledge: '142432243',
-    rewards: '5135534',
-    keysDelegating: 100,
-    fullness: 0.6,
-    margins: 0.3,
   }
 }
 
