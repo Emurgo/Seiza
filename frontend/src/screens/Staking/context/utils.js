@@ -5,9 +5,20 @@ import queryString from 'query-string'
 import {withRouter} from 'react-router'
 import {compose} from 'redux'
 
+import * as storage from '@/helpers/localStorage'
+
 const QUERY_STRING_CONFIG = {arrayFormat: 'bracket'}
 
 export const objToQueryString = (obj: {}) => queryString.stringify(obj, QUERY_STRING_CONFIG)
+
+// Consider moving to `storage` module and use JSON for everything
+export const getStorageData = (key: string, defaultValue: ?string = null) => {
+  try {
+    return JSON.parse(storage.getItem(key)) || defaultValue
+  } catch (err) {
+    return defaultValue
+  }
+}
 
 const replaceQueryString = (query, key, value) => {
   return queryString.stringify(
@@ -29,9 +40,9 @@ export const withUrlManager = compose(
       })
     }
 
-    const getQueryParam = (paramKey) => {
+    const getQueryParam = (paramKey, defaultValue: ?string = null) => {
       const parsed = queryString.parse(location.search, QUERY_STRING_CONFIG)
-      return parsed[paramKey]
+      return parsed[paramKey] || defaultValue
     }
 
     return (

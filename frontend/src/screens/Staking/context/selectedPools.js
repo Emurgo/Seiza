@@ -4,16 +4,17 @@ import {withProps, withHandlers} from 'recompose'
 
 import * as storage from '@/helpers/localStorage'
 
-import {withUrlManager, objToQueryString} from './utils'
+import {withUrlManager, objToQueryString, getStorageData} from './utils'
 
-// TODO: consider moving `JSON.stringify` to storage module
 // TODO: dont allow adding more than 'n' pools
 
 const STORAGE_KEY = 'selectedPools'
 
+const DEFAULT_VALUE = []
+
 export const initialSelectedPoolsContext = {
   selectedPoolsContext: {
-    selectedPools: [],
+    selectedPools: DEFAULT_VALUE,
     addPool: null,
     removePool: null,
     syncSelectedPoolsWithUrl: null,
@@ -43,18 +44,10 @@ const mergeProps = (BaseComponent) => ({
   )
 }
 
-const getStorageData = () => {
-  try {
-    return JSON.parse(storage.getItem(STORAGE_KEY)) || []
-  } catch (err) {
-    return []
-  }
-}
-
 export const selectedPoolsProvider = compose(
   withUrlManager,
   withProps((props) => ({
-    selectedPools: props.getQueryParam(STORAGE_KEY) || [],
+    selectedPools: props.getQueryParam(STORAGE_KEY, DEFAULT_VALUE),
   })),
   withHandlers({
     setPools: ({setQueryParam}) => (newPools) => {
@@ -78,10 +71,10 @@ export const selectedPoolsProvider = compose(
       setPools(newSelectedPools)
     },
     _syncSelectedPoolsWithUrl: ({setPools, getQueryParam}) => (query) => {
-      setPools(getQueryParam(STORAGE_KEY) || [])
+      setPools(getQueryParam(STORAGE_KEY, DEFAULT_VALUE))
     },
     _selectedPoolsStorageToUrl: () => () => {
-      const selectedPools = getStorageData()
+      const selectedPools = getStorageData(STORAGE_KEY, DEFAULT_VALUE)
       return selectedPools.length ? objToQueryString({selectedPools}) : null
     },
   }),

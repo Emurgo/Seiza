@@ -1,10 +1,18 @@
-import {fetchBootstrapEraPool, fetchBootstrapEraPoolList, BOOTSTRAP_POOLS} from './dataProviders'
+import _ from 'lodash'
+import {
+  fetchBootstrapEraPool,
+  fetchBootstrapEraPoolList,
+  fetchBootstrapEraPoolSummary,
+  BOOTSTRAP_POOLS,
+} from './dataProviders'
 
 const INVALID_CURSOR = {data: [], cursor: null, hasMore: false}
 
 const DEFAULT_PAGE_SIZE = 10
 
-export const pagedStakePoolListResolver = (api, cursor, pageSize) => {
+// TODO: This whole resolver would need to be structure better, but we should
+// do it once we have real data or implement filters to get a better picture
+export const pagedStakePoolListResolver = (api, cursor, pageSize, sortBy) => {
   if (cursor != null && !BOOTSTRAP_POOLS.includes(cursor)) return INVALID_CURSOR
 
   const _cursor = cursor || BOOTSTRAP_POOLS[0]
@@ -13,21 +21,33 @@ export const pagedStakePoolListResolver = (api, cursor, pageSize) => {
   const cursorPosition = BOOTSTRAP_POOLS.indexOf(_cursor)
   const nextCursorPosition = cursorPosition + _pageSize
 
-  const data = BOOTSTRAP_POOLS.slice(cursorPosition, nextCursorPosition).map((pool) =>
-    fetchBootstrapEraPool(api, pool)
-  )
+  const completeData = BOOTSTRAP_POOLS.map((pool) => ({
+    ...fetchBootstrapEraPool(api, pool),
+    summary: fetchBootstrapEraPoolSummary(api, pool),
+  }))
+  const sortedData = _.orderBy(completeData, (d) => d.summary[sortBy], 'desc')
+  const pagedData = sortedData.slice(cursorPosition, nextCursorPosition)
+
   const nextCursor =
     nextCursorPosition < BOOTSTRAP_POOLS.length ? BOOTSTRAP_POOLS[nextCursorPosition] : null
 
   return {
     cursor: nextCursor,
-    stakePools: data,
+    stakePools: pagedData,
     hasMore: nextCursor != null,
-    totalCount: BOOTSTRAP_POOLS.length, // TODO: calculate with respect to filters
+    totalCount: sortedData.length,
   }
 }
 
 export default {
+  StakePoolSortByEnum: {
+    REVENUE: 'revenue',
+    PERFORMANCE: 'performance',
+    FULLNESS: 'fullness',
+    PLEDGE: 'pledge',
+    MARGINS: 'margins',
+    STAKE: 'stake',
+  },
   Query: {
     stakePool: (root, args, context) =>
       fetchBootstrapEraPool(null, args.poolHash, args.epochNumber),
@@ -35,6 +55,6 @@ export default {
       args.poolHashes.map((poolHash) => fetchBootstrapEraPool(null, poolHash, args.epochNumber)),
     stakePoolList: (root, args, context) => fetchBootstrapEraPoolList(null, args.epochNumber),
     pagedStakePoolList: (_, args, context) =>
-      pagedStakePoolListResolver(null, args.cursor, args.pageSize),
+      pagedStakePoolListResolver(null, args.cursor, args.pageSize, args.sortBy),
   },
 }

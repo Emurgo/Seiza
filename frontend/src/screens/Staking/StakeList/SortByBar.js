@@ -3,12 +3,14 @@
 import React from 'react'
 import {Grid, Typography} from '@material-ui/core'
 import {defineMessages} from 'react-intl'
-import {withStateHandlers, withHandlers} from 'recompose'
+import {withHandlers} from 'recompose'
 import {compose} from 'redux'
 import {makeStyles} from '@material-ui/styles'
 
 import {Select} from '@/components/visual'
 import {useI18n} from '@/i18n/helpers'
+import {withSortByContext} from '../context'
+import {SORT_BY_OPTIONS} from '../context/sortBy'
 
 const I18N_PREFIX = 'staking.sortByBar'
 
@@ -58,20 +60,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-// TODO: Move to context
 export default compose(
-  withStateHandlers(
-    {
-      sortBy: 'revenue',
-    },
-    {
-      setSortBy: () => (sortBy) => ({sortBy}),
-    }
-  ),
+  withSortByContext,
   withHandlers({
-    onSortByChange: ({setSortBy}) => (e) => setSortBy(e.target.value),
+    onSortByChange: ({sortByContext: {setSortBy}}) => (e) => setSortBy(e.target.value),
   })
-)(({sortBy, onSortByChange, totalPoolsCount, shownPoolsCount}) => {
+)(({sortByContext: {sortBy}, onSortByChange, totalPoolsCount, shownPoolsCount}) => {
   const {translate: tr} = useI18n()
   const classes = useStyles()
   return (
@@ -83,12 +77,12 @@ export default compose(
           onChange={onSortByChange}
           className={classes.select}
           options={[
-            {value: 'revenue', label: tr(messages.revenue)},
-            {value: 'performance', label: tr(messages.performance)},
-            {value: 'fullness', label: tr(messages.fullness)},
-            {value: 'pledge', label: tr(messages.pledge)},
-            {value: 'margins', label: tr(messages.margins)},
-            {value: 'stake', label: tr(messages.stake)},
+            {value: SORT_BY_OPTIONS.REVENUE, label: tr(messages.revenue)},
+            {value: SORT_BY_OPTIONS.PERFORMANCE, label: tr(messages.performance)},
+            {value: SORT_BY_OPTIONS.FULLNESS, label: tr(messages.fullness)},
+            {value: SORT_BY_OPTIONS.PLEDGE, label: tr(messages.pledge)},
+            {value: SORT_BY_OPTIONS.MARGINS, label: tr(messages.margins)},
+            {value: SORT_BY_OPTIONS.STAKE, label: tr(messages.stake)},
           ]}
         />
       </Grid>
