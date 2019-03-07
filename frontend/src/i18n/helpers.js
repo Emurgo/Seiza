@@ -6,6 +6,9 @@ import React, {useContext} from 'react'
 import {compose} from 'redux'
 import _ from 'lodash'
 
+import 'moment/locale/ja'
+import 'moment/locale/ru'
+
 const defaultNumberFmt = {
   prefix: '',
   decimalSeparator: '.',
@@ -107,7 +110,7 @@ export const getIntlFormatters = (intl: any): Formatters => {
 
   const _formatTimestamp = (x, options) => {
     const desiredFormat = options.format || STANDARD_READABLE_FORMAT
-    const ts = moment(x)
+    const ts = moment(x).locale(intl.locale)
     if (!ts.isValid) throw new Error('bad timestamp')
     return ts.format(desiredFormat)
   }
