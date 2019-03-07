@@ -1,9 +1,11 @@
 // @flow
 import React from 'react'
-import {defineMessages} from 'react-intl'
+import {defineMessages, FormattedMessage} from 'react-intl'
 import {withRouter} from 'react-router'
 import {withProps} from 'recompose'
 import {compose} from 'redux'
+import {Typography} from '@material-ui/core'
+import {makeStyles} from '@material-ui/styles'
 import {
   AdaValue,
   SummaryCard,
@@ -16,9 +18,16 @@ import {
 import {withI18n} from '@/i18n/helpers'
 import AdaIcon from '@/assets/icons/transaction-id.svg'
 import {getStakePoolStakingKey} from './mockedData'
+import RewardAddressIcon from '@/assets/icons/reward-address.svg'
+import CertificateIcon from '@/assets/icons/certificate.svg'
+
+const useStyles = makeStyles((theme) => ({
+  smallAdaText: {
+    fontWeight: 500,
+  },
+}))
 
 const messages = defineMessages({
-  header: 'Staking Key',
   stakingKey: 'Staking Key Id',
   entityBadge: 'Revenue',
   poolRetiredWarning: 'Stake Pool is retired',
@@ -35,7 +44,8 @@ const messages = defineMessages({
   performance: 'Performance:',
   totalRewards: 'Total Rewards:',
   totalActiveEpochs: 'Total Active Epochs:',
-  epochs: '{count, plural, =0 {epochs} one {epoch} other {epochs}}',
+  epochs: '{count, plural, =0 {# epochs} one {# epoch} other {# epochs}}',
+  days: '({count, plural, =0 {# days} one {# day} other {# days}})',
   stakersCount: '# Stakers:',
   stakers: '{count, plural, =0 {stakers} one {staker} other {stakers}}',
   margin: 'Margin:',
@@ -46,18 +56,26 @@ const messages = defineMessages({
   rewardAddress: 'Reward Address:',
   stakePoolCertificate: 'Stake Pool Certificate:',
   lastUpdate: 'Last Update On:',
-  fromTop1Begin: '(',
-  fromTop1End: ' from Top 1)',
-  fromTop1EndDot: ' from Top 1).',
 })
+
+const FromTop1Message = ({value}) => (
+  // $FlowFixMe Not sure why this is giving error
+  <FormattedMessage
+    id="screens.Blockchain.StakingKey.StakePoolStakingKey.fromTop1"
+    defaultMessage="({value} from Top 1)"
+    values={{value}}
+  />
+)
 
 const StakePoolStakingKey = ({
   stakePool,
-  i18n: {translate, formatPercent, formatInt, formatTimestamp},
+  i18n: {translate, formatPercent, formatInt, formatTimestamp, formatAda},
 }) => {
+  const classes = useStyles()
   const {Row, Label, Value} = SummaryCard
+
   return (
-    <SimpleLayout title={translate(messages.header)}>
+    <SimpleLayout title={stakePool.name}>
       <Alert type="warning" message={translate(messages.poolRetiredWarning)} />
 
       <EntityIdCard
@@ -79,7 +97,7 @@ const StakePoolStakingKey = ({
         </Row>
         <Row>
           <Label>{translate(messages.validationCharacters)}</Label>
-          <Value>...{stakePool.validationCharacters}</Value>
+          <Value>{stakePool.validationCharacters}</Value>
         </Row>
         <Row>
           <Label>{translate(messages.creationDate)}</Label>
@@ -110,14 +128,29 @@ const StakePoolStakingKey = ({
         <Row>
           <Label>{translate(messages.totalRewards)}</Label>
           <Value>
-            <AdaValue value={stakePool.totalRewards} showCurrency />
+            <Typography variant="body1" align="right">
+              <AdaValue value={stakePool.totalRewards.amount} showCurrency />
+            </Typography>
+            <Typography variant="caption" color="textSecondary" align="right">
+              <FormattedMessage
+                id="screens.Blockchain.StakingKey.StakePoolStakingKey.estimatedMissed"
+                defaultMessage="Estimated: {count} missed"
+                values={{
+                  count: (
+                    <span className={classes.smallAdaText}>
+                      {formatAda(stakePool.totalRewards.estimatedMissed)} ADA
+                    </span>
+                  ),
+                }}
+              />
+            </Typography>
           </Value>
         </Row>
         <Row>
           <Label>{translate(messages.totalActiveEpochs)}</Label>
           <Value>
-            {formatInt(stakePool.totalActiveEpochs)}{' '}
-            {translate(messages.epochs, {count: stakePool.totalActiveEpochs})}
+            {translate(messages.epochs, {count: stakePool.timeActive.epochs})}{' '}
+            {translate(messages.days, {count: stakePool.timeActive.days})}
           </Value>
         </Row>
         <Row>
@@ -130,42 +163,53 @@ const StakePoolStakingKey = ({
         <Row>
           <Label>{translate(messages.margin)}</Label>
           <Value>
-            {formatPercent(stakePool.currentMargin.margin)} {translate(messages.fromTop1Begin)}
-            {formatPercent(stakePool.topPoolComparison.margin, {
-              withSign: true,
-            })}
-            {translate(messages.fromTop1EndDot)} {translate(messages.lastUpdate)}{' '}
-            {formatTimestamp(stakePool.currentMargin.updatedAt)}
+            <Typography variant="body1" align="right">
+              {formatPercent(stakePool.currentMargin.margin)}{' '}
+              <FromTop1Message
+                value={formatPercent(stakePool.topPoolComparison.margin, {
+                  withSign: true,
+                })}
+              />
+            </Typography>
+            <Typography variant="caption" color="textSecondary" align="right">
+              {translate(messages.lastUpdate)} {formatTimestamp(stakePool.currentMargin.updatedAt)}
+            </Typography>
           </Value>
         </Row>
         <Row>
           <Label>{translate(messages.cost)}</Label>
           <Value>
-            <AdaValue value={stakePool.currentCost.cost} showCurrency />
-            {translate(messages.fromTop1Begin)}
-            <AdaValue value={stakePool.topPoolComparison.cost} withSign showCurrency />
-            {translate(messages.fromTop1EndDot)} {translate(messages.lastUpdate)}{' '}
-            {formatTimestamp(stakePool.currentCost.updatedAt)}
+            <Typography variant="body1" align="right">
+              <AdaValue value={stakePool.currentCost.cost} showCurrency />
+              <FromTop1Message
+                value={<AdaValue value={stakePool.topPoolComparison.cost} withSign showCurrency />}
+              />
+            </Typography>
+            <Typography variant="caption" color="textSecondary" align="right">
+              {translate(messages.lastUpdate)} {formatTimestamp(stakePool.currentCost.updatedAt)}
+            </Typography>
           </Value>
         </Row>
         <Row>
           <Label>{translate(messages.fullness)}</Label>
           <Value>
-            {formatPercent(stakePool.fullness)} {translate(messages.fromTop1Begin)}
-            {formatPercent(stakePool.topPoolComparison.fullness, {
-              withSign: true,
-            })}
-            {translate(messages.fromTop1End)}
+            {formatPercent(stakePool.fullness)}{' '}
+            <FromTop1Message
+              value={formatPercent(stakePool.topPoolComparison.fullness, {
+                withSign: true,
+              })}
+            />
           </Value>
         </Row>
         <Row>
           <Label>{translate(messages.revenue)}</Label>
           <Value>
-            {formatPercent(stakePool.revenue)} {translate(messages.fromTop1Begin)}
-            {formatPercent(stakePool.topPoolComparison.revenue, {
-              withSign: true,
-            })}
-            {translate(messages.fromTop1End)}
+            {formatPercent(stakePool.revenue)}{' '}
+            <FromTop1Message
+              value={formatPercent(stakePool.topPoolComparison.revenue, {
+                withSign: true,
+              })}
+            />
           </Value>
         </Row>
         <Row>
@@ -173,18 +217,16 @@ const StakePoolStakingKey = ({
           <Value>{stakePool.description}</Value>
         </Row>
       </SummaryCard>
-      <SummaryCard>
-        <Row>
-          <Label>{translate(messages.rewardAddress)}</Label>
-          <Value>{stakePool.rewardsAddress}</Value>
-        </Row>
-      </SummaryCard>
-      <SummaryCard>
-        <Row>
-          <Label>{translate(messages.stakePoolCertificate)}</Label>
-          <Value>{stakePool.stakePoolCertificate}</Value>
-        </Row>
-      </SummaryCard>
+      <EntityIdCard
+        label={translate(messages.rewardAddress)}
+        value={stakePool.rewardsAddress}
+        iconRenderer={<img alt="" src={RewardAddressIcon} width={40} height={40} />}
+      />
+      <EntityIdCard
+        label={translate(messages.stakePoolCertificate)}
+        value={stakePool.stakePoolCertificate}
+        iconRenderer={<img alt="" src={CertificateIcon} width={40} height={40} />}
+      />
     </SimpleLayout>
   )
 }
