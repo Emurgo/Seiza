@@ -12,7 +12,7 @@ import Pagination, {getPageCount} from '@/components/visual/Pagination'
 import {SimpleLayout, DebugApolloError} from '@/components/visual'
 import BlocksTable, {ALL_COLUMNS} from './BlocksTable'
 import {GET_PAGED_BLOCKS} from '@/api/queries'
-import {withI18n} from '@/i18n/helpers'
+import {useI18n} from '@/i18n/helpers'
 import withPagedData from '@/components/HOC/withPagedData'
 
 const I18N_PREFIX = 'blockchain.blockList'
@@ -35,19 +35,19 @@ const autoUpdateStyles = (theme) =>
     },
   })
 
-const AutoUpdateSwitch = compose(
-  withStyles(autoUpdateStyles),
-  withI18n
-)(({checked, onChange, classes, i18n: {translate}}) => (
-  <Grid container direction="row" justify="flex-start" alignItems="center">
-    <Grid item>
-      <Typography className={classes.text}>{translate(messages.refreshState)}&nbsp;</Typography>
+const AutoUpdateSwitch = compose(withStyles(autoUpdateStyles))(({checked, onChange, classes}) => {
+  const {translate} = useI18n()
+  return (
+    <Grid container direction="row" justify="flex-start" alignItems="center">
+      <Grid item>
+        <Typography className={classes.text}>{translate(messages.refreshState)}&nbsp;</Typography>
+      </Grid>
+      <Grid item>
+        <Switch color="primary" checked={checked} onChange={onChange} />
+      </Grid>
     </Grid>
-    <Grid item>
-      <Switch color="primary" checked={checked} onChange={onChange} />
-    </Grid>
-  </Grid>
-))
+  )
+})
 
 const styles = (theme) =>
   createStyles({
@@ -60,8 +60,8 @@ const PagedBlocks = (props) => {
   const {
     pagedDataResult: {loading, error, pagedData: pagedBlocks},
     classes,
-    i18n: {translate},
   } = props
+  const {translate} = useI18n()
   return (
     <SimpleLayout title={translate(messages.header)}>
       <Grid
@@ -143,6 +143,5 @@ const withSetTotalPageCount = compose(
 
 export default compose(
   withStyles(styles),
-  withI18n,
   withPagedData({withData, withSetTotalPageCount, initialAutoUpdate: true})
 )(PagedBlocks)
