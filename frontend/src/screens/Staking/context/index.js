@@ -1,6 +1,8 @@
 import React from 'react'
 import {compose} from 'redux'
 
+import * as urlUtils from '@/helpers/url'
+
 import {
   selectedPoolsProvider,
   getSelectedPoolsConsumer,
@@ -9,49 +11,55 @@ import {
 
 import {sortByProvider, getSortByConsumer, initialSortByContext} from './sortBy'
 
+import {showFiltersProvider, getShowFiltersConsumer, initialShowFiltersContext} from './showFilters'
+
 const Context = React.createContext({
   ...initialSelectedPoolsContext,
   ...initialSortByContext,
+  ...initialShowFiltersContext,
 })
 
 export const stakingContextProvider = (WrappedComponent) =>
   compose(
     selectedPoolsProvider,
-    sortByProvider
-  )(({selectedPoolsContext, sortByContext, ...props}) => (
+    sortByProvider,
+    showFiltersProvider
+  )(({selectedPoolsContext, sortByContext, showFiltersContext, ...props}) => (
     <Context.Provider
       value={{
         selectedPoolsContext,
         sortByContext,
+        showFiltersContext,
       }}
     >
       <WrappedComponent {...props} />
     </Context.Provider>
   ))
 
-export const withSyncListScreenWithUrl = (WrappedComponent) => (props) => (
+export const withSyncListScreenWithUrlQuery = (WrappedComponent) => (props) => (
   <Context.Consumer>
     {({
-      selectedPoolsContext: {_syncSelectedPoolsWithUrl, _selectedPoolsStorageToUrl},
-      sortByContext: {_syncSortByWithUrl, _sortByStorageToUrl},
+      selectedPoolsContext: {_syncSelectedPoolsWithQuery, _selectedPoolsStorageToQuery},
+      sortByContext: {_syncSortByWithQuery, _sortByStorageToQuery},
+      showFiltersContext: {_syncShowFiltersWithQuery, _showFiltersStorageToQuery},
     }) => {
       const getListScreenUrlQuery = () => {
-        const selectedPoolsUrl = _selectedPoolsStorageToUrl()
-        const sortByUrl = _sortByStorageToUrl()
-
-        const nonEmptyUrls = [selectedPoolsUrl, sortByUrl].filter((url) => url)
-        return nonEmptyUrls.length ? `?${nonEmptyUrls.join('&')}` : ''
+        const selectedPoolsQuery = _selectedPoolsStorageToQuery()
+        const sortByQuery = _sortByStorageToQuery()
+        const showFiltersQuery = _showFiltersStorageToQuery()
+        return urlUtils.joinQueryStrings([selectedPoolsQuery, sortByQuery, showFiltersQuery])
       }
 
-      const syncListScreenWithUrl = (query) => {
-        _syncSelectedPoolsWithUrl(query)
-        _syncSortByWithUrl(query)
+      const syncListScreenWithUrlQuery = (query) => {
+        _syncSelectedPoolsWithQuery(query)
+        _syncSortByWithQuery(query)
+        _syncShowFiltersWithQuery(query)
       }
 
       return (
         <WrappedComponent
           {...props}
-          syncListScreenWithUrl={syncListScreenWithUrl}
+          syncListScreenWithUrlQuery={syncListScreenWithUrlQuery}
           getListScreenUrlQuery={getListScreenUrlQuery}
         />
       )
@@ -61,3 +69,4 @@ export const withSyncListScreenWithUrl = (WrappedComponent) => (props) => (
 
 export const withSelectedPoolsContext = getSelectedPoolsConsumer(Context)
 export const withSortByContext = getSortByConsumer(Context)
+export const withShowFiltersContext = getShowFiltersConsumer(Context)

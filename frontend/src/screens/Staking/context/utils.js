@@ -1,33 +1,22 @@
 // @flow
 
 import React from 'react'
-import queryString from 'query-string'
 import {withRouter} from 'react-router'
 import {compose} from 'redux'
 
+import * as urlUtils from '@/helpers/url'
 import * as storage from '@/helpers/localStorage'
 
-const QUERY_STRING_CONFIG = {arrayFormat: 'bracket'}
-
-export const objToQueryString = (obj: {}) => queryString.stringify(obj, QUERY_STRING_CONFIG)
+// Note: dont set `defaultValue` in below function to `null` as due to query-string api,
+// we sometimes need default value to be `undefined` which `null` overrides
 
 // Consider moving to `storage` module and use JSON for everything
-export const getStorageData = (key: string, defaultValue: ?string = null) => {
+export const getStorageData = (key: string, defaultValue: any) => {
   try {
     return JSON.parse(storage.getItem(key)) || defaultValue
   } catch (err) {
     return defaultValue
   }
-}
-
-const replaceQueryString = (query, key, value) => {
-  return queryString.stringify(
-    {
-      ...queryString.parse(query, QUERY_STRING_CONFIG),
-      [key]: value,
-    },
-    QUERY_STRING_CONFIG
-  )
 }
 
 export const withUrlManager = compose(
@@ -36,12 +25,12 @@ export const withUrlManager = compose(
     const setQueryParam = (key, value) => {
       history.replace({
         pathname: location.pathname,
-        search: replaceQueryString(location.search, key, value),
+        search: urlUtils.replaceQueryParam(location.search, key, value),
       })
     }
 
-    const getQueryParam = (paramKey, defaultValue: ?string = null) => {
-      const parsed = queryString.parse(location.search, QUERY_STRING_CONFIG)
+    const getQueryParam = (paramKey, defaultValue) => {
+      const parsed = urlUtils.parse(location.search)
       return parsed[paramKey] || defaultValue
     }
 

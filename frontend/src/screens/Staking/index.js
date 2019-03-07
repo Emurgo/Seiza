@@ -5,8 +5,9 @@ import {Switch, Route, Redirect} from 'react-router-dom'
 import {compose} from 'redux'
 import {Grid, createStyles, withStyles} from '@material-ui/core'
 
+import * as urlUtils from '@/helpers/url'
 import {routeTo} from '@/helpers/routes'
-import {stakingContextProvider, withSyncListScreenWithUrl} from './context'
+import {stakingContextProvider, withSyncListScreenWithUrlQuery} from './context'
 import SideMenu from './SideMenu'
 import StakePoolList from './StakeList'
 import StakePoolHeader from './Header'
@@ -33,12 +34,11 @@ const NotFound = withStyles(styles)(({classes}) => (
 ))
 
 // Note: URL vs Storage: no merging: either url or localStorage wins
-const ListScreenRoute = compose(withSyncListScreenWithUrl)(
-  ({location: {search: urlQuery}, syncListScreenWithUrl, getListScreenUrlQuery}) => {
+const ListScreenRoute = compose(withSyncListScreenWithUrlQuery)(
+  ({location: {search: urlQuery}, syncListScreenWithUrlQuery, getListScreenUrlQuery}) => {
     const storageQuery = getListScreenUrlQuery()
     if (urlQuery) {
-      // TODO: consider better than equality check to avoid unnecessary sync
-      urlQuery !== storageQuery && syncListScreenWithUrl(urlQuery)
+      !urlUtils.areQueryStringsSame(urlQuery, storageQuery) && syncListScreenWithUrlQuery(urlQuery)
       return <StakePoolList />
     } else {
       return storageQuery ? (
