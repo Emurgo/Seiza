@@ -8,9 +8,8 @@ const styles = ({palette, spacing}) =>
       paddingBottom: spacing.unit * 2.5,
     },
     title: {
-      color: palette.grey[600],
-      borderBottom: `1px solid ${palette.grey[600]}`,
       marginBottom: spacing.unit * 2.5,
+      borderBottom: `1px solid ${palette.text.secondary}`,
     },
     childrenContainer: {
       '& > *': {
@@ -23,7 +22,7 @@ const SimpleLayout = ({title, classes, children, maxWidth = '1500px'}) => (
   <Grid container className={classes.container} direction="row" justify="space-around">
     <div style={{width: '85%', maxWidth}}>
       <Grid container direction="row" justify="center">
-        <Typography className={classes.title} align="justify" variant="h4">
+        <Typography className={classes.title} align="justify" variant="h2" color="textSecondary">
           {title}
         </Typography>
       </Grid>

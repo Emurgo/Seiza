@@ -30,7 +30,7 @@ const styles = ({palette}) =>
 const BlockchainHeader = ({classes, i18n: {translate}}) => (
   <div className={classes.wrapper}>
     <OverviewMetrics />
-    <Typography variant="h4">{translate(messages.header)}</Typography>
+    <Typography variant="h1">{translate(messages.header)}</Typography>
     <Search />
   </div>
 )

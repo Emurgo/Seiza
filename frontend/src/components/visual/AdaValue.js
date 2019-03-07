@@ -1,16 +1,16 @@
 import React from 'react'
 import {compose} from 'redux'
 
-import {withStyles, createStyles} from '@material-ui/core'
+import {withStyles, createStyles, Typography} from '@material-ui/core'
 
 import {withI18n} from '@/i18n/helpers'
 
 const styles = (theme) =>
   createStyles({
-    integral: {},
-    fractional: {
-      color: 'gray',
-      fontSize: '0.85em',
+    wrapper: {
+      '& > *': {
+        display: 'inline',
+      },
     },
   })
 
@@ -21,11 +21,17 @@ const AdaValue = ({value, i18n, classes, options, showCurrency, withSign = false
   }
   const formatted = i18n.formatAdaSplit(value, {withSign: false})
   return (
-    <React.Fragment>
-      <span className={classes.integral}>{formatted.integral}</span>
-      <span className={classes.fractional}>{formatted.fractional}</span>
-      {showCurrency && <span> ADA</span>}
-    </React.Fragment>
+    <span className={classes.wrapper}>
+      <Typography variant="body1" component="span">
+        {formatted.integral}
+      </Typography>
+      <Typography variant="caption" color="textSecondary">
+        {formatted.fractional}
+      </Typography>
+      <Typography variant="body1" component="span">
+        {showCurrency ? ' ADA' : ''}
+      </Typography>
+    </span>
   )
 }
 

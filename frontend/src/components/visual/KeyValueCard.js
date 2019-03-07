@@ -13,13 +13,10 @@ import {
 const headerStyles = ({palette}) =>
   createStyles({
     wrapper: {
-      backgroundColor: palette.grey[200],
+      backgroundColor: palette.unobtrusiveContentHighlight,
       minHeight: '60px',
       paddingLeft: '30px',
       paddingRight: '30px',
-    },
-    label: {
-      color: palette.grey[500],
     },
   })
 
@@ -36,9 +33,6 @@ const bodyStyles = ({palette}) =>
       '&:last-child': {
         borderBottom: 'none',
       },
-    },
-    label: {
-      color: palette.grey[500],
     },
   })
 
@@ -72,10 +66,12 @@ const _Header = ({classes, logo, label, value}) => (
       </Grid>
     )}
     <Grid item>
-      <Typography className={classes.label}>{label}</Typography>
+      <Typography variant="body1" color="textSecondary">
+        {label}
+      </Typography>
     </Grid>
-    <Grid item className={classes.value}>
-      {value}
+    <Grid item>
+      <Typography variant="overline">{value}</Typography>
     </Grid>
   </Grid>
 )
@@ -94,9 +90,13 @@ const _Body = ({items, classes}) => (
         direction="row"
       >
         <Grid item>
-          <Typography className={classes.label}>{label}</Typography>
+          <Typography variant="body1" color="textSecondary">
+            {label}
+          </Typography>
         </Grid>
-        <Grid item>{value}</Grid>
+        <Grid item>
+          <Typography variant="body1">{value}</Typography>
+        </Grid>
       </Grid>
     ))}
   </Grid>

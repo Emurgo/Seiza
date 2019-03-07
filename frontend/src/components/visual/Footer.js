@@ -56,7 +56,7 @@ const styles = ({palette}) =>
       background: palette.gradient,
     },
     bottomNav: {
-      backgroundColor: palette.footer.main,
+      backgroundColor: palette.text.primary,
     },
     bottomNavRow: {
       padding: '5px',
@@ -89,10 +89,10 @@ const Footer = ({classes, navItems, i18n: {translate}}) => (
       alignItems="center"
     >
       <Grid item className={classes.bottomNavRow}>
-        <Typography variant="h4">{translate(subscribeMessages.subscribeHeader)}</Typography>
+        <Typography variant="h1">{translate(subscribeMessages.subscribeHeader)}</Typography>
       </Grid>
       <Grid item className={classes.bottomNavRow}>
-        <Typography>{translate(subscribeMessages.subscribeText)}</Typography>
+        <Typography variant="body1">{translate(subscribeMessages.subscribeText)}</Typography>
       </Grid>
       <Grid item className={classes.bottomNavRow}>
         <Grid container direction="row" justify="center">
