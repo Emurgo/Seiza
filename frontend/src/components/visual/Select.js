@@ -1,13 +1,20 @@
 import React from 'react'
 import classnames from 'classnames'
-import {withStyles, OutlinedInput, FormControl, FormLabel, NativeSelect} from '@material-ui/core'
+import {
+  withStyles,
+  OutlinedInput,
+  FormControl,
+  FormLabel,
+  Select as SelectMUI,
+  MenuItem,
+} from '@material-ui/core'
 
-const StyledNativeSelect = withStyles({
+const StyledSelect = withStyles({
   select: {
     paddingTop: '10px',
     paddingBottom: '10px',
   },
-})(NativeSelect)
+})(SelectMUI)
 
 const styles = (theme) => ({
   label: {
@@ -25,13 +32,13 @@ const Select = ({classes, value, onChange, options, label, className}) => (
         {label}
       </FormLabel>
     )}
-    <StyledNativeSelect value={value} onChange={onChange} input={<OutlinedInput labelWidth={0} />}>
+    <StyledSelect value={value} onChange={onChange} input={<OutlinedInput labelWidth={0} />}>
       {options.map(({value, label}) => (
-        <option key={value} value={value}>
+        <MenuItem key={label} value={value}>
           {label}
-        </option>
+        </MenuItem>
       ))}
-    </StyledNativeSelect>
+    </StyledSelect>
   </FormControl>
 )
 
