@@ -44,6 +44,28 @@ const commonThemeObj = {
     opaqueText: {
       opacity: 0.54,
     },
+    h1: {
+      fontSize: 36,
+      fontWeight: 700,
+    },
+    h2: {
+      fontSize: 24,
+      fontWeight: 700,
+    },
+    body1: {
+      fontSize: 14,
+    },
+    button: {
+      fontWeight: 700,
+      letterSpacing: 2,
+    },
+    caption: {
+      fontSize: 12,
+    },
+    overline: {
+      letterSpacing: 1.5,
+      fontSize: 13,
+    },
   },
 }
 
@@ -65,6 +87,15 @@ const themeDefinitions = {
       primary: {
         main: '#4D20C0',
       },
+      // Note:
+      // <Typography color="primary"> ---> selects palette.primary.main
+      // <Typography color="secondary"> ---> selects palette.secondary.main
+      // <Typography color="textPrimary"> ---> selects palette.text.primary
+      // <Typography color="textSecondary"> ---> selects palette.text.secondary
+      text: {
+        primary: '#120546',
+        secondary: '#8791AD',
+      },
       secondary: {
         main: 'rgba(77, 32, 192, 0.1)', // or #E7E4F8 ?
       },
@@ -75,7 +106,6 @@ const themeDefinitions = {
         main: '#B1E1F2', // color of one of lines in graph
       },
       footer: {
-        main: '#120546',
         link: '#6F7290',
         contrastText: '#FFFFFF',
       },
@@ -111,6 +141,10 @@ const themeDefinitions = {
         endPercent: 100,
         gradient: 'linear-gradient(97deg, #3a404c 0%, #b7b9bc 100%)',
       },
+      text: {
+        primary: '#8791AD',
+        secondary: '#120546',
+      },
       primary: {
         main: '#c5d9f9',
       },
@@ -124,7 +158,6 @@ const themeDefinitions = {
         main: '#B1E1F2', // color of one of lines in graph
       },
       footer: {
-        main: '#120546',
         link: '#6F7290',
         contrastText: '#FFFFFF',
       },

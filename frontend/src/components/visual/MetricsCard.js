@@ -44,12 +44,6 @@ const styles = (theme) =>
     icon: {
       width: 50,
     },
-    value: {
-      fontSize: 20,
-    },
-    metric: {
-      color: 'grey',
-    },
     bottomSpace: {
       height: '5px',
     },
@@ -163,10 +157,14 @@ class MetricsCard extends React.Component<MetricsCardProps> {
                 </Grid>
                 <Grid container direction="column" justify="center" alignItems="center" item>
                   <Grid item>
-                    <Typography className={classes.value}>{value}</Typography>
+                    <Typography variant="h2" className={classes.value}>
+                      {value}
+                    </Typography>
                   </Grid>
                   <Grid item>
-                    <Typography className={classes.metric}>{metric}</Typography>
+                    <Typography variant="caption" color="textSecondary" className={classes.metric}>
+                      {metric}
+                    </Typography>
                   </Grid>
                 </Grid>
               </Wrapper>
