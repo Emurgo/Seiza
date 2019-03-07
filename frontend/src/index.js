@@ -4,6 +4,8 @@ import './index.css'
 import React from 'react'
 import ReactDOM from 'react-dom'
 import {ApolloProvider} from 'react-apollo'
+import {ApolloProvider as ApolloHooksProvider} from 'react-apollo-hooks'
+
 import {HttpLink} from 'apollo-link-http'
 import {InMemoryCache} from 'apollo-cache-inmemory'
 import {ApolloClient} from 'apollo-client'
@@ -22,7 +24,9 @@ const render = (Component) => {
     root &&
     ReactDOM.render(
       <ApolloProvider client={client}>
-        <App />
+        <ApolloHooksProvider client={client}>
+          <App />
+        </ApolloHooksProvider>
       </ApolloProvider>,
       root
     )
