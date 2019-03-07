@@ -26,25 +26,11 @@ import ThemeSelect from '@/components/common/ThemeSelect'
 import './App.css'
 import seizaLogo from './assets/icons/logo-seiza.svg'
 
-const I18N_PREFIX = 'mainNavigation'
-
 const navigationMessages = defineMessages({
-  home: {
-    id: `${I18N_PREFIX}.home`,
-    defaultMessage: 'Home',
-  },
-  blockchain: {
-    id: `${I18N_PREFIX}.blockchain`,
-    defaultMessage: 'Blockchain',
-  },
-  staking: {
-    id: `${I18N_PREFIX}.staking`,
-    defaultMessage: 'Staking',
-  },
-  more: {
-    id: `${I18N_PREFIX}.more`,
-    defaultMessage: 'More',
-  },
+  home: '<Home>',
+  blockchain: 'Blockchain',
+  staking: 'Staking',
+  more: 'More',
 })
 
 const useAppStyles = makeStyles((theme) => ({

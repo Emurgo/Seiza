@@ -1,10 +1,13 @@
-const path = require('path');
+const path = require('path')
+const {override, addBabelPlugin} = require('customize-cra')
 
-module.exports = function override(config) {
+const addAbsolutePathImport = (config) => {
   config.resolve = {
     ...config.resolve,
-    alias: { '@': path.resolve(__dirname, 'src') },
-  };
+    alias: {'@': path.resolve(__dirname, 'src')},
+  }
 
-  return config;
-};
+  return config
+}
+
+module.exports = override(addBabelPlugin('react-intl-auto'), addAbsolutePathImport)

@@ -8,21 +8,10 @@ import WithCopyToClipboard from '../headless/copyToClipboard'
 import copyIcon from '@/assets/icons/copy.svg'
 import copiedIcon from '@/assets/icons/copied.svg'
 
-const I18N_PREFIX = 'ui_elements.copy_to_clipboard'
-
 const messages = defineMessages({
-  altText: {
-    id: `${I18N_PREFIX}.altText`,
-    defaultMessage: 'Copy to clipboard',
-  },
-  tooltipCopy: {
-    id: `${I18N_PREFIX}.tooltipCopy`,
-    defaultMessage: 'Copy to clipboard',
-  },
-  tooltipCopied: {
-    id: `${I18N_PREFIX}.tooltipCopied`,
-    defaultMessage: 'Copied!',
-  },
+  altText: 'Copy to clipboard',
+  tooltipCopy: 'Copy to clipboard',
+  tooltipCopied: 'Copied!',
 })
 
 const _CopyToClipboard = ({value, i18n}) => {

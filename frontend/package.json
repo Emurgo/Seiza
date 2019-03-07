@@ -11,8 +11,7 @@
     "flow-stop": "flow stop",
     "flow-coverage": "flow-coverage-report || exit 0",
     "prettier": "prettier-eslint --write \"src/**/*.js\"",
-    "extract:messages": "react-intl-cra 'src/**/*.{js,jsx}' -o 'src/i18n/messages/messages.json'",
-    "manage:translations": "node ./translationRunner.js",
+    "extract-translations": "NODE_ENV=development yarn run extract-react-intl-messages -o src/i18n/locales/ -l en --flat 'src/**/*.js'",
     "test": "yarn flow && yarn eslint",
     "update-schema-type": "yarn gql-gen"
   },
@@ -27,6 +26,7 @@
     "bignumber.js": "^8.0.2",
     "classnames": "^2.2.6",
     "copy-to-clipboard": "^3.0.8",
+    "customize-cra": "^0.2.12",
     "graphql": "^14.1.1",
     "graphql-tag": "^2.10.1",
     "idx": "^2.5.3",
@@ -44,8 +44,13 @@
     "redux": "^4.0.1"
   },
   "devDependencies": {
+    "@babel/core": "^7.3.4",
+    "babel-core": "^7.0.0-bridge.0",
+    "babel-plugin-react-intl-auto": "^1.6.1",
+    "babel-preset-react-app": "^7.0.2",
     "eslint-config-vacuumlabs": "^1.7.0",
     "eslint-import-resolver-alias": "^1.1.2",
+    "extract-react-intl-messages": "^0.14.0",
     "flow-bin": "^0.92.1",
     "flow-coverage-report": "^0.6.1",
     "graphql-code-generator": "^0.17.0",
@@ -54,9 +59,7 @@
     "graphql-codegen-flow-documents": "^0.17.0",
     "node-sass": "^4.11.0",
     "prettier-eslint-cli": "^4.7.1",
-    "react-app-rewired": "^2.1.0",
-    "react-intl-cra": "^0.3.4",
-    "react-intl-translations-manager": "^5.0.3"
+    "react-app-rewired": "^2.1.0"
   },
   "eslintConfig": {
     "extends": "react-app"
