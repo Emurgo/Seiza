@@ -14,6 +14,12 @@ const styles = (theme) => ({
   },
 })
 
+const LANGUAGES = [
+  {locale: 'en', label: 'En'},
+  {locale: 'ja', label: 'インポ'},
+  {locale: 'ru', label: 'Russian'},
+].map(({locale, label}) => ({value: locale, label}))
+
 // TODO: use images instead of names
 export default compose(
   withStyles(styles),
@@ -23,6 +29,6 @@ export default compose(
     className={classes.select}
     value={locale}
     onChange={(e) => setLocale(e.target.value)}
-    options={[{value: 'en', label: 'En'}, {value: 'es', label: 'Es'}]}
+    options={LANGUAGES}
   />
 ))
