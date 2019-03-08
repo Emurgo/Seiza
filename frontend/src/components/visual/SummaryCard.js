@@ -48,7 +48,9 @@ const Label = ({children}) => (
 
 const Value = ({children}) => (
   <Grid item>
-    <Typography variant="body1">{children}</Typography>
+    <Typography variant="body1" component="span">
+      {children}
+    </Typography>
   </Grid>
 )
 

@@ -9,6 +9,8 @@ import AdaIcon from '@/assets/icons/transaction-id.svg'
 import {withI18n} from '@/i18n/helpers'
 import RewardAddressIcon from '@/assets/icons/reward-address.svg'
 import CertificateIcon from '@/assets/icons/certificate.svg'
+import Tabs from './UserTabs'
+import {getUserStakingKey} from './mockedData'
 
 const I18N_PREFIX = 'blockchain.stakingKey.user'
 
@@ -79,27 +81,14 @@ const messages = defineMessages({
   },
 })
 
-const UserStakingKey = ({stakingKeyHash, i18n: {translate, formatTimestamp, formatInt}}) => {
-  // TODO: get data from backend
-  const stakingKey = {
-    stakingKeyHash,
-    type: 'USER',
-    createdAt: '2019-02-13T10:58:31.000Z',
-    stakedAda: '151251251981295151',
-    totalRewards: '41513514846517',
-    uncollectedRewards: '9439918145817',
-    addressesCount: 5134,
-    totalEpochsActive: 11,
-    rewardAddress: 'a5c3af824de94faff971d1b2488c5017dcf0f3c3a056334195efb368c0fe2f75',
-    delegationCert: '6b686ed997b3846ebf93642b5bfe482ca2682245b826601ca352d2c3c0394a68',
-  }
+const UserStakingKey = ({stakingKey, i18n: {translate, formatTimestamp, formatInt}}) => {
   const {Row, Label, Value} = SummaryCard
 
   return (
     <SimpleLayout title={translate(messages.header)}>
       <EntityIdCard
         label={translate(messages.stakingKey)}
-        value={stakingKeyHash}
+        value={stakingKey.hash}
         iconRenderer={<img alt="" src={AdaIcon} />}
       />
 
@@ -144,6 +133,7 @@ const UserStakingKey = ({stakingKeyHash, i18n: {translate, formatTimestamp, form
           </Value>
         </Row>
       </SummaryCard>
+
       <EntityIdCard
         label={translate(messages.rewardAddress)}
         value={stakingKey.rewardAddress}
@@ -154,6 +144,8 @@ const UserStakingKey = ({stakingKeyHash, i18n: {translate, formatTimestamp, form
         value={stakingKey.delegationCert}
         iconRenderer={<img alt="" src={CertificateIcon} />}
       />
+
+      <Tabs stakingKey={stakingKey} />
     </SimpleLayout>
   )
 }
@@ -162,6 +154,7 @@ export default compose(
   withI18n,
   withRouter,
   withProps((props) => ({
-    stakingKeyHash: props.match.params.stakingKey,
+    // TODO: get data from backend
+    stakingKey: getUserStakingKey(props.match.params.stakingKey),
   }))
 )(UserStakingKey)
