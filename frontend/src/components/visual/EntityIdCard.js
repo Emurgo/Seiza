@@ -34,7 +34,7 @@ const styles = (theme) =>
     },
   })
 
-const EntityIdCard = ({classes, iconRenderer, label, value}) => (
+const EntityIdCard = ({classes, iconRenderer, label, value, badge}) => (
   <Card className={classNames(classes.card, classes.flex)}>
     {iconRenderer && (
       <Grid item className={classNames(classes.flex, classes.centeredFlex)}>
@@ -49,6 +49,11 @@ const EntityIdCard = ({classes, iconRenderer, label, value}) => (
         <CopyToClipboard value={value} />
       </Grid>
     </div>
+    {badge && (
+      <Grid item className={classNames(classes.flex, classes.centeredFlex)}>
+        {badge}
+      </Grid>
+    )}
   </Card>
 )
 
