@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="48px" height="48px" viewBox="0 0 48 48" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.6 (67491) - http://www.bohemiancoding.com/sketch -->
+    <title>icon/certificates</title>
+    <desc>Created with Sketch.</desc>
+    <g id="icon/certificates" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="icon/startpage-currency-copy-2">
+            <g id="icon/bg-for-icon" fill="#4D20C0" opacity="0.1">
+                <circle id="Oval-Copy-4" cx="24" cy="24" r="24"></circle>
+            </g>
+            <g id="icon/price" transform="translate(8.000000, 8.000000)">
+                <rect id="Rectangle" fill="#FFFFFF" opacity="0" x="0" y="0" width="32" height="32"></rect>
+                <g id="icon/export" transform="translate(3.000000, 3.000000)">
+                    <rect id="Rectangle" fill="#FFFFFF" opacity="0" x="0" y="0" width="26" height="26"></rect>
+                    <path d="M13.1665206,22.6699257 C13.3283061,23.0402132 13.5327947,23.3902491 13.7753859,23.7132178 L14.015834,24.0333333 L6.5,24.0333333 C5.19292609,24.0333333 4.13333333,22.9737406 4.13333333,21.6666667 L4.13333333,4.33333333 C4.13333333,3.02625943 5.19292609,1.96666667 6.5,1.96666667 L19.5,1.96666667 C20.8070739,1.96666667 21.8666667,3.02625943 21.8666667,4.33333333 L21.8666667,13.5196964 L21.6268802,13.4710223 C21.2860233,13.401832 20.9370013,13.3666667 20.5833333,13.3666667 L20.3833333,13.3666667 L20.3833333,4.33333333 C20.3833333,3.8454818 19.9878515,3.45 19.5,3.45 L6.5,3.45 C6.01214847,3.45 5.61666667,3.8454818 5.61666667,4.33333333 L5.61666667,21.6666667 C5.61666667,22.1545182 6.01214847,22.55 6.5,22.55 L12.98325,22.55 L13.1665206,22.6699257 Z" id="Combined-Shape" fill="#4D20C0" fill-rule="nonzero"></path>
+                    <path d="M20.5131033,26.3726953 C17.1993948,26.3726953 14.5131033,23.6864038 14.5131033,20.3726953 C14.5131033,17.0589868 17.1993948,14.3726953 20.5131033,14.3726953 C23.8268118,14.3726953 26.5131033,17.0589868 26.5131033,20.3726953 C26.5131033,23.6864038 23.8268118,26.3726953 20.5131033,26.3726953 Z M20.5131033,24.8990111 C23.0129185,24.8990111 25.0394191,22.8725105 25.0394191,20.3726953 C25.0394191,17.8728802 23.0129185,15.8463795 20.5131033,15.8463795 C18.0132881,15.8463795 15.9867875,17.8728802 15.9867875,20.3726953 C15.9867875,22.8725105 18.0132881,24.8990111 20.5131033,24.8990111 Z" id="Oval-Copy" fill="#4D20C0" fill-rule="nonzero"></path>
+                    <polyline id="Path-3" stroke="#92B9FC" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" points="17.9043911 20.0967472 19.90285 22.5418695 22.8266271 18.5418695"></polyline>
+                    <path d="M8.3529608,7.02911843 L17.4893147,7.02911843" id="Path-6" stroke="#92B9FC" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <path d="M8.3529608,10.2791184 L17.4893147,10.2791184" id="Path-6-Copy" stroke="#92B9FC" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <path d="M8.3529608,15.6957851 L12.6586686,15.6957851" id="Path-6-Copy-2" stroke="#92B9FC" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <path d="M8.3529608,18.9457851 L12.6586686,18.9457851" id="Path-6-Copy-3" stroke="#92B9FC" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
