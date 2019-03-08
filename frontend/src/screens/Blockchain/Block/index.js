@@ -1,10 +1,11 @@
 // @flow
 
 import React from 'react'
-import {graphql} from 'react-apollo'
+import {useQuery} from 'react-apollo-hooks'
 import {compose} from 'redux'
 import {withProps} from 'recompose'
 import {withRouter} from 'react-router'
+import gql from 'graphql-tag'
 
 import {defineMessages} from 'react-intl'
 import {Card} from '@material-ui/core'
@@ -19,8 +20,7 @@ import {
   DebugApolloError,
 } from '@/components/visual'
 
-import {withI18n} from '@/i18n/helpers'
-import {GET_BLOCK_BY_HASH} from '@/api/queries'
+import {useI18n} from '@/i18n/helpers'
 
 const I18N_PREFIX = 'block.fields'
 
@@ -55,8 +55,8 @@ const TransactionList = ({transactions}) => (
   </React.Fragment>
 )
 
-const _BlockSummaryCard = ({i18n, block}) => {
-  const {translate, formatInt, formatTimestamp} = i18n
+const BlockSummaryCard = ({block}) => {
+  const {translate, formatInt, formatTimestamp} = useI18n()
 
   const label = blockSummaryLabels
 
@@ -77,8 +77,6 @@ const _BlockSummaryCard = ({i18n, block}) => {
   )
 }
 
-const BlockSummaryCard = compose(withI18n)(_BlockSummaryCard)
-
 const blockMessages = defineMessages({
   title: {
     id: 'blockchain.block.title',
@@ -90,9 +88,67 @@ const blockMessages = defineMessages({
   },
 })
 
-const Block = ({blockDataProvider, i18n}) => {
-  const {loading, block, error} = blockDataProvider
-  const {translate} = i18n
+const BLOCK_INFO_FRAGMENT = gql`
+  fragment BlockInfo on Block {
+    blockHash
+    epoch
+    slot
+    timeIssued
+    transactionsCount
+    totalSend
+    size
+    blockLeader {
+      poolHash
+      name
+    }
+    totalFees
+  }
+`
+
+const TX_INFO_FRAGMENT = gql`
+  fragment BasicTxInfo on Transaction {
+    txHash
+    totalInput
+    totalOutput
+    fees
+    inputs {
+      address58
+      amount
+    }
+    outputs {
+      address58
+      amount
+    }
+    confirmationsCount
+  }
+`
+
+const useBlockData = ({blockHash}) => {
+  const result = useQuery(
+    gql`
+      query($blockHash: String!) {
+        block(blockHash: $blockHash) {
+          ...BlockInfo
+          transactions {
+            ...BasicTxInfo
+          }
+        }
+      }
+      ${TX_INFO_FRAGMENT}
+      ${BLOCK_INFO_FRAGMENT}
+    `,
+    {
+      variables: {blockHash},
+    }
+  )
+  const {loading, error, data} = result
+
+  return {loading, error, block: data.block}
+}
+
+const Block = ({blockHash}) => {
+  const {loading, block, error} = useBlockData({blockHash})
+  const {translate} = useI18n()
 
   return (
     <SimpleLayout title={translate(blockMessages.title)}>
@@ -115,14 +171,5 @@ export default compose(
   withRouter,
   withProps((props) => ({
     blockHash: props.match.params.blockHash,
-  })),
-  graphql(GET_BLOCK_BY_HASH, {
-    name: 'blockDataProvider',
-    options: ({blockHash}) => {
-      return {
-        variables: {blockHash},
-      }
-    },
-  }),
-  withI18n
+  }))
 )(Block)

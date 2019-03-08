@@ -45,30 +45,6 @@ export const GET_PAGED_BLOCKS_IN_EPOCH = gql`
   ${BLOCK_INFO_FRAGMENT}
 `
 
-export const GET_BLOCK_BY_HASH = gql`
-  query($blockHash: String!) {
-    block(blockHash: $blockHash) {
-      ...BasicBlockInfo
-      transactions {
-        txHash
-        totalInput
-        totalOutput
-        fees
-        inputs {
-          address58
-          amount
-        }
-        outputs {
-          address58
-          amount
-        }
-        confirmationsCount
-      }
-    }
-  }
-  ${BLOCK_INFO_FRAGMENT}
-`
-
 export const GET_ADDRESS_BY_ADDRESS58 = gql`
   query($address58: String!) {
     address(address58: $address58) {
