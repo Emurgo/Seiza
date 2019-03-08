@@ -139,7 +139,7 @@ class MetricsCard extends React.Component<MetricsCardProps> {
 
     const Wrapper = onClick
       ? ({children}) => (
-        <ButtonBase onClick={onClick} className={classes.button}>
+        <ButtonBase onClick={onClick} className={classes.button} focusRipple>
           {children}
         </ButtonBase>
       )
