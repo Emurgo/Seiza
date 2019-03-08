@@ -59,12 +59,18 @@ const styles = (theme) =>
       'padding': '4px',
       'width': '100%',
       'display': 'flex',
+      'border': '1px solid transparent',
+      'borderRadius': '4px',
+      'transition': theme.transitions.create(['background-color', 'box-shadow', 'border'], {
+        duration: theme.transitions.duration.short,
+      }),
       '&:hover': {
         'backgroundColor': fade(theme.palette.action.active, theme.palette.action.hoverOpacity),
         // Reset on touch devices, it doesn't add specificity
         '@media (hover: none)': {
           backgroundColor: 'transparent',
         },
+        'border': `1px solid ${fade('#000', 0.5)}`,
       },
     },
   })
@@ -139,7 +145,7 @@ class MetricsCard extends React.Component<MetricsCardProps> {
 
     const Wrapper = onClick
       ? ({children}) => (
-        <ButtonBase onClick={onClick} className={classes.button}>
+        <ButtonBase onClick={onClick} className={classes.button} focusRipple>
           {children}
         </ButtonBase>
       )
