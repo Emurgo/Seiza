@@ -10,7 +10,7 @@ import {Select} from '@/components/visual'
 const styles = (theme) => ({
   select: {
     marginRight: '40px',
-    width: '60px',
+    width: '80px',
   },
 })
 

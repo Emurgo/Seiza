@@ -50,7 +50,7 @@ const tipFormatter = (value) => `${value}%`
 export default compose(
   withStateHandlers(
     {
-      language: 'en',
+      language: 'all',
       range: [RANGE_START, RANGE_END],
     },
     {
