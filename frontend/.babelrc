@@ -1,0 +1,13 @@
+{
+  "presets": [["react-app", {flow: true}
+  ]],
+  "plugins": [
+    [
+      "react-intl-auto",
+      {
+        "removePrefix": "src/",
+        "filebase": true
+      }
+    ]
+  ]
+}
