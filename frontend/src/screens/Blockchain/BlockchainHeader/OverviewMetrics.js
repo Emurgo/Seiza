@@ -76,12 +76,17 @@ const OverviewMetrics = ({intl, data, classes, currency, setCurrency}) => {
   return (
     <Grid container justify="center" wrap="wrap" direction="row">
       <Grid item className={classes.cardDimensions}>
-        <MetricsCard
-          className={classes.card}
-          icon="epoch"
-          metric={translate(text.epochLabel)}
-          value={epochNumber}
-        />
+        <WithNavigateTo to={status && routeTo.epoch(status.epochNumber)}>
+          {({navigate}) => (
+            <MetricsCard
+              className={classes.card}
+              icon="epoch"
+              metric={translate(text.epochLabel)}
+              value={epochNumber}
+              onClick={navigate}
+            />
+          )}
+        </WithNavigateTo>
       </Grid>
       <GridItem>
         <MetricsCard
