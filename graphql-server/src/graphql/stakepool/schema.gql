@@ -36,7 +36,7 @@ enum StakePoolSortByEnum {
 
 type Query {
   stakePoolList(epochNumber: Int): BootstrapEraStakePool!
-  pagedStakePoolList(cursor: String, pageSize: Int, sortBy: StakePoolSortByEnum!): PagedStakePoolsResult!
+  pagedStakePoolList(cursor: String, sortBy: StakePoolSortByEnum!, searchBy: String, pageSize: Int): PagedStakePoolsResult!
   stakePool(poolHash: String!, epochNumber: Int): BootstrapEraStakePool,
   stakePools(poolHashes: [String!]!, epochNumber: Int): [BootstrapEraStakePool]
 }
