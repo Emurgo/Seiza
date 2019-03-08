@@ -3,8 +3,8 @@ import {compose} from 'redux'
 import {withProps, withHandlers} from 'recompose'
 
 import * as storage from '@/helpers/localStorage'
-
-import {withUrlManager, objToQueryString, getStorageData} from './utils'
+import * as urlUtils from '@/helpers/url'
+import {withUrlManager, getStorageData} from './utils'
 
 const STORAGE_KEY = 'sortBy'
 
@@ -19,17 +19,21 @@ export const SORT_BY_OPTIONS = {
 
 const DEFAULT_VALUE = SORT_BY_OPTIONS.REVENUE
 
+// TODO: needed once we add proper flow
 export const initialSortByContext = {
   sortByContext: {
     sortBy: DEFAULT_VALUE,
+    setSortBy: null,
+    _syncSortByWithQuery: null,
+    _sortByStorageToQuery: null,
   },
 }
 
 const mergeProps = (BaseComponent) => ({
   sortBy,
   setSortBy,
-  _syncSortByWithUrl,
-  _sortByStorageToUrl,
+  _syncSortByWithQuery,
+  _sortByStorageToQuery,
   ...restProps
 }) => {
   return (
@@ -37,8 +41,8 @@ const mergeProps = (BaseComponent) => ({
       sortByContext={{
         sortBy,
         setSortBy,
-        _syncSortByWithUrl,
-        _sortByStorageToUrl,
+        _syncSortByWithQuery,
+        _sortByStorageToQuery,
       }}
       {...restProps}
     />
@@ -57,12 +61,12 @@ export const sortByProvider = compose(
     },
   }),
   withHandlers({
-    _syncSortByWithUrl: ({setSortBy, getQueryParam}) => (query) => {
+    _syncSortByWithQuery: ({setSortBy, getQueryParam}) => (query) => {
       setSortBy(getQueryParam(STORAGE_KEY, DEFAULT_VALUE))
     },
-    _sortByStorageToUrl: () => () => {
+    _sortByStorageToQuery: () => () => {
       const sortBy = getStorageData(STORAGE_KEY, DEFAULT_VALUE)
-      return objToQueryString({sortBy})
+      return urlUtils.objToQueryString({sortBy})
     },
   }),
   mergeProps

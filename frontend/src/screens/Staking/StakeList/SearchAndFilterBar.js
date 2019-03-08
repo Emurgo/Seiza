@@ -10,6 +10,7 @@ import {makeStyles} from '@material-ui/styles'
 import {useI18n} from '@/i18n/helpers'
 import {Searchbar, Button} from '@/components/visual'
 import Filters from './Filters'
+import {withShowFiltersContext} from '../context'
 
 const I18N_PREFIX = 'staking.actionBar'
 
@@ -67,9 +68,12 @@ const Search = compose(
   )
 })
 
-export default () => {
+export default compose(withShowFiltersContext)((props) => {
   const classes = useStyles()
   const {translate: tr} = useI18n()
+  const {
+    showFiltersContext: {showFilters, toggleFilters},
+  } = props
   return (
     <Grid container direction="column" justify="space-between" className={classes.wrapper}>
       <Grid item>
@@ -77,14 +81,16 @@ export default () => {
           <div className={classes.searchWrapper}>
             <Search />
           </div>
-          <Button primary className={classes.button}>
+          <Button onClick={toggleFilters} primary className={classes.button}>
             {tr(messages.filters)}
           </Button>
         </Grid>
       </Grid>
-      <Grid item className={classes.filtersWrapper}>
-        <Filters />
-      </Grid>
+      {showFilters && (
+        <Grid item className={classes.filtersWrapper}>
+          <Filters />
+        </Grid>
+      )}
     </Grid>
   )
-}
+})

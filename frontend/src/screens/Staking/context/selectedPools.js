@@ -3,8 +3,8 @@ import {compose} from 'redux'
 import {withProps, withHandlers} from 'recompose'
 
 import * as storage from '@/helpers/localStorage'
-
-import {withUrlManager, objToQueryString, getStorageData} from './utils'
+import * as urlUtils from '@/helpers/url'
+import {withUrlManager, getStorageData} from './utils'
 
 // TODO: dont allow adding more than 'n' pools
 
@@ -12,13 +12,14 @@ const STORAGE_KEY = 'selectedPools'
 
 const DEFAULT_VALUE = []
 
+// TODO: needed once we add proper flow
 export const initialSelectedPoolsContext = {
   selectedPoolsContext: {
     selectedPools: DEFAULT_VALUE,
     addPool: null,
     removePool: null,
-    syncSelectedPoolsWithUrl: null,
-    selectedPoolsStorageToUrl: null,
+    syncSelectedPoolsWithQuery: null,
+    selectedPoolsStorageToQuery: null,
   },
 }
 
@@ -26,8 +27,8 @@ const mergeProps = (BaseComponent) => ({
   selectedPools,
   removePool,
   addPool,
-  _syncSelectedPoolsWithUrl,
-  _selectedPoolsStorageToUrl,
+  _syncSelectedPoolsWithQuery,
+  _selectedPoolsStorageToQuery,
   ...restProps
 }) => {
   return (
@@ -36,8 +37,8 @@ const mergeProps = (BaseComponent) => ({
         addPool,
         removePool,
         selectedPools,
-        _syncSelectedPoolsWithUrl,
-        _selectedPoolsStorageToUrl,
+        _syncSelectedPoolsWithQuery,
+        _selectedPoolsStorageToQuery,
       }}
       {...restProps}
     />
@@ -70,12 +71,12 @@ export const selectedPoolsProvider = compose(
       const newSelectedPools = [...selectedPools, poolHash]
       setPools(newSelectedPools)
     },
-    _syncSelectedPoolsWithUrl: ({setPools, getQueryParam}) => (query) => {
+    _syncSelectedPoolsWithQuery: ({setPools, getQueryParam}) => (query) => {
       setPools(getQueryParam(STORAGE_KEY, DEFAULT_VALUE))
     },
-    _selectedPoolsStorageToUrl: () => () => {
+    _selectedPoolsStorageToQuery: () => () => {
       const selectedPools = getStorageData(STORAGE_KEY, DEFAULT_VALUE)
-      return selectedPools.length ? objToQueryString({selectedPools}) : null
+      return selectedPools.length ? urlUtils.objToQueryString({selectedPools}) : null
     },
   }),
   mergeProps
