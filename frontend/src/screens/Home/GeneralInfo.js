@@ -7,7 +7,13 @@ import {compose} from 'redux'
 import {withProps} from 'recompose'
 import {graphql} from 'react-apollo'
 
-import {KeyValueCard, SimpleLayout, LoadingInProgress, DebugApolloError} from '@/components/visual'
+import {
+  KeyValueCard,
+  SimpleLayout,
+  LoadingOverlay,
+  ErrorOverlay,
+  Overlay,
+} from '@/components/visual'
 import {withI18n} from '@/i18n/helpers'
 
 const I18N_PREFIX = 'home.generalInfo'
@@ -200,10 +206,12 @@ const Row = ({children}) => (
   </Grid>
 )
 
+// Note(ppershing): queryData will be undefined if we are skipping the query
+// so we need to deal with it explicitly
 const facadeQueryData = (queryData, dataKey) => ({
-  data: queryData[dataKey],
-  loading: queryData.loading,
-  error: queryData.error,
+  data: queryData && queryData[dataKey],
+  loading: !queryData || queryData.loading,
+  error: queryData && queryData.error,
 })
 
 const OVERVIEW_METRICS_QUERY = gql`
@@ -216,17 +224,19 @@ const OVERVIEW_METRICS_QUERY = gql`
 `
 
 const _InfoCard = ({data, fields, cardLabel, cardValue, loading, error}) => {
-  if (loading) return <LoadingInProgress />
-  if (error) return <DebugApolloError error={error} />
-
   const items = fields.map((fieldDesc) => ({
     label: fieldDesc.label,
-    value: fieldDesc.getValue(data[fieldDesc.id]),
+    value: data && fieldDesc.getValue(data[fieldDesc.id]),
   }))
+
   return (
-    <KeyValueCard header={<KeyValueCard.Header label={cardLabel} value={cardValue} />}>
-      <KeyValueCard.Body items={items} />
-    </KeyValueCard>
+    <Overlay.Wrapper>
+      <KeyValueCard header={<KeyValueCard.Header label={cardLabel} value={cardValue} />}>
+        <KeyValueCard.Body items={items} />
+        <LoadingOverlay loading={loading} />
+        <ErrorOverlay error={!loading && error} />
+      </KeyValueCard>
+    </Overlay.Wrapper>
   )
 }
 
@@ -238,6 +248,7 @@ const SlotInfoCard = compose(
       variables: {epoch, slot},
       pollInterval: SLOT_POLL_INTERVAL,
     }),
+    skip: ({epoch, slot}) => epoch == null || slot == null,
   }),
   withProps(({i18n, slotInfoProvider, slot}) => ({
     cardLabel: i18n.translate(cardHeaders.slotLabel),
@@ -289,6 +300,7 @@ const GeneralInfoLastEpoch = compose(
       variables: {epoch},
       pollInterval: POLL_INTERVAL,
     }),
+    skip: ({epoch}) => epoch == null,
   }),
   withProps(({i18n, epochInfoProvider, epoch}) => {
     return {
@@ -309,12 +321,12 @@ export default compose(
     }),
   })
 )(({classes, i18n: {translate}, currentStatusProvider: {loading, error, currentStatus}}) => {
-  if (loading) return <LoadingInProgress />
-  if (error) return <DebugApolloError error={error} />
-
   // TODO (richard): currently we pass blockCount (which seems to be calculated as slotCount)
   // Do we want info about last Slot or Block? (probably Block)
   // Leaving Slot for now, probably will change
+
+  const epoch = currentStatus && currentStatus.epochNumber
+  const slot = currentStatus && currentStatus.blockCount
 
   return (
     <SimpleLayout title={translate(messages.header)} maxWidth="1200px">
@@ -323,7 +335,7 @@ export default compose(
           <GeneralInfoGenesis />
         </Grid>
         <Grid item xs={6}>
-          <GeneralInfoLastEpoch epoch={currentStatus.epochNumber} />
+          <GeneralInfoLastEpoch epoch={epoch} />
         </Grid>
       </Row>
       <Row>
@@ -331,7 +343,7 @@ export default compose(
           <GeneralInfo24Hours />
         </Grid>
         <Grid item xs={6}>
-          <SlotInfoCard epoch={currentStatus.epochNumber} slot={currentStatus.blockCount} />
+          <SlotInfoCard epoch={epoch} slot={slot} />
         </Grid>
       </Row>
     </SimpleLayout>

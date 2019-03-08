@@ -9,7 +9,7 @@ import {Switch, Typography, Grid, withStyles, createStyles} from '@material-ui/c
 
 import {onDidUpdate, onDidMount} from '@/components/HOC/lifecycles'
 import Pagination, {getPageCount} from '@/components/visual/Pagination'
-import {SimpleLayout, DebugApolloError} from '@/components/visual'
+import {SimpleLayout} from '@/components/visual'
 import BlocksTable, {ALL_COLUMNS} from './BlocksTable'
 import {GET_PAGED_BLOCKS} from '@/api/queries'
 import {useI18n} from '@/i18n/helpers'
@@ -84,15 +84,12 @@ const PagedBlocks = (props) => {
           />
         </Grid>
       </Grid>
-      {error ? (
-        <DebugApolloError error={error} />
-      ) : (
-        <BlocksTable
-          loading={loading}
-          blocks={pagedBlocks && pagedBlocks.blocks}
-          columns={ALL_COLUMNS}
-        />
-      )}
+      <BlocksTable
+        loading={loading}
+        error={error}
+        blocks={pagedBlocks && pagedBlocks.blocks}
+        columns={ALL_COLUMNS}
+      />
     </SimpleLayout>
   )
 }

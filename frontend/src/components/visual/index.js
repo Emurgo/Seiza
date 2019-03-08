@@ -1,4 +1,7 @@
 export {default as LoadingInProgress} from './LoadingInProgress'
+export {default as LoadingOverlay} from './LoadingOverlay'
+export {default as Overlay} from './Overlay'
+export {default as ErrorOverlay} from './ErrorOverlay'
 export {default as DebugApolloError} from './DebugApolloError'
 export {default as SimpleLayout} from './SimpleLayout'
 export {default as SummaryCard} from './SummaryCard'

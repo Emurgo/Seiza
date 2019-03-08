@@ -61,7 +61,7 @@ export const COLUMNS_MAP = {
 }
 export const ALL_COLUMNS = Object.values(COLUMNS_MAP)
 
-const BlocksTable = ({blocks, columns, i18n, loading}) => {
+const BlocksTable = ({blocks, columns, i18n, loading, error}) => {
   const {translate, formatInt, formatTimestamp} = i18n
 
   const {EPOCH, SLOT, TIME, SLOT_LEADER, TRANSACTIONS, TOTAL_SENT, FEES, SIZE} = COLUMNS_MAP
@@ -132,6 +132,7 @@ const BlocksTable = ({blocks, columns, i18n, loading}) => {
     <Table
       noDataText={translate(tableMessages.noDataToShow)}
       loading={loading}
+      error={error}
       headerData={headerData}
       bodyData={bodyData}
     />
