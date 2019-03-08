@@ -27,7 +27,7 @@ import './App.css'
 import seizaLogo from './assets/icons/logo-seiza.svg'
 
 const navigationMessages = defineMessages({
-  home: '<Home>',
+  home: 'Home',
   blockchain: 'Blockchain',
   staking: 'Staking',
   more: 'More',

@@ -2,15 +2,16 @@
 import React from 'react'
 import {defineMessages} from 'react-intl'
 import {compose} from 'redux'
-import {withStateHandlers, withHandlers} from 'recompose'
+import {withHandlers, withStateHandlers} from 'recompose'
 import {withRouter} from 'react-router'
 import {Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
 import {useI18n} from '@/i18n/helpers'
 import {Searchbar, Button} from '@/components/visual'
+import {onDidUpdate} from '@/components/HOC/lifecycles'
 import Filters from './Filters'
-import {withShowFiltersContext} from '../context'
+import {withShowFiltersContext, withSearchByContext} from '../context'
 
 const I18N_PREFIX = 'staking.actionBar'
 
@@ -42,27 +43,28 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
+// TODO: consider adding `onClear` handler to `Searchbar` and re-query then
 const Search = compose(
   withRouter,
-  withStateHandlers(
-    {
-      searchText: '',
-    },
-    {
-      setSearchText: () => (searchText) => ({searchText}),
+  withSearchByContext,
+  withStateHandlers((props) => ({searchBy: props.searchByContext.searchBy}), {
+    setSearchBy: () => (searchBy) => ({searchBy}),
+  }),
+  onDidUpdate((props, prevProps) => {
+    if (props.searchByContext.searchBy !== prevProps.searchByContext.searchBy) {
+      props.setSearchBy(props.searchByContext.searchBy)
     }
-  ),
+  }),
   withHandlers({
-    // TODO:
-    onSearch: ({history}) => (query) => console.log('query', query), // eslint-disable-line
+    onSearch: ({searchByContext}) => (query) => searchByContext.setSearchBy(query),
   })
-)(({i18n, searchText, setSearchText, onChange, onSearch}) => {
+)(({i18n, setSearchBy: onChange, searchBy: value, onSearch}) => {
   const {translate: tr} = useI18n()
   return (
     <Searchbar
       placeholder={tr(messages.searchPlaceholder)}
-      value={searchText}
-      onChange={setSearchText}
+      value={value}
+      onChange={onChange}
       onSearch={onSearch}
     />
   )

@@ -38,6 +38,7 @@ type PropTypes = {
   value: string,
   handleOnChangeEvent: (str: string) => any,
   onSearch: (str: string) => any,
+  onChange: (str: string) => any,
   onSubmit: (event: Object) => any,
   classes: Object,
   textFieldProps: Object,
@@ -52,7 +53,7 @@ class Searchbar extends React.Component<PropTypes> {
   }
 
   clearInput = () => {
-    this.props.handleOnChangeEvent('')
+    this.props.onChange('')
     this.inputRef.current && this.inputRef.current.focus()
   }
 
@@ -72,7 +73,7 @@ class Searchbar extends React.Component<PropTypes> {
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
-                <IconButton aria-label="Toggle password visibility" onClick={this.clearInput}>
+                <IconButton aria-label="Clear-search" onClick={this.clearInput}>
                   <Close />
                 </IconButton>
               </InputAdornment>
