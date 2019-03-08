@@ -1,6 +1,6 @@
 // @flow
 
-import React from 'react'
+import React, {useEffect} from 'react'
 import {Switch, Route, Redirect} from 'react-router-dom'
 import {compose} from 'redux'
 import {Grid, createStyles, withStyles} from '@material-ui/core'
@@ -37,16 +37,18 @@ const NotFound = withStyles(styles)(({classes}) => (
 const ListScreenRoute = compose(withSyncListScreenWithUrlQuery)(
   ({location: {search: urlQuery}, syncListScreenWithUrlQuery, getListScreenUrlQuery}) => {
     const storageQuery = getListScreenUrlQuery()
-    if (urlQuery) {
-      !urlUtils.areQueryStringsSame(urlQuery, storageQuery) && syncListScreenWithUrlQuery(urlQuery)
-      return <StakePoolList />
-    } else {
-      return storageQuery ? (
-        <Redirect exact to={`${routeTo.staking.poolList()}${storageQuery}`} />
-      ) : (
-        <StakePoolList />
-      )
-    }
+
+    useEffect(() => {
+      if (urlQuery && !urlUtils.areQueryStringsSame(urlQuery, storageQuery)) {
+        syncListScreenWithUrlQuery(urlQuery)
+      }
+    }, [urlQuery, storageQuery])
+
+    return urlQuery || !storageQuery ? (
+      <StakePoolList />
+    ) : (
+      <Redirect exact to={`${routeTo.staking.poolList()}${storageQuery}`} />
+    )
   }
 )
 
