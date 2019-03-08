@@ -11,6 +11,7 @@ import {
   SimpleLayout,
   EntityIdCard,
   Alert,
+  CircularProgressBar,
 } from '@/components/visual'
 import {withI18n} from '@/i18n/helpers'
 import AdaIcon from '@/assets/icons/transaction-id.svg'
@@ -26,6 +27,10 @@ const messages = defineMessages({
   stakingKey: {
     id: `${I18N_PREFIX}.entityId`,
     defaultMessage: 'Staking Key Id',
+  },
+  entityBadge: {
+    id: `${I18N_PREFIX}.entityBadge`,
+    defaultMessage: 'Revenue',
   },
   poolRetiredWarning: {
     id: `${I18N_PREFIX}.poolRetiredWarning`,
@@ -154,6 +159,9 @@ const StakePoolStakingKey = ({
         label={translate(messages.stakingKey)}
         value={stakePool.hash}
         iconRenderer={<img alt="" src={AdaIcon} width={40} height={40} />}
+        badge={
+          <CircularProgressBar label={translate(messages.entityBadge)} value={stakePool.revenue} />
+        }
       />
       <SummaryCard>
         <Row>
