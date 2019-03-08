@@ -7,6 +7,8 @@ import {withProps} from 'recompose'
 import {AdaValue, SummaryCard, SimpleLayout, EntityIdCard} from '@/components/visual'
 import AdaIcon from '@/assets/icons/transaction-id.svg'
 import {withI18n} from '@/i18n/helpers'
+import RewardAddressIcon from '@/assets/icons/reward-address.svg'
+import CertificateIcon from '@/assets/icons/certificate.svg'
 
 const I18N_PREFIX = 'blockchain.stakingKey.user'
 
@@ -59,6 +61,14 @@ const messages = defineMessages({
     id: `${I18N_PREFIX}.uncollectedRewards`,
     defaultMessage: 'Uncollected Rewards:',
   },
+  totalEpochsActive: {
+    id: `${I18N_PREFIX}.totalEpochsActive`,
+    defaultMessage: 'Total Epochs Active:',
+  },
+  epochs: {
+    id: `${I18N_PREFIX}.epochs`,
+    defaultMessage: '{count, plural, =0 {# epochs} one {# epoch} other {# epochs}}',
+  },
   rewardAddress: {
     id: `${I18N_PREFIX}.rewardAddress`,
     defaultMessage: 'Reward Address:',
@@ -90,7 +100,7 @@ const UserStakingKey = ({stakingKeyHash, i18n: {translate, formatTimestamp, form
       <EntityIdCard
         label={translate(messages.stakingKey)}
         value={stakingKeyHash}
-        iconRenderer={<img alt="" src={AdaIcon} width={40} height={40} />}
+        iconRenderer={<img alt="" src={AdaIcon} />}
       />
 
       <SummaryCard>
@@ -128,24 +138,22 @@ const UserStakingKey = ({stakingKeyHash, i18n: {translate, formatTimestamp, form
           </Value>
         </Row>
         <Row>
-          <Label>{translate(messages.uncollectedRewards)}</Label>
+          <Label>{translate(messages.totalEpochsActive)}</Label>
           <Value>
-            <AdaValue showCurrency value={stakingKey.uncollectedRewards} />
+            {translate(messages.epochs, {count: formatInt(stakingKey.totalEpochsActive)})}
           </Value>
         </Row>
       </SummaryCard>
-      <SummaryCard>
-        <Row>
-          <Label>{translate(messages.rewardAddress)}</Label>
-          <Value>{stakingKey.rewardAddress}</Value>
-        </Row>
-      </SummaryCard>
-      <SummaryCard>
-        <Row>
-          <Label>{translate(messages.delegationCert)}</Label>
-          <Value>{stakingKey.delegationCert}</Value>
-        </Row>
-      </SummaryCard>
+      <EntityIdCard
+        label={translate(messages.rewardAddress)}
+        value={stakingKey.rewardAddress}
+        iconRenderer={<img alt="" src={RewardAddressIcon} />}
+      />
+      <EntityIdCard
+        label={translate(messages.delegationCert)}
+        value={stakingKey.delegationCert}
+        iconRenderer={<img alt="" src={CertificateIcon} />}
+      />
     </SimpleLayout>
   )
 }
