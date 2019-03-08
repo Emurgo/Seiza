@@ -8,11 +8,15 @@ module.exports = {
     browser: true,
     jest: true
   },
+  plugins: [
+    "react-hooks"
+  ],
   rules: {
     semi: [2, "never"],
     "no-unexpected-multiline": 2,
     "no-duplicate-imports": 0,
-    "import/no-duplicates": "error"
+    "import/no-duplicates": "error",
+    "react-hooks/rules-of-hooks": "error"
   },
   settings: {
     "import/resolver": {
