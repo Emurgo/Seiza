@@ -1,13 +1,13 @@
 // @flow
 
-import React from 'react'
+import React, {useEffect} from 'react'
 import {Switch, Route, Redirect} from 'react-router-dom'
 import {compose} from 'redux'
 import {Grid, createStyles, withStyles} from '@material-ui/core'
 
 import * as urlUtils from '@/helpers/url'
 import {routeTo} from '@/helpers/routes'
-import {stakingContextProvider, withSyncListScreenWithUrlQuery} from './context'
+import {stakingContextProvider, withSetListScreenStorageFromQuery} from './context'
 import SideMenu from './SideMenu'
 import StakePoolList from './StakeList'
 import StakePoolHeader from './Header'
@@ -34,19 +34,21 @@ const NotFound = withStyles(styles)(({classes}) => (
 ))
 
 // Note: URL vs Storage: no merging: either url or localStorage wins
-const ListScreenRoute = compose(withSyncListScreenWithUrlQuery)(
-  ({location: {search: urlQuery}, syncListScreenWithUrlQuery, getListScreenUrlQuery}) => {
+const ListScreenRoute = compose(withSetListScreenStorageFromQuery)(
+  ({location: {search: urlQuery}, setListScreenStorageFromQuery, getListScreenUrlQuery}) => {
     const storageQuery = getListScreenUrlQuery()
-    if (urlQuery) {
-      !urlUtils.areQueryStringsSame(urlQuery, storageQuery) && syncListScreenWithUrlQuery(urlQuery)
-      return <StakePoolList />
-    } else {
-      return storageQuery ? (
-        <Redirect exact to={`${routeTo.staking.poolList()}${storageQuery}`} />
-      ) : (
-        <StakePoolList />
-      )
-    }
+
+    useEffect(() => {
+      if (urlQuery && !urlUtils.areQueryStringsSame(urlQuery, storageQuery)) {
+        setListScreenStorageFromQuery(urlQuery)
+      }
+    }, [urlQuery, storageQuery])
+
+    return urlQuery || !storageQuery ? (
+      <StakePoolList />
+    ) : (
+      <Redirect exact to={`${routeTo.staking.poolList()}${storageQuery}`} />
+    )
   }
 )
 

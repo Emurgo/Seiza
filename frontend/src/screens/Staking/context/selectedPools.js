@@ -18,8 +18,8 @@ export const initialSelectedPoolsContext = {
     selectedPools: DEFAULT_VALUE,
     addPool: null,
     removePool: null,
-    syncSelectedPoolsWithQuery: null,
-    selectedPoolsStorageToQuery: null,
+    _setSelectedPoolsStorageFromQuery: null,
+    _selectedPoolsStorageToQuery: null,
   },
 }
 
@@ -27,7 +27,7 @@ const mergeProps = (BaseComponent) => ({
   selectedPools,
   removePool,
   addPool,
-  _syncSelectedPoolsWithQuery,
+  _setSelectedPoolsStorageFromQuery,
   _selectedPoolsStorageToQuery,
   ...restProps
 }) => {
@@ -37,7 +37,7 @@ const mergeProps = (BaseComponent) => ({
         addPool,
         removePool,
         selectedPools,
-        _syncSelectedPoolsWithQuery,
+        _setSelectedPoolsStorageFromQuery,
         _selectedPoolsStorageToQuery,
       }}
       {...restProps}
@@ -71,7 +71,7 @@ export const selectedPoolsProvider = compose(
       const newSelectedPools = [...selectedPools, poolHash]
       setPools(newSelectedPools)
     },
-    _syncSelectedPoolsWithQuery: ({setPools, getQueryParam}) => (query) => {
+    _setSelectedPoolsStorageFromQuery: ({setPools, getQueryParam}) => (query) => {
       setPools(getQueryParam(STORAGE_KEY, DEFAULT_VALUE))
     },
     _selectedPoolsStorageToQuery: () => () => {
