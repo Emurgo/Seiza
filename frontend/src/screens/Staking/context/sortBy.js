@@ -24,7 +24,7 @@ export const initialSortByContext = {
   sortByContext: {
     sortBy: DEFAULT_VALUE,
     setSortBy: null,
-    _syncSortByWithQuery: null,
+    _setSortByStorageFromQuery: null,
     _sortByStorageToQuery: null,
   },
 }
@@ -32,7 +32,7 @@ export const initialSortByContext = {
 const mergeProps = (BaseComponent) => ({
   sortBy,
   setSortBy,
-  _syncSortByWithQuery,
+  _setSortByStorageFromQuery,
   _sortByStorageToQuery,
   ...restProps
 }) => {
@@ -41,7 +41,7 @@ const mergeProps = (BaseComponent) => ({
       sortByContext={{
         sortBy,
         setSortBy,
-        _syncSortByWithQuery,
+        _setSortByStorageFromQuery,
         _sortByStorageToQuery,
       }}
       {...restProps}
@@ -61,7 +61,7 @@ export const sortByProvider = compose(
     },
   }),
   withHandlers({
-    _syncSortByWithQuery: ({setSortBy, getQueryParam}) => (query) => {
+    _setSortByStorageFromQuery: ({setSortBy, getQueryParam}) => (query) => {
       setSortBy(getQueryParam(STORAGE_KEY, DEFAULT_VALUE))
     },
     _sortByStorageToQuery: () => () => {

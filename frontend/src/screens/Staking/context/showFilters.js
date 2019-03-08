@@ -17,7 +17,7 @@ export const initialShowFiltersContext = {
   showFiltersContext: {
     showFilters: DEFAULT_VALUE,
     toggleFilters: null,
-    _syncShowFiltersWithQuery: null,
+    _setShowFiltersStorageFromQuery: null,
     _showFiltersStorageToQuery: null,
   },
 }
@@ -25,7 +25,7 @@ export const initialShowFiltersContext = {
 const mergeProps = (BaseComponent) => ({
   showFilters,
   toggleFilters,
-  _syncShowFiltersWithQuery,
+  _setShowFiltersStorageFromQuery,
   _showFiltersStorageToQuery,
   _setShowFilters,
   ...restProps
@@ -35,7 +35,7 @@ const mergeProps = (BaseComponent) => ({
       showFiltersContext={{
         showFilters,
         toggleFilters,
-        _syncShowFiltersWithQuery,
+        _setShowFiltersStorageFromQuery,
         _showFiltersStorageToQuery,
       }}
       {...restProps}
@@ -61,7 +61,7 @@ export const showFiltersProvider = compose(
     },
   }),
   withHandlers({
-    _syncShowFiltersWithQuery: ({_setShowFilters, getQueryParam}) => (query) => {
+    _setShowFiltersStorageFromQuery: ({_setShowFilters, getQueryParam}) => (query) => {
       _setShowFilters(getQueryParam(STORAGE_KEY, DEFAULT_VALUE))
     },
     _showFiltersStorageToQuery: () => () => {

@@ -7,7 +7,7 @@ import {Grid, createStyles, withStyles} from '@material-ui/core'
 
 import * as urlUtils from '@/helpers/url'
 import {routeTo} from '@/helpers/routes'
-import {stakingContextProvider, withSyncListScreenWithUrlQuery} from './context'
+import {stakingContextProvider, withSetListScreenStorageFromQuery} from './context'
 import SideMenu from './SideMenu'
 import StakePoolList from './StakeList'
 import StakePoolHeader from './Header'
@@ -34,13 +34,13 @@ const NotFound = withStyles(styles)(({classes}) => (
 ))
 
 // Note: URL vs Storage: no merging: either url or localStorage wins
-const ListScreenRoute = compose(withSyncListScreenWithUrlQuery)(
-  ({location: {search: urlQuery}, syncListScreenWithUrlQuery, getListScreenUrlQuery}) => {
+const ListScreenRoute = compose(withSetListScreenStorageFromQuery)(
+  ({location: {search: urlQuery}, setListScreenStorageFromQuery, getListScreenUrlQuery}) => {
     const storageQuery = getListScreenUrlQuery()
 
     useEffect(() => {
       if (urlQuery && !urlUtils.areQueryStringsSame(urlQuery, storageQuery)) {
-        syncListScreenWithUrlQuery(urlQuery)
+        setListScreenStorageFromQuery(urlQuery)
       }
     }, [urlQuery, storageQuery])
 
