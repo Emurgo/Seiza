@@ -12,7 +12,7 @@ import {Button, DebugApolloError, LoadingInProgress} from '@/components/visual'
 import StakePool from './StakePool'
 import SearchAndFilterBar from './SearchAndFilterBar'
 import SortByBar from './SortByBar'
-import {withSortByContext, withSearchTextContext} from '../context'
+import {withSortByContext, withSearchTextContext, withPerformanceContext} from '../context'
 
 const PAGE_SIZE = 3
 
@@ -109,19 +109,32 @@ const StakeList = ({
   )
 }
 
+const formatPerformancetoGQL = (performance) => ({
+  from: performance[0] / 100,
+  to: performance[1] / 100,
+})
+
 export default compose(
   withI18n,
   withStyles(styles),
   withSortByContext,
   withSearchTextContext,
+  withPerformanceContext,
   graphql(
     gql`
-      query($cursor: String, $pageSize: Int, $sortBy: StakePoolSortByEnum!, $searchText: String) {
+      query(
+        $cursor: String
+        $pageSize: Int
+        $sortBy: StakePoolSortByEnum!
+        $searchText: String
+        $performance: PerformanceInterval
+      ) {
         pagedStakePoolList(
           cursor: $cursor
           pageSize: $pageSize
           sortBy: $sortBy
           searchText: $searchText
+          performance: $performance
         ) {
           stakePools {
             poolHash
@@ -145,8 +158,19 @@ export default compose(
     `,
     {
       name: 'poolsDataProvider',
-      options: ({cursor, sortByContext: {sortBy}, searchTextContext: {searchText}}) => ({
-        variables: {cursor, sortBy, searchText, pageSize: PAGE_SIZE},
+      options: ({
+        cursor,
+        sortByContext: {sortBy},
+        searchTextContext: {searchText},
+        performanceContext: {performance},
+      }) => ({
+        variables: {
+          cursor,
+          sortBy,
+          searchText,
+          pageSize: PAGE_SIZE,
+          performance: formatPerformancetoGQL(performance),
+        },
       }),
     }
   ),
@@ -155,6 +179,7 @@ export default compose(
       poolsDataProvider,
       sortByContext: {sortBy},
       searchTextContext: {searchText},
+      performanceContext: {performance},
     }) => () => {
       const {
         fetchMore,
@@ -162,7 +187,13 @@ export default compose(
       } = poolsDataProvider
 
       return fetchMore({
-        variables: {cursor, pageSize: PAGE_SIZE, sortBy, searchText},
+        variables: {
+          cursor,
+          pageSize: PAGE_SIZE,
+          sortBy,
+          searchText,
+          performance: formatPerformancetoGQL(performance),
+        },
         updateQuery: (prev, {fetchMoreResult, ...rest}) => {
           if (!fetchMoreResult) return prev
           // TODO: currently taken from graphql docs, consider doing it nicer
