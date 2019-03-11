@@ -1,3 +1,4 @@
+// @flow
 import React from 'react'
 import {compose} from 'redux'
 import {withProps, withHandlers} from 'recompose'
@@ -49,7 +50,7 @@ const mergeProps = (BaseComponent) => ({
   )
 }
 
-export const sortByProvider = compose(
+export const sortByProvider: any = compose(
   withUrlManager,
   withProps((props) => ({
     sortBy: props.getQueryParam(STORAGE_KEY, DEFAULT_VALUE),
@@ -72,7 +73,7 @@ export const sortByProvider = compose(
   mergeProps
 )
 
-export const getSortByConsumer = (Context) => (WrappedComponent) => (props) => (
+export const getSortByConsumer: any = (Context) => (WrappedComponent) => (props) => (
   <Context.Consumer>
     {({sortByContext}) => <WrappedComponent {...props} sortByContext={sortByContext} />}
   </Context.Consumer>

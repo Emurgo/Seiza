@@ -58,7 +58,7 @@ const StakePoolStakingKey = ({
   const {Row, Label, Value} = SummaryCard
   return (
     <SimpleLayout title={translate(messages.header)}>
-      <Alert warning message={translate(messages.poolRetiredWarning)} />
+      <Alert type="warning" message={translate(messages.poolRetiredWarning)} />
 
       <EntityIdCard
         label={translate(messages.stakingKey)}

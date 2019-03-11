@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import React, {useState, useCallback} from 'react'
 import type {Node} from 'react'
 import classnames from 'classnames'
 import {
@@ -10,13 +10,12 @@ import {
   Typography,
   Grid,
   IconButton,
-  withStyles,
 } from '@material-ui/core'
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
-import {withHandlers, withState} from 'recompose'
-import {compose} from 'redux'
+import {makeStyles} from '@material-ui/styles'
 
-const styles = (theme) => ({
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
+
+const useStyles = makeStyles((theme) => ({
   expansionPanel: {
     'display': 'flex',
     'flexDirection': 'column',
@@ -43,30 +42,38 @@ const styles = (theme) => ({
   spacing: {
     marginRight: theme.spacing.unit * 0.5,
   },
-})
+}))
 
 type ExpandableCardPT = {
-  classes: Object,
   expanded: boolean,
   onChange: (event: any, expanded: boolean) => any,
   renderExpandedArea: () => Node,
   renderHeader: () => Node,
   footer: Node,
   className?: string,
-  iconAnimating: boolean,
+}
+
+const useIconAnimating = ({expanded, onChange}) => {
+  const [iconAnimating, setIconAnimating] = useState(false)
+  // Note(ppershing): useCallback is not an ideal solution, see
+  // https://github.com/facebook/react/issues/14099
+  // for a discussion
+  const _onChange = useCallback(
+    (event, expanded) => {
+      setIconAnimating(!iconAnimating)
+      onChange(event, expanded)
+    },
+    [iconAnimating, onChange, expanded]
+  )
+
+  return {iconAnimating, onChange: _onChange}
 }
 
 const ExpandableCard = (props: ExpandableCardPT) => {
-  const {
-    classes,
-    expanded,
-    onChange,
-    renderExpandedArea,
-    renderHeader,
-    footer,
-    className,
-    iconAnimating,
-  } = props
+  const {expanded, onChange: _onChange, renderExpandedArea, renderHeader, footer, className} = props
+
+  const classes = useStyles()
+  const {iconAnimating, onChange} = useIconAnimating({expanded, onChange: _onChange})
 
   return (
     <Grid container className={className} direction="row">
@@ -106,13 +113,4 @@ const ExpandableCard = (props: ExpandableCardPT) => {
   )
 }
 
-export default compose(
-  withState('iconAnimating', 'setIconAnimating', false),
-  withHandlers({
-    onChange: ({setIconAnimating, iconAnimating, onChange}) => (event, expanded) => {
-      setIconAnimating(!iconAnimating)
-      onChange(expanded)
-    },
-  }),
-  withStyles(styles)
-)(ExpandableCard)
+export default ExpandableCard

@@ -19,23 +19,33 @@ export const getStorageData = (key: string, defaultValue: any) => {
   }
 }
 
-export const withUrlManager = compose(
-  withRouter,
-  (BaseComponent) => ({history, location, match, ...restProps}) => {
-    const setQueryParam = (key, value) => {
-      history.replace({
-        pathname: location.pathname,
-        search: urlUtils.replaceQueryParam(location.search, key, value),
-      })
-    }
+type ManagerProps = {|
+  getQueryParam: any,
+  setQueryParam: any,
+|}
 
-    const getQueryParam = (paramKey, defaultValue) => {
-      const parsed = urlUtils.parse(location.search)
-      return parsed[paramKey] || defaultValue
-    }
+export const withUrlManager = <Props>(
+  BaseComponent: React$ComponentType<{|...Props, ...ManagerProps|}>
+): React$ComponentType<Props> => {
+  const enhancer = compose(
+    withRouter,
+    (BaseComponent) => ({history, location, match, ...restProps}) => {
+      const setQueryParam = (key, value) => {
+        history.replace({
+          pathname: location.pathname,
+          search: urlUtils.replaceQueryParam(location.search, key, value),
+        })
+      }
 
-    return (
-      <BaseComponent getQueryParam={getQueryParam} setQueryParam={setQueryParam} {...restProps} />
-    )
-  }
-)
+      const getQueryParam = (paramKey, defaultValue) => {
+        const parsed = urlUtils.parse(location.search)
+        return parsed[paramKey] || defaultValue
+      }
+
+      return (
+        <BaseComponent getQueryParam={getQueryParam} setQueryParam={setQueryParam} {...restProps} />
+      )
+    }
+  )
+  return enhancer(BaseComponent)
+}

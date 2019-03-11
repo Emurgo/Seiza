@@ -15,6 +15,7 @@ import App from './App'
 import * as serviceWorker from './serviceWorker'
 
 const client = new ApolloClient({
+  // $FlowFixMe Not sure why ApolloLink is not compatible with HttpLink
   link: new HttpLink({uri: process.env.REACT_APP_GRAPHQL_SERVER_URL}),
   cache: new InMemoryCache(),
 })
