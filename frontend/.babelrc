@@ -1,6 +1,5 @@
 {
-  "presets": [["react-app", {flow: true}
-  ]],
+  "presets": [["react-app", { "flow": true }, "@babel/preset-react"]],
   "plugins": [
     [
       "react-intl-auto",
