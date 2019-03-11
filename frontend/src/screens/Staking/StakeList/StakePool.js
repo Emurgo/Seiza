@@ -147,32 +147,21 @@ const Header = compose(
   </Grid>
 ))
 
-const DataGrid = withStyles(contentStyles)(({labels, values, classes}) => (
-  <Grid container direction="row">
-    <Grid item>
-      <Grid
-        container
-        direction="column"
-        alignItems="flex-start"
-        justify="flex-start"
-        className={classes.verticalBlock}
-      >
-        {labels.map((label) => (
-          <Grid item key={label} className={classes.rowItem}>
+const DataGrid = withStyles(contentStyles)(({items, classes}) => (
+  // Note: when setting direction to `column` there is strange height misallignment
+  <Grid container direction="row" className={classes.verticalBlock}>
+    {items.map(({label, value}) => (
+      <Grid item key={label} xs={12}>
+        <Grid container direction="row">
+          <Grid xs={6} item className={classes.rowItem}>
             <Typography className={classes.label}>{label}</Typography>
           </Grid>
-        ))}
-      </Grid>
-    </Grid>
-    <Grid item>
-      <Grid container direction="column" alignItems="flex-start" justify="flex-start">
-        {values.map((value, index) => (
-          <Grid item key={index} className={classes.rowItem}>
+          <Grid xs={6} item className={classes.rowItem}>
             {value}
           </Grid>
-        ))}
+        </Grid>
       </Grid>
-    </Grid>
+    ))}
   </Grid>
 ))
 
@@ -184,36 +173,42 @@ const Content = compose(
     <Header className={classes.wrapper} name={data.name} hash={data.hash} />
     <Grid className={classes.innerWrapper} container justify="space-between" direction="row">
       <Grid item xs={1} container justify="space-around" direction="column">
-        <div>
-          <CircularProgressBar label="Revenue" value={0.25} />
-        </div>
+        <CircularProgressBar label="Revenue" value={0.25} />
       </Grid>
       <Grid item xs={5}>
         <DataGrid
-          labels={[
-            translate(messages.performance),
-            translate(messages.pledge),
-            translate(messages.margins),
-          ]}
-          values={[
-            <Typography key={0}>{formatPercent(data.performance)}</Typography>,
-            <AdaValue key={1} value={data.pledge} />,
-            <Typography key={2}>{formatPercent(data.margins)}</Typography>,
+          items={[
+            {
+              label: translate(messages.performance),
+              value: <Typography>{formatPercent(data.performance)}</Typography>,
+            },
+            {
+              label: translate(messages.pledge),
+              value: <AdaValue value={data.pledge} />,
+            },
+            {
+              label: translate(messages.margins),
+              value: <Typography>{formatPercent(data.margins)}</Typography>,
+            },
           ]}
         />
       </Grid>
 
       <Grid item xs={5}>
         <DataGrid
-          labels={[
-            translate(messages.createdAt),
-            translate(messages.fullness),
-            translate(messages.stake),
-          ]}
-          values={[
-            <Typography key={0}>{formatTimestamp(data.createdAt)}</Typography>,
-            <Typography key={1}>{formatPercent(data.fullness)}</Typography>,
-            <AdaValue key={2} value={data.stake} />,
+          items={[
+            {
+              label: translate(messages.createdAt),
+              value: <Typography>{formatTimestamp(data.createdAt)}</Typography>,
+            },
+            {
+              label: translate(messages.fullness),
+              value: <Typography>{formatPercent(data.fullness)}</Typography>,
+            },
+            {
+              label: translate(messages.stake),
+              value: <AdaValue value={data.stake} />,
+            },
           ]}
         />
       </Grid>
