@@ -15,6 +15,9 @@ const DEFAULT_PAGE_SIZE = 10
 // TODO: This whole resolver would need to be structure better, but we should
 // do it once we have real data to get a better picture
 
+// Note: this does not do half-open interval intentionally
+const inRange = (v, from, to) => v >= from && v <= to
+
 const getPoolsData = (api) => {
   return BOOTSTRAP_POOLS.map((pool) => ({
     ...fetchBootstrapEraPool(api, pool),
@@ -22,15 +25,20 @@ const getPoolsData = (api) => {
   }))
 }
 
-const filterData = (data, searchText) => {
-  return searchText ? data.filter((pool) => pool.name.includes(searchText)) : data
+const filterData = (data, searchText, performance) => {
+  const _filtered = searchText ? data.filter((pool) => pool.name.includes(searchText)) : data
+  return performance
+    ? _filtered.filter((pool) =>
+      inRange(pool.summary.performance, performance.from, performance.to)
+    )
+    : _filtered
 }
 
 const sortData = (data, sortBy) => _.orderBy(data, (d) => d.summary[sortBy], 'desc')
 
-const getFilteredAndSortedPoolsData = (api, sortBy, searchText) => {
+const getFilteredAndSortedPoolsData = (api, sortBy, searchText, performance) => {
   const data = getPoolsData(api)
-  const filteredData = filterData(data, searchText)
+  const filteredData = filterData(data, searchText, performance)
   return sortData(filteredData, sortBy)
 }
 
@@ -39,9 +47,10 @@ export const pagedStakePoolListResolver = (
   cursor,
   sortBy,
   searchText,
+  performance,
   pageSize = DEFAULT_PAGE_SIZE
 ) => {
-  const data = getFilteredAndSortedPoolsData(api, sortBy, searchText)
+  const data = getFilteredAndSortedPoolsData(api, sortBy, searchText, performance)
 
   if (!data.length) return NO_RESULTS
 
@@ -80,6 +89,13 @@ export default {
       args.poolHashes.map((poolHash) => fetchBootstrapEraPool(null, poolHash, args.epochNumber)),
     stakePoolList: (root, args, context) => fetchBootstrapEraPoolList(null, args.epochNumber),
     pagedStakePoolList: (_, args, context) =>
-      pagedStakePoolListResolver(null, args.cursor, args.sortBy, args.searchText, args.pageSize),
+      pagedStakePoolListResolver(
+        null,
+        args.cursor,
+        args.sortBy,
+        args.searchText,
+        args.performance,
+        args.pageSize
+      ),
   },
 }
