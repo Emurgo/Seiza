@@ -11,7 +11,7 @@ import {useI18n} from '@/i18n/helpers'
 import {Searchbar, Button} from '@/components/visual'
 import {onDidUpdate} from '@/components/HOC/lifecycles'
 import Filters from './Filters'
-import {withShowFiltersContext, withSearchByContext} from '../context'
+import {withShowFiltersContext, withSearchTextContext} from '../context'
 
 const I18N_PREFIX = 'staking.actionBar'
 
@@ -46,19 +46,19 @@ const useStyles = makeStyles((theme) => ({
 // TODO: consider adding `onClear` handler to `Searchbar` and re-query then
 const Search = compose(
   withRouter,
-  withSearchByContext,
-  withStateHandlers((props) => ({searchBy: props.searchByContext.searchBy}), {
-    setSearchBy: () => (searchBy) => ({searchBy}),
+  withSearchTextContext,
+  withStateHandlers((props) => ({searchText: props.searchTextContext.searchText}), {
+    setSearchText: () => (searchText) => ({searchText}),
   }),
   onDidUpdate((props, prevProps) => {
-    if (props.searchByContext.searchBy !== prevProps.searchByContext.searchBy) {
-      props.setSearchBy(props.searchByContext.searchBy)
+    if (props.searchTextContext.searchText !== prevProps.searchTextContext.searchText) {
+      props.setSearchText(props.searchTextContext.searchText)
     }
   }),
   withHandlers({
-    onSearch: ({searchByContext}) => (query) => searchByContext.setSearchBy(query),
+    onSearch: ({searchTextContext}) => (query) => searchTextContext.setSearchText(query),
   })
-)(({i18n, setSearchBy: onChange, searchBy: value, onSearch}) => {
+)(({i18n, setSearchText: onChange, searchText: value, onSearch}) => {
   const {translate: tr} = useI18n()
   return (
     <Searchbar

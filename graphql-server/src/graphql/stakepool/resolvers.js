@@ -22,15 +22,15 @@ const getPoolsData = (api) => {
   }))
 }
 
-const filterData = (data, searchBy) => {
-  return searchBy ? data.filter((pool) => pool.name.includes(searchBy)) : data
+const filterData = (data, searchText) => {
+  return searchText ? data.filter((pool) => pool.name.includes(searchText)) : data
 }
 
 const sortData = (data, sortBy) => _.orderBy(data, (d) => d.summary[sortBy], 'desc')
 
-const getFilteredAndSortedPoolsData = (api, sortBy, searchBy) => {
+const getFilteredAndSortedPoolsData = (api, sortBy, searchText) => {
   const data = getPoolsData(api)
-  const filteredData = filterData(data, searchBy)
+  const filteredData = filterData(data, searchText)
   return sortData(filteredData, sortBy)
 }
 
@@ -38,10 +38,10 @@ export const pagedStakePoolListResolver = (
   api,
   cursor,
   sortBy,
-  searchBy,
+  searchText,
   pageSize = DEFAULT_PAGE_SIZE
 ) => {
-  const data = getFilteredAndSortedPoolsData(api, sortBy, searchBy)
+  const data = getFilteredAndSortedPoolsData(api, sortBy, searchText)
 
   if (!data.length) return NO_RESULTS
 
@@ -80,6 +80,6 @@ export default {
       args.poolHashes.map((poolHash) => fetchBootstrapEraPool(null, poolHash, args.epochNumber)),
     stakePoolList: (root, args, context) => fetchBootstrapEraPoolList(null, args.epochNumber),
     pagedStakePoolList: (_, args, context) =>
-      pagedStakePoolListResolver(null, args.cursor, args.sortBy, args.searchBy, args.pageSize),
+      pagedStakePoolListResolver(null, args.cursor, args.sortBy, args.searchText, args.pageSize),
   },
 }

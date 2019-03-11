@@ -12,7 +12,7 @@ import {Button, DebugApolloError, LoadingInProgress, Alert} from '@/components/v
 import StakePool from './StakePool'
 import SearchAndFilterBar from './SearchAndFilterBar'
 import SortByBar from './SortByBar'
-import {withSortByContext, withSearchByContext} from '../context'
+import {withSortByContext, withSearchTextContext} from '../context'
 
 const PAGE_SIZE = 3
 
@@ -108,15 +108,15 @@ export default compose(
   withI18n,
   withStyles(styles),
   withSortByContext,
-  withSearchByContext,
+  withSearchTextContext,
   graphql(
     gql`
-      query($cursor: String, $pageSize: Int, $sortBy: StakePoolSortByEnum!, $searchBy: String) {
+      query($cursor: String, $pageSize: Int, $sortBy: StakePoolSortByEnum!, $searchText: String) {
         pagedStakePoolList(
           cursor: $cursor
           pageSize: $pageSize
           sortBy: $sortBy
-          searchBy: $searchBy
+          searchText: $searchText
         ) {
           stakePools {
             poolHash
@@ -140,8 +140,8 @@ export default compose(
     `,
     {
       name: 'poolsDataProvider',
-      options: ({cursor, sortByContext: {sortBy}, searchByContext: {searchBy}}) => ({
-        variables: {cursor, sortBy, searchBy, pageSize: PAGE_SIZE},
+      options: ({cursor, sortByContext: {sortBy}, searchTextContext: {searchText}}) => ({
+        variables: {cursor, sortBy, searchText, pageSize: PAGE_SIZE},
       }),
     }
   ),
@@ -149,7 +149,7 @@ export default compose(
     onLoadMore: ({
       poolsDataProvider,
       sortByContext: {sortBy},
-      searchByContext: {searchBy},
+      searchTextContext: {searchText},
     }) => () => {
       const {
         fetchMore,
@@ -157,7 +157,7 @@ export default compose(
       } = poolsDataProvider
 
       return fetchMore({
-        variables: {cursor, pageSize: PAGE_SIZE, sortBy, searchBy},
+        variables: {cursor, pageSize: PAGE_SIZE, sortBy, searchText},
         updateQuery: (prev, {fetchMoreResult, ...rest}) => {
           if (!fetchMoreResult) return prev
           // TODO: currently taken from graphql docs, consider doing it nicer
