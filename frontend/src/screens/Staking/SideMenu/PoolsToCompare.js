@@ -9,7 +9,7 @@ import {IconButton, Grid, Chip, Typography, createStyles, withStyles} from '@mat
 import {defineMessages} from 'react-intl'
 import {Share, CallMade, CallReceived} from '@material-ui/icons'
 
-import {LoadingInProgress, DebugApolloError} from '@/components/visual'
+import {LoadingDots, DebugApolloError} from '@/components/visual'
 import {withI18n} from '@/i18n/helpers'
 import {withSelectedPoolsContext} from '../context'
 
@@ -73,21 +73,37 @@ const PoolsToCompare = ({
   selectedPoolsContext: {removePool},
   i18n: {translate},
   poolsProvider: {loading, error, stakePools},
+  selectedPoolsContext,
 }) => {
-  if (loading) return <LoadingInProgress />
+  // TODO(ppershing): Is this the proper place to show loading errors?
   if (error) return <DebugApolloError error={error} />
 
-  const sortedSelectedPools = _.sortBy(stakePools, (pool) => pool.name)
+  // TODO(ppershing): this is a hack until we figure out proper way of doing this in Apollo
+  // TODO(ppershing): also, this means that reordering happens in the meantime. Hard to fix that
+  // though...
+  const allData = _.sortBy(stakePools || [], (pool) => pool.name).filter((pool) =>
+    _.includes(selectedPoolsContext.selectedPools, pool.poolHash)
+  )
+  for (const hash of selectedPoolsContext.selectedPools) {
+    if (allData.some((pool) => pool.poolHash === hash)) continue
+    allData.push({poolHash: hash, name: null})
+  }
+
+  // End of hack
 
   return (
     <Grid container className={classes.wrapper} direction="row">
       <Grid container direction="row" alignItems="center" className={classes.header}>
         <Typography className={classes.text}>{translate(messages.header)}</Typography>&nbsp;
-        <Typography>{sortedSelectedPools.length}</Typography>
+        <Typography>{allData.length}</Typography>
       </Grid>
       <Grid className={classes.stakePools}>
-        {sortedSelectedPools.map(({name, poolHash}) => (
-          <StakePoolItem key={poolHash} label={name} onDelete={() => removePool(poolHash)} />
+        {allData.map(({name, poolHash}) => (
+          <StakePoolItem
+            key={poolHash}
+            label={name != null ? name : <LoadingDots />}
+            onDelete={() => removePool(poolHash)}
+          />
         ))}
       </Grid>
       {/* TODO: onClick handling and real work */}
