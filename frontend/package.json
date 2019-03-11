@@ -55,6 +55,7 @@
     "extract-react-intl-messages": "^0.14.0",
     "flow-bin": "^0.92.1",
     "flow-coverage-report": "^0.6.1",
+    "flow-typed": "^2.5.1",
     "graphql-code-generator": "^0.17.0",
     "graphql-codegen-flow": "^0.17.0",
     "graphql-codegen-flow-common": "^0.15.0-alpha.1885b0cc",
