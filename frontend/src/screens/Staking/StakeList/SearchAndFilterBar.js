@@ -2,15 +2,16 @@
 import React from 'react'
 import {defineMessages} from 'react-intl'
 import {compose} from 'redux'
-import {withStateHandlers, withHandlers} from 'recompose'
+import {withHandlers, withStateHandlers} from 'recompose'
 import {withRouter} from 'react-router'
 import {Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
 import {useI18n} from '@/i18n/helpers'
 import {Searchbar, Button} from '@/components/visual'
+import {onDidUpdate} from '@/components/HOC/lifecycles'
 import Filters from './Filters'
-import {withShowFiltersContext} from '../context'
+import {withShowFiltersContext, withSearchTextContext} from '../context'
 
 const I18N_PREFIX = 'staking.actionBar'
 
@@ -42,27 +43,28 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
+// TODO: consider adding `onClear` handler to `Searchbar` and re-query then
 const Search = compose(
   withRouter,
-  withStateHandlers(
-    {
-      searchText: '',
-    },
-    {
-      setSearchText: () => (searchText) => ({searchText}),
+  withSearchTextContext,
+  withStateHandlers((props) => ({searchText: props.searchTextContext.searchText}), {
+    setSearchText: () => (searchText) => ({searchText}),
+  }),
+  onDidUpdate((props, prevProps) => {
+    if (props.searchTextContext.searchText !== prevProps.searchTextContext.searchText) {
+      props.setSearchText(props.searchTextContext.searchText)
     }
-  ),
+  }),
   withHandlers({
-    // TODO:
-    onSearch: ({history}) => (query) => console.log('query', query), // eslint-disable-line
+    onSearch: ({searchTextContext}) => (query) => searchTextContext.setSearchText(query),
   })
-)(({i18n, searchText, setSearchText, onChange, onSearch}) => {
+)(({i18n, setSearchText: onChange, searchText: value, onSearch}) => {
   const {translate: tr} = useI18n()
   return (
     <Searchbar
       placeholder={tr(messages.searchPlaceholder)}
-      value={searchText}
-      onChange={setSearchText}
+      value={value}
+      onChange={onChange}
       onSearch={onSearch}
     />
   )

@@ -8,20 +8,17 @@ import {withHandlers} from 'recompose'
 import {defineMessages} from 'react-intl'
 
 import {withI18n} from '@/i18n/helpers'
-import {Button, DebugApolloError, LoadingInProgress} from '@/components/visual'
+import {Button, DebugApolloError, LoadingInProgress, Alert} from '@/components/visual'
 import StakePool from './StakePool'
 import SearchAndFilterBar from './SearchAndFilterBar'
 import SortByBar from './SortByBar'
-import {withSortByContext} from '../context'
+import {withSortByContext, withSearchTextContext} from '../context'
 
-const I18N_PREFIX = 'staking'
 const PAGE_SIZE = 3
 
 const messages = defineMessages({
-  loadMore: {
-    id: `${I18N_PREFIX}.loadMore`,
-    defaultMessage: 'Load More',
-  },
+  loadMore: 'Load More',
+  noResults: 'No matching results for the given query.',
 })
 
 const styles = (theme) =>
@@ -49,6 +46,9 @@ const styles = (theme) =>
       marginTop: '20px',
       marginBottom: '-15px',
     },
+    lastItemSpace: {
+      padding: theme.spacing.unit * 5,
+    },
   })
 
 const stakePoolFacade = (data) => ({
@@ -67,7 +67,7 @@ const StakeList = ({
   classes,
   poolsDataProvider: {loading, error, pagedStakePoolList},
   onLoadMore,
-  i18n: {translate},
+  i18n: {translate: tr},
 }) => {
   if (loading) return <LoadingInProgress />
   if (error) return <DebugApolloError error={error} />
@@ -79,22 +79,30 @@ const StakeList = ({
         <Grid item className={classes.rowWrapper}>
           <SearchAndFilterBar />
         </Grid>
-        <Grid item className={classnames(classes.rowWrapper, classes.sortByBar)}>
-          <SortByBar totalPoolsCount={totalCount} shownPoolsCount={stakePoolList.length} />
-        </Grid>
+        {totalCount > 0 ? (
+          <Grid item className={classnames(classes.rowWrapper, classes.sortByBar)}>
+            <SortByBar totalPoolsCount={totalCount} shownPoolsCount={stakePoolList.length} />
+          </Grid>
+        ) : (
+          <div className={classes.rowWrapper}>
+            <Alert message={tr(messages.noResults)} />
+          </div>
+        )}
         {stakePoolList.map((pool) => (
           <Grid item key={pool.hash} className={classes.rowWrapper}>
             <StakePool data={pool} />
           </Grid>
         ))}
-        {hasMore && (
+        {hasMore ? (
           <Grid item className={classes.loadMoreWrapper}>
             <Grid container justify="center" direction="row">
               <Button className={classes.loadMore} gradient rounded onClick={onLoadMore}>
-                {translate(messages.loadMore)}
+                {tr(messages.loadMore)}
               </Button>
             </Grid>
           </Grid>
+        ) : (
+          <div className={classes.lastItemSpace} />
         )}
       </Grid>
     </React.Fragment>
@@ -105,10 +113,16 @@ export default compose(
   withI18n,
   withStyles(styles),
   withSortByContext,
+  withSearchTextContext,
   graphql(
     gql`
-      query($cursor: String, $pageSize: Int, $sortBy: StakePoolSortByEnum!) {
-        pagedStakePoolList(cursor: $cursor, pageSize: $pageSize, sortBy: $sortBy) {
+      query($cursor: String, $pageSize: Int, $sortBy: StakePoolSortByEnum!, $searchText: String) {
+        pagedStakePoolList(
+          cursor: $cursor
+          pageSize: $pageSize
+          sortBy: $sortBy
+          searchText: $searchText
+        ) {
           stakePools {
             poolHash
             description
@@ -131,20 +145,24 @@ export default compose(
     `,
     {
       name: 'poolsDataProvider',
-      options: ({cursor, sortByContext: {sortBy}}) => ({
-        variables: {cursor, sortBy, pageSize: PAGE_SIZE},
+      options: ({cursor, sortByContext: {sortBy}, searchTextContext: {searchText}}) => ({
+        variables: {cursor, sortBy, searchText, pageSize: PAGE_SIZE},
       }),
     }
   ),
   withHandlers({
-    onLoadMore: ({poolsDataProvider, sortByContext: {sortBy}}) => () => {
+    onLoadMore: ({
+      poolsDataProvider,
+      sortByContext: {sortBy},
+      searchTextContext: {searchText},
+    }) => () => {
       const {
         fetchMore,
         pagedStakePoolList: {cursor},
       } = poolsDataProvider
 
       return fetchMore({
-        variables: {cursor, pageSize: PAGE_SIZE, sortBy},
+        variables: {cursor, pageSize: PAGE_SIZE, sortBy, searchText},
         updateQuery: (prev, {fetchMoreResult, ...rest}) => {
           if (!fetchMoreResult) return prev
           // TODO: currently taken from graphql docs, consider doing it nicer
