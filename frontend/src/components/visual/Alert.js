@@ -108,4 +108,8 @@ const Alert = ({title, type, message}: PropTypes) => {
   )
 }
 
+Alert.defaultProps = {
+  type: TYPES.NEUTRAL,
+}
+
 export default Alert

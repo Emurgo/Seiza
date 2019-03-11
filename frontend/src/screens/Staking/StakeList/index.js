@@ -3,12 +3,12 @@ import gql from 'graphql-tag'
 import classnames from 'classnames'
 import {compose} from 'redux'
 import {graphql} from 'react-apollo'
-import {Grid, createStyles, withStyles} from '@material-ui/core'
+import {Typography, Grid, createStyles, withStyles} from '@material-ui/core'
 import {withHandlers} from 'recompose'
 import {defineMessages} from 'react-intl'
 
 import {withI18n} from '@/i18n/helpers'
-import {Button, DebugApolloError, LoadingInProgress, Alert} from '@/components/visual'
+import {Button, DebugApolloError, LoadingInProgress} from '@/components/visual'
 import StakePool from './StakePool'
 import SearchAndFilterBar from './SearchAndFilterBar'
 import SortByBar from './SortByBar'
@@ -85,7 +85,7 @@ const StakeList = ({
           </Grid>
         ) : (
           <div className={classes.rowWrapper}>
-            <Alert message={tr(messages.noResults)} />
+            <Typography>{tr(messages.noResults)}</Typography>
           </div>
         )}
         {stakePoolList.map((pool) => (
