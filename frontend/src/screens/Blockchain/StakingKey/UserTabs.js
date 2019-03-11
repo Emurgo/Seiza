@@ -5,55 +5,21 @@ import WithTabState from '@/components/headless/tabState'
 import {SummaryCard, AdaValue} from '@/components/visual'
 import {useI18n} from '@/i18n/helpers'
 
-const I18N_PREFIX = 'stakingKey.user.tabs'
 const messages = defineMessages({
-  delegatedPoolInfoName: {
-    id: `${I18N_PREFIX}.delegatedPoolInfoTabName`,
-    defaultMessage: 'Delegated Pool Info',
-  },
-  historyName: {
-    id: `${I18N_PREFIX}.historyTabName`,
-    defaultMessage: 'History',
-  },
-  transactionsName: {
-    id: `${I18N_PREFIX}.transactionsTabName`,
-    defaultMessage: 'Transactions',
-  },
+  delegatedPoolInfoName: 'Delegated Pool Info',
+  historyName: 'History',
+  transactionsName: 'Transactions',
 })
 
 const delegatedPoolMessages = defineMessages({
-  stakePool: {
-    id: `${I18N_PREFIX}.stakePool`,
-    defaultMessage: 'Stake Pool',
-  },
-  stakePoolPosition: {
-    id: `${I18N_PREFIX}.stakePoolPosition`,
-    defaultMessage: 'Stake Pool Position',
-  },
-  marginDiff: {
-    id: `${I18N_PREFIX}.marginDiff`,
-    defaultMessage: 'Stake Pool Margin Difference with Top #1',
-  },
-  costDiff: {
-    id: `${I18N_PREFIX}.costDiff`,
-    defaultMessage: 'Stake Pool Cost Difference with Top #1',
-  },
-  perfDiff: {
-    id: `${I18N_PREFIX}.perfDiff`,
-    defaultMessage: 'Stake Pool Performance diff with Top #1',
-  },
-  currentTopStakePool: {
-    id: `${I18N_PREFIX}.currentTopStakePool`,
-    defaultMessage: 'Current Top Stake Pool',
-  },
-  epochsCount: {
-    id: `${I18N_PREFIX}.epochsCount`,
-    defaultMessage: 'Epochs in current stake pool',
-  },
-  epochs: {
-    id: `${I18N_PREFIX}.epochs`,
-    defaultMessage: '{count, plural, =0 {# epochs} one {# epoch} other {# epochs}}',
-  },
+  stakePool: 'Stake Pool',
+  stakePoolPosition: 'Stake Pool Position',
+  marginDiff: 'Stake Pool Margin Difference with Top #1',
+  costDiff: 'Stake Pool Cost Difference with Top #1',
+  perfDiff: 'Stake Pool Performance diff with Top #1',
+  currentTopStakePool: 'Current Top Stake Pool',
+  epochsCount: 'Epochs in current stake pool',
+  epochs: '{count, plural, =0 {# epochs} one {# epoch} other {# epochs}}',
 })
 
 const DelegatedPoolInfoTab = ({stakingKey}) => {

@@ -5,13 +5,8 @@ import {compose} from 'redux'
 
 import {withI18n} from '@/i18n/helpers'
 
-const I18N_PREFIX = 'notFound'
-
 const messages = defineMessages({
-  notFound: {
-    id: `${I18N_PREFIX}.notFound`,
-    defaultMessage: 'We are sorry, but the requested url could not be found.',
-  },
+  notFound: 'We are sorry, but the requested url could not be found.',
 })
 
 const styles = createStyles({

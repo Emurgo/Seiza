@@ -16,92 +16,36 @@ import {
 } from '@/components/visual'
 import {withI18n} from '@/i18n/helpers'
 
-const I18N_PREFIX = 'home.generalInfo'
-const CARD_HEADERS = `${I18N_PREFIX}.cardHeaders`
-const GENERAL_INFO = `${I18N_PREFIX}.generalInfoCard`
-const SLOT_INFO = `${I18N_PREFIX}.slotInfoCard`
-
 const POLL_INTERVAL = 1000 * 60
 const SLOT_POLL_INTERVAL = 1000 * 10
 
 const messages = defineMessages({
-  header: {
-    id: `${I18N_PREFIX}.header`,
-    defaultMessage: 'General info',
-  },
+  header: 'General info',
 })
 
 const generalInfoMessages = defineMessages({
-  blocks: {
-    id: `${GENERAL_INFO}.blocks`,
-    defaultMessage: 'Blocks:',
-  },
-  transactions: {
-    id: `${GENERAL_INFO}.transactions`,
-    defaultMessage: 'Txs:',
-  },
-  movements: {
-    id: `${GENERAL_INFO}.movements`,
-    defaultMessage: 'Movements:',
-  },
-  totalFees: {
-    id: `${GENERAL_INFO}.fees`,
-    defaultMessage: 'Fees:',
-  },
-  addresses: {
-    id: `${GENERAL_INFO}.addresses`,
-    defaultMessage: 'Addresses:',
-  },
-  emptySlotsCount: {
-    id: `${GENERAL_INFO}.emptySlotsCount`,
-    defaultMessage: 'Empty slots:',
-  },
+  blocks: 'Blocks:',
+  transactions: 'Txs:',
+  movements: 'Movements:',
+  totalFees: 'Fees:',
+  addresses: 'Addresses:',
+  emptySlotsCount: 'Empty slots:',
 })
 
 const slotInfoMessages = defineMessages({
-  supply: {
-    id: `${SLOT_INFO}.supply`,
-    defaultMessage: 'Supply:',
-  },
-  transactions: {
-    id: `${SLOT_INFO}.transactions`,
-    defaultMessage: 'Txs:',
-  },
-  totalSent: {
-    id: `${SLOT_INFO}.totalSent`,
-    defaultMessage: 'Sent:',
-  },
-  totalFees: {
-    id: `${SLOT_INFO}.totalFees`,
-    defaultMessage: 'Fees:',
-  },
+  supply: 'Supply:',
+  transactions: 'Txs:',
+  totalSent: 'Sent:',
+  totalFees: 'Fees:',
 })
 
 const cardHeaders = defineMessages({
-  totalLabel: {
-    id: `${CARD_HEADERS}.totalLabel`,
-    defaultMessage: 'Total',
-  },
-  totalValue: {
-    id: `${CARD_HEADERS}.totalValue`,
-    defaultMessage: 'From Genesis',
-  },
-  epochLabel: {
-    id: `${CARD_HEADERS}.epochLabel`,
-    defaultMessage: 'Epoch',
-  },
-  last24HoursLabel: {
-    id: `${CARD_HEADERS}.last24HoursLabel`,
-    defaultMessage: 'Last',
-  },
-  last24HoursValue: {
-    id: `${CARD_HEADERS}.last24HoursValue`,
-    defaultMessage: '24 Hours',
-  },
-  slotLabel: {
-    id: `${CARD_HEADERS}.slotLabel`,
-    defaultMessage: 'Slot',
-  },
+  totalLabel: 'Total',
+  totalValue: 'From Genesis',
+  epochLabel: 'Epoch',
+  last24HoursLabel: 'Last',
+  last24HoursValue: '24 Hours',
+  slotLabel: 'Slot',
 })
 
 const getGeneralFields = ({translate, formatAda, formatInt}) => [

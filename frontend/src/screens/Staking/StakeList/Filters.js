@@ -10,21 +10,10 @@ import {defineMessages} from 'react-intl'
 import {useI18n} from '@/i18n/helpers'
 import {Slider, Select} from '@/components/visual'
 
-const I18N_PREFIX = 'staking.filters'
-
 const messages = defineMessages({
-  allLanguages: {
-    id: `${I18N_PREFIX}.allLanguages`,
-    defaultMessage: 'All',
-  },
-  languages: {
-    id: `${I18N_PREFIX}.languages`,
-    defaultMessage: 'Languages',
-  },
-  performance: {
-    id: `${I18N_PREFIX}.performance`,
-    defaultMessage: 'Performance',
-  },
+  allLanguages: 'All',
+  languages: 'Languages',
+  performance: 'Performance',
 })
 
 // TODO: margin/padding theme unit

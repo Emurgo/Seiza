@@ -24,29 +24,12 @@ const GET_STAKE_POOLS_IN_EPOCH = gql`
   }
 `
 
-const I18N_PREFIX = 'blockchain.epoch.stakingPoolsTab'
-
 const messages = defineMessages({
-  name: {
-    id: `${I18N_PREFIX}.nameColumn`,
-    defaultMessage: 'Name',
-  },
-  performance: {
-    id: `${I18N_PREFIX}.performanceColumn`,
-    defaultMessage: 'Performance',
-  },
-  adaStaked: {
-    id: `${I18N_PREFIX}.adaStakedColumn`,
-    defaultMessage: 'ADA Staked',
-  },
-  rewards: {
-    id: `${I18N_PREFIX}.rewardsColumn`,
-    defaultMessage: 'Rewards Received',
-  },
-  keysDelegating: {
-    id: `${I18N_PREFIX}.keysDelegating`,
-    defaultMessage: 'Keys Delegating',
-  },
+  name: 'Name',
+  performance: 'Performance',
+  adaStaked: 'ADA Staked',
+  rewards: 'Rewards Received',
+  keysDelegating: 'Keys Delegating',
 })
 
 const StakingPools = ({i18n, stakePoolsData}) => {

@@ -13,18 +13,9 @@ import classNames from 'classnames'
 export type AssuranceLevel = 'LOW' | 'MEDIUM' | 'HIGH' | 'xx'
 
 const assuranceMessages = defineMessages({
-  LOW: {
-    id: 'assuranceLevels.low',
-    defaultMessage: 'Low',
-  },
-  MEDIUM: {
-    id: 'assuranceLevels.medium',
-    defaultMessage: 'Medium',
-  },
-  HIGH: {
-    id: 'assuranceLevels.high',
-    defaultMessage: 'High',
-  },
+  LOW: 'Low',
+  MEDIUM: 'Medium',
+  HIGH: 'High',
 })
 
 // TODO: use colors from scheme

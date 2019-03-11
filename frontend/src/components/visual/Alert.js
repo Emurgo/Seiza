@@ -19,25 +19,12 @@ const TYPES = {
 }
 type AlertTypeEnum = $Values<typeof TYPES>
 
-const I18N_PREFIX = 'alert'
-
+// Note: babel-plugin-react-intl-auto cannot handle member expressions
 const messages = defineMessages({
-  [TYPES.EMPHASIS]: {
-    id: `${I18N_PREFIX}.emphasis`,
-    defaultMessage: 'Emphasis',
-  },
-  [TYPES.WARNING]: {
-    id: `${I18N_PREFIX}.warning`,
-    defaultMessage: 'Warning',
-  },
-  [TYPES.ALERT]: {
-    id: `${I18N_PREFIX}.alert`,
-    defaultMessage: 'Alert',
-  },
-  [TYPES.NEUTRAL]: {
-    id: `${I18N_PREFIX}.neutral`,
-    defaultMessage: 'Message',
-  },
+  emphasis: 'Emphasis',
+  warning: 'Warning',
+  alert: 'Alert',
+  neutral: 'Message',
 })
 
 const getBorderColorStyle = (backgroundColor) => darken(backgroundColor, 0.05)

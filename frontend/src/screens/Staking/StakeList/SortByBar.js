@@ -12,41 +12,15 @@ import {useI18n} from '@/i18n/helpers'
 import {withSortByContext} from '../context'
 import {SORT_BY_OPTIONS} from '../context/sortBy'
 
-const I18N_PREFIX = 'staking.sortByBar'
-
 const messages = defineMessages({
-  sortBy: {
-    id: `${I18N_PREFIX}.sortBy`,
-    defaultMessage: 'Sort by',
-  },
-  revenue: {
-    id: `${I18N_PREFIX}.revenue`,
-    defaultMessage: 'Revenue',
-  },
-  performance: {
-    id: `${I18N_PREFIX}.performance`,
-    defaultMessage: 'Performance',
-  },
-  fullness: {
-    id: `${I18N_PREFIX}.fullness`,
-    defaultMessage: 'Fullness',
-  },
-  pledge: {
-    id: `${I18N_PREFIX}.pledge`,
-    defaultMessage: 'Pledge',
-  },
-  margins: {
-    id: `${I18N_PREFIX}.margins`,
-    defaultMessage: 'Margins',
-  },
-  stake: {
-    id: `${I18N_PREFIX}.stake`,
-    defaultMessage: 'Stake',
-  },
-  shownPoolsCount: {
-    id: `${I18N_PREFIX}.shownPoolsCount`,
-    defaultMessage: '{count} Stake {count, plural, =0 {pools} one {pool} other {pools}} from',
-  },
+  sortBy: 'Sort by',
+  revenue: 'Revenue',
+  performance: 'Performance',
+  fullness: 'Fullness',
+  pledge: 'Pledge',
+  margins: 'Margins',
+  stake: 'Stake',
+  shownPoolsCount: '{count} Stake {count, plural, =0 {pools} one {pool} other {pools}} from',
 })
 
 // TODO: margin/padding theme unit

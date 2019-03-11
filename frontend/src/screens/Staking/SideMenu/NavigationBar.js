@@ -10,29 +10,12 @@ import NavLink from '@/components/common/NavLink'
 import {routeTo} from '@/helpers/routes'
 import {withI18n} from '@/i18n/helpers'
 
-const I18N_PREFIX = 'staking.navigation'
-
 const navigationMessages = defineMessages({
-  list: {
-    id: `${I18N_PREFIX}.list`,
-    defaultMessage: 'Stake pools list',
-  },
-  comparison: {
-    id: `${I18N_PREFIX}.comparison`,
-    defaultMessage: 'Comparison matric',
-  },
-  history: {
-    id: `${I18N_PREFIX}.history`,
-    defaultMessage: 'Stake pools history',
-  },
-  charts: {
-    id: `${I18N_PREFIX}.charts`,
-    defaultMessage: 'Charts',
-  },
-  location: {
-    id: `${I18N_PREFIX}.location`,
-    defaultMessage: 'Location',
-  },
+  list: 'Stake pools list',
+  comparison: 'Comparison matric',
+  history: 'Stake pools history',
+  charts: 'Charts',
+  location: 'Location',
 })
 
 const menuItemStyles = ({palette}) =>

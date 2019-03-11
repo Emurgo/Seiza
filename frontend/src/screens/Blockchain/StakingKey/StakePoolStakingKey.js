@@ -17,133 +17,38 @@ import {withI18n} from '@/i18n/helpers'
 import AdaIcon from '@/assets/icons/transaction-id.svg'
 import {getStakePoolStakingKey} from './mockedData'
 
-const I18N_PREFIX = 'blockchain.stakingKey.stakePool'
-
 const messages = defineMessages({
-  header: {
-    id: `${I18N_PREFIX}.header`,
-    defaultMessage: 'Staking Key',
-  },
-  stakingKey: {
-    id: `${I18N_PREFIX}.entityId`,
-    defaultMessage: 'Staking Key Id',
-  },
-  entityBadge: {
-    id: `${I18N_PREFIX}.entityBadge`,
-    defaultMessage: 'Revenue',
-  },
-  poolRetiredWarning: {
-    id: `${I18N_PREFIX}.poolRetiredWarning`,
-    defaultMessage: 'Stake Pool is retired',
-  },
-  poolSaturatedWarning: {
-    id: `${I18N_PREFIX}.poolSaturatedWarning`,
-    defaultMessage: 'Stake Pool is overly saturated',
-  },
-  poolNotCompetitive: {
-    id: `${I18N_PREFIX}.poolNotCompetitive`,
-    defaultMessage: 'Stake pool is not in the top 100',
-  },
-  stakingType: {
-    id: `${I18N_PREFIX}.stakingType`,
-    defaultMessage: 'Staking Type:',
-  },
-  stakingTypeStakingPool: {
-    id: `${I18N_PREFIX}.stakingTypeStakingPool`,
-    defaultMessage: 'Staking Pool:',
-  },
-  stakingPoolName: {
-    id: `${I18N_PREFIX}.stakingPoolName`,
-    defaultMessage: 'Name:',
-  },
-  validationCharacters: {
-    id: `${I18N_PREFIX}.validationCharacters`,
-    defaultMessage: 'Validation Characters:',
-  },
-  creationDate: {
-    id: `${I18N_PREFIX}.creationDate`,
-    defaultMessage: 'Creation Date:',
-  },
-  webpage: {
-    id: `${I18N_PREFIX}.webpage`,
-    defaultMessage: 'Webpage:',
-  },
-  pledge: {
-    id: `${I18N_PREFIX}.pledge`,
-    defaultMessage: 'Pledge:',
-  },
-  totalStakedAda: {
-    id: `${I18N_PREFIX}.totalStakedAda`,
-    defaultMessage: 'Total Staked ADA:',
-  },
-  performance: {
-    id: `${I18N_PREFIX}.performance`,
-    defaultMessage: 'Performance:',
-  },
-  totalRewards: {
-    id: `${I18N_PREFIX}.totalRewards`,
-    defaultMessage: 'Total Rewards:',
-  },
-  totalActiveEpochs: {
-    id: `${I18N_PREFIX}.totalActiveEpochs`,
-    defaultMessage: 'Total Active Epochs:',
-  },
-  epochs: {
-    id: `${I18N_PREFIX}.epochs`,
-    defaultMessage: '{count, plural, =0 {epochs} one {epoch} other {epochs}}',
-  },
-  stakersCount: {
-    id: `${I18N_PREFIX}.stakersCount`,
-    defaultMessage: '# Stakers:',
-  },
-  stakers: {
-    id: `${I18N_PREFIX}.stakers`,
-    defaultMessage: '{count, plural, =0 {stakers} one {staker} other {stakers}}',
-  },
-  margin: {
-    id: `${I18N_PREFIX}.margin`,
-    defaultMessage: 'Margin:',
-  },
-  cost: {
-    id: `${I18N_PREFIX}.cost`,
-    defaultMessage: 'Cost:',
-  },
-  fullness: {
-    id: `${I18N_PREFIX}.fullness`,
-    defaultMessage: 'Fullness:',
-  },
-  revenue: {
-    id: `${I18N_PREFIX}.revenue`,
-    defaultMessage: 'Revenue:',
-  },
-  description: {
-    id: `${I18N_PREFIX}.description`,
-    defaultMessage: 'Description:',
-  },
-  rewardAddress: {
-    id: `${I18N_PREFIX}.rewardAddress`,
-    defaultMessage: 'Reward Address:',
-  },
-  stakePoolCertificate: {
-    id: `${I18N_PREFIX}.stakePoolCertificate`,
-    defaultMessage: 'Stake Pool Certificate:',
-  },
-  lastUpdate: {
-    id: `${I18N_PREFIX}.lastUpdate`,
-    defaultMessage: 'Last Update On:',
-  },
-  fromTop1Begin: {
-    id: `${I18N_PREFIX}.fromTop1Begin`,
-    defaultMessage: '(',
-  },
-  fromTop1End: {
-    id: `${I18N_PREFIX}.fromTop1End`,
-    defaultMessage: ' from Top 1)',
-  },
-  fromTop1EndDot: {
-    id: `${I18N_PREFIX}.fromTop1EndDot`,
-    defaultMessage: ' from Top 1).',
-  },
+  header: 'Staking Key',
+  stakingKey: 'Staking Key Id',
+  entityBadge: 'Revenue',
+  poolRetiredWarning: 'Stake Pool is retired',
+  poolSaturatedWarning: 'Stake Pool is overly saturated',
+  poolNotCompetitive: 'Stake pool is not in the top 100',
+  stakingType: 'Staking Type:',
+  stakingTypeStakingPool: 'Staking Pool:',
+  stakingPoolName: 'Name:',
+  validationCharacters: 'Validation Characters:',
+  creationDate: 'Creation Date:',
+  webpage: 'Webpage:',
+  pledge: 'Pledge:',
+  totalStakedAda: 'Total Staked ADA:',
+  performance: 'Performance:',
+  totalRewards: 'Total Rewards:',
+  totalActiveEpochs: 'Total Active Epochs:',
+  epochs: '{count, plural, =0 {epochs} one {epoch} other {epochs}}',
+  stakersCount: '# Stakers:',
+  stakers: '{count, plural, =0 {stakers} one {staker} other {stakers}}',
+  margin: 'Margin:',
+  cost: 'Cost:',
+  fullness: 'Fullness:',
+  revenue: 'Revenue:',
+  description: 'Description:',
+  rewardAddress: 'Reward Address:',
+  stakePoolCertificate: 'Stake Pool Certificate:',
+  lastUpdate: 'Last Update On:',
+  fromTop1Begin: '(',
+  fromTop1End: ' from Top 1)',
+  fromTop1EndDot: ' from Top 1).',
 })
 
 const StakePoolStakingKey = ({

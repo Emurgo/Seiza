@@ -9,10 +9,7 @@ import Search from './Search'
 import {withI18n} from '@/i18n/helpers'
 
 const messages = defineMessages({
-  header: {
-    id: 'blockchain.header',
-    defaultMessage: 'Ada Blockchain Explorer',
-  },
+  header: 'Ada Blockchain Explorer',
 })
 
 const styles = ({palette}) =>

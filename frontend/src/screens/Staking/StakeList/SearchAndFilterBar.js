@@ -13,17 +13,9 @@ import {onDidUpdate} from '@/components/HOC/lifecycles'
 import Filters from './Filters'
 import {withShowFiltersContext, withSearchTextContext} from '../context'
 
-const I18N_PREFIX = 'staking.actionBar'
-
 const messages = defineMessages({
-  searchPlaceholder: {
-    id: `${I18N_PREFIX}.searchBar`,
-    defaultMessage: 'Search for a Stake Pool by name',
-  },
-  filters: {
-    id: `${I18N_PREFIX}.filters`,
-    defaultMessage: 'Filters',
-  },
+  searchPlaceholder: 'Search for a Stake Pool by name',
+  filters: 'Filters',
 })
 
 // TODO: margin/padding theme unit

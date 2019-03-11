@@ -10,10 +10,7 @@ import Searchbar from '@/components/visual/Searchbar'
 import {routeTo} from '@/helpers/routes'
 
 const text = defineMessages({
-  searchPlaceholder: {
-    id: 'overview.search.placeholder',
-    defaultMessage: 'Search addresses, epochs & slots on the Cardano network',
-  },
+  searchPlaceholder: 'Search addresses, epochs & slots on the Cardano network',
 })
 
 export default compose(

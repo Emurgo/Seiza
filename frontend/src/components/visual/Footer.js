@@ -11,29 +11,11 @@ import {Button} from '@/components/visual'
 import {withI18n} from '@/i18n/helpers'
 import logo from '../../assets/icons/logo-seiza-white.svg'
 
-// TODO: add flow types
-
-const I18N_PREFIX = 'footer'
-const SUBSCRIBE_PREFIX = `${I18N_PREFIX}.subscribe`
-
 const subscribeMessages = defineMessages({
-  subscribeHeader: {
-    id: `${SUBSCRIBE_PREFIX}.header`,
-    defaultMessage: "Let's stay in touch!",
-  },
-  subscribeText: {
-    id: `${SUBSCRIBE_PREFIX}.text`,
-    defaultMessage:
-      'Get access to subscriber and be the first to know when we launch something new!',
-  },
-  emailButton: {
-    id: `${SUBSCRIBE_PREFIX}.email`,
-    defaultMessage: 'Email',
-  },
-  subscribeButton: {
-    id: `${SUBSCRIBE_PREFIX}.subscribe`,
-    defaultMessage: 'Subscribe',
-  },
+  subscribeHeader: "Let's stay in touch!",
+  subscribeText: 'Get access to subscriber and be the first to know when we launch something new!',
+  emailButton: 'Email',
+  subscribeButton: 'Subscribe',
 })
 
 const styles = ({palette}) =>

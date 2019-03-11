@@ -22,25 +22,11 @@ import {
 
 import {useI18n} from '@/i18n/helpers'
 
-const I18N_PREFIX = 'block.fields'
-
 const blockSummaryLabels = defineMessages({
-  epoch: {
-    id: `${I18N_PREFIX}.epoch`,
-    defaultMessage: 'Epoch',
-  },
-  slot: {
-    id: `${I18N_PREFIX}.slot`,
-    defaultMessage: 'Slot',
-  },
-  issuedAt: {
-    id: `${I18N_PREFIX}.issuedAt`,
-    defaultMessage: 'Timestamp',
-  },
-  transactionsCount: {
-    id: `${I18N_PREFIX}.transactionsCount`,
-    defaultMessage: '# Transactions',
-  },
+  epoch: 'Epoch',
+  slot: 'Slot',
+  issuedAt: 'Timestamp',
+  transactionsCount: '# Transactions',
 })
 
 const TransactionCard = ({transaction}) => (
@@ -78,14 +64,8 @@ const BlockSummaryCard = ({block}) => {
 }
 
 const blockMessages = defineMessages({
-  title: {
-    id: 'blockchain.block.title',
-    defaultMessage: '<Block>',
-  },
-  blockHash: {
-    id: 'blockchain.block.blockHash',
-    defaultMessage: 'Block ID',
-  },
+  title: '<Block>',
+  blockHash: 'Block ID',
 })
 
 const BLOCK_INFO_FRAGMENT = gql`

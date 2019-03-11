@@ -30,66 +30,21 @@ import {routeTo} from '@/helpers/routes'
 import type {Transaction} from '@/__generated__/schema.flow'
 
 const messages = defineMessages({
-  header: {
-    id: 'transaction.header',
-    defaultMessage: 'Transaction',
-  },
-  transactionId: {
-    id: 'transaction.transactionId',
-    defaultMessage: 'Transaction Id',
-  },
-  assuranceLevel: {
-    id: 'transaction.assuranceLevel',
-    defaultMessage: 'Assurance Level:',
-  },
-  confirmations: {
-    id: 'transaction.confirmations',
-    defaultMessage: '{count, plural, =0 {confirmations} one {confirmation} other {confirmations}}',
-  },
-  epoch: {
-    id: 'transaction.epoch',
-    defaultMessage: 'Epoch:',
-  },
-  slot: {
-    id: 'transaction.slot',
-    defaultMessage: 'Slot:',
-  },
-  date: {
-    id: 'transaction.date',
-    defaultMessage: 'Date:',
-  },
-  size: {
-    id: 'transaction.size',
-    defaultMessage: 'Size:',
-  },
-  fees: {
-    id: 'transaction.fees',
-    defaultMessage: 'Transaction Fees:',
-  },
-  notAvailable: {
-    id: 'transaction.field.notAvailable',
-    defaultMessage: 'N/A',
-  },
-  addressCount: {
-    id: 'transaction.addressCount',
-    defaultMessage: '{count, plural, =0 {# addresses} one {# address} other {# addresses}}',
-  },
-  from: {
-    id: 'transaction.from',
-    defaultMessage: 'From:',
-  },
-  to: {
-    id: 'transaction.to',
-    defaultMessage: 'To:',
-  },
-  seeAll: {
-    id: 'transaction.seeAll',
-    defaultMessage: 'See all addresses',
-  },
-  hideAll: {
-    id: 'transaction.hideAll',
-    defaultMessage: 'Hide all addresses',
-  },
+  header: 'Transaction',
+  transactionId: 'Transaction Id',
+  assuranceLevel: 'Assurance Level:',
+  confirmations: '{count, plural, =0 {confirmations} one {confirmation} other {confirmations}}',
+  epoch: 'Epoch:',
+  slot: 'Slot:',
+  date: 'Date:',
+  size: 'Size:',
+  fees: 'Transaction Fees:',
+  notAvailable: 'N/A',
+  addressCount: '{count, plural, =0 {# addresses} one {# address} other {# addresses}}',
+  from: 'From:',
+  to: 'To:',
+  seeAll: 'See all addresses',
+  hideAll: 'Hide all addresses',
 })
 
 type AssuranceEnum = 'LOW' | 'MEDIUM' | 'HIGH'
