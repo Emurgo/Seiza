@@ -15,7 +15,9 @@ import {withPerformanceContext} from '../context'
 const messages = defineMessages({
   allLanguages: 'All',
   languages: 'Languages',
-  performance: 'Performance',
+  regions: 'Regions',
+  allRegions: 'All',
+  performance: 'Performance:',
 })
 
 // TODO: margin/padding theme unit
@@ -24,11 +26,10 @@ const useStyles = makeStyles((theme) => ({
     background: theme.palette.background.paper,
   },
   select: {
-    width: '200px',
+    width: '85%',
   },
   slider: {
-    width: '300px',
-    marginLeft: '30px',
+    width: '90%',
   },
 }))
 
@@ -40,8 +41,13 @@ const tipFormatter = (value) => `${value}%`
 export default compose(
   withPerformanceContext,
   withStateHandlers(
-    (props) => ({performance: props.performanceContext.performance, language: 'all'}),
+    (props) => ({
+      performance: props.performanceContext.performance,
+      language: 'all',
+      region: 'all',
+    }),
     {
+      setRegion: () => (region) => ({region}),
       setLanguage: () => (language) => ({language}),
       setPerformance: () => (performance) => ({performance}),
     }
@@ -57,36 +63,57 @@ export default compose(
       props.setPerformance(props.performanceContext.performance)
     }
   })
-)(({onDragEnd, setPerformance: onPerformanceChange, performance, onLanguageChange, language}) => {
-  const {translate: tr} = useI18n()
-  const classes = useStyles()
-  return (
-    <Card>
-      <CardContent>
-        <Grid container className={classes.wrapper} direction="row">
-          <Grid item>
-            <Select
-              value={language}
-              label={tr(messages.languages)}
-              onChange={onLanguageChange}
-              className={classes.select}
-              options={[{value: 'all', label: tr(messages.allLanguages)}]}
-            />
+)(
+  ({
+    onDragEnd,
+    setPerformance: onPerformanceChange,
+    performance,
+    onLanguageChange,
+    language,
+    setRegion: onRegionChange,
+    region,
+  }) => {
+    const {translate: tr} = useI18n()
+    const classes = useStyles()
+    return (
+      <Card>
+        <CardContent>
+          <Grid container className={classes.wrapper} direction="row">
+            <Grid item xs={4}>
+              <Select
+                value={region}
+                label={tr(messages.regions)}
+                onChange={onRegionChange}
+                className={classes.select}
+                options={[{value: 'all', label: tr(messages.allRegions)}]}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <Select
+                value={language}
+                label={tr(messages.languages)}
+                onChange={onLanguageChange}
+                className={classes.select}
+                options={[{value: 'all', label: tr(messages.allLanguages)}]}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <div className={classes.slider}>
+                <Slider
+                  min={RANGE_START}
+                  max={RANGE_END}
+                  tipFormatter={tipFormatter}
+                  value={performance}
+                  label={tr(messages.performance)}
+                  className={classes.slider}
+                  onChange={onPerformanceChange}
+                  onDragEnd={onDragEnd}
+                />
+              </div>
+            </Grid>
           </Grid>
-          <Grid item>
-            <Slider
-              min={RANGE_START}
-              max={RANGE_END}
-              tipFormatter={tipFormatter}
-              value={performance}
-              label={tr(messages.performance)}
-              className={classes.slider}
-              onChange={onPerformanceChange}
-              onDragEnd={onDragEnd}
-            />
-          </Grid>
-        </Grid>
-      </CardContent>
-    </Card>
-  )
-})
+        </CardContent>
+      </Card>
+    )
+  }
+)
