@@ -17,6 +17,14 @@ const text = defineMessages({
     id: 'overview.metrics.not_available',
     defaultMessage: 'N/A',
   },
+  loading: {
+    id: 'overview.metrics.loading',
+    defaultMessage: '...',
+  },
+  error: {
+    id: 'overview.metrics.error',
+    defaultMessage: 'Err',
+  },
   epochLabel: {
     id: 'overview.metrics.epoch.label',
     defaultMessage: 'Epoch',
@@ -63,9 +71,9 @@ const GridItem = withStyles(styles)(({children, classes}) => (
 
 const OverviewMetrics = ({intl, data, classes, currency, setCurrency}) => {
   const {translate, formatInt, formatPercent, formatFiat} = getIntlFormatters(intl)
-  const status = data.currentStatus
+  const {currentStatus: status, loading, error} = data
 
-  const NA = translate(text.not_available)
+  const NA = translate(loading ? text.loading : error ? text.error : text.not_available)
 
   const epochNumber = formatInt(idx(status, (s) => s.epochNumber), {defaultValue: NA})
   const blockCount = formatInt(idx(status, (s) => s.blockCount), {defaultValue: NA})
