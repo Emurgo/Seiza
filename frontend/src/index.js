@@ -1,5 +1,6 @@
 // @flow
 import './index.css'
+import './utils.css'
 
 import React from 'react'
 import ReactDOM from 'react-dom'
