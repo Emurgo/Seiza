@@ -17,8 +17,6 @@ import {withI18n} from '@/i18n/helpers'
 import AdaIcon from '@/assets/icons/transaction-id.svg'
 import {getStakePoolStakingKey} from './mockedData'
 
-const I18N_PREFIX = 'blockchain.stakingKey.stakePool'
-
 const messages = defineMessages({
   header: 'Staking Key',
   stakingKey: 'Staking Key Id',

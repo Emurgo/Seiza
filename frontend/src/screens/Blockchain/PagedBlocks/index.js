@@ -15,8 +15,6 @@ import {GET_PAGED_BLOCKS} from '@/api/queries'
 import {useI18n} from '@/i18n/helpers'
 import withPagedData from '@/components/HOC/withPagedData'
 
-const I18N_PREFIX = 'blockchain.blockList'
-
 const messages = defineMessages({
   refreshState: 'Refresh state:',
   header: 'Recent blocks',

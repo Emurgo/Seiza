@@ -22,8 +22,6 @@ import {
 
 import {useI18n} from '@/i18n/helpers'
 
-const I18N_PREFIX = 'block.fields'
-
 const blockSummaryLabels = defineMessages({
   epoch: 'Epoch',
   slot: 'Slot',

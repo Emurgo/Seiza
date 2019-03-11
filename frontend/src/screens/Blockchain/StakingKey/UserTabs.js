@@ -5,7 +5,6 @@ import WithTabState from '@/components/headless/tabState'
 import {SummaryCard, AdaValue} from '@/components/visual'
 import {useI18n} from '@/i18n/helpers'
 
-const I18N_PREFIX = 'stakingKey.user.tabs'
 const messages = defineMessages({
   delegatedPoolInfoName: 'Delegated Pool Info',
   historyName: 'History',

@@ -13,8 +13,6 @@ import {onDidUpdate} from '@/components/HOC/lifecycles'
 import Filters from './Filters'
 import {withShowFiltersContext, withSearchTextContext} from '../context'
 
-const I18N_PREFIX = 'staking.actionBar'
-
 const messages = defineMessages({
   searchPlaceholder: 'Search for a Stake Pool by name',
   filters: 'Filters',

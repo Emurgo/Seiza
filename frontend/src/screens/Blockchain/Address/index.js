@@ -33,8 +33,6 @@ import {
 
 import addressIcon from '@/assets/icons/qrcode.svg'
 
-const I18N_PREFIX = 'blockchain.address'
-
 const summaryMessages = defineMessages({
   address: 'Address ID',
   addressType: 'Address type',

@@ -18,8 +18,6 @@ import {withI18n} from '@/i18n/helpers'
 
 const INPUT_PADDING = 10
 
-const I18N_PREFIX = 'pagination'
-
 const ariaLabels = defineMessages({
   lastPage: 'Last Page',
   firstPage: 'First Page',

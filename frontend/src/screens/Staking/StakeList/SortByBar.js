@@ -12,8 +12,6 @@ import {useI18n} from '@/i18n/helpers'
 import {withSortByContext} from '../context'
 import {SORT_BY_OPTIONS} from '../context/sortBy'
 
-const I18N_PREFIX = 'staking.sortByBar'
-
 const messages = defineMessages({
   sortBy: 'Sort by',
   revenue: 'Revenue',

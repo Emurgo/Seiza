@@ -10,8 +10,6 @@ import NavLink from '@/components/common/NavLink'
 import {routeTo} from '@/helpers/routes'
 import {withI18n} from '@/i18n/helpers'
 
-const I18N_PREFIX = 'staking.navigation'
-
 const navigationMessages = defineMessages({
   list: 'Stake pools list',
   comparison: 'Comparison matric',

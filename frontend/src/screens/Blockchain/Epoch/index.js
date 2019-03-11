@@ -21,8 +21,6 @@ import WithTabState from '@/components/headless/tabState'
 import BlocksTab from './Blocks'
 import StakingPoolsTab from './StakingPools'
 
-const I18N_PREFIX = 'blockchain.epoch'
-
 const messages = defineMessages({
   header: 'Epoch',
   entityHeader: 'Epoch Number',

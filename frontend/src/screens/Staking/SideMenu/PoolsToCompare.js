@@ -13,8 +13,6 @@ import {LoadingInProgress, DebugApolloError} from '@/components/visual'
 import {withI18n} from '@/i18n/helpers'
 import {withSelectedPoolsContext} from '../context'
 
-const I18N_PREFIX = 'staking.poolsToCompare'
-
 const messages = defineMessages({
   header: 'Stake pools to compare:',
   share: 'Share',

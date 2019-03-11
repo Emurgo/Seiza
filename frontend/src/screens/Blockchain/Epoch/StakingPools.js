@@ -24,8 +24,6 @@ const GET_STAKE_POOLS_IN_EPOCH = gql`
   }
 `
 
-const I18N_PREFIX = 'blockchain.epoch.stakingPoolsTab'
-
 const messages = defineMessages({
   name: 'Name',
   performance: 'Performance',

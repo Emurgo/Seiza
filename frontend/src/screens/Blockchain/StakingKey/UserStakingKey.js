@@ -12,8 +12,6 @@ import CertificateIcon from '@/assets/icons/certificate.svg'
 import Tabs from './UserTabs'
 import {getUserStakingKey} from './mockedData'
 
-const I18N_PREFIX = 'blockchain.stakingKey.user'
-
 const messages = defineMessages({
   header: 'Staking Key',
   stakingKey: 'Staking Key Id',

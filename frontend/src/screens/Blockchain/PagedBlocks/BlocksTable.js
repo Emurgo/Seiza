@@ -7,8 +7,6 @@ import {AdaValue, Link} from '@/components/visual'
 import {withI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
 
-const I18N_PREFIX = 'blockchain.blockList.table'
-
 // TODO?: aria-label messages
 const tableMessages = defineMessages({
   epoch: 'epoch',

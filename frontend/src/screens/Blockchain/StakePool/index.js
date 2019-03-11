@@ -18,8 +18,6 @@ import {
 
 import {withI18n} from '@/i18n/helpers'
 
-const I18N_PREFIX = 'stakepool.fields'
-
 const summaryLabels = defineMessages({
   name: 'Name',
   description: 'Description',

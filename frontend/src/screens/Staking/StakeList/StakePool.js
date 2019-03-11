@@ -9,8 +9,6 @@ import WithModalState from '@/components/headless/modalState'
 import {withI18n} from '@/i18n/helpers'
 import {withSelectedPoolsContext} from '../context'
 
-const I18N_PREFIX = 'staking.stakePool'
-
 const messages = defineMessages({
   performance: 'Performance:',
   pledge: 'Pledge:',

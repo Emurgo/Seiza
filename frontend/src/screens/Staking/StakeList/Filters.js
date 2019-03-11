@@ -10,8 +10,6 @@ import {defineMessages} from 'react-intl'
 import {useI18n} from '@/i18n/helpers'
 import {Slider, Select} from '@/components/visual'
 
-const I18N_PREFIX = 'staking.filters'
-
 const messages = defineMessages({
   allLanguages: 'All',
   languages: 'Languages',

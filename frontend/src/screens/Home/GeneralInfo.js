@@ -16,11 +16,6 @@ import {
 } from '@/components/visual'
 import {withI18n} from '@/i18n/helpers'
 
-const I18N_PREFIX = 'home.generalInfo'
-const CARD_HEADERS = `${I18N_PREFIX}.cardHeaders`
-const GENERAL_INFO = `${I18N_PREFIX}.generalInfoCard`
-const SLOT_INFO = `${I18N_PREFIX}.slotInfoCard`
-
 const POLL_INTERVAL = 1000 * 60
 const SLOT_POLL_INTERVAL = 1000 * 10
 

@@ -10,8 +10,6 @@ import {withI18n} from '@/i18n/helpers'
 // TODO: consider renaming the component or using different one
 import {MetricsCard} from '@/components/visual'
 
-const I18N_PREFIX = 'staking.header'
-
 const messages = defineMessages({
   header: 'Explore Stake Pools',
   card1: 'You can search for stake pool you like',
