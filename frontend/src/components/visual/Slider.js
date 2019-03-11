@@ -88,6 +88,12 @@ export default compose(
   withHandlers({
     onFocusOn: ({setFocused}) => (e) => setFocused(true),
     onFocusOff: ({setFocused}) => (e) => setFocused(false),
+  }),
+  withHandlers({
+    onAfterChange: ({onFocusOff, onDragEnd}) => () => {
+      onFocusOff()
+      onDragEnd()
+    },
   })
 )(
   ({
@@ -100,7 +106,7 @@ export default compose(
     value,
     tipFormatter,
     focused,
-    onFocusOff,
+    onAfterChange,
     onFocusOn,
     theme,
   }) => {
@@ -114,13 +120,12 @@ export default compose(
         )}
         <div className={classes.rangeWrapper}>
           <Range
-            onAfterChange={onFocusOff}
             onBeforeChange={onFocusOn}
             onChange={onChange}
             trackStyle={[getTrackStyle(theme), getTrackStyle(theme)]}
             handleStyle={[getHandleStyle(theme), getHandleStyle(theme)]}
             railStyle={getRailStyle(theme)}
-            {...{min, max, value, handle}}
+            {...{min, max, value, handle, onAfterChange}}
           />
         </div>
       </FormControl>

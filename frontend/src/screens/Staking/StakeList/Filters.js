@@ -9,6 +9,8 @@ import {defineMessages} from 'react-intl'
 
 import {useI18n} from '@/i18n/helpers'
 import {Slider, Select} from '@/components/visual'
+import {onDidUpdate} from '@/components/HOC/lifecycles'
+import {withPerformanceContext} from '../context'
 
 const messages = defineMessages({
   allLanguages: 'All',
@@ -35,22 +37,27 @@ const RANGE_END = 100
 
 const tipFormatter = (value) => `${value}%`
 
-// Note: just mocked usage demonstration
 export default compose(
+  withPerformanceContext,
   withStateHandlers(
-    {
-      language: 'all',
-      range: [RANGE_START, RANGE_END],
-    },
+    (props) => ({performance: props.performanceContext.performance, language: 'all'}),
     {
       setLanguage: () => (language) => ({language}),
-      setRange: () => (range) => ({range}),
+      setPerformance: () => (performance) => ({performance}),
     }
   ),
   withHandlers({
     onLanguageChange: ({setLanguage}) => (e) => setLanguage(e.target.value),
+    onDragEnd: ({performanceContext, performance}) => () => {
+      performanceContext.setPerformance(performance)
+    },
+  }),
+  onDidUpdate((props, prevProps) => {
+    if (props.performanceContext.performance !== prevProps.performanceContext.performance) {
+      props.setPerformance(props.performanceContext.performance)
+    }
   })
-)(({setRange: onRangeChange, range, onLanguageChange, language}) => {
+)(({onDragEnd, setPerformance: onPerformanceChange, performance, onLanguageChange, language}) => {
   const {translate: tr} = useI18n()
   const classes = useStyles()
   return (
@@ -71,10 +78,11 @@ export default compose(
               min={RANGE_START}
               max={RANGE_END}
               tipFormatter={tipFormatter}
-              value={range}
+              value={performance}
               label={tr(messages.performance)}
               className={classes.slider}
-              onChange={onRangeChange}
+              onChange={onPerformanceChange}
+              onDragEnd={onDragEnd}
             />
           </Grid>
         </Grid>
