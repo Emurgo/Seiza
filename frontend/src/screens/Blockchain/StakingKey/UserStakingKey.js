@@ -15,70 +15,22 @@ import {getUserStakingKey} from './mockedData'
 const I18N_PREFIX = 'blockchain.stakingKey.user'
 
 const messages = defineMessages({
-  header: {
-    id: `${I18N_PREFIX}.header`,
-    defaultMessage: 'Staking Key',
-  },
-  stakingKey: {
-    id: `${I18N_PREFIX}.entityId`,
-    defaultMessage: 'Staking Key Id',
-  },
-  stakingType: {
-    id: `${I18N_PREFIX}.stakingType`,
-    defaultMessage: 'Staking Type:',
-  },
-  stakingTypeUser: {
-    id: `${I18N_PREFIX}.stakingTypeUser`,
-    defaultMessage: 'User',
-  },
-  stakingTypeStakingPool: {
-    id: `${I18N_PREFIX}.stakingTypeStakingPool`,
-    defaultMessage: 'Staking Pool',
-  },
-  stakingTypePending: {
-    id: `${I18N_PREFIX}.stakingTypePending`,
-    defaultMessage: 'Pending',
-  },
-  creationDate: {
-    id: `${I18N_PREFIX}.creationDate`,
-    defaultMessage: 'Creation Date:',
-  },
-  stakedAda: {
-    id: `${I18N_PREFIX}.stakedAda`,
-    defaultMessage: 'Staked ADA:',
-  },
-  addressesCount: {
-    id: `${I18N_PREFIX}.addressesCount`,
-    defaultMessage: '# Addresses:',
-  },
-  addresses: {
-    id: `${I18N_PREFIX}.addresses`,
-    defaultMessage: '{count, plural, =0 {addresses} one {address} other {addresses}}',
-  },
-  totalRewards: {
-    id: `${I18N_PREFIX}.totalRewards`,
-    defaultMessage: 'Total Rewards:',
-  },
-  uncollectedRewards: {
-    id: `${I18N_PREFIX}.uncollectedRewards`,
-    defaultMessage: 'Uncollected Rewards:',
-  },
-  totalEpochsActive: {
-    id: `${I18N_PREFIX}.totalEpochsActive`,
-    defaultMessage: 'Total Epochs Active:',
-  },
-  epochs: {
-    id: `${I18N_PREFIX}.epochs`,
-    defaultMessage: '{count, plural, =0 {# epochs} one {# epoch} other {# epochs}}',
-  },
-  rewardAddress: {
-    id: `${I18N_PREFIX}.rewardAddress`,
-    defaultMessage: 'Reward Address:',
-  },
-  delegationCert: {
-    id: `${I18N_PREFIX}.delegationCertificate`,
-    defaultMessage: 'Delegation Certificate:',
-  },
+  header: 'Staking Key',
+  stakingKey: 'Staking Key Id',
+  stakingType: 'Staking Type:',
+  stakingTypeUser: 'User',
+  stakingTypeStakingPool: 'Staking Pool',
+  stakingTypePending: 'Pending',
+  creationDate: 'Creation Date:',
+  stakedAda: 'Staked ADA:',
+  addressesCount: '# Addresses:',
+  addresses: '{count, plural, =0 {addresses} one {address} other {addresses}}',
+  totalRewards: 'Total Rewards:',
+  uncollectedRewards: 'Uncollected Rewards:',
+  totalEpochsActive: 'Total Epochs Active:',
+  epochs: '{count, plural, =0 {# epochs} one {# epoch} other {# epochs}}',
+  rewardAddress: 'Reward Address:',
+  delegationCert: 'Delegation Certificate:',
 })
 
 const UserStakingKey = ({stakingKey, i18n: {translate, formatTimestamp, formatInt}}) => {

@@ -21,14 +21,8 @@ import {withI18n} from '@/i18n/helpers'
 const I18N_PREFIX = 'stakepool.fields'
 
 const summaryLabels = defineMessages({
-  name: {
-    id: `${I18N_PREFIX}.name`,
-    defaultMessage: 'Name',
-  },
-  description: {
-    id: `${I18N_PREFIX}.description`,
-    defaultMessage: 'Description',
-  },
+  name: 'Name',
+  description: 'Description',
 })
 
 const _PoolSummaryCard = ({i18n, pool}) => {
@@ -54,14 +48,8 @@ const _PoolSummaryCard = ({i18n, pool}) => {
 const PoolSummaryCard = compose(withI18n)(_PoolSummaryCard)
 
 const messages = defineMessages({
-  title: {
-    id: 'blockchain.stakepool.title',
-    defaultMessage: '<Stake pool>',
-  },
-  poolHash: {
-    id: 'blockchain.stakepool.blockHash',
-    defaultMessage: 'Pool ID',
-  },
+  title: '<Stake pool>',
+  poolHash: 'Pool ID',
 })
 
 const StakePool = ({poolDataProvider, i18n}) => {

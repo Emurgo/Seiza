@@ -15,14 +15,8 @@ export const THEMES = {
 const I18N_PREFIX = 'themes'
 
 export const themeMessages = defineMessages({
-  [THEMES.BRIGHT]: {
-    id: `${I18N_PREFIX}.bright`,
-    defaultMessage: 'Bright',
-  },
-  [THEMES.DARK]: {
-    id: `${I18N_PREFIX}.dark`,
-    defaultMessage: 'Dark',
-  },
+  [THEMES.BRIGHT]: 'Bright',
+  [THEMES.DARK]: 'Dark',
 })
 
 // TODO: Which font families to fallback to?

@@ -11,42 +11,15 @@ const I18N_PREFIX = 'blockchain.blockList.table'
 
 // TODO?: aria-label messages
 const tableMessages = defineMessages({
-  epoch: {
-    id: `${I18N_PREFIX}.epoch`,
-    defaultMessage: 'epoch',
-  },
-  slot: {
-    id: `${I18N_PREFIX}.slot`,
-    defaultMessage: 'slot',
-  },
-  slotLeader: {
-    id: `${I18N_PREFIX}.slotLeader`,
-    defaultMessage: 'slot leader',
-  },
-  time: {
-    id: `${I18N_PREFIX}.time`,
-    defaultMessage: 'time',
-  },
-  transactions: {
-    id: `${I18N_PREFIX}.transactions`,
-    defaultMessage: 'transactions',
-  },
-  totalSent: {
-    id: `${I18N_PREFIX}.totalSent`,
-    defaultMessage: 'total sent (ADA)',
-  },
-  fees: {
-    id: `${I18N_PREFIX}.fees`,
-    defaultMessage: 'fees (ADA)',
-  },
-  size: {
-    id: `${I18N_PREFIX}.size`,
-    defaultMessage: 'size (B)',
-  },
-  noDataToShow: {
-    id: `${I18N_PREFIX}.noDataToShow`,
-    defaultMessage: 'No data to show.',
-  },
+  epoch: 'epoch',
+  slot: 'slot',
+  slotLeader: 'slot leader',
+  time: 'time',
+  transactions: 'transactions',
+  totalSent: 'total sent (ADA)',
+  fees: 'fees (ADA)',
+  size: 'size (B)',
+  noDataToShow: 'No data to show.',
 })
 
 export const COLUMNS_MAP = {

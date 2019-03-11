@@ -22,22 +22,10 @@ type AlertTypeEnum = $Values<typeof TYPES>
 const I18N_PREFIX = 'alert'
 
 const messages = defineMessages({
-  [TYPES.EMPHASIS]: {
-    id: `${I18N_PREFIX}.emphasis`,
-    defaultMessage: 'Emphasis',
-  },
-  [TYPES.WARNING]: {
-    id: `${I18N_PREFIX}.warning`,
-    defaultMessage: 'Warning',
-  },
-  [TYPES.ALERT]: {
-    id: `${I18N_PREFIX}.alert`,
-    defaultMessage: 'Alert',
-  },
-  [TYPES.NEUTRAL]: {
-    id: `${I18N_PREFIX}.neutral`,
-    defaultMessage: 'Message',
-  },
+  [TYPES.EMPHASIS]: 'Emphasis',
+  [TYPES.WARNING]: 'Warning',
+  [TYPES.ALERT]: 'Alert',
+  [TYPES.NEUTRAL]: 'Message',
 })
 
 const getBorderColorStyle = (backgroundColor) => darken(backgroundColor, 0.05)

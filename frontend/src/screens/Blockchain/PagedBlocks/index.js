@@ -18,14 +18,8 @@ import withPagedData from '@/components/HOC/withPagedData'
 const I18N_PREFIX = 'blockchain.blockList'
 
 const messages = defineMessages({
-  refreshState: {
-    id: `${I18N_PREFIX}.refreshState`,
-    defaultMessage: 'Refresh state:',
-  },
-  header: {
-    id: `${I18N_PREFIX}.header`,
-    defaultMessage: 'Recent blocks',
-  },
+  refreshState: 'Refresh state:',
+  header: 'Recent blocks',
 })
 
 const autoUpdateStyles = (theme) =>

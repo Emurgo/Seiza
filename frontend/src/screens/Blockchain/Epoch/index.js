@@ -24,62 +24,20 @@ import StakingPoolsTab from './StakingPools'
 const I18N_PREFIX = 'blockchain.epoch'
 
 const messages = defineMessages({
-  header: {
-    id: `${I18N_PREFIX}.header`,
-    defaultMessage: 'Epoch',
-  },
-  entityHeader: {
-    id: `${I18N_PREFIX}.entityIdHeader`,
-    defaultMessage: 'Epoch Number',
-  },
-  startTime: {
-    id: `${I18N_PREFIX}.startTime`,
-    defaultMessage: 'Start Time',
-  },
-  endTime: {
-    id: `${I18N_PREFIX}.endTime`,
-    defaultMessage: 'End Time',
-  },
-  blocksCount: {
-    id: `${I18N_PREFIX}.blocksCount`,
-    defaultMessage: 'Blocks',
-  },
-  txCount: {
-    id: `${I18N_PREFIX}.txCount`,
-    defaultMessage: 'Transactions',
-  },
-  totalAdaCirculation: {
-    id: `${I18N_PREFIX}.totalAdaCirculation`,
-    defaultMessage: 'Total ADA Circulation',
-  },
-  totalFees: {
-    id: `${I18N_PREFIX}.totalFees`,
-    defaultMessage: 'Total Fees',
-  },
-  totalAdaStaked: {
-    id: `${I18N_PREFIX}.totalAdaStaked`,
-    defaultMessage: 'Total ADA Staked',
-  },
-  totalStakingRewards: {
-    id: `${I18N_PREFIX}.totalStakingRewards`,
-    defaultMessage: 'Total Staking Rewards',
-  },
-  stakingKeysDelegating: {
-    id: `${I18N_PREFIX}.stakingKeysDelegating`,
-    defaultMessage: 'Total Staking Keys Delegating',
-  },
-  stakingPoolsCount: {
-    id: `${I18N_PREFIX}.stakingPoolsCount`,
-    defaultMessage: 'Total Pools Count',
-  },
-  blocksTab: {
-    id: `${I18N_PREFIX}.blocksTab`,
-    defaultMessage: 'Blocks',
-  },
-  stakingPoolsTab: {
-    id: `${I18N_PREFIX}.stakingPoolsTab`,
-    defaultMessage: 'Staking Pools',
-  },
+  header: 'Epoch',
+  entityHeader: 'Epoch Number',
+  startTime: 'Start Time',
+  endTime: 'End Time',
+  blocksCount: 'Blocks',
+  txCount: 'Transactions',
+  totalAdaCirculation: 'Total ADA Circulation',
+  totalFees: 'Total Fees',
+  totalAdaStaked: 'Total ADA Staked',
+  totalStakingRewards: 'Total Staking Rewards',
+  stakingKeysDelegating: 'Total Staking Keys Delegating',
+  stakingPoolsCount: 'Total Pools Count',
+  blocksTab: 'Blocks',
+  stakingPoolsTab: 'Staking Pools',
 })
 
 const GET_EPOCH_BY_NUMBER = gql`

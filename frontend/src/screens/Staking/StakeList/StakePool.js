@@ -12,46 +12,16 @@ import {withSelectedPoolsContext} from '../context'
 const I18N_PREFIX = 'staking.stakePool'
 
 const messages = defineMessages({
-  performance: {
-    id: `${I18N_PREFIX}.performance`,
-    defaultMessage: 'Performance:',
-  },
-  pledge: {
-    id: `${I18N_PREFIX}.pledge`,
-    defaultMessage: 'Pledge:',
-  },
-  margins: {
-    id: `${I18N_PREFIX}.margins`,
-    defaultMessage: 'Margins:',
-  },
-  createdAt: {
-    id: `${I18N_PREFIX}.createdAt`,
-    defaultMessage: 'Creation time:',
-  },
-  fullness: {
-    id: `${I18N_PREFIX}.fullness`,
-    defaultMessage: 'Fullness:',
-  },
-  stake: {
-    id: `${I18N_PREFIX}.stake`,
-    defaultMessage: 'Stake:',
-  },
-  hideDesc: {
-    id: `${I18N_PREFIX}.hideDesc`,
-    defaultMessage: 'Hide description',
-  },
-  showDesc: {
-    id: `${I18N_PREFIX}.showDesc`,
-    defaultMessage: 'Full description',
-  },
-  addPool: {
-    id: `${I18N_PREFIX}.addPool`,
-    defaultMessage: 'Add',
-  },
-  removePool: {
-    id: `${I18N_PREFIX}.removePool`,
-    defaultMessage: 'Remove',
-  },
+  performance: 'Performance:',
+  pledge: 'Pledge:',
+  margins: 'Margins:',
+  createdAt: 'Creation time:',
+  fullness: 'Fullness:',
+  stake: 'Stake:',
+  hideDesc: 'Hide description',
+  showDesc: 'Full description',
+  addPool: 'Add',
+  removePool: 'Remove',
 })
 
 const headerStyles = ({palette}) =>

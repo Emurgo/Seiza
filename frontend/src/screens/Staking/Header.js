@@ -13,22 +13,10 @@ import {MetricsCard} from '@/components/visual'
 const I18N_PREFIX = 'staking.header'
 
 const messages = defineMessages({
-  header: {
-    id: `${I18N_PREFIX}.header`,
-    defaultMessage: 'Explore Stake Pools',
-  },
-  card1: {
-    id: `${I18N_PREFIX}.card1`,
-    defaultMessage: 'You can search for stake pool you like',
-  },
-  card2: {
-    id: `${I18N_PREFIX}.card2`,
-    defaultMessage: 'You can download or share it',
-  },
-  card3: {
-    id: `${I18N_PREFIX}.card3`,
-    defaultMessage: 'You can compare it by diff features',
-  },
+  header: 'Explore Stake Pools',
+  card1: 'You can search for stake pool you like',
+  card2: 'You can download or share it',
+  card3: 'You can compare it by diff features',
 })
 
 const styles = ({palette}) =>

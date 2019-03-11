@@ -17,30 +17,12 @@ import {routeTo} from '@/helpers/routes'
 import {SimpleLayout, LoadingInProgress, DebugApolloError, Link} from '@/components/visual'
 
 const messages = defineMessages({
-  title: {
-    id: 'blockchain.search.title',
-    defaultMessage: 'Search results',
-  },
-  query: {
-    id: 'blockchain.search.query',
-    defaultMessage: 'Query: ',
-  },
-  noResults: {
-    id: 'blockchain.search.noResults',
-    defaultMessage: 'Nothing found!',
-  },
-  address: {
-    id: 'blockchain.search.address',
-    defaultMessage: 'Address: ',
-  },
-  transaction: {
-    id: 'blockchain.search.transaction',
-    defaultMessage: 'Transaction: ',
-  },
-  block: {
-    id: 'blockchain.search.block',
-    defaultMessage: 'Block: ',
-  },
+  title: 'Search results',
+  query: 'Query: ',
+  noResults: 'Nothing found!',
+  address: 'Address: ',
+  transaction: 'Transaction: ',
+  block: 'Block: ',
 })
 
 const Address = ({item, i18n}) => (

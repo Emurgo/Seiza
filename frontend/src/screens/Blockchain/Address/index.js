@@ -36,30 +36,12 @@ import addressIcon from '@/assets/icons/qrcode.svg'
 const I18N_PREFIX = 'blockchain.address'
 
 const summaryMessages = defineMessages({
-  address: {
-    id: `${I18N_PREFIX}.address`,
-    defaultMessage: 'Address ID',
-  },
-  addressType: {
-    id: `${I18N_PREFIX}.addressType`,
-    defaultMessage: 'Address type',
-  },
-  transactionsCount: {
-    id: `${I18N_PREFIX}.transactionsCount`,
-    defaultMessage: 'Total transactions for address',
-  },
-  balance: {
-    id: `${I18N_PREFIX}.balance`,
-    defaultMessage: 'Address Balance',
-  },
-  totalAdaReceived: {
-    id: `${I18N_PREFIX}.totalAdaReceived`,
-    defaultMessage: 'Total received ADA',
-  },
-  totalAdaSent: {
-    id: `${I18N_PREFIX}.totalAdaSent`,
-    defaultMessage: 'Total sent ADA',
-  },
+  address: 'Address ID',
+  addressType: 'Address type',
+  transactionsCount: 'Total transactions for address',
+  balance: 'Address Balance',
+  totalAdaReceived: 'Total received ADA',
+  totalAdaSent: 'Total sent ADA',
 })
 
 const Heading = ({children}) => <Typography variant="h4">{children}</Typography>
@@ -121,18 +103,9 @@ const _AddressSummaryCard = ({addressSummary, i18n}) => {
 const AddressSummaryCard = withI18n(_AddressSummaryCard)
 
 const messages = defineMessages({
-  title: {
-    id: `${I18N_PREFIX}.title`,
-    defaultMessage: 'Address',
-  },
-  showQRCode: {
-    id: `${I18N_PREFIX}.showQRCode`,
-    defaultMessage: 'Show QR code',
-  },
-  transactionsHeading: {
-    id: `${I18N_PREFIX}.transactionsHeading`,
-    defaultMessage: 'Transactions',
-  },
+  title: 'Address',
+  showQRCode: 'Show QR code',
+  transactionsHeading: 'Transactions',
 })
 
 const AddressScreen = ({addressDataProvider, i18n}) => {

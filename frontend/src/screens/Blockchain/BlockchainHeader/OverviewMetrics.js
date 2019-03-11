@@ -13,42 +13,15 @@ import {routeTo} from '@/helpers/routes'
 import WithNavigateTo from '@/components/headless/navigateTo'
 
 const text = defineMessages({
-  not_available: {
-    id: 'overview.metrics.not_available',
-    defaultMessage: 'N/A',
-  },
-  loading: {
-    id: 'overview.metrics.loading',
-    defaultMessage: '...',
-  },
-  error: {
-    id: 'overview.metrics.error',
-    defaultMessage: 'Err',
-  },
-  epochLabel: {
-    id: 'overview.metrics.epoch.label',
-    defaultMessage: 'Epoch',
-  },
-  blocksLabel: {
-    id: 'overview.metrics.blocks.label',
-    defaultMessage: 'Blocks',
-  },
-  decentralizationLabel: {
-    id: 'overview.metrics.decentralization.label',
-    defaultMessage: 'Decentralization',
-  },
-  priceLabel: {
-    id: 'overview.metrics.price.label',
-    defaultMessage: 'Price',
-  },
-  poolsLabel: {
-    id: 'overview.metrics.poolCount.label',
-    defaultMessage: 'Pools',
-  },
-  searchPlaceholder: {
-    id: 'overview.search.placeholder',
-    defaultMessage: 'Search addresses, epochs & slots on the Cardano network',
-  },
+  not_available: 'N/A',
+  loading: '...',
+  error: 'Err',
+  epochLabel: 'Epoch',
+  blocksLabel: 'Blocks',
+  decentralizationLabel: 'Decentralization',
+  priceLabel: 'Price',
+  poolsLabel: 'Pools',
+  searchPlaceholder: 'Search addresses, epochs & slots on the Cardano network',
 })
 
 const styles = (theme) =>
