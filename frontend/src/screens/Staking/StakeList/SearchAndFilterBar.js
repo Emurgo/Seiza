@@ -8,7 +8,7 @@ import {Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
 import {useI18n} from '@/i18n/helpers'
-import {Searchbar, Button} from '@/components/visual'
+import {Searchbar, ToggleButton} from '@/components/visual'
 import {onDidUpdate} from '@/components/HOC/lifecycles'
 import Filters from './Filters'
 import {withShowFiltersContext, withSearchTextContext} from '../context'
@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: '20px',
   },
   button: {
-    width: '100px',
+    width: '120px',
   },
 }))
 
@@ -83,9 +83,14 @@ export default compose(withShowFiltersContext)((props) => {
           <div className={classes.searchWrapper}>
             <Search />
           </div>
-          <Button onClick={toggleFilters} primary className={classes.button}>
+          <ToggleButton
+            open={!showFilters}
+            onClick={toggleFilters}
+            primary
+            className={classes.button}
+          >
             {tr(messages.filters)}
-          </Button>
+          </ToggleButton>
         </Grid>
       </Grid>
       {showFilters && (
