@@ -7,14 +7,13 @@ import {compose} from 'redux'
 import {withStateHandlers} from 'recompose'
 import {graphql} from 'react-apollo'
 import {Grid, createStyles, withStyles} from '@material-ui/core'
-import MetricsCard from '@/components/visual/MetricsCard'
+import {MetricsCard, LoadingDots} from '@/components/visual'
 import {getIntlFormatters} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
 import WithNavigateTo from '@/components/headless/navigateTo'
 
 const text = defineMessages({
   not_available: 'N/A',
-  loading: '...',
   error: 'Err',
   epochLabel: 'Epoch',
   blocksLabel: 'Blocks',
@@ -46,7 +45,7 @@ const OverviewMetrics = ({intl, data, classes, currency, setCurrency}) => {
   const {translate, formatInt, formatPercent, formatFiat} = getIntlFormatters(intl)
   const {currentStatus: status, loading, error} = data
 
-  const NA = translate(loading ? text.loading : error ? text.error : text.not_available)
+  const NA = loading ? <LoadingDots /> : translate(error ? text.error : text.not_available)
 
   const epochNumber = formatInt(idx(status, (s) => s.epochNumber), {defaultValue: NA})
   const blockCount = formatInt(idx(status, (s) => s.blockCount), {defaultValue: NA})
