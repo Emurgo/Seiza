@@ -1,4 +1,5 @@
 import React from 'react'
+import classnames from 'classnames'
 import {withStyles, createStyles, Card, Typography, Grid} from '@material-ui/core'
 
 const styles = (theme) =>
@@ -26,14 +27,14 @@ const _SummaryCard = ({classes, children}) => {
   return <Card className={classes.card}>{children}</Card>
 }
 
-const Row = ({children, classes}) => {
+const Row = ({children, classes, className}) => {
   return (
     <Grid
       container
       direction="row"
       justify="space-between"
       alignItems="center"
-      className={classes.listRow}
+      className={classnames(classes.listRow, className)}
     >
       {children}
     </Grid>
