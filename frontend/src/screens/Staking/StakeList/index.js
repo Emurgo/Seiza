@@ -46,6 +46,9 @@ const styles = (theme) =>
       marginTop: '20px',
       marginBottom: '-15px',
     },
+    lastItemSpace: {
+      padding: theme.spacing.unit * 5,
+    },
   })
 
 const stakePoolFacade = (data) => ({
@@ -90,7 +93,7 @@ const StakeList = ({
             <StakePool data={pool} />
           </Grid>
         ))}
-        {hasMore && (
+        {hasMore ? (
           <Grid item className={classes.loadMoreWrapper}>
             <Grid container justify="center" direction="row">
               <Button className={classes.loadMore} gradient rounded onClick={onLoadMore}>
@@ -98,6 +101,8 @@ const StakeList = ({
               </Button>
             </Grid>
           </Grid>
+        ) : (
+          <div className={classes.lastItemSpace} />
         )}
       </Grid>
     </React.Fragment>
