@@ -59,11 +59,11 @@ const _StakePoolItem = ({classes, label, onDelete}) => (
 
 const StakePoolItem = withStyles(poolsStyles)(_StakePoolItem)
 
-const Action = withStyles(poolsStyles)(({classes, label, Icon, onClick}) => (
+const Action = withStyles(poolsStyles)(({classes, label, icon, onClick}) => (
   <Grid container direction="row" alignItems="center">
     <Typography className={classes.text}>{label}</Typography>
     <IconButton onClick={onClick} aria-label={label}>
-      <Icon />
+      {icon}
     </IconButton>
   </Grid>
 ))
@@ -93,13 +93,25 @@ const PoolsToCompare = ({
       {/* TODO: onClick handling and real work */}
       <Grid container direction="row" alignItems="center" justify="space-between" wrap="nowrap">
         <Grid item>
-          <Action label={translate(messages.share)} Icon={Share} onClick={() => null} />
+          <Action
+            label={translate(messages.share)}
+            icon={<Share color="primary" />}
+            onClick={() => null}
+          />
         </Grid>
         <Grid item>
-          <Action label={translate(messages.import)} Icon={CallReceived} onClick={() => null} />
+          <Action
+            label={translate(messages.import)}
+            icon={<CallReceived color="primary" />}
+            onClick={() => null}
+          />
         </Grid>
         <Grid item>
-          <Action label={translate(messages.export)} Icon={CallMade} onClick={() => null} />
+          <Action
+            label={translate(messages.export)}
+            icon={<CallMade color="primary" />}
+            onClick={() => null}
+          />
         </Grid>
       </Grid>
     </Grid>

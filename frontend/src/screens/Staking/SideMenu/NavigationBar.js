@@ -3,7 +3,8 @@
 import React from 'react'
 import classnames from 'classnames'
 import {compose} from 'redux'
-import {Typography, createStyles, withStyles} from '@material-ui/core'
+import {Typography, createStyles, withStyles, Grid} from '@material-ui/core'
+import {Search, LocationOn, BarChart, History, Compare} from '@material-ui/icons'
 import {defineMessages} from 'react-intl'
 
 import NavLink from '@/components/common/NavLink'
@@ -12,13 +13,13 @@ import {withI18n} from '@/i18n/helpers'
 
 const navigationMessages = defineMessages({
   list: 'Stake pools list',
-  comparison: 'Comparison matric',
+  comparison: 'Comparison matrix',
   history: 'Stake pools history',
   charts: 'Charts',
   location: 'Location',
 })
 
-const menuItemStyles = ({palette}) =>
+const menuItemStyles = ({palette, spacing}) =>
   createStyles({
     link: {
       'background': palette.background.paper,
@@ -35,13 +36,25 @@ const menuItemStyles = ({palette}) =>
     activeText: {
       color: palette.primary.dark,
     },
+    icon: {
+      paddingRight: spacing.unit * 2,
+    },
   })
 
-// TODO: icon
-const _MenuItem = ({classes, active, label}) => (
-  <div className={classnames(classes.link, active && classes.active)}>
-    <Typography className={classnames(active && classes.activeText)}>{label}</Typography>
-  </div>
+const _MenuItem = ({classes, active, label, icon}) => (
+  <Grid
+    container
+    direction="row"
+    alignItems="center"
+    className={classnames(classes.link, active && classes.active)}
+  >
+    <Grid item className={classes.icon}>
+      {icon}
+    </Grid>
+    <Grid item>
+      <Typography className={classnames(active && classes.activeText)}>{label}</Typography>
+    </Grid>
+  </Grid>
 )
 
 const MenuItem = withStyles(menuItemStyles)(_MenuItem)
@@ -53,17 +66,33 @@ const navigationBarStyles = createStyles({
 })
 
 const navItems = [
-  {link: routeTo.staking.poolList(), i18nLabel: navigationMessages.list},
-  {link: routeTo.staking.poolComparison(), i18nLabel: navigationMessages.comparison},
-  {link: routeTo.staking.history(), i18nLabel: navigationMessages.history},
-  {link: routeTo.staking.charts(), i18nLabel: navigationMessages.charts},
-  {link: routeTo.staking.location(), i18nLabel: navigationMessages.location},
+  {link: routeTo.staking.poolList(), i18nLabel: navigationMessages.list, icon: <Search primary />},
+  {
+    link: routeTo.staking.poolComparison(),
+    i18nLabel: navigationMessages.comparison,
+    icon: <Compare primary />,
+  },
+  {
+    link: routeTo.staking.history(),
+    i18nLabel: navigationMessages.history,
+    icon: <History primary />,
+  },
+  {
+    link: routeTo.staking.charts(),
+    i18nLabel: navigationMessages.charts,
+    icon: <BarChart primary />,
+  },
+  {
+    link: routeTo.staking.location(),
+    i18nLabel: navigationMessages.location,
+    icon: <LocationOn primary />,
+  },
 ]
 
 const NavigationBar = ({classes, i18n: {translate}}) =>
-  navItems.map(({link, i18nLabel}) => (
+  navItems.map(({link, i18nLabel, icon}) => (
     <NavLink key={link} to={link} className={classes.href}>
-      {(isActive) => <MenuItem active={isActive} label={translate(i18nLabel)} />}
+      {(isActive) => <MenuItem active={isActive} label={translate(i18nLabel)} icon={icon} />}
     </NavLink>
   ))
 
