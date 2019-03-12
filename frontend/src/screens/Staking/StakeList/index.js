@@ -12,7 +12,7 @@ import {Button, DebugApolloError, LoadingInProgress} from '@/components/visual'
 import StakePool from './StakePool'
 import SearchAndFilterBar from './SearchAndFilterBar'
 import SortByBar from './SortByBar'
-import {withPerformanceContext} from '../context/performance'
+import {usePerformanceContext} from '../context/performance'
 import {withSearchTextContext} from '../context/searchText'
 import {useSortByContext} from '../context/sortBy'
 
@@ -120,10 +120,10 @@ export default compose(
   withI18n,
   withStyles(styles),
   withSearchTextContext,
-  withPerformanceContext,
   withProps(() => {
     const sortByContext = useSortByContext()
-    return sortByContext
+    const performanceContext = usePerformanceContext()
+    return {...sortByContext, ...performanceContext}
   }),
   graphql(
     gql`

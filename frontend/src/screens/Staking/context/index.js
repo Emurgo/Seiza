@@ -7,7 +7,7 @@ import {withSelectedPoolsProvider, withSelectedPoolsContext} from './selectedPoo
 import {withSortByProvider, useSortByContext} from './sortBy'
 import {withFiltersProvider, withShowFiltersContext} from './showFilters'
 import {withSearchTextProvider, withSearchTextContext} from './searchText'
-import {withPerformanceProvider, withPerformanceContext} from './performance'
+import {withPerformanceProvider, usePerformanceContext} from './performance'
 
 // TODO: consider continuous rewriting to hooks for better flow coverage
 
@@ -23,18 +23,18 @@ export const withSetListScreenStorageFromQuery = compose(
   withSelectedPoolsContext,
   withShowFiltersContext,
   withSearchTextContext,
-  withPerformanceContext,
   (WrappedComponent) => ({
     selectedPoolsContext: {_setSelectedPoolsStorageFromQuery, _selectedPoolsStorageToQuery},
-
     showFiltersContext: {_setShowFiltersStorageFromQuery, _showFiltersStorageToQuery},
     searchTextContext: {_setSearchTextStorageFromQuery, _searchTextStorageToQuery},
-    performanceContext: {_setPerformanceStorageFromQuery, _performanceStorageToQuery},
     ...restProps
   }) => {
     const {
       sortByContext: {_setSortByStorageFromQuery, _sortByStorageToQuery},
     } = useSortByContext()
+    const {
+      performanceContext: {_setPerformanceStorageFromQuery, _performanceStorageToQuery},
+    } = usePerformanceContext()
     const getListScreenUrlQuery = () => {
       const selectedPoolsQuery = _selectedPoolsStorageToQuery()
       const sortByQuery = _sortByStorageToQuery()
