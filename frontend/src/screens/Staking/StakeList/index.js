@@ -4,7 +4,7 @@ import classnames from 'classnames'
 import {compose} from 'redux'
 import {graphql} from 'react-apollo'
 import {Typography, Grid, createStyles, withStyles} from '@material-ui/core'
-import {withHandlers} from 'recompose'
+import {withHandlers, withProps} from 'recompose'
 import {defineMessages} from 'react-intl'
 
 import {withI18n} from '@/i18n/helpers'
@@ -12,9 +12,9 @@ import {Button, DebugApolloError, LoadingInProgress} from '@/components/visual'
 import StakePool from './StakePool'
 import SearchAndFilterBar from './SearchAndFilterBar'
 import SortByBar from './SortByBar'
-import {withPerformanceContext} from '../context/performance'
-import {withSearchTextContext} from '../context/searchText'
-import {withSortByContext} from '../context/sortBy'
+import {usePerformanceContext} from '../context/performance'
+import {useSearchTextContext} from '../context/searchText'
+import {useSortByContext} from '../context/sortBy'
 
 const PAGE_SIZE = 3
 
@@ -119,9 +119,12 @@ const formatPerformancetoGQL = (performance) => ({
 export default compose(
   withI18n,
   withStyles(styles),
-  withSortByContext,
-  withSearchTextContext,
-  withPerformanceContext,
+  withProps(() => {
+    const sortByContext = useSortByContext()
+    const performanceContext = usePerformanceContext()
+    const searchTextContext = useSearchTextContext()
+    return {...sortByContext, ...performanceContext, ...searchTextContext}
+  }),
   graphql(
     gql`
       query(
@@ -161,8 +164,8 @@ export default compose(
     {
       name: 'poolsDataProvider',
       options: ({
-        cursor,
         sortByContext: {sortBy},
+        cursor,
         searchTextContext: {searchText},
         performanceContext: {performance},
       }) => ({
@@ -179,9 +182,9 @@ export default compose(
   withHandlers({
     onLoadMore: ({
       poolsDataProvider,
-      sortByContext: {sortBy},
       searchTextContext: {searchText},
       performanceContext: {performance},
+      sortByContext: {sortBy},
     }) => () => {
       const {
         fetchMore,

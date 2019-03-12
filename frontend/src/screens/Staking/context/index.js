@@ -4,10 +4,10 @@ import {compose} from 'redux'
 import * as urlUtils from '@/helpers/url'
 
 import {withSelectedPoolsProvider, withSelectedPoolsContext} from './selectedPools'
-import {withSortByProvider, withSortByContext} from './sortBy'
+import {withSortByProvider, useSortByContext} from './sortBy'
 import {withFiltersProvider, withShowFiltersContext} from './showFilters'
-import {withSearchTextProvider, withSearchTextContext} from './searchText'
-import {withPerformanceProvider, withPerformanceContext} from './performance'
+import {withSearchTextProvider, useSearchTextContext} from './searchText'
+import {withPerformanceProvider, usePerformanceContext} from './performance'
 
 // TODO: consider continuous rewriting to hooks for better flow coverage
 
@@ -21,18 +21,21 @@ export const stakingContextProvider = compose(
 
 export const withSetListScreenStorageFromQuery = compose(
   withSelectedPoolsContext,
-  withSortByContext,
   withShowFiltersContext,
-  withSearchTextContext,
-  withPerformanceContext,
   (WrappedComponent) => ({
     selectedPoolsContext: {_setSelectedPoolsStorageFromQuery, _selectedPoolsStorageToQuery},
-    sortByContext: {_setSortByStorageFromQuery, _sortByStorageToQuery},
     showFiltersContext: {_setShowFiltersStorageFromQuery, _showFiltersStorageToQuery},
-    searchTextContext: {_setSearchTextStorageFromQuery, _searchTextStorageToQuery},
-    performanceContext: {_setPerformanceStorageFromQuery, _performanceStorageToQuery},
     ...restProps
   }) => {
+    const {
+      sortByContext: {_setSortByStorageFromQuery, _sortByStorageToQuery},
+    } = useSortByContext()
+    const {
+      performanceContext: {_setPerformanceStorageFromQuery, _performanceStorageToQuery},
+    } = usePerformanceContext()
+    const {
+      searchTextContext: {_setSearchTextStorageFromQuery, _searchTextStorageToQuery},
+    } = useSearchTextContext()
     const getListScreenUrlQuery = () => {
       const selectedPoolsQuery = _selectedPoolsStorageToQuery()
       const sortByQuery = _sortByStorageToQuery()

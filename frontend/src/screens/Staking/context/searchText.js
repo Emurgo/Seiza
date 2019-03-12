@@ -1,12 +1,22 @@
-import React from 'react'
-import {compose} from 'redux'
+// @flow
 
-import {withManageSimpleContextValue} from './utils'
+import React, {useContext} from 'react'
+
+import {useManageSimpleContextValue} from './utils'
 
 const STORAGE_KEY = 'searchText'
 const DEFAULT_VALUE = ''
 
-const Context = React.createContext({
+type ContextType = {
+  searchTextContext: {
+    searchText: string,
+    setSearchText: Function,
+    _setSearchTextStorageFromQuery: Function,
+    _searchTextStorageToQuery: Function,
+  },
+}
+
+const Context = React.createContext<ContextType>({
   searchTextContext: {
     searchText: DEFAULT_VALUE,
     setSearchText: null,
@@ -15,34 +25,27 @@ const Context = React.createContext({
   },
 })
 
-export const withSearchTextProvider = compose(
-  withManageSimpleContextValue(STORAGE_KEY, DEFAULT_VALUE),
-  (WrappedComponent) => ({
-    value: searchText,
-    setValue: setSearchText,
-    _storageToQuery: _searchTextStorageToQuery,
-    _setStorageFromQuery: _setSearchTextStorageFromQuery,
-    ...restProps
-  }) => {
+export const withSearchTextProvider = <Props>(
+  WrappedComponent: React$ComponentType<Props>
+): React$ComponentType<Props> => (props) => {
+    const {value, setValue, _setStorageFromQuery, _storageToQuery} = useManageSimpleContextValue(
+      STORAGE_KEY,
+      DEFAULT_VALUE
+    )
     return (
       <Context.Provider
         value={{
           searchTextContext: {
-            searchText,
-            setSearchText,
-            _setSearchTextStorageFromQuery,
-            _searchTextStorageToQuery,
+            searchText: value,
+            setSearchText: setValue,
+            _searchTextStorageToQuery: _storageToQuery,
+            _setSearchTextStorageFromQuery: _setStorageFromQuery,
           },
         }}
       >
-        <WrappedComponent {...restProps} />
+        <WrappedComponent {...props} />
       </Context.Provider>
     )
   }
-)
 
-export const withSearchTextContext = (WrappedComponent) => (props) => (
-  <Context.Consumer>
-    {({searchTextContext}) => <WrappedComponent {...props} searchTextContext={searchTextContext} />}
-  </Context.Consumer>
-)
+export const useSearchTextContext = (): ContextType => useContext(Context)

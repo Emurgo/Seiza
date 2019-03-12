@@ -1,12 +1,22 @@
-import React from 'react'
-import {compose} from 'redux'
+// @flow
 
-import {withManageSimpleContextValue} from './utils'
+import React, {useContext} from 'react'
+
+import {useManageSimpleContextValue} from './utils'
 
 const STORAGE_KEY = 'performance'
 const DEFAULT_VALUE = [0, 100]
 
-const Context = React.createContext({
+type ContextType = {
+  performanceContext: {
+    performance: Array<number>,
+    setPerformance: Function,
+    _setPerformanceStorageFromQuery: Function,
+    _performanceStorageToQuery: Function,
+  },
+}
+
+const Context = React.createContext<ContextType>({
   performanceContext: {
     performance: DEFAULT_VALUE,
     setPerformance: null,
@@ -15,38 +25,32 @@ const Context = React.createContext({
   },
 })
 
-const toIntArray = (array) => array.map((v) => parseInt(v, 10))
+const toIntArray = (array: Array<string | number>): Array<number> =>
+  array.map((v) => parseInt(v, 10))
 
-export const withPerformanceProvider = compose(
-  withManageSimpleContextValue(STORAGE_KEY, DEFAULT_VALUE, toIntArray),
-  (WrappedComponent) => ({
-    value: performance,
-    setValue: setPerformance,
-    _setStorageFromQuery: _setPerformanceStorageFromQuery,
-    _storageToQuery: _performanceStorageToQuery,
-    ...restProps
-  }) => {
+export const withPerformanceProvider = <Props>(
+  WrappedComponent: React$ComponentType<Props>
+): React$ComponentType<Props> => (props) => {
+    const {value, setValue, _setStorageFromQuery, _storageToQuery} = useManageSimpleContextValue(
+      STORAGE_KEY,
+      DEFAULT_VALUE,
+      toIntArray
+    )
+
     return (
       <Context.Provider
         value={{
           performanceContext: {
-            performance,
-            setPerformance,
-            _setPerformanceStorageFromQuery,
-            _performanceStorageToQuery,
+            performance: value,
+            setPerformance: setValue,
+            _setPerformanceStorageFromQuery: _setStorageFromQuery,
+            _performanceStorageToQuery: _storageToQuery,
           },
         }}
       >
-        <WrappedComponent {...restProps} />
+        <WrappedComponent {...props} />
       </Context.Provider>
     )
   }
-)
 
-export const withPerformanceContext = (WrappedComponent) => (props) => (
-  <Context.Consumer>
-    {({performanceContext}) => (
-      <WrappedComponent {...props} performanceContext={performanceContext} />
-    )}
-  </Context.Consumer>
-)
+export const usePerformanceContext = (): ContextType => useContext(Context)

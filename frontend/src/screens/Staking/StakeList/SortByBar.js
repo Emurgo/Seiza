@@ -1,15 +1,13 @@
 // @flow
 
-import React from 'react'
+import React, {useCallback} from 'react'
 import {Grid, Typography} from '@material-ui/core'
 import {defineMessages} from 'react-intl'
-import {withHandlers} from 'recompose'
-import {compose} from 'redux'
 import {makeStyles} from '@material-ui/styles'
 
 import {Select} from '@/components/visual'
 import {useI18n} from '@/i18n/helpers'
-import {withSortByContext, SORT_BY_OPTIONS} from '../context/sortBy'
+import {SORT_BY_OPTIONS, useSortByContext} from '../context/sortBy'
 
 const messages = defineMessages({
   sortBy: 'Sort by',
@@ -33,14 +31,22 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export default compose(
-  withSortByContext,
-  withHandlers({
-    onSortByChange: ({sortByContext: {setSortBy}}) => (e) => setSortBy(e.target.value),
-  })
-)(({sortByContext: {sortBy}, onSortByChange, totalPoolsCount, shownPoolsCount}) => {
+type Props = {|
+  totalPoolsCount: number,
+  shownPoolsCount: number,
+|}
+
+const SortByBar = ({totalPoolsCount, shownPoolsCount}: Props) => {
+  const {
+    sortByContext: {sortBy, setSortBy},
+  } = useSortByContext()
   const {translate: tr} = useI18n()
   const classes = useStyles()
+
+  const onSortByChange = useCallback((e) => {
+    setSortBy(e.target.value)
+  })
+
   return (
     <Grid container justify="space-between" alignItems="center">
       <Grid item>
@@ -70,4 +76,6 @@ export default compose(
       </Grid>
     </Grid>
   )
-})
+}
+
+export default SortByBar
