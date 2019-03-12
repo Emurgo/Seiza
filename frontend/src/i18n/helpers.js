@@ -65,10 +65,12 @@ const _isNumeric = (n) => {
   return `${n}` === `${_parsed}` && _.isNumber(_parsed) && _.isFinite(_parsed)
 }
 
-type Msg = {
-  id: string,
-  defaultMessage: string,
-}
+type Msg =
+  | {
+      id: string,
+      defaultMessage?: string,
+    }
+  | string
 
 type Formatters = {
   translate: (msg: Msg, args?: any) => string,
@@ -108,7 +110,11 @@ export const getIntlFormatters = (intl: any): Formatters => {
     })
   }
 
-  const _formatTimestamp = (x, options) => {
+  type FormatTimestampOptions = {
+    format: string,
+  }
+
+  const _formatTimestamp = (x, options: FormatTimestampOptions) => {
     const desiredFormat = options.format || STANDARD_READABLE_FORMAT
     const ts = moment(x).locale(intl.locale)
     if (!ts.isValid) throw new Error('bad timestamp')

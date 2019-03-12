@@ -33,18 +33,22 @@ const styles = (theme) =>
     },
   })
 
-type PropTypes = {
+type ExternalProps = {
   placeholder: string,
   value: string,
-  handleOnChangeEvent: (str: string) => any,
   onSearch: (str: string) => any,
-  onChange: (str: string) => any,
-  onSubmit: (event: Object) => any,
-  classes: Object,
-  textFieldProps: Object,
+  textFieldProps?: Object,
+  onChange: (event: any) => any,
 }
 
-class Searchbar extends React.Component<PropTypes> {
+type Props = {
+  ...$Exact<ExternalProps>,
+  handleOnChangeEvent: (str: string) => any,
+  onSubmit: (event: Object) => any,
+  classes: Object,
+}
+
+class Searchbar extends React.Component<Props> {
   inputRef: {current: null | ElementRef<'input'>}
 
   constructor(props) {
@@ -90,7 +94,7 @@ class Searchbar extends React.Component<PropTypes> {
   }
 }
 
-export default compose(
+export default (compose(
   withHandlers({
     onSubmit: ({onSearch, value}) => (event) => {
       event.preventDefault()
@@ -99,4 +103,4 @@ export default compose(
     handleOnChangeEvent: ({onChange}) => (event) => onChange(event.target.value),
   }),
   withStyles(styles)
-)(Searchbar)
+)(Searchbar): React$ComponentType<ExternalProps>)

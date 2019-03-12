@@ -38,7 +38,9 @@ const RANGE_END = 100
 
 const tipFormatter = (value) => `${value}%`
 
-export default compose(
+type ExternalProps = {}
+
+export default (compose(
   withPerformanceContext,
   withStateHandlers(
     (props) => ({
@@ -116,4 +118,4 @@ export default compose(
       </Card>
     )
   }
-)
+): React$ComponentType<ExternalProps>)

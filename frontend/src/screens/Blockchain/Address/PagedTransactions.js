@@ -9,6 +9,8 @@ import {Card} from '@material-ui/core'
 import {routeTo} from '@/helpers/routes'
 import Pagination, {getPageCount} from '@/components/visual/Pagination'
 
+import type {Transaction} from '@/__generated__/schema.flow'
+
 const ROWS_PER_PARGE = 3
 
 const PagedTransactions = ({currentTransactions, totalCount, onChangePage, rowsPerPage, page}) => (
@@ -27,7 +29,11 @@ const PagedTransactions = ({currentTransactions, totalCount, onChangePage, rowsP
   </React.Fragment>
 )
 
-export default compose(
+type ExternalProps = {
+  transactions: Array<Transaction>,
+}
+
+export default (compose(
   withProps((props) => {
     const totalCount = props.transactions.length
     const pageCount = getPageCount(totalCount, ROWS_PER_PARGE)
@@ -45,4 +51,4 @@ export default compose(
       currentTransactions: transactions.slice(from, from + rowsPerPage),
     }
   })
-)(PagedTransactions)
+)(PagedTransactions): React$ComponentType<ExternalProps>)
