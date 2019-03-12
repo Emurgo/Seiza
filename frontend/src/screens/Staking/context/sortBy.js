@@ -1,11 +1,8 @@
 // @flow
 import React from 'react'
 import {compose} from 'redux'
-import {withProps, withHandlers} from 'recompose'
 
-import * as storage from '@/helpers/localStorage'
-import * as urlUtils from '@/helpers/url'
-import {withUrlManager, getStorageData} from './utils'
+import {withManageSimpleContextValue} from './utils'
 
 const STORAGE_KEY = 'sortBy'
 
@@ -20,60 +17,42 @@ export const SORT_BY_OPTIONS = {
 
 const DEFAULT_VALUE = SORT_BY_OPTIONS.REVENUE
 
-// TODO: needed once we add proper flow
-export const initialSortByContext = {
+const Context = React.createContext({
   sortByContext: {
     sortBy: DEFAULT_VALUE,
     setSortBy: null,
     _setSortByStorageFromQuery: null,
     _sortByStorageToQuery: null,
   },
-}
+})
 
-const mergeProps = (BaseComponent) => ({
-  sortBy,
-  setSortBy,
-  _setSortByStorageFromQuery,
-  _sortByStorageToQuery,
-  ...restProps
-}) => {
-  return (
-    <BaseComponent
-      sortByContext={{
-        sortBy,
-        setSortBy,
-        _setSortByStorageFromQuery,
-        _sortByStorageToQuery,
-      }}
-      {...restProps}
-    />
-  )
-}
-
-export const sortByProvider: any = compose(
-  withUrlManager,
-  withProps((props) => ({
-    sortBy: props.getQueryParam(STORAGE_KEY, DEFAULT_VALUE),
-  })),
-  withHandlers({
-    setSortBy: ({setQueryParam}) => (sortBy) => {
-      storage.setItem(STORAGE_KEY, JSON.stringify(sortBy))
-      setQueryParam(STORAGE_KEY, sortBy)
-    },
-  }),
-  withHandlers({
-    _setSortByStorageFromQuery: ({setSortBy, getQueryParam}) => (query) => {
-      setSortBy(getQueryParam(STORAGE_KEY, DEFAULT_VALUE))
-    },
-    _sortByStorageToQuery: () => () => {
-      const sortBy = getStorageData(STORAGE_KEY, DEFAULT_VALUE)
-      return urlUtils.objToQueryString({sortBy})
-    },
-  }),
-  mergeProps
+export const withSortByProvider: any = compose(
+  withManageSimpleContextValue(STORAGE_KEY, DEFAULT_VALUE),
+  (WrappedComponent) => ({
+    value: sortBy,
+    setValue: setSortBy,
+    _setStorageFromQuery: _setSortByStorageFromQuery,
+    _storageToQuery: _sortByStorageToQuery,
+    ...restProps
+  }) => {
+    return (
+      <Context.Provider
+        value={{
+          sortByContext: {
+            sortBy,
+            setSortBy,
+            _setSortByStorageFromQuery,
+            _sortByStorageToQuery,
+          },
+        }}
+      >
+        <WrappedComponent {...restProps} />
+      </Context.Provider>
+    )
+  }
 )
 
-export const getSortByConsumer: any = (Context) => (WrappedComponent) => (props) => (
+export const withSortByContext: any = (WrappedComponent) => (props) => (
   <Context.Consumer>
     {({sortByContext}) => <WrappedComponent {...props} sortByContext={sortByContext} />}
   </Context.Consumer>

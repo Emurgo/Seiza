@@ -7,7 +7,7 @@ import {withHandlers, withProps} from 'recompose'
 import {ExpandableCard, Button, AdaValue, CircularProgressBar} from '@/components/visual'
 import WithModalState from '@/components/headless/modalState'
 import {withI18n} from '@/i18n/helpers'
-import {withSelectedPoolsContext} from '../context'
+import {withSelectedPoolsContext} from '../context/selectedPools'
 
 const messages = defineMessages({
   performance: 'Performance:',

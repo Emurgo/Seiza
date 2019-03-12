@@ -12,38 +12,16 @@ const STORAGE_KEY = 'showFilters'
 // check: https://www.npmjs.com/package/query-string
 const DEFAULT_VALUE = undefined
 
-// TODO: needed once we add proper flow
-export const initialShowFiltersContext = {
+const Context = React.createContext({
   showFiltersContext: {
     showFilters: DEFAULT_VALUE,
     toggleFilters: null,
     _setShowFiltersStorageFromQuery: null,
     _showFiltersStorageToQuery: null,
   },
-}
+})
 
-const mergeProps = (BaseComponent) => ({
-  showFilters,
-  toggleFilters,
-  _setShowFiltersStorageFromQuery,
-  _showFiltersStorageToQuery,
-  _setShowFilters,
-  ...restProps
-}) => {
-  return (
-    <BaseComponent
-      showFiltersContext={{
-        showFilters,
-        toggleFilters,
-        _setShowFiltersStorageFromQuery,
-        _showFiltersStorageToQuery,
-      }}
-      {...restProps}
-    />
-  )
-}
-
-export const showFiltersProvider = compose(
+export const withFiltersProvider = compose(
   withUrlManager,
   withProps((props) => ({
     showFilters: props.getQueryParam(STORAGE_KEY, DEFAULT_VALUE),
@@ -69,10 +47,32 @@ export const showFiltersProvider = compose(
       return urlUtils.objToQueryString({showFilters})
     },
   }),
-  mergeProps
+  (WrappedComponent) => ({
+    showFilters,
+    _setShowFilters,
+    toggleFilters,
+    _setShowFiltersStorageFromQuery,
+    _showFiltersStorageToQuery,
+    ...restProps
+  }) => {
+    return (
+      <Context.Provider
+        value={{
+          showFiltersContext: {
+            showFilters,
+            toggleFilters,
+            _setShowFiltersStorageFromQuery,
+            _showFiltersStorageToQuery,
+          },
+        }}
+      >
+        <WrappedComponent {...restProps} />
+      </Context.Provider>
+    )
+  }
 )
 
-export const getShowFiltersConsumer = (Context) => (WrappedComponent) => (props) => (
+export const withShowFiltersContext = (WrappedComponent) => (props) => (
   <Context.Consumer>
     {({showFiltersContext}) => (
       <WrappedComponent {...props} showFiltersContext={showFiltersContext} />

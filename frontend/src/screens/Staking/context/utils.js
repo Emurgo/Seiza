@@ -3,6 +3,7 @@
 import React from 'react'
 import {withRouter} from 'react-router'
 import {compose} from 'redux'
+import {withProps, withHandlers} from 'recompose'
 
 import * as urlUtils from '@/helpers/url'
 import * as storage from '@/helpers/localStorage'
@@ -46,6 +47,47 @@ export const withUrlManager = <Props>(
         <BaseComponent getQueryParam={getQueryParam} setQueryParam={setQueryParam} {...restProps} />
       )
     }
+  )
+  return enhancer(BaseComponent)
+}
+
+type SimpleValueHocProps = {|
+  value: any,
+  setValue: Function,
+  _setStorageFromQuery: Function,
+  _storageToQuery: Function,
+|}
+
+// Note/Todo (richard): I could not type this HOC using exact props in `React$ComponentType` due
+// to error in `withHandlers`, soon rewrite to hooks might help
+// Performs updates of a single value, and exposes url/storage sync methods
+export const withManageSimpleContextValue = (
+  storageKey: string,
+  defaultValue: any,
+  transformValue: Function = (v) => v
+) => <Props>(
+  BaseComponent: React$ComponentType<{...Props, ...SimpleValueHocProps, ...ManagerProps}>
+): React$ComponentType<Props> => {
+  const enhancer = compose(
+    withUrlManager,
+    withProps((props) => ({
+      value: props.getQueryParam(storageKey, defaultValue),
+    })),
+    withHandlers({
+      setValue: ({setQueryParam}) => (value) => {
+        storage.setItem(storageKey, JSON.stringify(value))
+        setQueryParam(storageKey, value)
+      },
+    }),
+    withHandlers({
+      _setStorageFromQuery: ({setValue, getQueryParam}) => (query) => {
+        setValue(getQueryParam(storageKey, defaultValue))
+      },
+      _storageToQuery: () => () => {
+        const value = getStorageData(storageKey, defaultValue)
+        return urlUtils.objToQueryString({[storageKey]: value})
+      },
+    })
   )
   return enhancer(BaseComponent)
 }

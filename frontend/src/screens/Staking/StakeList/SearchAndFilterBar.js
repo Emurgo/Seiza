@@ -11,7 +11,8 @@ import {useI18n} from '@/i18n/helpers'
 import {Searchbar, ToggleButton} from '@/components/visual'
 import {onDidUpdate} from '@/components/HOC/lifecycles'
 import Filters from './Filters'
-import {withShowFiltersContext, withSearchTextContext} from '../context'
+import {withShowFiltersContext} from '../context/showFilters'
+import {withSearchTextContext} from '../context/searchText'
 
 const messages = defineMessages({
   searchPlaceholder: 'Search for a Stake Pool by name',

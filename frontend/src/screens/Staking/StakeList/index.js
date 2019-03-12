@@ -12,7 +12,9 @@ import {Button, DebugApolloError, LoadingInProgress} from '@/components/visual'
 import StakePool from './StakePool'
 import SearchAndFilterBar from './SearchAndFilterBar'
 import SortByBar from './SortByBar'
-import {withSortByContext, withSearchTextContext, withPerformanceContext} from '../context'
+import {withPerformanceContext} from '../context/performance'
+import {withSearchTextContext} from '../context/searchText'
+import {withSortByContext} from '../context/sortBy'
 
 const PAGE_SIZE = 3
 
