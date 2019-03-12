@@ -1,10 +1,11 @@
 // @flow
 
-import React from 'react'
+import React, {useCallback} from 'react'
 import {withRouter} from 'react-router'
 import {compose} from 'redux'
 import {withProps, withHandlers} from 'recompose'
 
+import useReactRouter from 'use-react-router'
 import * as urlUtils from '@/helpers/url'
 import * as storage from '@/helpers/localStorage'
 
@@ -18,6 +19,44 @@ export const getStorageData = (key: string, defaultValue: any) => {
   } catch (err) {
     return defaultValue
   }
+}
+
+export const useUrlManager = () => {
+  const {history, location} = useReactRouter()
+  const setQueryParam = (key: string, value: any) => {
+    history.replace({
+      pathname: location.pathname,
+      search: urlUtils.replaceQueryParam(location.search, key, value),
+    })
+  }
+
+  const getQueryParam = (paramKey: string, defaultValue: any): any => {
+    const parsed = urlUtils.parse(location.search)
+    return parsed[paramKey] || defaultValue
+  }
+
+  return {setQueryParam, getQueryParam}
+}
+
+export const useManageSimpleContextValue = (
+  storageKey: string,
+  defaultValue: any,
+  transformValue: Function = (v) => v
+) => {
+  const {setQueryParam, getQueryParam} = useUrlManager()
+  const value = getQueryParam(storageKey, defaultValue)
+  const setValue = useCallback((value: any) => {
+    storage.setItem(storageKey, JSON.stringify(value))
+    setQueryParam(storageKey, value)
+  })
+  const _setStorageFromQuery = useCallback((query: string) => {
+    setValue(getQueryParam(storageKey, defaultValue))
+  })
+  const _storageToQuery = useCallback(() => {
+    const value = getStorageData(storageKey, defaultValue)
+    return urlUtils.objToQueryString({[storageKey]: value})
+  })
+  return {value, setValue, _setStorageFromQuery, _storageToQuery}
 }
 
 type ManagerProps = {|

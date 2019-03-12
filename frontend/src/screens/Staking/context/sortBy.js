@@ -1,8 +1,7 @@
 // @flow
-import React from 'react'
-import {compose} from 'redux'
+import React, {useContext} from 'react'
 
-import {withManageSimpleContextValue} from './utils'
+import {useManageSimpleContextValue} from './utils'
 
 const STORAGE_KEY = 'sortBy'
 
@@ -17,43 +16,45 @@ export const SORT_BY_OPTIONS = {
 
 const DEFAULT_VALUE = SORT_BY_OPTIONS.REVENUE
 
-const Context = React.createContext({
+type ContextType = {
   sortByContext: {
-    sortBy: DEFAULT_VALUE,
+    sortBy: string,
+    setSortBy: Function,
+    _setSortByStorageFromQuery: Function,
+    _sortByStorageToQuery: Function,
+  },
+}
+
+const Context = React.createContext<ContextType>({
+  sortByContext: {
+    sortBy: STORAGE_KEY,
     setSortBy: null,
     _setSortByStorageFromQuery: null,
     _sortByStorageToQuery: null,
   },
 })
 
-export const withSortByProvider: any = compose(
-  withManageSimpleContextValue(STORAGE_KEY, DEFAULT_VALUE),
-  (WrappedComponent) => ({
-    value: sortBy,
-    setValue: setSortBy,
-    _setStorageFromQuery: _setSortByStorageFromQuery,
-    _storageToQuery: _sortByStorageToQuery,
-    ...restProps
-  }) => {
+export const withSortByProvider = <Props>(
+  WrappedComponent: React$ComponentType<Props>
+): React$ComponentType<Props> => (props) => {
+    const {value, setValue, _setStorageFromQuery, _storageToQuery} = useManageSimpleContextValue(
+      STORAGE_KEY,
+      DEFAULT_VALUE
+    )
     return (
       <Context.Provider
         value={{
           sortByContext: {
-            sortBy,
-            setSortBy,
-            _setSortByStorageFromQuery,
-            _sortByStorageToQuery,
+            sortBy: value,
+            setSortBy: setValue,
+            _setSortByStorageFromQuery: _setStorageFromQuery,
+            _sortByStorageToQuery: _storageToQuery,
           },
         }}
       >
-        <WrappedComponent {...restProps} />
+        <WrappedComponent {...props} />
       </Context.Provider>
     )
   }
-)
 
-export const withSortByContext: any = (WrappedComponent) => (props) => (
-  <Context.Consumer>
-    {({sortByContext}) => <WrappedComponent {...props} sortByContext={sortByContext} />}
-  </Context.Consumer>
-)
+export const useSortByContext = (): ContextType => useContext(Context)
