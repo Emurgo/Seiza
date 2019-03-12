@@ -36,7 +36,7 @@ type Props = {|
   shownPoolsCount: number,
 |}
 
-export default ({totalPoolsCount, shownPoolsCount}: Props) => {
+const SortByBar = ({totalPoolsCount, shownPoolsCount}: Props) => {
   const {
     sortByContext: {sortBy, setSortBy},
   } = useSortByContext()
@@ -77,3 +77,5 @@ export default ({totalPoolsCount, shownPoolsCount}: Props) => {
     </Grid>
   )
 }
+
+export default SortByBar

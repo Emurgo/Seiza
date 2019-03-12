@@ -4,8 +4,8 @@ import React, {useCallback} from 'react'
 import {withRouter} from 'react-router'
 import {compose} from 'redux'
 import {withProps, withHandlers} from 'recompose'
-
 import useReactRouter from 'use-react-router'
+
 import * as urlUtils from '@/helpers/url'
 import * as storage from '@/helpers/localStorage'
 

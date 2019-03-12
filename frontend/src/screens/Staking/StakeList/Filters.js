@@ -35,7 +35,7 @@ const RANGE_END = 100
 
 const tipFormatter = (value) => `${value}%`
 
-export default () => {
+const Filters = () => {
   const {performanceContext} = usePerformanceContext()
   const [performance, setPerformance] = useState(performanceContext.performance)
   const [language, setLanguage] = useState('all')
@@ -89,3 +89,5 @@ export default () => {
     </Card>
   )
 }
+
+export default Filters

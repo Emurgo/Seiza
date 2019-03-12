@@ -13,7 +13,7 @@ import StakePool from './StakePool'
 import SearchAndFilterBar from './SearchAndFilterBar'
 import SortByBar from './SortByBar'
 import {usePerformanceContext} from '../context/performance'
-import {withSearchTextContext} from '../context/searchText'
+import {useSearchTextContext} from '../context/searchText'
 import {useSortByContext} from '../context/sortBy'
 
 const PAGE_SIZE = 3
@@ -119,11 +119,11 @@ const formatPerformancetoGQL = (performance) => ({
 export default compose(
   withI18n,
   withStyles(styles),
-  withSearchTextContext,
   withProps(() => {
     const sortByContext = useSortByContext()
     const performanceContext = usePerformanceContext()
-    return {...sortByContext, ...performanceContext}
+    const searchTextContext = useSearchTextContext()
+    return {...sortByContext, ...performanceContext, ...searchTextContext}
   }),
   graphql(
     gql`
@@ -184,14 +184,12 @@ export default compose(
       poolsDataProvider,
       searchTextContext: {searchText},
       performanceContext: {performance},
+      sortByContext: {sortBy},
     }) => () => {
       const {
         fetchMore,
         pagedStakePoolList: {cursor},
       } = poolsDataProvider
-      const {
-        sortByContext: {sortBy},
-      } = useSortByContext()
 
       return fetchMore({
         variables: {
