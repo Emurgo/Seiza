@@ -13,10 +13,13 @@ import {ApolloClient} from 'apollo-client'
 
 import App from './App'
 import * as serviceWorker from './serviceWorker'
+import {dataIdFromObject} from './helpers/apollo'
 
 const client = new ApolloClient({
   link: new HttpLink({uri: process.env.REACT_APP_GRAPHQL_SERVER_URL}),
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache({
+    dataIdFromObject,
+  }),
 })
 
 const render = (Component) => {
