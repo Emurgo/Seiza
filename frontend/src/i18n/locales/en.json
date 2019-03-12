@@ -44,7 +44,6 @@
   "screens.Blockchain.BlockchainHeader.OverviewMetrics.decentralizationLabel": "Decentralization",
   "screens.Blockchain.BlockchainHeader.OverviewMetrics.epochLabel": "Epoch",
   "screens.Blockchain.BlockchainHeader.OverviewMetrics.error": "Err",
-  "screens.Blockchain.BlockchainHeader.OverviewMetrics.loading": "...",
   "screens.Blockchain.BlockchainHeader.OverviewMetrics.not_available": "N/A",
   "screens.Blockchain.BlockchainHeader.OverviewMetrics.poolsLabel": "Pools",
   "screens.Blockchain.BlockchainHeader.OverviewMetrics.priceLabel": "Price",
