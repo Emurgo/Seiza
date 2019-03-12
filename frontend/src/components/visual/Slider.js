@@ -17,6 +17,7 @@ const styles = (theme) =>
   createStyles({
     label: {
       paddingBottom: PADDING,
+      textTransform: 'uppercase',
     },
     formControl: {
       margin: theme.spacing.unit,
@@ -63,12 +64,14 @@ const getHandle = (className, tipFormatter) => (props) => {
   const width = estimateTooltipWidth(_value)
   return (
     <div key={index}>
-      <div
-        style={{...handleStyle, width, left: `calc(${props.offset}% - ${width / 2}px)`}}
-        className={className}
-      >
-        {_value}
-      </div>
+      {dragging && (
+        <div
+          style={{...handleStyle, width, left: `calc(${props.offset}% - ${width / 2}px)`}}
+          className={className}
+        >
+          {_value}
+        </div>
+      )}
       <Handle value={value} {...restProps} />
     </div>
   )
@@ -115,7 +118,10 @@ export default compose(
       <FormControl className={classnames(classes.formControl, className)}>
         {label && (
           <FormLabel focused={focused} className={classes.label} component="legend">
-            {label}
+            <span>{label}</span>&nbsp;&nbsp;
+            <span>
+              {tipFormatter(value[0])} - {tipFormatter(value[1])}
+            </span>
           </FormLabel>
         )}
         <div className={classes.rangeWrapper}>

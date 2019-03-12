@@ -19,6 +19,7 @@ const StyledSelect = withStyles({
 const styles = (theme) => ({
   label: {
     paddingBottom: '5px',
+    textTransform: 'uppercase',
   },
   formControl: {
     margin: theme.spacing.unit,
