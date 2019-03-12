@@ -52,6 +52,54 @@ export const getUserStakingKey = (stakingKeyHash) => ({
   currentStakePool: generateStakePool(
     'dd4548f88bebd98653a6977cb6cf1cf6a57dcec8ed8655f6e8b690e998bb2164'
   ),
+  history: [
+    {
+      epochNumber: 103,
+      actions: [
+        {
+          type: 'COST',
+          value: '500000000',
+        },
+        {
+          type: 'MARGIN',
+          total: -0.05,
+          change: -0.03,
+        },
+      ],
+    },
+
+    {
+      epochNumber: 102,
+      actions: [
+        {
+          type: 'PLEDGE_CHANGE',
+          value: '1000000000',
+        },
+        {
+          type: 'WITHDRAWAL',
+          value: '-300000000',
+        },
+      ],
+    },
+    {
+      epochNumber: 101,
+      actions: [
+        {
+          type: 'COST',
+          value: '500000000',
+        },
+        {
+          type: 'WITHDRAWAL',
+          value: '-300000000',
+        },
+        {
+          type: 'MARGIN',
+          total: -0.05,
+          change: -0.03,
+        },
+      ],
+    },
+  ],
 })
 export const getStakePoolStakingKey = (stakingKeyHash) => {
   return generateStakePool(stakingKeyHash)

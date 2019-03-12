@@ -4,6 +4,7 @@ import {Paper, Typography} from '@material-ui/core'
 import WithTabState from '@/components/headless/tabState'
 import {SummaryCard, AdaValue, Tab, Tabs} from '@/components/visual'
 import {useI18n} from '@/i18n/helpers'
+import HistoryTab from './HistoryTab'
 
 // Note: We have "currentColor" inside of these svg files
 // which magically uses current CSS color inherited
@@ -91,9 +92,6 @@ const DelegatedPoolInfoTab = ({stakingKey}) => {
       </SummaryCard>
     </React.Fragment>
   )
-}
-const HistoryTab = () => {
-  return <div>HistoryTab</div>
 }
 const TransactionsTab = () => {
   return <div>TransactionsTab</div>

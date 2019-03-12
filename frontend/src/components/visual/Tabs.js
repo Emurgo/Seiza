@@ -25,7 +25,13 @@ const useTabStyles = makeStyles(({palette, spacing}) => ({
 export const Tabs = ({children, ...props}) => {
   const classes = useTabsStyles()
   return (
-    <MuiTabs classes={classes} variant="fullWidth" textColor="primary" {...props}>
+    <MuiTabs
+      classes={classes}
+      variant="fullWidth"
+      textColor="primary"
+      indicatorColor="secondary"
+      {...props}
+    >
       {children}
     </MuiTabs>
   )
@@ -33,5 +39,5 @@ export const Tabs = ({children, ...props}) => {
 
 export const Tab = ({...props}) => {
   const classes = useTabStyles()
-  return <MuiTab classes={classes} indicatorColor="secondary" {...props} />
+  return <MuiTab classes={classes} {...props} />
 }
