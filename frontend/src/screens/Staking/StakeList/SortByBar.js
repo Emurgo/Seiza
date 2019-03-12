@@ -9,8 +9,7 @@ import {makeStyles} from '@material-ui/styles'
 
 import {Select} from '@/components/visual'
 import {useI18n} from '@/i18n/helpers'
-import {withSortByContext} from '../context'
-import {SORT_BY_OPTIONS} from '../context/sortBy'
+import {withSortByContext, SORT_BY_OPTIONS} from '../context/sortBy'
 
 const messages = defineMessages({
   sortBy: 'Sort by',

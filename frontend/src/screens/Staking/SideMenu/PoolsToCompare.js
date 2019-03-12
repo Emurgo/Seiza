@@ -13,8 +13,8 @@ import {Share, CallMade, CallReceived} from '@material-ui/icons'
 import {LoadingDots, DebugApolloError} from '@/components/visual'
 import assert from 'assert'
 import {withI18n} from '@/i18n/helpers'
-import {withSelectedPoolsContext} from '../context'
 import {dataIdFromObject} from '@/helpers/apollo'
+import {withSelectedPoolsContext} from '../context/selectedPools'
 
 const messages = defineMessages({
   header: 'Stake pools to compare:',

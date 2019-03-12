@@ -9,43 +9,20 @@ import {withUrlManager, getStorageData} from './utils'
 // TODO: dont allow adding more than 'n' pools
 
 const STORAGE_KEY = 'selectedPools'
-
 const DEFAULT_VALUE = []
 
-// TODO: needed once we add proper flow
-export const initialSelectedPoolsContext = {
+const Context = React.createContext({
   selectedPoolsContext: {
     selectedPools: DEFAULT_VALUE,
     addPool: null,
     removePool: null,
+    setPools: null,
     _setSelectedPoolsStorageFromQuery: null,
     _selectedPoolsStorageToQuery: null,
   },
-}
+})
 
-const mergeProps = (BaseComponent) => ({
-  selectedPools,
-  removePool,
-  addPool,
-  _setSelectedPoolsStorageFromQuery,
-  _selectedPoolsStorageToQuery,
-  ...restProps
-}) => {
-  return (
-    <BaseComponent
-      selectedPoolsContext={{
-        addPool,
-        removePool,
-        selectedPools,
-        _setSelectedPoolsStorageFromQuery,
-        _selectedPoolsStorageToQuery,
-      }}
-      {...restProps}
-    />
-  )
-}
-
-export const selectedPoolsProvider = compose(
+export const withSelectedPoolsProvider = compose(
   withUrlManager,
   withProps((props) => ({
     selectedPools: props.getQueryParam(STORAGE_KEY, DEFAULT_VALUE),
@@ -79,10 +56,35 @@ export const selectedPoolsProvider = compose(
       return selectedPools.length ? urlUtils.objToQueryString({selectedPools}) : null
     },
   }),
-  mergeProps
+  (WrappedComponent) => ({
+    selectedPools,
+    setPools,
+    removePool,
+    addPool,
+    _setSelectedPoolsStorageFromQuery,
+    _selectedPoolsStorageToQuery,
+    ...restProps
+  }) => {
+    return (
+      <Context.Provider
+        value={{
+          selectedPoolsContext: {
+            selectedPools,
+            addPool,
+            removePool,
+            setPools,
+            _setSelectedPoolsStorageFromQuery,
+            _selectedPoolsStorageToQuery,
+          },
+        }}
+      >
+        <WrappedComponent {...restProps} />
+      </Context.Provider>
+    )
+  }
 )
 
-export const getSelectedPoolsConsumer = (Context) => (WrappedComponent) => (props) => (
+export const withSelectedPoolsContext = (WrappedComponent) => (props) => (
   <Context.Consumer>
     {({selectedPoolsContext}) => (
       <WrappedComponent {...props} selectedPoolsContext={selectedPoolsContext} />

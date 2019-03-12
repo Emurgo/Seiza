@@ -3,109 +3,66 @@ import {compose} from 'redux'
 
 import * as urlUtils from '@/helpers/url'
 
-import {
-  selectedPoolsProvider,
-  getSelectedPoolsConsumer,
-  initialSelectedPoolsContext,
-} from './selectedPools'
+import {withSelectedPoolsProvider, withSelectedPoolsContext} from './selectedPools'
+import {withSortByProvider, withSortByContext} from './sortBy'
+import {withFiltersProvider, withShowFiltersContext} from './showFilters'
+import {withSearchTextProvider, withSearchTextContext} from './searchText'
+import {withPerformanceProvider, withPerformanceContext} from './performance'
 
-import {sortByProvider, getSortByConsumer, initialSortByContext} from './sortBy'
+// TODO: `searchText`, `sortBy` and `performance` are extremenly similar,
+// create one common module for them (module to operate on a simple value)
 
-import {showFiltersProvider, getShowFiltersConsumer, initialShowFiltersContext} from './showFilters'
-
-import {searchTextProvider, getSearchTextConsumer, initialSearchTextContext} from './searchText'
-
-import {performanceProvider, getPerformanceConsumer, initialPerformanceContext} from './performance'
-
-// TODO: think if really want just one Provider for whole staking section or want to break it
-// into multiple context providers as it is the way how we infact use them
-
-// TODO: `searchText` and `sortBy` are extremenly similar, create one common module for them
-// (module to operate on a simple value)
-
-const Context = React.createContext({
-  ...initialSelectedPoolsContext,
-  ...initialSortByContext,
-  ...initialShowFiltersContext,
-  ...initialSearchTextContext,
-  ...initialPerformanceContext,
-})
-
-export const stakingContextProvider = (WrappedComponent) =>
-  compose(
-    selectedPoolsProvider,
-    sortByProvider,
-    showFiltersProvider,
-    searchTextProvider,
-    performanceProvider
-  )(
-    ({
-      selectedPoolsContext,
-      sortByContext,
-      showFiltersContext,
-      searchTextContext,
-      performanceContext,
-      ...props
-    }) => (
-      <Context.Provider
-        value={{
-          selectedPoolsContext,
-          sortByContext,
-          showFiltersContext,
-          searchTextContext,
-          performanceContext,
-        }}
-      >
-        <WrappedComponent {...props} />
-      </Context.Provider>
-    )
-  )
-
-export const withSetListScreenStorageFromQuery = (WrappedComponent) => (props) => (
-  <Context.Consumer>
-    {({
-      selectedPoolsContext: {_setSelectedPoolsStorageFromQuery, _selectedPoolsStorageToQuery},
-      sortByContext: {_setSortByStorageFromQuery, _sortByStorageToQuery},
-      showFiltersContext: {_setShowFiltersStorageFromQuery, _showFiltersStorageToQuery},
-      searchTextContext: {_setSearchTextStorageFromQuery, _searchTextStorageToQuery},
-      performanceContext: {_setPerformanceStorageFromQuery, _performanceStorageToQuery},
-    }) => {
-      const getListScreenUrlQuery = () => {
-        const selectedPoolsQuery = _selectedPoolsStorageToQuery()
-        const sortByQuery = _sortByStorageToQuery()
-        const showFiltersQuery = _showFiltersStorageToQuery()
-        const searchTextQuery = _searchTextStorageToQuery()
-        const performanceQuery = _performanceStorageToQuery()
-        return urlUtils.joinQueryStrings([
-          selectedPoolsQuery,
-          sortByQuery,
-          showFiltersQuery,
-          searchTextQuery,
-          performanceQuery,
-        ])
-      }
-
-      const setListScreenStorageFromQuery = (query) => {
-        _setSelectedPoolsStorageFromQuery(query)
-        _setSortByStorageFromQuery(query)
-        _setShowFiltersStorageFromQuery(query)
-        _setSearchTextStorageFromQuery(query)
-        _setPerformanceStorageFromQuery(query)
-      }
-
-      return (
-        <WrappedComponent
-          {...props}
-          setListScreenStorageFromQuery={setListScreenStorageFromQuery}
-          getListScreenUrlQuery={getListScreenUrlQuery}
-        />
-      )
-    }}
-  </Context.Consumer>
+export const stakingContextProvider = compose(
+  withSelectedPoolsProvider,
+  withSortByProvider,
+  withFiltersProvider,
+  withSearchTextProvider,
+  withPerformanceProvider
 )
 
-export const withSelectedPoolsContext = getSelectedPoolsConsumer(Context)
-export const withSortByContext = getSortByConsumer(Context)
-export const withShowFiltersContext = getShowFiltersConsumer(Context)
-export const withSearchTextContext = getSearchTextConsumer(Context)
-export const withPerformanceContext = getPerformanceConsumer(Context)
+export const withSetListScreenStorageFromQuery = compose(
+  withSelectedPoolsContext,
+  withSortByContext,
+  withShowFiltersContext,
+  withSearchTextContext,
+  withPerformanceContext,
+  (WrappedComponent) => ({
+    selectedPoolsContext: {_setSelectedPoolsStorageFromQuery, _selectedPoolsStorageToQuery},
+    sortByContext: {_setSortByStorageFromQuery, _sortByStorageToQuery},
+    showFiltersContext: {_setShowFiltersStorageFromQuery, _showFiltersStorageToQuery},
+    searchTextContext: {_setSearchTextStorageFromQuery, _searchTextStorageToQuery},
+    performanceContext: {_setPerformanceStorageFromQuery, _performanceStorageToQuery},
+    ...restProps
+  }) => {
+    const getListScreenUrlQuery = () => {
+      const selectedPoolsQuery = _selectedPoolsStorageToQuery()
+      const sortByQuery = _sortByStorageToQuery()
+      const showFiltersQuery = _showFiltersStorageToQuery()
+      const searchTextQuery = _searchTextStorageToQuery()
+      const performanceQuery = _performanceStorageToQuery()
+      return urlUtils.joinQueryStrings([
+        selectedPoolsQuery,
+        sortByQuery,
+        showFiltersQuery,
+        searchTextQuery,
+        performanceQuery,
+      ])
+    }
+
+    const setListScreenStorageFromQuery = (query) => {
+      _setSelectedPoolsStorageFromQuery(query)
+      _setSortByStorageFromQuery(query)
+      _setShowFiltersStorageFromQuery(query)
+      _setSearchTextStorageFromQuery(query)
+      _setPerformanceStorageFromQuery(query)
+    }
+
+    return (
+      <WrappedComponent
+        {...restProps}
+        setListScreenStorageFromQuery={setListScreenStorageFromQuery}
+        getListScreenUrlQuery={getListScreenUrlQuery}
+      />
+    )
+  }
+)

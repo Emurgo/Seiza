@@ -7,40 +7,18 @@ import * as urlUtils from '@/helpers/url'
 import {withUrlManager, getStorageData} from './utils'
 
 const STORAGE_KEY = 'searchText'
-
 const DEFAULT_VALUE = ''
 
-// TODO: needed once we add proper flow
-export const initialSearchTextContext = {
-  sortByContext: {
+const Context = React.createContext({
+  searchTextContext: {
     searchText: DEFAULT_VALUE,
     setSearchText: null,
     _setSearchTextStorageFromQuery: null,
     _searchTextStorageToQuery: null,
   },
-}
+})
 
-const mergeProps = (BaseComponent) => ({
-  searchText,
-  setSearchText,
-  _setSearchTextStorageFromQuery,
-  _searchTextStorageToQuery,
-  ...restProps
-}) => {
-  return (
-    <BaseComponent
-      searchTextContext={{
-        searchText,
-        setSearchText,
-        _setSearchTextStorageFromQuery,
-        _searchTextStorageToQuery,
-      }}
-      {...restProps}
-    />
-  )
-}
-
-export const searchTextProvider = compose(
+export const withSearchTextProvider = compose(
   withUrlManager,
   withProps((props) => ({
     searchText: props.getQueryParam(STORAGE_KEY, DEFAULT_VALUE),
@@ -60,10 +38,31 @@ export const searchTextProvider = compose(
       return urlUtils.objToQueryString({searchText})
     },
   }),
-  mergeProps
+  (WrappedComponent) => ({
+    searchText,
+    setSearchText,
+    _searchTextStorageToQuery,
+    _setSearchTextStorageFromQuery,
+    ...restProps
+  }) => {
+    return (
+      <Context.Provider
+        value={{
+          searchTextContext: {
+            searchText,
+            setSearchText,
+            _setSearchTextStorageFromQuery,
+            _searchTextStorageToQuery,
+          },
+        }}
+      >
+        <WrappedComponent {...restProps} />
+      </Context.Provider>
+    )
+  }
 )
 
-export const getSearchTextConsumer = (Context) => (WrappedComponent) => (props) => (
+export const withSearchTextContext = (WrappedComponent) => (props) => (
   <Context.Consumer>
     {({searchTextContext}) => <WrappedComponent {...props} searchTextContext={searchTextContext} />}
   </Context.Consumer>

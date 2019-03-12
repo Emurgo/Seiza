@@ -10,7 +10,7 @@ import {defineMessages} from 'react-intl'
 import {useI18n} from '@/i18n/helpers'
 import {Slider, Select} from '@/components/visual'
 import {onDidUpdate} from '@/components/HOC/lifecycles'
-import {withPerformanceContext} from '../context'
+import {withPerformanceContext} from '../context/performance'
 
 const messages = defineMessages({
   allLanguages: 'All',

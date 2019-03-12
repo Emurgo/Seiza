@@ -9,42 +9,20 @@ import {withUrlManager, getStorageData} from './utils'
 // TODO: refactor (DRY) in next PR all similar context handlers at once
 
 const STORAGE_KEY = 'performance'
-
 const DEFAULT_VALUE = [0, 100]
 
-// TODO: needed once we add proper flow
-export const initialPerformanceContext = {
-  sortByContext: {
+const Context = React.createContext({
+  performanceContext: {
     performance: DEFAULT_VALUE,
     setPerformance: null,
     _setPerformanceStorageFromQuery: null,
     _performanceStorageToQuery: null,
   },
-}
-
-const mergeProps = (BaseComponent) => ({
-  performance,
-  setPerformance,
-  _setPerformanceStorageFromQuery,
-  _performanceStorageToQuery,
-  ...restProps
-}) => {
-  return (
-    <BaseComponent
-      performanceContext={{
-        performance,
-        setPerformance,
-        _setPerformanceStorageFromQuery,
-        _performanceStorageToQuery,
-      }}
-      {...restProps}
-    />
-  )
-}
+})
 
 const toIntArray = (array) => array.map((v) => parseInt(v, 10))
 
-export const performanceProvider = compose(
+export const withPerformanceProvider = compose(
   withUrlManager,
   withProps((props) => ({
     performance: toIntArray(props.getQueryParam(STORAGE_KEY, DEFAULT_VALUE)),
@@ -64,10 +42,31 @@ export const performanceProvider = compose(
       return urlUtils.objToQueryString({performance})
     },
   }),
-  mergeProps
+  (WrappedComponent) => ({
+    performance,
+    setPerformance,
+    _setPerformanceStorageFromQuery,
+    _performanceStorageToQuery,
+    ...restProps
+  }) => {
+    return (
+      <Context.Provider
+        value={{
+          performanceContext: {
+            performance,
+            setPerformance,
+            _setPerformanceStorageFromQuery,
+            _performanceStorageToQuery,
+          },
+        }}
+      >
+        <WrappedComponent {...restProps} />
+      </Context.Provider>
+    )
+  }
 )
 
-export const getPerformanceConsumer = (Context) => (WrappedComponent) => (props) => (
+export const withPerformanceContext = (WrappedComponent) => (props) => (
   <Context.Consumer>
     {({performanceContext}) => (
       <WrappedComponent {...props} performanceContext={performanceContext} />
