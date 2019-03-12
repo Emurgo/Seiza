@@ -1,5 +1,5 @@
 // @flow
-import React, {useState, useCallback} from 'react'
+import React from 'react'
 import type {Node} from 'react'
 import classnames from 'classnames'
 import {
@@ -28,11 +28,9 @@ const useStyles = makeStyles((theme) => ({
   },
   icon: {
     color: 'gray',
-  },
-  iconAnimationSetting: {
     transition: 'transform 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
   },
-  iconAnimation: {
+  iconExpanded: {
     transform: 'rotate(180deg)',
   },
   mainContent: {
@@ -53,27 +51,10 @@ type ExpandableCardPT = {
   className?: string,
 }
 
-const useIconAnimating = ({expanded, onChange}) => {
-  const [iconAnimating, setIconAnimating] = useState(false)
-  // Note(ppershing): useCallback is not an ideal solution, see
-  // https://github.com/facebook/react/issues/14099
-  // for a discussion
-  const _onChange = useCallback(
-    (event, expanded) => {
-      setIconAnimating(!iconAnimating)
-      onChange(event, expanded)
-    },
-    [iconAnimating, onChange, expanded]
-  )
-
-  return {iconAnimating, onChange: _onChange}
-}
-
 const ExpandableCard = (props: ExpandableCardPT) => {
-  const {expanded, onChange: _onChange, renderExpandedArea, renderHeader, footer, className} = props
+  const {expanded, onChange, renderExpandedArea, renderHeader, footer, className} = props
 
   const classes = useStyles()
-  const {iconAnimating, onChange} = useIconAnimating({expanded, onChange: _onChange})
 
   return (
     <Grid container className={className} direction="row">
@@ -97,11 +78,7 @@ const ExpandableCard = (props: ExpandableCardPT) => {
               <Grid item>
                 <IconButton>
                   <ExpandMoreIcon
-                    className={classnames(
-                      classes.icon,
-                      classes.iconAnimationSetting,
-                      iconAnimating && classes.iconAnimation
-                    )}
+                    className={classnames(classes.icon, expanded && classes.iconExpanded)}
                   />
                 </IconButton>
               </Grid>
