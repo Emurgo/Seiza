@@ -1,11 +1,8 @@
 // @flow
 import React from 'react'
 import {compose} from 'redux'
-import {withProps, withHandlers} from 'recompose'
 
-import * as storage from '@/helpers/localStorage'
-import * as urlUtils from '@/helpers/url'
-import {withUrlManager, getStorageData} from './utils'
+import {withManageSimpleContextValue} from './utils'
 
 const STORAGE_KEY = 'sortBy'
 
@@ -30,30 +27,12 @@ const Context = React.createContext({
 })
 
 export const withSortByProvider: any = compose(
-  withUrlManager,
-  withProps((props) => ({
-    sortBy: props.getQueryParam(STORAGE_KEY, DEFAULT_VALUE),
-  })),
-  withHandlers({
-    setSortBy: ({setQueryParam}) => (sortBy) => {
-      storage.setItem(STORAGE_KEY, JSON.stringify(sortBy))
-      setQueryParam(STORAGE_KEY, sortBy)
-    },
-  }),
-  withHandlers({
-    _setSortByStorageFromQuery: ({setSortBy, getQueryParam}) => (query) => {
-      setSortBy(getQueryParam(STORAGE_KEY, DEFAULT_VALUE))
-    },
-    _sortByStorageToQuery: () => () => {
-      const sortBy = getStorageData(STORAGE_KEY, DEFAULT_VALUE)
-      return urlUtils.objToQueryString({sortBy})
-    },
-  }),
+  withManageSimpleContextValue(STORAGE_KEY, DEFAULT_VALUE),
   (WrappedComponent) => ({
-    sortBy,
-    setSortBy,
-    _setSortByStorageFromQuery,
-    _sortByStorageToQuery,
+    value: sortBy,
+    setValue: setSortBy,
+    _setStorageFromQuery: _setSortByStorageFromQuery,
+    _storageToQuery: _sortByStorageToQuery,
     ...restProps
   }) => {
     return (

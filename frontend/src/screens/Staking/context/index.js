@@ -9,8 +9,7 @@ import {withFiltersProvider, withShowFiltersContext} from './showFilters'
 import {withSearchTextProvider, withSearchTextContext} from './searchText'
 import {withPerformanceProvider, withPerformanceContext} from './performance'
 
-// TODO: `searchText`, `sortBy` and `performance` are extremenly similar,
-// create one common module for them (module to operate on a simple value)
+// TODO: consider continuous rewriting to hooks for better flow coverage
 
 export const stakingContextProvider = compose(
   withSelectedPoolsProvider,

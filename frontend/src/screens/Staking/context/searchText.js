@@ -1,10 +1,7 @@
 import React from 'react'
 import {compose} from 'redux'
-import {withProps, withHandlers} from 'recompose'
 
-import * as storage from '@/helpers/localStorage'
-import * as urlUtils from '@/helpers/url'
-import {withUrlManager, getStorageData} from './utils'
+import {withManageSimpleContextValue} from './utils'
 
 const STORAGE_KEY = 'searchText'
 const DEFAULT_VALUE = ''
@@ -19,30 +16,12 @@ const Context = React.createContext({
 })
 
 export const withSearchTextProvider = compose(
-  withUrlManager,
-  withProps((props) => ({
-    searchText: props.getQueryParam(STORAGE_KEY, DEFAULT_VALUE),
-  })),
-  withHandlers({
-    setSearchText: ({setQueryParam}) => (searchText) => {
-      storage.setItem(STORAGE_KEY, JSON.stringify(searchText))
-      setQueryParam(STORAGE_KEY, searchText)
-    },
-  }),
-  withHandlers({
-    _setSearchTextStorageFromQuery: ({setSearchText, getQueryParam}) => (query) => {
-      setSearchText(getQueryParam(STORAGE_KEY, DEFAULT_VALUE))
-    },
-    _searchTextStorageToQuery: () => () => {
-      const searchText = getStorageData(STORAGE_KEY, DEFAULT_VALUE)
-      return urlUtils.objToQueryString({searchText})
-    },
-  }),
+  withManageSimpleContextValue(STORAGE_KEY, DEFAULT_VALUE),
   (WrappedComponent) => ({
-    searchText,
-    setSearchText,
-    _searchTextStorageToQuery,
-    _setSearchTextStorageFromQuery,
+    value: searchText,
+    setValue: setSearchText,
+    _storageToQuery: _searchTextStorageToQuery,
+    _setStorageFromQuery: _setSearchTextStorageFromQuery,
     ...restProps
   }) => {
     return (
