@@ -1,9 +1,15 @@
 import React from 'react'
 import {defineMessages} from 'react-intl'
-import {Paper, Tabs, Tab, Typography} from '@material-ui/core'
+import {Paper, Typography} from '@material-ui/core'
 import WithTabState from '@/components/headless/tabState'
-import {SummaryCard, AdaValue} from '@/components/visual'
+import {SummaryCard, AdaValue, Tab, Tabs} from '@/components/visual'
 import {useI18n} from '@/i18n/helpers'
+
+// Note: We have "currentColor" inside of these svg files
+// which magically uses current CSS color inherited
+import {ReactComponent as DelegatedPoolIcon} from '@/assets/icons/delegated-stakepool-info.svg'
+import {ReactComponent as HistoryIcon} from '@/assets/icons/stakepool-history.svg'
+import {ReactComponent as TransactionsIcon} from '@/assets/icons/transactions.svg'
 
 const messages = defineMessages({
   delegatedPoolInfoName: 'Delegated Pool Info',
@@ -118,9 +124,9 @@ const StakingPoolTabs = ({stakingKey}) => {
         return (
           <Paper>
             <Tabs value={currentTab} onChange={setTab}>
-              <Tab label={translate(messages.delegatedPoolInfoName)} />
-              <Tab label={translate(messages.historyName)} />
-              <Tab label={translate(messages.transactionsName)} />
+              <Tab icon={<DelegatedPoolIcon />} label={translate(messages.delegatedPoolInfoName)} />
+              <Tab icon={<HistoryIcon />} label={translate(messages.historyName)} />
+              <Tab icon={<TransactionsIcon />} label={translate(messages.transactionsName)} />
             </Tabs>
             <TabContent stakingKey={stakingKey} />
           </Paper>
