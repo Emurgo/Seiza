@@ -1,6 +1,6 @@
 // @flow
 
-import React, {useEffect} from 'react'
+import React, {useEffect, useState} from 'react'
 import {Switch, Route, Redirect} from 'react-router-dom'
 import {compose} from 'redux'
 import {Grid, createStyles, withStyles} from '@material-ui/core'
@@ -35,6 +35,9 @@ const NotFound = withStyles(styles)(({classes}) => (
 
 // Note: URL vs Storage: no merging: either url or localStorage wins
 const ListScreenRoute = ({location: {search: urlQuery}}) => {
+  console.log('aa')
+  const [a, b] = useState(0)
+  console.log('bb')
   const {setListScreenStorageFromQuery, getListScreenUrlQuery} = useSetListScreenStorageFromQuery()
   const storageQuery = getListScreenUrlQuery()
 

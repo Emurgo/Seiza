@@ -1,3 +1,4 @@
+import React, {useState} from 'react'
 import {compose} from 'redux'
 
 import * as urlUtils from '@/helpers/url'
@@ -19,7 +20,9 @@ export const stakingContextProvider = compose(
   withPerformanceProvider
 )
 
-export const useSetListScreenStorageFromQuery = () => {
+export function useSetListScreenStorageFromQuery() {
+  const [p, g] = useState(0)
+  console.log('was there')
   const {
     sortByContext: {_setSortByStorageFromQuery, _sortByStorageToQuery},
   } = useSortByContext()
@@ -59,5 +62,5 @@ export const useSetListScreenStorageFromQuery = () => {
     _setPerformanceStorageFromQuery(query)
   }
 
-  return {getListScreenUrlQuery, setListScreenStorageFromQuery}
+  return {setListScreenStorageFromQuery, getListScreenUrlQuery}
 }
