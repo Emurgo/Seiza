@@ -43,9 +43,12 @@ const SortByBar = ({totalPoolsCount, shownPoolsCount}: Props) => {
   const {translate: tr} = useI18n()
   const classes = useStyles()
 
-  const onSortByChange = useCallback((e) => {
-    setSortBy(e.target.value)
-  })
+  const onSortByChange = useCallback(
+    (e) => {
+      setSortBy(e.target.value)
+    },
+    [setSortBy]
+  )
 
   return (
     <Grid container justify="space-between" alignItems="center">

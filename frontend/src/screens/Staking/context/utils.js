@@ -23,17 +23,24 @@ export const getStorageData = (key: string, defaultValue: any) => {
 
 export const useUrlManager = () => {
   const {history, location} = useReactRouter()
-  const setQueryParam = (key: string, value: any) => {
-    history.replace({
-      pathname: location.pathname,
-      search: urlUtils.replaceQueryParam(location.search, key, value),
-    })
-  }
 
-  const getQueryParam = (paramKey: string, defaultValue: any): any => {
-    const parsed = urlUtils.parse(location.search)
-    return parsed[paramKey] || defaultValue
-  }
+  const setQueryParam = useCallback(
+    (key: string, value: any) => {
+      history.replace({
+        pathname: location.pathname,
+        search: urlUtils.replaceQueryParam(location.search, key, value),
+      })
+    },
+    [history, location]
+  )
+
+  const getQueryParam = useCallback(
+    (paramKey: string, defaultValue: any): any => {
+      const parsed = urlUtils.parse(location.search)
+      return parsed[paramKey] || defaultValue
+    },
+    [history, location]
+  )
 
   return {setQueryParam, getQueryParam}
 }
@@ -45,13 +52,22 @@ export const useManageSimpleContextValue = (
 ) => {
   const {setQueryParam, getQueryParam} = useUrlManager()
   const value = getQueryParam(storageKey, defaultValue)
-  const setValue = useCallback((value: any) => {
-    storage.setItem(storageKey, JSON.stringify(value))
-    setQueryParam(storageKey, value)
-  })
-  const _setStorageFromQuery = useCallback((query: string) => {
-    setValue(getQueryParam(storageKey, defaultValue))
-  })
+
+  const setValue = useCallback(
+    (value: any) => {
+      storage.setItem(storageKey, JSON.stringify(value))
+      setQueryParam(storageKey, value)
+    },
+    [setQueryParam]
+  )
+
+  const _setStorageFromQuery = useCallback(
+    (query: string) => {
+      setValue(query)
+    },
+    [setValue]
+  )
+
   const _storageToQuery = useCallback(() => {
     const value = getStorageData(storageKey, defaultValue)
     return urlUtils.objToQueryString({[storageKey]: value})
