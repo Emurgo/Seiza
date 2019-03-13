@@ -35,7 +35,7 @@ export function useSetListScreenStorageFromQuery() {
   } = useSelectedPoolsContext()
   const {_setShowFiltersStorageFromQuery, _showFiltersStorageToQuery} = useShowFiltersContext()
 
-  const getListScreenUrlQuery = () => {
+  const getScreenUrlQuery = () => {
     const selectedPoolsQuery = _selectedPoolsStorageToQuery()
     const sortByQuery = _sortByStorageToQuery()
     const showFiltersQuery = _showFiltersStorageToQuery()
@@ -50,7 +50,7 @@ export function useSetListScreenStorageFromQuery() {
     ])
   }
 
-  const setListScreenStorageFromQuery = (query: string) => {
+  const setScreenStorageFromQuery = (query: string) => {
     _setSelectedPoolsStorageFromQuery(query)
     _setSortByStorageFromQuery(query)
     _setShowFiltersStorageFromQuery(query)
@@ -58,5 +58,23 @@ export function useSetListScreenStorageFromQuery() {
     _setPerformanceStorageFromQuery(query)
   }
 
-  return {setListScreenStorageFromQuery, getListScreenUrlQuery}
+  return {setScreenStorageFromQuery, getScreenUrlQuery}
+}
+
+export function useSetBasicScreenStorageFromQuery() {
+  const {
+    _setSelectedPoolsStorageFromQuery,
+    _selectedPoolsStorageToQuery,
+  } = useSelectedPoolsContext()
+
+  const getScreenUrlQuery = () => {
+    const selectedPoolsQuery = _selectedPoolsStorageToQuery()
+    return urlUtils.joinQueryStrings([selectedPoolsQuery])
+  }
+
+  const setScreenStorageFromQuery = (query: string) => {
+    _setSelectedPoolsStorageFromQuery(query)
+  }
+
+  return {setScreenStorageFromQuery, getScreenUrlQuery}
 }
