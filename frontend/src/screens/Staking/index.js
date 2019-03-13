@@ -2,12 +2,13 @@
 
 import React, {useEffect} from 'react'
 import {Switch, Route, Redirect} from 'react-router-dom'
+import {withRouter} from 'react-router'
 import {compose} from 'redux'
 import {Grid, createStyles, withStyles} from '@material-ui/core'
 
 import * as urlUtils from '@/helpers/url'
 import {routeTo} from '@/helpers/routes'
-import {stakingContextProvider, withSetListScreenStorageFromQuery} from './context'
+import {stakingContextProvider, useSetListScreenStorageFromQuery} from './context'
 import SideMenu from './SideMenu'
 import StakePoolList from './StakeList'
 import StakePoolHeader from './Header'
@@ -34,23 +35,23 @@ const NotFound = withStyles(styles)(({classes}) => (
 ))
 
 // Note: URL vs Storage: no merging: either url or localStorage wins
-const ListScreenRoute = compose(withSetListScreenStorageFromQuery)(
-  ({location: {search: urlQuery}, setListScreenStorageFromQuery, getListScreenUrlQuery}) => {
-    const storageQuery = getListScreenUrlQuery()
+// Note!!!: this does not work with hooks unless wrapper in `withRouter`
+const ListScreenRoute = withRouter(({location: {search: urlQuery}}) => {
+  const {setListScreenStorageFromQuery, getListScreenUrlQuery} = useSetListScreenStorageFromQuery()
+  const storageQuery = getListScreenUrlQuery()
 
-    useEffect(() => {
-      if (urlQuery && !urlUtils.areQueryStringsSame(urlQuery, storageQuery)) {
-        setListScreenStorageFromQuery(urlQuery)
-      }
-    }, [urlQuery, storageQuery])
+  useEffect(() => {
+    if (urlQuery && !urlUtils.areQueryStringsSame(urlQuery, storageQuery)) {
+      setListScreenStorageFromQuery(urlQuery)
+    }
+  }, [urlQuery, storageQuery])
 
-    return urlQuery || !storageQuery ? (
-      <StakePoolList />
-    ) : (
-      <Redirect exact to={`${routeTo.staking.poolList()}${storageQuery}`} />
-    )
-  }
-)
+  return urlQuery || !storageQuery ? (
+    <StakePoolList />
+  ) : (
+    <Redirect exact to={`${routeTo.staking.poolList()}${storageQuery}`} />
+  )
+})
 
 export default compose(
   withStyles(styles),
