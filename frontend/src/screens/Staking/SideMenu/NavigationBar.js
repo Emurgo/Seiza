@@ -66,26 +66,30 @@ const navigationBarStyles = createStyles({
 })
 
 const navItems = [
-  {link: routeTo.staking.poolList(), i18nLabel: navigationMessages.list, icon: <Search primary />},
+  {
+    link: routeTo.staking.poolList(),
+    i18nLabel: navigationMessages.list,
+    icon: <Search color="primary" />,
+  },
   {
     link: routeTo.staking.poolComparison(),
     i18nLabel: navigationMessages.comparison,
-    icon: <Compare primary />,
+    icon: <Compare color="primary" />,
   },
   {
     link: routeTo.staking.history(),
     i18nLabel: navigationMessages.history,
-    icon: <History primary />,
+    icon: <History color="primary" />,
   },
   {
     link: routeTo.staking.charts(),
     i18nLabel: navigationMessages.charts,
-    icon: <BarChart primary />,
+    icon: <BarChart color="primary" />,
   },
   {
     link: routeTo.staking.location(),
     i18nLabel: navigationMessages.location,
-    icon: <LocationOn primary />,
+    icon: <LocationOn color="primary" />,
   },
 ]
 
