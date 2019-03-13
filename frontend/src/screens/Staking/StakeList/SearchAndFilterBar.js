@@ -1,14 +1,13 @@
 // @flow
 import React, {useState, useCallback} from 'react'
 import {defineMessages} from 'react-intl'
-import {compose} from 'redux'
 import {Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
 import {useI18n} from '@/i18n/helpers'
 import {Searchbar, ToggleButton} from '@/components/visual'
 import Filters from './Filters'
-import {withShowFiltersContext} from '../context/showFilters'
+import {useShowFiltersContext} from '../context/showFilters'
 import {useSearchTextContext} from '../context/searchText'
 
 const messages = defineMessages({
@@ -52,12 +51,12 @@ const Search = () => {
   )
 }
 
-export default compose(withShowFiltersContext)((props) => {
+export default () => {
   const classes = useStyles()
   const {translate: tr} = useI18n()
   const {
     showFiltersContext: {showFilters, toggleFilters},
-  } = props
+  } = useShowFiltersContext()
   return (
     <Grid container direction="column" justify="space-between" className={classes.wrapper}>
       <Grid item>
@@ -82,4 +81,4 @@ export default compose(withShowFiltersContext)((props) => {
       )}
     </Grid>
   )
-})
+}
