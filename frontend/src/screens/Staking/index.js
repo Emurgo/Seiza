@@ -1,7 +1,8 @@
 // @flow
 
-import React, {useEffect, useState} from 'react'
+import React, {useEffect} from 'react'
 import {Switch, Route, Redirect} from 'react-router-dom'
+import {withRouter} from 'react-router'
 import {compose} from 'redux'
 import {Grid, createStyles, withStyles} from '@material-ui/core'
 
@@ -34,10 +35,8 @@ const NotFound = withStyles(styles)(({classes}) => (
 ))
 
 // Note: URL vs Storage: no merging: either url or localStorage wins
-const ListScreenRoute = ({location: {search: urlQuery}}) => {
-  console.log('aa')
-  const [a, b] = useState(0)
-  console.log('bb')
+// Note!!!: this does not work with hooks unless wrapper in `withRouter`
+const ListScreenRoute = withRouter(({location: {search: urlQuery}}) => {
   const {setListScreenStorageFromQuery, getListScreenUrlQuery} = useSetListScreenStorageFromQuery()
   const storageQuery = getListScreenUrlQuery()
 
@@ -52,7 +51,7 @@ const ListScreenRoute = ({location: {search: urlQuery}}) => {
   ) : (
     <Redirect exact to={`${routeTo.staking.poolList()}${storageQuery}`} />
   )
-}
+})
 
 export default compose(
   withStyles(styles),

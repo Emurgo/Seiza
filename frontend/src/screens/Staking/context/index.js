@@ -1,4 +1,5 @@
-import React, {useState} from 'react'
+// @flow
+
 import {compose} from 'redux'
 
 import * as urlUtils from '@/helpers/url'
@@ -9,10 +10,10 @@ import {withFiltersProvider, useShowFiltersContext} from './showFilters'
 import {withSearchTextProvider, useSearchTextContext} from './searchText'
 import {withPerformanceProvider, usePerformanceContext} from './performance'
 
-// TODO: once we have only hooks, dont wrap fields inside `somethingContext` object
+// TODO: once we have only hooks, dont wrap fields inside `somethingContext` object (next PR)
 
-// TODO: consider getting rid of `compose` and combine all providers in single component
-export const stakingContextProvider = compose(
+// TODO: consider getting rid of `compose` and combine all providers in single component (next PR)
+export const stakingContextProvider: any = compose(
   withSelectedPoolsProvider,
   withSortByProvider,
   withFiltersProvider,
@@ -21,8 +22,6 @@ export const stakingContextProvider = compose(
 )
 
 export function useSetListScreenStorageFromQuery() {
-  const [p, g] = useState(0)
-  console.log('was there')
   const {
     sortByContext: {_setSortByStorageFromQuery, _sortByStorageToQuery},
   } = useSortByContext()
@@ -54,7 +53,7 @@ export function useSetListScreenStorageFromQuery() {
     ])
   }
 
-  const setListScreenStorageFromQuery = (query) => {
+  const setListScreenStorageFromQuery = (query: string) => {
     _setSelectedPoolsStorageFromQuery(query)
     _setSortByStorageFromQuery(query)
     _setShowFiltersStorageFromQuery(query)
