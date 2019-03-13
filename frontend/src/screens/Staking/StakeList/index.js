@@ -39,6 +39,10 @@ const styles = (theme) =>
       marginTop: '30px',
       marginBottom: '50px',
       minWidth: '120px',
+      paddingLeft: theme.spacing.unit * 3,
+      paddingRight: theme.spacing.unit * 3,
+      paddingTop: theme.spacing.unit,
+      paddingBottom: theme.spacing.unit,
     },
     loadMoreWrapper: {
       width: '100%',
