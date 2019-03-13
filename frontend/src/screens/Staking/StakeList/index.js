@@ -3,12 +3,13 @@ import gql from 'graphql-tag'
 import classnames from 'classnames'
 import {compose} from 'redux'
 import {graphql} from 'react-apollo'
-import {Typography, Grid, createStyles, withStyles} from '@material-ui/core'
+import {Typography, Grid, createStyles} from '@material-ui/core'
+import {makeStyles} from '@material-ui/styles'
 import {withHandlers, withProps} from 'recompose'
 import {defineMessages} from 'react-intl'
 
-import {withI18n} from '@/i18n/helpers'
-import {Button, DebugApolloError, LoadingInProgress} from '@/components/visual'
+import {useI18n} from '@/i18n/helpers'
+import {Button, Overlay, LoadingInProgress, LoadingOverlay, LoadingError} from '@/components/visual'
 import StakePool from './StakePool'
 import SearchAndFilterBar from './SearchAndFilterBar'
 import SortByBar from './SortByBar'
@@ -23,7 +24,7 @@ const messages = defineMessages({
   noResults: 'No matching results for the given query.',
 })
 
-const styles = (theme) =>
+const useStyles = makeStyles((theme) =>
   createStyles({
     rowWrapper: {
       padding: '15px 30px',
@@ -56,6 +57,7 @@ const styles = (theme) =>
       padding: theme.spacing.unit * 5,
     },
   })
+)
 
 const stakePoolFacade = (data) => ({
   hash: data.poolHash,
@@ -69,46 +71,77 @@ const stakePoolFacade = (data) => ({
   stake: data.summary.adaStaked,
 })
 
-const StakeList = ({
-  classes,
+const StakeList = ({onLoadMore, pagedStakePoolList, loading}) => {
+  const {translate: tr} = useI18n()
+  const classes = useStyles()
+
+  if (loading && !pagedStakePoolList) return <LoadingInProgress />
+
+  const {hasMore} = pagedStakePoolList
+  const stakePoolList = pagedStakePoolList.stakePools.map(stakePoolFacade)
+
+  return (
+    <Overlay.Wrapper>
+      {stakePoolList.map((pool) => (
+        <Grid item key={pool.hash} className={classes.rowWrapper}>
+          <StakePool data={pool} />
+        </Grid>
+      ))}
+      {hasMore ? (
+        <Grid item className={classes.loadMoreWrapper}>
+          <Grid container justify="center" direction="row">
+            <Button className={classes.loadMore} gradient rounded onClick={onLoadMore}>
+              {tr(messages.loadMore)}
+            </Button>
+          </Grid>
+        </Grid>
+      ) : (
+        <div className={classes.lastItemSpace} />
+      )}
+      <LoadingOverlay loading={loading} />
+    </Overlay.Wrapper>
+  )
+}
+
+const StakeListWrapper = ({
   poolsDataProvider: {loading, error, pagedStakePoolList},
   onLoadMore,
-  i18n: {translate: tr},
 }) => {
-  if (loading) return <LoadingInProgress />
-  if (error) return <DebugApolloError error={error} />
-  const {hasMore, totalCount} = pagedStakePoolList
-  const stakePoolList = pagedStakePoolList.stakePools.map(stakePoolFacade)
+  const {translate: tr} = useI18n()
+  const classes = useStyles()
+
+  const totalCount = loading || error ? 0 : pagedStakePoolList.totalCount
+  const shownPoolsCount = loading || error ? 0 : pagedStakePoolList.stakePools.length
+
   return (
     <React.Fragment>
       <Grid container direction="column" alignItems="flex-start" className={classes.wrapper}>
         <Grid item className={classes.rowWrapper}>
           <SearchAndFilterBar />
         </Grid>
-        {totalCount > 0 ? (
+        {loading || error || totalCount > 0 ? (
           <Grid item className={classnames(classes.rowWrapper, classes.sortByBar)}>
-            <SortByBar totalPoolsCount={totalCount} shownPoolsCount={stakePoolList.length} />
+            <SortByBar
+              loading={loading}
+              error={error}
+              totalPoolsCount={totalCount}
+              shownPoolsCount={shownPoolsCount}
+            />
           </Grid>
         ) : (
           <div className={classes.rowWrapper}>
             <Typography>{tr(messages.noResults)}</Typography>
           </div>
         )}
-        {stakePoolList.map((pool) => (
-          <Grid item key={pool.hash} className={classes.rowWrapper}>
-            <StakePool data={pool} />
-          </Grid>
-        ))}
-        {hasMore ? (
-          <Grid item className={classes.loadMoreWrapper}>
-            <Grid container justify="center" direction="row">
-              <Button className={classes.loadMore} gradient rounded onClick={onLoadMore}>
-                {tr(messages.loadMore)}
-              </Button>
-            </Grid>
-          </Grid>
-        ) : (
-          <div className={classes.lastItemSpace} />
+        <Grid item className={classes.rowWrapper}>
+          <LoadingError error={error} />
+        </Grid>
+        {!error && (
+          <StakeList
+            loading={loading}
+            pagedStakePoolList={pagedStakePoolList}
+            onLoadMore={onLoadMore}
+          />
         )}
       </Grid>
     </React.Fragment>
@@ -120,9 +153,8 @@ const formatPerformancetoGQL = (performance) => ({
   to: performance[1] / 100,
 })
 
+// TODO: refactor with hooks
 export default compose(
-  withI18n,
-  withStyles(styles),
   withProps(() => {
     const sortByContext = useSortByContext()
     const performanceContext = usePerformanceContext()
@@ -220,4 +252,4 @@ export default compose(
       })
     },
   })
-)(StakeList)
+)(StakeListWrapper)

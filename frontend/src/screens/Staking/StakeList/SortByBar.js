@@ -34,9 +34,11 @@ const useStyles = makeStyles((theme) => ({
 type Props = {|
   totalPoolsCount: number,
   shownPoolsCount: number,
+  loading: boolean,
+  error: boolean,
 |}
 
-const SortByBar = ({totalPoolsCount, shownPoolsCount}: Props) => {
+const SortByBar = ({totalPoolsCount, shownPoolsCount, loading, error}: Props) => {
   const {sortBy, setSortBy} = useSortByContext()
   const {translate: tr} = useI18n()
   const classes = useStyles()
@@ -66,15 +68,17 @@ const SortByBar = ({totalPoolsCount, shownPoolsCount}: Props) => {
           ]}
         />
       </Grid>
-      <Grid item>
-        <Grid container>
-          <Typography className={classes.shownPools}>
-            {tr(messages.shownPoolsCount, {count: shownPoolsCount})}
-          </Typography>
-          &nbsp;
-          <Typography>{totalPoolsCount}</Typography>
+      {!loading && !error && (
+        <Grid item>
+          <Grid container>
+            <Typography className={classes.shownPools}>
+              {tr(messages.shownPoolsCount, {count: shownPoolsCount})}
+            </Typography>
+            &nbsp;
+            <Typography>{totalPoolsCount}</Typography>
+          </Grid>
         </Grid>
-      </Grid>
+      )}
     </Grid>
   )
 }
