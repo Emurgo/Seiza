@@ -36,7 +36,7 @@ const RANGE_END = 100
 const tipFormatter = (value) => `${value}%`
 
 const Filters = () => {
-  const {performanceContext} = usePerformanceContext()
+  const performanceContext = usePerformanceContext()
   const [performance, setPerformance] = useState(performanceContext.performance)
   const [language, setLanguage] = useState('all')
   const [region, setRegion] = useState('all')

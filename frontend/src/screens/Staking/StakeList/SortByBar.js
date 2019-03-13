@@ -37,9 +37,7 @@ type Props = {|
 |}
 
 const SortByBar = ({totalPoolsCount, shownPoolsCount}: Props) => {
-  const {
-    sortByContext: {sortBy, setSortBy},
-  } = useSortByContext()
+  const {sortBy, setSortBy} = useSortByContext()
   const {translate: tr} = useI18n()
   const classes = useStyles()
 

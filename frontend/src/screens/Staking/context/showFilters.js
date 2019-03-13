@@ -13,21 +13,17 @@ const STORAGE_KEY = 'showFilters'
 const DEFAULT_VALUE = undefined
 
 type ContextType = {
-  showFiltersContext: {
-    showFilters: typeof undefined | true,
-    toggleFilters: Function,
-    _setShowFiltersStorageFromQuery: Function,
-    _showFiltersStorageToQuery: Function,
-  },
+  showFilters: typeof undefined | true,
+  toggleFilters: Function,
+  _setShowFiltersStorageFromQuery: Function,
+  _showFiltersStorageToQuery: Function,
 }
 
 const Context = React.createContext<ContextType>({
-  showFiltersContext: {
-    showFilters: DEFAULT_VALUE,
-    toggleFilters: null,
-    _setShowFiltersStorageFromQuery: null,
-    _showFiltersStorageToQuery: null,
-  },
+  showFilters: DEFAULT_VALUE,
+  toggleFilters: null,
+  _setShowFiltersStorageFromQuery: null,
+  _showFiltersStorageToQuery: null,
 })
 
 export const FiltersProvider = ({children}: ProviderProps) => {
@@ -46,12 +42,10 @@ export const FiltersProvider = ({children}: ProviderProps) => {
   return (
     <Context.Provider
       value={{
-        showFiltersContext: {
-          showFilters,
-          toggleFilters,
-          _setShowFiltersStorageFromQuery,
-          _showFiltersStorageToQuery,
-        },
+        showFilters,
+        toggleFilters,
+        _setShowFiltersStorageFromQuery,
+        _showFiltersStorageToQuery,
       }}
     >
       {children}

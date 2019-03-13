@@ -12,31 +12,25 @@ const STORAGE_KEY = 'selectedPools'
 const DEFAULT_VALUE = []
 
 type ContextType = {
-  selectedPoolsContext: {
-    selectedPools: Array<string>,
-    addPool: Function,
-    removePool: Function,
-    setPools: Function,
-    _setSelectedPoolsStorageFromQuery: Function,
-    _selectedPoolsStorageToQuery: Function,
-  },
+  selectedPools: Array<string>,
+  addPool: Function,
+  removePool: Function,
+  _setSelectedPoolsStorageFromQuery: Function,
+  _selectedPoolsStorageToQuery: Function,
 }
 
 const Context = React.createContext<ContextType>({
-  selectedPoolsContext: {
-    selectedPools: DEFAULT_VALUE,
-    addPool: null,
-    removePool: null,
-    setPools: null,
-    _setSelectedPoolsStorageFromQuery: null,
-    _selectedPoolsStorageToQuery: null,
-  },
+  selectedPools: DEFAULT_VALUE,
+  addPool: null,
+  removePool: null,
+  _setSelectedPoolsStorageFromQuery: null,
+  _selectedPoolsStorageToQuery: null,
 })
 
 export const SelectedPoolsProvider = ({children}: ProviderProps) => {
   const {
     value: selectedPools,
-    setValue: setPools,
+    setValue: _setPools,
     _setStorageFromQuery: _setSelectedPoolsStorageFromQuery,
     _storageToQuery: _selectedPoolsStorageToQuery,
   } = useManageSimpleContextValue(STORAGE_KEY, DEFAULT_VALUE)
@@ -47,9 +41,9 @@ export const SelectedPoolsProvider = ({children}: ProviderProps) => {
         throw new Error(`Could not remove pool ${poolHash}`)
       }
       const newSelectedPools = selectedPools.filter((_poolHash) => _poolHash !== poolHash)
-      setPools(newSelectedPools)
+      _setPools(newSelectedPools)
     },
-    [selectedPools, setPools]
+    [selectedPools, _setPools]
   )
 
   const addPool = useCallback(
@@ -58,22 +52,19 @@ export const SelectedPoolsProvider = ({children}: ProviderProps) => {
         throw new Error(`Pool ${poolHash} is already added.`)
       }
       const newSelectedPools = [...selectedPools, poolHash]
-      setPools(newSelectedPools)
+      _setPools(newSelectedPools)
     },
-    [selectedPools, setPools]
+    [selectedPools, _setPools]
   )
 
   return (
     <Context.Provider
       value={{
-        selectedPoolsContext: {
-          selectedPools,
-          addPool,
-          removePool,
-          setPools,
-          _setSelectedPoolsStorageFromQuery,
-          _selectedPoolsStorageToQuery,
-        },
+        selectedPools,
+        addPool,
+        removePool,
+        _setSelectedPoolsStorageFromQuery,
+        _selectedPoolsStorageToQuery,
       }}
     >
       {children}

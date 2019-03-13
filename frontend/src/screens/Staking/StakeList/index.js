@@ -123,7 +123,7 @@ export default compose(
     const sortByContext = useSortByContext()
     const performanceContext = usePerformanceContext()
     const searchTextContext = useSearchTextContext()
-    return {...sortByContext, ...performanceContext, ...searchTextContext}
+    return {sortByContext, performanceContext, searchTextContext}
   }),
   graphql(
     gql`
