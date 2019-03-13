@@ -1,13 +1,12 @@
-import React from 'react'
+import React, {useCallback} from 'react'
 import {compose} from 'redux'
 import {Grid, createStyles, withStyles, Typography} from '@material-ui/core'
 import {defineMessages} from 'react-intl'
-import {withHandlers, withProps} from 'recompose'
 
 import {ExpandableCard, Button, AdaValue, CircularProgressBar} from '@/components/visual'
 import WithModalState from '@/components/headless/modalState'
 import {withI18n} from '@/i18n/helpers'
-import {withSelectedPoolsContext} from '../context/selectedPools'
+import {useSelectedPoolsContext} from '../context/selectedPools'
 
 const messages = defineMessages({
   performance: 'Performance:',
@@ -71,49 +70,51 @@ const cardStyles = ({pallete}) =>
 
 const Header = compose(
   withI18n,
-  withStyles(headerStyles),
-  withSelectedPoolsContext,
-  withProps((props) => ({
-    selected: props.selectedPoolsContext.selectedPools.includes(props.hash),
-  })),
-  withHandlers({
-    onAddPool: ({selectedPoolsContext: {addPool}, hash}) => () => addPool(hash),
-    onRemovePool: ({selectedPoolsContext: {removePool}, hash}) => () => removePool(hash),
-  })
-)(({classes, name, hash, i18n: {translate}, onAddPool, onRemovePool, selected}) => (
-  <Grid
-    className={classes.wrapper}
-    container
-    justify="space-between"
-    alignItems="center"
-    direction="row"
-  >
-    <Grid item>
-      <Grid container direction="row">
-        <Grid item>
-          <div className={classes.dot} />
-        </Grid>
-        <Grid item>
-          <Grid container direction="column" className={classes.info}>
-            <Typography variant="h6">{name}</Typography>
-            <Typography>{hash}</Typography>
+  withStyles(headerStyles)
+)(({classes, name, hash, i18n: {translate}}) => {
+  const {
+    selectedPoolsContext: {addPool, removePool, selectedPools},
+  } = useSelectedPoolsContext()
+  const selected = selectedPools.includes(hash)
+
+  const onAddPool = useCallback(() => addPool(hash), [addPool, hash])
+  const onRemovePool = useCallback(() => removePool(hash), [removePool, hash])
+
+  return (
+    <Grid
+      className={classes.wrapper}
+      container
+      justify="space-between"
+      alignItems="center"
+      direction="row"
+    >
+      <Grid item>
+        <Grid container direction="row">
+          <Grid item>
+            <div className={classes.dot} />
+          </Grid>
+          <Grid item>
+            <Grid container direction="column" className={classes.info}>
+              <Typography variant="h6">{name}</Typography>
+              <Typography>{hash}</Typography>
+            </Grid>
           </Grid>
         </Grid>
       </Grid>
+      <Grid item>
+        {selected ? (
+          <Button rounded primary onClick={onRemovePool} className={classes.button}>
+            {translate(messages.removePool)}
+          </Button>
+        ) : (
+          <Button rounded secondary onClick={onAddPool} className={classes.button}>
+            {translate(messages.addPool)}
+          </Button>
+        )}
+      </Grid>
     </Grid>
-    <Grid item>
-      {selected ? (
-        <Button rounded primary onClick={onRemovePool} className={classes.button}>
-          {translate(messages.removePool)}
-        </Button>
-      ) : (
-        <Button rounded secondary onClick={onAddPool} className={classes.button}>
-          {translate(messages.addPool)}
-        </Button>
-      )}
-    </Grid>
-  </Grid>
-))
+  )
+})
 
 const DataGrid = withStyles(contentStyles)(({items, classes}) => (
   // Note: when setting direction to `column` there is strange height misallignment

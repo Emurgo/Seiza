@@ -14,7 +14,7 @@ import {LoadingDots, DebugApolloError} from '@/components/visual'
 import assert from 'assert'
 import {withI18n} from '@/i18n/helpers'
 import {dataIdFromObject} from '@/helpers/apollo'
-import {withSelectedPoolsContext} from '../context/selectedPools'
+import {useSelectedPoolsContext} from '../context/selectedPools'
 
 const messages = defineMessages({
   header: 'Stake pools to compare:',
@@ -78,11 +78,10 @@ const PoolNamesFragment = gql`
   }
 `
 
-const PoolsToCompare = ({
-  classes,
-  selectedPoolsContext: {removePool, selectedPools: poolHashes},
-  i18n: {translate},
-}) => {
+const PoolsToCompare = ({classes, i18n: {translate}}) => {
+  const {
+    selectedPoolsContext: {removePool, selectedPools: poolHashes},
+  } = useSelectedPoolsContext()
   const client = useApolloClient()
 
   const fragmentData = poolHashes.map((hash) => {
@@ -190,6 +189,5 @@ const PoolsToCompare = ({
 // TODO: we may want some other strategy for getting pools names
 export default compose(
   withI18n,
-  withStyles(poolsStyles),
-  withSelectedPoolsContext
+  withStyles(poolsStyles)
 )(PoolsToCompare)

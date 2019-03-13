@@ -3,13 +3,14 @@ import {compose} from 'redux'
 
 import * as urlUtils from '@/helpers/url'
 
-import {withSelectedPoolsProvider, withSelectedPoolsContext} from './selectedPools'
+import {withSelectedPoolsProvider, useSelectedPoolsContext} from './selectedPools'
 import {withSortByProvider, useSortByContext} from './sortBy'
 import {withFiltersProvider, withShowFiltersContext} from './showFilters'
 import {withSearchTextProvider, useSearchTextContext} from './searchText'
 import {withPerformanceProvider, usePerformanceContext} from './performance'
 
 // TODO: consider continuous rewriting to hooks for better flow coverage
+// TODO: once we have only hooks, dont wrap fields inside `somethingContext` object
 
 export const stakingContextProvider = compose(
   withSelectedPoolsProvider,
@@ -20,10 +21,8 @@ export const stakingContextProvider = compose(
 )
 
 export const withSetListScreenStorageFromQuery = compose(
-  withSelectedPoolsContext,
   withShowFiltersContext,
   (WrappedComponent) => ({
-    selectedPoolsContext: {_setSelectedPoolsStorageFromQuery, _selectedPoolsStorageToQuery},
     showFiltersContext: {_setShowFiltersStorageFromQuery, _showFiltersStorageToQuery},
     ...restProps
   }) => {
@@ -36,6 +35,9 @@ export const withSetListScreenStorageFromQuery = compose(
     const {
       searchTextContext: {_setSearchTextStorageFromQuery, _searchTextStorageToQuery},
     } = useSearchTextContext()
+    const {
+      selectedPoolsContext: {_setSelectedPoolsStorageFromQuery, _selectedPoolsStorageToQuery},
+    } = useSelectedPoolsContext()
     const getListScreenUrlQuery = () => {
       const selectedPoolsQuery = _selectedPoolsStorageToQuery()
       const sortByQuery = _sortByStorageToQuery()

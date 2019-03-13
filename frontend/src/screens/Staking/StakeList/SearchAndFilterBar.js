@@ -37,7 +37,9 @@ const Search = () => {
   const {searchTextContext} = useSearchTextContext()
   const [searchText, setSearchText] = useState(searchTextContext.searchText)
 
-  const onSearch = useCallback((query) => searchTextContext.setSearchText(query))
+  const onSearch = useCallback((query) => searchTextContext.setSearchText(query), [
+    searchTextContext.setSearchText,
+  ])
 
   const {translate: tr} = useI18n()
   return (
