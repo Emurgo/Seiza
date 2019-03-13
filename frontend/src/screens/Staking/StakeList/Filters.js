@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
     width: '85%',
   },
   slider: {
-    width: '90%',
+    width: '95%',
   },
 }))
 
@@ -42,6 +42,7 @@ const Filters = () => {
   const [region, setRegion] = useState('all')
 
   const onLanguageChange = useCallback((e) => setLanguage(e.target.value), [setLanguage])
+  const onRegionChange = useCallback((e) => setRegion(e.target.value), [setRegion])
   const onDragEnd = useCallback((e) => performanceContext.setPerformance(performance), [
     performanceContext.setPerformance,
     performance,
@@ -57,7 +58,7 @@ const Filters = () => {
             <Select
               value={region}
               label={tr(messages.regions)}
-              onChange={setRegion}
+              onChange={onRegionChange}
               className={classes.select}
               options={[{value: 'all', label: tr(messages.allRegions)}]}
             />
