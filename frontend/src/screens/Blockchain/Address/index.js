@@ -42,7 +42,7 @@ const summaryMessages = defineMessages({
   totalAdaSent: 'Total sent ADA',
 })
 
-const Heading = ({children}) => <Typography variant="h4">{children}</Typography>
+const Heading = ({children}) => <Typography variant="h1">{children}</Typography>
 
 const modalStyles = (theme) =>
   createStyles({
