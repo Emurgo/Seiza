@@ -53,7 +53,7 @@ export const useManageSimpleContextValue = (
   transformValue: Function = (v) => v
 ) => {
   const {setQueryParam, getQueryParam} = useUrlManager()
-  const value = getQueryParam(storageKey, defaultValue)
+  const value = transformValue(getQueryParam(storageKey, defaultValue))
 
   const setValue = React.useCallback(
     (value: any) => {
@@ -65,7 +65,8 @@ export const useManageSimpleContextValue = (
 
   const _setStorageFromQuery = React.useCallback(
     (query: string) => {
-      setValue(query)
+      const value = getQueryParam(storageKey, query)
+      setValue(value)
     },
     [setValue]
   )
