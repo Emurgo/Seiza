@@ -4,6 +4,8 @@ import React, {useContext} from 'react'
 
 import {useManageSimpleContextValue} from './utils'
 
+import type {ProviderProps} from './utils'
+
 const STORAGE_KEY = 'searchText'
 const DEFAULT_VALUE = ''
 
@@ -25,27 +27,25 @@ const Context = React.createContext<ContextType>({
   },
 })
 
-export const withSearchTextProvider = <Props>(
-  WrappedComponent: React$ComponentType<Props>
-): React$ComponentType<Props> => (props) => {
-    const {value, setValue, _setStorageFromQuery, _storageToQuery} = useManageSimpleContextValue(
-      STORAGE_KEY,
-      DEFAULT_VALUE
-    )
-    return (
-      <Context.Provider
-        value={{
-          searchTextContext: {
-            searchText: value,
-            setSearchText: setValue,
-            _searchTextStorageToQuery: _storageToQuery,
-            _setSearchTextStorageFromQuery: _setStorageFromQuery,
-          },
-        }}
-      >
-        <WrappedComponent {...props} />
-      </Context.Provider>
-    )
-  }
+export const SearchTextProvider = ({children}: ProviderProps) => {
+  const {value, setValue, _setStorageFromQuery, _storageToQuery} = useManageSimpleContextValue(
+    STORAGE_KEY,
+    DEFAULT_VALUE
+  )
+  return (
+    <Context.Provider
+      value={{
+        searchTextContext: {
+          searchText: value,
+          setSearchText: setValue,
+          _searchTextStorageToQuery: _storageToQuery,
+          _setSearchTextStorageFromQuery: _setStorageFromQuery,
+        },
+      }}
+    >
+      {children}
+    </Context.Provider>
+  )
+}
 
 export const useSearchTextContext = (): ContextType => useContext(Context)

@@ -4,6 +4,8 @@ import React, {useCallback, useContext} from 'react'
 
 import {useManageSimpleContextValue} from './utils'
 
+import type {ProviderProps} from './utils'
+
 const STORAGE_KEY = 'showFilters'
 
 // Note: undefined is used instead of 'false' intentionally
@@ -28,35 +30,33 @@ const Context = React.createContext<ContextType>({
   },
 })
 
-export const withFiltersProvider = <Props>(
-  WrappedComponent: React$ComponentType<Props>
-): React$ComponentType<Props> => (props) => {
-    const {
-      value: showFilters,
-      setValue: _setShowFilters,
-      _setStorageFromQuery: _setShowFiltersStorageFromQuery,
-      _storageToQuery: _showFiltersStorageToQuery,
-    } = useManageSimpleContextValue(STORAGE_KEY, DEFAULT_VALUE)
+export const FiltersProvider = ({children}: ProviderProps) => {
+  const {
+    value: showFilters,
+    setValue: _setShowFilters,
+    _setStorageFromQuery: _setShowFiltersStorageFromQuery,
+    _storageToQuery: _showFiltersStorageToQuery,
+  } = useManageSimpleContextValue(STORAGE_KEY, DEFAULT_VALUE)
 
-    const toggleFilters = useCallback(() => {
-      const newValue = showFilters ? DEFAULT_VALUE : true
-      _setShowFilters(newValue)
-    }, [_setShowFilters, showFilters])
+  const toggleFilters = useCallback(() => {
+    const newValue = showFilters ? DEFAULT_VALUE : true
+    _setShowFilters(newValue)
+  }, [_setShowFilters, showFilters])
 
-    return (
-      <Context.Provider
-        value={{
-          showFiltersContext: {
-            showFilters,
-            toggleFilters,
-            _setShowFiltersStorageFromQuery,
-            _showFiltersStorageToQuery,
-          },
-        }}
-      >
-        <WrappedComponent {...props} />
-      </Context.Provider>
-    )
-  }
+  return (
+    <Context.Provider
+      value={{
+        showFiltersContext: {
+          showFilters,
+          toggleFilters,
+          _setShowFiltersStorageFromQuery,
+          _showFiltersStorageToQuery,
+        },
+      }}
+    >
+      {children}
+    </Context.Provider>
+  )
+}
 
 export const useShowFiltersContext = (): ContextType => useContext(Context)
