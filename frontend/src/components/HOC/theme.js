@@ -44,6 +44,10 @@ const commonThemeObj = {
       fontSize: 24,
       fontWeight: 700,
     },
+    h4: {
+      fontSize: 20,
+      fontWeight: 400,
+    },
     body1: {
       fontSize: 16,
     },
