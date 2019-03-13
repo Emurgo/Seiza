@@ -2,17 +2,17 @@ import React from 'react'
 import classnames from 'classnames'
 import {withStyles, createStyles, Card, Typography, Grid} from '@material-ui/core'
 
-const styles = (theme) =>
+const styles = ({spacing, palette}) =>
   createStyles({
     card: {
-      padding: theme.spacing.unit * 2,
+      padding: spacing.unit * 2,
     },
     listRow: {
-      'paddingTop': theme.spacing.unit * 2.5,
-      'paddingBottom': theme.spacing.unit * 2.5,
+      'paddingTop': spacing.unit * 2.5,
+      'paddingBottom': spacing.unit * 2.5,
 
       '&:not(:last-child)': {
-        borderBottom: '0.5px solid gray',
+        borderBottom: `0.5px solid ${palette.unobtrusiveContentHighlight}`,
       },
       '&:last-child': {
         paddingBottom: 0,
@@ -43,7 +43,9 @@ const Row = ({children, classes, className}) => {
 
 const Label = ({children}) => (
   <Grid item>
-    <Typography variant="caption">{children}</Typography>
+    <Typography variant="caption" color="textSecondary">
+      {children}
+    </Typography>
   </Grid>
 )
 

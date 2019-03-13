@@ -43,10 +43,14 @@ const EntityIdCard = ({classes, iconRenderer, label, value, badge}) => (
     )}
 
     <div className={classes.cardContent}>
-      <Typography variant="caption">{label}</Typography>
+      <Typography variant="overline" color="textSecondary">
+        {label}
+      </Typography>
       <Grid item>
-        <span className={classes.value}>{value}</span>
-        <CopyToClipboard value={value} />
+        <Typography variant="body1" className={classes.value}>
+          {value}
+          <CopyToClipboard value={value} />
+        </Typography>
       </Grid>
     </div>
     {badge && (

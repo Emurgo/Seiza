@@ -7,8 +7,14 @@ const generateStakePool = (stakingKeyHash) => ({
   pledge: '10000003723742',
   totalAdaStaked: '10000003723742',
   performance: 0.65,
-  totalRewards: '5000000123123',
-  totalActiveEpochs: 32,
+  totalRewards: {
+    amount: '5000000123123',
+    estimatedMissed: '1000000123123',
+  },
+  timeActive: {
+    epochs: 32,
+    days: 500,
+  },
   stakersCount: 1271,
   currentMargin: {
     margin: 0.08,

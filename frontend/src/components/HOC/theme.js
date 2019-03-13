@@ -45,7 +45,7 @@ const commonThemeObj = {
       fontWeight: 700,
     },
     body1: {
-      fontSize: 14,
+      fontSize: 16,
     },
     button: {
       fontWeight: 700,
@@ -57,6 +57,7 @@ const commonThemeObj = {
     overline: {
       letterSpacing: 1.5,
       fontSize: 13,
+      lineHeight: 1.5,
     },
   },
 }
