@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const Search = () => {
-  const {searchTextContext} = useSearchTextContext()
+  const searchTextContext = useSearchTextContext()
   const [searchText, setSearchText] = useState(searchTextContext.searchText)
 
   const onSearch = useCallback((query) => searchTextContext.setSearchText(query), [
@@ -54,9 +54,7 @@ const Search = () => {
 export default () => {
   const classes = useStyles()
   const {translate: tr} = useI18n()
-  const {
-    showFiltersContext: {showFilters, toggleFilters},
-  } = useShowFiltersContext()
+  const {showFilters, toggleFilters} = useShowFiltersContext()
   return (
     <Grid container direction="column" justify="space-between" className={classes.wrapper}>
       <Grid item>

@@ -19,21 +19,17 @@ export const SORT_BY_OPTIONS = {
 const DEFAULT_VALUE = SORT_BY_OPTIONS.REVENUE
 
 type ContextType = {
-  sortByContext: {
-    sortBy: string,
-    setSortBy: Function,
-    _setSortByStorageFromQuery: Function,
-    _sortByStorageToQuery: Function,
-  },
+  sortBy: string,
+  setSortBy: Function,
+  _setSortByStorageFromQuery: Function,
+  _sortByStorageToQuery: Function,
 }
 
 const Context = React.createContext<ContextType>({
-  sortByContext: {
-    sortBy: STORAGE_KEY,
-    setSortBy: null,
-    _setSortByStorageFromQuery: null,
-    _sortByStorageToQuery: null,
-  },
+  sortBy: STORAGE_KEY,
+  setSortBy: null,
+  _setSortByStorageFromQuery: null,
+  _sortByStorageToQuery: null,
 })
 
 export const SortByProvider = ({children}: ProviderProps) => {
@@ -44,12 +40,10 @@ export const SortByProvider = ({children}: ProviderProps) => {
   return (
     <Context.Provider
       value={{
-        sortByContext: {
-          sortBy: value,
-          setSortBy: setValue,
-          _setSortByStorageFromQuery: _setStorageFromQuery,
-          _sortByStorageToQuery: _storageToQuery,
-        },
+        sortBy: value,
+        setSortBy: setValue,
+        _setSortByStorageFromQuery: _setStorageFromQuery,
+        _sortByStorageToQuery: _storageToQuery,
       }}
     >
       {children}

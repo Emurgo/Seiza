@@ -79,9 +79,7 @@ const PoolNamesFragment = gql`
 `
 
 const PoolsToCompare = ({classes, i18n: {translate}}) => {
-  const {
-    selectedPoolsContext: {removePool, selectedPools: poolHashes},
-  } = useSelectedPoolsContext()
+  const {removePool, selectedPools: poolHashes} = useSelectedPoolsContext()
   const client = useApolloClient()
 
   const fragmentData = poolHashes.map((hash) => {

@@ -9,8 +9,6 @@ import {FiltersProvider, useShowFiltersContext} from './showFilters'
 import {SearchTextProvider, useSearchTextContext} from './searchText'
 import {PerformanceProvider, usePerformanceContext} from './performance'
 
-// TODO: once we have only hooks, dont wrap fields inside `somethingContext` object (next PR)
-
 type ProviderProps = {|
   children: React.Node,
 |}
@@ -28,21 +26,14 @@ export const StakingContextProvider = ({children}: ProviderProps) => (
 )
 
 export function useSetListScreenStorageFromQuery() {
+  const {_setSortByStorageFromQuery, _sortByStorageToQuery} = useSortByContext()
+  const {_setPerformanceStorageFromQuery, _performanceStorageToQuery} = usePerformanceContext()
+  const {_setSearchTextStorageFromQuery, _searchTextStorageToQuery} = useSearchTextContext()
   const {
-    sortByContext: {_setSortByStorageFromQuery, _sortByStorageToQuery},
-  } = useSortByContext()
-  const {
-    performanceContext: {_setPerformanceStorageFromQuery, _performanceStorageToQuery},
-  } = usePerformanceContext()
-  const {
-    searchTextContext: {_setSearchTextStorageFromQuery, _searchTextStorageToQuery},
-  } = useSearchTextContext()
-  const {
-    selectedPoolsContext: {_setSelectedPoolsStorageFromQuery, _selectedPoolsStorageToQuery},
+    _setSelectedPoolsStorageFromQuery,
+    _selectedPoolsStorageToQuery,
   } = useSelectedPoolsContext()
-  const {
-    showFiltersContext: {_setShowFiltersStorageFromQuery, _showFiltersStorageToQuery},
-  } = useShowFiltersContext()
+  const {_setShowFiltersStorageFromQuery, _showFiltersStorageToQuery} = useShowFiltersContext()
 
   const getListScreenUrlQuery = () => {
     const selectedPoolsQuery = _selectedPoolsStorageToQuery()

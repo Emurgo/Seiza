@@ -72,9 +72,7 @@ const Header = compose(
   withI18n,
   withStyles(headerStyles)
 )(({classes, name, hash, i18n: {translate}}) => {
-  const {
-    selectedPoolsContext: {addPool, removePool, selectedPools},
-  } = useSelectedPoolsContext()
+  const {addPool, removePool, selectedPools} = useSelectedPoolsContext()
   const selected = selectedPools.includes(hash)
 
   const onAddPool = useCallback(() => addPool(hash), [addPool, hash])
