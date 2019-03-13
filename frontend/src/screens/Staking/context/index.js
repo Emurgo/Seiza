@@ -1,24 +1,30 @@
 // @flow
 
-import {compose} from 'redux'
+import * as React from 'react'
 
 import * as urlUtils from '@/helpers/url'
-
-import {withSelectedPoolsProvider, useSelectedPoolsContext} from './selectedPools'
-import {withSortByProvider, useSortByContext} from './sortBy'
-import {withFiltersProvider, useShowFiltersContext} from './showFilters'
-import {withSearchTextProvider, useSearchTextContext} from './searchText'
-import {withPerformanceProvider, usePerformanceContext} from './performance'
+import {SelectedPoolsProvider, useSelectedPoolsContext} from './selectedPools'
+import {SortByProvider, useSortByContext} from './sortBy'
+import {FiltersProvider, useShowFiltersContext} from './showFilters'
+import {SearchTextProvider, useSearchTextContext} from './searchText'
+import {PerformanceProvider, usePerformanceContext} from './performance'
 
 // TODO: once we have only hooks, dont wrap fields inside `somethingContext` object (next PR)
 
-// TODO: consider getting rid of `compose` and combine all providers in single component (next PR)
-export const stakingContextProvider: any = compose(
-  withSelectedPoolsProvider,
-  withSortByProvider,
-  withFiltersProvider,
-  withSearchTextProvider,
-  withPerformanceProvider
+type ProviderProps = {|
+  children: React.Node,
+|}
+
+export const StakingContextProvider = ({children}: ProviderProps) => (
+  <SelectedPoolsProvider>
+    <SortByProvider>
+      <FiltersProvider>
+        <SearchTextProvider>
+          <PerformanceProvider>{children}</PerformanceProvider>
+        </SearchTextProvider>
+      </FiltersProvider>
+    </SortByProvider>
+  </SelectedPoolsProvider>
 )
 
 export function useSetListScreenStorageFromQuery() {

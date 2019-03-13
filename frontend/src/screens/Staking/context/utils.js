@@ -1,6 +1,7 @@
 // @flow
 
-import {useCallback} from 'react'
+import * as React from 'react'
+
 import useReactRouter from 'use-react-router'
 
 import * as urlUtils from '@/helpers/url'
@@ -8,6 +9,10 @@ import * as storage from '@/helpers/localStorage'
 
 // Note: dont set `defaultValue` in below function to `null` as due to query-string api,
 // we sometimes need default value to be `undefined` which `null` overrides
+
+export type ProviderProps = {|
+  children: React.Node,
+|}
 
 // Consider moving to `storage` module and use JSON for everything
 export const getStorageData = (key: string, defaultValue: any) => {
@@ -21,7 +26,7 @@ export const getStorageData = (key: string, defaultValue: any) => {
 export const useUrlManager = () => {
   const {history, location} = useReactRouter()
 
-  const setQueryParam = useCallback(
+  const setQueryParam = React.useCallback(
     (key: string, value: any) => {
       history.replace({
         pathname: location.pathname,
@@ -31,7 +36,7 @@ export const useUrlManager = () => {
     [history, location]
   )
 
-  const getQueryParam = useCallback(
+  const getQueryParam = React.useCallback(
     (paramKey: string, defaultValue: any): any => {
       const parsed = urlUtils.parse(location.search)
       return parsed[paramKey] || defaultValue
@@ -50,7 +55,7 @@ export const useManageSimpleContextValue = (
   const {setQueryParam, getQueryParam} = useUrlManager()
   const value = getQueryParam(storageKey, defaultValue)
 
-  const setValue = useCallback(
+  const setValue = React.useCallback(
     (value: any) => {
       storage.setItem(storageKey, JSON.stringify(value))
       setQueryParam(storageKey, value)
@@ -58,14 +63,14 @@ export const useManageSimpleContextValue = (
     [setQueryParam]
   )
 
-  const _setStorageFromQuery = useCallback(
+  const _setStorageFromQuery = React.useCallback(
     (query: string) => {
       setValue(query)
     },
     [setValue]
   )
 
-  const _storageToQuery = useCallback(() => {
+  const _storageToQuery = React.useCallback(() => {
     const value = getStorageData(storageKey, defaultValue)
     return urlUtils.objToQueryString({[storageKey]: value})
   })
