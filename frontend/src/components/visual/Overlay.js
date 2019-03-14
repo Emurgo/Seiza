@@ -26,12 +26,18 @@ const useWrapperStyles = makeStyles({
 type ContentProps = {
   background?: string,
   children: ?React$Node,
+  // Note: style is passed by Fade component
+  style?: any,
 }
 
 // Note: Parent has to have position:relative
-const OverlayContent = ({background, children}: ContentProps) => {
+const OverlayContent = ({background, children, style}: ContentProps) => {
   const classes = useContentStyles({background})
-  return children ? <div className={classes.overlayContent}>{children}</div> : null
+  return (
+    <div className={classes.overlayContent} style={style}>
+      {children}
+    </div>
+  )
 }
 
 type WrapperProps = {
