@@ -13,6 +13,7 @@ import {
   LoadingOverlay,
   ErrorOverlay,
   Overlay,
+  AdaValue,
 } from '@/components/visual'
 import {withI18n} from '@/i18n/helpers'
 
@@ -62,17 +63,17 @@ const getGeneralFields = ({translate, formatAda, formatInt}) => [
   {
     id: 'movements',
     label: translate(generalInfoMessages.movements),
-    getValue: (rawValue) => formatAda(rawValue),
+    getValue: (rawValue) => <AdaValue value={rawValue} />,
   },
   {
     id: 'totalFees',
     label: translate(generalInfoMessages.totalFees),
-    getValue: (rawValue) => formatAda(rawValue),
+    getValue: (rawValue) => <AdaValue value={rawValue} />,
   },
   {
     id: 'addresses',
     label: translate(generalInfoMessages.addresses),
-    getValue: (rawValue) => formatAda(rawValue),
+    getValue: (rawValue) => formatInt(rawValue),
   },
   {
     id: 'emptySlotsCount',
@@ -85,22 +86,22 @@ const getSlotFields = ({translate, formatAda, formatInt, formatTimestamp}) => [
   {
     id: 'supply',
     label: translate(slotInfoMessages.supply),
-    getValue: (rawValue) => formatAda(rawValue),
+    getValue: (rawValue) => <AdaValue value={rawValue} />,
   },
   {
     id: 'txCount',
     label: translate(slotInfoMessages.transactions),
-    getValue: (rawValue) => formatAda(rawValue),
+    getValue: (rawValue) => formatInt(rawValue),
   },
   {
     id: 'totalSent',
     label: translate(slotInfoMessages.totalSent),
-    getValue: (rawValue) => formatAda(rawValue),
+    getValue: (rawValue) => <AdaValue value={rawValue} />,
   },
   {
     id: 'totalFees',
     label: translate(slotInfoMessages.totalFees),
-    getValue: (rawValue) => formatAda(rawValue),
+    getValue: (rawValue) => <AdaValue value={rawValue} />,
   },
 ]
 
