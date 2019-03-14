@@ -122,6 +122,15 @@ const DropdownList = withProps(({close}) => ({
   </Popper>
 ))
 
+const ClickableWrapper = ({onClick, classes, children}) =>
+  onClick ? (
+    <ButtonBase onClick={onClick} className={classes.button} focusRipple>
+      {children}
+    </ButtonBase>
+  ) : (
+    <div className={classes.noButton}>{children}</div>
+  )
+
 type MetricsCardProps = {
   metric: string,
   value: string,
@@ -145,20 +154,12 @@ class MetricsCard extends React.Component<MetricsCardProps> {
   render() {
     const {metric, value, icon, classes, className, options, onClick} = this.props
 
-    const Wrapper = onClick
-      ? ({children}) => (
-        <ButtonBase onClick={onClick} className={classes.button} focusRipple>
-          {children}
-        </ButtonBase>
-      )
-      : ({children}) => <div className={classes.noButton}>{children}</div>
-
     return (
       <WithModalState>
         {({isOpen, closeModal: closePopper, toggle: togglePopper}) => (
           <React.Fragment>
             <Card className={classnames(classes.card, className)}>
-              <Wrapper>
+              <ClickableWrapper {...{onClick, classes}}>
                 {/* just to center the image */}
                 <Grid container direction="column" justify="space-around" className={classes.icon}>
                   <img alt="" src={ICONS[icon]} />
@@ -175,7 +176,7 @@ class MetricsCard extends React.Component<MetricsCardProps> {
                     </Typography>
                   </Grid>
                 </Grid>
-              </Wrapper>
+              </ClickableWrapper>
               {options && (
                 <div className={classes.dropdownArrow}>
                   <IconButton
