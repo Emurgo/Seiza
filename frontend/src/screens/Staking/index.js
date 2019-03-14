@@ -2,7 +2,6 @@
 
 import React, {useEffect} from 'react'
 import {Switch, Route, Redirect} from 'react-router-dom'
-import {withRouter} from 'react-router'
 import {Grid, createStyles} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import useReactRouter from 'use-react-router'
@@ -51,22 +50,13 @@ const urlToScreen = {
   [routeTo.staking.location()]: PageNotFound,
 }
 
-const urlToStorageSyncHook = {
-  [routeTo.staking.poolList()]: useSetListScreenStorageFromQuery,
-  [routeTo.staking.poolComparison()]: useSetBasicScreenStorageFromQuery,
-  [routeTo.staking.history()]: useSetBasicScreenStorageFromQuery,
-  [routeTo.staking.charts()]: useSetBasicScreenStorageFromQuery,
-  [routeTo.staking.location()]: useSetBasicScreenStorageFromQuery,
-}
-
 // Note: URL vs Storage: no merging: either url or localStorage wins
-const useQuerySync = () => {
+const getQuerySynchronizer = (useSetScreenStorageFromQuery) => () => {
   const {
     location: {search: urlQuery},
     match,
   } = useReactRouter()
   const pathname = match.path
-  const useSetScreenStorageFromQuery = urlToStorageSyncHook[pathname]
   const {setScreenStorageFromQuery, getScreenUrlQuery} = useSetScreenStorageFromQuery()
 
   const storageQuery = getScreenUrlQuery()
@@ -86,12 +76,11 @@ const useQuerySync = () => {
   )
 }
 
-// Note!!!: for unknown reason this does not work with hooks unless wrapper in `withRouter`
-const PoolListQuerySynchronizer = withRouter(() => useQuerySync())
-const PoolComparisonQuerySynchronizer = withRouter(() => useQuerySync())
-const HistoryQuerySynchronizer = withRouter(() => useQuerySync())
-const ChartsQuerySynchronizer = withRouter(() => useQuerySync())
-const LocationQuerySynchronizer = withRouter(() => useQuerySync())
+const PoolListQuerySynchronizer = getQuerySynchronizer(useSetListScreenStorageFromQuery)
+const PoolComparisonQuerySynchronizer = getQuerySynchronizer(useSetBasicScreenStorageFromQuery)
+const HistoryQuerySynchronizer = getQuerySynchronizer(useSetBasicScreenStorageFromQuery)
+const ChartsQuerySynchronizer = getQuerySynchronizer(useSetBasicScreenStorageFromQuery)
+const LocationQuerySynchronizer = getQuerySynchronizer(useSetBasicScreenStorageFromQuery)
 
 export default () => {
   const classes = useStyles()
@@ -108,15 +97,23 @@ export default () => {
           <Grid item lg={9} xl={6} className={classes.mainContent}>
             <Switch>
               <Redirect exact from={routeTo.staking.home()} to={routeTo.staking.poolList()} />
-              <Route exact path={routeTo.staking.poolList()} render={PoolListQuerySynchronizer} />
+              <Route
+                exact
+                path={routeTo.staking.poolList()}
+                component={PoolListQuerySynchronizer}
+              />
               <Route
                 exact
                 path={routeTo.staking.poolComparison()}
-                render={PoolComparisonQuerySynchronizer}
+                component={PoolComparisonQuerySynchronizer}
               />
-              <Route exact path={routeTo.staking.history()} render={HistoryQuerySynchronizer} />
-              <Route exact path={routeTo.staking.charts()} render={ChartsQuerySynchronizer} />
-              <Route exact path={routeTo.staking.location()} render={LocationQuerySynchronizer} />
+              <Route exact path={routeTo.staking.history()} component={HistoryQuerySynchronizer} />
+              <Route exact path={routeTo.staking.charts()} component={ChartsQuerySynchronizer} />
+              <Route
+                exact
+                path={routeTo.staking.location()}
+                component={LocationQuerySynchronizer}
+              />
               <Route component={NotFound} />
             </Switch>
           </Grid>
