@@ -2,13 +2,17 @@
 
 import React, {useEffect} from 'react'
 import {Switch, Route, Redirect} from 'react-router-dom'
-import {withRouter} from 'react-router'
 import {Grid, createStyles} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
+import useReactRouter from 'use-react-router'
 
 import * as urlUtils from '@/helpers/url'
 import {routeTo} from '@/helpers/routes'
-import {StakingContextProvider, useSetListScreenStorageFromQuery} from './context'
+import {
+  StakingContextProvider,
+  useSetListScreenStorageFromQuery,
+  useSetBasicScreenStorageFromQuery,
+} from './context'
 import SideMenu from './SideMenu'
 import StakePoolList from './StakeList'
 import StakePoolHeader from './Header'
@@ -39,23 +43,44 @@ const NotFound = () => {
 }
 
 // Note: URL vs Storage: no merging: either url or localStorage wins
-// Note!!!: this does not work with hooks unless wrapper in `withRouter`
-const ListScreenRoute = withRouter(({location: {search: urlQuery}}) => {
-  const {setListScreenStorageFromQuery, getListScreenUrlQuery} = useSetListScreenStorageFromQuery()
-  const storageQuery = getListScreenUrlQuery()
+const synchronizedScreenFactory = (Screen, useSetScreenStorageFromQuery) => () => {
+  const {
+    location: {search: urlQuery},
+    match: {path},
+  } = useReactRouter()
+  const {setScreenStorageFromQuery, getScreenUrlQuery} = useSetScreenStorageFromQuery()
+
+  const storageQuery = getScreenUrlQuery()
 
   useEffect(() => {
     if (urlQuery && !urlUtils.areQueryStringsSame(urlQuery, storageQuery)) {
-      setListScreenStorageFromQuery(urlQuery)
+      setScreenStorageFromQuery(urlQuery)
     }
   }, [urlQuery, storageQuery])
 
-  return urlQuery || !storageQuery ? (
-    <StakePoolList />
-  ) : (
-    <Redirect exact to={`${routeTo.staking.poolList()}${storageQuery}`} />
-  )
-})
+  return urlQuery || !storageQuery ? <Screen /> : <Redirect exact to={`${path}${storageQuery}`} />
+}
+
+const PoolListQuerySynchronizer = synchronizedScreenFactory(
+  StakePoolList,
+  useSetListScreenStorageFromQuery
+)
+const PoolComparisonQuerySynchronizer = synchronizedScreenFactory(
+  NotFound,
+  useSetBasicScreenStorageFromQuery
+)
+const HistoryQuerySynchronizer = synchronizedScreenFactory(
+  NotFound,
+  useSetBasicScreenStorageFromQuery
+)
+const ChartsQuerySynchronizer = synchronizedScreenFactory(
+  NotFound,
+  useSetBasicScreenStorageFromQuery
+)
+const LocationQuerySynchronizer = synchronizedScreenFactory(
+  NotFound,
+  useSetBasicScreenStorageFromQuery
+)
 
 export default () => {
   const classes = useStyles()
@@ -72,7 +97,23 @@ export default () => {
           <Grid item lg={9} xl={6} className={classes.mainContent}>
             <Switch>
               <Redirect exact from={routeTo.staking.home()} to={routeTo.staking.poolList()} />
-              <Route exact path={routeTo.staking.poolList()} render={ListScreenRoute} />
+              <Route
+                exact
+                path={routeTo.staking.poolList()}
+                component={PoolListQuerySynchronizer}
+              />
+              <Route
+                exact
+                path={routeTo.staking.poolComparison()}
+                component={PoolComparisonQuerySynchronizer}
+              />
+              <Route exact path={routeTo.staking.history()} component={HistoryQuerySynchronizer} />
+              <Route exact path={routeTo.staking.charts()} component={ChartsQuerySynchronizer} />
+              <Route
+                exact
+                path={routeTo.staking.location()}
+                component={LocationQuerySynchronizer}
+              />
               <Route component={NotFound} />
             </Switch>
           </Grid>
