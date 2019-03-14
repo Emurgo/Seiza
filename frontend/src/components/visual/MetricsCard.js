@@ -34,7 +34,6 @@ const styles = (theme) =>
       display: 'flex',
       flexDirection: 'row',
       boxShadow: 'none',
-      padding: theme.spacing.unit,
     },
     dropdownArrow: {
       display: 'flex',
@@ -45,6 +44,7 @@ const styles = (theme) =>
     icon: {
       width: 50,
       marginRight: theme.spacing.unit,
+      marginLeft: theme.spacing.unit,
     },
     bottomSpace: {
       height: '5px',
