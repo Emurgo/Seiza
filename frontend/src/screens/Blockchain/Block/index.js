@@ -1,6 +1,6 @@
 // @flow
 
-import React from 'react'
+import React, {useRef, useState, useCallback} from 'react'
 import {useQuery} from 'react-apollo-hooks'
 import {compose} from 'redux'
 import {withProps} from 'recompose'
@@ -8,8 +8,6 @@ import {withRouter} from 'react-router'
 import gql from 'graphql-tag'
 
 import {defineMessages} from 'react-intl'
-import {Card} from '@material-ui/core'
-import {Link} from 'react-router-dom'
 
 import {routeTo} from '@/helpers/routes'
 import {
@@ -18,6 +16,10 @@ import {
   SimpleLayout,
   LoadingInProgress,
   DebugApolloError,
+  Link,
+  AdaValue,
+  ExpansionPanel,
+  EntityCardContent,
 } from '@/components/visual'
 
 import {useI18n} from '@/i18n/helpers'
@@ -29,16 +31,59 @@ const blockSummaryLabels = defineMessages({
   transactionsCount: '# Transactions',
 })
 
-const TransactionCard = ({transaction}) => (
-  <Card>
-    <Link to={routeTo.transaction(transaction.txHash)}>{transaction.txHash}</Link>
-  </Card>
-)
+const transactionMessages = defineMessages({
+  transactionId: 'Transacton Id:',
+  value: 'Value:',
+  inputsCount: 'Number of Inputs:',
+  outputsCount: 'Number of Outputs:',
+})
+
+const TransactionCard = ({transaction}) => {
+  const entityRef = useRef(null)
+  const [expanded, setExpanded] = useState(false)
+  const onChange = useCallback(
+    (event) => {
+      entityRef.current && !entityRef.current.contains(event.target) && setExpanded(!expanded)
+    },
+    [expanded, entityRef]
+  )
+  const {translate: tr, formatInt} = useI18n()
+  const {Row, Label, Value} = SummaryCard
+  return (
+    <ExpansionPanel
+      expanded={expanded}
+      onChange={onChange}
+      summary={
+        <EntityCardContent
+          label={tr(transactionMessages.transactionId)}
+          innerRef={entityRef}
+          value={<Link to={routeTo.transaction(transaction.txHash)}>{transaction.txHash}</Link>}
+        />
+      }
+    >
+      {/* //TODO: certificate */}
+      <Row>
+        <Label>{tr(transactionMessages.value)}</Label>
+        <Value>
+          <AdaValue value={transaction.totalInput} showCurrency />
+        </Value>
+      </Row>
+      <Row>
+        <Label>{tr(transactionMessages.inputsCount)}</Label>
+        <Value>{formatInt(transaction.inputs.length)}</Value>
+      </Row>
+      <Row>
+        <Label>{tr(transactionMessages.outputsCount)}</Label>
+        <Value>{formatInt(transaction.outputs.length)}</Value>
+      </Row>
+    </ExpansionPanel>
+  )
+}
 
 const TransactionList = ({transactions}) => (
-  <React.Fragment>
+  <div>
     {transactions && transactions.map((tx) => <TransactionCard key={tx.txHash} transaction={tx} />)}
-  </React.Fragment>
+  </div>
 )
 
 const BlockSummaryCard = ({block}) => {
