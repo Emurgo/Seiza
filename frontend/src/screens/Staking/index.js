@@ -56,7 +56,7 @@ const synchronizedScreenFactory = (Screen, useSetScreenStorageFromQuery) => () =
     if (urlQuery && !urlUtils.areQueryStringsSame(urlQuery, storageQuery)) {
       setScreenStorageFromQuery(urlQuery)
     }
-  }, [urlQuery, storageQuery])
+  }, [urlQuery, storageQuery, setScreenStorageFromQuery])
 
   return urlQuery || !storageQuery ? <Screen /> : <Redirect exact to={`${path}${storageQuery}`} />
 }

@@ -44,7 +44,7 @@ const Filters = () => {
   const onLanguageChange = useCallback((e) => setLanguage(e.target.value), [setLanguage])
   const onRegionChange = useCallback((e) => setRegion(e.target.value), [setRegion])
   const onDragEnd = useCallback((e) => performanceContext.setPerformance(performance), [
-    performanceContext.setPerformance,
+    performanceContext,
     performance,
   ])
 
