@@ -42,21 +42,12 @@ const NotFound = () => {
   )
 }
 
-const urlToScreen = {
-  [routeTo.staking.poolList()]: StakePoolList,
-  [routeTo.staking.poolComparison()]: PageNotFound,
-  [routeTo.staking.history()]: PageNotFound,
-  [routeTo.staking.charts()]: PageNotFound,
-  [routeTo.staking.location()]: PageNotFound,
-}
-
 // Note: URL vs Storage: no merging: either url or localStorage wins
-const getQuerySynchronizer = (useSetScreenStorageFromQuery) => () => {
+const synchronizedScreenFactory = (Screen, useSetScreenStorageFromQuery) => () => {
   const {
     location: {search: urlQuery},
-    match,
+    match: {path},
   } = useReactRouter()
-  const pathname = match.path
   const {setScreenStorageFromQuery, getScreenUrlQuery} = useSetScreenStorageFromQuery()
 
   const storageQuery = getScreenUrlQuery()
@@ -67,20 +58,29 @@ const getQuerySynchronizer = (useSetScreenStorageFromQuery) => () => {
     }
   }, [urlQuery, storageQuery])
 
-  const Screen = urlToScreen[match.path]
-
-  return urlQuery || !storageQuery ? (
-    <Screen />
-  ) : (
-    <Redirect exact to={`${pathname}${storageQuery}`} />
-  )
+  return urlQuery || !storageQuery ? <Screen /> : <Redirect exact to={`${path}${storageQuery}`} />
 }
 
-const PoolListQuerySynchronizer = getQuerySynchronizer(useSetListScreenStorageFromQuery)
-const PoolComparisonQuerySynchronizer = getQuerySynchronizer(useSetBasicScreenStorageFromQuery)
-const HistoryQuerySynchronizer = getQuerySynchronizer(useSetBasicScreenStorageFromQuery)
-const ChartsQuerySynchronizer = getQuerySynchronizer(useSetBasicScreenStorageFromQuery)
-const LocationQuerySynchronizer = getQuerySynchronizer(useSetBasicScreenStorageFromQuery)
+const PoolListQuerySynchronizer = synchronizedScreenFactory(
+  StakePoolList,
+  useSetListScreenStorageFromQuery
+)
+const PoolComparisonQuerySynchronizer = synchronizedScreenFactory(
+  NotFound,
+  useSetBasicScreenStorageFromQuery
+)
+const HistoryQuerySynchronizer = synchronizedScreenFactory(
+  NotFound,
+  useSetBasicScreenStorageFromQuery
+)
+const ChartsQuerySynchronizer = synchronizedScreenFactory(
+  NotFound,
+  useSetBasicScreenStorageFromQuery
+)
+const LocationQuerySynchronizer = synchronizedScreenFactory(
+  NotFound,
+  useSetBasicScreenStorageFromQuery
+)
 
 export default () => {
   const classes = useStyles()
