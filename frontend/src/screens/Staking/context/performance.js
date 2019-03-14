@@ -14,6 +14,7 @@ type ContextType = {
   setPerformance: Function,
   _setPerformanceStorageFromQuery: Function,
   _performanceStorageToQuery: Function,
+  _setPerformanceStorageToDefault: Function,
 }
 
 const Context = React.createContext<ContextType>({
@@ -21,17 +22,20 @@ const Context = React.createContext<ContextType>({
   setPerformance: null,
   _setPerformanceStorageFromQuery: null,
   _performanceStorageToQuery: null,
+  _setPerformanceStorageToDefault: null,
 })
 
 const toIntArray = (array: Array<string | number>): Array<number> =>
   array.map((v) => parseInt(v, 10))
 
 export const PerformanceProvider = ({children}: ProviderProps) => {
-  const {value, setValue, _setStorageFromQuery, _storageToQuery} = useManageSimpleContextValue(
-    STORAGE_KEY,
-    DEFAULT_VALUE,
-    toIntArray
-  )
+  const {
+    value,
+    setValue,
+    _setStorageFromQuery,
+    _storageToQuery,
+    _setStorageToDefault,
+  } = useManageSimpleContextValue(STORAGE_KEY, DEFAULT_VALUE, toIntArray)
 
   return (
     <Context.Provider
@@ -40,6 +44,7 @@ export const PerformanceProvider = ({children}: ProviderProps) => {
         setPerformance: setValue,
         _setPerformanceStorageFromQuery: _setStorageFromQuery,
         _performanceStorageToQuery: _storageToQuery,
+        _setPerformanceStorageToDefault: _setStorageToDefault,
       }}
     >
       {children}

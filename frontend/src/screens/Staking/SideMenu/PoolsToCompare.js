@@ -28,7 +28,7 @@ const poolsStyles = ({palette}) =>
     wrapper: {
       padding: '20px 40px 20px 60px',
       background: palette.background.paper,
-      borderBottom: `1px solid ${palette.grey[200]}`,
+      borderBottom: `1px solid ${palette.contentUnfocus}`,
     },
     header: {
       paddingBottom: '15px',

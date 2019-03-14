@@ -7,6 +7,7 @@ import {defineMessages} from 'react-intl'
 
 import {useI18n} from '@/i18n/helpers'
 import {Slider, Select} from '@/components/visual'
+import {useStateWithChangingDefault} from '@/components/hooks/useStateWithChangingDefault'
 import {usePerformanceContext} from '../context/performance'
 
 const messages = defineMessages({
@@ -37,7 +38,7 @@ const tipFormatter = (value) => `${value}%`
 
 const Filters = () => {
   const performanceContext = usePerformanceContext()
-  const [performance, setPerformance] = useState(performanceContext.performance)
+  const [performance, setPerformance] = useStateWithChangingDefault(performanceContext.performance)
   const [language, setLanguage] = useState('all')
   const [region, setRegion] = useState('all')
 

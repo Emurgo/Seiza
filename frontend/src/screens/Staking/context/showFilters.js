@@ -17,6 +17,7 @@ type ContextType = {
   toggleFilters: Function,
   _setShowFiltersStorageFromQuery: Function,
   _showFiltersStorageToQuery: Function,
+  _setShowFiltersStorageToDefault: Function,
 }
 
 const Context = React.createContext<ContextType>({
@@ -24,6 +25,7 @@ const Context = React.createContext<ContextType>({
   toggleFilters: null,
   _setShowFiltersStorageFromQuery: null,
   _showFiltersStorageToQuery: null,
+  _setShowFiltersStorageToDefault: null,
 })
 
 export const FiltersProvider = ({children}: ProviderProps) => {
@@ -32,6 +34,7 @@ export const FiltersProvider = ({children}: ProviderProps) => {
     setValue: _setShowFilters,
     _setStorageFromQuery: _setShowFiltersStorageFromQuery,
     _storageToQuery: _showFiltersStorageToQuery,
+    _setStorageToDefault: _setShowFiltersStorageToDefault,
   } = useManageSimpleContextValue(STORAGE_KEY, DEFAULT_VALUE)
 
   const toggleFilters = useCallback(() => {
@@ -46,6 +49,7 @@ export const FiltersProvider = ({children}: ProviderProps) => {
         toggleFilters,
         _setShowFiltersStorageFromQuery,
         _showFiltersStorageToQuery,
+        _setShowFiltersStorageToDefault,
       }}
     >
       {children}
