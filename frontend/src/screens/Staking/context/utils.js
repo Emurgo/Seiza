@@ -41,7 +41,7 @@ export const useUrlManager = () => {
       const parsed = urlUtils.parse(location.search)
       return parsed[paramKey] || defaultValue
     },
-    [history, location]
+    [location]
   )
 
   return {setQueryParam, getQueryParam}
@@ -60,7 +60,7 @@ export const useManageSimpleContextValue = (
       storage.setItem(storageKey, JSON.stringify(value))
       setQueryParam(storageKey, value)
     },
-    [setQueryParam]
+    [setQueryParam, storageKey]
   )
 
   const _setStorageFromQuery = React.useCallback(
@@ -68,12 +68,12 @@ export const useManageSimpleContextValue = (
       const value = getQueryParam(storageKey, query)
       setValue(value)
     },
-    [setValue]
+    [getQueryParam, setValue, storageKey]
   )
 
   const _storageToQuery = React.useCallback(() => {
     const value = getStorageData(storageKey, defaultValue)
     return urlUtils.objToQueryString({[storageKey]: value})
-  })
+  }, [storageKey, defaultValue])
   return {value, setValue, _setStorageFromQuery, _storageToQuery}
 }
