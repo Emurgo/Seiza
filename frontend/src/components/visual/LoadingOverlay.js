@@ -13,11 +13,11 @@ const FADE_TIMEOUT = {enter: 1500, exit: 0}
 // Note: Parent has to have position:relative
 const LoadingOverlay = ({loading}: Props) => {
   return loading ? (
-    <Overlay.Content>
-      <Fade in timeout={FADE_TIMEOUT}>
+    <Fade in timeout={FADE_TIMEOUT}>
+      <Overlay.Content>
         <LoadingInProgress />
-      </Fade>
-    </Overlay.Content>
+      </Overlay.Content>
+    </Fade>
   ) : null
 }
 
