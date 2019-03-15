@@ -1,0 +1,452 @@
+// @flow
+
+import * as React from 'react'
+import gql from 'graphql-tag'
+import classnames from 'classnames'
+import {useQuery} from 'react-apollo-hooks'
+import {defineMessages} from 'react-intl'
+import {makeStyles} from '@material-ui/styles'
+import {darken} from '@material-ui/core/styles/colorManipulator'
+import {withSize} from 'react-sizeme'
+
+import {Grid, Typography, createStyles} from '@material-ui/core'
+import {useI18n} from '@/i18n/helpers'
+import {useSelectedPoolsContext} from '../context/selectedPools'
+import {LoadingInProgress} from '@/components/visual'
+
+// TODO: Markdown/css polish
+// TODO?: full width scenario
+// TODO (postpone): colors based on "goodness" for comparable rows
+
+// TODO: for proper overflow testing
+const DEMO_OVERFLOW_TEXT = ''
+
+const messages = defineMessages({
+  stakePools: `Stake pools ${DEMO_OVERFLOW_TEXT}`,
+  categoryOneLabel: 'Category 1',
+  categoryTwoLabel: 'Category 2',
+  categoryThreeLabel: 'Category 3',
+  noData: 'There are no pools selected.',
+})
+
+const ellipsizeStyles = {
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  whiteSpace: 'nowrap',
+}
+
+const CATEGORIES_PANEL_WIDTH = 200
+const VALUES_PANEL_WIDTH = 300
+
+const useStyles = makeStyles((theme) => {
+  const darkBorder = `1px solid ${darken(theme.palette.unobtrusiveContentHighlight, 0.2)}`
+  const lightBorder = `1px solid ${darken(theme.palette.unobtrusiveContentHighlight, 0.05)}`
+  const categoriesPanelWidth = `${CATEGORIES_PANEL_WIDTH}px`
+  const valuesPanelWidth = `${VALUES_PANEL_WIDTH}px`
+  return createStyles({
+    ellipsis: ellipsizeStyles,
+    wrapper: {
+      margin: theme.spacing.unit * 6,
+      display: 'flex',
+      background: theme.palette.background.paper,
+    },
+    categoriesWrapper: {
+      'width': categoriesPanelWidth,
+      '& > *': {
+        borderRight: darkBorder,
+        borderBottom: darkBorder,
+      },
+      '& > :first-child': {
+        borderBottom: 'none',
+      },
+      '& > :last-child': {
+        borderBottom: 'none',
+      },
+    },
+    category: {
+      'borderBottom': darkBorder,
+      '&:last-child': {
+        borderBottom: 'none',
+      },
+      '& > *': {
+        borderBottom: lightBorder,
+      },
+      '& > :last-child': {
+        borderBottom: 'none',
+      },
+    },
+    categoryKey: {
+      padding: theme.spacing.unit * 2,
+      width: categoriesPanelWidth,
+      ...ellipsizeStyles,
+    },
+    scrollWrapper: {
+      'overflowX': 'auto',
+      'borderRadius': '0 5px 0 0',
+
+      '&::-webkit-scrollbar': {
+        height: '6px',
+        background: 'red',
+        position: 'absolute',
+        top: '-30px',
+      },
+      '&::-webkit-scrollbar-track': {
+        '-webkit-box-shadow': 'inset 0 0 6px rgba(0,0,0,0.00)',
+        'background': darken(theme.palette.background.default, 0.1),
+      },
+      '&::-webkit-scrollbar-thumb': {
+        backgroundColor: 'rgba(0,0,0,.5)',
+        outline: '1px solid slategrey',
+        borderRadius: '5px',
+      },
+    },
+    rowsWrapper: {
+      '& > *': {
+        borderBottom: darkBorder,
+      },
+      '& > :last-child': {
+        borderBottom: 'none',
+      },
+    },
+    data: {
+      '& > *': {
+        borderBottom: lightBorder,
+      },
+      '& > :last-child': {
+        borderBottom: 'none',
+      },
+    },
+    dataText: {
+      padding: theme.spacing.unit * 2,
+      width: valuesPanelWidth,
+      ...ellipsizeStyles,
+    },
+    header: {
+      background: darken(theme.palette.background.default, 0.1),
+      padding: theme.spacing.unit * 2.5,
+      height: '60px', // Note: otherwise there is +1 pixel strange issue
+    },
+    dot: {
+      height: 20,
+      width: 20,
+      borderRadius: 10,
+      background: theme.palette.background.paper,
+      marginRight: theme.spacing.unit,
+    },
+    poolHeader: {
+      width: valuesPanelWidth,
+      ...ellipsizeStyles,
+    },
+    categoryHeader: {
+      borderRadius: '5px 0 0 0',
+      width: categoriesPanelWidth,
+      ...ellipsizeStyles,
+    },
+    categoryRowWrapper: {
+      '& > *': {
+        borderLeft: darkBorder,
+      },
+      '& > :first-child': {
+        borderLeft: 'none',
+      },
+    },
+    categoryGap: {
+      height: 40,
+      borderBottom: 'none',
+    },
+    categogyTitle: {
+      'height': 40,
+      'display': 'flex',
+      'alignItems': 'center',
+      'padding': theme.spacing.unit * 2,
+      'borderBottom': 'none',
+      '& span': {
+        fontWeight: 600,
+      },
+    },
+    noPools: {
+      padding: theme.spacing.unit * 2,
+    },
+  })
+})
+
+type CategoryConfigType = Array<{|
+  label: string,
+  getValue: (Object, Object) => any,
+|}>
+
+const categoryOneConfig = [
+  {
+    label: 'Performance',
+    getValue: (stakePool, {formatPercent}) => formatPercent(stakePool.summary.performance),
+  },
+  {
+    label: 'Pledge',
+    getValue: (stakePool, {formatAda}) => formatAda(stakePool.summary.pledge),
+  },
+  {
+    label: `Margins ${DEMO_OVERFLOW_TEXT}`,
+    getValue: (stakePool, {formatPercent}) => formatPercent(stakePool.summary.margins),
+  },
+  {
+    label: 'Creation time',
+    getValue: (stakePool, {formatTimestamp}) => formatTimestamp(stakePool.createdAt),
+  },
+  {
+    label: 'Last updated',
+    getValue: (stakePool, formatters) => 'N/A',
+  },
+]
+
+const categoryTwoConfig = [
+  {
+    label: 'Fullness',
+    getValue: (stakePool, {formatPercent}) => formatPercent(stakePool.summary.fullness),
+  },
+  {
+    label: 'Cost',
+    getValue: (stakePool, formatters) => 'N/A',
+  },
+  {
+    label: 'Ranking',
+    getValue: (stakePool, formatters) => 'N/A',
+  },
+  {
+    label: 'Revenue',
+    getValue: (stakePool, {formatPercent}) => formatPercent(stakePool.summary.revenue),
+  },
+  {
+    label: 'Last updated',
+    getValue: (stakePool, formatters) => 'N/A',
+  },
+  {
+    label: 'ADA to Slot',
+    getValue: (stakePool, formatters) => 'N/A',
+  },
+]
+
+const categoryThreeConfig = [
+  {
+    label: 'Region',
+    getValue: (stakePool, formatters) => 'N/A',
+  },
+  {
+    label: 'Lifetime Review',
+    getValue: (stakePool, formatters) => 'N/A',
+  },
+  {
+    label: 'K-position',
+    getValue: (stakePool, formatters) => 'N/A',
+  },
+  {
+    label: 'Description',
+    getValue: (stakePool, formatters) => `${stakePool.description}${DEMO_OVERFLOW_TEXT}`,
+  },
+]
+
+const PoolDataFragment = gql`
+  fragment ComparisonMatrixDataFragment on BootstrapEraStakePool {
+    poolHash
+    name
+    createdAt
+    description
+    summary {
+      revenue
+      performance
+      adaStaked
+      rewards
+      keysDelegating
+      fullness
+      margins
+      pledge
+    }
+  }
+`
+
+type CategoryKeysProps = {|
+  categoryConfig: CategoryConfigType,
+  categoryLabel: string,
+|}
+
+const CategoryKeys = ({categoryConfig, categoryLabel}: CategoryKeysProps) => {
+  const classes = useStyles()
+  return (
+    <Grid className={classes.category} container direction="column">
+      <div className={classes.categogyTitle}>
+        <Typography variant="caption">{categoryLabel}</Typography>
+      </div>
+      {categoryConfig.map(({label}) => (
+        <Typography key={label} className={classes.categoryKey} variant="body1">
+          {label}
+        </Typography>
+      ))}
+    </Grid>
+  )
+}
+
+type CategoryDataProps = {|
+  data: Object, // get graphql type
+  categoryConfig: CategoryConfigType,
+|}
+
+const CategoryData = ({data, categoryConfig}: CategoryDataProps) => {
+  const classes = useStyles()
+  const intlFormatters = useI18n()
+  return (
+    <Grid className={classes.data} container direction="column" wrap="nowrap">
+      <div className={classes.categoryGap} />
+      {categoryConfig.map(({label, getValue}) => (
+        <Typography key={label} className={classes.dataText} variant="body1">
+          {getValue(data, intlFormatters)}
+        </Typography>
+      ))}
+    </Grid>
+  )
+}
+
+type StakePoolHeaderProps = {|
+  title: string,
+|}
+
+const StakePoolHeader = ({title}: StakePoolHeaderProps) => {
+  const classes = useStyles()
+  return (
+    <Grid
+      container
+      direction="row"
+      className={classnames(classes.header, classes.poolHeader)}
+      wrap="nowrap"
+    >
+      {/* Note: not working properly when text overflows if not wrapped this way */}
+      <Grid item>
+        <div className={classes.dot} />
+      </Grid>
+      <Typography className={classes.ellipsis} variant="overline">
+        {title} {DEMO_OVERFLOW_TEXT}
+      </Typography>
+    </Grid>
+  )
+}
+
+type CategoryHeaderProps = {|
+  title: string,
+|}
+
+const CategoryHeader = ({title}: CategoryHeaderProps) => {
+  const classes = useStyles()
+  return (
+    <Typography className={classnames(classes.header, classes.categoryHeader)} variant="overline">
+      {title}
+    </Typography>
+  )
+}
+
+type CategoryDataRowProps = {|
+  data: Array<Object>, // TODO: get graphql type
+  categoryConfig: CategoryConfigType,
+  showHeader?: boolean,
+|}
+
+const CategoryDataRow = ({data, showHeader, categoryConfig}: CategoryDataRowProps) => {
+  const classes = useStyles()
+  return (
+    <Grid container direction="row" wrap="nowrap" className={classes.categoryRowWrapper}>
+      {data.map((stakePool) => (
+        <Grid item key={stakePool.poolHash}>
+          <Grid container direction="column">
+            {showHeader && (
+              <Grid item>
+                <StakePoolHeader title={stakePool.name} />
+              </Grid>
+            )}
+            <Grid item>
+              <CategoryData data={stakePool} categoryConfig={categoryConfig} />
+            </Grid>
+          </Grid>
+        </Grid>
+      ))}
+    </Grid>
+  )
+}
+
+const getTotalWidth = (data) => {
+  // Note: `data.length` incorporates border width
+  return data.length + CATEGORIES_PANEL_WIDTH + data.length * VALUES_PANEL_WIDTH
+}
+
+const ComparisonMatrix = ({size}) => {
+  const classes = useStyles()
+  const {translate: tr} = useI18n()
+  const {selectedPools: poolHashes} = useSelectedPoolsContext()
+
+  const {error, loading, data} = useQuery(
+    gql`
+      query($poolHashes: [String!]!) {
+        stakePools(poolHashes: $poolHashes) {
+          ...ComparisonMatrixDataFragment
+        }
+      }
+      ${PoolDataFragment}
+    `,
+    {
+      variables: {poolHashes},
+    }
+  )
+
+  if (loading && !data.stakePools) {
+    // Note: this can hardly be cented right using FullWidth layout
+    return (
+      <div style={{marginTop: 100}}>
+        <LoadingInProgress />
+      </div>
+    )
+  }
+
+  const stakePools = data.stakePools || []
+
+  if (!loading && !error && !stakePools.length) {
+    // TODO: consider using Alert
+    return <Typography className={classes.noPools}>{tr(messages.noData)}</Typography>
+  }
+
+  // Note: the 'divs' below are intentional as Grid had some issues with overflows
+  const contentWidth = getTotalWidth(stakePools)
+  const width = Math.min(contentWidth, size.width)
+
+  // TODO: Alert error
+  // Note: `Overlay.Wrapper` just dont look nice here
+  return (
+    <div className={classes.wrapper} style={{maxWidth: width}}>
+      <div className={classes.categoriesWrapper}>
+        <CategoryHeader title={tr(messages.stakePools)} />
+        <CategoryKeys
+          categoryConfig={categoryOneConfig}
+          categoryLabel={tr(messages.categoryOneLabel)}
+        />
+        <CategoryKeys
+          categoryConfig={categoryTwoConfig}
+          categoryLabel={tr(messages.categoryTwoLabel)}
+        />
+        <CategoryKeys
+          categoryConfig={categoryThreeConfig}
+          categoryLabel={tr(messages.categoryThreeLabel)}
+        />
+      </div>
+      <div className={classes.scrollWrapper}>
+        <Grid container direction="column" className={classes.rowsWrapper}>
+          <Grid item>
+            <CategoryDataRow data={stakePools} categoryConfig={categoryOneConfig} showHeader />
+          </Grid>
+          <Grid item>
+            <CategoryDataRow data={stakePools} categoryConfig={categoryTwoConfig} />
+          </Grid>
+          <Grid item>
+            <CategoryDataRow data={stakePools} categoryConfig={categoryThreeConfig} />
+          </Grid>
+        </Grid>
+      </div>
+    </div>
+  )
+}
+
+export default withSize()(ComparisonMatrix)
