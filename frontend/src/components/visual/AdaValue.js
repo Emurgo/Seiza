@@ -6,6 +6,7 @@ import {makeStyles} from '@material-ui/styles'
 import gql from 'graphql-tag'
 import {useQuery} from 'react-apollo-hooks'
 import {defineMessages} from 'react-intl'
+import idx from 'idx'
 
 import {useI18n} from '@/i18n/helpers'
 import LoadingDots from './LoadingDots'
@@ -33,10 +34,13 @@ const useCurrentPrice = (currency) => {
       },
     }
   )
+
+  const price = idx(data, (_) => _.currentStatus.price)
+
   return {
     loading,
     error,
-    price: data.currentStatus.price,
+    price,
   }
 }
 
@@ -57,10 +61,10 @@ const AdaFiatTooltip = ({value}) => {
   const {formatFiat, translate: tr} = useI18n()
   return (
     <div>
-      {error ? (
-        tr(tooltipMessages.priceError)
-      ) : loading ? (
+      {loading ? (
         <LoadingDots />
+      ) : error || !price ? (
+        tr(tooltipMessages.priceError)
       ) : (
         tr(tooltipMessages.currentPrice, {
           value: formatFiat(convertAdaToFiat(value, price), {currency, digits: 2}),
@@ -70,24 +74,25 @@ const AdaFiatTooltip = ({value}) => {
   )
 }
 
-type Props = {
-  value: string,
-  options: any, // TODO
-  showCurrency?: boolean,
-  withSign?: boolean,
-}
+type Props = {|
+  +value: string,
+  +noValue?: ?React$Node,
+  +showCurrency?: boolean,
+  +withSign?: boolean,
+|}
 
 // TODO: once needed, add variant prop
-const AdaValue = ({value, options, showCurrency, withSign = false}: Props) => {
+const AdaValue = ({value, noValue, showCurrency, withSign = false}: Props) => {
   const {formatAdaSplit} = useI18n()
   const classes = useStyles()
 
   if (value == null) {
-    return options.defaultValue
+    return noValue || null
   }
-  const formatted = formatAdaSplit(value, {withSign: false})
+
+  const formatted = formatAdaSplit(value, {withSign})
   return (
-    <Tooltip enterDelay={1000} title={<AdaFiatTooltip value={value} />}>
+    <Tooltip enterDelay={1000} title={<AdaFiatTooltip value={value} />} placement="top">
       <span className={classes.wrapper}>
         <Typography variant="body1" component="span">
           {formatted.integral}
