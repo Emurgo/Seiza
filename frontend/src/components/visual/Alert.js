@@ -84,9 +84,7 @@ const Alert = ({title, type, message}: PropTypes) => {
               <Typography variant="overline">{title || tr(messages[type])}</Typography>
             </Grid>
             <Grid item>
-              <Typography variant="body2">
-                <span className={classes.message}>{message}</span>
-              </Typography>
+              <Typography variant="body2">{message}</Typography>
             </Grid>
           </Grid>
         </Grid>

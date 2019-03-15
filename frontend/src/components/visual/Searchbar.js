@@ -43,7 +43,7 @@ type ExternalProps = {
 
 type Props = {
   ...$Exact<ExternalProps>,
-  handleOnChangeEvent: (str: string) => any,
+  handleOnChangeEvent: (event: any) => any,
   onSubmit: (event: Object) => any,
   classes: Object,
 }
