@@ -66,11 +66,7 @@ const Header = ({logo, label, value}: HeaderProps) => {
       justify="space-between"
       direction="row"
     >
-      {logo && (
-        <Grid item className={classes.logo}>
-          {logo}
-        </Grid>
-      )}
+      {logo && <Grid item>{logo}</Grid>}
       <Grid item>
         <Typography variant="body1" color="textSecondary">
           {label}
