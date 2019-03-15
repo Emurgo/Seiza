@@ -30,6 +30,7 @@ const useStyles = makeStyles((theme) =>
       // TODO: consider a better solution to avoid scroll bars
       overflow: 'hidden',
     },
+    mainContent: {},
   })
 )
 

@@ -136,8 +136,8 @@ type MetricsCardProps = {
   value: string,
   icon: $Keys<typeof ICONS>,
   className: any,
-  options: ?Array<Option>,
-  onClick: ?() => any,
+  options?: Array<Option>,
+  onClick?: () => any,
   classes: Object,
 }
 
