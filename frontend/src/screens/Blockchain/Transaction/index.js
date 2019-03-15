@@ -109,11 +109,7 @@ const AddressesSummary = ({transaction}) => {
               </Typography>
             </React.Fragment>
           }
-          value={
-            <React.Fragment>
-              -<AdaValue value={transaction.totalInput} showCurrency />
-            </React.Fragment>
-          }
+          value={<AdaValue value={transaction.totalInput} showCurrency showSign="-" />}
         />
       </Grid>
       <Grid item xs={6} className={classes.padding}>
@@ -128,11 +124,7 @@ const AddressesSummary = ({transaction}) => {
               </Typography>
             </React.Fragment>
           }
-          value={
-            <React.Fragment>
-              +<AdaValue value={transaction.totalOutput} showCurrency />
-            </React.Fragment>
-          }
+          value={<AdaValue value={transaction.totalOutput} showCurrency showSign="+" />}
         />
       </Grid>
     </Grid>
@@ -171,8 +163,7 @@ const BreakdownItem = (props) => {
         </Grid>
         <Grid item xs={6}>
           <Grid container justify="flex-end" direction="row">
-            <Typography inline>{valuePrefix}</Typography>{' '}
-            <AdaValue value={amount} withSign showCurrency />
+            <AdaValue value={amount} showSign={valuePrefix} showCurrency />
           </Grid>
         </Grid>
       </Grid>
@@ -210,7 +201,7 @@ const AddressesBreakdown = ({transaction}) => {
 }
 
 const TransactionSummary = ({transaction}) => {
-  const {translate, formatAda, formatInt, formatTimestamp} = useI18n()
+  const {translate, formatInt, formatTimestamp} = useI18n()
 
   const N_A = translate(messages.notAvailable)
 
@@ -250,7 +241,9 @@ const TransactionSummary = ({transaction}) => {
         })}
       </Item>
       <Item label={messages.size}>{formatInt(transaction.size, {defaultValue: N_A})}</Item>
-      <Item label={messages.fees}>{`${formatAda(transaction.fees)} ADA`}</Item>
+      <Item label={messages.fees}>
+        <AdaValue value={transaction.fees} showCurrency />
+      </Item>
     </SummaryCard>
   )
 }

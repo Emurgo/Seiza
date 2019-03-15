@@ -5,6 +5,7 @@ import {injectIntl} from 'react-intl'
 import React, {useContext} from 'react'
 import {compose} from 'redux'
 import _ from 'lodash'
+import assert from 'assert'
 
 import 'moment/locale/ja'
 import 'moment/locale/ru'
@@ -65,6 +66,37 @@ const _isNumeric = (n) => {
   return `${n}` === `${_parsed}` && _.isNumber(_parsed) && _.isFinite(_parsed)
 }
 
+type GetSignFn = (x: string) => string
+
+const _stripSign = (x: string): string =>
+  x.substring(0, 1) === '-' || x.substring(0, 1) === '+' ? x.substring(1) : x
+
+const _getSignAuto: GetSignFn = (x) => (x.substring(0, 1) === '-' ? '-' : '')
+const _getSignNever: GetSignFn = (x) => ''
+const _getSignAlways: GetSignFn = (x) => (x.substring(0, 1) === '-' ? '-' : '+')
+const _getSignPlus: GetSignFn = (x) => '+'
+const _getSignMinus: GetSignFn = (x) => '-'
+
+const GET_SIGN = {
+  'auto': _getSignAuto,
+  'never': _getSignNever,
+  'always': _getSignAlways,
+  '+': _getSignPlus,
+  '-': _getSignMinus,
+}
+
+export type ShowSign = $Keys<typeof GET_SIGN>
+
+const plusOrMinus: $ReadOnlyArray<ShowSign> = ['+', '-']
+const _withSign = (x: string, showSign: ShowSign): string => {
+  // when client uses "+" or "-", we allow only posisitve numbers
+  if (plusOrMinus.includes(showSign)) {
+    assert.notEqual(x.substring(0, 1), '-', 'The number should be positive')
+  }
+
+  return `${GET_SIGN[showSign](x)}${_stripSign(x)}`
+}
+
 type Msg =
   | {
       id: string,
@@ -88,9 +120,6 @@ type Formatters = {
 export const getIntlFormatters = (intl: any): Formatters => {
   const translate = intl.formatMessage
   const formatNumber = intl.formatNumber
-
-  // Note: no sign for '-' because negative number is rendered with '-' automatically
-  const _formatSign = (x) => (Math.sign(parseFloat(x)) >= 0 ? '+' : '')
 
   const _formatInt = (x, options = {}) =>
     formatNumber(x, {
@@ -128,12 +157,32 @@ export const getIntlFormatters = (intl: any): Formatters => {
   }
 
   // TODO: we should compare ADA values to zero as BigNumbers, not directly
-  const withFormatSign = (formatter): any => (x, options = {}) => {
-    const {withSign, ...restOptions} = options
-    if (withSign && _isNumeric(x)) {
-      return `${_formatSign(x)}${formatter(x, restOptions)}`
+  const withFormatSign = (formatter): any => (x, options = {}): string => {
+    const {showSign = 'auto', ...restOptions} = options
+    const formatted = formatter(x, restOptions)
+
+    if (_isNumeric(formatted)) {
+      // TODO: This won't work with Arabic language,
+      // because we're working with formatted value
+      return _withSign(formatted, showSign)
     }
-    return formatter(x, restOptions)
+
+    return formatted
+  }
+
+  const withFormatSignAdaSplit = (formatter): any => (x, options = {}) => {
+    const {showSign = 'auto', ...restOptions} = options
+    const formatted = formatter(x, restOptions)
+
+    if (_isNumeric(x)) {
+      return {
+        ...formatted,
+        // TODO: This won't work with Arabic language,
+        // because we're working with formatted value
+        integral: _withSign(formatted.integral, showSign),
+      }
+    }
+    return formatted
   }
 
   const withSignAndDefaultValue = compose(
@@ -144,7 +193,10 @@ export const getIntlFormatters = (intl: any): Formatters => {
   const formatInt = withSignAndDefaultValue(_formatInt)
   const formatPercent = withSignAndDefaultValue(_formatPercent)
   const formatAda = withSignAndDefaultValue(_formatAda)
-  const formatAdaSplit = withSignAndDefaultValue(_formatAdaSplit)
+  const formatAdaSplit = compose(
+    withDefaultValue,
+    withFormatSignAdaSplit
+  )(_formatAdaSplit)
   const formatFiat = withSignAndDefaultValue(_formatFiat)
 
   const formatTimestamp = withDefaultValue(_formatTimestamp)

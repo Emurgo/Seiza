@@ -31,23 +31,25 @@ const messages = defineMessages({
 
 const MarginAction = ({total, change}) => {
   const {formatPercent} = useI18n()
-  return `${formatPercent(total, {withSign: true})} (${formatPercent(change, {withSign: true})})`
+  return `${formatPercent(total, {showSign: 'always'})} (${formatPercent(change, {
+    showSign: 'always',
+  })})`
 }
 
 const CostAction = ({value}) => {
-  return <AdaValue value={value} showCurrency withSign />
+  return <AdaValue value={value} showCurrency showSign="always" />
 }
 
 const WithdrawalAction = ({value}) => {
   return (
     <React.Fragment>
-      (<AdaValue value={value} showCurrency withSign />)
+      (<AdaValue value={value} showCurrency showSign="always" />)
     </React.Fragment>
   )
 }
 
 const PledgeAction = ({value}) => {
-  return <AdaValue value={value} showCurrency withSign />
+  return <AdaValue value={value} showCurrency showSign="always" />
 }
 
 const ACTION_RENDERERS = {

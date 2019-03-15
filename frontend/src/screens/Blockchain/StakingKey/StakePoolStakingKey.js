@@ -167,7 +167,7 @@ const StakePoolStakingKey = ({
               {formatPercent(stakePool.currentMargin.margin)}{' '}
               <FromTop1Message
                 value={formatPercent(stakePool.topPoolComparison.margin, {
-                  withSign: true,
+                  showSign: 'always',
                 })}
               />
             </Typography>
@@ -182,7 +182,13 @@ const StakePoolStakingKey = ({
             <Typography variant="body1" align="right">
               <AdaValue value={stakePool.currentCost.cost} showCurrency />
               <FromTop1Message
-                value={<AdaValue value={stakePool.topPoolComparison.cost} withSign showCurrency />}
+                value={
+                  <AdaValue
+                    value={stakePool.topPoolComparison.cost}
+                    showSign="always"
+                    showCurrency
+                  />
+                }
               />
             </Typography>
             <Typography variant="caption" color="textSecondary" align="right">
@@ -196,7 +202,7 @@ const StakePoolStakingKey = ({
             {formatPercent(stakePool.fullness)}{' '}
             <FromTop1Message
               value={formatPercent(stakePool.topPoolComparison.fullness, {
-                withSign: true,
+                showSign: 'always',
               })}
             />
           </Value>
@@ -207,7 +213,7 @@ const StakePoolStakingKey = ({
             {formatPercent(stakePool.revenue)}{' '}
             <FromTop1Message
               value={formatPercent(stakePool.topPoolComparison.revenue, {
-                withSign: true,
+                showSign: 'always',
               })}
             />
           </Value>
