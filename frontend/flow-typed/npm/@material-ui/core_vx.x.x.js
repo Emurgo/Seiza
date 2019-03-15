@@ -772,7 +772,13 @@ declare module '@material-ui/core/Grid/Grid' {
     | 'space-around'
   declare type AlignItems = 'flex-start' | 'center' | 'flex-end' | 'stretch' | 'baseline'
   declare type Direction = 'row' | 'row-reverse' | 'column' | 'column-reverse'
-  declare type Justify = 'flex-start' | 'center' | 'flex-end' | 'space-between' | 'space-around'
+  declare type Justify =
+    | 'flex-start'
+    | 'center'
+    | 'flex-end'
+    | 'space-between'
+    | 'space-around'
+    | 'space-evenly'
   declare type Spacing = 0 | 8 | 16 | 24 | 32 | 40
   declare type Wrap = 'nowrap' | 'wrap' | 'wrap-reverse'
   declare type GridProps = {
@@ -3910,4 +3916,7 @@ declare module '@material-ui/core' {
   declare export type Theme = StylesTheme
   declare export type WithStyles = StylesWithStyles
   declare export type WithTheme = StylesWithTheme
+  declare export var createStyles: <T>(arg: T) => T
+
+  declare export var Popper: any
 }

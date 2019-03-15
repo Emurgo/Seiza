@@ -182,14 +182,13 @@ declare module 'react-intl' {
     options?: $npm$ReactIntl$PluralFormatOptions
   ): $npm$ReactIntl$PluralCategoryString
 
-  declare class FormattedMessage extends React$Component<
-    $npm$ReactIntl$MessageDescriptor & {
-      values?: Object,
-      tagName?: string,
-      children?: | ((...formattedMessage: Array<React$Node>) => React$Node)
-        | ((string) => React$Node),
-    }
-  > {}
+  declare class FormattedMessage extends React$Component<{
+    id: string,
+    defaultMessage?: string,
+    values?: Object,
+    tagName?: string,
+    children?: ((...formattedMessage: Array<React$Node>) => React$Node) | ((string) => React$Node),
+  }> {}
   declare class FormattedHTMLMessage extends React$Component<
     $npm$ReactIntl$DateTimeFormatOptions & {
       values?: Object,
