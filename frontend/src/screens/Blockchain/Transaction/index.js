@@ -1,16 +1,16 @@
 // @flow
-
 import React from 'react'
 import {graphql} from 'react-apollo'
 import {compose} from 'redux'
 import {withProps} from 'recompose'
 import {withRouter} from 'react-router'
-import {Link} from 'react-router-dom'
 import {defineMessages} from 'react-intl'
+import classnames from 'classnames'
 import idx from 'idx'
 import gql from 'graphql-tag'
+import {makeStyles} from '@material-ui/styles'
+import {Typography, Grid} from '@material-ui/core'
 
-import {withStyles, createStyles, Typography, Grid, Divider} from '@material-ui/core'
 import {
   SummaryCard,
   SimpleLayout,
@@ -18,16 +18,17 @@ import {
   DebugApolloError,
   EntityIdCard,
   ExpandableCard,
+  AdaValue,
+  Link,
+  Divider,
 } from '@/components/visual'
 import WithModalState from '@/components/headless/modalState'
 import AssuranceChip from '@/components/common/AssuranceChip'
 import AdaIcon from '@/assets/icons/transaction-id.svg'
 
 import {ASSURANCE_LEVELS_VALUES} from '@/config'
-import {withI18n} from '@/i18n/helpers'
+import {useI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
-
-import type {Transaction} from '@/__generated__/schema.flow'
 
 const messages = defineMessages({
   header: 'Transaction',
@@ -40,7 +41,7 @@ const messages = defineMessages({
   size: 'Size:',
   fees: 'Transaction Fees:',
   notAvailable: 'N/A',
-  addressCount: '{count, plural, =0 {# addresses} one {# address} other {# addresses}}',
+  addressCount: '#{count, plural, =0 {# addresses} one {# address} other {# addresses}}',
   from: 'From:',
   to: 'To:',
   seeAll: 'See all addresses',
@@ -58,101 +59,135 @@ const assuranceFromConfirmations = (cnt: number): AssuranceEnum => {
   }
 }
 
-const Summary = withI18n(({i18n, caption, value}) => (
-  <Grid container justify="space-between" alignItems="center" direction="row">
-    <Grid item>
-      <Typography variant="caption">{caption}</Typography>
-    </Grid>
-    <Grid item>
-      <Typography variant="body1">{value}</Typography>
-    </Grid>
-  </Grid>
-))
-
-const addressSummaryStyles = (theme) =>
-  createStyles({
-    wrapper: {
-      paddingLeft: theme.spacing.unit * 3,
-      paddingRight: theme.spacing.unit * 3,
-    },
-  })
-
-const AddressesSummary = compose(
-  withI18n,
-  withStyles(addressSummaryStyles)
-)(({transaction, i18n, classes}) => {
-  const {translate, formatAda} = i18n
+const Summary = ({caption, value}) => {
   return (
-    <Grid container className={classes.wrapper} direction="row">
-      <Grid item xs={6}>
+    <Grid container justify="space-between" alignItems="center" direction="row">
+      <Grid item>
+        <Typography variant="caption">{caption}</Typography>
+      </Grid>
+      <Grid item>
+        <Typography variant="body1">{value}</Typography>
+      </Grid>
+    </Grid>
+  )
+}
+
+const getBorderStyle = (theme) => `1px solid ${theme.palette.contentUnfocus}`
+const useCommonStyles = makeStyles((theme) => ({
+  leftSide: {
+    borderRight: getBorderStyle(theme),
+  },
+  rightSide: {
+    borderLeft: getBorderStyle(theme),
+  },
+}))
+
+const useAddressSummaryStyles = makeStyles((theme) => ({
+  text: {
+    textTransform: 'uppercase',
+  },
+  padding: {
+    padding: theme.spacing.unit * 4,
+  },
+}))
+
+const AddressesSummary = ({transaction}) => {
+  const {translate} = useI18n()
+  const commonClasses = useCommonStyles()
+  const classes = useAddressSummaryStyles()
+  return (
+    <Grid container direction="row">
+      <Grid item xs={6} className={classnames(commonClasses.leftSide, classes.padding)}>
         <Summary
           caption={
             <React.Fragment>
-              {translate(messages.from)}{' '}
-              {translate(messages.addressCount, {count: transaction.inputs.length})}
+              <Typography variant="caption" inline color="textSecondary" className={classes.text}>
+                {translate(messages.from)}
+              </Typography>{' '}
+              <Typography variant="caption" inline color="textPrimary">
+                {translate(messages.addressCount, {count: transaction.inputs.length})}
+              </Typography>
             </React.Fragment>
           }
-          value={<React.Fragment>- {formatAda(transaction.totalInput)} ADA</React.Fragment>}
+          value={
+            <React.Fragment>
+              -<AdaValue value={transaction.totalInput} showCurrency />
+            </React.Fragment>
+          }
         />
       </Grid>
-      <Grid item xs={6}>
+      <Grid item xs={6} className={classes.padding}>
         <Summary
           caption={
             <React.Fragment>
-              {translate(messages.to)}{' '}
-              {translate(messages.addressCount, {count: transaction.outputs.length})}
+              <Typography variant="caption" inline color="textSecondary" className={classes.text}>
+                {translate(messages.to)}
+              </Typography>{' '}
+              <Typography variant="caption" inline color="textPrimary">
+                {translate(messages.addressCount, {count: transaction.outputs.length})}
+              </Typography>
             </React.Fragment>
           }
-          value={<React.Fragment>+ {formatAda(transaction.totalOutput)} ADA</React.Fragment>}
+          value={
+            <React.Fragment>
+              +<AdaValue value={transaction.totalOutput} showCurrency />
+            </React.Fragment>
+          }
         />
       </Grid>
     </Grid>
   )
-})
+}
 
-const breakdownStyles = (theme) =>
-  createStyles({
-    truncate: {
-      textOverflow: 'ellipsis',
-      overflow: 'hidden',
-      whiteSpace: 'nowrap',
-    },
-  })
+const useBreakdownStyles = makeStyles((theme) => ({
+  margin: {
+    marginLeft: theme.spacing.unit * 4,
+    marginRight: theme.spacing.unit * 4,
+  },
+  rowSpacing: {
+    marginTop: theme.spacing.unit * 1.5,
+    marginBottom: theme.spacing.unit * 1.5,
+  },
+}))
 
-const Breakdown = compose(
-  withI18n,
-  withStyles(breakdownStyles)
-)((props) => {
-  const {i18n, valuePrefix, captionPrefix, classes, target} = props
-  const {formatAda} = i18n
+const BreakdownItem = (props) => {
+  const {valuePrefix, captionPrefix, target} = props
   const {address58, amount} = target
-
+  const breakdownClasses = useBreakdownStyles()
   return (
-    <React.Fragment>
-      <Grid container justify="space-between" alignItems="center" direction="row">
+    <div className={breakdownClasses.margin}>
+      <Divider light />
+      <Grid
+        container
+        justify="space-between"
+        alignItems="center"
+        direction="row"
+        className={breakdownClasses.rowSpacing}
+      >
         <Grid item xs={6}>
-          <Typography variant="caption" className={classes.truncate}>
+          <Typography variant="caption" color="textSecondary" noWrap>
             {captionPrefix} <Link to={routeTo.address(address58)}>{address58}</Link>
           </Typography>
         </Grid>
         <Grid item xs={6}>
           <Grid container justify="flex-end" direction="row">
-            {valuePrefix} {formatAda(amount)} ADA
+            <Typography inline>{valuePrefix}</Typography>{' '}
+            <AdaValue value={amount} withSign showCurrency />
           </Grid>
         </Grid>
       </Grid>
-      <Divider />
-    </React.Fragment>
+    </div>
   )
-})
+}
 
-const AddressesBreakdown = withI18n(({transaction, i18n}) => {
-  const {formatInt} = i18n
+const AddressesBreakdown = ({transaction}) => {
+  const {formatInt} = useI18n()
+  const commonClasses = useCommonStyles()
   return (
     <Grid container direction="row">
-      <Grid item xs={6}>
-        {transaction.inputs.map((input, index) => (
-          <Breakdown
+      <Grid item xs={6} className={classnames(commonClasses.leftSide)}>
+        {transaction.inputs.map((input, index, items) => (
+          <BreakdownItem
             key={index}
             target={input}
             captionPrefix={`# ${formatInt(index + 1)}`}
@@ -161,8 +196,8 @@ const AddressesBreakdown = withI18n(({transaction, i18n}) => {
         ))}
       </Grid>
       <Grid item xs={6}>
-        {transaction.outputs.map((output, index) => (
-          <Breakdown
+        {transaction.outputs.map((output, index, items) => (
+          <BreakdownItem
             key={index}
             target={output}
             captionPrefix={`# ${formatInt(index + 1)}`}
@@ -172,10 +207,10 @@ const AddressesBreakdown = withI18n(({transaction, i18n}) => {
       </Grid>
     </Grid>
   )
-})
+}
 
-const _TransactionSummary = ({transaction, i18n}: {transaction: Transaction, i18n: any}) => {
-  const {translate, formatAda, formatInt, formatTimestamp} = i18n
+const TransactionSummary = ({transaction}) => {
+  const {translate, formatAda, formatInt, formatTimestamp} = useI18n()
 
   const N_A = translate(messages.notAvailable)
 
@@ -220,10 +255,8 @@ const _TransactionSummary = ({transaction, i18n}: {transaction: Transaction, i18
   )
 }
 
-const TransactionSummary = compose(withI18n)(_TransactionSummary)
-
-const TransactionScreen = ({i18n, transactionDataProvider}) => {
-  const {translate} = i18n
+const TransactionScreen = ({transactionDataProvider}) => {
+  const {translate} = useI18n()
   const {loading, transaction, error} = transactionDataProvider
   return (
     <SimpleLayout title={translate(messages.header)}>
@@ -261,7 +294,6 @@ export default compose(
   withProps((props) => ({
     txHash: props.match.params.txHash,
   })),
-  withI18n,
   graphql(
     gql`
       query($txHash: String!) {
