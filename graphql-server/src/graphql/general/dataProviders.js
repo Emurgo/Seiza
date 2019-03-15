@@ -21,27 +21,27 @@ export type GeneralInfo = {|
 export type EpochInfo = GeneralInfo
 
 const mockedSlotInfo: SlotInfo = {
-  supply: '30379712132694',
+  supply: '31,000,000,000.000000'.replace(/[,.]/g, ''),
   txCount: 12,
-  totalSent: '1234',
-  totalFees: '12',
+  totalSent: '1234025436',
+  totalFees: '12003125',
 }
 
-const mockedGeneralInfo: GeneralInfo = {
-  blocksCount: 2183881,
-  txCount: 21343454,
+const mockedGeneralInfo = (x): GeneralInfo => ({
+  blocksCount: Math.floor(4123.4312431243124123 * x),
+  txCount: Math.floor(12345.5435234523 * x),
   movements: '7084878665513',
   totalFees: '328203',
-  emptySlotsCount: 323,
-  addresses: '4324324',
-}
+  emptySlotsCount: Math.floor(432.315452345423 * x),
+  addresses: '12345',
+})
 
 export const fetchGeneralInfo = (api: any, period: string): Promise<GeneralInfo> => {
-  return Promise.resolve(mockedGeneralInfo)
+  return Promise.resolve(mockedGeneralInfo(period === 'LAST_24_HOURS' ? 1 : 300))
 }
 
 export const fetchEpochInfo = (api: any, epoch: number): Promise<EpochInfo> => {
-  return Promise.resolve(mockedGeneralInfo)
+  return Promise.resolve(mockedGeneralInfo(5))
 }
 
 export const fetchSlotInfo = (api: any, epoch: number, slot: number): Promise<SlotInfo> => {

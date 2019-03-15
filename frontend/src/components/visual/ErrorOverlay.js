@@ -2,7 +2,7 @@
 import React from 'react'
 
 import DebugApolloError from './DebugApolloError'
-import LoadingError from './LoadingDots'
+import LoadingError from './LoadingError'
 import Overlay from './Overlay'
 
 type Props = {

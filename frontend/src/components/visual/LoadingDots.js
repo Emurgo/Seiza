@@ -1,3 +1,5 @@
+// @flow
+
 import React from 'react'
 import {makeStyles} from '@material-ui/styles'
 
@@ -27,7 +29,9 @@ const useStyles = makeStyles({
   },
 })
 
-const LoadingDots = () => {
+type EmptyProps = {||}
+
+const LoadingDots = (props: EmptyProps) => {
   const classes = useStyles()
   const dot = '•'
   return (
