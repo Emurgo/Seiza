@@ -17,6 +17,7 @@ import SideMenu from './SideMenu'
 import StakePoolList from './StakeList'
 import StakePoolHeader from './Header'
 import PageNotFound from '../PageNotFound'
+import LocationMap from './LocationMap'
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -30,7 +31,9 @@ const useStyles = makeStyles((theme) =>
       // TODO: consider a better solution to avoid scroll bars
       overflow: 'hidden',
     },
-    mainContent: {},
+    mainContent: {
+      flexGrow: 1,
+    },
   })
 )
 
@@ -79,7 +82,7 @@ const ChartsQuerySynchronizer = synchronizedScreenFactory(
   useSetBasicScreenStorageFromQuery
 )
 const LocationQuerySynchronizer = synchronizedScreenFactory(
-  NotFound,
+  LocationMap,
   useSetBasicScreenStorageFromQuery
 )
 
