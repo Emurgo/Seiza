@@ -14,6 +14,7 @@ type ContextType = {
   setSearchText: Function,
   _setSearchTextStorageFromQuery: Function,
   _searchTextStorageToQuery: Function,
+  _setSearchTextStorageToDefault: Function,
 }
 
 const Context = React.createContext<ContextType>({
@@ -21,13 +22,17 @@ const Context = React.createContext<ContextType>({
   setSearchText: null,
   _setSearchTextStorageFromQuery: null,
   _searchTextStorageToQuery: null,
+  _setSearchTextStorageToDefault: null,
 })
 
 export const SearchTextProvider = ({children}: ProviderProps) => {
-  const {value, setValue, _setStorageFromQuery, _storageToQuery} = useManageSimpleContextValue(
-    STORAGE_KEY,
-    DEFAULT_VALUE
-  )
+  const {
+    value,
+    setValue,
+    _setStorageFromQuery,
+    _storageToQuery,
+    _setStorageToDefault,
+  } = useManageSimpleContextValue(STORAGE_KEY, DEFAULT_VALUE)
   return (
     <Context.Provider
       value={{
@@ -35,6 +40,7 @@ export const SearchTextProvider = ({children}: ProviderProps) => {
         setSearchText: setValue,
         _searchTextStorageToQuery: _storageToQuery,
         _setSearchTextStorageFromQuery: _setStorageFromQuery,
+        _setSearchTextStorageToDefault: _setStorageToDefault,
       }}
     >
       {children}

@@ -9,6 +9,8 @@ import {FiltersProvider, useShowFiltersContext} from './showFilters'
 import {SearchTextProvider, useSearchTextContext} from './searchText'
 import {PerformanceProvider, usePerformanceContext} from './performance'
 
+import {useUrlManager} from './utils'
+
 type ProviderProps = {|
   children: React.Node,
 |}
@@ -77,4 +79,28 @@ export function useSetBasicScreenStorageFromQuery() {
   }
 
   return {setScreenStorageFromQuery, getScreenUrlQuery}
+}
+
+export function useResetUrlAndStorage() {
+  const {setQuery} = useUrlManager()
+  const {_setSortByStorageToDefault} = useSortByContext()
+  const {_setPerformanceStorageToDefault} = usePerformanceContext()
+  const {_setSearchTextStorageToDefault} = useSearchTextContext()
+  const {_setShowFiltersStorageToDefault} = useShowFiltersContext()
+  const {getScreenUrlQuery} = useSetListScreenStorageFromQuery()
+
+  // Note: we do not reset "selected pools" intentionally
+  // Note: we can not perform url replacement in separate `_reset` functions as
+  // they have all closured initial urlQuery and would rewrite sooner rewritten urlQuery
+  const resetUrlAndStorage = () => {
+    _setPerformanceStorageToDefault()
+    _setSortByStorageToDefault()
+    _setSearchTextStorageToDefault()
+    _setShowFiltersStorageToDefault()
+
+    const query = getScreenUrlQuery()
+    setQuery(query)
+  }
+
+  return resetUrlAndStorage
 }

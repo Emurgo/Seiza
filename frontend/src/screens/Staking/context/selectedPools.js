@@ -17,6 +17,7 @@ type ContextType = {
   removePool: Function,
   _setSelectedPoolsStorageFromQuery: Function,
   _selectedPoolsStorageToQuery: Function,
+  _setSelectedPoolsStorageToDefault: Function,
 }
 
 const Context = React.createContext<ContextType>({
@@ -25,6 +26,7 @@ const Context = React.createContext<ContextType>({
   removePool: null,
   _setSelectedPoolsStorageFromQuery: null,
   _selectedPoolsStorageToQuery: null,
+  _setSelectedPoolsStorageToDefault: null,
 })
 
 export const SelectedPoolsProvider = ({children}: ProviderProps) => {
@@ -33,6 +35,7 @@ export const SelectedPoolsProvider = ({children}: ProviderProps) => {
     setValue: _setPools,
     _setStorageFromQuery: _setSelectedPoolsStorageFromQuery,
     _storageToQuery: _selectedPoolsStorageToQuery,
+    _setStorageToDefault: _setSelectedPoolsStorageToDefault,
   } = useManageSimpleContextValue(STORAGE_KEY, DEFAULT_VALUE)
 
   const removePool = useCallback(
@@ -65,6 +68,7 @@ export const SelectedPoolsProvider = ({children}: ProviderProps) => {
         removePool,
         _setSelectedPoolsStorageFromQuery,
         _selectedPoolsStorageToQuery,
+        _setSelectedPoolsStorageToDefault,
       }}
     >
       {children}

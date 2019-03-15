@@ -23,6 +23,7 @@ type ContextType = {
   setSortBy: Function,
   _setSortByStorageFromQuery: Function,
   _sortByStorageToQuery: Function,
+  _setSortByStorageToDefault: Function,
 }
 
 const Context = React.createContext<ContextType>({
@@ -30,13 +31,17 @@ const Context = React.createContext<ContextType>({
   setSortBy: null,
   _setSortByStorageFromQuery: null,
   _sortByStorageToQuery: null,
+  _setSortByStorageToDefault: null,
 })
 
 export const SortByProvider = ({children}: ProviderProps) => {
-  const {value, setValue, _setStorageFromQuery, _storageToQuery} = useManageSimpleContextValue(
-    STORAGE_KEY,
-    DEFAULT_VALUE
-  )
+  const {
+    value,
+    setValue,
+    _setStorageFromQuery,
+    _storageToQuery,
+    _setStorageToDefault,
+  } = useManageSimpleContextValue(STORAGE_KEY, DEFAULT_VALUE)
   return (
     <Context.Provider
       value={{
@@ -44,6 +49,7 @@ export const SortByProvider = ({children}: ProviderProps) => {
         setSortBy: setValue,
         _setSortByStorageFromQuery: _setStorageFromQuery,
         _sortByStorageToQuery: _storageToQuery,
+        _setSortByStorageToDefault: _setStorageToDefault,
       }}
     >
       {children}

@@ -1,11 +1,12 @@
 // @flow
-import React, {useState, useCallback} from 'react'
+import React, {useCallback} from 'react'
 import {defineMessages} from 'react-intl'
 import {Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
 import {useI18n} from '@/i18n/helpers'
 import {Searchbar, ToggleButton} from '@/components/visual'
+import {useStateWithChangingDefault} from '@/components/hooks/useStateWithChangingDefault'
 import Filters from './Filters'
 import {useShowFiltersContext} from '../context/showFilters'
 import {useSearchTextContext} from '../context/searchText'
@@ -34,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Search = () => {
   const searchTextContext = useSearchTextContext()
-  const [searchText, setSearchText] = useState(searchTextContext.searchText)
+  const [searchText, setSearchText] = useStateWithChangingDefault(searchTextContext.searchText)
 
   const onSearch = useCallback((query) => searchTextContext.setSearchText(query), [
     searchTextContext,
