@@ -17,15 +17,28 @@ const styles = ({palette}) =>
     link: {
       textDecoration: 'none',
       textTransform: 'uppercase',
+      position: 'relative',
     },
     linkText: {
+      'fontSize': 14,
+      'fontWeight': 'bold',
       'display': 'inline-block',
-      'color': palette.getContrastText(palette.background.default),
       '&:hover': {
         color: palette.primary.dark,
       },
     },
-    active: {color: palette.primary.dark, borderBottom: `1px solid ${palette.primary.dark}`},
+    active: {
+      'color': palette.primary.main,
+      '&:after': {
+        content: '""',
+        background: palette.tertiary.main,
+        position: 'absolute',
+        bottom: -5,
+        left: 0,
+        width: '50%',
+        height: '1px',
+      },
+    },
   })
 
 const Navbar = ({items = [], currentPathname, classes}) => (
@@ -38,6 +51,7 @@ const Navbar = ({items = [], currentPathname, classes}) => (
               <Typography
                 className={classnames(classes.linkText, isActive && classes.active)}
                 variant="body1"
+                color="textSecondary"
               >
                 {label}
               </Typography>
