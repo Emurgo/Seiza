@@ -15,6 +15,7 @@ import {
 } from './context'
 import SideMenu from './SideMenu'
 import StakePoolList from './StakeList'
+import ComparisonMatrix from './ComparisonMatrix'
 import StakePoolHeader from './Header'
 import PageNotFound from '../PageNotFound'
 import LocationMap from './LocationMap'
@@ -65,26 +66,81 @@ const synchronizedScreenFactory = (Screen, useSetScreenStorageFromQuery) => () =
   return urlQuery || !storageQuery ? <Screen /> : <Redirect exact to={`${path}${storageQuery}`} />
 }
 
+const LayoutedStakePoolList = () => (
+  <CenteredLayout>
+    <StakePoolList />
+  </CenteredLayout>
+)
+const LayoutedComparisonMatrix = () => (
+  <FullWidthLayout>
+    <ComparisonMatrix />
+  </FullWidthLayout>
+)
+const LayoutedHistory = () => (
+  <CenteredLayout>
+    <NotFound />
+  </CenteredLayout>
+)
+const LayoutedCharts = () => (
+  <CenteredLayout>
+    <NotFound />
+  </CenteredLayout>
+)
+const LayoutedLocation = () => (
+  <CenteredLayout>
+    <LocationMap />
+  </CenteredLayout>
+)
+
 const PoolListQuerySynchronizer = synchronizedScreenFactory(
-  StakePoolList,
+  LayoutedStakePoolList,
   useSetListScreenStorageFromQuery
 )
 const PoolComparisonQuerySynchronizer = synchronizedScreenFactory(
-  NotFound,
+  LayoutedComparisonMatrix,
   useSetBasicScreenStorageFromQuery
 )
 const HistoryQuerySynchronizer = synchronizedScreenFactory(
-  NotFound,
+  LayoutedHistory,
   useSetBasicScreenStorageFromQuery
 )
 const ChartsQuerySynchronizer = synchronizedScreenFactory(
-  NotFound,
+  LayoutedCharts,
   useSetBasicScreenStorageFromQuery
 )
 const LocationQuerySynchronizer = synchronizedScreenFactory(
-  LocationMap,
+  LayoutedLocation,
   useSetBasicScreenStorageFromQuery
 )
+
+const FullWidthLayout = ({children}) => {
+  const classes = useStyles()
+  return (
+    <div className="d-flex">
+      <div className={classes.sidebar}>
+        <SideMenu />
+      </div>
+      <div className="flex-grow-1">{children}</div>
+    </div>
+  )
+}
+
+const CenteredLayout = ({children}) => {
+  const classes = useStyles()
+  return (
+    <Grid container direction="row" wrap="nowrap" spacing={24}>
+      <Grid item lg={3} xl={3}>
+        <div className={classes.sidebar}>
+          <SideMenu />
+        </div>
+      </Grid>
+      <Grid item lg={9} xl={6} className={classes.mainContent}>
+        {children}
+      </Grid>
+      <Grid item lg={false} xl={3} />
+    </Grid>
+  )
+}
 
 export default () => {
   const classes = useStyles()
@@ -92,37 +148,20 @@ export default () => {
     <StakingContextProvider>
       <Grid container direction="column" className={classes.wrapper}>
         <StakePoolHeader />
-        <Grid container direction="row" wrap="nowrap" spacing={24}>
-          <Grid item lg={3} xl={3}>
-            <div className={classes.sidebar}>
-              <SideMenu />
-            </div>
-          </Grid>
-          <Grid item lg={9} xl={6} className={classes.mainContent}>
-            <Switch>
-              <Redirect exact from={routeTo.staking.home()} to={routeTo.staking.poolList()} />
-              <Route
-                exact
-                path={routeTo.staking.poolList()}
-                component={PoolListQuerySynchronizer}
-              />
-              <Route
-                exact
-                path={routeTo.staking.poolComparison()}
-                component={PoolComparisonQuerySynchronizer}
-              />
-              <Route exact path={routeTo.staking.history()} component={HistoryQuerySynchronizer} />
-              <Route exact path={routeTo.staking.charts()} component={ChartsQuerySynchronizer} />
-              <Route
-                exact
-                path={routeTo.staking.location()}
-                component={LocationQuerySynchronizer}
-              />
-              <Route component={NotFound} />
-            </Switch>
-          </Grid>
-          <Grid item lg={false} xl={3} />
-        </Grid>
+
+        <Switch>
+          <Redirect exact from={routeTo.staking.home()} to={routeTo.staking.poolList()} />
+          <Route exact path={routeTo.staking.poolList()} component={PoolListQuerySynchronizer} />
+          <Route
+            exact
+            path={routeTo.staking.poolComparison()}
+            component={PoolComparisonQuerySynchronizer}
+          />
+          <Route exact path={routeTo.staking.history()} component={HistoryQuerySynchronizer} />
+          <Route exact path={routeTo.staking.charts()} component={ChartsQuerySynchronizer} />
+          <Route exact path={routeTo.staking.location()} component={LocationQuerySynchronizer} />
+          <Route component={NotFound} />
+        </Switch>
       </Grid>
     </StakingContextProvider>
   )
