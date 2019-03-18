@@ -9,8 +9,8 @@ import AdaIcon from '@/assets/icons/transaction-id.svg'
 import {withI18n} from '@/i18n/helpers'
 import RewardAddressIcon from '@/assets/icons/reward-address.svg'
 import CertificateIcon from '@/assets/icons/certificate.svg'
-import Tabs from './UserTabs'
-import {getUserStakingKey} from './mockedData'
+import Tabs from './Tabs'
+import {getUserStakingKey} from '../mockedData'
 
 const messages = defineMessages({
   header: 'Staking Key',

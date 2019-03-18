@@ -15,10 +15,9 @@ const delegatedPoolMessages = defineMessages({
   epochsValue: '{count, plural, =0 {# epochs} one {# epoch} other {# epochs}}',
 })
 
-const DelegatedPoolInfoTab = ({stakingKey}) => {
+const DelegatedPoolInfoTab = ({stakePool, epochsInCurrentStakePool}) => {
   const {translate, formatInt, formatPercent} = useI18n()
   const {Row, Label, Value} = SummaryCard
-  const {currentStakePool: stakePool} = stakingKey
 
   return (
     <SummaryCard>
@@ -68,7 +67,7 @@ const DelegatedPoolInfoTab = ({stakingKey}) => {
         <Label>{translate(delegatedPoolMessages.epochsLabel)}</Label>
         <Value>
           {translate(delegatedPoolMessages.epochsValue, {
-            count: formatInt(stakingKey.epochsInCurrentStakePool),
+            count: formatInt(epochsInCurrentStakePool),
           })}
         </Value>
       </Row>
