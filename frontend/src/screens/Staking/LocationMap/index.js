@@ -7,7 +7,8 @@ import {LoadScript, GoogleMap, Marker} from '@react-google-maps/api'
 import {defineMessages} from 'react-intl'
 
 import {useI18n} from '@/i18n/helpers'
-import {Alert, SummaryCard, LoadingInProgress} from '@/components/visual'
+import {VisualHash, Alert, SummaryCard, LoadingInProgress} from '@/components/visual'
+import {dangerouslyEmbedIntoDataURI} from '@/helpers/url'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -27,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   poolRowIcon: {
-    width: 50,
+    width: 64,
   },
   poolRowMain: {
     flexGrow: 1,
@@ -35,44 +36,42 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 // This is just an example
-const CustomIcon = () => {
+const PoolMarker = ({poolHash}) => {
   return (
-    <svg height={30} width={30} viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg">
-      <circle cx={15} cy={15} r={15} strokeWidth={2} stroke="#f00" fill="#ff0" />
-      <text x={0} y={20}>
-        SVG
-      </text>
+    <svg width={32} height={40} viewBox="0 0 32 40" xmlns="http://www.w3.org/2000/svg">
+      <circle cx={16} cy={15} r={20} fill="white" />
+      <image
+        x={0}
+        y={0}
+        width={32}
+        height={32}
+        href={VisualHash.dataURI({value: poolHash, size: 32})}
+      />
     </svg>
   )
 }
 
-const renderToDataURI = (component) =>
-  `data:image/svg+xml;utf8,${encodeURIComponent(renderToStaticMarkup(component))}`
+PoolMarker.dataURI = ({poolHash}) =>
+  dangerouslyEmbedIntoDataURI(
+    'image/svg+xml',
+    renderToStaticMarkup(<PoolMarker poolHash={poolHash} />)
+  )
 
 const POOLS = [
   {
     hash: 'abc',
     location: {lat: -30, lng: 150},
     name: 'Pool A',
-    icon: {
-      url: 'http://maps.google.com/mapfiles/ms/micons/blue.png',
-    },
   },
   {
     hash: 'def',
     location: {lat: -10, lng: -10},
     name: 'Pool B',
-    icon: {
-      url: renderToDataURI(<CustomIcon />),
-    },
   },
   {
     hash: 'tmp',
     location: {lat: 47, lng: 11},
-    name: 'Adalite.IO',
-    icon: {
-      url: 'http://maps.google.com/mapfiles/ms/micons/red.png',
-    },
+    name: 'Adalite.io',
   },
 ]
 
@@ -115,7 +114,12 @@ const LocationMap = ({pools}) => {
         mapContainerStyle={{width: '100%', height: '100%'}}
       >
         {pools.map((pool) => (
-          <Marker key={pool.hash} position={pool.location} title={pool.name} icon={pool.icon} />
+          <Marker
+            key={pool.hash}
+            position={pool.location}
+            title={pool.name}
+            icon={PoolMarker.dataURI({poolHash: pool.hash})}
+          />
         ))}
       </GoogleMap>
     </LoadScript>
@@ -127,7 +131,7 @@ const PoolEntry = ({pool}) => {
   return (
     <SummaryCard.Row>
       <div className={classes.poolRowIcon}>
-        <img src={pool.icon && pool.icon.url} />
+        <VisualHash value={pool.hash} size={48} />
       </div>
       <div className={classes.poolRowMain}>
         <div>
