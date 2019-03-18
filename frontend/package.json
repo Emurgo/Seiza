@@ -8,6 +8,7 @@
     "eject": "react-app-rewired eject",
     "eslint": "eslint src --max-warnings=0",
     "flow": "flow",
+    "flow-start": "flow start",
     "flow-stop": "flow stop",
     "flow-coverage": "flow-coverage-report || exit 0",
     "prettier": "prettier-eslint --write \"src/**/*.js\"",

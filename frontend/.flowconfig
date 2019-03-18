@@ -9,6 +9,7 @@
 
 [options]
 
+server.max_workers=4
 suppress_type=$FlowFixMe
 module.file_ext=.js
 module.file_ext=.scss
