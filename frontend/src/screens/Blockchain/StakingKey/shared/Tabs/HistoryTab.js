@@ -27,6 +27,7 @@ const messages = defineMessages({
   MARGIN: 'Stake Pool margins:',
   PLEDGE_CHANGE: 'Stake Pool pledge change:',
   WITHDRAWAL: 'Stake Pool moved out funds:',
+  historyName: 'History',
 })
 
 const MarginAction = ({total, change}) => {
@@ -82,8 +83,7 @@ const EpochHeader = ({epochNumber}) => {
 }
 
 // TODO: add shadow effect on hover
-const HistoryTab = ({stakingKey}) => {
-  const {history} = stakingKey
+const HistoryTab = ({history}) => {
   const {translate: tr} = useI18n()
   const classes = useStyles()
   const {Row, Label, Value} = SummaryCard

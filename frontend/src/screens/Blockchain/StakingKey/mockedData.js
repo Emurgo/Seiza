@@ -41,23 +41,6 @@ const generateStakePool = (stakingKeyHash) => ({
   description: 'let’s work together to make money!',
   rewardsAddress: 'a5c3af824de94faff971d1b2488c5017dcf0f3c3a056334195efb368c0fe2f75',
   stakePoolCertificate: '6b686ed997b3846ebf93642b5bfe482ca2682245b826601ca352d2c3c0394a68',
-})
-
-export const getUserStakingKey = (stakingKeyHash) => ({
-  hash: stakingKeyHash,
-  type: 'USER',
-  createdAt: '2019-02-13T10:58:31.000Z',
-  stakedAda: '151251251981295151',
-  totalRewards: '41513514846517',
-  uncollectedRewards: '9439918145817',
-  addressesCount: 5134,
-  totalEpochsActive: 11,
-  rewardAddress: 'a5c3af824de94faff971d1b2488c5017dcf0f3c3a056334195efb368c0fe2f75',
-  delegationCert: '6b686ed997b3846ebf93642b5bfe482ca2682245b826601ca352d2c3c0394a68',
-  epochsInCurrentStakePool: 3,
-  currentStakePool: generateStakePool(
-    'dd4548f88bebd98653a6977cb6cf1cf6a57dcec8ed8655f6e8b690e998bb2164'
-  ),
   history: [
     {
       epochNumber: 103,
@@ -73,7 +56,6 @@ export const getUserStakingKey = (stakingKeyHash) => ({
         },
       ],
     },
-
     {
       epochNumber: 102,
       actions: [
@@ -208,6 +190,23 @@ export const getUserStakingKey = (stakingKeyHash) => ({
       },
     },
   ],
+})
+
+export const getUserStakingKey = (stakingKeyHash) => ({
+  hash: stakingKeyHash,
+  type: 'USER',
+  createdAt: '2019-02-13T10:58:31.000Z',
+  stakedAda: '151251251981295151',
+  totalRewards: '41513514846517',
+  uncollectedRewards: '9439918145817',
+  addressesCount: 5134,
+  totalEpochsActive: 11,
+  rewardAddress: 'a5c3af824de94faff971d1b2488c5017dcf0f3c3a056334195efb368c0fe2f75',
+  delegationCert: '6b686ed997b3846ebf93642b5bfe482ca2682245b826601ca352d2c3c0394a68',
+  epochsInCurrentStakePool: 3,
+  currentStakePool: generateStakePool(
+    'dd4548f88bebd98653a6977cb6cf1cf6a57dcec8ed8655f6e8b690e998bb2164'
+  ),
 })
 export const getStakePoolStakingKey = (stakingKeyHash) => {
   return generateStakePool(stakingKeyHash)

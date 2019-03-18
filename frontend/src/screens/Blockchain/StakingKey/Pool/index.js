@@ -6,6 +6,7 @@ import {withProps} from 'recompose'
 import {compose} from 'redux'
 import {Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
+
 import {
   AdaValue,
   SummaryCard,
@@ -17,9 +18,10 @@ import {
 } from '@/components/visual'
 import {withI18n} from '@/i18n/helpers'
 import AdaIcon from '@/assets/icons/transaction-id.svg'
-import {getStakePoolStakingKey} from './mockedData'
+import {getStakePoolStakingKey} from '../mockedData'
 import RewardAddressIcon from '@/assets/icons/reward-address.svg'
 import CertificateIcon from '@/assets/icons/certificate.svg'
+import Tabs from './Tabs'
 
 const useStyles = makeStyles((theme) => ({
   smallAdaText: {
@@ -67,7 +69,7 @@ const FromTop1Message = ({value}) => (
   />
 )
 
-const StakePoolStakingKey = ({
+const StakePool = ({
   stakePool,
   i18n: {translate, formatPercent, formatInt, formatTimestamp, formatAda},
 }) => {
@@ -233,6 +235,7 @@ const StakePoolStakingKey = ({
         value={stakePool.stakePoolCertificate}
         iconRenderer={<img alt="" src={CertificateIcon} width={40} height={40} />}
       />
+      <Tabs stakePool={stakePool} />
     </SimpleLayout>
   )
 }
@@ -244,4 +247,4 @@ export default compose(
     // TODO: get data from backend
     stakePool: getStakePoolStakingKey(props.match.params.stakingKey),
   }))
-)(StakePoolStakingKey)
+)(StakePool)

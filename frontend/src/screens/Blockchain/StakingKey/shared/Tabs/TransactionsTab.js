@@ -35,7 +35,7 @@ const ACTION_VALUE_RENDERER = {
   FUNDING_POOL_REMOVED: ({value: {poolName, poolHash}}) => `${poolName} ${poolHash}`,
 }
 
-const TransactionList = ({transactions}) => {
+const TransactionsTab = ({transactions}) => {
   const {Row, Label, Value} = SummaryCard
   const {translate: tr, formatInt, formatTimestamp} = useI18n()
   return (
@@ -72,10 +72,6 @@ const TransactionList = ({transactions}) => {
         })}
     </div>
   )
-}
-
-const TransactionsTab = ({stakingKey}) => {
-  return <TransactionList transactions={stakingKey.transactions} />
 }
 
 export default TransactionsTab
