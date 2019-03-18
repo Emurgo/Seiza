@@ -139,8 +139,8 @@ const themeDefinitions = {
         gradient: 'linear-gradient(97deg, #3a404c 0%, #b7b9bc 100%)',
       },
       text: {
-        primary: '#8791AD',
-        secondary: '#120546',
+        primary: '#ffffff',
+        secondary: '#8791AD',
       },
       primary: {
         main: '#c5d9f9',

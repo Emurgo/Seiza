@@ -12,7 +12,7 @@ const styles = (theme) =>
     textField: {
       flex: 1,
       flexBasis: 500,
-      background: 'white',
+      background: theme.palette.background.paper,
       borderRadius: 5,
     },
     input: {
