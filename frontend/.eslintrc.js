@@ -14,6 +14,8 @@ module.exports = {
     'no-unexpected-multiline': 2,
     'no-duplicate-imports': 0,
     'import/no-duplicates': 'error',
+    'import/named': 'error',
+    'import/default': 'error',
     'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'warn',
   },
