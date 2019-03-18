@@ -51,7 +51,7 @@ const DelegatedPoolInfoTab = ({stakingKey}) => {
           <Label>{translate(delegatedPoolMessages.marginDiff)}</Label>
           <Value>
             {formatPercent(stakePool.currentMargin.margin)} (
-            {formatPercent(stakePool.topPoolComparison.margin, {withSign: true})})
+            {formatPercent(stakePool.topPoolComparison.margin, {showSign: 'always'})})
           </Value>
         </Row>
         <Row>
@@ -65,7 +65,7 @@ const DelegatedPoolInfoTab = ({stakingKey}) => {
           <Label>{translate(delegatedPoolMessages.perfDiff)}</Label>
           <Value>
             {formatPercent(stakePool.performance)} (
-            {formatPercent(stakePool.topPoolComparison.performance, {withSign: true})})
+            {formatPercent(stakePool.topPoolComparison.performance, {showSign: 'always'})})
           </Value>
         </Row>
         <Row>
