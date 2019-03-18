@@ -1,5 +1,5 @@
 // @flow
-
+import assert from 'assert'
 import _ from 'lodash'
 import queryString from 'query-string'
 
@@ -28,4 +28,19 @@ export const areQueryStringsSame = (query1: string, query2: string): boolean => 
 export const joinQueryStrings = (queryStrings: Array<string>): string => {
   const nonEmptyQueryStrings = queryStrings.filter((query) => query)
   return nonEmptyQueryStrings.length ? `?${nonEmptyQueryStrings.join('&')}` : ''
+}
+
+// Note: without Object.freeze
+// $Values<typeof > doens't work as expected
+const EMBEDDABLE_MIMETYPES = Object.freeze({
+  SVG: 'image/svg+xml',
+})
+
+type EmbeddableMimetype = $Values<typeof EMBEDDABLE_MIMETYPES>
+
+// Naming is here to remind us of
+// vulnerability if data is non-sanitized
+export const dangerouslyEmbedIntoDataURI = (mimetype: EmbeddableMimetype, data: string) => {
+  assert(Object.values(EMBEDDABLE_MIMETYPES).includes(mimetype))
+  return `data:${mimetype};utf8,${encodeURIComponent(data)}`
 }

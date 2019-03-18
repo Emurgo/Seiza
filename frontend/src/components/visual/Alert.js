@@ -11,12 +11,12 @@ import warningIcon from '@/assets/icons/warning.svg'
 import alertIcon from '@/assets/icons/alert.svg'
 import {useI18n} from '@/i18n/helpers'
 
-const TYPES = {
+const TYPES = Object.freeze({
   EMPHASIS: 'emphasis',
   WARNING: 'warning',
   ALERT: 'alert',
   NEUTRAL: 'neutral',
-}
+})
 type AlertTypeEnum = $Values<typeof TYPES>
 
 // Note: babel-plugin-react-intl-auto cannot handle member expressions
