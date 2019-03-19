@@ -10,4 +10,7 @@ const addAbsolutePathImport = (config) => {
   return config
 }
 
-module.exports = override(addBabelPlugin('react-intl-auto'), addAbsolutePathImport)
+module.exports = override(
+  addBabelPlugin(['react-intl-auto', {removePrefix: 'src/', filebase: true}]),
+  addAbsolutePathImport
+)
