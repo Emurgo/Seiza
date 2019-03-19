@@ -33,18 +33,18 @@ const styles = (theme) => {
       borderRadius: '1000px',
     },
     secondary: {
-      'border': `1px solid ${theme.palette.primary.dark}`,
+      'border': `1px solid ${theme.palette.primary.main}`,
       'background': theme.palette.background.default,
-      'color': theme.palette.primary.dark,
+      'color': theme.palette.primary.main,
       '&:hover': {
         background: darken(theme.palette.background.default, DARKEN_FACTOR),
       },
     },
     primary: {
-      'background': theme.palette.primary.dark,
-      'color': theme.palette.getContrastText(theme.palette.primary.dark),
+      'background': theme.palette.primary.main,
+      'color': theme.palette.getContrastText(theme.palette.primary.main),
       '&:hover': {
-        background: fade(theme.palette.primary.dark, FADE_FACTOR),
+        background: fade(theme.palette.primary.main, FADE_FACTOR),
       },
     },
     disabled: {
