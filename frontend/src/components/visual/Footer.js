@@ -5,8 +5,8 @@ import classnames from 'classnames'
 import {compose} from 'redux'
 import {Link} from 'react-router-dom'
 import {defineMessages} from 'react-intl'
-import {Grid, withStyles, createStyles, Typography, Input} from '@material-ui/core'
-
+import {Grid, withStyles, createStyles, Typography, TextField} from '@material-ui/core'
+import {makeStyles} from '@material-ui/styles'
 import {Button} from '@/components/visual'
 import {withI18n} from '@/i18n/helpers'
 import logo from '../../assets/icons/logo-seiza-white.svg'
@@ -52,14 +52,37 @@ const styles = ({palette}) =>
       width: '200px',
     },
     email: {
-      marginLeft: '10px',
-      marginRight: '10px',
-      border: `1px solid ${palette.primary.dark}`,
-      borderRadius: '35px',
-      padding: '3px 10px',
       width: '200px',
     },
   })
+
+const useRoundedInputStyles = makeStyles((theme) => {
+  return {
+    // Mui Input div
+    Input: {
+      '&>fieldset': {
+        borderRadius: '35px',
+      },
+    },
+    // <input> element
+    input: {
+      padding: '8.5px 15px',
+    },
+  }
+})
+
+const RoundedInput = React.forwardRef((props, ref) => {
+  const classes = useRoundedInputStyles()
+  return (
+    <TextField
+      variant="outlined"
+      InputProps={{className: classes.Input}}
+      inputProps={{className: classes.input}}
+      inputRef={ref}
+      {...props}
+    />
+  )
+})
 
 const Footer = ({classes, navItems, i18n: {translate}}) => (
   <React.Fragment>
@@ -78,15 +101,16 @@ const Footer = ({classes, navItems, i18n: {translate}}) => (
       </Grid>
       <Grid item className={classes.bottomNavRow}>
         <Grid container direction="row" justify="center">
-          <Input
-            disableUnderline
-            className={classes.email}
-            placeholder={translate(subscribeMessages.emailButton)}
-            type="email"
-          />
-          <Button rounded gradient className={classnames(classes.subscribe)}>
-            {translate(subscribeMessages.subscribeButton)}
-          </Button>
+          <form>
+            <RoundedInput
+              className={classes.email}
+              placeholder={translate(subscribeMessages.emailButton)}
+              type="email"
+            />
+            <Button rounded gradient className={classnames(classes.subscribe)} type="submit">
+              {translate(subscribeMessages.subscribeButton)}
+            </Button>
+          </form>
         </Grid>
       </Grid>
     </Grid>
