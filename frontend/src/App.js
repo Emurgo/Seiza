@@ -14,6 +14,7 @@ import {provideIntl} from './components/HOC/intl'
 import {provideTheme, withTheme} from './components/HOC/theme'
 import {Navbar, Footer} from './components/visual'
 import {useI18n, InjectHookIntlContext} from '@/i18n/helpers'
+import {AutoSyncProvider} from './screens/Staking/context/autoSync'
 
 import Home from './screens/Home'
 import Blockchain from './screens/Blockchain'
@@ -82,25 +83,27 @@ const App = () => {
   const {translate} = useI18n()
   return (
     <Router>
-      <Grid container direction="column" className={classes.maxHeight} wrap="nowrap">
-        <Grid item>
-          <CssBaseline />
-          <TopBar />
+      <AutoSyncProvider>
+        <Grid container direction="column" className={classes.maxHeight} wrap="nowrap">
+          <Grid item>
+            <CssBaseline />
+            <TopBar />
+          </Grid>
+          <Grid item className={classes.contentWrapper}>
+            <Switch>
+              <Redirect exact from="/" to={routeTo.home()} />
+              <Route exact path={routeTo.home()} component={Home} />
+              <Route path={routeTo.blockchain()} component={Blockchain} />
+              <Route path={routeTo.staking.home()} component={Staking} />
+              <Route path={routeTo.more()} component={More} />
+              <Route component={PageNotFound} />
+            </Switch>
+          </Grid>
+          <Grid item>
+            <Footer navItems={getTranslatedNavItems(translate)} />
+          </Grid>
         </Grid>
-        <Grid item className={classes.contentWrapper}>
-          <Switch>
-            <Redirect exact from="/" to={routeTo.home()} />
-            <Route exact path={routeTo.home()} component={Home} />
-            <Route path={routeTo.blockchain()} component={Blockchain} />
-            <Route path={routeTo.staking.home()} component={Staking} />
-            <Route path={routeTo.more()} component={More} />
-            <Route component={PageNotFound} />
-          </Switch>
-        </Grid>
-        <Grid item>
-          <Footer navItems={getTranslatedNavItems(translate)} />
-        </Grid>
-      </Grid>
+      </AutoSyncProvider>
     </Router>
   )
 }

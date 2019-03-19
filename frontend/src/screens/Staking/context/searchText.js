@@ -25,14 +25,14 @@ const Context = React.createContext<ContextType>({
   _setSearchTextStorageToDefault: null,
 })
 
-export const SearchTextProvider = ({children}: ProviderProps) => {
+export const SearchTextProvider = ({children, autoSync}: ProviderProps) => {
   const {
     value,
     setValue,
     _setStorageFromQuery,
     _storageToQuery,
     _setStorageToDefault,
-  } = useManageSimpleContextValue(STORAGE_KEY, DEFAULT_VALUE)
+  } = useManageSimpleContextValue(autoSync, STORAGE_KEY, DEFAULT_VALUE)
   return (
     <Context.Provider
       value={{

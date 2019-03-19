@@ -13,6 +13,7 @@ import {
   useSetListScreenStorageFromQuery,
   useSetBasicScreenStorageFromQuery,
 } from './context'
+import {useAutoSyncContext} from './context/autoSync'
 import SideMenu from './SideMenu'
 import StakePoolList from './StakeList'
 import ComparisonMatrix from './ComparisonMatrix'
@@ -54,14 +55,26 @@ const synchronizedScreenFactory = (Screen, useSetScreenStorageFromQuery) => () =
     match: {path},
   } = useReactRouter()
   const {setScreenStorageFromQuery, getScreenUrlQuery} = useSetScreenStorageFromQuery()
+  const {autoSync, setAutosync} = useAutoSyncContext()
 
   const storageQuery = getScreenUrlQuery()
 
   useEffect(() => {
-    if (urlQuery && !urlUtils.areQueryStringsSame(urlQuery, storageQuery)) {
-      setScreenStorageFromQuery(urlQuery)
+    if (urlQuery) {
+      // Initial load case, to determine whether we should set `autosync` to true/false.
+      if (autoSync === null) {
+        setAutosync(urlUtils.areQueryStringsSame(urlQuery, storageQuery))
+      }
+
+      if (!urlUtils.areQueryStringsSame(urlQuery, storageQuery) && autoSync) {
+        setScreenStorageFromQuery(urlQuery)
+        console.log('Synchronized storage from url') // eslint-disable-line
+      }
     }
-  }, [urlQuery, storageQuery, setScreenStorageFromQuery])
+    if (!urlQuery && autoSync == null) {
+      setAutosync(true)
+    }
+  }, [urlQuery, storageQuery, setScreenStorageFromQuery, autoSync, setAutosync])
 
   return urlQuery || !storageQuery ? <Screen /> : <Redirect exact to={`${path}${storageQuery}`} />
 }
@@ -148,8 +161,10 @@ const CenteredLayout = ({children}) => {
 
 export default () => {
   const classes = useStyles()
+  const {autoSync} = useAutoSyncContext()
+
   return (
-    <StakingContextProvider>
+    <StakingContextProvider autoSync={autoSync}>
       <Grid container direction="column" className={classes.wrapper}>
         <StakePoolHeader />
 
