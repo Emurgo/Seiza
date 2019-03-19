@@ -16,19 +16,23 @@ type ExternalProps = {|
   children: React$Node,
 |}
 
-const TransactionCard = ({txHash, children}: ExternalProps) => {
-  const entityRef = useRef(null)
+const useExpandHandler = () => {
+  const ref = useRef(null)
   const [expanded, setExpanded] = useState(false)
-  const onChange = useCutClickableArea(entityRef, () => setExpanded((expanded) => !expanded))
+  const onClickExpand = useCutClickableArea(ref, () => setExpanded((expanded) => !expanded))
+  return [expanded, ref, onClickExpand]
+}
+const TransactionCard = ({txHash, children}: ExternalProps) => {
+  const [expanded, ref, onClickExpand] = useExpandHandler()
   const {translate: tr} = useI18n()
   return (
     <ExpansionPanel
       expanded={expanded}
-      onChange={onChange}
+      onChange={onClickExpand}
       summary={
         <EntityCardContent
           label={tr(messages.transactionId)}
-          innerRef={entityRef}
+          innerRef={ref}
           value={<Link to={routeTo.transaction(txHash)}>{txHash}</Link>}
         />
       }
