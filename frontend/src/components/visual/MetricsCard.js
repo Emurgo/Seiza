@@ -72,7 +72,7 @@ const styles = (theme) =>
         '@media (hover: none)': {
           backgroundColor: 'transparent',
         },
-        'border': `1px solid ${fade('#000', 0.5)}`,
+        'border': `1px solid ${theme.palette.text.primary}`,
       },
     },
   })
