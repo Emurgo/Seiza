@@ -1,32 +1,59 @@
 // @flow
 import React from 'react'
-import {withStyles, createStyles} from '@material-ui/core'
-
+import _ from 'lodash'
 import type {ComponentType} from 'react'
+import {makeStyles} from '@material-ui/styles'
 
-const styles = (theme) =>
-  createStyles({
-    background: {
-      fill: 'none',
-      stroke: '#ddd',
-    },
-    progress: {
-      fill: 'none',
-      stroke: 'red',
-      strokeLinecap: 'round',
-      strokeLinejoin: 'round',
-    },
-    percentText: {
-      fontSize: '20px',
-      fontWeight: 'bold',
-    },
-    text: {
-      fontSize: '10px',
-    },
-  })
+const colorNameFromValue = (value: number): string => {
+  const COLORS = [
+    {maxValue: 0.25, color: 'alertStrong'},
+    {maxValue: 0.75, color: 'warning'},
+    {maxValue: Infinity, color: 'emphasis'},
+  ]
+  return _.find(COLORS, ({maxValue}) => value <= maxValue).color
+}
+
+const getColors = (theme, value: number) => {
+  const rangeName = colorNameFromValue(value)
+  return {
+    color: theme.palette[rangeName].color,
+    backgroundColor: theme.palette[rangeName].background,
+  }
+}
+
+const useStyles = makeStyles((theme) => ({
+  background: {
+    fill: 'none',
+    stroke: (props) => getColors(theme, props.value).backgroundColor,
+  },
+  progress: {
+    fill: 'none',
+    stroke: (props) => getColors(theme, props.value).color,
+  },
+  percentText: {
+    fontSize: theme.typography.fontSize * 1.25,
+    fontWeight: '500',
+    stroke: theme.palette.contentFocus,
+    fill: theme.palette.contentFocus,
+    fontFamily: theme.typography.fontFamily,
+  },
+  text: {
+    fontSize: theme.typography.fontSize * 0.625,
+    fontWeight: '200',
+    letterSpacing: 1.05,
+    stroke: theme.palette.contentFocus,
+    fontFamily: theme.typography.fontFamily,
+  },
+}))
+
+type ExternalProps = {
+  +value: number,
+  +label: string,
+}
 
 // Based on https://codepen.io/bbrady/pen/ozrjKE
-const _CircularProgressBar = ({value, label, classes}) => {
+const CircularProgressBar: ComponentType<ExternalProps> = ({value, label}) => {
+  const classes = useStyles({value})
   const size = 75
   const strokeWidth = 8
 
@@ -77,9 +104,4 @@ const _CircularProgressBar = ({value, label, classes}) => {
   )
 }
 
-type ExternalProps = {
-  value: number,
-  label: string,
-}
-
-export default (withStyles(styles)(_CircularProgressBar): ComponentType<ExternalProps>)
+export default CircularProgressBar

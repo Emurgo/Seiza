@@ -33,6 +33,7 @@ const commonThemeObj = {
   typography: {
     useNextVariants: true,
     fontFamily: fontFamilies,
+    fontSize: 16,
     opaqueText: {
       opacity: 0.54,
     },
