@@ -1,25 +1,34 @@
 // @flow
 
 import * as React from 'react'
+import _ from 'lodash'
 import gql from 'graphql-tag'
 import classnames from 'classnames'
 import {useQuery} from 'react-apollo-hooks'
 import {defineMessages} from 'react-intl'
 import {makeStyles} from '@material-ui/styles'
-import {darken} from '@material-ui/core/styles/colorManipulator'
+import {darken, fade} from '@material-ui/core/styles/colorManipulator'
 import {withSize} from 'react-sizeme'
 
-import {Grid, Typography, createStyles} from '@material-ui/core'
+import {Grid, Typography, Tooltip, createStyles} from '@material-ui/core'
 import {useI18n} from '@/i18n/helpers'
 import {useSelectedPoolsContext} from '../context/selectedPools'
 import {LoadingInProgress} from '@/components/visual'
+import CopyToClipboard from '@/components/common/CopyToClipboard'
 
 // TODO: Markdown/css polish
 // TODO?: full width scenario
 // TODO (postpone): colors based on "goodness" for comparable rows
 
-// TODO: for proper overflow testing
-const DEMO_OVERFLOW_TEXT = ''
+// eslint-disable-next-line
+const generateLongText = (string, repeats) =>
+  _.range(0, repeats)
+    .map(() => string)
+    .join('')
+
+// "turn on" for proper overflow testing
+const DEMO_OVERFLOW_TEXT = '' // generateLongText('M', 40)
+const DEMO_OVERFLOW_TEXT2 = '' // generateLongText(' Hello', 40)
 
 const messages = defineMessages({
   stakePools: `Stake pools ${DEMO_OVERFLOW_TEXT}`,
@@ -27,6 +36,7 @@ const messages = defineMessages({
   categoryTwoLabel: 'Category 2',
   categoryThreeLabel: 'Category 3',
   noData: 'There are no pools selected.',
+  copyText: 'Copy',
 })
 
 const ellipsizeStyles = {
@@ -41,6 +51,7 @@ const VALUES_PANEL_WIDTH = 300
 const useStyles = makeStyles((theme) => {
   const darkBorder = `1px solid ${darken(theme.palette.unobtrusiveContentHighlight, 0.2)}`
   const lightBorder = `1px solid ${darken(theme.palette.unobtrusiveContentHighlight, 0.05)}`
+  const padding = theme.spacing.unit * 2
   const categoriesPanelWidth = `${CATEGORIES_PANEL_WIDTH}px`
   const valuesPanelWidth = `${VALUES_PANEL_WIDTH}px`
   return createStyles({
@@ -76,8 +87,8 @@ const useStyles = makeStyles((theme) => {
       },
     },
     categoryKey: {
-      padding: theme.spacing.unit * 2,
       width: categoriesPanelWidth,
+      padding,
       ...ellipsizeStyles,
     },
     scrollWrapper: {
@@ -117,9 +128,8 @@ const useStyles = makeStyles((theme) => {
       },
     },
     dataText: {
-      padding: theme.spacing.unit * 2,
       width: valuesPanelWidth,
-      ...ellipsizeStyles,
+      padding,
     },
     header: {
       background: darken(theme.palette.background.default, 0.1),
@@ -158,21 +168,51 @@ const useStyles = makeStyles((theme) => {
       'height': 40,
       'display': 'flex',
       'alignItems': 'center',
-      'padding': theme.spacing.unit * 2,
       'borderBottom': 'none',
+      padding,
       '& span': {
         fontWeight: 600,
       },
     },
     noPools: {
-      padding: theme.spacing.unit * 2,
+      padding,
     },
   })
 })
 
+const useTooltipStyles = makeStyles((theme) => {
+  return {
+    text: {
+      wordBreak: 'break-word',
+      color: 'white',
+    },
+    copy: {
+      cursor: 'pointer',
+      padding: '10px 0',
+      display: 'flex',
+      justifyContent: 'center',
+    },
+  }
+})
+
+const CustomTooltip = ({text}) => {
+  const {translate} = useI18n()
+  const classes = useTooltipStyles()
+  return (
+    <div>
+      <Typography className={classes.text}>{text}</Typography>
+      <div className={classes.copy}>
+        <CopyToClipboard value={text}>{translate(messages.copyText)}</CopyToClipboard>
+      </div>
+    </div>
+  )
+}
+
 type CategoryConfigType = Array<{|
   label: string,
-  getValue: (Object, Object) => any,
+  getValue?: (Object, Object) => any,
+  render?: (Object, Object) => any,
+  height?: number,
 |}>
 
 const categoryOneConfig = [
@@ -225,6 +265,42 @@ const categoryTwoConfig = [
   },
 ]
 
+const useDescriptionStyles = makeStyles((theme) => {
+  return {
+    wrapper: {
+      position: 'relative',
+    },
+    overlay: {
+      height: '90px',
+      width: '100%',
+      background: `linear-gradient(to top, ${theme.palette.background.paper} 0%, ${fade(
+        theme.palette.background.paper,
+        0.15
+      )} 70%)`,
+      position: 'absolute',
+      bottom: 0,
+    },
+    text: {
+      height: 95,
+      overflow: 'hidden',
+    },
+  }
+})
+
+const StakePoolDescription = ({text}) => {
+  const classes = useDescriptionStyles()
+  return (
+    <Tooltip title={<CustomTooltip text={text} />} placement="top" interactive>
+      <div className={classes.wrapper}>
+        <Typography className={classes.text} variant="body1">
+          {text}
+        </Typography>
+        <div className={classes.overlay} />
+      </div>
+    </Tooltip>
+  )
+}
+
 const categoryThreeConfig = [
   {
     label: 'Region',
@@ -240,7 +316,10 @@ const categoryThreeConfig = [
   },
   {
     label: 'Description',
-    getValue: (stakePool, formatters) => `${stakePool.description}${DEMO_OVERFLOW_TEXT}`,
+    render: (stakePool, formatters) => {
+      return <StakePoolDescription text={stakePool.description + DEMO_OVERFLOW_TEXT2} />
+    },
+    height: 132, // used to sync height with label field
   },
 ]
 
@@ -275,8 +354,13 @@ const CategoryKeys = ({categoryConfig, categoryLabel}: CategoryKeysProps) => {
       <div className={classes.categogyTitle}>
         <Typography variant="caption">{categoryLabel}</Typography>
       </div>
-      {categoryConfig.map(({label}) => (
-        <Typography key={label} className={classes.categoryKey} variant="body1">
+      {categoryConfig.map(({label, height}) => (
+        <Typography
+          key={label}
+          style={height ? {height} : {}}
+          className={classes.categoryKey}
+          variant="body1"
+        >
           {label}
         </Typography>
       ))}
@@ -295,10 +379,20 @@ const CategoryData = ({data, categoryConfig}: CategoryDataProps) => {
   return (
     <Grid className={classes.data} container direction="column" wrap="nowrap">
       <div className={classes.categoryGap} />
-      {categoryConfig.map(({label, getValue}) => (
-        <Typography key={label} className={classes.dataText} variant="body1">
-          {getValue(data, intlFormatters)}
-        </Typography>
+      {categoryConfig.map(({label, getValue, render, height}) => (
+        <React.Fragment key={label}>
+          {render ? (
+            <div className={classes.dataText}>{render(data, intlFormatters)}</div>
+          ) : getValue ? (
+            <Typography
+              style={height ? {height} : {}}
+              className={classnames(classes.dataText, classes.ellipsis)}
+              variant="body1"
+            >
+              {getValue(data, intlFormatters)}
+            </Typography>
+          ) : null}
+        </React.Fragment>
       ))}
     </Grid>
   )

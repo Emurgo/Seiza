@@ -14,7 +14,7 @@ const messages = defineMessages({
   tooltipCopied: 'Copied!',
 })
 
-const _CopyToClipboard = ({value, i18n}) => {
+const _CopyToClipboard = ({value, i18n, children = null}) => {
   const {translate} = i18n
   return (
     <WithCopyToClipboard value={value}>
@@ -26,9 +26,13 @@ const _CopyToClipboard = ({value, i18n}) => {
               onExited: reset,
             }}
           >
-            <IconButton onClick={copy}>
-              <img alt={messages.altText} src={isCopied ? copiedIcon : copyIcon} />
-            </IconButton>
+            {children ? (
+              <div onClick={copy}>{children}</div>
+            ) : (
+              <IconButton onClick={copy}>
+                <img alt={messages.altText} src={isCopied ? copiedIcon : copyIcon} />
+              </IconButton>
+            )}
           </Tooltip>
         </React.Fragment>
       )}
