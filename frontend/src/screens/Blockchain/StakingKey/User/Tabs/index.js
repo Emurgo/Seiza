@@ -15,9 +15,9 @@ import {ReactComponent as HistoryIcon} from '@/assets/icons/stakepool-history.sv
 import {ReactComponent as TransactionsIcon} from '@/assets/icons/transactions.svg'
 
 const messages = defineMessages({
-  delegatedPoolInfoName: 'Delegated Pool Info',
-  historyName: 'History',
-  transactionsName: 'Transactions',
+  delegatedPoolInfoTabName: 'Delegated Pool Info',
+  historyTabName: 'History ({count, plural, =0 {# epochs} one {# epoch} other {# epochs}})',
+  transactionsTabName: 'Transactions ({count})',
 })
 
 const TAB_NAMES = {
@@ -45,7 +45,7 @@ const TABS = {
 }
 
 const UserTabs = ({stakingKey}) => {
-  const {translate} = useI18n()
+  const {translate: tr} = useI18n()
 
   return (
     <WithTabState tabNames={TABS.ORDER}>
@@ -54,9 +54,27 @@ const UserTabs = ({stakingKey}) => {
         return (
           <Paper>
             <Tabs value={currentTab} onChange={setTab}>
-              <Tab icon={<DelegatedPoolIcon />} label={translate(messages.delegatedPoolInfoName)} />
-              <Tab icon={<HistoryIcon />} label={translate(messages.historyName)} />
-              <Tab icon={<TransactionsIcon />} label={translate(messages.transactionsName)} />
+              <Tab icon={<DelegatedPoolIcon />} label={tr(messages.delegatedPoolInfoTabName)} />
+              <Tab
+                icon={<HistoryIcon />}
+                label={
+                  <React.Fragment>
+                    {tr(messages.historyTabName, {
+                      count: stakingKey.currentStakePool.timeActive.epochs,
+                    })}{' '}
+                  </React.Fragment>
+                }
+              />
+              <Tab
+                icon={<TransactionsIcon />}
+                label={
+                  <React.Fragment>
+                    {tr(messages.transactionsTabName, {
+                      count: stakingKey.currentStakePool.transactions.length,
+                    })}
+                  </React.Fragment>
+                }
+              />
             </Tabs>
             <TabContent stakingKey={stakingKey} />
           </Paper>
