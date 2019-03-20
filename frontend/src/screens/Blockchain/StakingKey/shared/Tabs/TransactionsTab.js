@@ -1,9 +1,17 @@
 import React from 'react'
 import {defineMessages} from 'react-intl'
+import {makeStyles} from '@material-ui/styles'
 
 import TransactionCard from '@/components/common/TransactionCard'
-import {AdaValue, SummaryCard} from '@/components/visual'
+import {AdaValue, SummaryCard, Pagination} from '@/components/visual'
 import {useI18n} from '@/i18n/helpers'
+
+const useStyles = makeStyles((theme) => ({
+  paginationWrapper: {
+    marginTop: theme.spacing.unit * 6,
+    marginBottom: theme.spacing.unit * 6,
+  },
+}))
 
 const transactionMessages = defineMessages({
   epoch: 'Epoch:',
@@ -38,6 +46,7 @@ const ACTION_VALUE_RENDERER = {
 const TransactionsTab = ({transactions}) => {
   const {Row, Label, Value} = SummaryCard
   const {translate: tr, formatInt, formatTimestamp} = useI18n()
+  const classes = useStyles()
   return (
     <div>
       {transactions &&
@@ -70,6 +79,9 @@ const TransactionsTab = ({transactions}) => {
             </TransactionCard>
           )
         })}
+      <div className={classes.paginationWrapper}>
+        <Pagination count={1} rowsPerPage={1} page={0} />
+      </div>
     </div>
   )
 }
