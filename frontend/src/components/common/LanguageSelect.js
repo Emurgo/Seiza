@@ -15,7 +15,7 @@ import KoreanFlag from '@/assets/icons/flags/korean.svg'
 const useStyles = makeStyles((theme) => ({
   select: {
     marginRight: '40px',
-    width: '100px',
+    width: '90px',
   },
 }))
 
@@ -54,6 +54,7 @@ export default withSetLocale(({setLocale, locale}) => {
   const classes = useStyles()
   return (
     <Select
+      hasBorder={false}
       className={classes.select}
       value={locale}
       onChange={(e) => setLocale(e.target.value)}
