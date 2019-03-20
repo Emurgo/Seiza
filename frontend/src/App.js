@@ -11,7 +11,7 @@ import {defineMessages} from 'react-intl'
 
 import {routeTo} from './helpers/routes'
 import {provideIntl} from './components/HOC/intl'
-import {provideTheme, withTheme} from './components/HOC/theme'
+import {provideTheme, withTheme, THEME_DEFINITIONS} from './components/HOC/theme'
 import {Navbar, Footer} from './components/visual'
 import {useI18n, InjectHookIntlContext} from '@/i18n/helpers'
 
@@ -105,8 +105,8 @@ const App = () => {
   )
 }
 
-const ThemeWrapper = ({currentTheme, themeDefinitions}) => (
-  <ThemeProvider theme={themeDefinitions[currentTheme]}>
+const ThemeWrapper = ({currentTheme}) => (
+  <ThemeProvider theme={THEME_DEFINITIONS[currentTheme]}>
     <InjectHookIntlContext>
       <App />
     </InjectHookIntlContext>

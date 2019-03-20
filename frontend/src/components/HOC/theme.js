@@ -1,5 +1,4 @@
 import React from 'react'
-import _ from 'lodash'
 import {compose} from 'redux'
 import {withState, withHandlers} from 'recompose'
 import {createMuiTheme} from '@material-ui/core/styles'
@@ -9,20 +8,6 @@ import * as storage from '../../helpers/localStorage'
 export const THEMES = {
   BRIGHT: 'bright',
   DARK: 'dark',
-}
-
-const ThemeLabel = ({color1, color2}) => {
-  const THEME_LABEL_SIZE = 20
-  const styles = {
-    themeLabel: {
-      height: THEME_LABEL_SIZE,
-      width: THEME_LABEL_SIZE,
-      borderRadius: THEME_LABEL_SIZE,
-      background: `linear-gradient(to right, ${color1} 0%, ${color2} 100%)`,
-    },
-  }
-
-  return <div style={styles.themeLabel} />
 }
 
 // TODO: Which font families to fallback to?
@@ -77,7 +62,7 @@ const commonThemeObj = {
 
 // Note: Footer design does not play well with primary or secondary color
 // TODO: create common theme properties
-const themeDefinitions = {
+export const THEME_DEFINITIONS = {
   [THEMES.BRIGHT]: createMuiTheme({
     ...commonThemeObj,
     palette: {
@@ -188,18 +173,9 @@ const themeDefinitions = {
   }),
 }
 
-export const themeLabels = {
-  [THEMES.BRIGHT]: (
-    <ThemeLabel color1="#DBEFF8" color2={themeDefinitions[THEMES.BRIGHT].palette.primary.main} />
-  ),
-  [THEMES.DARK]: (
-    <ThemeLabel color1={'white'} color2={themeDefinitions[THEMES.DARK].palette.secondary.main} />
-  ),
-}
-
 const Context = React.createContext({
   setTheme: null,
-  theme: null,
+  currentTheme: null,
 })
 
 export const provideTheme = (WrappedComponent) =>
@@ -216,8 +192,6 @@ export const provideTheme = (WrappedComponent) =>
       value={{
         setTheme,
         currentTheme,
-        themes: _.values(THEMES),
-        themeDefinitions,
       }}
     >
       <WrappedComponent {...props} />
@@ -226,14 +200,8 @@ export const provideTheme = (WrappedComponent) =>
 
 export const withTheme = (WrappedComponent) => (props) => (
   <Context.Consumer>
-    {({setTheme, currentTheme, themes, themeDefinitions}) => (
-      <WrappedComponent
-        {...props}
-        setTheme={setTheme}
-        currentTheme={currentTheme}
-        themes={themes}
-        themeDefinitions={themeDefinitions}
-      />
+    {({setTheme, currentTheme}) => (
+      <WrappedComponent {...props} setTheme={setTheme} currentTheme={currentTheme} />
     )}
   </Context.Consumer>
 )
