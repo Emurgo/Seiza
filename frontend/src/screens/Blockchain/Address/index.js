@@ -1,21 +1,11 @@
 // @flow
-
 import React from 'react'
 import {graphql} from 'react-apollo'
 import {compose} from 'redux'
 import {withProps} from 'recompose'
 import {withRouter} from 'react-router'
-import QRCode from 'qrcode.react'
 import {defineMessages} from 'react-intl'
-import {
-  withStyles,
-  createStyles,
-  Grid,
-  Tooltip,
-  IconButton,
-  Modal,
-  Typography,
-} from '@material-ui/core'
+import {Tooltip, IconButton, Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
 import {GET_ADDRESS_BY_ADDRESS58} from '@/api/queries'
@@ -23,13 +13,14 @@ import {withI18n, useI18n} from '@/i18n/helpers'
 
 import WithModalState from '@/components/headless/modalState'
 import PagedTransactions from './PagedTransactions'
-
+import QRDialog from './QRDialog'
 import {
   EntityIdCard,
   SimpleLayout,
   LoadingInProgress,
   DebugApolloError,
   SummaryCard,
+  EntityCardContent,
 } from '@/components/visual'
 
 import addressIcon from '@/assets/icons/qrcode.svg'
@@ -42,37 +33,6 @@ const summaryMessages = defineMessages({
   totalAdaReceived: 'Total received ADA',
   totalAdaSent: 'Total sent ADA',
 })
-
-const modalStyles = (theme) =>
-  createStyles({
-    paper: {
-      position: 'absolute',
-      width: theme.spacing.unit * 50,
-      backgroundColor: theme.palette.background.paper,
-      boxShadow: theme.shadows[5],
-      padding: theme.spacing.unit * 4,
-      outline: 'none',
-      top: '50%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)',
-    },
-  })
-
-type QRModalProps = {isOpen: boolean, onClose: () => any, value: string, classes: any}
-
-const QRModal = withStyles(modalStyles)(({classes, isOpen, onClose, value}: QRModalProps) => (
-  /* For disableRestoreFocus see
-   * https://github.com/mui-org/material-ui/issues/9343#issuecomment-377772257
-   */
-  <Modal open={isOpen} onClose={onClose} disableRestoreFocus>
-    <div className={classes.paper}>
-      <Grid container justify="center" direction="row">
-        <QRCode value={value} size={128} />
-        {value}
-      </Grid>
-    </div>
-  </Modal>
-))
 
 const _AddressSummaryCard = ({addressSummary, i18n}) => {
   const {translate, formatInt, formatAda} = i18n
@@ -103,6 +63,7 @@ const messages = defineMessages({
   title: 'Address',
   showQRCode: 'Show QR code',
   transactionsHeading: 'Transactions',
+  qrCodeDialogEntityLabel: 'Address Id',
 })
 
 const useHeadingStyles = makeStyles((theme) => ({
@@ -129,9 +90,9 @@ const Heading = ({txCount}) => {
 
 const AddressScreen = ({addressDataProvider, i18n}) => {
   const {loading, address, error} = addressDataProvider
-  const {translate} = i18n
+  const {translate: tr} = i18n
   return (
-    <SimpleLayout title={translate(messages.title)}>
+    <SimpleLayout title={tr(messages.title)}>
       {loading ? (
         <LoadingInProgress />
       ) : error ? (
@@ -139,18 +100,28 @@ const AddressScreen = ({addressDataProvider, i18n}) => {
       ) : (
         <React.Fragment>
           <EntityIdCard
-            label={translate(summaryMessages.address)}
+            label={tr(summaryMessages.address)}
             value={address.address58}
             iconRenderer={
               <WithModalState>
                 {({isOpen, openModal, closeModal}) => (
                   <React.Fragment>
-                    <Tooltip title={translate(messages.showQRCode)}>
+                    <Tooltip title={tr(messages.showQRCode)}>
                       <IconButton onClick={openModal}>
                         <img alt="show qr code" src={addressIcon} />
                       </IconButton>
                     </Tooltip>
-                    <QRModal value={address.address58} isOpen={isOpen} onClose={closeModal} />
+                    <QRDialog
+                      qrCodeValue={address.address58}
+                      description={
+                        <EntityCardContent
+                          label={tr(messages.qrCodeDialogEntityLabel)}
+                          value={address.address58}
+                        />
+                      }
+                      isOpen={isOpen}
+                      onClose={closeModal}
+                    />
                   </React.Fragment>
                 )}
               </WithModalState>
