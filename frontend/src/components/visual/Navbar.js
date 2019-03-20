@@ -44,17 +44,17 @@ const useNavTypographyStyles = makeStyles(({palette}) => ({
     '&:hover': {
       color: palette.primary.dark,
     },
-    'active': {
-      'color': palette.primary.main,
-      '&:after': {
-        content: '""',
-        background: palette.tertiary.main,
-        position: 'absolute',
-        bottom: -5,
-        left: 0,
-        width: '50%',
-        height: '1px',
-      },
+  },
+  active: {
+    'color': palette.primary.main,
+    '&:after': {
+      content: '""',
+      background: palette.tertiary.main,
+      position: 'absolute',
+      bottom: -5,
+      left: 0,
+      width: '50%',
+      height: '1px',
     },
   },
 }))
