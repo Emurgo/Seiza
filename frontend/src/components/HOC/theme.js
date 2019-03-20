@@ -1,6 +1,5 @@
 import React from 'react'
 import _ from 'lodash'
-import {defineMessages} from 'react-intl'
 import {compose} from 'redux'
 import {withState, withHandlers} from 'recompose'
 import {createMuiTheme} from '@material-ui/core/styles'
@@ -8,14 +7,23 @@ import {createMuiTheme} from '@material-ui/core/styles'
 import * as storage from '../../helpers/localStorage'
 
 export const THEMES = {
-  DARK: 'dark',
   BRIGHT: 'bright',
+  DARK: 'dark',
 }
 
-export const themeMessages = defineMessages({
-  bright: 'Bright',
-  dark: 'Dark',
-})
+const ThemeLabel = ({color1, color2}) => {
+  const THEME_LABEL_SIZE = 20
+  const styles = {
+    themeLabel: {
+      height: THEME_LABEL_SIZE,
+      width: THEME_LABEL_SIZE,
+      borderRadius: THEME_LABEL_SIZE,
+      background: `linear-gradient(to right, ${color1} 0%, ${color2} 100%)`,
+    },
+  }
+
+  return <div style={styles.themeLabel} />
+}
 
 // TODO: Which font families to fallback to?
 const fontFamilies = [
@@ -178,6 +186,15 @@ const themeDefinitions = {
       disabled: 'rgba(146, 185, 252, 0.05)',
     },
   }),
+}
+
+export const themeLabels = {
+  [THEMES.BRIGHT]: (
+    <ThemeLabel color1="#DBEFF8" color2={themeDefinitions[THEMES.BRIGHT].palette.primary.main} />
+  ),
+  [THEMES.DARK]: (
+    <ThemeLabel color1={'white'} color2={themeDefinitions[THEMES.DARK].palette.secondary.main} />
+  ),
 }
 
 const Context = React.createContext({

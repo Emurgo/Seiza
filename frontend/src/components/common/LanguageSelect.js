@@ -14,7 +14,6 @@ import KoreanFlag from '@/assets/icons/flags/korean.svg'
 
 const useStyles = makeStyles((theme) => ({
   select: {
-    marginRight: '40px',
     width: '90px',
   },
 }))
