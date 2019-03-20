@@ -35,7 +35,7 @@ const Select = ({classes, value, onChange, options, label, className}) => (
     )}
     <StyledSelect value={value} onChange={onChange} input={<OutlinedInput labelWidth={0} />}>
       {options.map(({value, label}) => (
-        <MenuItem key={label} value={value}>
+        <MenuItem key={value} value={value}>
           {label}
         </MenuItem>
       ))}

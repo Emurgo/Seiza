@@ -1,5 +1,6 @@
 import React from 'react'
 import {Typography, withStyles, createStyles} from '@material-ui/core'
+import {makeStyles} from '@material-ui/styles'
 import classnames from 'classnames'
 
 import NavLink from '@/components/common/NavLink'
@@ -19,15 +20,31 @@ const styles = ({palette}) =>
       textTransform: 'uppercase',
       position: 'relative',
     },
-    linkText: {
-      'fontSize': 14,
-      'fontWeight': 'bold',
-      'display': 'inline-block',
-      '&:hover': {
-        color: palette.primary.dark,
-      },
+  })
+
+const Navbar = ({items = [], currentPathname, classes}) => (
+  <nav>
+    <ul className={classes.list}>
+      {items.map(({link, label}) => (
+        <li key={label} className={classes.item}>
+          <NavLink className={classes.link} to={link}>
+            {(isActive) => <NavTypography isActive={isActive}>{label}</NavTypography>}
+          </NavLink>
+        </li>
+      ))}
+    </ul>
+  </nav>
+)
+
+const useNavTypographyStyles = makeStyles(({palette}) => ({
+  linkText: {
+    'fontSize': 14,
+    'fontWeight': 'bold',
+    'display': 'inline-block',
+    '&:hover': {
+      color: palette.primary.dark,
     },
-    active: {
+    'active': {
       'color': palette.primary.main,
       '&:after': {
         content: '""',
@@ -39,28 +56,21 @@ const styles = ({palette}) =>
         height: '1px',
       },
     },
-  })
+  },
+}))
 
-const Navbar = ({items = [], currentPathname, classes}) => (
-  <nav>
-    <ul className={classes.list}>
-      {items.map(({link, label}) => (
-        <li key={label} className={classes.item}>
-          <NavLink className={classes.link} to={link}>
-            {(isActive) => (
-              <Typography
-                className={classnames(classes.linkText, isActive && classes.active)}
-                variant="body1"
-                color="textSecondary"
-              >
-                {label}
-              </Typography>
-            )}
-          </NavLink>
-        </li>
-      ))}
-    </ul>
-  </nav>
-)
+export const NavTypography = ({isActive, children}) => {
+  const classes = useNavTypographyStyles()
+
+  return (
+    <Typography
+      className={classnames(classes.linkText, isActive && classes.active)}
+      variant="body1"
+      color="textSecondary"
+    >
+      {children}
+    </Typography>
+  )
+}
 
 export default withStyles(styles)(Navbar)
