@@ -6,7 +6,7 @@ import {withProps} from 'recompose'
 import gql from 'graphql-tag'
 import {graphql} from 'react-apollo'
 import idx from 'idx'
-import {Tab, Tabs, Paper} from '@material-ui/core'
+import {Paper} from '@material-ui/core'
 import {
   SummaryCard,
   SimpleLayout,
@@ -14,6 +14,8 @@ import {
   LoadingInProgress,
   DebugApolloError,
   AdaValue,
+  Tab,
+  Tabs,
 } from '@/components/visual'
 import {withI18n} from '@/i18n/helpers'
 import EpochIcon from '@/assets/icons/metrics-epoch.svg'
