@@ -43,6 +43,7 @@ export function useSetListScreenStorageFromQuery() {
     const showFiltersQuery = _showFiltersStorageToQuery()
     const searchTextQuery = _searchTextStorageToQuery()
     const performanceQuery = _performanceStorageToQuery()
+
     return urlUtils.joinQueryStrings([
       selectedPoolsQuery,
       sortByQuery,
