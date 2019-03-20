@@ -13,8 +13,8 @@ import {ReactComponent as HistoryIcon} from '@/assets/icons/stakepool-history.sv
 import {ReactComponent as TransactionsIcon} from '@/assets/icons/transactions.svg'
 
 const messages = defineMessages({
-  historyName: 'History',
-  transactionsName: 'Transactions',
+  historyTabName: 'History ({count, plural, =0 {# epochs} one {# epoch} other {# epochs}})',
+  transactionsTabName: 'Transactions ({count})',
 })
 
 const TAB_NAMES = {
@@ -33,7 +33,7 @@ const TABS = {
 }
 
 const StakingPoolTabs = ({stakePool}) => {
-  const {translate} = useI18n()
+  const {translate: tr} = useI18n()
 
   return (
     <WithTabState tabNames={TABS.ORDER}>
@@ -42,8 +42,26 @@ const StakingPoolTabs = ({stakePool}) => {
         return (
           <Paper>
             <Tabs value={currentTab} onChange={setTab}>
-              <Tab icon={<HistoryIcon />} label={translate(messages.historyName)} />
-              <Tab icon={<TransactionsIcon />} label={translate(messages.transactionsName)} />
+              <Tab
+                icon={<HistoryIcon />}
+                label={
+                  <React.Fragment>
+                    {tr(messages.historyTabName, {
+                      count: stakePool.timeActive.epochs,
+                    })}{' '}
+                  </React.Fragment>
+                }
+              />
+              <Tab
+                icon={<TransactionsIcon />}
+                label={
+                  <React.Fragment>
+                    {tr(messages.transactionsTabName, {
+                      count: stakePool.transactions.length,
+                    })}
+                  </React.Fragment>
+                }
+              />
             </Tabs>
             <TabContent stakePool={stakePool} />
           </Paper>
