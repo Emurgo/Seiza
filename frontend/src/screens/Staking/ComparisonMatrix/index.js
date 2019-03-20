@@ -8,7 +8,6 @@ import {useQuery} from 'react-apollo-hooks'
 import {defineMessages} from 'react-intl'
 import {makeStyles} from '@material-ui/styles'
 import {darken, fade} from '@material-ui/core/styles/colorManipulator'
-import {withSize} from 'react-sizeme'
 
 import {Grid, Typography, Tooltip, createStyles} from '@material-ui/core'
 import {useI18n} from '@/i18n/helpers'
@@ -463,12 +462,7 @@ const CategoryDataRow = ({data, showHeader, categoryConfig}: CategoryDataRowProp
   )
 }
 
-const getTotalWidth = (data) => {
-  // Note: `data.length` incorporates border width
-  return data.length + CATEGORIES_PANEL_WIDTH + data.length * VALUES_PANEL_WIDTH
-}
-
-const ComparisonMatrix = ({size}) => {
+const ComparisonMatrix = () => {
   const classes = useStyles()
   const {translate: tr} = useI18n()
   const {selectedPools: poolHashes} = useSelectedPoolsContext()
@@ -504,13 +498,10 @@ const ComparisonMatrix = ({size}) => {
   }
 
   // Note: the 'divs' below are intentional as Grid had some issues with overflows
-  const contentWidth = getTotalWidth(stakePools)
-  const width = Math.min(contentWidth, size.width)
-
   // TODO: Alert error
   // Note: `Overlay.Wrapper` just dont look nice here
   return (
-    <div className={classes.wrapper} style={{maxWidth: width}}>
+    <div className={classes.wrapper}>
       <div className={classes.categoriesWrapper}>
         <CategoryHeader title={tr(messages.stakePools)} />
         <CategoryKeys
@@ -543,4 +534,4 @@ const ComparisonMatrix = ({size}) => {
   )
 }
 
-export default withSize()(ComparisonMatrix)
+export default ComparisonMatrix

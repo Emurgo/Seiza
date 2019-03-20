@@ -116,12 +116,16 @@ const LocationQuerySynchronizer = synchronizedScreenFactory(
 const FullWidthLayout = ({children}) => {
   const classes = useStyles()
   return (
-    <div className="d-flex">
-      <div className={classes.sidebar}>
-        <SideMenu />
-      </div>
-      <div className="flex-grow-1">{children}</div>
-    </div>
+    <Grid container direction="row" wrap="nowrap" spacing={24}>
+      <Grid item lg={3}>
+        <div className={classes.sidebar}>
+          <SideMenu />
+        </div>
+      </Grid>
+      <Grid item lg={9} className={classes.mainContent}>
+        {children}
+      </Grid>
+    </Grid>
   )
 }
 

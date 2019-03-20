@@ -37,9 +37,9 @@ export const useUrlManager = () => {
   )
 
   const getQueryParam = React.useCallback(
-    (paramKey: string, defaultValue: any): any => {
-      const parsed = urlUtils.parse(location.search)
-      return parsed[paramKey] || defaultValue
+    (paramKey: string, query?: string): any => {
+      const parsed = urlUtils.parse(query || location.search)
+      return parsed[paramKey]
     },
     [location]
   )
@@ -63,7 +63,7 @@ export const useManageSimpleContextValue = (
   transformValue: Function = (v) => v
 ) => {
   const {setQueryParam, getQueryParam} = useUrlManager()
-  const value = transformValue(getQueryParam(storageKey, defaultValue))
+  const value = transformValue(getQueryParam(storageKey) || defaultValue)
 
   const setValue = React.useCallback(
     (value: any) => {
