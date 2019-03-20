@@ -59,12 +59,12 @@ const useNavTypographyStyles = makeStyles(({palette}) => ({
   },
 }))
 
-export const NavTypography = ({isActive, children}) => {
+export const NavTypography = ({isActive, children, className}) => {
   const classes = useNavTypographyStyles()
 
   return (
     <Typography
-      className={classnames(classes.linkText, isActive && classes.active)}
+      className={classnames(classes.linkText, isActive && classes.active, className)}
       variant="body1"
       color="textSecondary"
     >

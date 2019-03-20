@@ -5,6 +5,7 @@ import {createMuiTheme} from '@material-ui/core/styles'
 
 import * as storage from '../../helpers/localStorage'
 
+// Note: keep synced with theme select intl keys
 export const THEMES = {
   BRIGHT: 'bright',
   DARK: 'dark',
