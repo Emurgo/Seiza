@@ -9,7 +9,7 @@ const styles = ({palette, spacing}) =>
     },
     titleWrapper: {
       position: 'relative',
-      margin: spacing.unit * 2.5,
+      margin: spacing.unit * 4,
     },
     title: {
       'marginBottom': spacing.unit * 2.5,

@@ -1,6 +1,6 @@
 // @flow
 import React from 'react'
-import {Typography, createStyles, withStyles} from '@material-ui/core'
+import {Typography, createStyles, withStyles, Grid} from '@material-ui/core'
 import {defineMessages} from 'react-intl'
 import {compose} from 'redux'
 
@@ -12,23 +12,62 @@ const messages = defineMessages({
   header: 'Ada Blockchain Explorer',
 })
 
-const styles = ({palette}) =>
+const styles = ({palette, spacing}) =>
   createStyles({
     wrapper: {
-      display: 'flex',
-      justifyContent: 'space-evenly',
-      alignItems: 'center',
-      flexDirection: 'column',
-      height: '300px',
       background: palette.gradient,
+    },
+    metricsWrapper: {
+      marginTop: spacing.unit * 5,
+      marginBottom: spacing.unit * 5,
+    },
+    searchWrapper: {
+      'marginLeft': 'auto',
+      'marginRight': 'auto',
+      'marginBottom': spacing.unit * 6.5,
+      '& > *': {
+        marginTop: spacing.unit * 1.25,
+        marginBottom: spacing.unit * 1.25,
+      },
+    },
+    subtitleWrapper: {
+      marginLeft: spacing.unit * 4,
+      marginRight: spacing.unit * 4,
     },
   })
 
 const BlockchainHeader = ({classes, i18n: {translate}}) => (
   <div className={classes.wrapper}>
-    <OverviewMetrics />
-    <Typography variant="h1">{translate(messages.header)}</Typography>
-    <Search />
+    <Grid
+      container
+      direction="column"
+      justify="space-around"
+      alignItems="center"
+      className={classes.wrapper}
+    >
+      <Grid item className={classes.metricsWrapper}>
+        <OverviewMetrics />
+      </Grid>
+
+      <Grid item xs={10} md={8} lg={6}>
+        <Grid container direction="column" alignItems="stretch" className={classes.searchWrapper}>
+          <Typography variant="h1" align="center">
+            {translate(messages.header)}
+          </Typography>
+          <Search />
+          <Typography
+            variant="caption"
+            color="textSecondary"
+            className={classes.subtitleWrapper}
+            align="center"
+          >
+            Lorem ipsum dolor sit amet, meis partem equidem ut nec. Malorum sensibus dissentiet pro
+            ea, to facete inciderint nam. Ad dico abhorreant sed. lus libris intellegam ne, aperiri
+            scaevola ei cum.
+          </Typography>
+        </Grid>
+      </Grid>
+    </Grid>
   </div>
 )
 

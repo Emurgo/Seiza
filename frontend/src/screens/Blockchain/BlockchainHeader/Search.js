@@ -30,13 +30,11 @@ export default compose(
 )(({i18n, searchText, setSearchText, onChange, onSearch}) => {
   const {translate} = i18n
   return (
-    <div style={{width: '45%', margin: '0 auto'}}>
-      <Searchbar
-        placeholder={translate(text.searchPlaceholder)}
-        value={searchText}
-        onChange={setSearchText}
-        onSearch={onSearch}
-      />
-    </div>
+    <Searchbar
+      placeholder={translate(text.searchPlaceholder)}
+      value={searchText}
+      onChange={setSearchText}
+      onSearch={onSearch}
+    />
   )
 })
