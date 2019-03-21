@@ -3,7 +3,7 @@
 import moment from 'moment'
 import {GraphQLScalarType, GraphQLError, Kind} from 'graphql'
 
-module.exports = new GraphQLScalarType({
+export default new GraphQLScalarType({
   name: 'Timestamp',
   /**
    * Serialize date value into string
