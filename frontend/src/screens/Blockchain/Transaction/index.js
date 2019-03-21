@@ -72,13 +72,9 @@ const Summary = ({caption, value}) => {
   )
 }
 
-const getBorderStyle = (theme) => `1px solid ${theme.palette.contentUnfocus}`
 const useCommonStyles = makeStyles((theme) => ({
   leftSide: {
-    borderRight: getBorderStyle(theme),
-  },
-  rightSide: {
-    borderLeft: getBorderStyle(theme),
+    borderRight: `1px solid ${theme.palette.contentUnfocus}`,
   },
 }))
 
@@ -176,7 +172,7 @@ const AddressesBreakdown = ({transaction}) => {
   const commonClasses = useCommonStyles()
   return (
     <Grid container direction="row">
-      <Grid item xs={6} className={classnames(commonClasses.leftSide)}>
+      <Grid item xs={6} className={commonClasses.leftSide}>
         {transaction.inputs.map((input, index, items) => (
           <BreakdownItem
             key={index}

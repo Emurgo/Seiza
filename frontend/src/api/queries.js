@@ -56,6 +56,11 @@ export const GET_ADDRESS_BY_ADDRESS58 = gql`
       totalAdaReceived
       transactions {
         txHash
+        fees
+        block {
+          epoch
+          slot
+        }
       }
     }
   }
