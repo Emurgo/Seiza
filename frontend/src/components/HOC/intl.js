@@ -2,7 +2,7 @@ import React from 'react'
 import {compose} from 'redux'
 import {withState, withHandlers} from 'recompose'
 import {IntlProvider, addLocaleData} from 'react-intl'
-import * as storage from '../../helpers/localStorage'
+import localStorage from '../../helpers/localStorage'
 
 // Note: see https://medium.com/@shalkam/create-react-app-i18n-the-easy-way-b05536c594cb
 // for more info
@@ -26,11 +26,11 @@ const Context = React.createContext({
 
 export const provideIntl = (WrappedComponent) =>
   compose(
-    withState('locale', 'setLocale', storage.getItem('locale') || 'en'),
+    withState('locale', 'setLocale', localStorage.getItem('locale') || 'en'),
     withHandlers({
       setLocale: ({setLocale}) => (newLocale) => {
         setLocale(newLocale)
-        storage.setItem('locale', newLocale)
+        localStorage.setItem('locale', newLocale)
       },
     })
   )(({locale, setLocale, ...props}) => (

@@ -5,8 +5,8 @@ import * as React from 'react'
 import useReactRouter from 'use-react-router'
 
 import * as urlUtils from '@/helpers/url'
-import * as localStorage from '@/helpers/localStorage'
-import * as sessionStorage from '@/helpers/sessionStorage'
+import localStorage from '@/helpers/localStorage'
+import sessionStorage from '@/helpers/sessionStorage'
 
 // Note: dont set `defaultValue` in below function to `null` as due to query-string api,
 // we sometimes need default value to be `undefined` which `null` overrides
@@ -16,18 +16,12 @@ export type ProviderProps = {|
   autoSync: ?boolean,
 |}
 
-// Consider moving to `storage` module and use JSON for everything
 export const getStorageData = (key: string, defaultValue: any, autoSync: ?boolean) => {
   if (autoSync === false) {
     return sessionStorage.getItem(key) || defaultValue
   }
   // This also applies for `null` case, when `autoSync` was not determined yet
-  // TODO: move to localStorage module and refactor other parts that use it
-  try {
-    return JSON.parse(localStorage.getItem(key)) || defaultValue
-  } catch (err) {
-    return defaultValue
-  }
+  return localStorage.getItem(key) || defaultValue
 }
 
 export const useUrlManager = () => {
@@ -75,7 +69,7 @@ export const useManageSimpleContextValue = (
 
   const setValue = React.useCallback(
     (value: any) => {
-      autoSync && localStorage.setItem(storageKey, JSON.stringify(value))
+      autoSync && localStorage.setItem(storageKey, value)
       sessionStorage.setItem(storageKey, value)
       setQueryParam(storageKey, value)
     },
@@ -96,7 +90,7 @@ export const useManageSimpleContextValue = (
   }, [autoSync, storageKey, defaultValue])
 
   const _setStorageToDefault = React.useCallback(() => {
-    autoSync && localStorage.setItem(storageKey, JSON.stringify(defaultValue))
+    autoSync && localStorage.setItem(storageKey, defaultValue)
     sessionStorage.setItem(storageKey, defaultValue)
   }, [autoSync, storageKey, defaultValue])
 

@@ -1,3 +1,5 @@
-export const setItem = (key, item) => localStorage.setItem(key, item)
+// @flow
 
-export const getItem = (key) => localStorage.getItem(key)
+import {_getStorage} from './storage'
+
+export default _getStorage(localStorage, 'local')
