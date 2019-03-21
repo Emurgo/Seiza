@@ -24,7 +24,7 @@ const styles = (theme) =>
     searchButton: {
       borderBottomLeftRadius: 0,
       borderTopLeftRadius: 0,
-      height: 56, // Note: in sync with textField style
+      height: 58, // Note: in sync with textField style
       boxShadow: 'none',
     },
     container: {
