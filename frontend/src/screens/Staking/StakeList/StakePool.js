@@ -3,7 +3,13 @@ import {compose} from 'redux'
 import {Grid, createStyles, withStyles, Typography} from '@material-ui/core'
 import {defineMessages} from 'react-intl'
 
-import {ExpandableCard, Button, AdaValue, CircularProgressBar} from '@/components/visual'
+import {
+  ExpandableCard,
+  Button,
+  AdaValue,
+  CircularProgressBar,
+  VisualHash,
+} from '@/components/visual'
 import WithModalState from '@/components/headless/modalState'
 import {withI18n} from '@/i18n/helpers'
 import {useSelectedPoolsContext} from '../context/selectedPools'
@@ -21,43 +27,41 @@ const messages = defineMessages({
   removePool: 'Remove',
 })
 
-const headerStyles = ({palette}) =>
+const headerStyles = ({palette, spacing}) =>
   createStyles({
     wrapper: {
       background: palette.background.default,
-      padding: '20px',
+      padding: spacing.unit * 3,
     },
     dot: {
-      marginTop: '6px',
-      width: '20px',
-      height: '20px',
-      background: palette.background.paper,
-      borderRadius: '10px',
-      border: `1px solid ${palette.grey[200]}`,
+      marginTop: '7px',
     },
     info: {
-      paddingLeft: '10px',
+      paddingLeft: spacing.unit,
     },
     button: {
       width: '120px',
     },
   })
 
-const contentStyles = ({palette}) =>
+const contentStyles = ({palette, spacing}) =>
   createStyles({
     verticalBlock: {
-      paddingRight: '20px',
+      paddingRight: spacing.unit * 3,
     },
     label: {
       color: palette.grey[500], // TODO: make fit any theme
       textTransform: 'uppercase',
     },
     rowItem: {
-      paddingTop: '8px',
-      paddingBottom: '8px',
+      paddingTop: spacing.unit,
+      paddingBottom: spacing.unit,
     },
     innerWrapper: {
-      padding: '20px',
+      padding: spacing.unit * 3,
+    },
+    extraContent: {
+      padding: spacing.unit * 3,
     },
   })
 
@@ -67,7 +71,6 @@ const cardStyles = ({pallete}) =>
       opacity: 0.6,
     },
   })
-
 const Header = compose(
   withI18n,
   withStyles(headerStyles)
@@ -88,8 +91,8 @@ const Header = compose(
     >
       <Grid item>
         <Grid container direction="row">
-          <Grid item>
-            <div className={classes.dot} />
+          <Grid item className={classes.dot}>
+            <VisualHash value={hash} size={22} />
           </Grid>
           <Grid item>
             <Grid container direction="column" className={classes.info}>
@@ -166,7 +169,11 @@ const Content = compose(
           items={[
             {
               label: translate(messages.createdAt),
-              value: <Typography>{formatTimestamp(data.createdAt)}</Typography>,
+              value: (
+                <Typography>
+                  {formatTimestamp(data.createdAt, {format: formatTimestamp.FMT_MONTH_NUMERAL})}
+                </Typography>
+              ),
             },
             {
               label: translate(messages.fullness),
@@ -183,7 +190,9 @@ const Content = compose(
   </React.Fragment>
 ))
 
-const ExtraContent = ({data}) => <div>{data.description}</div>
+const ExtraContent = withStyles(contentStyles)(({data, classes}) => (
+  <div className={classes.extraContent}>{data.description}</div>
+))
 
 const StakePool = ({classes, data, i18n: {translate}}) => (
   <WithModalState>
