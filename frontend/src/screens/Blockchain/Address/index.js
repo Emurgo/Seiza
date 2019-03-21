@@ -16,9 +16,10 @@ import {
   Modal,
   Typography,
 } from '@material-ui/core'
+import {makeStyles} from '@material-ui/styles'
 
 import {GET_ADDRESS_BY_ADDRESS58} from '@/api/queries'
-import {withI18n} from '@/i18n/helpers'
+import {withI18n, useI18n} from '@/i18n/helpers'
 
 import WithModalState from '@/components/headless/modalState'
 import PagedTransactions from './PagedTransactions'
@@ -41,8 +42,6 @@ const summaryMessages = defineMessages({
   totalAdaReceived: 'Total received ADA',
   totalAdaSent: 'Total sent ADA',
 })
-
-const Heading = ({children}) => <Typography variant="h1">{children}</Typography>
 
 const modalStyles = (theme) =>
   createStyles({
@@ -106,6 +105,28 @@ const messages = defineMessages({
   transactionsHeading: 'Transactions',
 })
 
+const useHeadingStyles = makeStyles((theme) => ({
+  underline: {
+    borderBottom: `1px solid ${theme.palette.text.secondary}`,
+  },
+  wrapper: {
+    marginBottom: theme.spacing.unit * 6,
+    marginTop: theme.spacing.unit * 6,
+  },
+}))
+
+const Heading = ({txCount}) => {
+  const {translate: tr} = useI18n()
+  const classes = useHeadingStyles()
+  return (
+    <div className={classes.wrapper}>
+      <Typography variant="h2" color="textSecondary">
+        <span className={classes.underline}>{txCount}</span> {tr(messages.transactionsHeading)}
+      </Typography>
+    </div>
+  )
+}
+
 const AddressScreen = ({addressDataProvider, i18n}) => {
   const {loading, address, error} = addressDataProvider
   const {translate} = i18n
@@ -136,7 +157,7 @@ const AddressScreen = ({addressDataProvider, i18n}) => {
             }
           />
           <AddressSummaryCard addressSummary={address} />
-          <Heading>{translate(messages.transactionsHeading)}</Heading>
+          <Heading txCount={address.transactions && address.transactions.length} />
           <PagedTransactions transactions={address.transactions} />
         </React.Fragment>
       )}
