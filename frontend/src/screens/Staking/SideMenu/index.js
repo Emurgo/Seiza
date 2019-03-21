@@ -19,7 +19,7 @@ const messages = defineMessages({
 const useStyles = makeStyles((theme) => ({
   iconButton: {
     width: '100%',
-    padding: '40px 40px 40px 60px',
+    padding: '20px 40px 20px 60px',
     borderRadius: 0,
     borderBottom: `1px solid ${theme.palette.contentUnfocus}`,
     background: theme.palette.background.paper,
