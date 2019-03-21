@@ -1,21 +1,15 @@
 import React from 'react'
-import _ from 'lodash'
-import {defineMessages} from 'react-intl'
 import {compose} from 'redux'
 import {withState, withHandlers} from 'recompose'
 import {createMuiTheme} from '@material-ui/core/styles'
 
 import * as storage from '../../helpers/localStorage'
 
+// Note: keep synced with theme select intl keys
 export const THEMES = {
-  DARK: 'dark',
   BRIGHT: 'bright',
+  DARK: 'dark',
 }
-
-export const themeMessages = defineMessages({
-  bright: 'Bright',
-  dark: 'Dark',
-})
 
 // TODO: Which font families to fallback to?
 const fontFamilies = [
@@ -69,7 +63,7 @@ const commonThemeObj = {
 
 // Note: Footer design does not play well with primary or secondary color
 // TODO: create common theme properties
-const themeDefinitions = {
+export const THEME_DEFINITIONS = {
   [THEMES.BRIGHT]: createMuiTheme({
     ...commonThemeObj,
     palette: {
@@ -182,7 +176,7 @@ const themeDefinitions = {
 
 const Context = React.createContext({
   setTheme: null,
-  theme: null,
+  currentTheme: null,
 })
 
 export const provideTheme = (WrappedComponent) =>
@@ -199,8 +193,6 @@ export const provideTheme = (WrappedComponent) =>
       value={{
         setTheme,
         currentTheme,
-        themes: _.values(THEMES),
-        themeDefinitions,
       }}
     >
       <WrappedComponent {...props} />
@@ -209,14 +201,8 @@ export const provideTheme = (WrappedComponent) =>
 
 export const withTheme = (WrappedComponent) => (props) => (
   <Context.Consumer>
-    {({setTheme, currentTheme, themes, themeDefinitions}) => (
-      <WrappedComponent
-        {...props}
-        setTheme={setTheme}
-        currentTheme={currentTheme}
-        themes={themes}
-        themeDefinitions={themeDefinitions}
-      />
+    {({setTheme, currentTheme}) => (
+      <WrappedComponent {...props} setTheme={setTheme} currentTheme={currentTheme} />
     )}
   </Context.Consumer>
 )

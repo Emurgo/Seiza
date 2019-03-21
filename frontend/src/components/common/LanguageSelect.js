@@ -1,7 +1,6 @@
 // @flow
 import React from 'react'
 import {Grid} from '@material-ui/core'
-import {makeStyles} from '@material-ui/styles'
 import {withSetLocale} from '@/components/HOC/intl'
 import {Select} from '@/components/visual'
 import {NavTypography} from '@/components/visual/Navbar'
@@ -11,13 +10,6 @@ import JapaneseFlag from '@/assets/icons/flags/japanese.svg'
 import RussianFlag from '@/assets/icons/flags/russian.svg'
 import ChineseFlag from '@/assets/icons/flags/chinese.svg'
 import KoreanFlag from '@/assets/icons/flags/korean.svg'
-
-const useStyles = makeStyles((theme) => ({
-  select: {
-    marginRight: '40px',
-    width: '100px',
-  },
-}))
 
 const Label = ({langCode, flagSrc}) => (
   <Grid container direction="row" justify="space-around" alignItems="center" wrap="nowrap">
@@ -49,15 +41,11 @@ const LANGUAGES = [
   },
 ].map(({locale, label}) => ({value: locale, label}))
 
-// TODO: use images instead of names
-export default withSetLocale(({setLocale, locale}) => {
-  const classes = useStyles()
-  return (
-    <Select
-      className={classes.select}
-      value={locale}
-      onChange={(e) => setLocale(e.target.value)}
-      options={LANGUAGES}
-    />
-  )
-})
+export default withSetLocale(({setLocale, locale}) => (
+  <Select
+    hasBorder={false}
+    value={locale}
+    onChange={(e) => setLocale(e.target.value)}
+    options={LANGUAGES}
+  />
+))

@@ -26,21 +26,32 @@ const styles = (theme) => ({
   },
 })
 
-const Select = ({classes, value, onChange, options, label, className}) => (
-  <FormControl variant="outlined" className={classnames(classes.formControl, className)}>
-    {label && (
-      <FormLabel className={classes.label} component="legend">
-        {label}
-      </FormLabel>
-    )}
-    <StyledSelect value={value} onChange={onChange} input={<OutlinedInput labelWidth={0} />}>
-      {options.map(({value, label}) => (
-        <MenuItem key={value} value={value}>
+const NoBorderInput = withStyles({
+  root: {
+    '& fieldset': {
+      border: 'none',
+    },
+  },
+})(OutlinedInput)
+
+const Select = ({classes, value, onChange, options, label, className, hasBorder = true}) => {
+  const InputComponent = hasBorder ? OutlinedInput : NoBorderInput
+  return (
+    <FormControl variant="outlined" className={classnames(classes.formControl, className)}>
+      {label && (
+        <FormLabel className={classes.label} component="legend">
           {label}
-        </MenuItem>
-      ))}
-    </StyledSelect>
-  </FormControl>
-)
+        </FormLabel>
+      )}
+      <StyledSelect value={value} onChange={onChange} input={<InputComponent labelWidth={0} />}>
+        {options.map(({value, label}) => (
+          <MenuItem key={value} value={value}>
+            {label}
+          </MenuItem>
+        ))}
+      </StyledSelect>
+    </FormControl>
+  )
+}
 
 export default withStyles(styles)(Select)
