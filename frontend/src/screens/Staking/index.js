@@ -16,6 +16,7 @@ import {
 import SideMenu from './SideMenu'
 import StakePoolList from './StakeList'
 import ComparisonMatrix from './ComparisonMatrix'
+import People from './People'
 import StakePoolHeader from './Header'
 import PageNotFound from '../PageNotFound'
 import LocationMap from './LocationMap'
@@ -91,6 +92,11 @@ const LayoutedLocation = () => (
     <LocationMap />
   </CenteredLayout>
 )
+const LayoutedPeople = () => (
+  <CenteredLayout>
+    <People />
+  </CenteredLayout>
+)
 
 const PoolListQuerySynchronizer = synchronizedScreenFactory(
   LayoutedStakePoolList,
@@ -110,6 +116,10 @@ const ChartsQuerySynchronizer = synchronizedScreenFactory(
 )
 const LocationQuerySynchronizer = synchronizedScreenFactory(
   LayoutedLocation,
+  useSetBasicScreenStorageFromQuery
+)
+const PeopleQuerySynchronizer = synchronizedScreenFactory(
+  LayoutedPeople,
   useSetBasicScreenStorageFromQuery
 )
 
@@ -164,6 +174,7 @@ export default () => {
           <Route exact path={routeTo.staking.history()} component={HistoryQuerySynchronizer} />
           <Route exact path={routeTo.staking.charts()} component={ChartsQuerySynchronizer} />
           <Route exact path={routeTo.staking.location()} component={LocationQuerySynchronizer} />
+          <Route exact path={routeTo.staking.people()} component={PeopleQuerySynchronizer} />
           <Route component={NotFound} />
         </Switch>
       </Grid>

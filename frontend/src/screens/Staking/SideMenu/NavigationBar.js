@@ -4,7 +4,7 @@ import React from 'react'
 import classnames from 'classnames'
 import {compose} from 'redux'
 import {Typography, createStyles, withStyles, Grid} from '@material-ui/core'
-import {Search, LocationOn, BarChart, History, Compare} from '@material-ui/icons'
+import {Search, LocationOn, BarChart, History, Compare, People} from '@material-ui/icons'
 import {defineMessages} from 'react-intl'
 
 import NavLink from '@/components/common/NavLink'
@@ -17,6 +17,7 @@ const navigationMessages = defineMessages({
   history: 'Stake pools history',
   charts: 'Charts',
   location: 'Location',
+  people: 'People',
 })
 
 const menuItemStyles = ({palette, spacing}) =>
@@ -90,6 +91,11 @@ const navItems = [
     link: routeTo.staking.location(),
     i18nLabel: navigationMessages.location,
     icon: <LocationOn color="primary" />,
+  },
+  {
+    link: routeTo.staking.people(),
+    i18nLabel: navigationMessages.people,
+    icon: <People color="primary" />,
   },
 ]
 
