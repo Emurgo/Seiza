@@ -20,10 +20,12 @@ import StakePoolHeader from './Header'
 import PageNotFound from '../PageNotFound'
 import LocationMap from './LocationMap'
 
+const SIDEBAR_WIDTH = 450
+
 const useStyles = makeStyles((theme) =>
   createStyles({
     sidebar: {
-      maxWidth: '450px',
+      maxWidth: SIDEBAR_WIDTH,
     },
     notFound: {
       marginTop: '100px',
@@ -34,6 +36,11 @@ const useStyles = makeStyles((theme) =>
     },
     mainContent: {
       flexGrow: 1,
+    },
+    mainFullWidthContent: {
+      // Note: this does not work good with `flexGrow:1` as it introduces various overflow issues
+      // with ComparisonMatrix layout
+      width: `calc(100% - ${SIDEBAR_WIDTH}px)`,
     },
   })
 )
@@ -116,15 +123,13 @@ const LocationQuerySynchronizer = synchronizedScreenFactory(
 const FullWidthLayout = ({children}) => {
   const classes = useStyles()
   return (
-    <Grid container direction="row" wrap="nowrap" spacing={24}>
-      <Grid item lg={3}>
-        <div className={classes.sidebar}>
-          <SideMenu />
-        </div>
-      </Grid>
-      <Grid item lg={9} className={classes.mainContent}>
-        {children}
-      </Grid>
+    <Grid container direction="row" wrap="nowrap">
+      {/* Grid items were removed becaues they introduce padding which
+          has alignenment issues with centered layout */}
+      <div className={classes.sidebar}>
+        <SideMenu />
+      </div>
+      <div className={classes.mainFullWidthContent}>{children}</div>
     </Grid>
   )
 }
