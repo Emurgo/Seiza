@@ -77,6 +77,7 @@ const RoundedInput = React.forwardRef((props, ref) => {
     <TextField
       variant="outlined"
       InputProps={{className: classes.Input}}
+      inputProps={{className: classes.input}}
       inputRef={ref}
       {...props}
     />
