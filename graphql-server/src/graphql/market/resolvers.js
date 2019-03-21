@@ -1,3 +1,4 @@
+// @flow
 import moment from 'moment'
 
 const facadeMarketHistory = (data: any) => ({
@@ -29,6 +30,7 @@ const fetchMarketHistory = async ({pricingAPI}, currency) => {
 
 export default {
   Query: {
-    marketHistory: (root, args, context) => fetchMarketHistory(context, args.currency),
+    marketHistory: (root: any, args: any, context: any) =>
+      fetchMarketHistory(context, args.currency),
   },
 }
