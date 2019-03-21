@@ -49,7 +49,7 @@ const styles = ({palette}) => ({
 const getEstimatedInputWidth = (pageCount: number): number => {
   // Note: those values are quite ad-hoc
   const baseWidth = INPUT_PADDING * 2 + 5
-  const charSize = 10
+  const charSize = 11
   return String(pageCount).length * charSize + baseWidth
 }
 
