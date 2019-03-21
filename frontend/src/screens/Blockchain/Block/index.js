@@ -14,7 +14,7 @@ import {
   SummaryCard,
   SimpleLayout,
   LoadingInProgress,
-  DebugApolloError,
+  LoadingError,
   AdaValue,
 } from '@/components/visual'
 
@@ -158,7 +158,7 @@ const Block = ({blockHash}) => {
       {loading ? (
         <LoadingInProgress />
       ) : error ? (
-        <DebugApolloError error={error} />
+        <LoadingError error={error} />
       ) : (
         <React.Fragment>
           <EntityIdCard label={translate(blockMessages.blockHash)} value={block.blockHash} />
