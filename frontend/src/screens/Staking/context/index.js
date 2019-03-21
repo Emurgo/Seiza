@@ -13,14 +13,15 @@ import {useUrlManager} from './utils'
 
 type ProviderProps = {|
   children: React.Node,
+  autoSync: ?boolean,
 |}
 
-export const StakingContextProvider = ({children}: ProviderProps) => (
-  <SelectedPoolsProvider>
-    <SortByProvider>
-      <FiltersProvider>
-        <SearchTextProvider>
-          <PerformanceProvider>{children}</PerformanceProvider>
+export const StakingContextProvider = ({children, autoSync}: ProviderProps) => (
+  <SelectedPoolsProvider autoSync={autoSync}>
+    <SortByProvider autoSync={autoSync}>
+      <FiltersProvider autoSync={autoSync}>
+        <SearchTextProvider autoSync={autoSync}>
+          <PerformanceProvider autoSync={autoSync}>{children}</PerformanceProvider>
         </SearchTextProvider>
       </FiltersProvider>
     </SortByProvider>
@@ -85,6 +86,7 @@ export function useSetBasicScreenStorageFromQuery() {
 export function useResetUrlAndStorage() {
   const {setQuery} = useUrlManager()
   const {_setSortByStorageToDefault} = useSortByContext()
+  const {_setSelectedPoolsStorageToDefault} = useSelectedPoolsContext()
   const {_setPerformanceStorageToDefault} = usePerformanceContext()
   const {_setSearchTextStorageToDefault} = useSearchTextContext()
   const {_setShowFiltersStorageToDefault} = useShowFiltersContext()
@@ -96,6 +98,7 @@ export function useResetUrlAndStorage() {
   const resetUrlAndStorage = () => {
     _setPerformanceStorageToDefault()
     _setSortByStorageToDefault()
+    _setSelectedPoolsStorageToDefault()
     _setSearchTextStorageToDefault()
     _setShowFiltersStorageToDefault()
 

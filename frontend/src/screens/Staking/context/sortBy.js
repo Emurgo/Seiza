@@ -34,14 +34,14 @@ const Context = React.createContext<ContextType>({
   _setSortByStorageToDefault: null,
 })
 
-export const SortByProvider = ({children}: ProviderProps) => {
+export const SortByProvider = ({children, autoSync}: ProviderProps) => {
   const {
     value,
     setValue,
     _setStorageFromQuery,
     _storageToQuery,
     _setStorageToDefault,
-  } = useManageSimpleContextValue(STORAGE_KEY, DEFAULT_VALUE)
+  } = useManageSimpleContextValue(autoSync, STORAGE_KEY, DEFAULT_VALUE)
   return (
     <Context.Provider
       value={{

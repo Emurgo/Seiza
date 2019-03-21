@@ -28,14 +28,14 @@ const Context = React.createContext<ContextType>({
 const toIntArray = (array: Array<string | number>): Array<number> =>
   array.map((v) => parseInt(v, 10))
 
-export const PerformanceProvider = ({children}: ProviderProps) => {
+export const PerformanceProvider = ({children, autoSync}: ProviderProps) => {
   const {
     value,
     setValue,
     _setStorageFromQuery,
     _storageToQuery,
     _setStorageToDefault,
-  } = useManageSimpleContextValue(STORAGE_KEY, DEFAULT_VALUE, toIntArray)
+  } = useManageSimpleContextValue(autoSync, STORAGE_KEY, DEFAULT_VALUE, toIntArray)
 
   return (
     <Context.Provider

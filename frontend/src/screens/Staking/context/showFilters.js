@@ -28,14 +28,14 @@ const Context = React.createContext<ContextType>({
   _setShowFiltersStorageToDefault: null,
 })
 
-export const FiltersProvider = ({children}: ProviderProps) => {
+export const FiltersProvider = ({children, autoSync}: ProviderProps) => {
   const {
     value: showFilters,
     setValue: _setShowFilters,
     _setStorageFromQuery: _setShowFiltersStorageFromQuery,
     _storageToQuery: _showFiltersStorageToQuery,
     _setStorageToDefault: _setShowFiltersStorageToDefault,
-  } = useManageSimpleContextValue(STORAGE_KEY, DEFAULT_VALUE)
+  } = useManageSimpleContextValue(autoSync, STORAGE_KEY, DEFAULT_VALUE)
 
   const toggleFilters = useCallback(() => {
     const newValue = showFilters ? DEFAULT_VALUE : true

@@ -29,14 +29,14 @@ const Context = React.createContext<ContextType>({
   _setSelectedPoolsStorageToDefault: null,
 })
 
-export const SelectedPoolsProvider = ({children}: ProviderProps) => {
+export const SelectedPoolsProvider = ({children, autoSync}: ProviderProps) => {
   const {
     value: selectedPools,
     setValue: _setPools,
     _setStorageFromQuery: _setSelectedPoolsStorageFromQuery,
     _storageToQuery: _selectedPoolsStorageToQuery,
     _setStorageToDefault: _setSelectedPoolsStorageToDefault,
-  } = useManageSimpleContextValue(STORAGE_KEY, DEFAULT_VALUE)
+  } = useManageSimpleContextValue(autoSync, STORAGE_KEY, DEFAULT_VALUE)
 
   const removePool = useCallback(
     (poolHash) => {
