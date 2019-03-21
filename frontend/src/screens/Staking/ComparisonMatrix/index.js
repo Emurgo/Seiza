@@ -58,9 +58,9 @@ const useStyles = makeStyles((theme) => {
     wrapper: {
       margin: theme.spacing.unit * 6,
       display: 'flex',
-      background: theme.palette.background.paper,
     },
     categoriesWrapper: {
+      'background': theme.palette.background.paper,
       'width': categoriesPanelWidth,
       '& > *': {
         borderRight: darkBorder,
@@ -91,6 +91,7 @@ const useStyles = makeStyles((theme) => {
       ...ellipsizeStyles,
     },
     scrollWrapper: {
+      'background': theme.palette.background.paper,
       'overflowX': 'auto',
       'borderRadius': '0 5px 0 0',
 
