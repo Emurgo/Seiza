@@ -87,7 +87,7 @@ const TransactionList = ({transactions = []}) => {
   return transactions.map((tx) => <TransactionCard key={tx.txHash} transaction={tx} />)
 }
 
-const TAB_NAMES = {
+const TAB_NAMES: {|ALL: string, SENT: string, RECEIVED: string|} = {
   ALL: 'ALL',
   SENT: 'SENT',
   RECEIVED: 'RECEIVED',
@@ -153,7 +153,11 @@ const TabsHeader = ({tabState, paginationProps}) => {
 }
 
 const PagedTransactions = ({currentTransactions, totalCount, onChangePage, rowsPerPage, page}) => {
-  const tabState = useTabState(Object.values(TAB_NAMES))
+  // Note (Patrik): Object.values() returns Array<mixed>
+  // which conflicts with Array<string> used in useTabState
+  // See https://github.com/facebook/flow/issues/2221
+  const objValues: Array<any> = Object.values(TAB_NAMES)
+  const tabState = useTabState(objValues)
   const TabContent = TABS_CONTENT[tabState.currentTabName]
   return (
     <React.Fragment>
