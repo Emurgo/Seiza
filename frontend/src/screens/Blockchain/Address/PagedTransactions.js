@@ -92,13 +92,10 @@ const TAB_NAMES = {
   SENT: 'SENT',
   RECEIVED: 'RECEIVED',
 }
-const TABS = {
-  ORDER: [TAB_NAMES.ALL, TAB_NAMES.SENT, TAB_NAMES.RECEIVED],
-  CONTENT: {
-    [TAB_NAMES.ALL]: TransactionList,
-    [TAB_NAMES.SENT]: TransactionList,
-    [TAB_NAMES.RECEIVED]: TransactionList,
-  },
+const TABS_CONTENT = {
+  [TAB_NAMES.ALL]: TransactionList,
+  [TAB_NAMES.SENT]: TransactionList,
+  [TAB_NAMES.RECEIVED]: TransactionList,
 }
 
 const TabHeader = ({onClick, isActive, label}) => {
@@ -119,21 +116,21 @@ const TabsHeader = ({tabState, paginationProps}) => {
         <Grid container direction="row" justify="space-between">
           <Grid item>
             <TabHeader
-              onClick={() => setTab(TABS.ORDER.indexOf(TAB_NAMES.ALL))}
+              onClick={() => setTab(Object.values(TAB_NAMES).indexOf(TAB_NAMES.ALL))}
               isActive={currentTabName === TAB_NAMES.ALL}
               label={tr(messages.all)}
             />
           </Grid>
           <Grid item>
             <TabHeader
-              onClick={() => setTab(TABS.ORDER.indexOf(TAB_NAMES.SENT))}
+              onClick={() => setTab(Object.values(TAB_NAMES).indexOf(TAB_NAMES.SENT))}
               isActive={currentTabName === TAB_NAMES.SENT}
               label={tr(messages.sent)}
             />
           </Grid>
           <Grid item>
             <TabHeader
-              onClick={() => setTab(TABS.ORDER.indexOf(TAB_NAMES.RECEIVED))}
+              onClick={() => setTab(Object.values(TAB_NAMES).indexOf(TAB_NAMES.RECEIVED))}
               isActive={currentTabName === TAB_NAMES.RECEIVED}
               label={tr(messages.received)}
             />
@@ -156,8 +153,8 @@ const TabsHeader = ({tabState, paginationProps}) => {
 }
 
 const PagedTransactions = ({currentTransactions, totalCount, onChangePage, rowsPerPage, page}) => {
-  const tabState = useTabState(TABS.ORDER)
-  const TabContent = TABS.CONTENT[tabState.currentTabName]
+  const tabState = useTabState(Object.values(TAB_NAMES))
+  const TabContent = TABS_CONTENT[tabState.currentTabName]
   return (
     <React.Fragment>
       <TabsHeader
