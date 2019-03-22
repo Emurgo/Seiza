@@ -4,7 +4,8 @@ import {useState, useCallback} from 'react'
 type UseTabStateReturnValue = {
   currentTabIndex: number,
   currentTab: string,
-  setTab: (tabIndex: number) => any,
+  setTab: (tab: string) => any,
+  setTabByEventIndex: (event: any, index: number) => any,
 }
 
 type UseTabState = (
