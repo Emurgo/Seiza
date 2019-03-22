@@ -10,9 +10,10 @@ import {makeStyles} from '@material-ui/styles'
 import {NavTypography} from '@/components/visual/Navbar'
 import Pagination, {getPageCount} from '@/components/visual/Pagination'
 import {EntityCardContent, SummaryCard, AdaValue} from '@/components/visual'
+import useTabState from '@/components/hooks/useTabState'
+import {ObjectValues} from '@/helpers/flow'
 import {useI18n} from '@/i18n/helpers'
 import type {Transaction} from '@/__generated__/schema.flow'
-import useTabState from '@/components/hooks/useTabState'
 
 const messages = defineMessages({
   transactionEntity: 'Transaction Id',
@@ -153,10 +154,7 @@ const TabsHeader = ({tabState, paginationProps}) => {
 }
 
 const PagedTransactions = ({currentTransactions, totalCount, onChangePage, rowsPerPage, page}) => {
-  // Note (Patrik): Object.values() returns Array<mixed>
-  // which conflicts with Array<string> used in useTabState
-  // See https://github.com/facebook/flow/issues/2221
-  const tabNames: Array<any> = Object.values(TAB_NAMES)
+  const tabNames = ObjectValues(TAB_NAMES)
   const tabState = useTabState(tabNames)
   const TabContent = TABS_CONTENT[tabState.currentTab]
   return (
