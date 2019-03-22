@@ -111,31 +111,21 @@ const TabsHeader = ({tabState, paginationProps}) => {
   const {translate: tr} = useI18n()
   const {currentTab, setTab} = tabState
   const {totalCount, onChangePage, rowsPerPage, page} = paginationProps
+  const tabs = [
+    {id: TAB_NAMES.ALL, label: tr(messages.all)},
+    {id: TAB_NAMES.SENT, label: tr(messages.sent)},
+    {id: TAB_NAMES.RECEIVED, label: tr(messages.received)},
+  ]
+
   return (
     <Grid container direction="row" justify="space-between">
       <Grid item xs={12} sm={6} md={4} lg={3}>
         <Grid container direction="row" justify="space-between">
-          <Grid item>
-            <TabHeader
-              onClick={() => setTab(TAB_NAMES.ALL)}
-              isActive={currentTab === TAB_NAMES.ALL}
-              label={tr(messages.all)}
-            />
-          </Grid>
-          <Grid item>
-            <TabHeader
-              onClick={() => setTab(TAB_NAMES.SENT)}
-              isActive={currentTab === TAB_NAMES.SENT}
-              label={tr(messages.sent)}
-            />
-          </Grid>
-          <Grid item>
-            <TabHeader
-              onClick={() => setTab(TAB_NAMES.RECEIVED)}
-              isActive={currentTab === TAB_NAMES.RECEIVED}
-              label={tr(messages.received)}
-            />
-          </Grid>
+          {tabs.map(({id, label}) => (
+            <Grid key={id} item>
+              <TabHeader onClick={() => setTab(id)} isActive={currentTab === id} label={label} />
+            </Grid>
+          ))}
         </Grid>
       </Grid>
 
