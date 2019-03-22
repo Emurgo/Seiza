@@ -37,6 +37,7 @@
     "babel-jest": "^24.1.0",
     "babel-watch": "^7.0.0",
     "eslint-config-vacuumlabs": "^1.7.0",
+    "eslint-plugin-flowtype": "^3.4.2",
     "eslint-plugin-import": "^2.16.0",
     "eslint-plugin-react": "^7.12.4",
     "jest": "^24.1.0",

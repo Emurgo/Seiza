@@ -2,7 +2,7 @@
 import BigNumber from 'bignumber.js'
 import {GraphQLScalarType, GraphQLError, Kind} from 'graphql'
 
-module.exports = new GraphQLScalarType({
+export default new GraphQLScalarType({
   name: 'AdaAmount',
 
   serialize(value) {
