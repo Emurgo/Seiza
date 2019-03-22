@@ -21,6 +21,7 @@ const messages = defineMessages({
   share: 'Share',
   import: 'Import',
   export: 'Export',
+  noPools: 'You have no pools to compare yet',
 })
 
 const poolsStyles = ({palette}) =>
@@ -39,9 +40,6 @@ const poolsStyles = ({palette}) =>
     chip: {
       marginTop: '6px',
       marginBottom: '6px',
-    },
-    text: {
-      textTransform: 'uppercase',
     },
   })
 
@@ -135,8 +133,14 @@ const PoolsToCompare = ({classes, i18n: {translate}}) => {
   return (
     <Grid container className={classes.wrapper} direction="row">
       <Grid container direction="row" alignItems="center" className={classes.header}>
-        <Typography className={classes.text}>{translate(messages.header)}</Typography>&nbsp;
-        <Typography>{data.length}</Typography>
+        {data.length ? (
+          <React.Fragment>
+            <Typography variant="overline">{translate(messages.header)}</Typography>&nbsp;
+            <Typography variant="overline">{data.length}</Typography>
+          </React.Fragment>
+        ) : (
+          <Typography variant="overline">{translate(messages.noPools)}</Typography>
+        )}
       </Grid>
       <Grid className={classes.stakePools}>
         {data.map(({name, poolHash}) => (
