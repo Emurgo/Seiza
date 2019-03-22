@@ -3,7 +3,7 @@ import {compose} from 'redux'
 import {withState, withHandlers} from 'recompose'
 import {createMuiTheme} from '@material-ui/core/styles'
 
-import * as storage from '../../helpers/localStorage'
+import localStorage from '../../helpers/localStorage'
 
 // Note: keep synced with theme select intl keys
 export const THEMES = {
@@ -181,11 +181,11 @@ const Context = React.createContext({
 
 export const provideTheme = (WrappedComponent) =>
   compose(
-    withState('currentTheme', 'setTheme', storage.getItem('theme') || THEMES.BRIGHT),
+    withState('currentTheme', 'setTheme', localStorage.getItem('theme') || THEMES.BRIGHT),
     withHandlers({
       setTheme: ({setTheme}) => (newTheme) => {
         setTheme(newTheme)
-        storage.setItem('theme', newTheme)
+        localStorage.setItem('theme', newTheme)
       },
     })
   )(({currentTheme, setTheme, ...props}) => (
