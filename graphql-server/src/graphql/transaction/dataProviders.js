@@ -1,53 +1,59 @@
 // @flow
-import moment from 'moment'
-type GetCoin = {
-  getCoin: string,
-}
-type TxAPIType = {
-  ctsId: string,
-  ctsTxTimeIssued: number,
-  ctsBlockTimeIssued: number,
-  ctsBlockHeight: number,
-  ctsBlockEpoch: number,
-  ctsBlockSlot: number,
-  ctsBlockHash: string,
-  ctsRelayedBy: null,
-  ctsTotalInput: GetCoin,
-  ctsTotalOutput: GetCoin,
-  ctsFees: GetCoin,
-  ctsInputs: Array<[string, GetCoin]>,
-  ctsOutputs: Array<[string, GetCoin]>,
-}
-export type FacadeTransaction = {
-  txHash: string,
-  txTimeIssued: number,
-  _blockHash: string,
-  totalInput: string,
-  totalOutput: string,
-  fees: string,
-  inputs: Array<{|address58: string, amount: string|}>,
-  outputs: Array<{|address58: string, amount: string|}>,
-}
-export const facadeTransaction = (txData: TxAPIType): FacadeTransaction => ({
-  txHash: txData.ctsId,
-  txTimeIssued: moment.unix(txData.ctsTxTimeIssued),
-  _blockHash: txData.ctsBlockHash,
-  blockHash: txData.ctsBlockHash,
-  totalInput: txData.ctsTotalInput.getCoin,
-  totalOutput: txData.ctsTotalOutput.getCoin,
-  fees: txData.ctsFees.getCoin,
-  inputs: txData.ctsInputs.map((input) => ({
-    address58: input[0],
-    amount: input[1].getCoin,
-  })),
-  outputs: txData.ctsOutputs.map((output) => ({
-    address58: output[0],
-    amount: output[1].getCoin,
-  })),
-  size: -1, // No data right now
-})
+import _ from 'lodash'
+import assert from 'assert'
+import {ApolloError} from 'apollo-server'
+import Bignumber from 'bignumber.js'
 
-export const fetchTransaction = async (api: any, txHash: string) => {
-  const rawTx = await api.get(`txs/summary/${txHash}`)
-  return facadeTransaction(rawTx)
+const facadeElasticTransaction = (source: any) => {
+  // TODO: bignumber sum
+  const _sum = (amounts) => amounts.reduce((acc, x) => acc.plus(new Bignumber(x, 10)), Bignumber(0))
+
+  const totalInput = _sum(source.inputs_amount)
+  const totalOutput = _sum(source.outputs_amount)
+
+  return {
+    txHash: source.hash,
+    _blockHash: source.block_hash,
+    blockHash: source.block_hash,
+
+    totalInput,
+    totalOutput,
+    // TODO: what about refunds?
+    fees: totalInput.minus(totalOutput),
+
+    inputs: _.zip(source.inputs_address, source.inputs_amount).map(([address58, amount]) => ({
+      address58,
+      amount,
+    })),
+    outputs: _.zip(source.outputs_address, source.outputs_amount).map(([address58, amount]) => ({
+      address58,
+      amount,
+    })),
+
+    // Note: tx_body is hex-encoded
+    size: source.tx_body.length / 2,
+  }
+}
+
+export const fetchTransaction = async ({elastic}: any, txHash: string) => {
+  const {hits} = await elastic.search({
+    index: 'txs',
+    type: 'txs',
+    body: {
+      query: {
+        match_phrase: {
+          hash: txHash,
+        },
+      },
+    },
+  })
+
+  // TODO: generate only warning for total>0?
+  assert(hits.total <= 1)
+
+  // TODO: better error handling of total==0
+  if (hits.total !== 1) {
+    throw new ApolloError('Transaction not found', 'NOT_FOUND', {txHash})
+  }
+  return facadeElasticTransaction(hits.hits[0]._source)
 }

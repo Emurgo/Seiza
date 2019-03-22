@@ -33,7 +33,7 @@ import epochSchema from './graphql/epoch/schema.gql'
 import Timestamp from './graphql/scalars/timestamp'
 import AdaAmount from './graphql/scalars/adaAmount'
 
-import {cardanoAPI, pricingAPI} from './api'
+import {cardanoAPI, pricingAPI, elastic} from './api'
 import type {CardanoAPI} from './api'
 
 // TODO: global error handler
@@ -47,7 +47,7 @@ const _resolvers = {
   Timestamp,
   AdaAmount,
   Query: {
-    transaction: (root, args, context) => fetchTransaction(context.cardanoAPI, args.txHash),
+    transaction: (root, args, context) => fetchTransaction(context, args.txHash),
     address: (root, args, context) => fetchAddress(context.cardanoAPI, args.address58),
 
     currentStatus: currentStatusResolver,
@@ -73,7 +73,7 @@ const _resolvers = {
   Block: {
     transactions: (block, args, context) =>
       fetchBlockTransactionIds(context.cardanoAPI, block.blockHash).then((ids) =>
-        Promise.all(ids.map((id) => fetchTransaction(context.cardanoAPI, id)))
+        ids.map((id) => fetchTransaction(context, id))
       ),
     blockLeader: (block, args, context) => fetchBootstrapEraPool(null, block._blockLeader),
   },
@@ -82,7 +82,7 @@ const _resolvers = {
   },
   Address: {
     transactions: (address, args, context) =>
-      Promise.all(address._transactionIds.map((id) => fetchTransaction(context.cardanoAPI, id))),
+      Promise.all(address._transactionIds.map((id) => fetchTransaction(context, id))),
   },
   BlockChainSearchItem: {
     __resolveType: (obj, context, info) => obj._type,
@@ -99,6 +99,23 @@ export type ApolloContext = {
 
 // TODO:
 export type Parent = any
+
+const logError = (error: any) => {
+  /* eslint-disable no-console */
+  console.log('--------------------')
+  console.log(error)
+  console.log('--------------------')
+  /* eslint-enable no-console */
+}
+
+const stripSensitiveInfoFromError = (error: any) => {
+  if (error.extensions.code === 'INTERNAL_SERVER_ERROR') {
+    // Remove all traces of js exception
+    error.message = 'Internal server error'
+    error.extensions.exception = {}
+  }
+  delete error.extensions.exception.stacktrace
+}
 
 const server = new ApolloServer({
   typeDefs: mergeTypes(
@@ -127,7 +144,8 @@ const server = new ApolloServer({
   ],
   // TODO: replace with production-ready logger
   formatError: (error: any): any => {
-    console.log(error) // eslint-disable-line
+    logError(error)
+    stripSensitiveInfoFromError(error)
     return error
   },
   formatResponse: (response: any): any => {
@@ -137,6 +155,7 @@ const server = new ApolloServer({
   context: (): ApolloContext => ({
     cardanoAPI,
     pricingAPI,
+    elastic,
   }),
 })
 
