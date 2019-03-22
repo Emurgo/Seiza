@@ -25,7 +25,11 @@ const styles = ({palette}) =>
       display: 'flex',
     },
     link: {
-      textDecoration: 'none',
+      'textDecoration': 'none',
+      '&:hover': {
+        textDecoration: 'underline',
+        color: palette.background.paper,
+      },
     },
     navItem: {
       paddingLeft: '50px',
