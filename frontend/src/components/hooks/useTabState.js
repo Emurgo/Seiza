@@ -2,22 +2,32 @@
 import {useState, useCallback} from 'react'
 
 type UseTabStateReturnValue = {
-  currentTab: number,
-  currentTabName: string,
+  currentTabIndex: number,
+  currentTab: string,
   setTab: (tabIndex: number) => any,
 }
 
 type UseTabState = (
   tabNames: $ReadOnlyArray<string>,
-  initialTabIndex?: number
+  initialTabName?: string
 ) => UseTabStateReturnValue
 
-const useTabState: UseTabState = (tabNames, initialTabIndex = 0) => {
-  const [currentTabIndex, setTabIndex] = useState(0)
-  const setTab = useCallback((tabIndex) => setTabIndex(tabIndex), [setTabIndex])
+const tabNameToIndex = (tabNames, tabName) => {
+  const indexOfTab = tabNames.indexOf(tabName)
+  return indexOfTab === -1 ? 0 : indexOfTab
+}
+
+// Note: Not compatible with WithTabState
+const useTabState: UseTabState = (tabNames, initialTabName) => {
+  const initialTabIndex = tabNameToIndex(tabNames, initialTabName)
+  const [currentTabIndex, setTabIndex] = useState(initialTabIndex)
+  const setTab = useCallback((tabName) => setTabIndex(tabNameToIndex(tabNames, tabName)), [
+    tabNames,
+    setTabIndex,
+  ])
   return {
-    currentTab: currentTabIndex,
-    currentTabName: tabNames[currentTabIndex],
+    currentTabIndex,
+    currentTab: tabNames[currentTabIndex],
     setTab,
   }
 }

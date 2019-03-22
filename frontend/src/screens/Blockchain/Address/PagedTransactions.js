@@ -87,7 +87,7 @@ const TransactionList = ({transactions = []}) => {
   return transactions.map((tx) => <TransactionCard key={tx.txHash} transaction={tx} />)
 }
 
-const TAB_NAMES: {|ALL: string, SENT: string, RECEIVED: string|} = {
+const TAB_NAMES = {
   ALL: 'ALL',
   SENT: 'SENT',
   RECEIVED: 'RECEIVED',
@@ -108,7 +108,7 @@ const TabHeader = ({onClick, isActive, label}) => {
 
 const TabsHeader = ({tabState, paginationProps}) => {
   const {translate: tr} = useI18n()
-  const {setTab, currentTabName} = tabState
+  const {currentTab, setTab} = tabState
   const {totalCount, onChangePage, rowsPerPage, page} = paginationProps
   return (
     <Grid container direction="row" justify="space-between">
@@ -116,22 +116,22 @@ const TabsHeader = ({tabState, paginationProps}) => {
         <Grid container direction="row" justify="space-between">
           <Grid item>
             <TabHeader
-              onClick={() => setTab(Object.values(TAB_NAMES).indexOf(TAB_NAMES.ALL))}
-              isActive={currentTabName === TAB_NAMES.ALL}
+              onClick={() => setTab(TAB_NAMES.ALL)}
+              isActive={currentTab === TAB_NAMES.ALL}
               label={tr(messages.all)}
             />
           </Grid>
           <Grid item>
             <TabHeader
-              onClick={() => setTab(Object.values(TAB_NAMES).indexOf(TAB_NAMES.SENT))}
-              isActive={currentTabName === TAB_NAMES.SENT}
+              onClick={() => setTab(TAB_NAMES.SENT)}
+              isActive={currentTab === TAB_NAMES.SENT}
               label={tr(messages.sent)}
             />
           </Grid>
           <Grid item>
             <TabHeader
-              onClick={() => setTab(Object.values(TAB_NAMES).indexOf(TAB_NAMES.RECEIVED))}
-              isActive={currentTabName === TAB_NAMES.RECEIVED}
+              onClick={() => setTab(TAB_NAMES.RECEIVED)}
+              isActive={currentTab === TAB_NAMES.RECEIVED}
               label={tr(messages.received)}
             />
           </Grid>
@@ -158,7 +158,7 @@ const PagedTransactions = ({currentTransactions, totalCount, onChangePage, rowsP
   // See https://github.com/facebook/flow/issues/2221
   const objValues: Array<any> = Object.values(TAB_NAMES)
   const tabState = useTabState(objValues)
-  const TabContent = TABS_CONTENT[tabState.currentTabName]
+  const TabContent = TABS_CONTENT[tabState.currentTab]
   return (
     <React.Fragment>
       <TabsHeader
