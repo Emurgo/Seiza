@@ -2,6 +2,7 @@
 
 import React from 'react'
 import _ from 'lodash'
+import useReactRouter from 'use-react-router'
 import gql from 'graphql-tag'
 import {useApolloClient, useQuery} from 'react-apollo-hooks'
 import {compose} from 'redux'
@@ -11,6 +12,7 @@ import {IconButton, Grid, Chip, Typography, createStyles, withStyles} from '@mat
 import {Share, CallMade, CallReceived} from '@material-ui/icons'
 
 import {LoadingDots, DebugApolloError} from '@/components/visual'
+import CopyToClipboard from '@/components/common/CopyToClipboard'
 import assert from 'assert'
 import {withI18n} from '@/i18n/helpers'
 import {dataIdFromObject} from '@/helpers/apollo'
@@ -79,6 +81,7 @@ const PoolNamesFragment = gql`
 const PoolsToCompare = ({classes, i18n: {translate}}) => {
   const {removePool, selectedPools: poolHashes} = useSelectedPoolsContext()
   const client = useApolloClient()
+  const {history, location} = useReactRouter()
 
   const fragmentData = poolHashes.map((hash) => {
     const id = dataIdFromObject({__typename: 'BootstrapEraStakePool', poolHash: hash})
@@ -130,6 +133,10 @@ const PoolsToCompare = ({classes, i18n: {translate}}) => {
     .sortBy((pool) => (pool.name ? `1${pool.name}` : '2'))
     .value()
 
+  // Note: not using `window.location.href` as then the component would not properly
+  // listen to changes in url query
+  const currentUrl = window.location.origin + history.createHref(location)
+
   return (
     <Grid container className={classes.wrapper} direction="row">
       <Grid container direction="row" alignItems="center" className={classes.header}>
@@ -165,7 +172,11 @@ const PoolsToCompare = ({classes, i18n: {translate}}) => {
         <Grid item>
           <Action
             label={translate(messages.share)}
-            icon={<Share color="primary" />}
+            icon={
+              <CopyToClipboard value={currentUrl}>
+                <Share color="primary" />
+              </CopyToClipboard>
+            }
             onClick={() => null}
           />
         </Grid>
