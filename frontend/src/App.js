@@ -37,6 +37,7 @@ const navigationMessages = defineMessages({
 const useAppStyles = makeStyles((theme) => ({
   maxHeight: {
     height: '100%',
+    background: theme.palette.background.default,
   },
   contentWrapper: {
     flex: 1,
