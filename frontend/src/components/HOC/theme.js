@@ -124,6 +124,11 @@ export const THEME_DEFINITIONS = {
       contentUnfocus: '#BFC5D2',
       unobtrusiveContentHighlight: '#F4F6FC',
       disabled: 'rgba(146, 185, 252, 0.05)',
+      adaValue: {
+        positive: '#5FDBC1',
+        negative: '#FF1755',
+        neutral: '#120546',
+      },
     },
   }),
   [THEMES.DARK]: createMuiTheme({
@@ -182,6 +187,11 @@ export const THEME_DEFINITIONS = {
       contentUnfocus: '#BFC5D2',
       unobtrusiveContentHighlight: '#6F5B93',
       disabled: 'rgba(146, 185, 252, 0.05)',
+      adaValue: {
+        positive: '#5FDBC1',
+        negative: '#FF1755',
+        neutral: '#ffffff',
+      },
     },
   }),
 }
