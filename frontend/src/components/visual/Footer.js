@@ -77,6 +77,8 @@ const RoundedInput = React.forwardRef((props, ref) => {
     <TextField
       variant="outlined"
       InputProps={{className: classes.Input}}
+      // (react-create-app complains about same props)
+      // eslint-disable-next-line
       inputProps={{className: classes.input}}
       inputRef={ref}
       {...props}
