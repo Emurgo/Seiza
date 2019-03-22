@@ -7,12 +7,12 @@ import cn from 'classnames'
 import {Grid, Card, ButtonBase} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
-import WithTabState from '@/components/headless/tabState'
 import {NavTypography} from '@/components/visual/Navbar'
 import Pagination, {getPageCount} from '@/components/visual/Pagination'
 import {EntityCardContent, SummaryCard, AdaValue} from '@/components/visual'
 import {useI18n} from '@/i18n/helpers'
 import type {Transaction} from '@/__generated__/schema.flow'
+import useTabState from '@/components/hooks/useTabState'
 
 const messages = defineMessages({
   transactionEntity: 'Transaction Id',
@@ -119,21 +119,21 @@ const TabsHeader = ({tabState, paginationProps}) => {
         <Grid container direction="row" justify="space-between">
           <Grid item>
             <TabHeader
-              onClick={(event) => setTab(event, TABS.ORDER.indexOf(TAB_NAMES.ALL))}
+              onClick={() => setTab(TABS.ORDER.indexOf(TAB_NAMES.ALL))}
               isActive={currentTabName === TAB_NAMES.ALL}
               label={tr(messages.all)}
             />
           </Grid>
           <Grid item>
             <TabHeader
-              onClick={(event) => setTab(event, TABS.ORDER.indexOf(TAB_NAMES.SENT))}
+              onClick={() => setTab(TABS.ORDER.indexOf(TAB_NAMES.SENT))}
               isActive={currentTabName === TAB_NAMES.SENT}
               label={tr(messages.sent)}
             />
           </Grid>
           <Grid item>
             <TabHeader
-              onClick={(event) => setTab(event, TABS.ORDER.indexOf(TAB_NAMES.RECEIVED))}
+              onClick={() => setTab(TABS.ORDER.indexOf(TAB_NAMES.RECEIVED))}
               isActive={currentTabName === TAB_NAMES.RECEIVED}
               label={tr(messages.received)}
             />
@@ -156,22 +156,17 @@ const TabsHeader = ({tabState, paginationProps}) => {
 }
 
 const PagedTransactions = ({currentTransactions, totalCount, onChangePage, rowsPerPage, page}) => {
+  const tabState = useTabState(TABS.ORDER)
+  const TabContent = TABS.CONTENT[tabState.currentTabName]
   return (
-    <WithTabState tabNames={TABS.ORDER}>
-      {(tabState) => {
-        const TabContent = TABS.CONTENT[tabState.currentTabName]
-        return (
-          <React.Fragment>
-            <TabsHeader
-              tabState={tabState}
-              paginationProps={{totalCount, onChangePage, rowsPerPage, page}}
-            />
+    <React.Fragment>
+      <TabsHeader
+        tabState={tabState}
+        paginationProps={{totalCount, onChangePage, rowsPerPage, page}}
+      />
 
-            <TabContent transactions={currentTransactions} />
-          </React.Fragment>
-        )
-      }}
-    </WithTabState>
+      <TabContent transactions={currentTransactions} />
+    </React.Fragment>
   )
 }
 
