@@ -1,5 +1,7 @@
 import React from 'react'
 import {defineMessages} from 'react-intl'
+import {Typography} from '@material-ui/core'
+import {makeStyles} from '@material-ui/styles'
 
 import {SimpleLayout, Link} from '@/components/visual'
 import MarketHistory from './MarketData'
@@ -12,11 +14,20 @@ const messages = defineMessages({
   stakePoolProfileScreen: 'Stakepool profile screen',
 })
 
+const useStyles = makeStyles((theme) => ({
+  graphWrapper: {
+    height: 600,
+    background: 'white', // TODO: temporary
+    borderRadius: '5px',
+  },
+}))
+
 const More = () => {
   const {translate: tr} = useI18n()
+  const classes = useStyles()
   return (
     <SimpleLayout title="Market data i18n">
-      <h1>{tr(messages.stakingKeyScreens)}</h1>
+      <Typography variant="h4">{tr(messages.stakingKeyScreens)}</Typography>
       <Link
         to={routeTo.stakingKey.user(
           'c4ca4238a0b923820dcc509a6f75849bc81e728d9d4c2f636f067f89cc14862c'
@@ -31,7 +42,7 @@ const More = () => {
       >
         {tr(messages.stakePoolProfileScreen)}
       </Link>
-      <div style={{height: 600}}>
+      <div className={classes.graphWrapper}>
         <MarketHistory />
       </div>
     </SimpleLayout>

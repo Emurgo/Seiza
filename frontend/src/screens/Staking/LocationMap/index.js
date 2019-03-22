@@ -89,7 +89,7 @@ const LocationMap = ({pools}) => {
   if (!process.env.REACT_APP_GOOGLE_MAPS_API_KEY) {
     return (
       <div>
-        <h1>{tr(messages.missingApiKey)} </h1>
+        <Typography variant="h4">{tr(messages.missingApiKey)} </Typography>
       </div>
     )
   }
@@ -138,7 +138,9 @@ const PoolEntry = ({pool}) => {
           <Typography variant="caption">{pool.name}</Typography>
         </div>
         <div>
-          {pool.location.lat}, {pool.location.lng}
+          <Typography>
+            {pool.location.lat}, {pool.location.lng}
+          </Typography>
         </div>
       </div>
     </SummaryCard.Row>

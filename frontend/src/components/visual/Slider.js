@@ -25,6 +25,7 @@ const styles = (theme) =>
     },
     handle: {
       border: `1px solid ${darken(theme.palette.background.default, 0.05)}`,
+      color: theme.palette.text.primary,
     },
     rangeWrapper: {
       paddingTop: '25px',
