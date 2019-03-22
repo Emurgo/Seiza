@@ -14,9 +14,10 @@ const text = defineMessages({
   message: 'There was an error loading the data',
 })
 
+// eslint-disable-next-line handle-callback-err
 const LoadingError = ({error}: Props) => {
   const {translate: tr} = useI18n()
-  return error ? <Alert type="alert" title={tr(text.title)} message={tr(text.message)} /> : null
+  return <Alert type="alert" title={tr(text.title)} message={tr(text.message)} />
 }
 
 export default LoadingError

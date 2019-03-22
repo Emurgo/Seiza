@@ -133,10 +133,11 @@ const StakeListWrapper = ({
             <Typography>{tr(messages.noResults)}</Typography>
           </div>
         )}
-        <Grid item className={classes.rowWrapper}>
-          <LoadingError error={error} />
-        </Grid>
-        {!error && (
+        {error ? (
+          <Grid item className={classes.rowWrapper}>
+            <LoadingError error={error} />
+          </Grid>
+        ) : (
           <StakeList
             loading={loading}
             pagedStakePoolList={pagedStakePoolList}
