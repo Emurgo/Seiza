@@ -156,8 +156,8 @@ const PagedTransactions = ({currentTransactions, totalCount, onChangePage, rowsP
   // Note (Patrik): Object.values() returns Array<mixed>
   // which conflicts with Array<string> used in useTabState
   // See https://github.com/facebook/flow/issues/2221
-  const objValues: Array<any> = Object.values(TAB_NAMES)
-  const tabState = useTabState(objValues)
+  const tabNames: Array<any> = Object.values(TAB_NAMES)
+  const tabState = useTabState(tabNames)
   const TabContent = TABS_CONTENT[tabState.currentTab]
   return (
     <React.Fragment>

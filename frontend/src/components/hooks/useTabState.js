@@ -12,23 +12,15 @@ type UseTabState = (
   initialTabName?: string
 ) => UseTabStateReturnValue
 
-const tabNameToIndex = (tabNames, tabName) => {
-  const indexOfTab = tabNames.indexOf(tabName)
-  return indexOfTab === -1 ? 0 : indexOfTab
-}
-
 // Note: Not compatible with WithTabState
 const useTabState: UseTabState = (tabNames, initialTabName) => {
-  const initialTabIndex = tabNameToIndex(tabNames, initialTabName)
-  const [currentTabIndex, setTabIndex] = useState(initialTabIndex)
-  const setTab = useCallback((tabName) => setTabIndex(tabNameToIndex(tabNames, tabName)), [
-    tabNames,
-    setTabIndex,
-  ])
+  const [currentTab, setTab] = useState(initialTabName || tabNames[0])
+  const setTabByEventIndex = useCallback((event, index) => setTab(tabNames[index]), [tabNames])
   return {
-    currentTabIndex,
-    currentTab: tabNames[currentTabIndex],
+    currentTabIndex: tabNames.indexOf(currentTab),
+    currentTab,
     setTab,
+    setTabByEventIndex, // material-ui's Tabs's callback
   }
 }
 
