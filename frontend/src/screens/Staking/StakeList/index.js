@@ -164,20 +164,8 @@ export default compose(
   }),
   graphql(
     gql`
-      query(
-        $cursor: String
-        $pageSize: Int
-        $sortBy: StakePoolSortByEnum!
-        $searchText: String
-        $performance: PerformanceInterval
-      ) {
-        pagedStakePoolList(
-          cursor: $cursor
-          pageSize: $pageSize
-          sortBy: $sortBy
-          searchText: $searchText
-          performance: $performance
-        ) {
+      query($cursor: String, $searchOptions: StakePoolSearchOptions!) {
+        pagedStakePoolList(cursor: $cursor, searchOptions: $searchOptions) {
           stakePools {
             poolHash
             description
@@ -208,10 +196,12 @@ export default compose(
       }) => ({
         variables: {
           cursor,
-          sortBy,
-          searchText,
-          pageSize: PAGE_SIZE,
-          performance: formatPerformancetoGQL(performance),
+          searchOptions: {
+            sortBy,
+            searchText,
+            pageSize: PAGE_SIZE,
+            performance: formatPerformancetoGQL(performance),
+          },
         },
       }),
     }
@@ -231,10 +221,12 @@ export default compose(
       return fetchMore({
         variables: {
           cursor,
-          pageSize: PAGE_SIZE,
-          sortBy,
-          searchText,
-          performance: formatPerformancetoGQL(performance),
+          searchOptions: {
+            pageSize: PAGE_SIZE,
+            sortBy,
+            searchText,
+            performance: formatPerformancetoGQL(performance),
+          },
         },
         updateQuery: (prev, {fetchMoreResult, ...rest}) => {
           if (!fetchMoreResult) return prev
