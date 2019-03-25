@@ -12,6 +12,7 @@ const DEFAULT_VALUE = [0, 100]
 type ContextType = {
   performance: Array<number>,
   setPerformance: Function,
+  performanceEqualsDefault: boolean,
   _setPerformanceStorageFromQuery: Function,
   _performanceStorageToQuery: Function,
   _setPerformanceStorageToDefault: Function,
@@ -19,6 +20,7 @@ type ContextType = {
 
 const Context = React.createContext<ContextType>({
   performance: DEFAULT_VALUE,
+  performanceEqualsDefault: true,
   setPerformance: null,
   _setPerformanceStorageFromQuery: null,
   _performanceStorageToQuery: null,
@@ -32,6 +34,7 @@ export const PerformanceProvider = ({children, autoSync}: ProviderProps) => {
   const {
     value,
     setValue,
+    equalsDefault,
     _setStorageFromQuery,
     _storageToQuery,
     _setStorageToDefault,
@@ -45,6 +48,7 @@ export const PerformanceProvider = ({children, autoSync}: ProviderProps) => {
         _setPerformanceStorageFromQuery: _setStorageFromQuery,
         _performanceStorageToQuery: _storageToQuery,
         _setPerformanceStorageToDefault: _setStorageToDefault,
+        performanceEqualsDefault: equalsDefault,
       }}
     >
       {children}

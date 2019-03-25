@@ -1,5 +1,5 @@
 // @flow
-import React, {useCallback} from 'react'
+import React, {useCallback, useState} from 'react'
 import {defineMessages} from 'react-intl'
 import {Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
@@ -8,8 +8,8 @@ import {useI18n} from '@/i18n/helpers'
 import {Searchbar, ToggleButton} from '@/components/visual'
 import {useStateWithChangingDefault} from '@/components/hooks/useStateWithChangingDefault'
 import Filters from './Filters'
-import {useShowFiltersContext} from '../context/showFilters'
 import {useSearchTextContext} from '../context/searchText'
+import {usePerformanceContext} from '../context/performance'
 
 const messages = defineMessages({
   searchPlaceholder: 'Search for a Stake Pool by name',
@@ -33,6 +33,22 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
+const useAreFiltersChanged = () => {
+  const {performanceEqualsDefault} = usePerformanceContext()
+  return !performanceEqualsDefault
+}
+
+const useToggleFilters = () => {
+  const areFiltersChanged = useAreFiltersChanged()
+  const [showFilters, setShowFilters] = useState(areFiltersChanged)
+
+  const onToggleShowFilters = useCallback(() => {
+    setShowFilters(!showFilters)
+  }, [showFilters])
+
+  return [showFilters, onToggleShowFilters]
+}
+
 const Search = () => {
   const searchTextContext = useSearchTextContext()
   const [searchText, setSearchText] = useStateWithChangingDefault(searchTextContext.searchText)
@@ -55,7 +71,8 @@ const Search = () => {
 export default () => {
   const classes = useStyles()
   const {translate: tr} = useI18n()
-  const {showFilters, toggleFilters} = useShowFiltersContext()
+  const [showFilters, onToggleFilters] = useToggleFilters()
+
   return (
     <Grid container direction="column" justify="space-between" className={classes.wrapper}>
       <Grid item>
@@ -65,7 +82,7 @@ export default () => {
           </div>
           <ToggleButton
             open={!showFilters}
-            onClick={toggleFilters}
+            onClick={onToggleFilters}
             primary
             className={classes.button}
           >
