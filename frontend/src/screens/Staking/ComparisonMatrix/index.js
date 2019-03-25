@@ -5,13 +5,15 @@ import gql from 'graphql-tag'
 import {useQuery} from 'react-apollo-hooks'
 import {defineMessages} from 'react-intl'
 import {makeStyles} from '@material-ui/styles'
-import {fade} from '@material-ui/core/styles/colorManipulator'
 
-import {Typography, Tooltip} from '@material-ui/core'
+import {Typography} from '@material-ui/core'
 import {useI18n} from '@/i18n/helpers'
 import {useSelectedPoolsContext} from '../context/selectedPools'
 import {LoadingInProgress, ComparisonMatrix, LoadingError} from '@/components/visual'
-import CopyToClipboard from '@/components/common/CopyToClipboard'
+import {
+  FadeoutFieldWithTooltip,
+  EllipsizedLinkFieldWithTooltip,
+} from '@/components/visual/ComparisonMatrix'
 
 const messages = defineMessages({
   stakePools: 'Stake pools',
@@ -19,7 +21,6 @@ const messages = defineMessages({
   categoryTwoLabel: 'Category 2',
   categoryThreeLabel: 'Category 3',
   noData: 'There are no pools selected.',
-  copyText: 'Copy',
 })
 
 const categoryOneMessages = defineMessages({
@@ -35,7 +36,7 @@ const categoryTwoMessages = defineMessages({
   cost: 'Cost',
   ranking: 'Ranking',
   revenue: 'Revenue',
-  lastUpdated: 'Last updated',
+  website: 'Website',
   adaToSlot: 'ADA to Slot',
 })
 
@@ -89,8 +90,8 @@ const categoryTwoConfig = [
     getValue: (stakePool, {formatPercent}) => formatPercent(stakePool.summary.revenue),
   },
   {
-    i18nLabel: categoryTwoMessages.lastUpdated,
-    getValue: (stakePool, formatters) => 'N/A',
+    i18nLabel: categoryTwoMessages.website,
+    render: (stakePool, formatters) => <EllipsizedLinkFieldWithTooltip text={stakePool.website} />,
   },
   {
     i18nLabel: categoryTwoMessages.adaToSlot,
@@ -115,7 +116,7 @@ const categoryThreeConfig = [
   {
     i18nLabel: categoryThreeMessages.description,
     render: (stakePool, formatters) => {
-      return <StakePoolDescription text={stakePool.description} />
+      return <FadeoutFieldWithTooltip text={stakePool.description} height={132} />
     },
     height: 132, // used to sync height with label field
   },
@@ -134,76 +135,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const useTooltipStyles = makeStyles((theme) => {
-  return {
-    text: {
-      wordBreak: 'break-word',
-      color: 'white',
-    },
-    copy: {
-      cursor: 'pointer',
-      padding: '10px 0',
-      display: 'flex',
-      justifyContent: 'center',
-    },
-  }
-})
-
-const CustomTooltip = ({text}) => {
-  const {translate} = useI18n()
-  const classes = useTooltipStyles()
-  return (
-    <div>
-      <Typography className={classes.text}>{text}</Typography>
-      <div className={classes.copy}>
-        <CopyToClipboard value={text}>{translate(messages.copyText)}</CopyToClipboard>
-      </div>
-    </div>
-  )
-}
-
-const useDescriptionStyles = makeStyles((theme) => {
-  return {
-    wrapper: {
-      position: 'relative',
-    },
-    overlay: {
-      height: '90px',
-      width: '100%',
-      background: `linear-gradient(to top, ${theme.palette.background.paper} 0%, ${fade(
-        theme.palette.background.paper,
-        0.15
-      )} 70%)`,
-      position: 'absolute',
-      bottom: 0,
-    },
-    text: {
-      height: 95,
-      overflow: 'hidden',
-    },
-  }
-})
-
-const StakePoolDescription = ({text}) => {
-  const classes = useDescriptionStyles()
-  return (
-    <Tooltip title={<CustomTooltip text={text} />} placement="top" interactive>
-      <div className={classes.wrapper}>
-        <Typography className={classes.text} variant="body1">
-          {text}
-        </Typography>
-        <div className={classes.overlay} />
-      </div>
-    </Tooltip>
-  )
-}
-
 const PoolDataFragment = gql`
   fragment ComparisonMatrixDataFragment on BootstrapEraStakePool {
     poolHash
     name
     createdAt
     description
+    website
     summary {
       revenue
       performance

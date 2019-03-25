@@ -16,6 +16,7 @@ type BootstrapEraStakePool {
   description: String
   summary: StakePoolSummary
   createdAt: Timestamp!
+  website: URL!
 }
 
 type PagedStakePoolsResult {

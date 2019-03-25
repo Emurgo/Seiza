@@ -3,6 +3,9 @@ import 'babel-polyfill'
 import {ApolloServer, gql} from 'apollo-server'
 import {mergeTypes} from 'merge-graphql-schemas'
 
+// TODO: consider using more of those
+import {URL} from '@okgrow/graphql-scalars'
+
 import {fetchAddress} from './graphql/address/dataProviders'
 import {fetchBlockSummary, fetchBlockTransactionIds} from './graphql/block/dataProviders'
 import {fetchTransaction} from './graphql/transaction/dataProviders'
@@ -41,11 +44,13 @@ import type {CardanoAPI} from './api'
 const globalTypes = gql`
   scalar Timestamp
   scalar AdaAmount
+  scalar URL
 `
 
 const _resolvers = {
   Timestamp,
   AdaAmount,
+  URL,
   Query: {
     transaction: (root, args, context) => fetchTransaction(context, args.txHash),
     address: (root, args, context) => fetchAddress(context.cardanoAPI, args.address58),
