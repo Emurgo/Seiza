@@ -146,7 +146,9 @@ const BlocksTable = ({blocks, columns, loading, error}: Props) => {
     ? blocks.map((block, index) => columns.map((column) => columnsRenderer[column].cell(block)))
     : []
 
-  return <Table loading={loading} error={error} headerData={headerData} bodyData={bodyData} />
+  return (
+    <Table hoverable loading={loading} error={error} headerData={headerData} bodyData={bodyData} />
+  )
 }
 
 export default BlocksTable

@@ -1,33 +1,44 @@
 // @flow
 import React from 'react'
 import classnames from 'classnames'
-import {CardHeader, CardContent, Typography, Grid} from '@material-ui/core'
+import {CardHeader, Typography, Grid} from '@material-ui/core'
 import {Card} from '@/components/visual'
 
 import {makeStyles} from '@material-ui/styles'
 import type {Node} from 'react'
 
-const useHeaderStyles = makeStyles(({palette}) => ({
+const useHeaderStyles = makeStyles(({spacing, palette}) => ({
   wrapper: {
     backgroundColor: palette.unobtrusiveContentHighlight,
     minHeight: '60px',
-    paddingLeft: '30px',
-    paddingRight: '30px',
+    paddingLeft: spacing.unit * 4,
+    paddingRight: spacing.unit * 4,
   },
 }))
 
-const useBodyStyles = makeStyles(({palette}) => ({
-  wrapper: {
-    paddingLeft: '15px',
-    paddingRight: '15px',
+const useBodyStyles = makeStyles(({spacing, palette}) => ({
+  // Note(ppershing): we need rowWrapper because
+  // :after applied on flex-container (.row) does not work as you would think.
+  // At the same time, we do not want to apply margins to the row
+  // as it messes up with the background
+  rowWrapper: {
+    '&:after': {
+      content: '""',
+      display: 'block',
+      marginLeft: spacing.unit * 4,
+      marginRight: spacing.unit * 4,
+      marginTop: '-1px', // move border into the row
+      borderBottom: `1px solid ${palette.unobtrusiveContentHighlight}`,
+    },
+    '&:last-child:after': {
+      content: 'none',
+    },
   },
   row: {
-    'paddingTop': '15px',
-    'paddingBottom': '15px',
-    'borderBottom': `1px solid ${palette.grey[200]}`,
-    '&:last-child': {
-      borderBottom: 'none',
-    },
+    paddingTop: spacing.unit * 2.5,
+    paddingBottom: spacing.unit * 2.5,
+    paddingLeft: spacing.unit * 4,
+    paddingRight: spacing.unit * 4,
   },
 }))
 
@@ -48,7 +59,7 @@ const KeyValueCard = ({children, header, className}: MainProps) => {
   return (
     <Card classes={{root: classnames(classes.root, className)}}>
       <CardHeader component={() => header} />
-      <CardContent>{children}</CardContent>
+      {children}
     </Card>
   )
 }
@@ -92,29 +103,26 @@ type BodyProps = {|
 
 const Body = ({items}: BodyProps) => {
   const classes = useBodyStyles()
-  return (
-    <Grid container className={classes.wrapper} direction="row">
-      {items.map(({label, value}) => (
-        <Grid
-          container
-          key={label}
-          justify="space-between"
-          alignItems="center"
-          className={classes.row}
-          direction="row"
-        >
-          <Grid item>
-            <Typography variant="body1" color="textSecondary">
-              {label}
-            </Typography>
-          </Grid>
-          <Grid item>
-            <Typography variant="body1">{value}</Typography>
-          </Grid>
+  return items.map(({label, value}) => (
+    <div key={label} className={classes.rowWrapper}>
+      <Grid
+        container
+        justify="space-between"
+        alignItems="center"
+        className={classes.row}
+        direction="row"
+      >
+        <Grid item>
+          <Typography variant="body1" color="textSecondary">
+            {label}
+          </Typography>
         </Grid>
-      ))}
-    </Grid>
-  )
+        <Grid item>
+          <Typography variant="body1">{value}</Typography>
+        </Grid>
+      </Grid>
+    </div>
+  ))
 }
 
 KeyValueCard.Body = Body
