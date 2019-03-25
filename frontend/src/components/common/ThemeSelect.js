@@ -64,8 +64,8 @@ export const themeLabels = {
   ),
   [THEMES.DARK]: (
     <ThemeLabel
-      color1={'white'}
-      color2={THEME_DEFINITIONS[THEMES.DARK].palette.secondary.main}
+      color1={THEME_DEFINITIONS[THEMES.DARK].palette.primary.main}
+      color2={THEME_DEFINITIONS[THEMES.DARK].palette.background.default}
       intlMessage={themeMessages[THEMES.DARK]}
     />
   ),

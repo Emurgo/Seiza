@@ -103,10 +103,13 @@ const useStyles = makeStyles((theme) => {
       },
       '&::-webkit-scrollbar-track': {
         '-webkit-box-shadow': 'inset 0 0 6px rgba(0,0,0,0.00)',
-        'background': darken(theme.palette.background.default, 0.1),
+        'background': theme.palette.background.paperContrast,
       },
       '&::-webkit-scrollbar-thumb': {
-        backgroundColor: 'rgba(0,0,0,.5)',
+        backgroundColor: fade(
+          theme.palette.getContrastText(theme.palette.background.paperContrast),
+          0.5
+        ),
         outline: '1px solid slategrey',
         borderRadius: '5px',
       },
@@ -132,7 +135,7 @@ const useStyles = makeStyles((theme) => {
       padding,
     },
     header: {
-      background: darken(theme.palette.background.default, 0.1),
+      background: theme.palette.background.paperContrast,
       padding: theme.spacing.unit * 2.5,
       height: '60px', // Note: otherwise there is +1 pixel strange issue
     },

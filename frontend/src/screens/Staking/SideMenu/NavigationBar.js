@@ -27,12 +27,12 @@ const menuItemStyles = ({palette, spacing}) =>
       'padding': '40px 40px 40px 60px',
       'textTransform': 'uppercase',
       '&:hover': {
-        background: palette.background.default,
+        background: palette.background.paperContrast,
       },
-      'borderBottom': `1px solid ${palette.grey[200]}`,
+      'borderBottom': `1px solid ${palette.unobtrusiveContentHighlight}`,
     },
     active: {
-      background: palette.background.default,
+      background: palette.background.paperContrast,
     },
     activeText: {
       color: palette.primary.dark,

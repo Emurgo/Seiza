@@ -53,7 +53,7 @@ const SideMenu = () => {
     <React.Fragment>
       <Grid container className={classes.autoSync} alignItems="center">
         <FormControlLabel
-          control={<Switch checked={!!autoSync} onChange={toggleAutoSync} />}
+          control={<Switch color="primary" checked={!!autoSync} onChange={toggleAutoSync} />}
           label={tr(messages.autoSync)}
         />
         <Link to={{pathname: match.url}} target="_blank" className={classes.link}>

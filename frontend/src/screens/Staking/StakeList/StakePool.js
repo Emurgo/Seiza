@@ -30,7 +30,7 @@ const messages = defineMessages({
 const headerStyles = ({palette, spacing}) =>
   createStyles({
     wrapper: {
-      background: palette.background.default,
+      background: palette.background.paperContrast,
       padding: spacing.unit * 3,
     },
     dot: {
@@ -191,7 +191,7 @@ const Content = compose(
 ))
 
 const ExtraContent = withStyles(contentStyles)(({data, classes}) => (
-  <div className={classes.extraContent}>{data.description}</div>
+  <Typography className={classes.extraContent}>{data.description}</Typography>
 ))
 
 const StakePool = ({classes, data, i18n: {translate}}) => (

@@ -42,7 +42,7 @@ const styles = ({palette}) =>
       background: palette.gradient,
     },
     bottomNav: {
-      backgroundColor: palette.text.primary,
+      backgroundColor: palette.footer.background,
     },
     bottomNavRow: {
       padding: '5px',

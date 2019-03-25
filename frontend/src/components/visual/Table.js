@@ -11,7 +11,9 @@ import {
   Grid,
   withStyles,
 } from '@material-ui/core'
+import {darken} from '@material-ui/core/styles/colorManipulator'
 import {compose} from 'redux'
+
 import Overlay from './Overlay'
 import LoadingOverlay from './LoadingOverlay'
 import ErrorOverlay from './ErrorOverlay'
@@ -26,7 +28,7 @@ const tableStyles = (theme) => ({
       backgroundColor: theme.palette.background.default,
     },
     '&:hover': {
-      backgroundColor: theme.palette.grey[200],
+      backgroundColor: darken(theme.palette.background.default, 0.07),
     },
     'cursor': 'pointer',
   },

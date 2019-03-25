@@ -81,10 +81,14 @@ const Alert = ({title, type, message}: PropTypes) => {
             className={classnames('h-100', 'flex-grow-1')}
           >
             <Grid item>
-              <Typography variant="overline">{title || tr(messages[type])}</Typography>
+              <Typography variant="overline" color="inherit">
+                {title || tr(messages[type])}
+              </Typography>
             </Grid>
             <Grid item>
-              <Typography variant="body2">{message}</Typography>
+              <Typography variant="body2" color="inherit">
+                {message}
+              </Typography>
             </Grid>
           </Grid>
         </Grid>

@@ -100,6 +100,7 @@ export const THEME_DEFINITIONS = {
       footer: {
         link: '#6F7290',
         contrastText: '#FFFFFF',
+        background: '#220049',
       },
       warning: {
         color: '#FF805D',
@@ -113,6 +114,11 @@ export const THEME_DEFINITIONS = {
       emphasis: {
         color: '#8AE8D4',
         background: '#EAF8F9',
+      },
+      background: {
+        paperContrast: '#F4F5FC',
+        paper: '#FFFFFF',
+        default: '#F9FAFF',
       },
       contentFocus: '#8791AD',
       contentUnfocus: '#BFC5D2',
@@ -124,24 +130,24 @@ export const THEME_DEFINITIONS = {
     ...commonThemeObj,
     palette: {
       type: 'dark',
-      gradient: 'linear-gradient(97deg, #00050c 0%, #5a5c60 100%)',
+      gradient: 'linear-gradient(97deg, #8673EC 0%, #99B0EA 100%)',
       buttonsGradient: {
         direction: 97,
-        start: '#3a404c',
-        end: '#b7b9bc',
+        start: '#715BD3',
+        end: '#95BAF7',
         startPercent: 0,
         endPercent: 100,
-        gradient: 'linear-gradient(97deg, #3a404c 0%, #b7b9bc 100%)',
+        gradient: 'linear-gradient(97deg, #715BD3 0%, #95BAF7 100%)',
       },
       text: {
         primary: '#ffffff',
-        secondary: '#8791AD',
+        secondary: '#cccccc',
       },
       primary: {
-        main: '#c5d9f9',
+        main: '#90ACFE',
       },
       secondary: {
-        main: '#153363',
+        main: 'rgb(21, 51, 99, 0.3)',
       },
       tertiary: {
         main: '#92B9FC', // underscore of navbar, icons have it
@@ -152,6 +158,7 @@ export const THEME_DEFINITIONS = {
       footer: {
         link: '#6F7290',
         contrastText: '#FFFFFF',
+        background: '#220049',
       },
       warning: {
         color: '#FF805D',
@@ -166,9 +173,14 @@ export const THEME_DEFINITIONS = {
         color: '#8AE8D4',
         background: '#EAF8F9',
       },
+      background: {
+        default: '#34005A',
+        paper: '#3D1769',
+        paperContrast: '#220049',
+      },
       contentFocus: '#8791AD',
       contentUnfocus: '#BFC5D2',
-      unobtrusiveContentHighlight: '#F4F6FC',
+      unobtrusiveContentHighlight: '#6F5B93',
       disabled: 'rgba(146, 185, 252, 0.05)',
     },
   }),
