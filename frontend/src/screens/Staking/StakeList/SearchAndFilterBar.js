@@ -71,7 +71,7 @@ const Search = () => {
 export default () => {
   const classes = useStyles()
   const {translate: tr} = useI18n()
-  const [showFilters, onToggleFilters] = useToggleFilters()
+  const [showFilters, onToggleShowFilters] = useToggleFilters()
 
   return (
     <Grid container direction="column" justify="space-between" className={classes.wrapper}>
@@ -82,7 +82,7 @@ export default () => {
           </div>
           <ToggleButton
             open={!showFilters}
-            onClick={onToggleFilters}
+            onClick={onToggleShowFilters}
             primary
             className={classes.button}
           >
