@@ -32,6 +32,11 @@ const tableStyles = (theme) => ({
     },
     'cursor': 'pointer',
   },
+  cell: {
+    // Not sure why MaterialUi has in-consistent padding
+    // Reset paddingRight to same value as paddingLeft
+    paddingRight: '24px',
+  },
   head: {
     textTransform: 'uppercase',
   },
@@ -45,7 +50,7 @@ export default compose(withStyles(tableStyles))(
           <TableHead className={classes.head}>
             <TR>
               {headerData.map((item, index) => (
-                <TD key={index} align="left">
+                <TD key={index} align="left" className={classes.cell}>
                   {item}
                 </TD>
               ))}
@@ -56,7 +61,7 @@ export default compose(withStyles(tableStyles))(
               bodyData.map((row, outerIndex) => (
                 <TR key={outerIndex} className={classes.row}>
                   {row.map((item, innerIndex) => (
-                    <TD key={innerIndex} align="left">
+                    <TD key={innerIndex} align="left" className={classes.cell}>
                       {item}
                     </TD>
                   ))}

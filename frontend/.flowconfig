@@ -14,5 +14,6 @@ suppress_type=$FlowFixMe
 module.file_ext=.js
 module.file_ext=.scss
 module.name_mapper='^@\/\(.*\)$' -> '<PROJECT_ROOT>/src/\1'
+module.name_mapper.extension='svg' -> '<PROJECT_ROOT>/SVGModule.js.flow'
 
 [strict]
