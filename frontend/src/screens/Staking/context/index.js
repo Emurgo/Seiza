@@ -5,7 +5,6 @@ import * as React from 'react'
 import * as urlUtils from '@/helpers/url'
 import {SelectedPoolsProvider, useSelectedPoolsContext} from './selectedPools'
 import {SortByProvider, useSortByContext} from './sortBy'
-import {FiltersProvider, useShowFiltersContext} from './showFilters'
 import {SearchTextProvider, useSearchTextContext} from './searchText'
 import {PerformanceProvider, usePerformanceContext} from './performance'
 
@@ -19,11 +18,9 @@ type ProviderProps = {|
 export const StakingContextProvider = ({children, autoSync}: ProviderProps) => (
   <SelectedPoolsProvider autoSync={autoSync}>
     <SortByProvider autoSync={autoSync}>
-      <FiltersProvider autoSync={autoSync}>
-        <SearchTextProvider autoSync={autoSync}>
-          <PerformanceProvider autoSync={autoSync}>{children}</PerformanceProvider>
-        </SearchTextProvider>
-      </FiltersProvider>
+      <SearchTextProvider autoSync={autoSync}>
+        <PerformanceProvider autoSync={autoSync}>{children}</PerformanceProvider>
+      </SearchTextProvider>
     </SortByProvider>
   </SelectedPoolsProvider>
 )
@@ -36,19 +33,16 @@ export function useSetListScreenStorageFromQuery() {
     _setSelectedPoolsStorageFromQuery,
     _selectedPoolsStorageToQuery,
   } = useSelectedPoolsContext()
-  const {_setShowFiltersStorageFromQuery, _showFiltersStorageToQuery} = useShowFiltersContext()
 
   const getScreenUrlQuery = () => {
     const selectedPoolsQuery = _selectedPoolsStorageToQuery()
     const sortByQuery = _sortByStorageToQuery()
-    const showFiltersQuery = _showFiltersStorageToQuery()
     const searchTextQuery = _searchTextStorageToQuery()
     const performanceQuery = _performanceStorageToQuery()
 
     return urlUtils.joinQueryStrings([
       selectedPoolsQuery,
       sortByQuery,
-      showFiltersQuery,
       searchTextQuery,
       performanceQuery,
     ])
@@ -57,7 +51,6 @@ export function useSetListScreenStorageFromQuery() {
   const setScreenStorageFromQuery = (query: string) => {
     _setSelectedPoolsStorageFromQuery(query)
     _setSortByStorageFromQuery(query)
-    _setShowFiltersStorageFromQuery(query)
     _setSearchTextStorageFromQuery(query)
     _setPerformanceStorageFromQuery(query)
   }
@@ -89,7 +82,6 @@ export function useResetUrlAndStorage() {
   const {_setSelectedPoolsStorageToDefault} = useSelectedPoolsContext()
   const {_setPerformanceStorageToDefault} = usePerformanceContext()
   const {_setSearchTextStorageToDefault} = useSearchTextContext()
-  const {_setShowFiltersStorageToDefault} = useShowFiltersContext()
   const {getScreenUrlQuery} = useSetListScreenStorageFromQuery()
 
   // Note: we do not reset "selected pools" intentionally
@@ -100,7 +92,6 @@ export function useResetUrlAndStorage() {
     _setSortByStorageToDefault()
     _setSelectedPoolsStorageToDefault()
     _setSearchTextStorageToDefault()
-    _setShowFiltersStorageToDefault()
 
     const query = getScreenUrlQuery()
     setQuery(query)

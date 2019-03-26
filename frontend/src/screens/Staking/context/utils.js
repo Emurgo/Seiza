@@ -1,6 +1,7 @@
 // @flow
 
 import * as React from 'react'
+import _ from 'lodash'
 
 import useReactRouter from 'use-react-router'
 
@@ -76,6 +77,8 @@ export const useManageSimpleContextValue = (
     [autoSync, setQueryParam, storageKey]
   )
 
+  const equalsDefault = _.isEqual(value, defaultValue)
+
   const _setStorageFromQuery = React.useCallback(
     (query: string) => {
       const value = getQueryParam(storageKey, query)
@@ -94,5 +97,12 @@ export const useManageSimpleContextValue = (
     sessionStorage.setItem(storageKey, defaultValue)
   }, [autoSync, storageKey, defaultValue])
 
-  return {value, setValue, _setStorageFromQuery, _storageToQuery, _setStorageToDefault}
+  return {
+    value,
+    setValue,
+    equalsDefault,
+    _setStorageFromQuery,
+    _storageToQuery,
+    _setStorageToDefault,
+  }
 }
