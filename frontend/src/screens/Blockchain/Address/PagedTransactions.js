@@ -13,6 +13,7 @@ import {EntityCardContent, SummaryCard, AdaValue} from '@/components/visual'
 import useTabState from '@/components/hooks/useTabState'
 import {ObjectValues} from '@/helpers/flow'
 import {useI18n} from '@/i18n/helpers'
+import {TabsProvider as Tabs, TabItem as Tab, useTabContext} from '@/components/context/TabContext'
 import type {Transaction} from '@/__generated__/schema.flow'
 
 const messages = defineMessages({
@@ -93,11 +94,6 @@ const TAB_NAMES = {
   SENT: 'SENT',
   RECEIVED: 'RECEIVED',
 }
-const TABS_CONTENT = {
-  [TAB_NAMES.ALL]: TransactionList,
-  [TAB_NAMES.SENT]: TransactionList,
-  [TAB_NAMES.RECEIVED]: TransactionList,
-}
 
 const TabHeader = ({onClick, isActive, label}) => {
   return (
@@ -109,7 +105,7 @@ const TabHeader = ({onClick, isActive, label}) => {
 
 const TabsHeader = ({tabState, paginationProps}) => {
   const {translate: tr} = useI18n()
-  const {currentTab, setTab} = tabState
+  const {currentTab, setTab} = useTabContext()
   const {totalCount, onChangePage, rowsPerPage, page} = paginationProps
   const tabs = [
     {id: TAB_NAMES.ALL, label: tr(messages.all)},
@@ -146,16 +142,19 @@ const TabsHeader = ({tabState, paginationProps}) => {
 const PagedTransactions = ({currentTransactions, totalCount, onChangePage, rowsPerPage, page}) => {
   const tabNames = ObjectValues(TAB_NAMES)
   const tabState = useTabState(tabNames)
-  const TabContent = TABS_CONTENT[tabState.currentTab]
   return (
-    <React.Fragment>
-      <TabsHeader
-        tabState={tabState}
-        paginationProps={{totalCount, onChangePage, rowsPerPage, page}}
-      />
-
-      <TabContent transactions={currentTransactions} />
-    </React.Fragment>
+    <Tabs {...tabState}>
+      <TabsHeader paginationProps={{totalCount, onChangePage, rowsPerPage, page}} />
+      <Tab name={TAB_NAMES.ALL}>
+        <TransactionList transactions={currentTransactions} />
+      </Tab>
+      <Tab name={TAB_NAMES.SENT}>
+        <TransactionList transactions={currentTransactions} />
+      </Tab>
+      <Tab name={TAB_NAMES.RECEIVED}>
+        <TransactionList transactions={currentTransactions} />
+      </Tab>
+    </Tabs>
   )
 }
 
