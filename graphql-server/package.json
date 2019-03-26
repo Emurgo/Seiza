@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@elastic/elasticsearch": "^0.1.0-beta.2",
+    "@okgrow/graphql-scalars": "^0.4.5",
     "apollo-server": "^2.3.3",
     "axios": "^0.18.0",
     "babel-plugin-import-graphql": "^2.6.2",

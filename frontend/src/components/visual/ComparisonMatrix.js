@@ -4,13 +4,19 @@ import * as React from 'react'
 import classnames from 'classnames'
 import {makeStyles} from '@material-ui/styles'
 import {darken, fade} from '@material-ui/core/styles/colorManipulator'
+import {defineMessages} from 'react-intl'
 
-import {Grid, Typography, createStyles} from '@material-ui/core'
+import {Grid, Typography, Tooltip, createStyles} from '@material-ui/core'
 import {useI18n} from '@/i18n/helpers'
-import {VisualHash} from '@/components/visual'
+import {VisualHash, ExternalLink} from '@/components/visual'
+import CopyToClipboard from '@/components/common/CopyToClipboard'
 
 // TODO: full width scenario
 // TODO (postpone): colors based on "goodness" for comparable rows
+
+const messages = defineMessages({
+  copyText: 'Copy',
+})
 
 const ellipsizeStyles = {
   overflow: 'hidden',
@@ -19,11 +25,11 @@ const ellipsizeStyles = {
 }
 
 const VALUES_PANEL_WIDTH = 300
+const PADDING = 16
 
 const useStyles = makeStyles((theme) => {
   const darkBorder = `1px solid ${darken(theme.palette.unobtrusiveContentHighlight, 0.2)}`
   const lightBorder = `1px solid ${darken(theme.palette.unobtrusiveContentHighlight, 0.05)}`
-  const padding = theme.spacing.unit * 2
   const valuesPanelWidth = `${VALUES_PANEL_WIDTH}px`
   return createStyles({
     ellipsis: ellipsizeStyles,
@@ -57,7 +63,7 @@ const useStyles = makeStyles((theme) => {
       },
     },
     categoryKey: {
-      padding,
+      padding: PADDING,
       ...ellipsizeStyles,
     },
     scrollWrapper: {
@@ -102,7 +108,7 @@ const useStyles = makeStyles((theme) => {
     },
     dataText: {
       width: valuesPanelWidth,
-      padding,
+      padding: PADDING,
     },
     header: {
       background: darken(theme.palette.background.default, 0.04),
@@ -141,13 +147,93 @@ const useStyles = makeStyles((theme) => {
       'display': 'flex',
       'alignItems': 'center',
       'borderBottom': 'none',
-      padding,
+      'padding': PADDING,
       '& span': {
         fontWeight: 600,
       },
     },
   })
 })
+
+const useTooltipStyles = makeStyles((theme) => {
+  return {
+    text: {
+      wordBreak: 'break-word',
+      color: 'white',
+    },
+    copy: {
+      cursor: 'pointer',
+      padding: '10px 0',
+      display: 'flex',
+      justifyContent: 'center',
+    },
+  }
+})
+
+export const CustomTooltip = ({text}: {text: string}) => {
+  const {translate} = useI18n()
+  const classes = useTooltipStyles()
+  return (
+    <div>
+      <Typography className={classes.text}>{text}</Typography>
+      <div className={classes.copy}>
+        <CopyToClipboard value={text}>{translate(messages.copyText)}</CopyToClipboard>
+      </div>
+    </div>
+  )
+}
+
+export const EllipsizedLinkFieldWithTooltip = ({text}: {text: string}) => {
+  const classes = useStyles()
+  return (
+    <Tooltip title={<CustomTooltip text={text} />} placement="top" interactive>
+      {/* Note: Without this extra `div` tooltip is not working */}
+      <div>
+        <ExternalLink to={text}>
+          <Typography variant="body1" className={classes.ellipsis}>
+            {text}
+          </Typography>
+        </ExternalLink>
+      </div>
+    </Tooltip>
+  )
+}
+
+const useDescriptionStyles = makeStyles((theme) => {
+  return {
+    wrapper: {
+      position: 'relative',
+    },
+    overlay: {
+      height: '90px',
+      width: '100%',
+      background: `linear-gradient(to top, ${theme.palette.background.paper} 0%, ${fade(
+        theme.palette.background.paper,
+        0.15
+      )} 70%)`,
+      position: 'absolute',
+      bottom: 0,
+    },
+    text: ({height}) => ({
+      overflow: 'hidden',
+      height: height - PADDING,
+    }),
+  }
+})
+
+export const FadeoutFieldWithTooltip = ({text, height}: {text: string, height: number}) => {
+  const classes = useDescriptionStyles({height})
+  return (
+    <Tooltip title={<CustomTooltip text={text} />} placement="top" interactive>
+      <div className={classes.wrapper}>
+        <Typography className={classes.text} variant="body1">
+          {text}
+        </Typography>
+        <div className={classes.overlay} />
+      </div>
+    </Tooltip>
+  )
+}
 
 type CategoryConfigType = Array<{|
   i18nLabel: Object,

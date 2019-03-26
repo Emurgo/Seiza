@@ -3,7 +3,6 @@ import {
   fetchBootstrapEraPool,
   fetchBootstrapEraPoolList,
   fetchBootstrapEraPoolSummary,
-  BOOTSTRAP_POOLS,
 } from './dataProviders'
 
 const EMPTY_RESPONSE = {cursor: null, stakePools: [], hasMore: false, totalCount: 0}
@@ -18,12 +17,11 @@ const DEFAULT_PAGE_SIZE = 10
 // Note: this does not do half-open interval intentionally
 const inRange = (v, from, to) => v >= from && v <= to
 
-const getPoolsData = (api) => {
-  return BOOTSTRAP_POOLS.map((pool) => ({
-    ...fetchBootstrapEraPool(api, pool),
-    summary: fetchBootstrapEraPoolSummary(api, pool),
+const getPoolsData = (api) =>
+  fetchBootstrapEraPoolList(api).map((pool) => ({
+    ...pool,
+    summary: fetchBootstrapEraPoolSummary(api, pool.poolHash),
   }))
-}
 
 const filterData = (data, searchText, performance) => {
   const _filtered = searchText ? data.filter((pool) => pool.name.includes(searchText)) : data
