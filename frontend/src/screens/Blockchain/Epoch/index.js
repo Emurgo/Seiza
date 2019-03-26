@@ -7,24 +7,31 @@ import {withProps} from 'recompose'
 import gql from 'graphql-tag'
 import {graphql} from 'react-apollo'
 import idx from 'idx'
+import useReactRouter from 'use-react-router'
+
 import {Paper} from '@material-ui/core'
+import {makeStyles} from '@material-ui/styles'
 import {
   SummaryCard,
   SimpleLayout,
   EntityIdCard,
   LoadingInProgress,
-  DebugApolloError,
+  LoadingError,
   AdaValue,
   Tab,
   Tabs,
+  Button,
 } from '@/components/visual'
-import {withI18n} from '@/i18n/helpers'
+import {useI18n} from '@/i18n/helpers'
 import EpochIcon from '@/assets/icons/metrics-epoch.svg'
 import WithTabState from '@/components/headless/tabState'
 import BlocksTab from './Blocks'
 import StakingPoolsTab from './StakingPools'
+import {routeTo} from '@/helpers/routes'
 
 const messages = defineMessages({
+  goPreviousEpoch: '← Previous Epoch',
+  goNextEpoch: 'Next Epoch →',
   header: 'Epoch',
   entityHeader: 'Epoch Number',
   startTime: 'Start Time',
@@ -74,8 +81,8 @@ const TABS = {
 }
 
 const {Row, Label, Value} = SummaryCard
-const EpochSummaryCard = withI18n(({i18n, epoch}) => {
-  const {translate, formatTimestamp, formatInt} = i18n
+const EpochSummaryCard = ({epoch}) => {
+  const {translate, formatTimestamp, formatInt} = useI18n()
   return (
     <React.Fragment>
       <SummaryCard>
@@ -132,18 +139,51 @@ const EpochSummaryCard = withI18n(({i18n, epoch}) => {
       </SummaryCard>
     </React.Fragment>
   )
-})
+}
 
-const EpochScreen = ({i18n, epochNumber, epochDataProvider, match, tab, tabOrder, setTab}) => {
-  const {translate} = i18n
+const useStyles = makeStyles((theme) => ({
+  navigation: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  navigationButton: {
+    width: '250px',
+    margin: '0 30px',
+  },
+}))
+
+const EpochScreen = ({router, epochNumber, epochDataProvider, match, tab, tabOrder, setTab}) => {
+  const {translate} = useI18n()
   const {epoch, error, loading} = epochDataProvider
+  const {history} = useReactRouter()
+  const classes = useStyles()
+  const goNextEpoch = () => {
+    history.push(routeTo.epoch(epochNumber + 1))
+  }
+  const goPreviousEpoch = () => {
+    history.push(routeTo.epoch(epochNumber - 1))
+  }
 
   return (
     <SimpleLayout title={translate(messages.header)}>
+      <div className={classes.navigation}>
+        <Button
+          rounded secondary
+          onClick={goPreviousEpoch}
+          className={classes.navigationButton}
+          disabled={epochNumber < 1}
+        >{translate(messages.goPreviousEpoch)}</Button>
+        <Button
+          rounded secondary
+          className={classes.navigationButton}
+          onClick={goNextEpoch}
+        >{translate(messages.goNextEpoch)}</Button>
+      </div>
       {loading ? (
         <LoadingInProgress />
       ) : error ? (
-        <DebugApolloError error={error} />
+        <LoadingError error={error} />
       ) : (
         <React.Fragment>
           <EntityIdCard
@@ -183,5 +223,4 @@ export default compose(
       variables: {epochNumber},
     }),
   }),
-  withI18n
 )(EpochScreen)
