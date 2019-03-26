@@ -1,11 +1,24 @@
 // @flow
 import React from 'react'
 import {defineMessages} from 'react-intl'
+import {makeStyles} from '@material-ui/styles'
+import {Grid} from '@material-ui/core'
 
 import Table from '@/components/visual/Table'
 import {AdaValue, Link} from '@/components/visual'
-import {withI18n} from '@/i18n/helpers'
+import {useI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
+
+import {ReactComponent as EpochIcon} from '@/assets/icons/epoch.svg'
+import {ReactComponent as SlotIcon} from '@/assets/icons/slot.svg'
+import {ReactComponent as TimeIcon} from '@/assets/icons/time.svg'
+import {ReactComponent as SlotLeaderIcon} from '@/assets/icons/slot-leader.svg'
+import {ReactComponent as TransactionsIcon} from '@/assets/icons/transactions.svg'
+import {ReactComponent as TotalSentIcon} from '@/assets/icons/total-sent.svg'
+import {ReactComponent as FeeIcon} from '@/assets/icons/fee.svg'
+import {ReactComponent as SizeIcon} from '@/assets/icons/size.svg'
+
+import type {Block} from '@/__generated__/schema.flow'
 
 // TODO?: aria-label messages
 const tableMessages = defineMessages({
@@ -32,13 +45,51 @@ export const COLUMNS_MAP = {
 }
 export const ALL_COLUMNS = Object.values(COLUMNS_MAP)
 
-const BlocksTable = ({blocks, columns, i18n, loading, error}) => {
-  const {translate, formatInt, formatTimestamp} = i18n
+const useTHStyles = makeStyles((theme) => ({
+  root: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  icon: {
+    width: '20px',
+    height: '20px',
+    flexShrink: 0,
+  },
+  content: {
+    marginLeft: '6px',
+  },
+})
+)
+
+const TH = ({Icon, label}) => {
+  const {translate} = useI18n()
+  const classes = useTHStyles()
+  return (
+    <Grid container direction="row" alignItems="center" wrap="nowrap">
+      <Icon />
+      <span className={classes.content}>
+        {translate(label)}
+      </span>
+    </Grid>
+  )
+}
+
+type Props = {
+  blocks: ?$ReadOnlyArray<Block>;
+  columns: any;
+  loading: boolean;
+  error: any;
+}
+
+const BlocksTable = ({blocks, columns, loading, error}: Props) => {
+  const {translate, formatInt, formatTimestamp} = useI18n()
 
   const {EPOCH, SLOT, TIME, SLOT_LEADER, TRANSACTIONS, TOTAL_SENT, FEES, SIZE} = COLUMNS_MAP
+
   const columnsRenderer = {
     [EPOCH]: {
-      header: translate(tableMessages.epoch),
+      header: <TH Icon={EpochIcon} label={tableMessages.epoch} />,
       cell: (block) => (
         <Link key={0} to={routeTo.epoch(block.epoch)}>
           {formatInt(block.epoch)}
@@ -46,7 +97,7 @@ const BlocksTable = ({blocks, columns, i18n, loading, error}) => {
       ),
     },
     [SLOT]: {
-      header: translate(tableMessages.slot),
+      header: <TH Icon={SlotIcon} label={tableMessages.slot} />,
       cell: (block) => (
         <Link key={1} to={routeTo.block(block.blockHash)}>
           {formatInt(block.slot)}
@@ -54,11 +105,11 @@ const BlocksTable = ({blocks, columns, i18n, loading, error}) => {
       ),
     },
     [TIME]: {
-      header: translate(tableMessages.time),
+      header: <TH Icon={TimeIcon} label={tableMessages.time} />,
       cell: (block) => formatTimestamp(block.timeIssued),
     },
     [SLOT_LEADER]: {
-      header: translate(tableMessages.slotLeader),
+      header: <TH Icon={SlotLeaderIcon} label={tableMessages.slotLeader} />,
       cell: (block) => (
         <Link key={3} to={routeTo.stakepool(block.blockLeader.poolHash)}>
           {block.blockLeader.name}
@@ -66,11 +117,11 @@ const BlocksTable = ({blocks, columns, i18n, loading, error}) => {
       ),
     },
     [TRANSACTIONS]: {
-      header: translate(tableMessages.transactions),
+      header: <TH Icon={TransactionsIcon} label={tableMessages.transactions} />,
       cell: (block) => formatInt(block.transactionsCount),
     },
     [TOTAL_SENT]: {
-      header: translate(tableMessages.totalSent),
+      header: <TH Icon={TotalSentIcon} label={tableMessages.totalSent} />,
       cell: (block) => (
         <FixWidth key={5} width={100}>
           <AdaValue value={block.totalSend} />
@@ -78,7 +129,7 @@ const BlocksTable = ({blocks, columns, i18n, loading, error}) => {
       ),
     },
     [FEES]: {
-      header: translate(tableMessages.fees),
+      header: <TH Icon={FeeIcon} label={tableMessages.fees} />,
       cell: (block) => (
         <FixWidth key={6} width={100}>
           <AdaValue value={block.totalFees} />
@@ -86,7 +137,7 @@ const BlocksTable = ({blocks, columns, i18n, loading, error}) => {
       ),
     },
     [SIZE]: {
-      header: translate(tableMessages.size),
+      header: <TH Icon={SizeIcon} label={tableMessages.size} />,
       cell: (block) => formatInt(block.size),
     },
   }
@@ -110,4 +161,4 @@ const BlocksTable = ({blocks, columns, i18n, loading, error}) => {
   )
 }
 
-export default withI18n(BlocksTable)
+export default BlocksTable
