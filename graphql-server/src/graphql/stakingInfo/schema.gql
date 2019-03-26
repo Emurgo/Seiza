@@ -1,0 +1,18 @@
+type AllTimeStakingSummary {
+  blocksCreated: Int!
+  blocksMissed: Int!
+  totalPoolsCreated: Int!
+}
+
+type PerEpochStakingSummary {
+  totalStakedAmount: AdaAmount!
+  poolsCount: Int!
+  totalBlocksCreated: Int!
+  totalBlocksMissed: Int!
+  rewardsPerBlock: AdaAmount!
+}
+
+type Query {
+  allTimeStakingSummary: AllTimeStakingSummary!
+  perEpochStakingSummary(epoch: Int!): PerEpochStakingSummary!
+}

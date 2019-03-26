@@ -1,5 +1,6 @@
 // @flow
 import React from 'react'
+import classnames from 'classnames'
 import {makeStyles} from '@material-ui/styles'
 
 const useContentStyles = makeStyles((theme) => ({
@@ -42,11 +43,12 @@ const OverlayContent = ({background, children, style}: ContentProps) => {
 
 type WrapperProps = {
   children: ?React$Node,
+  className?: string,
 }
 
-const OverlayWrapper = ({children}: WrapperProps) => {
+const OverlayWrapper = ({children, className}: WrapperProps) => {
   const classes = useWrapperStyles()
-  return <div className={classes.overlayWrapper}>{children}</div>
+  return <div className={classnames(classes.overlayWrapper, className)}>{children}</div>
 }
 
 const Overlay = {
