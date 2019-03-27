@@ -94,7 +94,7 @@ const Row = ({poolData}) => {
   const classes = useStyles()
   return (
     <div className={classes.row}>
-      <RowHeader poolHash={poolData.poolHash} poolName={poolData.poolName} />
+      <RowHeader poolHash={poolData.poolHash} poolName={poolData.name} />
       <div className={classes.ownersWrapper}>
         <Grid container justify="space-between">
           <Typography variant="overline">{tr(messages.owner)}</Typography>
@@ -112,10 +112,15 @@ const Row = ({poolData}) => {
 
 type PeopleListProps = {
   data: Array<Object>, // TODO: get graphql type
+  NoDataComponent: Function,
+  loading: boolean,
 }
 
-const PeopleList = ({data}: PeopleListProps) => {
+const PeopleList = ({data, NoDataComponent, loading}: PeopleListProps) => {
   const classes = useStyles()
+
+  if (!loading && !data.length) return <NoDataComponent />
+
   return (
     <div className={classes.wrapper}>
       {data.map((poolData) => (
