@@ -8,10 +8,18 @@ import {useApolloClient, useQuery} from 'react-apollo-hooks'
 import {compose} from 'redux'
 import {defineMessages} from 'react-intl'
 
-import {IconButton, Grid, Chip, Typography, createStyles, withStyles} from '@material-ui/core'
+import {
+  IconButton,
+  Grid,
+  Chip,
+  Typography,
+  Avatar,
+  createStyles,
+  withStyles,
+} from '@material-ui/core'
 import {Share, CallMade, CallReceived} from '@material-ui/icons'
 
-import {LoadingDots, DebugApolloError} from '@/components/visual'
+import {LoadingDots, DebugApolloError, VisualHash} from '@/components/visual'
 import CopyToClipboard from '@/components/common/CopyToClipboard'
 import assert from 'assert'
 import {withI18n} from '@/i18n/helpers'
@@ -25,6 +33,12 @@ const messages = defineMessages({
   export: 'Export',
   noPools: 'You have no pools to compare yet',
 })
+
+const CustomAvatar = withStyles({
+  root: {
+    background: 'transparent',
+  },
+})(Avatar)
 
 const poolsStyles = ({palette}) =>
   createStyles({
@@ -45,20 +59,27 @@ const poolsStyles = ({palette}) =>
     },
   })
 
-const _StakePoolItem = ({classes, label, onDelete}) => (
-  <React.Fragment>
-    <Chip
-      label={label}
-      onClick={() => null}
-      onDelete={onDelete}
-      className={classes.chip}
-      variant="outlined"
-      color="primary"
-    />
-    {/* Hack to avoid displaying more chips in one line or in full width */}
-    <div />
-  </React.Fragment>
-)
+const _StakePoolItem = ({classes, label, onDelete, hash}) => {
+  return (
+    <React.Fragment>
+      <Chip
+        avatar={
+          <CustomAvatar>
+            <VisualHash value={hash} size={20} />
+          </CustomAvatar>
+        }
+        label={label}
+        onClick={() => null}
+        onDelete={onDelete}
+        className={classes.chip}
+        variant="outlined"
+        color="primary"
+      />
+      {/* Hack to avoid displaying more chips in one line or in full width */}
+      <div />
+    </React.Fragment>
+  )
+}
 
 const StakePoolItem = withStyles(poolsStyles)(_StakePoolItem)
 
@@ -153,6 +174,7 @@ const PoolsToCompare = ({classes, i18n: {translate}}) => {
         {data.map(({name, poolHash}) => (
           <StakePoolItem
             key={poolHash}
+            hash={poolHash}
             label={
               name != null ? (
                 name
