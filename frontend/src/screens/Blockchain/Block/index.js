@@ -2,9 +2,7 @@
 
 import React from 'react'
 import {useQuery} from 'react-apollo-hooks'
-import {compose} from 'redux'
-import {withProps} from 'recompose'
-import {withRouter} from 'react-router'
+import useReactRouter from 'use-react-router'
 import idx from 'idx'
 import gql from 'graphql-tag'
 
@@ -163,7 +161,12 @@ const TransactionList = ({transactions, loading}) => {
   )
 }
 
-const Block = ({blockHash}) => {
+const BlockScreen = () => {
+  const {
+    match: {
+      params: {blockHash},
+    },
+  } = useReactRouter()
   const {loading, blockData, error} = useBlockData({blockHash})
   const {translate} = useI18n()
 
@@ -182,9 +185,4 @@ const Block = ({blockHash}) => {
   )
 }
 
-export default compose(
-  withRouter,
-  withProps((props) => ({
-    blockHash: props.match.params.blockHash,
-  }))
-)(Block)
+export default BlockScreen
