@@ -9,7 +9,7 @@ import {makeStyles} from '@material-ui/styles'
 
 import {useI18n} from '@/i18n/helpers'
 import {useSelectedPoolsContext} from '../context/selectedPools'
-import {LoadingInProgress, ComparisonMatrix, LoadingError} from '@/components/visual'
+import {LoadingInProgress, ComparisonMatrix, LoadingError, AdaValue} from '@/components/visual'
 
 const messages = defineMessages({
   stakePools: 'Stake pools',
@@ -39,27 +39,34 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-// TODO: proper fields that make sense (now just taken from design)
 const config = [
   {
     i18nLabel: configMessages.totalPledge,
-    getValue: (stakePool, formatters) => 'N/A',
+    getValue: (stakePool, formatters) => <AdaValue value={stakePool.summary.pledge} />,
   },
   {
     i18nLabel: configMessages.numberOfStakers,
-    getValue: (stakePool, formatters) => 'N/A',
+    getValue: (stakePool, formatters) => stakePool.summary.stakersCount,
   },
   {
     i18nLabel: configMessages.totalStakingFromStakers,
-    getValue: (stakePool, formatters) => 'N/A',
+    getValue: (stakePool, formatters) => <AdaValue value={stakePool.summary.adaStaked} />,
   },
   {
     i18nLabel: configMessages.totalStaking,
-    getValue: (stakePool, formatters) => 'N/A',
+    getValue: (stakePool, formatters) => {
+      const totalStaking = `${parseInt(stakePool.summary.adaStaked, 10) +
+        parseInt(stakePool.summary.pledge, 10)}`
+      return <AdaValue value={totalStaking} />
+    },
   },
   {
     i18nLabel: configMessages.averageStakingPerStaker,
-    getValue: (stakePool, formatters) => 'N/A',
+    getValue: (stakePool, formatters) => {
+      const averagePerStaker = `${parseInt(stakePool.summary.adaStaked, 10) /
+        parseInt(stakePool.summary.stakersCount, 10)}`
+      return <AdaValue value={averagePerStaker} />
+    },
   },
 ]
 
@@ -67,6 +74,11 @@ const PoolDataFragment = gql`
   fragment ComparisonMatrixDataFragment on BootstrapEraStakePool {
     poolHash
     name
+    summary {
+      pledge
+      adaStaked
+      stakersCount
+    }
   }
 `
 

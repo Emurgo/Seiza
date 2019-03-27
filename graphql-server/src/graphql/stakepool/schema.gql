@@ -8,6 +8,7 @@ type StakePoolSummary {
   margins: Float
   pledge: AdaAmount
   revenue: Float
+  stakersCount: Int
 }
 
 type BootstrapEraStakePool {

@@ -9,7 +9,7 @@ import {makeStyles} from '@material-ui/styles'
 import {Typography} from '@material-ui/core'
 import {useI18n} from '@/i18n/helpers'
 import {useSelectedPoolsContext} from '../context/selectedPools'
-import {LoadingInProgress, ComparisonMatrix, LoadingError} from '@/components/visual'
+import {LoadingInProgress, ComparisonMatrix, LoadingError, AdaValue} from '@/components/visual'
 import {
   FadeoutFieldWithTooltip,
   EllipsizedLinkFieldWithTooltip,
@@ -55,7 +55,7 @@ const categoryOneConfig = [
   },
   {
     i18nLabel: categoryOneMessages.pledge,
-    getValue: (stakePool, {formatAda}) => formatAda(stakePool.summary.pledge),
+    getValue: (stakePool, formatters) => <AdaValue value={stakePool.summary.pledge} />,
   },
   {
     i18nLabel: categoryOneMessages.margins,
