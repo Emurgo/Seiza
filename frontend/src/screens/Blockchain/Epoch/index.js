@@ -15,7 +15,7 @@ import {
   SummaryCard,
   SimpleLayout,
   EntityIdCard,
-  LoadingInProgress,
+  LoadingDots,
   LoadingError,
   AdaValue,
   Tab,
@@ -72,6 +72,7 @@ const TAB_NAMES = {
   BLOCKS: 'BLOCKS',
   STAKING_POOLS: 'STAKING_POOLS',
 }
+
 const TABS = {
   ORDER: [TAB_NAMES.BLOCKS, TAB_NAMES.STAKING_POOLS],
   CONTENT: {
@@ -80,63 +81,102 @@ const TABS = {
   },
 }
 
-const {Row, Label, Value} = SummaryCard
-const EpochSummaryCard = ({epoch}) => {
+const EpochSummaryCard = ({epoch, loading}) => {
+  const {Row, Label, Value} = SummaryCard
   const {translate, formatTimestamp, formatInt} = useI18n()
+  const NA = loading ? <LoadingDots /> : 'N/A'
+
+  // If we are loading, do not show old data
+  epoch = loading ? null : epoch
+
+  const data1 = {
+    startTime: formatTimestamp(idx(epoch, (_) => _.startTime), {defaultValue: NA}),
+    endTime: formatTimestamp(idx(epoch, (_) => _.endTime), {defaultValue: NA}),
+
+    blocksCount: formatInt(idx(epoch, (_) => _.summary.blocksCreated), {defaultValue: NA}),
+
+    txCount: formatInt(idx(epoch, (_) => _.summary.transactionCount), {defaultValue: NA}),
+  }
+
+  const card1 = (
+    <SummaryCard>
+      <Row>
+        <Label>{translate(messages.startTime)}</Label>
+        <Value>{data1.startTime}</Value>
+      </Row>
+      <Row>
+        <Label>{translate(messages.endTime)}</Label>
+        <Value>{data1.endTime}</Value>
+      </Row>
+      <Row>
+        <Label>{translate(messages.blocksCount)}</Label>
+        <Value>{data1.blocksCount}</Value>
+      </Row>
+      <Row>
+        <Label>{translate(messages.txCount)}</Label>
+        <Value>{data1.txCount}</Value>
+      </Row>
+    </SummaryCard>
+  )
+
+  const data2 = {
+    totalAdaSupply: (
+      <AdaValue value={idx(epoch, (_) => _.summary.totalAdaSupply)} noValue={NA} showCurrency />
+    ),
+    epochFees: (
+      <AdaValue value={idx(epoch, (_) => _.summary.epochFees)} noValue={NA} showCurrency />
+    ),
+    totalAdaStaked: (
+      <AdaValue value={idx(epoch, (_) => _.summary.totalAdaStaked)} noValue={NA} showCurrency />
+    ),
+    totalStakingRewards: (
+      <AdaValue
+        value={idx(epoch, (_) => _.summary.totalStakingRewards)}
+        noValue={NA}
+        showCurrency
+      />
+    ),
+    stakingKeysDelegating: formatInt(idx(epoch, (_) => _.summary.delegatingStakingKeysCount), {
+      defaultValue: NA,
+    }),
+    stakingPoolsCount: formatInt(idx(epoch, (_) => _.summary.activeStakingPoolCount), {
+      defaultValue: NA,
+    }),
+  }
+
+  const card2 = (
+    <SummaryCard>
+      <Row>
+        <Label>{translate(messages.totalAdaCirculation)}</Label>
+        <Value>{data2.totalAdaSupply}</Value>
+      </Row>
+      <Row>
+        <Label>{translate(messages.totalFees)}</Label>
+        <Value>{data2.epochFees}</Value>
+      </Row>
+      <Row>
+        <Label>{translate(messages.totalAdaStaked)}</Label>
+        <Value>{data2.totalAdaStaked}</Value>
+      </Row>
+      <Row>
+        <Label>{translate(messages.totalStakingRewards)}</Label>
+        <Value>{data2.totalStakingRewards}</Value>
+      </Row>
+      <Row>
+        <Label>{translate(messages.stakingKeysDelegating)}</Label>
+        <Value>{data2.stakingKeysDelegating}</Value>
+      </Row>
+      <Row>
+        <Label>{translate(messages.stakingPoolsCount)}</Label>
+        <Value>{data2.stakingPoolsCount}</Value>
+      </Row>
+    </SummaryCard>
+  )
+
   return (
     <React.Fragment>
-      <SummaryCard>
-        <Row>
-          <Label>{translate(messages.startTime)}</Label>
-          <Value>{formatTimestamp(idx(epoch, (_) => _.startTime))}</Value>
-        </Row>
-        <Row>
-          <Label>{translate(messages.endTime)}</Label>
-          <Value>{formatTimestamp(idx(epoch, (_) => _.endTime))}</Value>
-        </Row>
-        <Row>
-          <Label>{translate(messages.blocksCount)}</Label>
-          <Value>{formatInt(idx(epoch, (_) => _.summary.blocksCreated))}</Value>
-        </Row>
-        <Row>
-          <Label>{translate(messages.txCount)}</Label>
-          <Value>{formatInt(idx(epoch, (_) => _.summary.transactionCount))}</Value>
-        </Row>
-      </SummaryCard>
-      <SummaryCard>
-        <Row>
-          <Label>{translate(messages.totalAdaCirculation)}</Label>
-          <Value>
-            <AdaValue value={idx(epoch, (_) => _.summary.totalAdaSupply)} /> ADA
-          </Value>
-        </Row>
-        <Row>
-          <Label>{translate(messages.totalFees)}</Label>
-          <Value>
-            <AdaValue value={idx(epoch, (_) => _.summary.epochFees)} /> ADA
-          </Value>
-        </Row>
-        <Row>
-          <Label>{translate(messages.totalAdaStaked)}</Label>
-          <Value>
-            <AdaValue value={idx(epoch, (_) => _.summary.totalAdaStaked)} /> ADA
-          </Value>
-        </Row>
-        <Row>
-          <Label>{translate(messages.totalStakingRewards)}</Label>
-          <Value>
-            <AdaValue value={idx(epoch, (_) => _.summary.stakingRewards)} /> ADA
-          </Value>
-        </Row>
-        <Row>
-          <Label>{translate(messages.stakingKeysDelegating)}</Label>
-          <Value>{formatInt(idx(epoch, (_) => _.summary.delegatingStakingKeysCount))}</Value>
-        </Row>
-        <Row>
-          <Label>{translate(messages.stakingPoolsCount)}</Label>
-          <Value>{formatInt(idx(epoch, (_) => _.summary.activeStakingPoolCount))}</Value>
-        </Row>
-      </SummaryCard>
+      {card1}
+      {card2}
     </React.Fragment>
   )
 }
@@ -153,45 +193,69 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
+const useEpochNavigation = (epochNumber: number) => {
+  const {history} = useReactRouter()
+
+  const linkPrev = routeTo.epoch(epochNumber - 1)
+  const linkNext = routeTo.epoch(epochNumber + 1)
+
+  // TODO: memoize using useCallback
+  const goPrev = () => {
+    history.push(linkPrev)
+  }
+  const goNext = () => {
+    history.push(linkNext)
+  }
+
+  return {
+    hasPrev: epochNumber > 0,
+    linkPrev,
+    goPrev,
+    hasNext: epochNumber != null, // For now we always have more epochs
+    linkNext,
+    goNext,
+  }
+}
+
 const EpochScreen = ({router, epochNumber, epochDataProvider, match, tab, tabOrder, setTab}) => {
   const {translate} = useI18n()
   const {epoch, error, loading} = epochDataProvider
-  const {history} = useReactRouter()
   const classes = useStyles()
-  const goNextEpoch = () => {
-    history.push(routeTo.epoch(epochNumber + 1))
-  }
-  const goPreviousEpoch = () => {
-    history.push(routeTo.epoch(epochNumber - 1))
-  }
+
+  const epochNavigation = useEpochNavigation(epochNumber)
 
   return (
     <SimpleLayout title={translate(messages.header)}>
       <div className={classes.navigation}>
         <Button
-          rounded secondary
-          onClick={goPreviousEpoch}
+          rounded
+          secondary
+          onClick={epochNavigation.goPrev}
           className={classes.navigationButton}
-          disabled={epochNumber < 1}
-        >{translate(messages.goPreviousEpoch)}</Button>
+          disabled={!epochNavigation.hasPrev}
+        >
+          {translate(messages.goPreviousEpoch)}
+        </Button>
         <Button
-          rounded secondary
+          rounded
+          secondary
           className={classes.navigationButton}
-          onClick={goNextEpoch}
-        >{translate(messages.goNextEpoch)}</Button>
+          onClick={epochNavigation.goNext}
+          disabled={!epochNavigation.hasNext}
+        >
+          {translate(messages.goNextEpoch)}
+        </Button>
       </div>
-      {loading ? (
-        <LoadingInProgress />
-      ) : error ? (
+      <EntityIdCard
+        label={translate(messages.entityHeader)}
+        value={epochNumber}
+        iconRenderer={<img alt="" src={EpochIcon} width={40} height={40} />}
+      />
+      {error ? (
         <LoadingError error={error} />
       ) : (
         <React.Fragment>
-          <EntityIdCard
-            label={translate(messages.entityHeader)}
-            value={epochNumber}
-            iconRenderer={<img alt="" src={EpochIcon} width={40} height={40} />}
-          />
-          <EpochSummaryCard epoch={epoch} />
+          <EpochSummaryCard epoch={epoch} loading={loading} />
           <WithTabState tabNames={TABS.ORDER}>
             {({setTab, currentTab, currentTabName}) => {
               const TabContent = TABS.CONTENT[currentTabName]
@@ -222,5 +286,5 @@ export default compose(
     options: ({epochNumber}) => ({
       variables: {epochNumber},
     }),
-  }),
+  })
 )(EpochScreen)
