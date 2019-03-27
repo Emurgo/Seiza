@@ -112,14 +112,10 @@ const Row = ({poolData}) => {
 
 type PeopleListProps = {
   data: Array<Object>, // TODO: get graphql type
-  NoDataComponent: Function,
-  loading: boolean,
 }
 
-const PeopleList = ({data, NoDataComponent, loading}: PeopleListProps) => {
+const PeopleList = ({data}: PeopleListProps) => {
   const classes = useStyles()
-
-  if (!loading && !data.length) return <NoDataComponent />
 
   return (
     <div className={classes.wrapper}>

@@ -67,15 +67,11 @@ const config = [
 
 type StatsProps = {|
   data: Array<Object>, // TODO: get graphql type
-  NoDataComponent: Function,
-  loading: boolean,
 |}
 
-const Stats = ({data, NoDataComponent, loading}: StatsProps) => {
+const Stats = ({data}: StatsProps) => {
   const classes = useStyles()
   const {translate: tr} = useI18n()
-
-  if (!loading && !data.length) return <NoDataComponent />
 
   return (
     <div className={classes.wrapper}>

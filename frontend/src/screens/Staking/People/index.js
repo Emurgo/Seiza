@@ -110,13 +110,6 @@ const LoadingComponent = () => {
   )
 }
 
-const TABS = {
-  OWNERS: PeopleList,
-  STATS: Stats,
-}
-
-const TAB_NAMES = Object.keys(TABS)
-
 const withLoadingAndErrorHadler = (BaseComponent) => ({
   data,
   loading,
@@ -133,6 +126,13 @@ const withLoadingAndErrorHadler = (BaseComponent) => ({
   return <BaseComponent data={data} {...restProps} />
 }
 
+const TABS = {
+  OWNERS: withLoadingAndErrorHadler(PeopleList),
+  STATS: withLoadingAndErrorHadler(Stats),
+}
+
+const TAB_NAMES = Object.keys(TABS)
+
 const People = () => {
   const {translate: tr} = useI18n()
   const classes = useStyles()
@@ -141,7 +141,7 @@ const People = () => {
   return (
     <WithTabState tabNames={TAB_NAMES}>
       {({setTab, currentTab, currentTabName}) => {
-        const TabContent = withLoadingAndErrorHadler(TABS[currentTabName])
+        const TabContent = TABS[currentTabName]
         return (
           <Paper className={classes.wrapper}>
             <Tabs value={currentTab} onChange={setTab}>
