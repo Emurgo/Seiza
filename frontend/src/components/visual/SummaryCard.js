@@ -24,7 +24,11 @@ const styles = ({spacing, palette}) =>
   })
 
 const _SummaryCard = ({classes, children}) => {
-  return <Card className={classes.card}>{children}</Card>
+  return (
+    <Card elevation={6} className={classes.card}>
+      {children}
+    </Card>
+  )
 }
 
 const Row = ({children, classes, className}) => {

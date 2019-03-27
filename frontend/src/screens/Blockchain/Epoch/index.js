@@ -155,7 +155,7 @@ const EpochScreen = ({i18n, epochNumber, epochDataProvider, match, tab, tabOrder
             {({setTab, currentTab, currentTabName}) => {
               const TabContent = TABS.CONTENT[currentTabName]
               return (
-                <Paper>
+                <Paper elevation={6}>
                   <Tabs value={currentTab} onChange={setTab}>
                     <Tab label={translate(messages.blocksTab)} />
                     <Tab label={translate(messages.stakingPoolsTab)} />

@@ -41,13 +41,7 @@ const useExpansionPanelClasses = makeStyles((theme) => ({
     'margin': 0,
     'borderTopRightRadius': '0 !important',
     'borderTopLeftRadius': '0 !important',
-    // TODO: This boxShadow was modified from original Paper component
-    // that is being rendered inside of ExpansionPanelDetails.
-    // This shadow removes the shadow from the top but is heavier on the bottom.
-    // We needed to remove the shadow from top in order to have nice Addresses
-    // breakdown on Transaction screen.
-    'boxShadow':
-      '0px 2px 3px 0px rgba(0,0,0,0.2), 0px 2px 1px 0px rgba(0,0,0,0.14), 0px 2px 1px 0px rgba(0,0,0,0.12)',
+    'boxShadow': 'none',
   },
 }))
 
@@ -98,32 +92,34 @@ const ExpandableCard = (props: ExpandableCardPT) => {
 
   return (
     <Grid container className={className} direction="row">
-      <Grid item xs={12}>
-        <Paper className={classes.mainContent}>{renderHeader()}</Paper>
-      </Grid>
-      <Grid item xs={12}>
-        <ExpansionPanel classes={expansionPanelClasses} onChange={onChange} expanded={expanded}>
-          <ExpansionPanelDetails classes={detailsClasses}>
-            {renderExpandedArea()}
-          </ExpansionPanelDetails>
-          <ExpansionPanelSummary classes={summaryClasses}>
-            <Grid container justify="center" alignItems="center" direction="row">
-              <Grid item className={classes.spacing}>
-                <Typography variant="overline" color="primary" classes={footerClasses}>
-                  {footer}
-                </Typography>
+      <Paper elevation={6} className="w-100">
+        <Grid item xs={12}>
+          <Paper className={classes.mainContent}>{renderHeader()}</Paper>
+        </Grid>
+        <Grid item xs={12}>
+          <ExpansionPanel classes={expansionPanelClasses} onChange={onChange} expanded={expanded}>
+            <ExpansionPanelDetails classes={detailsClasses}>
+              {renderExpandedArea()}
+            </ExpansionPanelDetails>
+            <ExpansionPanelSummary classes={summaryClasses}>
+              <Grid container justify="center" alignItems="center" direction="row">
+                <Grid item className={classes.spacing}>
+                  <Typography variant="overline" color="primary" classes={footerClasses}>
+                    {footer}
+                  </Typography>
+                </Grid>
+                <Grid item>
+                  <IconButton color="primary">
+                    <ExpandMoreIcon
+                      className={classnames(classes.icon, expanded && classes.iconExpanded)}
+                    />
+                  </IconButton>
+                </Grid>
               </Grid>
-              <Grid item>
-                <IconButton color="primary">
-                  <ExpandMoreIcon
-                    className={classnames(classes.icon, expanded && classes.iconExpanded)}
-                  />
-                </IconButton>
-              </Grid>
-            </Grid>
-          </ExpansionPanelSummary>
-        </ExpansionPanel>
-      </Grid>
+            </ExpansionPanelSummary>
+          </ExpansionPanel>
+        </Grid>
+      </Paper>
     </Grid>
   )
 }

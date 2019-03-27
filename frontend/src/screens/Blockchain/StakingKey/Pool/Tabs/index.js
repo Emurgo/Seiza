@@ -40,7 +40,7 @@ const StakingPoolTabs = ({stakePool}) => {
       {({setTab, currentTab, currentTabName}) => {
         const TabContent = TABS.RENDER_CONTENT[currentTabName]
         return (
-          <Paper>
+          <Paper elevation={6}>
             <Tabs value={currentTab} onChange={setTab}>
               <Tab
                 icon={<HistoryIcon />}

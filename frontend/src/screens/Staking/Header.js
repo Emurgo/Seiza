@@ -34,7 +34,7 @@ const styles = ({palette, spacing}) =>
   })
 
 const StakePoolCard = withStyles(styles)(({classes, value, iconSrc}) => (
-  <Card className={classes.card}>
+  <Card elevation={6} className={classes.card}>
     <Grid container direction="row" alignItems="center" wrap="nowrap">
       <Grid item className={classes.cardIcon}>
         <img alt="" src={iconSrc} />

@@ -86,7 +86,7 @@ const People = () => {
       {({setTab, currentTab, currentTabName}) => {
         const TabContent = TABS[currentTabName]
         return (
-          <Paper className={classes.wrapper}>
+          <Paper elevation={6} className={classes.wrapper}>
             <Tabs value={currentTab} onChange={setTab}>
               <Tab icon={<OwnersIcon />} label={tr(messages.owners)} />
               <Tab icon={<StatsIcon />} label={tr(messages.stats)} />

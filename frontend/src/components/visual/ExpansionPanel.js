@@ -34,7 +34,7 @@ const ExpansionPanel = (props) => {
   const summaryClasses = useExpansionSummaryStyles()
   const detailsClasses = useExpansionDetailsStyles()
   return (
-    <MuiExpansionPanel classes={{...useStyles(), ...classes}} {...restProps}>
+    <MuiExpansionPanel elevation={6} classes={{...useStyles(), ...classes}} {...restProps}>
       <MuiExpansionPanelSummary
         classes={summaryClasses}
         expandIcon={<ExpandMoreIcon color="primary" />}

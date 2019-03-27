@@ -43,7 +43,7 @@ type MainProps = {|
 const KeyValueCard = ({children, header}: MainProps) => {
   const classes = useMainStyles()
   return (
-    <Card className={classes.wrapper}>
+    <Card elevation={6} className={classes.wrapper}>
       <CardHeader component={() => header} />
       <CardContent>{children}</CardContent>
     </Card>
