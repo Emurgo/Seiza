@@ -68,7 +68,7 @@ const AdaFiatTooltip = ({value}) => {
 }
 
 type Props = {|
-  +value: string,
+  +value: ?string,
   +noValue?: ?React$Node,
   +showCurrency?: boolean,
   +showSign?: ShowSign,
