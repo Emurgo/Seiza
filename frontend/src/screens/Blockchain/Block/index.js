@@ -5,6 +5,7 @@ import {useQuery} from 'react-apollo-hooks'
 import {compose} from 'redux'
 import {withProps} from 'recompose'
 import {withRouter} from 'react-router'
+import idx from 'idx'
 import gql from 'graphql-tag'
 
 import {defineMessages} from 'react-intl'
@@ -13,6 +14,7 @@ import {
   EntityIdCard,
   SummaryCard,
   SimpleLayout,
+  LoadingDots,
   LoadingInProgress,
   LoadingError,
   AdaValue,
@@ -29,7 +31,7 @@ const blockSummaryLabels = defineMessages({
   transactionsCount: '# Transactions',
 })
 
-const BlockSummaryCard = ({block}) => {
+const BlockSummaryCard = ({blockData, loading}) => {
   const {translate, formatInt, formatTimestamp} = useI18n()
 
   const label = blockSummaryLabels
@@ -41,12 +43,21 @@ const BlockSummaryCard = ({block}) => {
     </SummaryCard.Row>
   )
 
+  const NA = loading ? <LoadingDots /> : 'N/A'
+
+  const data = {
+    epoch: formatInt(idx(blockData, (_) => _.epoch), {defaultValue: NA}),
+    slot: formatInt(idx(blockData, (_) => _.slot), {defaultValue: NA}),
+    issuedAt: formatTimestamp(idx(blockData, (_) => _.timeIssued), {defaultValue: NA}),
+    txCount: formatInt(idx(blockData, (_) => _.transactionsCount), {defaultValue: NA}),
+  }
+
   return (
     <SummaryCard>
-      <Item label={label.epoch}>{formatInt(block.epoch)}</Item>
-      <Item label={label.slot}>{formatInt(block.slot)}</Item>
-      <Item label={label.issuedAt}>{formatTimestamp(block.timeIssued)}</Item>
-      <Item label={label.transactionsCount}>{formatInt(block.transactionsCount)}</Item>
+      <Item label={label.epoch}>{data.epoch}</Item>
+      <Item label={label.slot}>{data.slot}</Item>
+      <Item label={label.issuedAt}>{data.issuedAt}</Item>
+      <Item label={label.transactionsCount}>{data.txCount}</Item>
     </SummaryCard>
   )
 }
@@ -111,7 +122,7 @@ const useBlockData = ({blockHash}) => {
   )
   const {loading, error, data} = result
 
-  return {loading, error, block: data.block}
+  return {loading, error, blockData: data.block}
 }
 
 const transactionMessages = defineMessages({
@@ -120,13 +131,15 @@ const transactionMessages = defineMessages({
   outputsCount: 'Number of Outputs:',
 })
 
-const TransactionList = ({transactions}) => {
+const TransactionList = ({transactions, loading}) => {
   const {Row, Label, Value} = SummaryCard
   const {translate: tr, formatInt} = useI18n()
   return (
     <div>
-      {transactions &&
-        transactions.map((tx) => (
+      {loading ? (
+        <LoadingInProgress />
+      ) : (
+        (transactions || []).map((tx) => (
           <TransactionCard key={tx.txHash} txHash={tx.txHash}>
             {/* //TODO: certificate */}
             <Row>
@@ -144,26 +157,25 @@ const TransactionList = ({transactions}) => {
               <Value>{formatInt(tx.outputs.length)}</Value>
             </Row>
           </TransactionCard>
-        ))}
+        ))
+      )}
     </div>
   )
 }
 
 const Block = ({blockHash}) => {
-  const {loading, block, error} = useBlockData({blockHash})
+  const {loading, blockData, error} = useBlockData({blockHash})
   const {translate} = useI18n()
 
   return (
     <SimpleLayout title={translate(blockMessages.title)}>
-      {loading ? (
-        <LoadingInProgress />
-      ) : error ? (
+      <EntityIdCard label={translate(blockMessages.blockHash)} value={blockHash} />
+      {error ? (
         <LoadingError error={error} />
       ) : (
         <React.Fragment>
-          <EntityIdCard label={translate(blockMessages.blockHash)} value={block.blockHash} />
-          <BlockSummaryCard block={block} />
-          <TransactionList transactions={block.transactions} />
+          <BlockSummaryCard loading={loading} blockData={blockData} />
+          <TransactionList loading={loading} transactions={idx(blockData, (_) => _.transactions)} />
         </React.Fragment>
       )}
     </SimpleLayout>
