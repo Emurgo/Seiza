@@ -1,9 +1,7 @@
 // @flow
 import React from 'react'
 import {useQuery} from 'react-apollo-hooks'
-import {compose} from 'redux'
-import {withProps} from 'recompose'
-import {withRouter} from 'react-router'
+import useReactRouter from 'use-react-router'
 import {defineMessages} from 'react-intl'
 import {Tooltip, IconButton, Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
@@ -113,7 +111,12 @@ const useAddressSummary = (address58) => {
   return {loading, error, addressSummary: data.address}
 }
 
-const AddressScreen = ({address58}) => {
+const AddressScreen = () => {
+  const {
+    match: {
+      params: {address58},
+    },
+  } = useReactRouter()
   const {loading, error, addressSummary} = useAddressSummary(address58)
   const {translate: tr} = useI18n()
   return (
@@ -162,9 +165,4 @@ const AddressScreen = ({address58}) => {
   )
 }
 
-export default compose(
-  withRouter,
-  withProps((props) => ({
-    address58: props.match.params.address58,
-  }))
-)(AddressScreen)
+export default AddressScreen
