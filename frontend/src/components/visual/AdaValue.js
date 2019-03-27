@@ -162,7 +162,7 @@ const AdaValue = ({value, noValue, showCurrency, showSign = 'auto', colorful = f
 
   const classes = useAdaValueStyles({
     // Note: we want negative styles if we have value='1234' and showSign="-"
-    value: ['+', '-'].includes(showSign) ? `${showSign}${value}` : value,
+    value: value != null && ['+', '-'].includes(showSign) ? `${showSign}${value}` : value,
     colorful,
   })
   const fontClasses = useFontStyles()
