@@ -43,7 +43,7 @@ const Row = ({children, classes, className}) => {
 
 const Label = ({children}) => (
   <Grid item>
-    <Typography variant="caption" color="textSecondary">
+    <Typography variant="body1" color="textSecondary">
       {children}
     </Typography>
   </Grid>

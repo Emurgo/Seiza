@@ -17,8 +17,6 @@ const styles = ({palette}) =>
     },
     link: {
       textDecoration: 'none',
-      textTransform: 'uppercase',
-      position: 'relative',
     },
   })
 
@@ -41,6 +39,9 @@ const useNavTypographyStyles = makeStyles(({palette}) => ({
     'fontSize': 14,
     'fontWeight': 'bold',
     'display': 'inline-block',
+    'textTransform': 'uppercase',
+    'position': 'relative',
+    'letterSpacing': 1.2,
     '&:hover': {
       color: palette.primary.dark,
     },
