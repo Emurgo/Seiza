@@ -7,7 +7,6 @@ import {Grid} from '@material-ui/core'
 
 import {onDidUpdate, onDidMount} from '@/components/HOC/lifecycles'
 import Pagination, {getPageCount} from '@/components/visual/Pagination'
-import {LoadingInProgress, DebugApolloError} from '@/components/visual'
 import {GET_PAGED_BLOCKS_IN_EPOCH} from '@/api/queries'
 import BlocksTable, {COLUMNS_MAP} from '../PagedBlocks/BlocksTable'
 import withPagedData from '@/components/HOC/withPagedData'
@@ -19,11 +18,7 @@ const Blocks = (props) => {
     pagedDataResult: {loading, error, pagedData: pagedBlocks},
   } = props
 
-  return loading ? (
-    <LoadingInProgress />
-  ) : error ? (
-    <DebugApolloError error={error} />
-  ) : (
+  return (
     <Grid container direction="column" justify="flex-end" alignItems="flex-end">
       <Grid item>
         <Pagination
@@ -33,7 +28,7 @@ const Blocks = (props) => {
           onChangePage={props.onChangePage}
         />
       </Grid>
-      <BlocksTable blocks={pagedBlocks.blocks} columns={columns} />
+      <BlocksTable blocks={pagedBlocks.blocks} columns={columns} loading={loading} error={error} />
     </Grid>
   )
 }
