@@ -28,7 +28,12 @@ const Blocks = (props) => {
           onChangePage={props.onChangePage}
         />
       </Grid>
-      <BlocksTable blocks={pagedBlocks.blocks} columns={columns} loading={loading} error={error} />
+      <BlocksTable
+        blocks={pagedBlocks && pagedBlocks.blocks}
+        columns={columns}
+        loading={loading}
+        error={error}
+      />
     </Grid>
   )
 }
