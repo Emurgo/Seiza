@@ -1,11 +1,8 @@
 // @flow
 import React from 'react'
-import {compose} from 'redux'
 import {defineMessages} from 'react-intl'
-import {withRouter} from 'react-router'
-import {withProps} from 'recompose'
 import gql from 'graphql-tag'
-import {graphql} from 'react-apollo'
+import {useQuery} from 'react-apollo-hooks'
 import idx from 'idx'
 import useReactRouter from 'use-react-router'
 
@@ -217,9 +214,27 @@ const useEpochNavigation = (epochNumber: number) => {
   }
 }
 
-const EpochScreen = ({router, epochNumber, epochDataProvider, match, tab, tabOrder, setTab}) => {
+const useEpochData = (epochNumber) => {
+  const {loading, error, data} = useQuery(GET_EPOCH_BY_NUMBER, {
+    variables: {epochNumber},
+  })
+  return {
+    loading,
+    error,
+    epochData: data.epoch,
+  }
+}
+
+const EpochScreen = () => {
+  const {
+    match: {
+      params: {epoch: epochStr},
+    },
+  } = useReactRouter()
+  const epochNumber = parseInt(epochStr, 10)
+  const {epochData, error, loading} = useEpochData(epochNumber)
+
   const {translate} = useI18n()
-  const {epoch, error, loading} = epochDataProvider
   const classes = useStyles()
 
   const epochNavigation = useEpochNavigation(epochNumber)
@@ -255,7 +270,7 @@ const EpochScreen = ({router, epochNumber, epochDataProvider, match, tab, tabOrd
         <LoadingError error={error} />
       ) : (
         <React.Fragment>
-          <EpochSummaryCard epoch={epoch} loading={loading} />
+          <EpochSummaryCard epoch={epochData} loading={loading} />
           <WithTabState tabNames={TABS.ORDER}>
             {({setTab, currentTab, currentTabName}) => {
               const TabContent = TABS.CONTENT[currentTabName]
@@ -276,15 +291,4 @@ const EpochScreen = ({router, epochNumber, epochDataProvider, match, tab, tabOrd
   )
 }
 
-export default compose(
-  withRouter,
-  withProps((props) => ({
-    epochNumber: parseInt(props.match.params.epoch, 10),
-  })),
-  graphql(GET_EPOCH_BY_NUMBER, {
-    name: 'epochDataProvider',
-    options: ({epochNumber}) => ({
-      variables: {epochNumber},
-    }),
-  })
-)(EpochScreen)
+export default EpochScreen

@@ -1,30 +1,28 @@
 // @flow
 
 import React from 'react'
-import {graphql} from 'react-apollo'
-import {compose} from 'redux'
-import {withProps} from 'recompose'
-import {withRouter} from 'react-router'
 import {defineMessages} from 'react-intl'
 import gql from 'graphql-tag'
+import {useQuery} from 'react-apollo-hooks'
+import useReactRouter from 'use-react-router'
 
 import {
   EntityIdCard,
   SummaryCard,
   SimpleLayout,
   LoadingInProgress,
-  DebugApolloError,
+  LoadingError,
 } from '@/components/visual'
 
-import {withI18n} from '@/i18n/helpers'
+import {useI18n} from '@/i18n/helpers'
 
 const summaryLabels = defineMessages({
   name: 'Name',
   description: 'Description',
 })
 
-const _PoolSummaryCard = ({i18n, pool}) => {
-  const {translate} = i18n
+const PoolSummaryCard = ({stakePoolData}) => {
+  const {translate} = useI18n()
 
   const label = summaryLabels
 
@@ -37,38 +35,16 @@ const _PoolSummaryCard = ({i18n, pool}) => {
 
   return (
     <SummaryCard>
-      <Item label={label.name}>{pool.name}</Item>
-      <Item label={label.description}>{pool.description}</Item>
+      <Item label={label.name}>{stakePoolData.name}</Item>
+      <Item label={label.description}>{stakePoolData.description}</Item>
     </SummaryCard>
   )
 }
-
-const PoolSummaryCard = compose(withI18n)(_PoolSummaryCard)
 
 const messages = defineMessages({
   title: '<Stake pool>',
   poolHash: 'Pool ID',
 })
-
-const StakePool = ({poolDataProvider, i18n}) => {
-  const {loading, stakePool, error} = poolDataProvider
-  const {translate} = i18n
-
-  return (
-    <SimpleLayout title={translate(messages.title)}>
-      {loading ? (
-        <LoadingInProgress />
-      ) : error ? (
-        <DebugApolloError error={error} />
-      ) : (
-        <React.Fragment>
-          <EntityIdCard label={translate(messages.poolHash)} value={stakePool.poolHash} />
-          <PoolSummaryCard pool={stakePool} />
-        </React.Fragment>
-      )}
-    </SimpleLayout>
-  )
-}
 
 const GET_POOL_BY_HASH = gql`
   query($poolHash: String!) {
@@ -80,18 +56,38 @@ const GET_POOL_BY_HASH = gql`
   }
 `
 
-export default compose(
-  withRouter,
-  withProps((props) => ({
-    poolHash: props.match.params.poolHash,
-  })),
-  graphql(GET_POOL_BY_HASH, {
-    name: 'poolDataProvider',
-    options: ({poolHash}) => {
-      return {
-        variables: {poolHash},
-      }
+const useStakePoolData = (poolHash) => {
+  const {loading, error, data} = useQuery(GET_POOL_BY_HASH, {
+    variables: {
+      poolHash,
     },
-  }),
-  withI18n
-)(StakePool)
+  })
+  return {loading, error, stakePoolData: data.stakePool}
+}
+
+const StakePool = () => {
+  const {
+    match: {
+      params: {poolHash},
+    },
+  } = useReactRouter()
+  const {loading, stakePoolData, error} = useStakePoolData(poolHash)
+  const {translate} = useI18n()
+
+  return (
+    <SimpleLayout title={translate(messages.title)}>
+      <EntityIdCard label={translate(messages.poolHash)} value={poolHash} />
+      {loading ? (
+        <LoadingInProgress />
+      ) : error ? (
+        <LoadingError error={error} />
+      ) : (
+        <React.Fragment>
+          <PoolSummaryCard stakePoolData={stakePoolData} />
+        </React.Fragment>
+      )}
+    </SimpleLayout>
+  )
+}
+
+export default StakePool

@@ -7,9 +7,10 @@ import cn from 'classnames'
 import {Grid, Card, ButtonBase} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
-import {NavTypography} from '@/components/visual/Navbar'
 import Pagination, {getPageCount} from '@/components/visual/Pagination'
-import {EntityCardContent, SummaryCard, AdaValue} from '@/components/visual'
+import {NavTypography} from '@/components/visual/Navbar'
+
+import {LoadingInProgress, EntityCardContent, SummaryCard, AdaValue} from '@/components/visual'
 import useTabState from '@/components/hooks/useTabState'
 import {ObjectValues} from '@/helpers/flow'
 import {useI18n} from '@/i18n/helpers'
@@ -139,9 +140,18 @@ const TabsHeader = ({tabState, paginationProps}) => {
   )
 }
 
-const PagedTransactions = ({currentTransactions, totalCount, onChangePage, rowsPerPage, page}) => {
+const PagedTransactions = ({
+  loading,
+  currentTransactions,
+  totalCount,
+  onChangePage,
+  rowsPerPage,
+  page,
+}) => {
   const tabNames = ObjectValues(TAB_NAMES)
   const tabState = useTabState(tabNames)
+  // TODO: better handle loading
+  if (loading) return <LoadingInProgress />
   return (
     <Tabs {...tabState}>
       <TabsHeader paginationProps={{totalCount, onChangePage, rowsPerPage, page}} />
