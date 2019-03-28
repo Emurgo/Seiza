@@ -29,3 +29,5 @@ yarn-error.log*
 
 flow-coverage
 
+# vscode history plugin
+.history
