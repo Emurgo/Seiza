@@ -5,8 +5,8 @@ import gql from 'graphql-tag'
 import {useQuery} from 'react-apollo-hooks'
 import {defineMessages} from 'react-intl'
 import {makeStyles} from '@material-ui/styles'
-
 import {Typography} from '@material-ui/core'
+
 import {useI18n} from '@/i18n/helpers'
 import {useSelectedPoolsContext} from '../context/selectedPools'
 import {LoadingInProgress, ComparisonMatrix, LoadingError, AdaValue} from '@/components/visual'
