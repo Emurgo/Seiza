@@ -30,13 +30,11 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const messages = defineMessages({
-  stakingKey: 'Staking Key Id',
+  stakepoolHash: 'Stakepool Id',
   entityBadge: 'Revenue',
   poolRetiredWarning: 'Stake Pool is retired',
   poolSaturatedWarning: 'Stake Pool is overly saturated',
   poolNotCompetitive: 'Stake pool is not in the top 100',
-  stakingType: 'Staking Type:',
-  stakingTypeStakingPool: 'Staking Pool:',
   stakingPoolName: 'Name:',
   validationCharacters: 'Validation Characters:',
   creationDate: 'Creation Date:',
@@ -81,7 +79,7 @@ const StakePool = ({
       <Alert type="warning" message={translate(messages.poolRetiredWarning)} />
 
       <EntityIdCard
-        label={translate(messages.stakingKey)}
+        label={translate(messages.stakepoolHash)}
         value={stakePool.hash}
         iconRenderer={<img alt="" src={AdaIcon} width={40} height={40} />}
         badge={
@@ -89,10 +87,6 @@ const StakePool = ({
         }
       />
       <SummaryCard>
-        <Row>
-          <Label>{translate(messages.stakingType)}</Label>
-          <Value>{translate(messages.stakingTypeStakingPool)}</Value>
-        </Row>
         <Row>
           <Label>{translate(messages.stakingPoolName)}</Label>
           <Value>{stakePool.name}</Value>
