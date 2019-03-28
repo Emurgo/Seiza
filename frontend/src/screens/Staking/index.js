@@ -27,7 +27,7 @@ const SIDEBAR_WIDTH = 450
 const useStyles = makeStyles((theme) =>
   createStyles({
     sidebar: {
-      maxWidth: SIDEBAR_WIDTH,
+      width: SIDEBAR_WIDTH,
     },
     notFound: {
       marginTop: '100px',
@@ -43,6 +43,23 @@ const useStyles = makeStyles((theme) =>
       // Note: this does not work good with `flexGrow:1` as it introduces various overflow issues
       // with ComparisonMatrix layout
       width: `calc(100% - ${SIDEBAR_WIDTH}px)`,
+    },
+    sidebarWrapper: {
+      minWidth: 450 + theme.spacing.unit,
+      paddingRight: theme.spacing.unit,
+      flex: 3,
+    },
+    centerWrapper: {
+      flex: 9,
+      [theme.breakpoints.up('xl')]: {
+        flex: 6,
+      },
+    },
+    rightSideWrapper: {
+      flex: 0,
+      [theme.breakpoints.up('xl')]: {
+        flex: 3,
+      },
     },
   })
 )
@@ -158,19 +175,19 @@ const FullWidthLayout = ({children}) => {
 }
 
 const CenteredLayout = ({children}) => {
+  // Note: using custom classes instead of Grid as its customization
+  // with regards to minWidth is hard
   const classes = useStyles()
   return (
-    <Grid container direction="row" wrap="nowrap" spacing={24}>
-      <Grid item lg={3} xl={3}>
+    <div className="d-flex">
+      <div className={classes.sidebarWrapper}>
         <div className={classes.sidebar}>
           <SideMenu />
         </div>
-      </Grid>
-      <Grid item lg={9} xl={6} className={classes.mainContent}>
-        {children}
-      </Grid>
-      <Grid item lg={false} xl={3} />
-    </Grid>
+      </div>
+      <div className={classes.centerWrapper}>{children}</div>
+      <div className={classes.rightSideWrapper} />
+    </div>
   )
 }
 
