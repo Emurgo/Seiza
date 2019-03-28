@@ -27,6 +27,7 @@ const styles = ({palette, spacing}) =>
     childrenContainer: {
       '& > *': {
         marginBottom: spacing.unit * 2.5,
+        width: '100%',
       },
     },
   })
