@@ -177,7 +177,7 @@ const poolsStyles = ({palette}) => {
       position: 'relative',
     },
     'poolAppearActive': {
-      animation: 'pool-enter 500ms',
+      animation: 'pool-enter-2 500ms',
     },
     'poolLeave': {
       opacity: '1',
@@ -187,7 +187,7 @@ const poolsStyles = ({palette}) => {
       height: '32px',
     },
     'poolLeaveActive': {
-      animation: 'pool-leave 600ms',
+      animation: 'pool-leave-2 600ms',
     },
   }
 }
