@@ -52,7 +52,7 @@ const Filters = () => {
   const {translate: tr} = useI18n()
   const classes = useStyles()
   return (
-    <Card>
+    <Card elevation={6}>
       <CardContent>
         <Grid container className={classes.wrapper} direction="row">
           <Grid item xs={4}>

@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
 const EntityIdCard = ({iconRenderer, label, value, badge}) => {
   const classes = useStyles()
   return (
-    <Card className={classNames(classes.card, classes.flex)}>
+    <Card elevation={6} className={classNames(classes.card, classes.flex)}>
       {iconRenderer && (
         <Grid item className={classNames(classes.flex, classes.centeredFlex)}>
           {iconRenderer}

@@ -47,7 +47,7 @@ const TransactionCard = ({transaction: tx}) => {
   const classes = useStyles()
   const {Row, Label, Value} = SummaryCard
   return (
-    <Card>
+    <Card elevation={6}>
       <div className={classes.txCard}>
         <EntityCardContent label={tr(messages.transactionEntity)} value={tx.txHash} />
       </div>

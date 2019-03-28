@@ -44,7 +44,7 @@ const tableStyles = (theme) => ({
 
 export default compose(withStyles(tableStyles))(
   ({i18n, classes, headerData, bodyData, noDataText, loading, error}) => (
-    <Paper className={classes.root}>
+    <Paper elevation={6} className={classes.root}>
       <Overlay.Wrapper>
         <Table>
           <TableHead className={classes.head}>
