@@ -116,6 +116,7 @@ export default ({data, height}) => {
       pointBackgroundColor: d.color,
       backgroundColor: gradients ? gradients[d.id] : DEFAULT_GRADIENT,
       pointRadius: 3,
+      pointHitRadius: 5,
       borderWidth: 2,
     })),
   }
