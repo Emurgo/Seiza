@@ -33,6 +33,9 @@ export default ({data, height}) => {
   const [activeGraph, setActiveGraph] = useState(null)
   const [gradients, setGradients] = useState(null)
 
+  // hack
+  const [hackTimestamp, setHackTimestamp] = useState()
+
   // TODO: depend on data
   useEffect(() => {
     const gradients = data.reduce(
@@ -57,14 +60,26 @@ export default ({data, height}) => {
       // points in all datasets will be hovered
       mode: 'nearest',
       onHover(event, item) {
+        if (hackTimestamp) return null
+
         if (item.length) {
           setActiveGraph(item[0]._datasetIndex)
         } else if (activeGraph != null) {
           setActiveGraph(null)
         }
+        event.stopPropagation()
       },
     },
-    legend: {},
+    legend: {
+      onHover(event, item) {
+        setActiveGraph(item.datasetIndex)
+        setHackTimestamp(Date.now())
+      },
+      onLeave() {
+        setHackTimestamp(null)
+        setActiveGraph(null)
+      },
+    },
     tooltips: {},
     scales: {
       xAxes: [
