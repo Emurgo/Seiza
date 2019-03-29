@@ -4,6 +4,9 @@ import _ from 'lodash'
 import React, {useState, useEffect} from 'react'
 import {Line} from 'react-chartjs-2'
 import {darken, fade} from '@material-ui/core/styles/colorManipulator'
+import moment from 'moment'
+
+moment.locale('en') // somehow goes to russian
 
 // TODO: use time for x-axes
 
@@ -67,8 +70,21 @@ export default ({data, height}) => {
       xAxes: [
         {
           ticks: {
-            autoSkip: true,
-            maxTicksLimit: 10,
+            maxTicksLimit: 15,
+          },
+          type: 'time',
+          time: {
+            displayFormats: {
+              quarter: 'MMMM DD YYYY',
+            },
+          },
+        },
+      ],
+      yAxes: [
+        {
+          scaleLabel: {
+            display: true,
+            labelString: 'Count',
           },
         },
       ],
@@ -76,7 +92,7 @@ export default ({data, height}) => {
   }
 
   const lineData = {
-    labels: getLabels(data),
+    //labels: getLabels(data),
     datasets: data.map((d, index) => ({
       data: d.data,
       label: d.label,
@@ -84,7 +100,8 @@ export default ({data, height}) => {
       borderColor: d.color,
       pointBackgroundColor: d.color,
       backgroundColor: gradients ? gradients[d.id] : DEFAULT_GRADIENT,
-      pointRadius: 4,
+      pointRadius: 3,
+      borderWidth: 2,
     })),
   }
 
