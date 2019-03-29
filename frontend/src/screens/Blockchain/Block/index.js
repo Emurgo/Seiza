@@ -29,6 +29,7 @@ import {useI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
 import {ReactComponent as NextBlockIcon} from '@/assets/icons/next-epoch.svg'
 import {ReactComponent as PreviousBlockIcon} from '@/assets/icons/previous-epoch.svg'
+import {extractError} from '@/helpers/errors'
 
 const blockSummaryLabels = defineMessages({
   epoch: 'Epoch',
@@ -243,7 +244,7 @@ const useBlockData = ({blockHash}) => {
   )
   const {loading, error, data} = result
 
-  return {loading, error, blockData: data.block}
+  return {loading, error: extractError(error, ['block']), blockData: data.block}
 }
 
 const transactionMessages = defineMessages({

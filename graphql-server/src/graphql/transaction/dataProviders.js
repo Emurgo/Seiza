@@ -1,5 +1,5 @@
 // @flow
-import {parseAdaValue} from '../utils'
+import {parseAdaValue, annotateNotFoundError} from '../utils'
 
 export const facadeTransaction = (source: any) => {
   return {
@@ -32,6 +32,6 @@ export const fetchTransaction = async ({elastic, E}: any, txHash: string) => {
     // todo: filter on active fork?
     .filter(E.matchPhrase('hash', txHash))
     .getSingleHit()
-
+    .catch(annotateNotFoundError({elasticType: 'tx', entity: 'Transaction'}))
   return facadeTransaction(hit._source)
 }

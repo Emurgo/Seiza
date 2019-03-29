@@ -8,6 +8,7 @@ import gql from 'graphql-tag'
 import cn from 'classnames'
 import {makeStyles} from '@material-ui/styles'
 import {Typography, Grid} from '@material-ui/core'
+import {extractError} from '@/helpers/errors'
 
 import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
 import {
@@ -328,7 +329,7 @@ const useTransactionData = (txHash) => {
       variables: {txHash},
     }
   )
-  return {loading, error, transactionData: data.transaction}
+  return {loading, error: extractError(error, ['transaction']), transactionData: data.transaction}
 }
 
 const useScreenParams = () => {

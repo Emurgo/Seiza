@@ -1,6 +1,6 @@
 import moment from 'moment'
 import assert from 'assert'
-import {parseAdaValue} from '../utils'
+import {parseAdaValue, annotateNotFoundError} from '../utils'
 
 export const facadeElasticBlock = (data) => ({
   epoch: data.epoch,
@@ -24,6 +24,7 @@ export const fetchBlockByHash = async ({elastic, E}, blockHash) => {
     .q('slot')
     .filter(E.matchPhrase('hash', blockHash))
     .getSingleHit()
+    .catch(annotateNotFoundError({entity: 'Block'}))
 
   return facadeElasticBlock(hit._source)
 }
@@ -48,6 +49,7 @@ export const fetchBlockBySlot = async ({elastic, E}, {epoch, slot}) => {
     .filter(E.eq('epoch', epoch))
     .filter(E.eq('slot', slot))
     .getSingleHit()
+    .catch(annotateNotFoundError({entity: 'Block'}))
 
   return facadeElasticBlock(hit._source)
 }

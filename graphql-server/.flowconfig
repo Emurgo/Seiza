@@ -1,4 +1,6 @@
 [ignore]
+# vscode history plugin
+.*/.history/.*
 
 [include]
 
