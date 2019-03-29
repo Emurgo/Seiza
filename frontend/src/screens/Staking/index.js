@@ -17,6 +17,7 @@ import {useAutoSyncContext} from './context/autoSync'
 import SideMenu from './SideMenu'
 import StakePoolList from './StakeList'
 import ComparisonMatrix from './ComparisonMatrix'
+import Charts from './Charts'
 import People from './People'
 import StakePoolHeader from './Header'
 import PageNotFound from '../PageNotFound'
@@ -121,7 +122,7 @@ const LayoutedHistory = () => (
 )
 const LayoutedCharts = () => (
   <CenteredLayout>
-    <NotFound />
+    <Charts />
   </CenteredLayout>
 )
 const LayoutedLocation = () => (
