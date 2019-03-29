@@ -15,8 +15,6 @@ import {getUserStakingKey} from '../mockedData'
 const messages = defineMessages({
   header: 'Staking Key',
   stakingKey: 'Staking Key Id',
-  stakingType: 'Staking Type:',
-  stakingTypeUser: 'User',
   stakingTypeStakingPool: 'Staking Pool',
   stakingTypePending: 'Pending',
   creationDate: 'Creation Date:',
@@ -43,10 +41,6 @@ const UserStakingKey = ({stakingKey, i18n: {translate, formatTimestamp, formatIn
       />
 
       <SummaryCard>
-        <Row>
-          <Label>{translate(messages.stakingType)}</Label>
-          <Value>{translate(messages.stakingTypeUser)}</Value>
-        </Row>
         <Row>
           <Label>{translate(messages.creationDate)}</Label>
           <Value>{formatTimestamp(stakingKey.createdAt)}</Value>
