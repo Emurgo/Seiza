@@ -2,9 +2,10 @@
 
 import React from 'react'
 import {compose} from 'redux'
-import {Grid, Typography, Card, createStyles, withStyles} from '@material-ui/core'
+import {Grid, Typography, createStyles, withStyles} from '@material-ui/core'
 import {defineMessages} from 'react-intl'
 
+import {Card} from '@/components/visual'
 import iconEpoch from '@/assets/icons/metrics-epoch.svg'
 import {withI18n} from '@/i18n/helpers'
 
@@ -25,7 +26,6 @@ const styles = ({palette, spacing}) =>
       width: '270px',
       marginLeft: '30px',
       marginRight: '30px',
-      boxShadow: 'none',
       padding: spacing.unit,
     },
     cardIcon: {
@@ -34,7 +34,7 @@ const styles = ({palette, spacing}) =>
   })
 
 const StakePoolCard = withStyles(styles)(({classes, value, iconSrc}) => (
-  <Card elevation={6} className={classes.card}>
+  <Card classes={{root: classes.card}}>
     <Grid container direction="row" alignItems="center" wrap="nowrap">
       <Grid item className={classes.cardIcon}>
         <img alt="" src={iconSrc} />

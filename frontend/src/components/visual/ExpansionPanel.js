@@ -5,6 +5,9 @@ import MuiExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import {makeStyles} from '@material-ui/styles'
 
+import {Card} from '@/components/visual'
+import {mergeStylesheets} from '@/helpers/styles'
+
 const useExpansionDetailsStyles = makeStyles((theme) => ({
   root: {
     flexDirection: 'column',
@@ -30,19 +33,22 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const ExpansionPanel = (props) => {
-  const {classes, summary, children, ...restProps} = props
+  const {classes: customClasses = {}, summary, children, ...restProps} = props
+  const classes = useStyles()
   const summaryClasses = useExpansionSummaryStyles()
   const detailsClasses = useExpansionDetailsStyles()
   return (
-    <MuiExpansionPanel elevation={6} classes={{...useStyles(), ...classes}} {...restProps}>
-      <MuiExpansionPanelSummary
-        classes={summaryClasses}
-        expandIcon={<ExpandMoreIcon color="primary" />}
-      >
-        {summary}
-      </MuiExpansionPanelSummary>
-      <MuiExpansionPanelDetails classes={detailsClasses}>{children}</MuiExpansionPanelDetails>
-    </MuiExpansionPanel>
+    <Card>
+      <MuiExpansionPanel classes={mergeStylesheets(classes, customClasses)} {...restProps}>
+        <MuiExpansionPanelSummary
+          classes={summaryClasses}
+          expandIcon={<ExpandMoreIcon color="primary" />}
+        >
+          {summary}
+        </MuiExpansionPanelSummary>
+        <MuiExpansionPanelDetails classes={detailsClasses}>{children}</MuiExpansionPanelDetails>
+      </MuiExpansionPanel>
+    </Card>
   )
 }
 

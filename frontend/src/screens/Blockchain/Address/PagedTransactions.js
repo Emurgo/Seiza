@@ -4,7 +4,7 @@ import {compose} from 'redux'
 import {withStateHandlers, withProps} from 'recompose'
 import {defineMessages} from 'react-intl'
 import cn from 'classnames'
-import {Grid, Card} from '@material-ui/core'
+import {Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
 import Pagination, {getPageCount} from '@/components/visual/Pagination'
@@ -17,6 +17,7 @@ import {
   Link,
   LiteTabs,
   LiteTab,
+  Card,
 } from '@/components/visual'
 import useTabState from '@/components/hooks/useTabState'
 import {ObjectValues} from '@/helpers/flow'
@@ -56,7 +57,7 @@ const TransactionCard = ({transaction: tx}) => {
   const classes = useStyles()
   const {Row, Label, Value} = SummaryCard
   return (
-    <Card elevation={6}>
+    <Card>
       <div className={classes.txCard}>
         <EntityCardContent
           label={tr(messages.transactionEntity)}

@@ -4,12 +4,10 @@ import type {ElementRef} from 'react'
 import classnames from 'classnames'
 import {withProps} from 'recompose'
 import {
-  Card,
   withStyles,
   createStyles,
   MenuList,
   MenuItem,
-  Paper,
   Popper,
   Grow,
   ClickAwayListener,
@@ -21,6 +19,7 @@ import {
 import {fade} from '@material-ui/core/styles/colorManipulator'
 import {MoreVert} from '@material-ui/icons'
 
+import {Card} from '@/components/visual'
 import WithModalState from '@/components/headless/modalState'
 import IconEpoch from '@/assets/icons/metrics-epoch.svg'
 import IconBlocks from '@/assets/icons/metrics-blocks.svg'
@@ -33,7 +32,6 @@ const styles = (theme) =>
     card: {
       display: 'flex',
       flexDirection: 'row',
-      boxShadow: 'none',
     },
     dropdownArrow: {
       display: 'flex',
@@ -106,7 +104,7 @@ const DropdownList = withProps(({close}) => ({
   <Popper open={isOpen} anchorEl={anchorEl} transition placement="bottom-end">
     {({TransitionProps}) => (
       <Grow {...TransitionProps}>
-        <Paper className={className}>
+        <Card classes={{root: className}}>
           <ClickAwayListener onClickAway={close}>
             <MenuList>
               {options.map(({label, onClick}) => (
@@ -116,7 +114,7 @@ const DropdownList = withProps(({close}) => ({
               ))}
             </MenuList>
           </ClickAwayListener>
-        </Paper>
+        </Card>
       </Grow>
     )}
   </Popper>
@@ -168,7 +166,7 @@ class MetricsCard extends React.Component<MetricsCardProps> {
       <WithModalState>
         {({isOpen, closeModal: closePopper, toggle: togglePopper}) => (
           <React.Fragment>
-            <Card className={classnames(classes.card, className)}>
+            <Card classes={{root: classnames(classes.card, className)}}>
               <ClickableWrapper {...{onClick, classes}} buttonBaseProps={clickableWrapperProps}>
                 {/* just to center the image */}
                 <Grid container direction="column" justify="space-around" className={classes.icon}>

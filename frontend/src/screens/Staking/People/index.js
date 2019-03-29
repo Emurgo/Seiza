@@ -3,15 +3,15 @@
 import React from 'react'
 import gql from 'graphql-tag'
 import {useQuery} from 'react-apollo-hooks'
-import {Paper, Typography} from '@material-ui/core'
+import {Typography} from '@material-ui/core'
 import {People as OwnersIcon, ViewHeadline as StatsIcon} from '@material-ui/icons'
 import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
 
-import {useSelectedPoolsContext} from '../context/selectedPools'
 import {useI18n} from '@/i18n/helpers'
-import {Tab, Tabs, LoadingInProgress, LoadingError} from '@/components/visual'
+import {Tab, Tabs, LoadingInProgress, LoadingError, Card} from '@/components/visual'
 import WithTabState from '@/components/headless/tabState'
+import {useSelectedPoolsContext} from '../context/selectedPools'
 import PeopleList from './PeopleList'
 import Stats from './Stats'
 
@@ -22,7 +22,7 @@ const messages = defineMessages({
 })
 
 const useStyles = makeStyles((theme) => ({
-  wrapper: {
+  root: {
     marginTop: theme.spacing.unit * 3,
     marginBottom: theme.spacing.unit * 3,
   },
@@ -148,16 +148,17 @@ const People = () => {
       {({setTab, currentTab, currentTabName}) => {
         const TabContent = TABS[currentTabName]
         return (
-          <Paper elevation={6} className={classes.wrapper}>
+          <Card classes={classes}>
             <Tabs value={currentTab} onChange={setTab}>
               <Tab icon={<OwnersIcon />} label={tr(messages.owners)} />
               <Tab icon={<StatsIcon />} label={tr(messages.stats)} />
             </Tabs>
+
             <TabContent
               data={stakePools}
               {...{loading, error, NoDataComponent, ErrorComponent, LoadingComponent}}
             />
-          </Paper>
+          </Card>
         )
       }}
     </WithTabState>

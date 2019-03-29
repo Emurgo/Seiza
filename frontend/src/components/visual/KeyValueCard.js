@@ -1,7 +1,8 @@
 // @flow
 import React from 'react'
 import classnames from 'classnames'
-import {Card, CardHeader, CardContent, Typography, Grid} from '@material-ui/core'
+import {CardHeader, CardContent, Typography, Grid} from '@material-ui/core'
+import {Card} from '@/components/visual'
 
 import {makeStyles} from '@material-ui/styles'
 import type {Node} from 'react'
@@ -31,7 +32,7 @@ const useBodyStyles = makeStyles(({palette}) => ({
 }))
 
 const useMainStyles = makeStyles(() => ({
-  wrapper: {
+  root: {
     width: '100%',
   },
 }))
@@ -45,7 +46,7 @@ type MainProps = {|
 const KeyValueCard = ({children, header, className}: MainProps) => {
   const classes = useMainStyles()
   return (
-    <Card elevation={6} className={classnames(classes.wrapper, className)}>
+    <Card classes={{root: classnames(classes.root, className)}}>
       <CardHeader component={() => header} />
       <CardContent>{children}</CardContent>
     </Card>

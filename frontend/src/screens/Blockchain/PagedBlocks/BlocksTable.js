@@ -59,8 +59,7 @@ const useTHStyles = makeStyles((theme) => ({
   content: {
     marginLeft: '6px',
   },
-})
-)
+}))
 
 const TH = ({Icon, label}) => {
   const {translate} = useI18n()
@@ -68,18 +67,16 @@ const TH = ({Icon, label}) => {
   return (
     <Grid container direction="row" alignItems="center" wrap="nowrap">
       <Icon />
-      <span className={classes.content}>
-        {translate(label)}
-      </span>
+      <span className={classes.content}>{translate(label)}</span>
     </Grid>
   )
 }
 
 type Props = {
-  blocks: ?$ReadOnlyArray<Block>;
-  columns: any;
-  loading: boolean;
-  error: any;
+  blocks: ?$ReadOnlyArray<Block>,
+  columns: any,
+  loading: boolean,
+  error: any,
 }
 
 const BlocksTable = ({blocks, columns, loading, error}: Props) => {
