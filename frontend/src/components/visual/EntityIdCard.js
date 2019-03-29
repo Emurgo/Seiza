@@ -78,7 +78,7 @@ const useContentStyles = makeStyles((theme) => ({
 
 // Note: User is unable to select whole text at once
 // due to cutting the text into different HTML elements
-export const EntityCardContent = ({label, value = '', innerRef}) => {
+export const EntityCardContent = ({label, value = '', innerRef, copyValue}) => {
   const classes = useContentStyles()
 
   return (
@@ -92,7 +92,7 @@ export const EntityCardContent = ({label, value = '', innerRef}) => {
             <EllipsizeMiddle value={value} />
           </Typography>
           <div className={classes.copyToClipboard}>
-            <CopyToClipboard value={value} />
+            <CopyToClipboard value={copyValue || value} />
           </div>
         </Grid>
       </div>
