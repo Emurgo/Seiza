@@ -4,17 +4,17 @@ import {compose} from 'redux'
 import {withStateHandlers, withProps} from 'recompose'
 import {defineMessages} from 'react-intl'
 import cn from 'classnames'
-import {Grid, Card, ButtonBase} from '@material-ui/core'
+import {Grid, Card} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
-import {NavTypography} from '@/components/visual/Navbar'
 import Pagination, {getPageCount} from '@/components/visual/Pagination'
-import {EntityCardContent, SummaryCard, AdaValue} from '@/components/visual'
+import {EntityCardContent, SummaryCard, AdaValue, LiteTabs, LiteTab} from '@/components/visual'
 import useTabState from '@/components/hooks/useTabState'
 import {ObjectValues} from '@/helpers/flow'
 import {useI18n} from '@/i18n/helpers'
 import {TabsProvider as Tabs, TabItem as Tab, useTabContext} from '@/components/context/TabContext'
 import type {Transaction} from '@/__generated__/schema.flow'
+import {getPadding} from '@/components/visual/LiteTabs'
 
 const messages = defineMessages({
   transactionEntity: 'Transaction Id',
@@ -95,17 +95,16 @@ const TAB_NAMES = {
   RECEIVED: 'RECEIVED',
 }
 
-const TabHeader = ({onClick, isActive, label}) => {
-  return (
-    <ButtonBase onClick={onClick}>
-      <NavTypography isActive={isActive}>{label}</NavTypography>
-    </ButtonBase>
-  )
-}
+const useLiteTabsClasses = makeStyles((theme) => ({
+  root: {
+    transform: `translateX(-${getPadding(theme)}px)`,
+  },
+}))
 
 const TabsHeader = ({tabState, paginationProps}) => {
   const {translate: tr} = useI18n()
-  const {currentTab, setTab} = useTabContext()
+  const classes = useLiteTabsClasses()
+  const {currentTabIndex, setTabByEventIndex} = useTabContext()
   const {totalCount, onChangePage, rowsPerPage, page} = paginationProps
   const tabs = [
     {id: TAB_NAMES.ALL, label: tr(messages.all)},
@@ -117,11 +116,13 @@ const TabsHeader = ({tabState, paginationProps}) => {
     <Grid container direction="row" justify="space-between">
       <Grid item xs={12} sm={6} md={4} lg={3}>
         <Grid container direction="row" justify="space-between">
-          {tabs.map(({id, label}) => (
-            <Grid key={id} item>
-              <TabHeader onClick={() => setTab(id)} isActive={currentTab === id} label={label} />
-            </Grid>
-          ))}
+          <Grid item>
+            <LiteTabs value={currentTabIndex} onChange={setTabByEventIndex} classes={classes}>
+              {tabs.map(({id, label}) => (
+                <LiteTab key={id} label={label} />
+              ))}
+            </LiteTabs>
+          </Grid>
         </Grid>
       </Grid>
 
