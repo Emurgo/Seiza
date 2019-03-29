@@ -5,14 +5,15 @@ import moment from 'moment'
 import React from 'react'
 import LineChart from './LineChart'
 
+const DATE_FORMAT = 'MMMM DD YYYY'
+
 function getRandomInt(min: number, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
 function generateData(count, xMin, xMax, yMin, yMax) {
-  const a = _.range(0, count).map((item, index) => {
-    const dateFormat = 'MMMM DD YYYY'
-    const date = moment('April 01 2017', dateFormat)
+  const data = _.range(0, count).map((item, index) => {
+    const date = moment('April 01 2017', DATE_FORMAT)
     date.add(index, 'days')
 
     return {
@@ -20,7 +21,7 @@ function generateData(count, xMin, xMax, yMin, yMax) {
       y: getRandomInt(yMin, yMax),
     }
   })
-  return _.uniqBy(_.sortBy(a, (d) => d.x), (d) => d.x)
+  return _.uniqBy(_.sortBy(data, (d) => d.x), (d) => d.x)
 }
 
 export default () => {
@@ -59,7 +60,7 @@ export default () => {
 
   return (
     <div style={{paddingTop: 50}}>
-      <LineChart data={data} height={100} />
+      <LineChart data={data} height={100} dateFormat={DATE_FORMAT} yLabel="Count" />
     </div>
   )
 }

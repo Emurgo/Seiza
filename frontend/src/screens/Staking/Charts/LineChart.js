@@ -1,42 +1,42 @@
 // @flow
 
-import _ from 'lodash'
 import React, {useState, useEffect} from 'react'
 import {Line} from 'react-chartjs-2'
-import {darken, fade} from '@material-ui/core/styles/colorManipulator'
+import {fade} from '@material-ui/core/styles/colorManipulator'
 import moment from 'moment'
 
-moment.locale('en') // somehow goes to russian
+// TODO: fix, somehow goes to russian
+moment.locale('en')
 
-// TODO: use time for x-axes
+const DEFAULT_GRADIENT = '#ffffff'
 
+// eslint-disable-next-line
 // https://stackoverflow.com/questions/29447579/chart-js-add-gradient-instead-of-solid-color-implementing-solution
 const getGradient = (id, color, height) => {
   const elem = document.getElementById(id)
-  const ctx = elem && elem.getContext('2d')
+  if (!elem) return DEFAULT_GRADIENT
+  // $FlowFixMe
+  const ctx = elem.getContext('2d')
   const gradient = ctx.createLinearGradient(0, 0, 0, height * 5)
   gradient.addColorStop(0, fade(color, 0.3))
   gradient.addColorStop(1, fade(color, 0))
   return gradient
 }
 
-const getLabels = (data) => {
-  const allXData = _.flatten(data.map((d) => d.data)).map((d) => d.x)
-  const min = Math.min(...allXData)
-  const max = Math.max(...allXData)
-  return _.range(min, max + 1, 1)
-}
+type Props = {|
+  data: Array<Object>,
+  height: number,
+  dateFormat: string,
+  yLabel: string,
+|}
 
-const DEFAULT_GRADIENT = '#ffffff'
-
-export default ({data, height}) => {
+export default ({data, height, dateFormat, yLabel}: Props) => {
   const [activeGraph, setActiveGraph] = useState(null)
   const [gradients, setGradients] = useState(null)
 
   // hack
-  const [hackTimestamp, setHackTimestamp] = useState()
+  const [hoveredByLegend, setHoveredByLegend] = useState(false)
 
-  // TODO: depend on data
   useEffect(() => {
     const gradients = data.reduce(
       (acc, d) => ({...acc, [d.id]: getGradient('test-graph', d.color, height)}),
@@ -52,35 +52,34 @@ export default ({data, height}) => {
       },
     },
     animation: {
-      duration: 0, // general animation time
+      duration: 0,
     },
     hover: {
-      // Note: `mode: neareset`
+      // Note: `mode: nearest`
       // Otherwise when hovering over `nth` point in some dataset, all `nth`
       // points in all datasets will be hovered
       mode: 'nearest',
       onHover(event, item) {
-        if (hackTimestamp) return null
+        if (hoveredByLegend) return null
 
         if (item.length) {
           setActiveGraph(item[0]._datasetIndex)
         } else if (activeGraph != null) {
           setActiveGraph(null)
         }
-        event.stopPropagation()
+        return null
       },
     },
     legend: {
       onHover(event, item) {
         setActiveGraph(item.datasetIndex)
-        setHackTimestamp(Date.now())
+        setHoveredByLegend(true)
       },
       onLeave() {
-        setHackTimestamp(null)
+        setHoveredByLegend(false)
         setActiveGraph(null)
       },
     },
-    tooltips: {},
     scales: {
       xAxes: [
         {
@@ -90,7 +89,7 @@ export default ({data, height}) => {
           type: 'time',
           time: {
             displayFormats: {
-              quarter: 'MMMM DD YYYY',
+              quarter: dateFormat,
             },
           },
         },
@@ -99,7 +98,7 @@ export default ({data, height}) => {
         {
           scaleLabel: {
             display: true,
-            labelString: 'Count',
+            labelString: yLabel,
           },
         },
       ],
@@ -107,7 +106,6 @@ export default ({data, height}) => {
   }
 
   const lineData = {
-    //labels: getLabels(data),
     datasets: data.map((d, index) => ({
       data: d.data,
       label: d.label,
