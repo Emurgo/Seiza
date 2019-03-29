@@ -1,9 +1,7 @@
 // @flow
 import React from 'react'
-import {graphql} from 'react-apollo'
-import {compose} from 'redux'
-import {withProps} from 'recompose'
-import {withRouter} from 'react-router'
+import {useQuery} from 'react-apollo-hooks'
+import useReactRouter from 'use-react-router'
 import {defineMessages} from 'react-intl'
 import classnames from 'classnames'
 import idx from 'idx'
@@ -15,13 +13,15 @@ import {
   SummaryCard,
   SimpleLayout,
   LoadingInProgress,
-  DebugApolloError,
+  LoadingError,
   EntityIdCard,
   ExpandableCard,
   AdaValue,
   Link,
   Divider,
   EllipsizeMiddle,
+  Overlay,
+  LoadingOverlay,
 } from '@/components/visual'
 import WithModalState from '@/components/headless/modalState'
 import AssuranceChip from '@/components/common/AssuranceChip'
@@ -35,7 +35,8 @@ const messages = defineMessages({
   header: 'Transaction',
   transactionId: 'Transaction Id',
   assuranceLevel: 'Assurance Level:',
-  confirmations: '{count, plural, =0 {confirmations} one {confirmation} other {confirmations}}',
+  confirmations:
+    '{count, plural, =0 {# confirmations} one {# confirmation} other {# confirmations}}',
   epoch: 'Epoch:',
   slot: 'Slot:',
   date: 'Date:',
@@ -220,10 +221,10 @@ const AddressesBreakdown = ({transaction}) => {
   )
 }
 
-const TransactionSummary = ({transaction}) => {
+const TransactionSummary = ({loading, transaction}) => {
   const {translate, formatInt, formatTimestamp} = useI18n()
 
-  const N_A = translate(messages.notAvailable)
+  const NA = translate(messages.notAvailable)
 
   const Item = ({label, children}) => (
     <SummaryCard.Row>
@@ -233,90 +234,54 @@ const TransactionSummary = ({transaction}) => {
   )
 
   const epochNumber = idx(transaction, (_) => _.block.epoch)
-  const renderEpochNumber =
-    epochNumber != null ? (
-      <Link to={routeTo.epoch(epochNumber)}>{formatInt(epochNumber)}</Link>
-    ) : (
-      N_A
-    )
-
-  const blockHash = idx(transaction, (_) => _.block.blockHash)
   const slot = idx(transaction, (_) => _.block.slot)
-  const renderSlot =
-    blockHash != null ? <Link to={routeTo.block(blockHash)}>{formatInt(slot)}</Link> : N_A
+  const blockHash = idx(transaction, (_) => _.block.blockHash)
 
-  return (
-    <SummaryCard>
-      <Item label={messages.assuranceLevel}>
-        <span>
-          {transaction.confirmationsCount != null && (
-            <AssuranceChip level={assuranceFromConfirmations(transaction.confirmationsCount)} />
-          )}{' '}
-          <span>
-            {formatInt(transaction.confirmationsCount)}{' '}
-            {translate(messages.confirmations, {
-              count: transaction.confirmationsCount,
-            })}
-          </span>
-        </span>
-      </Item>
-      <Item label={messages.epoch}>{renderEpochNumber}</Item>
-
-      <Item label={messages.slot}>{renderSlot}</Item>
-      <Item label={messages.date}>
-        {formatTimestamp(idx(transaction, (_) => _.block.timeIssued), {
-          defaultValue: N_A,
-          format: formatTimestamp.FMT_MONTH_NUMERAL,
-        })}
-      </Item>
-      <Item label={messages.size}>{formatInt(transaction.size, {defaultValue: N_A})}</Item>
-      <Item label={messages.fees}>
-        <AdaValue value={transaction.fees} showCurrency />
-      </Item>
-    </SummaryCard>
-  )
-}
-
-const TransactionScreen = ({transactionDataProvider}) => {
-  const {translate} = useI18n()
-  const {loading, transaction, error} = transactionDataProvider
-  return (
-    <SimpleLayout title={translate(messages.header)}>
-      {loading ? (
-        <LoadingInProgress />
-      ) : error ? (
-        <DebugApolloError error={error} />
+  const data = {
+    assuranceBadge:
+      idx(transaction, (_) => _.confirmationsCount) != null ? (
+        // $FlowFixMe flow does not understand idx precondition
+        <AssuranceChip level={assuranceFromConfirmations(transaction.confirmationsCount)} />
+      ) : null,
+    confirmations: translate(messages.confirmations, {
+      count: formatInt(idx(transaction, (_) => _.confirmationsCount), {defaultValue: NA}),
+    }),
+    epoch:
+      epochNumber != null ? (
+        <Link to={routeTo.epoch(epochNumber)}>{formatInt(epochNumber)}</Link>
       ) : (
-        <React.Fragment>
-          <EntityIdCard
-            label={translate(messages.transactionId)}
-            value={transaction.txHash}
-            iconRenderer={<img alt="" src={AdaIcon} width={40} height={40} />}
-          />
-          <TransactionSummary transaction={transaction} />
-          <WithModalState>
-            {({isOpen, toggle}) => (
-              <ExpandableCard
-                expanded={isOpen}
-                onChange={toggle}
-                renderHeader={() => <AddressesSummary transaction={transaction} />}
-                renderExpandedArea={() => <AddressesBreakdown transaction={transaction} />}
-                footer={isOpen ? translate(messages.hideAll) : translate(messages.seeAll)}
-              />
-            )}
-          </WithModalState>
-        </React.Fragment>
-      )}
-    </SimpleLayout>
+        NA
+      ),
+    slot: blockHash != null ? <Link to={routeTo.block(blockHash)}>{formatInt(slot)}</Link> : NA,
+    date: formatTimestamp(idx(transaction, (_) => _.block.timeIssued), {
+      defaultValue: NA,
+      format: formatTimestamp.FMT_MONTH_NUMERAL,
+    }),
+    size: formatInt(idx(transaction, (_) => _.size), {defaultValue: NA}),
+    fees: <AdaValue value={idx(transaction, (_) => _.fees)} noValue={NA} showCurrency />,
+  }
+
+  return (
+    <Overlay.Wrapper>
+      <SummaryCard>
+        <Item label={messages.assuranceLevel}>
+          <span>
+            {data.assuranceBadge} {data.confirmations}
+          </span>
+        </Item>
+        <Item label={messages.epoch}>{data.epoch}</Item>
+        <Item label={messages.slot}>{data.slot}</Item>
+        <Item label={messages.date}>{data.date}</Item>
+        <Item label={messages.size}>{data.size}</Item>
+        <Item label={messages.fees}>{data.fees}</Item>
+      </SummaryCard>
+      <LoadingOverlay loading={loading} />
+    </Overlay.Wrapper>
   )
 }
 
-export default compose(
-  withRouter,
-  withProps((props) => ({
-    txHash: props.match.params.txHash,
-  })),
-  graphql(
+const useTransactionData = (txHash) => {
+  const {loading, error, data} = useQuery(
     gql`
       query($txHash: String!) {
         transaction(txHash: $txHash) {
@@ -345,10 +310,57 @@ export default compose(
       }
     `,
     {
-      name: 'transactionDataProvider',
-      options: ({txHash}) => ({
-        variables: {txHash},
-      }),
+      variables: {txHash},
     }
   )
-)(TransactionScreen)
+  return {loading, error, transactionData: data.transaction}
+}
+
+const useScreenParams = () => {
+  const {
+    match: {
+      params: {txHash},
+    },
+  } = useReactRouter()
+  return {txHash}
+}
+
+const TransactionScreen = () => {
+  const {txHash} = useScreenParams()
+  const {loading, transactionData, error} = useTransactionData(txHash)
+  const {translate} = useI18n()
+
+  return (
+    <SimpleLayout title={translate(messages.header)}>
+      <EntityIdCard
+        label={translate(messages.transactionId)}
+        value={txHash}
+        iconRenderer={<img alt="" src={AdaIcon} width={40} height={40} />}
+      />
+      {error ? (
+        <LoadingError error={error} />
+      ) : (
+        <React.Fragment>
+          <TransactionSummary loading={loading} transaction={transactionData} />
+          {loading ? (
+            <LoadingInProgress />
+          ) : (
+            <WithModalState>
+              {({isOpen, toggle}) => (
+                <ExpandableCard
+                  expanded={isOpen}
+                  onChange={toggle}
+                  renderHeader={() => <AddressesSummary transaction={transactionData} />}
+                  renderExpandedArea={() => <AddressesBreakdown transaction={transactionData} />}
+                  footer={isOpen ? translate(messages.hideAll) : translate(messages.seeAll)}
+                />
+              )}
+            </WithModalState>
+          )}
+        </React.Fragment>
+      )}
+    </SimpleLayout>
+  )
+}
+
+export default TransactionScreen

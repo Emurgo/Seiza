@@ -6,19 +6,19 @@ import {useQuery} from 'react-apollo-hooks'
 import idx from 'idx'
 import useReactRouter from 'use-react-router'
 import {Link} from 'react-router-dom'
-
 import {Card} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {
   SummaryCard,
   SimpleLayout,
   EntityIdCard,
-  LoadingDots,
   LoadingError,
   AdaValue,
   Tab,
   Tabs,
   Button,
+  Overlay,
+  LoadingOverlay,
 } from '@/components/visual'
 import {useI18n} from '@/i18n/helpers'
 import EpochIcon from '@/assets/icons/metrics-epoch.svg'
@@ -28,6 +28,7 @@ import StakingPoolsTab from './StakingPools'
 import {routeTo} from '@/helpers/routes'
 
 const messages = defineMessages({
+  notAvailable: 'N/A',
   goPreviousEpoch: '← Previous Epoch',
   goNextEpoch: 'Next Epoch →',
   header: 'Epoch',
@@ -35,6 +36,7 @@ const messages = defineMessages({
   startTime: 'Start Time',
   endTime: 'End Time',
   blocksCount: 'Blocks',
+  blocksOutOfSlots: '{blocks} out of {slots} slots',
   txCount: 'Transactions',
   totalAdaCirculation: 'Total ADA Circulation',
   totalFees: 'Total Fees',
@@ -82,15 +84,15 @@ const TABS = {
 const EpochSummaryCard = ({epoch, loading}) => {
   const {Row, Label, Value} = SummaryCard
   const {translate, formatTimestamp, formatInt} = useI18n()
-  const NA = loading ? <LoadingDots /> : 'N/A'
-
-  // If we are loading, do not show old data
-  epoch = loading ? null : epoch
+  const NA = translate(messages.notAvailable)
 
   const data1 = {
     startTime: formatTimestamp(idx(epoch, (_) => _.startTime), {defaultValue: NA}),
     endTime: formatTimestamp(idx(epoch, (_) => _.endTime), {defaultValue: NA}),
-    blocksCount: formatInt(idx(epoch, (_) => _.summary.blocksCreated), {defaultValue: NA}),
+    blocksCount: translate(messages.blocksOutOfSlots, {
+      blocks: formatInt(idx(epoch, (_) => _.summary.blocksCreated), {defaultValue: NA}),
+      slots: formatInt(idx(epoch, (_) => _.summary.slotCount), {defaultValue: NA}),
+    }),
     txCount: formatInt(idx(epoch, (_) => _.summary.transactionCount), {defaultValue: NA}),
     totalAdaSupply: (
       <AdaValue value={idx(epoch, (_) => _.summary.totalAdaSupply)} noValue={NA} showCurrency />
@@ -171,8 +173,14 @@ const EpochSummaryCard = ({epoch, loading}) => {
 
   return (
     <React.Fragment>
-      {card1}
-      {card2}
+      <Overlay.Wrapper>
+        {card1}
+        <LoadingOverlay loading={loading} />
+      </Overlay.Wrapper>
+      <Overlay.Wrapper>
+        {card2}
+        <LoadingOverlay loading={loading} />
+      </Overlay.Wrapper>
     </React.Fragment>
   )
 }
@@ -213,9 +221,28 @@ const useEpochNavigation = (epochNumber: number) => {
   }
 }
 
+// https://github.com/trojanowski/react-apollo-hooks/issues/117
+// Note: this will hopefully go away in the next version of react-apollo-hooks
+const useQueryNotBugged = (...args) => {
+  const [notNullData, setNotNullData] = React.useState({})
+  const {data, error, loading} = useQuery(...args)
+
+  React.useEffect(() => {
+    if (data && !loading) {
+      setNotNullData(data)
+    }
+  }, [data, loading])
+
+  return {data: notNullData, error, loading}
+}
+
 const useEpochData = (epochNumber) => {
-  const {loading, error, data} = useQuery(GET_EPOCH_BY_NUMBER, {
+  const {loading, error, data} = useQueryNotBugged(GET_EPOCH_BY_NUMBER, {
     variables: {epochNumber},
+    query: {
+      fetchPolicy: 'network-only',
+      errorPolicy: 'all',
+    },
   })
   return {
     loading,
@@ -224,46 +251,57 @@ const useEpochData = (epochNumber) => {
   }
 }
 
-const EpochScreen = () => {
+const useScreenParams = () => {
   const {
     match: {
       params: {epoch: epochStr},
     },
   } = useReactRouter()
   const epochNumber = parseInt(epochStr, 10)
+  return {epochNumber}
+}
+
+const EpochNavigation = ({currentEpochNumber}) => {
+  const classes = useStyles()
+  const {translate} = useI18n()
+
+  const epochNavigation = useEpochNavigation(currentEpochNumber)
+  return (
+    <div className={classes.navigation}>
+      <Button
+        rounded
+        secondary
+        onClick={epochNavigation.goPrev}
+        className={classes.navigationButton}
+        disabled={!epochNavigation.hasPrev}
+        to={epochNavigation.linkPrev}
+        component={Link}
+      >
+        {translate(messages.goPreviousEpoch)}
+      </Button>
+      <Button
+        rounded
+        secondary
+        className={classes.navigationButton}
+        onClick={epochNavigation.goNext}
+        disabled={!epochNavigation.hasNext}
+        to={epochNavigation.linkNext}
+        component={Link}
+      >
+        {translate(messages.goNextEpoch)}
+      </Button>
+    </div>
+  )
+}
+
+const EpochScreen = () => {
+  const {epochNumber} = useScreenParams()
   const {epochData, error, loading} = useEpochData(epochNumber)
 
   const {translate} = useI18n()
-  const classes = useStyles()
-
-  const epochNavigation = useEpochNavigation(epochNumber)
-
   return (
     <SimpleLayout title={translate(messages.header)}>
-      <div className={classes.navigation}>
-        <Button
-          rounded
-          secondary
-          onClick={epochNavigation.goPrev}
-          className={classes.navigationButton}
-          disabled={!epochNavigation.hasPrev}
-          to={epochNavigation.linkPrev}
-          component={Link}
-        >
-          {translate(messages.goPreviousEpoch)}
-        </Button>
-        <Button
-          rounded
-          secondary
-          className={classes.navigationButton}
-          onClick={epochNavigation.goNext}
-          disabled={!epochNavigation.hasNext}
-          to={epochNavigation.linkNext}
-          component={Link}
-        >
-          {translate(messages.goNextEpoch)}
-        </Button>
-      </div>
+      <EpochNavigation currentEpochNumber={epochNumber} />
       <EntityIdCard
         showCopyIcon={false}
         label={translate(messages.entityHeader)}
