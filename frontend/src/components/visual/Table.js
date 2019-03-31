@@ -30,7 +30,6 @@ const tableStyles = (theme) => ({
     '&:hover': {
       backgroundColor: darken(theme.palette.background.default, 0.07),
     },
-    'cursor': 'pointer',
   },
   cell: {
     // Not sure why MaterialUi has in-consistent padding
