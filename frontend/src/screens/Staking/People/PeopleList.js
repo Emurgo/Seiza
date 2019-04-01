@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
   ownersWrapper: {
     paddingTop: theme.spacing.unit * 3,
   },
-  visualHash: {
+  visualHashWrapper: {
     paddingRight: theme.spacing.unit,
   },
   stakeKeyLink: {
@@ -58,8 +58,8 @@ const RowHeader = ({poolHash, poolName}) => {
   const classes = useStyles()
   return (
     <Grid container>
-      <Grid item className={classes.visualHash}>
-        <VisualHash value={poolHash} size={20} />
+      <Grid item className={classes.visualHashWrapper}>
+        <VisualHash value={poolHash} size={37} />
       </Grid>
       <Grid item>
         <Grid container direction="column">

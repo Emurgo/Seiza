@@ -92,7 +92,7 @@ const Header = compose(
       <Grid item>
         <Grid container direction="row">
           <Grid item className={classes.dot}>
-            <VisualHash value={hash} size={22} />
+            <VisualHash value={hash} size={48} />
           </Grid>
           <Grid item>
             <Grid container direction="column" className={classes.info}>

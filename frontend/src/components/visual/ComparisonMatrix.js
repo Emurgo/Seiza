@@ -112,14 +112,14 @@ const useStyles = makeStyles((theme) => {
     },
     header: {
       background: darken(theme.palette.background.default, 0.04),
-      padding: theme.spacing.unit * 2.5,
+      paddingRight: theme.spacing.unit * 2.5,
+      paddingLeft: theme.spacing.unit * 2.5,
+      display: 'flex',
+      alignItems: 'center',
       height: '60px', // Note: otherwise there is +1 pixel strange issue
     },
     visualHashWrapper: {
-      height: 20,
-      width: 20,
-      borderRadius: 10,
-      background: theme.palette.background.paper,
+      marginTop: '2px', // Note: strange, but looks better centered
       marginRight: theme.spacing.unit,
     },
     itemHeader: {
@@ -315,12 +315,14 @@ const Header = ({title, identifier}: HeaderProps) => {
       {/* Note: not working properly when text overflows if not wrapped this way */}
       <Grid item>
         <div className={classes.visualHashWrapper}>
-          <VisualHash value={identifier} size={20} />
+          <VisualHash value={identifier} size={24} />
         </div>
       </Grid>
-      <Typography className={classes.ellipsis} variant="overline">
-        {title}
-      </Typography>
+      <Grid item>
+        <Typography className={classes.ellipsis} variant="overline">
+          {title}
+        </Typography>
+      </Grid>
     </Grid>
   )
 }
