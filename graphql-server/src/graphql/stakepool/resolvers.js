@@ -1,4 +1,6 @@
 import _ from 'lodash'
+import BigNumber from 'bignumber.js'
+
 import {
   fetchBootstrapEraPool,
   fetchBootstrapEraPoolList,
@@ -78,6 +80,17 @@ export default {
     PLEDGE: 'pledge',
     MARGINS: 'margins',
     STAKE: 'stake',
+  },
+  StakePoolSummary: {
+    averageUserStaking: (parent) => {
+      return new BigNumber(parent.adaStaked)
+        .minus(parent.ownerPledge.declared)
+        .dividedBy(parent.stakersCount)
+        .toFixed(0)
+    },
+    usersAdaStaked: (parent) => {
+      return new BigNumber(parent.adaStaked).minus(parent.ownerPledge.declared)
+    },
   },
   Query: {
     stakePool: (root, args, context) =>

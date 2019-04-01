@@ -12,10 +12,11 @@ const messages = defineMessages({
 })
 
 const configMessages = defineMessages({
-  totalPledge: 'Total pledge',
+  declaredPledge: 'Declared pledge',
+  actualPledge: 'Actual pledge',
   numberOfStakers: 'Number of stakers',
-  totalStakingFromStakers: 'Total Staking from Stakers',
   totalStaking: 'Total Staking',
+  totalStakingFromStakers: 'Total Staking from stakers',
   averageStakingPerStaker: 'Average Staking per Staker',
 })
 
@@ -36,32 +37,30 @@ const useStyles = makeStyles((theme) => ({
 
 const config = [
   {
-    i18nLabel: configMessages.totalPledge,
-    getValue: (stakePool, formatters) => <AdaValue value={stakePool.summary.pledge} />,
+    i18nLabel: configMessages.declaredPledge,
+    getValue: (stakePool, formatters) => (
+      <AdaValue value={stakePool.summary.ownerPledge.declared} />
+    ),
+  },
+  {
+    i18nLabel: configMessages.actualPledge,
+    getValue: (stakePool, formatters) => <AdaValue value={stakePool.summary.ownerPledge.actual} />,
+  },
+  {
+    i18nLabel: configMessages.totalStaking,
+    getValue: (stakePool, formatters) => <AdaValue value={stakePool.summary.adaStaked} />,
+  },
+  {
+    i18nLabel: configMessages.totalStakingFromStakers,
+    getValue: (stakePool, formatters) => <AdaValue value={stakePool.summary.usersAdaStaked} />,
   },
   {
     i18nLabel: configMessages.numberOfStakers,
     getValue: (stakePool, formatters) => stakePool.summary.stakersCount,
   },
   {
-    i18nLabel: configMessages.totalStakingFromStakers,
-    getValue: (stakePool, formatters) => <AdaValue value={stakePool.summary.adaStaked} />,
-  },
-  {
-    i18nLabel: configMessages.totalStaking,
-    getValue: (stakePool, formatters) => {
-      const totalStaking = `${parseInt(stakePool.summary.adaStaked, 10) +
-        parseInt(stakePool.summary.pledge, 10)}`
-      return <AdaValue value={totalStaking} />
-    },
-  },
-  {
     i18nLabel: configMessages.averageStakingPerStaker,
-    getValue: (stakePool, formatters) => {
-      const averagePerStaker = `${parseInt(stakePool.summary.adaStaked, 10) /
-        parseInt(stakePool.summary.stakersCount, 10)}`
-      return <AdaValue value={averagePerStaker} />
-    },
+    getValue: (stakePool, formatters) => <AdaValue value={stakePool.summary.averageUserStaking} />,
   },
 ]
 

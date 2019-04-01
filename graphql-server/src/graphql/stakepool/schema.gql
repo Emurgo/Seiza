@@ -1,4 +1,11 @@
 #TODO: these are preliminary
+
+type OwnerPledge {
+  declared: AdaAmount
+  actual: AdaAmount
+}
+
+#TODO: make sure that `stakersCount` does not include owners
 type StakePoolSummary {
   performance: Float
   adaStaked: AdaAmount
@@ -9,6 +16,9 @@ type StakePoolSummary {
   pledge: AdaAmount
   revenue: Float
   stakersCount: Int
+  ownerPledge: OwnerPledge
+  usersAdaStaked: AdaAmount
+  averageUserStaking: AdaAmount
 }
 
 type BootstrapEraStakePool {

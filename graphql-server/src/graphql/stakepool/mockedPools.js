@@ -10,7 +10,7 @@ const _BOOTSTRAP_POOLS = [
     createdAt: moment(),
     website: 'https://buffettstalepoolthatyoumuststakein.com',
     summary: {
-      adaStaked: '14131351',
+      adaStaked: '141313510',
       keysDelegating: 100,
       performance: 0.71,
       pledge: '14243227',
@@ -19,6 +19,10 @@ const _BOOTSTRAP_POOLS = [
       margins: 0.3,
       revenue: 0.82,
       stakersCount: 3,
+      ownerPledge: {
+        declared: '14243227',
+        actual: '14243227',
+      },
     },
   },
   {
@@ -28,7 +32,7 @@ const _BOOTSTRAP_POOLS = [
     createdAt: moment(),
     website: 'https://buffettstalepool.com',
     summary: {
-      adaStaked: '14131352',
+      adaStaked: '141313520',
       keysDelegating: 99,
       performance: 0.72,
       pledge: '14243226',
@@ -37,6 +41,10 @@ const _BOOTSTRAP_POOLS = [
       margins: 0.31,
       revenue: 0.81,
       stakersCount: 4,
+      ownerPledge: {
+        declared: '14243226',
+        actual: '14243326',
+      },
     },
   },
   {
@@ -46,7 +54,7 @@ const _BOOTSTRAP_POOLS = [
     createdAt: moment(),
     website: 'https://buffettstalepool.com',
     summary: {
-      adaStaked: '14131353',
+      adaStaked: '141313530',
       keysDelegating: 98,
       performance: 0.73,
       pledge: '14243225',
@@ -55,6 +63,10 @@ const _BOOTSTRAP_POOLS = [
       margins: 0.32,
       revenue: 0.59,
       stakersCount: 5,
+      ownerPledge: {
+        declared: '14243225',
+        actual: '14243228',
+      },
     },
   },
   {
@@ -64,7 +76,7 @@ const _BOOTSTRAP_POOLS = [
     createdAt: moment(),
     website: 'https://buffettstalepool.com',
     summary: {
-      adaStaked: '14131354',
+      adaStaked: '141313540',
       keysDelegating: 97,
       performance: 0.74,
       pledge: '14243224',
@@ -73,6 +85,10 @@ const _BOOTSTRAP_POOLS = [
       margins: 0.33,
       revenue: 0.55,
       stakersCount: 6,
+      ownerPledge: {
+        declared: '14243224',
+        actual: '14243224',
+      },
     },
   },
   {
@@ -82,7 +98,7 @@ const _BOOTSTRAP_POOLS = [
     createdAt: moment(),
     website: 'https://buffettstalepool.com',
     summary: {
-      adaStaked: '14131355',
+      adaStaked: '141313550',
       keysDelegating: 96,
       performance: 0.75,
       pledge: '14243223',
@@ -91,6 +107,10 @@ const _BOOTSTRAP_POOLS = [
       margins: 0.34,
       revenue: 0.28,
       stakersCount: 7,
+      ownerPledge: {
+        declared: '14243223',
+        actual: '15243223',
+      },
     },
   },
   {
@@ -100,7 +120,7 @@ const _BOOTSTRAP_POOLS = [
     createdAt: moment(),
     website: 'https://buffettstalepool.com',
     summary: {
-      adaStaked: '14131356',
+      adaStaked: '141313560',
       keysDelegating: 95,
       performance: 0.76,
       pledge: '14243222',
@@ -109,6 +129,10 @@ const _BOOTSTRAP_POOLS = [
       margins: 0.35,
       revenue: 0.25,
       stakersCount: 8,
+      ownerPledge: {
+        declared: '14243222',
+        actual: '13243222',
+      },
     },
   },
   {
@@ -118,7 +142,7 @@ const _BOOTSTRAP_POOLS = [
     createdAt: moment(),
     website: 'https://buffettstalepool.com',
     summary: {
-      adaStaked: '14131357',
+      adaStaked: '141313570',
       keysDelegating: 94,
       performance: 0.77,
       pledge: '14243221',
@@ -127,6 +151,10 @@ const _BOOTSTRAP_POOLS = [
       margins: 0.36,
       revenue: 0.3,
       stakersCount: 9,
+      ownerPledge: {
+        declared: '14243221',
+        actual: '15243221',
+      },
     },
   },
 ]

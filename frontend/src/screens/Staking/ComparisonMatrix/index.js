@@ -25,7 +25,8 @@ const messages = defineMessages({
 
 const categoryOneMessages = defineMessages({
   performance: 'Performance',
-  pledge: 'Pledge',
+  declaredPledge: 'Declared Pledge',
+  actualPledge: 'Actual Pledge',
   margins: 'Margins',
   createdAt: 'Creation time',
   lastUpdated: 'Last updated',
@@ -54,8 +55,14 @@ const categoryOneConfig = [
     getValue: (stakePool, {formatPercent}) => formatPercent(stakePool.summary.performance),
   },
   {
-    i18nLabel: categoryOneMessages.pledge,
-    getValue: (stakePool, formatters) => <AdaValue value={stakePool.summary.pledge} />,
+    i18nLabel: categoryOneMessages.declaredPledge,
+    getValue: (stakePool, formatters) => (
+      <AdaValue value={stakePool.summary.ownerPledge.declared} />
+    ),
+  },
+  {
+    i18nLabel: categoryOneMessages.actualPledge,
+    getValue: (stakePool, formatters) => <AdaValue value={stakePool.summary.ownerPledge.actual} />,
   },
   {
     i18nLabel: categoryOneMessages.margins,
@@ -150,7 +157,10 @@ const PoolDataFragment = gql`
       keysDelegating
       fullness
       margins
-      pledge
+      ownerPledge {
+        actual
+        declared
+      }
     }
   }
 `
