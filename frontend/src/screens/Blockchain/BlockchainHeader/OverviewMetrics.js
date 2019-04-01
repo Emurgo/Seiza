@@ -11,6 +11,7 @@ import {MetricsCard, LoadingDots} from '@/components/visual'
 import {getIntlFormatters} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
 import WithNavigateTo from '@/components/headless/navigateTo'
+import {Link} from 'react-router-dom'
 
 const text = defineMessages({
   not_available: 'N/A',
@@ -53,10 +54,14 @@ const OverviewMetrics = ({intl, data, classes, currency, setCurrency}) => {
   const price = formatFiat(idx(status, (s) => s.price), {currency, defaultValue: NA})
   const pools = formatInt(idx(status, (s) => s.stakePoolCount), {defaultValue: NA})
 
+  const epochLink = status && routeTo.epoch(status.epochNumber)
+  const marketDataLink = routeTo.more()
+  const stakePoolsLink = routeTo.staking.home()
+
   return (
     <Grid container justify="center" wrap="wrap" direction="row">
       <Grid item className={classes.cardDimensions}>
-        <WithNavigateTo to={status && routeTo.epoch(status.epochNumber)}>
+        <WithNavigateTo to={epochLink}>
           {({navigate}) => (
             <MetricsCard
               className={classes.card}
@@ -64,6 +69,7 @@ const OverviewMetrics = ({intl, data, classes, currency, setCurrency}) => {
               metric={translate(text.epochLabel)}
               value={epochNumber}
               onClick={navigate}
+              clickableWrapperProps={{component: Link, to: epochLink}}
             />
           )}
         </WithNavigateTo>
@@ -85,7 +91,7 @@ const OverviewMetrics = ({intl, data, classes, currency, setCurrency}) => {
         />
       </GridItem>
       <GridItem>
-        <WithNavigateTo to={routeTo.more()}>
+        <WithNavigateTo to={marketDataLink}>
           {({navigate}) => (
             <MetricsCard
               className={classes.card}
@@ -107,12 +113,13 @@ const OverviewMetrics = ({intl, data, classes, currency, setCurrency}) => {
                   onClick: () => setCurrency('JPY'),
                 },
               ]}
+              clickableWrapperProps={{component: Link, to: marketDataLink}}
             />
           )}
         </WithNavigateTo>
       </GridItem>
       <GridItem>
-        <WithNavigateTo to={routeTo.staking.home()}>
+        <WithNavigateTo to={stakePoolsLink}>
           {({navigate}) => (
             <MetricsCard
               className={classes.card}
@@ -120,6 +127,7 @@ const OverviewMetrics = ({intl, data, classes, currency, setCurrency}) => {
               metric={translate(text.poolsLabel)}
               value={pools}
               onClick={navigate}
+              clickableWrapperProps={{component: Link, to: stakePoolsLink}}
             />
           )}
         </WithNavigateTo>

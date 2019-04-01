@@ -5,6 +5,7 @@ import gql from 'graphql-tag'
 import {useQuery} from 'react-apollo-hooks'
 import idx from 'idx'
 import useReactRouter from 'use-react-router'
+import {Link} from 'react-router-dom'
 
 import {Paper} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
@@ -248,6 +249,8 @@ const EpochScreen = () => {
           onClick={epochNavigation.goPrev}
           className={classes.navigationButton}
           disabled={!epochNavigation.hasPrev}
+          to={epochNavigation.linkPrev}
+          component={Link}
         >
           {translate(messages.goPreviousEpoch)}
         </Button>
@@ -257,6 +260,8 @@ const EpochScreen = () => {
           className={classes.navigationButton}
           onClick={epochNavigation.goNext}
           disabled={!epochNavigation.hasNext}
+          to={epochNavigation.linkNext}
+          component={Link}
         >
           {translate(messages.goNextEpoch)}
         </Button>
