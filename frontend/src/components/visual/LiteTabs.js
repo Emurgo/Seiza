@@ -1,17 +1,19 @@
 import React, {useState, useRef, useEffect} from 'react'
 import ReactDOM from 'react-dom'
 import _ from 'lodash'
+import idx from 'idx'
 import {Tabs as MuiTabs, Tab as MuiTab} from '@material-ui/core'
-import {makeStyles, useTheme} from '@material-ui/styles'
+import {makeStyles} from '@material-ui/styles'
 
 export const getPadding = (theme) => theme.spacing.unit * 3
 const useTabStyles = makeStyles((theme) => ({
   root: {
     minWidth: 'initial',
     minHeight: 'initial',
+    padding: `0px ${getPadding(theme)}px`,
   },
   labelContainer: {
-    'padding': `0px ${getPadding(theme)}px`,
+    'padding': 0,
     '&:hover': {
       color: theme.palette.primary.dark,
     },
@@ -30,49 +32,56 @@ const useTabIndicatorStyles = makeStyles((theme) => ({
   },
 }))
 
-const getWidthFromRef = (ref) =>
-  ref && ref.current != null ? ReactDOM.findDOMNode(ref.current).getBoundingClientRect().width : 0
+const labelNodeFromTabNode = (node) => idx(node, (_) => _.children[0])
 
-const calculateLeft = (refs, currentTabIndex, padding) =>
-  _.sum(refs.slice(0, currentTabIndex).map(getWidthFromRef)) + padding
+const labelRectFromTabRef = (tabRef) => {
+  const tabNode = ReactDOM.findDOMNode(tabRef.current)
+  const labelNode = labelNodeFromTabNode(tabNode)
+  return labelNode.getBoundingClientRect()
+}
+
+const rectFromRef = (ref) => ReactDOM.findDOMNode(ref.current).getBoundingClientRect()
+
+const calculateLeft = (tabsRef, tabRef) => {
+  const tabsRect = rectFromRef(tabsRef)
+  const tabLabelRect = labelRectFromTabRef(tabRef)
+  return tabLabelRect.left - tabsRect.left
+}
 
 const TAB_INDICATOR_PROPS = {style: {height: 0}}
 const TAB_INDICATOR_WIDTH = 0.5
 
-const getCurrentTabIndicatorWidth = (ref, padding) =>
-  (getWidthFromRef(ref) - padding * 2) * TAB_INDICATOR_WIDTH
+const getCurrentTabIndicatorWidth = (tabLabelRef) =>
+  labelRectFromTabRef(tabLabelRef).width * TAB_INDICATOR_WIDTH
 
 export const LiteTabs = ({children, ...props}) => {
   const indicatorClassName = useTabIndicatorStyles().root
-  const theme = useTheme()
+
+  const tabsRef = useRef(null)
+
   // https://stackoverflow.com/questions/54633690
   // This seems to me like escape hatch for looping over useRef
   const childrenRefs = useRef(_.range(children.length).map(() => React.createRef())).current
 
   // attach refs to <Tab> children
   children = _.zip(children, childrenRefs).map(([child, ref]) => React.cloneElement(child, {ref}))
+
   const [indicatorLocation, setIndicatorLocation] = useState({left: 0, width: 0})
 
-  const PADDING = getPadding(theme)
   const currentTabIndex = props.value
 
   useEffect(() => {
     const currentTabRef = childrenRefs[currentTabIndex]
     setIndicatorLocation({
-      left: calculateLeft(childrenRefs, currentTabIndex, PADDING),
-      width: getCurrentTabIndicatorWidth(currentTabRef, PADDING),
+      left: calculateLeft(tabsRef, currentTabRef),
+      width: getCurrentTabIndicatorWidth(currentTabRef),
     })
-  }, [PADDING, childrenRefs, currentTabIndex, setIndicatorLocation])
+  }, [childrenRefs, currentTabIndex, setIndicatorLocation])
 
-  const indicator = (
-    <div
-      style={{width: indicatorLocation.width, left: indicatorLocation.left}}
-      className={indicatorClassName}
-    />
-  )
+  const indicator = <div style={{...indicatorLocation}} className={indicatorClassName} />
 
   return (
-    <MuiTabs TabIndicatorProps={TAB_INDICATOR_PROPS} textColor="primary" {...props}>
+    <MuiTabs ref={tabsRef} TabIndicatorProps={TAB_INDICATOR_PROPS} textColor="primary" {...props}>
       {children}
       {indicator}
     </MuiTabs>
