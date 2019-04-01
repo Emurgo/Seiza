@@ -94,7 +94,7 @@ const Row = ({poolData}) => {
   const classes = useStyles()
   return (
     <div className={classes.row}>
-      <RowHeader poolHash={poolData.poolHash} poolName={poolData.poolName} />
+      <RowHeader poolHash={poolData.poolHash} poolName={poolData.name} />
       <div className={classes.ownersWrapper}>
         <Grid container justify="space-between">
           <Typography variant="overline">{tr(messages.owner)}</Typography>
@@ -116,6 +116,7 @@ type PeopleListProps = {
 
 const PeopleList = ({data}: PeopleListProps) => {
   const classes = useStyles()
+
   return (
     <div className={classes.wrapper}>
       {data.map((poolData) => (

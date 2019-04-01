@@ -67,7 +67,8 @@ const stakePoolFacade = (data) => ({
   fullness: data.summary.fullness,
   margins: data.summary.margins,
   performance: data.summary.performance,
-  pledge: data.summary.pledge,
+  // TODO: distinguish between `declared` and `actual` pledge?
+  pledge: data.summary.ownerPledge.declared,
   stake: data.summary.adaStaked,
 })
 
@@ -177,7 +178,9 @@ export default compose(
               margins
               performance
               adaStaked
-              pledge
+              ownerPledge {
+                declared
+              }
             }
           }
           cursor
