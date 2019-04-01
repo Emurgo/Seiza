@@ -1,7 +1,6 @@
 // @flow
 
 import React from 'react'
-import _ from 'lodash'
 import useReactRouter from 'use-react-router'
 import gql from 'graphql-tag'
 import {useApolloClient, useQuery} from 'react-apollo-hooks'
@@ -40,6 +39,20 @@ const CustomAvatar = withStyles({
   },
 })(Avatar)
 
+const CustomChip = withStyles({
+  root: {
+    marginTop: '6px',
+    marginBottom: '6px',
+  },
+  label: {
+    maxWidth: '300px',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    display: 'inline-block',
+  },
+})(Chip)
+
 const poolsStyles = ({palette}) =>
   createStyles({
     wrapper: {
@@ -53,15 +66,11 @@ const poolsStyles = ({palette}) =>
     stakePools: {
       paddingBottom: '15px',
     },
-    chip: {
-      marginTop: '6px',
-      marginBottom: '6px',
-    },
   })
 
 const _StakePoolItem = ({classes, label, onDelete, hash}) => {
   return (
-    <Chip
+    <CustomChip
       avatar={
         <CustomAvatar>
           <VisualHash value={hash} size={20} />
@@ -70,7 +79,6 @@ const _StakePoolItem = ({classes, label, onDelete, hash}) => {
       label={label}
       onClick={() => null}
       onDelete={onDelete}
-      className={classes.chip}
       variant="outlined"
       color="primary"
     />
@@ -141,14 +149,10 @@ const PoolsToCompare = ({classes, i18n: {translate}}) => {
     return <DebugApolloError />
   }
 
-  // Note(ppershing): sorting nulls to the end
-  const data = _(fragmentData)
-    .map(([hash, poolData]) => ({
-      poolHash: hash,
-      name: poolData ? poolData.name : null,
-    }))
-    .sortBy((pool) => (pool.name ? `1${pool.name}` : '2'))
-    .value()
+  const data = fragmentData.map(([hash, poolData]) => ({
+    poolHash: hash,
+    name: poolData && poolData.name,
+  }))
 
   // Note: not using `window.location.href` as then the component would not properly
   // listen to changes in url query
@@ -166,9 +170,9 @@ const PoolsToCompare = ({classes, i18n: {translate}}) => {
           <Typography variant="overline">{translate(messages.noPools)}</Typography>
         )}
       </Grid>
-      <Grid className={classes.stakePools}>
+      <Grid container direction="column" className={classes.stakePools}>
         {data.map(({name, poolHash}) => (
-          <React.Fragment key={poolHash}>
+          <div className="d-flex" key={poolHash}>
             <StakePoolItem
               hash={poolHash}
               label={
@@ -183,9 +187,8 @@ const PoolsToCompare = ({classes, i18n: {translate}}) => {
               }
               onDelete={() => removePool(poolHash)}
             />
-            {/* Hack to avoid displaying more chips in one line or in full width */}
-            <div />
-          </React.Fragment>
+            <div className="flex-grow-1" />
+          </div>
         ))}
       </Grid>
       {/* TODO: onClick handling and real work */}
