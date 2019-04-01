@@ -61,23 +61,19 @@ const poolsStyles = ({palette}) =>
 
 const _StakePoolItem = ({classes, label, onDelete, hash}) => {
   return (
-    <React.Fragment>
-      <Chip
-        avatar={
-          <CustomAvatar>
-            <VisualHash value={hash} size={20} />
-          </CustomAvatar>
-        }
-        label={label}
-        onClick={() => null}
-        onDelete={onDelete}
-        className={classes.chip}
-        variant="outlined"
-        color="primary"
-      />
-      {/* Hack to avoid displaying more chips in one line or in full width */}
-      <div />
-    </React.Fragment>
+    <Chip
+      avatar={
+        <CustomAvatar>
+          <VisualHash value={hash} size={20} />
+        </CustomAvatar>
+      }
+      label={label}
+      onClick={() => null}
+      onDelete={onDelete}
+      className={classes.chip}
+      variant="outlined"
+      color="primary"
+    />
   )
 }
 
@@ -172,21 +168,24 @@ const PoolsToCompare = ({classes, i18n: {translate}}) => {
       </Grid>
       <Grid className={classes.stakePools}>
         {data.map(({name, poolHash}) => (
-          <StakePoolItem
-            key={poolHash}
-            hash={poolHash}
-            label={
-              name != null ? (
-                name
-              ) : (
-                <span>
-                  {poolHash.slice(0, 5)}
-                  <LoadingDots />
-                </span>
-              )
-            }
-            onDelete={() => removePool(poolHash)}
-          />
+          <React.Fragment key={poolHash}>
+            <StakePoolItem
+              hash={poolHash}
+              label={
+                name != null ? (
+                  name
+                ) : (
+                  <span>
+                    {poolHash.slice(0, 5)}
+                    <LoadingDots />
+                  </span>
+                )
+              }
+              onDelete={() => removePool(poolHash)}
+            />
+            {/* Hack to avoid displaying more chips in one line or in full width */}
+            <div />
+          </React.Fragment>
         ))}
       </Grid>
       {/* TODO: onClick handling and real work */}
