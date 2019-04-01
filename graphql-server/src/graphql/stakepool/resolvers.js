@@ -82,14 +82,14 @@ export default {
     STAKE: 'stake',
   },
   StakePoolSummary: {
-    averageUserStaking: (parent) => {
-      return new BigNumber(parent.adaStaked)
-        .minus(parent.ownerPledge.declared)
-        .dividedBy(parent.stakersCount)
+    averageUserStaking: (stakepoolSummary) => {
+      return new BigNumber(stakepoolSummary.adaStaked)
+        .minus(stakepoolSummary.ownerPledge.declared)
+        .dividedBy(stakepoolSummary.stakersCount)
         .toFixed(0)
     },
-    usersAdaStaked: (parent) => {
-      return new BigNumber(parent.adaStaked).minus(parent.ownerPledge.declared)
+    usersAdaStaked: (stakepoolSummary) => {
+      return new BigNumber(stakepoolSummary.adaStaked).minus(stakepoolSummary.ownerPledge.declared)
     },
   },
   Query: {

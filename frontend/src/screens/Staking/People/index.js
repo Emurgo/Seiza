@@ -39,7 +39,6 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 // TODO: probably will be part of stake pool
-// TODO: distinguish between `declared` and `actual` pledge?
 const mockedOwners = [
   {
     stakingKey: 'c4ca4238a0b923820dcc509a6f75849bc81e728d9d4c2f636f067f89cc14862a',
@@ -125,7 +124,7 @@ const withLoadingAndErrorHadler = (BaseComponent) => ({
   LoadingComponent,
   ...restProps
 }) => {
-  if (loading && !data.length) return <LoadingComponent />
+  if (loading) return <LoadingComponent />
   if (error) return <ErrorComponent error={error} />
   if (!loading && !data.length) return <NoDataComponent />
 
