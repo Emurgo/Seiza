@@ -47,12 +47,10 @@ export const LiteTabs = ({children, ...props}) => {
   const theme = useTheme()
   // https://stackoverflow.com/questions/54633690
   // This seems to me like escape hatch for looping over useRef
-  const childrenRefs = useRef([...Array(children.length)].map(() => React.createRef())).current
+  const childrenRefs = useRef(_.range(children.length).map(() => React.createRef())).current
 
   // attach refs to <Tab> children
-  children = React.Children.map(children, (child, i) =>
-    React.cloneElement(child, {ref: childrenRefs[i]})
-  )
+  children = _.zip(children, childrenRefs).map(([child, ref]) => React.cloneElement(child, {ref}))
   const [indicatorLocation, setIndicatorLocation] = useState({left: 0, width: 0})
 
   const PADDING = getPadding(theme)

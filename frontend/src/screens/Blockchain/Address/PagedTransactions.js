@@ -97,7 +97,7 @@ const TAB_NAMES = {
 
 const useLiteTabsClasses = makeStyles((theme) => ({
   root: {
-    transform: `translateX(-${getPadding(theme)}px)`,
+    marginLeft: -getPadding(theme),
   },
 }))
 
