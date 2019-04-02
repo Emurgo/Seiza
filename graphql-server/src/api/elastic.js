@@ -1,15 +1,47 @@
 // @flow
 import {Client, errors as ElasticsearchErrors} from '@elastic/elasticsearch'
+import httpAWSES from 'http-aws-es'
+import AWS from 'aws-sdk'
 import {ApolloError} from 'apollo-server'
 import assert from 'assert'
 import E from './elasticHelpers'
 import type {SortDirection} from './elasticHelpers'
 
-// TODO: make this configurable
-const ELASTIC_URL =
-  'https://search-seiza-rustic-dev-kjf5rokepsughyjv7ejnorlvx4.us-west-1.es.amazonaws.com'
+assert(process.env.ELASTIC_URL)
+const ELASTIC_URL = process.env.ELASTIC_URL
 
-const client = new Client({node: ELASTIC_URL})
+// if AWS credentials were provided via env, we use 'aws-elasticsearch-client'
+const getClient = () => {
+  if (
+    process.env.AWS_ACCESS_KEY_ID &&
+    process.env.AWS_SECRET_ACCESS_KEY &&
+    process.env.AWS_REGION
+  ) {
+    const options = {
+      node: ELASTIC_URL,
+      credentials: new AWS.Credentials({
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+      }),
+    }
+
+    const config = Object.assign({}, options, {
+      connectionClass: httpAWSES,
+      awsConfig: new AWS.Config({
+        region: process.env.AWS_REGION,
+        credentials: options.credentials,
+      }),
+    })
+
+    const awsClient = new Client(config)
+    return awsClient
+  } else {
+    const plainClient = new Client({node: ELASTIC_URL})
+    return plainClient
+  }
+}
+
+const client = getClient()
 
 // This checks elastic response for validaty.
 // For now we prefer to be rather strict than to return partial data

@@ -1,5 +1,7 @@
 // @flow
 import 'babel-polyfill'
+import './loadEnv'
+
 import {ApolloServer} from 'apollo-server'
 
 import schema from './graphql/schema'
