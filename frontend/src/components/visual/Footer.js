@@ -2,14 +2,18 @@
 
 import React from 'react'
 import classnames from 'classnames'
-import {compose} from 'redux'
 import {Link} from 'react-router-dom'
 import {defineMessages} from 'react-intl'
-import {Grid, withStyles, createStyles, Typography, TextField} from '@material-ui/core'
+import {Grid, Typography, TextField} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
-import {Button} from '@/components/visual'
-import {withI18n} from '@/i18n/helpers'
+
+import {useI18n} from '@/i18n/helpers'
+import {Button, ExternalLink} from '@/components/visual'
 import logo from '../../assets/icons/logo-seiza-white.svg'
+
+const messages = defineMessages({
+  copyright: 'All rights reserved',
+})
 
 const subscribeMessages = defineMessages({
   subscribeHeader: "Let's stay in touch!",
@@ -18,47 +22,14 @@ const subscribeMessages = defineMessages({
   subscribeButton: 'Subscribe',
 })
 
-const styles = ({palette}) =>
-  createStyles({
-    nav: {
-      listStyleType: 'none',
-      display: 'flex',
-    },
-    link: {
-      'textDecoration': 'none',
-      '&:hover': {
-        textDecoration: 'underline',
-        color: palette.background.paper,
-      },
-    },
-    navItem: {
-      paddingLeft: '50px',
-    },
-    navText: {
-      color: palette.footer.contrastText,
-    },
-    topNav: {
-      padding: '10px',
-      background: palette.gradient,
-    },
-    bottomNav: {
-      backgroundColor: palette.footer.background,
-    },
-    bottomNavRow: {
-      padding: '5px',
-    },
-    logo: {
-      padding: '10px',
-    },
-    subscribe: {
-      marginLeft: '10px',
-      marginRight: '10px',
-      width: '200px',
-    },
-    email: {
-      width: '200px',
-    },
-  })
+const SOCIAL_LINKS = {
+  FACEBOOK: 'https://www.facebook.com/emurgo.io',
+  YOUTUBE: 'https://www.youtube.com/channel/UCgFQ0hHuPO1QDcyP6t9KZTQ',
+  MEDIUM: 'https://medium.com/@emurgo_io',
+  REDDIT: 'https://reddit.com/r/cardano',
+  TWITTER: 'https://twitter.com/emurgo_io',
+  LINKEDIN: 'https://www.linkedin.com/company/emurgo_io',
+}
 
 const useRoundedInputStyles = makeStyles((theme) => {
   return {
@@ -90,38 +61,138 @@ const RoundedInput = React.forwardRef((props, ref) => {
   )
 })
 
-const Footer = ({classes, navItems, i18n: {translate}}) => (
-  <React.Fragment>
+const useSubscribeFooterStyles = makeStyles(({palette}) => ({
+  wrapper: {
+    padding: '10px',
+    background: palette.gradient,
+  },
+  subscribe: {
+    marginLeft: '10px',
+    marginRight: '10px',
+    width: '200px',
+  },
+  email: {
+    width: '200px',
+  },
+  row: {
+    padding: '5px',
+  },
+}))
+
+const SubscribeFooter = () => {
+  const classes = useSubscribeFooterStyles()
+  const {translate: tr} = useI18n()
+
+  return (
     <Grid
-      className={classes.topNav}
+      className={classes.wrapper}
       container
       direction="column"
       justify="center"
       alignItems="center"
     >
-      <Grid item className={classes.bottomNavRow}>
-        <Typography variant="h1">{translate(subscribeMessages.subscribeHeader)}</Typography>
+      <Grid item className={classes.row}>
+        <Typography variant="h1">{tr(subscribeMessages.subscribeHeader)}</Typography>
       </Grid>
-      <Grid item className={classes.bottomNavRow}>
-        <Typography variant="body1">{translate(subscribeMessages.subscribeText)}</Typography>
+      <Grid item className={classes.row}>
+        <Typography variant="body1">{tr(subscribeMessages.subscribeText)}</Typography>
       </Grid>
-      <Grid item className={classes.bottomNavRow}>
+      <Grid item className={classes.row}>
         <Grid container direction="row" justify="center">
           <form>
             <RoundedInput
               className={classes.email}
-              placeholder={translate(subscribeMessages.emailButton)}
+              placeholder={tr(subscribeMessages.emailButton)}
               type="email"
             />
             <Button rounded gradient className={classnames(classes.subscribe)} type="submit">
-              {translate(subscribeMessages.subscribeButton)}
+              {tr(subscribeMessages.subscribeButton)}
             </Button>
           </form>
         </Grid>
       </Grid>
     </Grid>
-    <Grid container direction="row" justify="center" className={classes.bottomNav}>
-      <img className={classes.logo} alt="" src={logo} />
+  )
+}
+
+const useMainFooterStyles = makeStyles(({spacing, palette}) => ({
+  socialIcon: {
+    color: palette.footer.contrastText,
+  },
+  socialIconWrapper: {
+    marginRight: spacing.unit * 1.4,
+    marginBottom: spacing.unit * 0.75,
+  },
+  copyright: {
+    color: palette.footer.contrastText,
+    fontSize: 10,
+    paddingBottom: spacing.unit * 2,
+  },
+  logo: {
+    paddingBottom: spacing.unit,
+    paddingTop: spacing.unit,
+  },
+  nav: {
+    listStyleType: 'none',
+    display: 'flex',
+  },
+  wrapper: {
+    backgroundColor: palette.footer.background,
+  },
+  link: {
+    'textDecoration': 'none',
+    '&:hover': {
+      textDecoration: 'underline',
+      color: palette.background.paper,
+    },
+  },
+  navItem: {
+    paddingLeft: '50px',
+  },
+  navText: {
+    color: palette.footer.contrastText,
+  },
+}))
+
+const SocialIcon = ({to, className}) => {
+  const classes = useMainFooterStyles()
+  return (
+    <span className={classes.socialIconWrapper}>
+      <ExternalLink to={to}>
+        <i className={classnames(classes.socialIcon, className)} />
+      </ExternalLink>
+    </span>
+  )
+}
+
+const MainFooter = ({navItems}) => {
+  const classes = useMainFooterStyles()
+  const {translate: tr} = useI18n()
+  return (
+    <Grid container direction="row" justify="center" className={classes.wrapper}>
+      <Grid item>
+        <Grid container direction="column" alignItems="flex-start">
+          <Grid item>
+            <img className={classes.logo} alt="" src={logo} />
+          </Grid>
+          <Grid item>
+            <Grid container justify="center" alignItems="center">
+              <SocialIcon to={SOCIAL_LINKS.FACEBOOK} className="fa fa-facebook-square" />
+              <SocialIcon to={SOCIAL_LINKS.TWITTER} className="fa fa-twitter" />
+              <SocialIcon to={SOCIAL_LINKS.YOUTUBE} className="fa fa-youtube-play" />
+              <SocialIcon to={SOCIAL_LINKS.MEDIUM} className="fa fa-medium" />
+              <SocialIcon to={SOCIAL_LINKS.REDDIT} className="fa fa-reddit-alien" />
+              <SocialIcon to={SOCIAL_LINKS.LINKEDIN} className="fa fa-linkedin-square" />
+            </Grid>
+          </Grid>
+          <Grid item>
+            <Typography className={classes.copyright}>
+              {tr(messages.copyright)} | &#169;2019 EMURGO Co., Ltd
+            </Typography>
+          </Grid>
+        </Grid>
+      </Grid>
+
       <ul className={classes.nav}>
         {navItems.map(({link, label}) => (
           <li key={label} className={classes.navItem}>
@@ -132,10 +203,18 @@ const Footer = ({classes, navItems, i18n: {translate}}) => (
         ))}
       </ul>
     </Grid>
+  )
+}
+
+type FooterProps = {|
+  navItems: $ReadOnlyArray<{link: string, label: string}>,
+|}
+
+const Footer = ({navItems}: FooterProps) => (
+  <React.Fragment>
+    <SubscribeFooter />
+    <MainFooter navItems={navItems} />
   </React.Fragment>
 )
 
-export default compose(
-  withI18n,
-  withStyles(styles)
-)(Footer)
+export default Footer

@@ -1,6 +1,7 @@
 // @flow
 import './index.css'
 import './utils.css'
+import 'font-awesome/css/font-awesome.min.css'
 
 import React from 'react'
 import ReactDOM from 'react-dom'
