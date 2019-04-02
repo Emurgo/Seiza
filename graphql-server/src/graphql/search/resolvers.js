@@ -1,6 +1,6 @@
 import {fetchAddress} from '../address/dataProviders'
 import {fetchTransaction} from '../transaction/dataProviders'
-import {fetchBlockSummary} from '../block/dataProviders'
+import {fetchBlockByHash} from '../block/dataProviders'
 
 export const blockChainSearchResolver = async (root, args, context) => {
   const query = args.query
@@ -12,7 +12,7 @@ export const blockChainSearchResolver = async (root, args, context) => {
     fetchAddress(context.cardanoAPI, query)
       .then(addType('Address'))
       .catch(swallowError),
-    fetchBlockSummary(context.cardanoAPI, query)
+    fetchBlockByHash(context.cardanoAPI, query)
       .then(addType('Block'))
       .catch(swallowError),
     fetchTransaction(context.cardanoAPI, query)

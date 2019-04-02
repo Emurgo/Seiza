@@ -1,50 +1,37 @@
 // @flow
-import _ from 'lodash'
 import assert from 'assert'
 import {ApolloError} from 'apollo-server'
-import Bignumber from 'bignumber.js'
 
-const facadeElasticTransaction = (source: any) => {
-  // TODO: bignumber sum
-  const _sum = (amounts) => amounts.reduce((acc, x) => acc.plus(new Bignumber(x, 10)), Bignumber(0))
-
-  const totalInput = _sum(source.inputs_amount)
-  const totalOutput = _sum(source.outputs_amount)
-
+export const facadeElasticTransaction = (source: any) => {
   return {
     txHash: source.hash,
-    _blockHash: source.block_hash,
-    blockHash: source.block_hash,
-
-    totalInput,
-    totalOutput,
+    _epoch_slot: {epoch: source.epoch, slot: source.slot},
+    totalInput: source.sum_inputs,
+    totalOutput: source.sum_outputs,
     // TODO: what about refunds?
-    fees: totalInput.minus(totalOutput),
+    fees: source.fees,
 
-    inputs: _.zip(source.inputs_address, source.inputs_amount).map(([address58, amount]) => ({
-      address58,
-      amount,
-    })),
-    outputs: _.zip(source.outputs_address, source.outputs_amount).map(([address58, amount]) => ({
-      address58,
-      amount,
-    })),
+    // TODO: this is a hack for now
+    inputs: source.txio
+      .map((io) => ({address58: io.address[0], amount: io.val}))
+      .filter(({amount}) => amount < 0)
+      .map(({address58, amount}) => ({address58, amount: -amount})),
+    outputs: source.txio
+      .map((io) => ({address58: io.address[0], amount: io.val}))
+      .filter(({amount}) => amount >= 0),
 
-    // Note: tx_body is hex-encoded
-    size: source.tx_body.length / 2,
+    // TODO: tx size is missing in data
+    size: null,
+    supplyAfter: source.supply,
   }
 }
 
 export const fetchTransaction = async ({elastic}: any, txHash: string) => {
   const {hits} = await elastic.search({
-    index: 'txs',
-    type: 'txs',
+    index: 'seiza.tx',
+    type: 'tx',
     body: {
-      query: {
-        match_phrase: {
-          hash: txHash,
-        },
-      },
+      query: elastic._matchPhrase('hash', txHash),
     },
   })
 

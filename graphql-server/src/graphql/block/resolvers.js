@@ -1,69 +1,94 @@
-import {_fetchPage, PAGE_SIZE} from './dataProviders'
-import _ from 'lodash'
+import {facadeElasticBlock} from './dataProviders'
 import assert from 'assert'
-
-// Note: 'pages' are indexed from 1 in cardano API
-// Note: 'cursor' means including the position
-
-const INVALID_CURSOR = {data: [], cursor: null}
-
-const _fetchInitial = async (args, context) => {
-  const pageId = args.cursor && Math.ceil(args.cursor / PAGE_SIZE)
-  if (pageId < 1) throw new Error('Invalid cursor value')
-
-  const initialPage = await _fetchPage(pageId, context)
-
-  const sizeToKeep = args.cursor
-    ? args.cursor - (pageId - 1) * PAGE_SIZE
-    : initialPage.blocks.length
-
-  assert(initialPage.blocks.length >= sizeToKeep)
-
-  return {
-    nextPageId: initialPage.pageId - 1,
-    blocks: initialPage.blocks.slice(-sizeToKeep),
-  }
-}
-
-// countDown(5, 4) => 5,4,3,2
-const countDown = (start, count) => _.range(start, start - count, -1)
-
-const _fetchSubsequent = async (startPageId, count, context) => {
-  const pageIds = countDown(startPageId, Math.min(startPageId, Math.ceil(count / PAGE_SIZE)))
-
-  const subsequentData = await Promise.all(
-    pageIds.map((id) =>
-      _fetchPage(id, context).then(({blocks}) => {
-        assert(blocks.length === PAGE_SIZE)
-        return blocks
-      })
-    )
-  )
-
-  return _.flatten(subsequentData).slice(0, count)
-}
+const PAGE_SIZE = 10
 
 export const pagedBlocksResolver = async (parent, args, context) => {
-  const pageId = args.cursor && Math.ceil(args.cursor / PAGE_SIZE)
-  if (pageId < 1) return INVALID_CURSOR
+  const {cursor} = args
+  const {elastic} = context
 
-  const resultPageSize = PAGE_SIZE // hardcoded for now
+  const {hits} = await elastic.search({
+    index: 'seiza.block',
+    type: 'block',
+    body: {
+      query: elastic._filter([
+        elastic._currentBranch(),
+        elastic._notNull('hash'),
+        elastic._lte('height', cursor),
+      ]),
+      sort: elastic._orderBy([['height', 'desc']]),
+      size: PAGE_SIZE,
+    },
+  })
 
-  const {nextPageId, blocks: initialBlocks} = await _fetchInitial(args, context)
+  const blockData = hits.hits.map((h) => facadeElasticBlock(h._source))
+  assert(hits.hits.length <= PAGE_SIZE)
+  // TODO: maybe return empty result?
+  assert(hits.hits.length > 0)
 
-  const remainingCount = Math.max(0, resultPageSize - initialBlocks.length)
+  const startHeight = blockData[0].height
+  // self-check
+  assert(hits.total === startHeight)
 
-  const subsequentBlocks = await _fetchSubsequent(nextPageId, remainingCount, context)
-
-  const nextCursor = nextPageId * PAGE_SIZE - remainingCount
+  const nextCursor = startHeight - PAGE_SIZE
 
   return {
     cursor: nextCursor > 0 ? nextCursor : null,
-    data: [...initialBlocks, ...subsequentBlocks],
+    data: blockData,
   }
 }
 
-export const pagedBlocksInEpochResolver = (parent, args, context) => {
-  // TODO: Add logic to query blocks in target epoch
-  return pagedBlocksResolver(parent, args, context)
+export const pagedBlocksInEpochResolver = async (parent, args, context) => {
+  const {cursor, epochNumber: epoch} = args
+  const {elastic} = context
+
+  // Note: this is a workaround
+  const {
+    hits: {total: previousEpochs, hits: previousEnd},
+  } = await elastic.search({
+    index: 'seiza.block',
+    type: 'block',
+    body: {
+      query: elastic._filter([
+        elastic._onlyActiveFork(),
+        elastic._notNull('hash'),
+        elastic._lt('epoch', epoch),
+      ]),
+      sort: elastic._orderBy([['height', 'desc']]),
+      size: 1,
+    },
+  })
+
+  if (epoch > 0) {
+    assert(previousEnd.length > 0)
+    assert(previousEnd[0]._source.height === previousEpochs)
+  }
+
+  const {hits} = await elastic.search({
+    index: 'seiza.block',
+    type: 'block',
+    body: {
+      query: elastic._filter([
+        elastic._onlyActiveFork(),
+        elastic._notNull('hash'),
+        cursor && elastic._lte('height', cursor + previousEpochs),
+        elastic._exact('epoch', epoch),
+      ]),
+      sort: elastic._orderBy([['height', 'desc']]),
+      size: PAGE_SIZE,
+    },
+  })
+
+  if (cursor) {
+    assert(hits.total === cursor)
+  }
+
+  const blockData = hits.hits.map((h) => facadeElasticBlock(h._source))
+
+  const startHeight = blockData[0].height
+  const nextCursor = startHeight - PAGE_SIZE - previousEpochs
+
+  return {
+    cursor: nextCursor > 0 ? nextCursor : null,
+    data: blockData,
+  }
 }

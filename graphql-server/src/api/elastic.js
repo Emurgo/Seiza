@@ -38,6 +38,9 @@ const elasticErrorHandler = (err) => {
   // TODO: maybe distinguish between the errors from
   // https://github.com/elastic/elasticsearch-js/blob/master/lib/errors.js
 
+  // eslint-disable-next-line no-console
+  console.dir(err, {depth: 3})
+
   throw new ApolloError('Could not reach database', 'DB_UNREACHABLE', {err})
 }
 
@@ -47,13 +50,72 @@ type SearchParams = {
   body: any,
 }
 
+type SortDirection = 'asc' | 'desc'
+
 const elastic = {
-  search: (params: SearchParams) =>
-    client
+  search: (params: SearchParams) => {
+    // eslint-disable-next-line
+    console.dir(params, {depth: null})
+    return client
       .search(params)
       .catch(elasticErrorHandler)
       .then(checkResponse)
-      .then((response) => response.body),
+      .then((response) => response.body)
+  },
+  // Elastic query syntax seems to be ad-hoc and too verbose
+  // it is better to have some wrappers
+  _orderBy: (fields: Array<[string, SortDirection]>): any =>
+    fields.map(([field, order]) => ({
+      [field]: {order},
+    })),
+  _notNull: (field: string) => ({
+    exists: {
+      field,
+    },
+  }),
+  // Use for hash search -- seems to be case-insensitive exact match
+  // for them
+  _matchPhrase: (field: string, phrase: string) => ({
+    match_phrase: {
+      [field]: phrase,
+    },
+  }),
+
+  _lte: (field: string, value: any) => ({
+    range: {
+      [field]: {
+        lte: value,
+      },
+    },
+  }),
+  _lt: (field: string, value: any) => ({
+    range: {
+      [field]: {
+        lt: value,
+      },
+    },
+  }),
+  _exact: (field: string, value: any) => ({
+    term: {
+      [field]: value,
+    },
+  }),
+  _onlyActiveFork: () => ({
+    term: {
+      branch: 0,
+    },
+  }),
+  _filter: (conditions: Array<any>): any => ({
+    bool: {
+      filter: conditions.map((c) => !!c),
+    },
+  }),
+
+  _sum: (field: string) => ({
+    sum: {
+      field,
+    },
+  }),
 }
 
 export default elastic

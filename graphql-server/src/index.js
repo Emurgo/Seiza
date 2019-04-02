@@ -7,7 +7,11 @@ import {mergeTypes} from 'merge-graphql-schemas'
 import {URL} from '@okgrow/graphql-scalars'
 
 import {fetchAddress} from './graphql/address/dataProviders'
-import {fetchBlockSummary, fetchBlockTransactionIds} from './graphql/block/dataProviders'
+import {
+  fetchBlockByHash,
+  fetchBlockTransactionIds,
+  fetchBlockBySlot,
+} from './graphql/block/dataProviders'
 import {fetchTransaction} from './graphql/transaction/dataProviders'
 import {
   fetchBootstrapEraPool,
@@ -74,7 +78,7 @@ const _resolvers = {
         hasMore: result.cursor > 0,
       }
     },
-    block: (root, args, context) => fetchBlockSummary(context.cardanoAPI, args.blockHash),
+    block: (root, args, context) => fetchBlockByHash(context, args.blockHash),
     blockChainSearch: blockChainSearchResolver,
   },
   Block: {
@@ -85,7 +89,7 @@ const _resolvers = {
     blockLeader: (block, args, context) => fetchBootstrapEraPool(null, block._blockLeader),
   },
   Transaction: {
-    block: (tx, args, context) => fetchBlockSummary(context.cardanoAPI, tx._blockHash),
+    block: (tx, args, context) => fetchBlockBySlot(context, tx._epoch_slot),
   },
   Address: {
     transactions: (address, args, context) =>
