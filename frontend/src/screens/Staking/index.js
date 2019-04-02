@@ -1,8 +1,8 @@
 // @flow
 
-import React, {useEffect} from 'react'
+import * as React from 'react'
 import {Switch, Route, Redirect} from 'react-router-dom'
-import {Grid, createStyles} from '@material-ui/core'
+import {Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import useReactRouter from 'use-react-router'
 
@@ -22,13 +22,12 @@ import StakePoolHeader from './Header'
 import PageNotFound from '../PageNotFound'
 import LocationMap from './LocationMap'
 
-const SIDEBAR_WIDTH = 450
+const DEFAULT_MAX_WIDTH = '1000px'
 
-const useStyles = makeStyles((theme) =>
-  createStyles({
-    sidebar: {
-      width: SIDEBAR_WIDTH,
-    },
+const useStyles = makeStyles((theme) => {
+  // Note: we use `width` instead of `flex: 0 0 width` as it is causing spaces at the bottom of div
+  const sidebarWidth = 450
+  return {
     notFound: {
       marginTop: '100px',
     },
@@ -36,33 +35,37 @@ const useStyles = makeStyles((theme) =>
       // TODO: consider a better solution to avoid scroll bars
       overflow: 'hidden',
     },
-    mainContent: {
-      flexGrow: 1,
-    },
-    mainFullWidthContent: {
-      // Note: this does not work good with `flexGrow:1` as it introduces various overflow issues
-      // with ComparisonMatrix layout
-      width: `calc(100% - ${SIDEBAR_WIDTH}px)`,
+    layoutWrapper: {
+      display: 'flex',
+      width: '100%',
     },
     sidebarWrapper: {
-      minWidth: 450 + theme.spacing.unit,
-      paddingRight: theme.spacing.unit,
-      flex: 3,
+      width: sidebarWidth,
+      paddingRight: theme.spacing.unit * 3,
+    },
+    fullWidthWrapper: {
+      width: `calc(100% - ${sidebarWidth}px)`,
     },
     centerWrapper: {
-      flex: 9,
+      display: 'flex',
+      flex: 1,
+      justifyContent: 'flex-start',
       [theme.breakpoints.up('xl')]: {
-        flex: 6,
+        justifyContent: 'center',
       },
+    },
+    centeredItem: {
+      maxWidth: ({maxWidth}) => maxWidth,
+      width: '100%',
     },
     rightSideWrapper: {
-      flex: 0,
+      width: 0,
       [theme.breakpoints.up('xl')]: {
-        flex: 3,
+        width: sidebarWidth,
       },
     },
-  })
-)
+  }
+})
 
 const NotFound = () => {
   const classes = useStyles()
@@ -84,7 +87,7 @@ const synchronizedScreenFactory = (Screen, useSetScreenStorageFromQuery) => () =
 
   const storageQuery = getScreenUrlQuery()
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (urlQuery) {
       // Initial load case, to determine whether we should set `autosync` to true/false.
       if (autoSync === null) {
@@ -110,7 +113,7 @@ const LayoutedStakePoolList = () => (
   </CenteredLayout>
 )
 const LayoutedComparisonMatrix = () => (
-  <FullWidthLayout>
+  <FullWidthLayout center={false}>
     <ComparisonMatrix />
   </FullWidthLayout>
 )
@@ -160,33 +163,38 @@ const PeopleQuerySynchronizer = synchronizedScreenFactory(
   useSetBasicScreenStorageFromQuery
 )
 
-const FullWidthLayout = ({children}) => {
-  const classes = useStyles()
+type CenteredLayoutProps = {
+  children: React.Node,
+  maxWidth?: string,
+}
+
+const CenteredLayout = ({children, maxWidth = DEFAULT_MAX_WIDTH}: CenteredLayoutProps) => {
+  // Note: using custom classes instead of Grid as we need to specify
+  // also `flex-basis` and `flex-shrink`
+  const classes = useStyles({maxWidth})
   return (
-    <Grid container direction="row" wrap="nowrap">
-      {/* Grid items were removed becaues they introduce padding which
-          has alignenment issues with centered layout */}
-      <div className={classes.sidebar}>
+    <div className={classes.layoutWrapper}>
+      <div className={classes.sidebarWrapper}>
         <SideMenu />
       </div>
-      <div className={classes.mainFullWidthContent}>{children}</div>
-    </Grid>
+      <div className={classes.centerWrapper}>
+        <div className={classes.centeredItem}>{children}</div>
+      </div>
+      <div className={classes.rightSideWrapper} />
+    </div>
   )
 }
 
-const CenteredLayout = ({children}) => {
-  // Note: using custom classes instead of Grid as its customization
-  // with regards to minWidth is hard
+const FullWidthLayout = ({children}) => {
+  // Note: using custom classes instead of Grid as we need to specify
+  // also `flex-basis` and `flex-shrink`
   const classes = useStyles()
   return (
-    <div className="d-flex">
+    <div className={classes.layoutWrapper}>
       <div className={classes.sidebarWrapper}>
-        <div className={classes.sidebar}>
-          <SideMenu />
-        </div>
+        <SideMenu />
       </div>
-      <div className={classes.centerWrapper}>{children}</div>
-      <div className={classes.rightSideWrapper} />
+      <div className={classes.fullWidthWrapper}>{children}</div>
     </div>
   )
 }
