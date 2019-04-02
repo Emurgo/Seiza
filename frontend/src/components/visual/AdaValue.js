@@ -111,13 +111,14 @@ const useNeutralStyles = makeStyles(({palette}) => ({
   },
 }))
 
-const useFontStyles = makeStyles((palette) => ({
+const useFontStyles = makeStyles((theme) => ({
   thin: {
-    fontWeight: '300',
+    fontWeight: '200',
   },
   thick: {
-    fontWeight: '500',
+    fontWeight: '400', // Default font-weight
   },
+  monospace: theme.typography._monospace,
 }))
 
 type AdaValueStyleType = 'NEUTRAL' | 'POSITIVE' | 'NEGATIVE'
@@ -179,7 +180,7 @@ const AdaValue = ({value, noValue, showCurrency, showSign = 'auto', colorful = f
           variant="body1"
           inline
           component="span"
-          className={cn(classes.integral, fontClasses.thick)}
+          className={cn(classes.integral, fontClasses.thick, fontClasses.monospace)}
         >
           {integral}
         </Typography>
@@ -188,7 +189,7 @@ const AdaValue = ({value, noValue, showCurrency, showSign = 'auto', colorful = f
           color="textSecondary"
           inline
           component="span"
-          className={cn(classes.fractional, fontClasses.thin)}
+          className={cn(classes.fractional, fontClasses.thin, fontClasses.monospace)}
         >
           {fractional}
         </Typography>
@@ -197,7 +198,7 @@ const AdaValue = ({value, noValue, showCurrency, showSign = 'auto', colorful = f
             variant="body1"
             inline
             component="span"
-            className={cn(classes.adaSymbol, fontClasses.thick)}
+            className={cn(classes.adaSymbol, fontClasses.thick, fontClasses.monospace)}
           >
             &nbsp;ADA
           </Typography>

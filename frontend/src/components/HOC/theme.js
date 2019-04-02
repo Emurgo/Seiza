@@ -68,6 +68,11 @@ const commonThemeObj = {
       fontSize: 13,
       lineHeight: 1.5,
     },
+    // This is our custom style. <Typography /> does not support it
+    // but it is useful to have it here
+    _monospace: {
+      fontFamily: '"Lucida Console", Monaco, monospace',
+    },
   },
   shadows: [
     'none',
