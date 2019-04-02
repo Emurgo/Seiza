@@ -28,7 +28,6 @@ const useStyles = makeStyles((theme) =>
   createStyles({
     rowWrapper: {
       padding: '15px 30px',
-      maxWidth: '1000px',
       width: '100%',
     },
     wrapper: {
@@ -47,7 +46,6 @@ const useStyles = makeStyles((theme) =>
     },
     loadMoreWrapper: {
       width: '100%',
-      maxWidth: '1000px',
     },
     sortByBar: {
       marginTop: '20px',
