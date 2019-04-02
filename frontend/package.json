@@ -39,6 +39,7 @@
     "query-string": "^6.3.0",
     "rc-slider": "^8.6.6",
     "react": "^16.8.0",
+    "react-addons-css-transition-group": "^15.6.2",
     "react-apollo": "^2.4.1",
     "react-apollo-hooks": "^0.4.3",
     "react-dom": "^16.8.0",
