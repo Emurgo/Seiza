@@ -23,12 +23,12 @@ const useStyles = makeStyles((theme) => ({
 const EllipsizeMiddle = ({value, endCharactersCount = 6}) => {
   const classes = useStyles()
   return typeof value === 'string' && value.length > endCharactersCount ? (
-    <div className={classes.wrapper}>
+    <span className={classes.wrapper}>
       <span className={classes.ellipsizedSpan}>
         {value.substring(0, value.length - endCharactersCount)}
       </span>
       <span>{value.substring(value.length - endCharactersCount)}</span>
-    </div>
+    </span>
   ) : (
     value
   )

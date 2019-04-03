@@ -21,6 +21,7 @@ import {
   AdaValue,
   Link,
   Divider,
+  EllipsizeMiddle,
 } from '@/components/visual'
 import WithModalState from '@/components/headless/modalState'
 import AssuranceChip from '@/components/common/AssuranceChip'
@@ -136,6 +137,20 @@ const useBreakdownStyles = makeStyles((theme) => ({
     marginTop: theme.spacing.unit * 1.5,
     marginBottom: theme.spacing.unit * 1.5,
   },
+  spaced: {
+    width: '95%',
+  },
+  underlineHover: {
+    // hidden border so that text does not jump on hover
+    'borderBottom': '1px solid transparent',
+    '&:hover': {
+      borderBottom: '1px solid',
+    },
+    // border at the same position as underline
+    '& > :first-child': {
+      marginBottom: -4,
+    },
+  },
 }))
 
 const BreakdownItem = (props) => {
@@ -153,8 +168,17 @@ const BreakdownItem = (props) => {
         className={breakdownClasses.rowSpacing}
       >
         <Grid item xs={6}>
-          <Typography variant="caption" color="textSecondary" noWrap>
-            {captionPrefix} <Link to={routeTo.address(address58)}>{address58}</Link>
+          <Typography variant="caption" color="textSecondary">
+            <div className="d-flex">
+              {captionPrefix}
+              <div className={breakdownClasses.spaced}>
+                <Link to={routeTo.address(address58)} underline="none">
+                  <div className={breakdownClasses.underlineHover}>
+                    <EllipsizeMiddle value={address58} />
+                  </div>
+                </Link>
+              </div>
+            </div>
           </Typography>
         </Grid>
         <Grid item xs={6}>
@@ -177,7 +201,7 @@ const AddressesBreakdown = ({transaction}) => {
           <BreakdownItem
             key={index}
             target={input}
-            captionPrefix={`# ${formatInt(index + 1)}`}
+            captionPrefix={<React.Fragment>#&nbsp;{formatInt(index + 1)}&nbsp;</React.Fragment>}
             valuePrefix={'-'}
           />
         ))}
@@ -187,7 +211,7 @@ const AddressesBreakdown = ({transaction}) => {
           <BreakdownItem
             key={index}
             target={output}
-            captionPrefix={`# ${formatInt(index + 1)}`}
+            captionPrefix={<React.Fragment>#&nbsp;{formatInt(index + 1)}&nbsp;</React.Fragment>}
             valuePrefix={'+'}
           />
         ))}
