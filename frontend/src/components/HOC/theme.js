@@ -71,7 +71,7 @@ const commonThemeObj = {
     // This is our custom style. <Typography /> does not support it
     // but it is useful to have it here
     _monospace: {
-      fontFamily: '"Lucida Console", Monaco, monospace',
+      fontFamily: '"GT-America-Mono"',
     },
   },
   shadows: [
