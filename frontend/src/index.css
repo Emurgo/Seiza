@@ -106,6 +106,10 @@
   font-weight: 900;
   font-style: italic;
 }
+@font-face {
+  font-family: 'IBMPlexMono';
+  src: local('IBMPlexMono'), url(./assets/fonts/IBMPlexMono-Regular.ttf) format('truetype');
+}
 
 body {
   margin: 0;
