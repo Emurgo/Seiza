@@ -11,7 +11,7 @@ export const pagedBlocksResolver = async (parent, args, context) => {
     type: 'block',
     body: {
       query: elastic._filter([
-        elastic._currentBranch(),
+        elastic._onlyActiveFork(),
         elastic._notNull('hash'),
         elastic._lte('height', cursor),
       ]),
