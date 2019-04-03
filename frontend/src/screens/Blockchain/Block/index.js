@@ -61,7 +61,7 @@ const BlockSummaryCard = ({blockData, loading}) => {
 }
 
 const blockMessages = defineMessages({
-  title: '<Block>',
+  title: 'Block',
   blockHash: 'Block ID',
 })
 
