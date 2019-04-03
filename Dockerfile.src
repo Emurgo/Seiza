@@ -1,0 +1,5 @@
+FROM alpine AS src
+RUN apk add --no-cache git
+
+ADD ./ /src
+WORKDIR /src
