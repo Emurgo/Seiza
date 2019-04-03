@@ -26,5 +26,4 @@ export const routeTo = {
     location: () => `${STAKING_ROUTE}/location`,
     people: () => `${STAKING_ROUTE}/people`,
   },
-  search: (query: string) => `${BLOCKCHAIN_ROUTE}/search/${query}`,
 }
