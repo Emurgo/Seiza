@@ -31,10 +31,6 @@ const useStyles = makeStyles((theme) => {
     notFound: {
       marginTop: '100px',
     },
-    wrapper: {
-      // TODO: consider a better solution to avoid scroll bars
-      overflow: 'hidden',
-    },
     layoutWrapper: {
       display: 'flex',
       width: '100%',
@@ -200,12 +196,11 @@ const FullWidthLayout = ({children}) => {
 }
 
 export default () => {
-  const classes = useStyles()
   const {autoSync} = useAutoSyncContext()
 
   return (
     <StakingContextProvider autoSync={autoSync}>
-      <Grid container direction="column" className={classes.wrapper}>
+      <Grid container direction="column">
         <StakePoolHeader />
 
         <Switch>

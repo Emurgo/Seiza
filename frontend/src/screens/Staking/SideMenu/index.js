@@ -21,6 +21,9 @@ const messages = defineMessages({
 })
 
 const useStyles = makeStyles((theme) => ({
+  wrapper: {
+    height: '100%',
+  },
   iconButton: {
     width: '100%',
     padding: '20px 40px 20px 60px',
@@ -50,7 +53,7 @@ const SideMenu = () => {
   const {autoSync, toggleAutoSync} = useAutoSyncContext()
 
   return (
-    <React.Fragment>
+    <div className={classes.wrapper}>
       <Grid container className={classes.autoSync} alignItems="center">
         <FormControlLabel
           control={<Switch color="primary" checked={!!autoSync} onChange={toggleAutoSync} />}
@@ -70,7 +73,7 @@ const SideMenu = () => {
       </IconButton>
       <PoolsToCompare />
       <NavigationBar />
-    </React.Fragment>
+    </div>
   )
 }
 
