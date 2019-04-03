@@ -10,10 +10,17 @@ import {makeStyles} from '@material-ui/styles'
 import Pagination, {getPageCount} from '@/components/visual/Pagination'
 import {NavTypography} from '@/components/visual/Navbar'
 
-import {LoadingInProgress, EntityCardContent, SummaryCard, AdaValue} from '@/components/visual'
+import {
+  LoadingInProgress,
+  EntityCardContent,
+  SummaryCard,
+  AdaValue,
+  Link,
+} from '@/components/visual'
 import useTabState from '@/components/hooks/useTabState'
 import {ObjectValues} from '@/helpers/flow'
 import {useI18n} from '@/i18n/helpers'
+import {routeTo} from '@/helpers/routes'
 import {TabsProvider as Tabs, TabItem as Tab, useTabContext} from '@/components/context/TabContext'
 import type {Transaction} from '@/__generated__/schema.flow'
 
@@ -50,7 +57,11 @@ const TransactionCard = ({transaction: tx}) => {
   return (
     <Card elevation={6}>
       <div className={classes.txCard}>
-        <EntityCardContent label={tr(messages.transactionEntity)} value={tx.txHash} />
+        <EntityCardContent
+          label={tr(messages.transactionEntity)}
+          value={<Link to={routeTo.transaction(tx.txHash)}>{tx.txHash}</Link>}
+          copyValue={tx.txHash}
+        />
       </div>
       <Grid container direction="row">
         <Grid item xs={6} className={cn(classes.leftSide, classes.bothSides)}>
