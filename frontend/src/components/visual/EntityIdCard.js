@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const EntityIdCard = ({iconRenderer, label, value, badge}) => {
+const EntityIdCard = ({iconRenderer, label, value, badge, showCopyIcon = true, copyValue}) => {
   const classes = useStyles()
   return (
     <Card elevation={6} className={classNames(classes.card, classes.flex)}>
@@ -37,7 +37,12 @@ const EntityIdCard = ({iconRenderer, label, value, badge}) => {
         </Grid>
       )}
       <Grid item className={classes.cardContent}>
-        <EntityCardContent label={label} value={value} />
+        <EntityCardContent
+          label={label}
+          value={value}
+          showCopyIcon={showCopyIcon}
+          copyValue={copyValue}
+        />
       </Grid>
       {badge && (
         <Grid item className={classNames(classes.flex, classes.centeredFlex)}>
@@ -52,14 +57,14 @@ const useContentStyles = makeStyles((theme) => ({
   wrapper: {
     cursor: 'initial',
     overflow: 'hidden',
-    paddingTop: '12px', // same value as in valueContainer's paddingBottom
+    paddingTop: ({showCopyIcon}) => (showCopyIcon ? '12px' : 'initial'), // same value as in valueContainer's paddingBottom
   },
   valueContainer: {
     width: '100%',
     display: 'flex',
     alignItems: 'center',
-    paddingRight: '48px', // width of copy to clipboard icon
-    paddingBottom: '12px', // because icon background hover would be cut :/
+    paddingRight: ({showCopyIcon}) => (showCopyIcon ? '48px' : 'initial'), // width of copy to clipboard icon
+    paddingBottom: ({showCopyIcon}) => (showCopyIcon ? '12px' : 'initial'), // because icon background hover would be cut :/
     position: 'relative',
   },
   copyToClipboard: {
@@ -78,8 +83,14 @@ const useContentStyles = makeStyles((theme) => ({
 
 // Note: User is unable to select whole text at once
 // due to cutting the text into different HTML elements
-export const EntityCardContent = ({label, value = '', innerRef, copyValue}) => {
-  const classes = useContentStyles()
+export const EntityCardContent = ({
+  label,
+  value = '',
+  innerRef,
+  showCopyIcon = true,
+  copyValue,
+}) => {
+  const classes = useContentStyles({showCopyIcon})
 
   return (
     <div className={classes.correctureWrapper}>
@@ -91,9 +102,11 @@ export const EntityCardContent = ({label, value = '', innerRef, copyValue}) => {
           <Typography variant="body1" className={classes.hidden}>
             <EllipsizeMiddle value={value} />
           </Typography>
-          <div className={classes.copyToClipboard}>
-            <CopyToClipboard value={copyValue || value} />
-          </div>
+          {showCopyIcon && (
+            <div className={classes.copyToClipboard}>
+              <CopyToClipboard value={copyValue || value} />
+            </div>
+          )}
         </Grid>
       </div>
     </div>
