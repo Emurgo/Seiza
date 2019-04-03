@@ -107,7 +107,7 @@ const elastic = {
   }),
   _filter: (conditions: Array<any>): any => ({
     bool: {
-      filter: conditions.map((c) => !!c),
+      filter: conditions.filter((c) => !!c),
     },
   }),
 

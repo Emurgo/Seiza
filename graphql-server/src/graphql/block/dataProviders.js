@@ -75,7 +75,7 @@ export const fetchBlockBySlot = async ({elastic}, {epoch, slot}) => {
     type: 'block',
     body: {
       query: elastic._filter([
-        elastic._currentBranch(),
+        elastic._onlyActiveFork(),
         elastic._exact('epoch', epoch),
         elastic._exact('slot', slot),
       ]),
