@@ -22,6 +22,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
+const paperProps = {elevation: 0}
 const QRDialog = withMobileDialog()(
   ({isOpen, onClose, description, qrCodeValue, fullScreen}: QRDialogProps) => {
     const classes = useStyles()
@@ -31,6 +32,7 @@ const QRDialog = withMobileDialog()(
         fullScreen={fullScreen}
         open={isOpen}
         onClose={onClose}
+        PaperProps={paperProps}
         aria-labelledby="Address QR code"
       >
         <DialogContent>
