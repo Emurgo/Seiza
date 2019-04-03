@@ -19,7 +19,7 @@ import {
   Typography,
 } from '@material-ui/core'
 import {fade} from '@material-ui/core/styles/colorManipulator'
-import {ArrowDropDown} from '@material-ui/icons'
+import {MoreVert} from '@material-ui/icons'
 
 import WithModalState from '@/components/headless/modalState'
 import IconEpoch from '@/assets/icons/metrics-epoch.svg'
@@ -195,7 +195,7 @@ class MetricsCard extends React.Component<MetricsCardProps> {
                     }}
                     buttonRef={this.buttonRef}
                   >
-                    <ArrowDropDown />
+                    <MoreVert />
                   </IconButton>
                 </div>
               )}
