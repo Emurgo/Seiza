@@ -15,7 +15,10 @@ const messages = defineMessages({
 const styles = ({palette, spacing}) =>
   createStyles({
     wrapper: {
-      background: palette.gradient,
+      'background': palette.gradient,
+      '@media print': {
+        display: 'none',
+      },
     },
     metricsWrapper: {
       marginTop: spacing.unit * 5,

@@ -66,8 +66,11 @@ const RoundedInput = React.forwardRef((props, ref) => {
 
 const useSubscribeFooterStyles = makeStyles(({palette, spacing}) => ({
   wrapper: {
-    padding: spacing.unit * 2,
-    background: palette.gradient,
+    'padding': spacing.unit * 2,
+    'background': palette.gradient,
+    '@media print': {
+      display: 'none',
+    },
   },
   subscribe: {
     marginLeft: spacing.unit * 1.3,
@@ -130,8 +133,11 @@ const useMainFooterStyles = makeStyles(({spacing, palette, typography}) => ({
     color: palette.footer.contrastText,
   },
   socialIconWrapper: {
-    marginRight: spacing.unit * 1.4,
-    marginBottom: spacing.unit * 0.75,
+    'marginRight': spacing.unit * 1.4,
+    'marginBottom': spacing.unit * 0.75,
+    '@media print': {
+      display: 'none',
+    },
   },
   copyright: {
     color: palette.footer.contrastText,
@@ -139,12 +145,18 @@ const useMainFooterStyles = makeStyles(({spacing, palette, typography}) => ({
     paddingBottom: spacing.unit * 2,
   },
   logo: {
-    paddingBottom: spacing.unit * 1.5,
-    paddingTop: spacing.unit * 1.5,
+    'paddingBottom': spacing.unit * 1.5,
+    'paddingTop': spacing.unit * 1.5,
+    '@media print': {
+      display: 'none',
+    },
   },
   nav: {
-    listStyleType: 'none',
-    display: 'flex',
+    'listStyleType': 'none',
+    'display': 'flex',
+    '@media print': {
+      display: 'none',
+    },
   },
   wrapper: {
     backgroundColor: palette.footer.background,
