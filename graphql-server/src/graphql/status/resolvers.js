@@ -1,3 +1,5 @@
+import {fetchLatestBlock} from '../block/dataProviders'
+
 const fetchCurrentPrice = async ({pricingAPI}, currency) => {
   const result = await pricingAPI.get('price', {fsym: 'ADA', tsyms: currency})
 
@@ -5,12 +7,10 @@ const fetchCurrentPrice = async ({pricingAPI}, currency) => {
 }
 
 export const currentStatusResolver = (root, args, context) => {
-  const epochNumberResolver = () =>
-    context.cardanoAPI.get('blocks/pages').then((response) => response[1][0].cbeEpoch)
+  const epochNumberResolver = () => fetchLatestBlock(context).then((block) => block.epoch)
 
   // TODO: this turn this into blocks once we have that info
-  const blockCountResolver = () =>
-    context.cardanoAPI.get('blocks/pages').then((response) => response[1][0].cbeSlot)
+  const blockCountResolver = () => fetchLatestBlock(context).then((block) => block.slot)
 
   // TODO: get this info
   const decentralizationResolver = () => 0
