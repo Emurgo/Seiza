@@ -5,8 +5,11 @@ const useStyles = makeStyles((theme) => ({
   wrapper: {
     width: '100%',
     overflow: 'hidden',
-    // magic css needed in order for user to make a text selection of all child elements at once
-    userSelect: 'all',
+    // Used to disallow text selection. This component should be used together
+    // with `CopyToClipboard` component to allow copying of the content.
+    // The reason is that having content in two <span> leads to unwanted space character when
+    // copying directly.
+    userSelect: 'none',
     display: 'flex',
   },
   ellipsizedSpan: {
