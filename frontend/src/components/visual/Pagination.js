@@ -2,16 +2,14 @@
 import React from 'react'
 import classnames from 'classnames'
 import {IconButton, Grid, Input, withStyles, withTheme} from '@material-ui/core'
-import {
-  FirstPage as FirstPageArrow,
-  KeyboardArrowLeft,
-  KeyboardArrowRight,
-  LastPage as LastPageArrow,
-} from '@material-ui/icons'
 import {compose} from 'redux'
 import {withHandlers, withStateHandlers, withProps} from 'recompose'
 import {defineMessages} from 'react-intl'
 
+import {ReactComponent as FirstPageArrow} from '@/assets/icons/arrow-first-page.svg'
+import {ReactComponent as LastPageArrow} from '@/assets/icons/arrow-last-page.svg'
+import {ReactComponent as ArrowLeft} from '@/assets/icons/arrow-left.svg'
+import {ReactComponent as ArrowRight} from '@/assets/icons/arrow-right.svg'
 import {onDidUpdate} from '@/components/HOC/lifecycles'
 import {isInRange} from '@/helpers/validators'
 import {withI18n} from '@/i18n/helpers'
@@ -25,24 +23,21 @@ const ariaLabels = defineMessages({
   prevPage: 'Previous Page',
 })
 
-const styles = ({palette}) => ({
+const styles = ({palette, typography}) => ({
   input: {
-    paddingLeft: `${INPUT_PADDING}px`,
-    paddingRight: `${INPUT_PADDING}px`,
+    paddingLeft: `${INPUT_PADDING * 2}px`,
   },
   editableInput: {
-    border: `1px solid ${palette.grey[500]}`,
+    border: `1px solid ${palette.contentFocus}`,
     borderRadius: '5px',
-  },
-  arrow: {
-    color: palette.primary.dark,
+    padding: 0.5 * typography.fontSize,
   },
   arrowWrapper: {
     padding: '4px !important',
   },
   divider: {
-    color: palette.grey[500],
-    paddingLeft: '10px',
+    color: palette.contentFocus,
+    paddingLeft: '20px',
   },
 })
 
@@ -55,6 +50,8 @@ const getEstimatedInputWidth = (pageCount: number): number => {
 
 export const getPageCount = (itemsCount: number, rowsPerPage: number) =>
   Math.ceil(itemsCount / rowsPerPage)
+
+const inputProps = {style: {textAlign: 'center', padding: '6px 0 6px'}}
 
 export default compose(
   withI18n,
@@ -106,8 +103,9 @@ export default compose(
     const inputStyle = {width: `${getEstimatedInputWidth(pageCount)}px`}
     const isFirstPage = page === 0
     const isLastPage = page >= pageCount - 1
+
     return (
-      <Grid container direction="row" justify="center" alignItems="center" spacing={24}>
+      <Grid container wrap="nowrap" direction="row" justify="center" alignItems="center">
         <Grid item className={classes.arrowWrapper}>
           <IconButton
             className={classes.arrow}
@@ -116,6 +114,7 @@ export default compose(
             aria-label={
               reverseDirection ? translate(ariaLabels.lastPage) : translate(ariaLabels.firstPage)
             }
+            color="primary"
           >
             {theme.direction === 'rtl' ? <LastPageArrow /> : <FirstPageArrow />}
           </IconButton>
@@ -128,8 +127,9 @@ export default compose(
             aria-label={
               reverseDirection ? translate(ariaLabels.nextPage) : translate(ariaLabels.prevPage)
             }
+            color="primary"
           >
-            {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
+            {theme.direction === 'rtl' ? <ArrowRight /> : <ArrowLeft />}
           </IconButton>
         </Grid>
         <Grid item>
@@ -140,7 +140,8 @@ export default compose(
                 disableUnderline
                 value={goToPage}
                 onChange={onGoToPageChange}
-                className={classnames(classes.input, classes.editableInput)}
+                className={classnames(classes.editableInput)}
+                inputProps={inputProps}
               />
             </form>
             <span className={classes.divider}>/</span>
@@ -150,6 +151,7 @@ export default compose(
               readOnly
               value={pageCount}
               className={classes.input}
+              inputProps={inputProps}
             />
           </Grid>
         </Grid>
@@ -161,8 +163,9 @@ export default compose(
             aria-label={
               reverseDirection ? translate(ariaLabels.prevPage) : translate(ariaLabels.nextPage)
             }
+            color="primary"
           >
-            {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
+            {theme.direction === 'rtl' ? <ArrowLeft /> : <ArrowRight />}
           </IconButton>
         </Grid>
         <Grid item className={classes.arrowWrapper}>
@@ -173,6 +176,7 @@ export default compose(
             aria-label={
               reverseDirection ? translate(ariaLabels.firstPage) : translate(ariaLabels.lastPage)
             }
+            color="primary"
           >
             {theme.direction === 'rtl' ? <FirstPageArrow /> : <LastPageArrow />}
           </IconButton>
