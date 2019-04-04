@@ -208,6 +208,19 @@ const TransactionSummary = ({transaction}) => {
     </SummaryCard.Row>
   )
 
+  const epochNumber = idx(transaction, (_) => _.block.epoch)
+  const renderEpochNumber =
+    epochNumber != null ? (
+      <Link to={routeTo.epoch(epochNumber)}>{formatInt(epochNumber)}</Link>
+    ) : (
+      N_A
+    )
+
+  const blockHash = idx(transaction, (_) => _.block.blockHash)
+  const slot = idx(transaction, (_) => _.block.slot)
+  const renderSlot =
+    blockHash != null ? <Link to={routeTo.block(blockHash)}>{formatInt(slot)}</Link> : N_A
+
   return (
     <SummaryCard>
       <Item label={messages.assuranceLevel}>
@@ -223,13 +236,9 @@ const TransactionSummary = ({transaction}) => {
           </span>
         </span>
       </Item>
-      <Item label={messages.epoch}>
-        {formatInt(idx(transaction, (_) => _.block.epoch), {defaultValue: N_A})}
-      </Item>
+      <Item label={messages.epoch}>{renderEpochNumber}</Item>
 
-      <Item label={messages.slot}>
-        {formatInt(idx(transaction, (_) => _.block.slot), {defaultValue: N_A})}
-      </Item>
+      <Item label={messages.slot}>{renderSlot}</Item>
       <Item label={messages.date}>
         {formatTimestamp(idx(transaction, (_) => _.block.timeIssued), {
           defaultValue: N_A,
