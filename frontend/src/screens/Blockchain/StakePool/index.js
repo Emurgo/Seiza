@@ -42,7 +42,7 @@ const PoolSummaryCard = ({stakePoolData}) => {
 }
 
 const messages = defineMessages({
-  title: '<Stake pool>',
+  title: 'Stake pool',
   poolHash: 'Pool ID',
 })
 

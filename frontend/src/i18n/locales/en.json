@@ -109,7 +109,7 @@
   "screens.Blockchain.StakePool.index.description": "Description",
   "screens.Blockchain.StakePool.index.name": "Name",
   "screens.Blockchain.StakePool.index.poolHash": "Pool ID",
-  "screens.Blockchain.StakePool.index.title": "<Stake pool>",
+  "screens.Blockchain.StakePool.index.title": "Stake pool",
   "screens.Blockchain.StakingKey.Pool.Tabs.index.historyTabName": "History ({count, plural, =0 {# epochs} one {# epoch} other {# epochs}})",
   "screens.Blockchain.StakingKey.Pool.Tabs.index.transactionsTabName": "Transactions ({count})",
   "screens.Blockchain.StakingKey.Pool.index.cost": "Cost:",
