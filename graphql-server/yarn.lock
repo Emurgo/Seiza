@@ -1247,6 +1247,14 @@ aws4@^1.8.0:
   resolved "https://registry.yarnpkg.com/aws4/-/aws4-1.8.0.tgz#f0e003d9ca9e7f59c7a508945d7b2ef9a04a542f"
   integrity sha512-ReZxvNHIOv88FlT7rxcXIIC0fPt4KZqZbOlivyWtXLt8ESx84zd3kMC6iK5jVeS2qt+g7ftS7ye4fi06X5rtRQ==
 
+axios-cache-adapter@^2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/axios-cache-adapter/-/axios-cache-adapter-2.3.0.tgz#9ad37cc30f935111441e21214290b226e61cb6e5"
+  integrity sha512-6wegNDj1SB8iIR0mHKThNCRV+JytUX/eg1xgwvLCrZI+wVX2AiNr9pXL3rdQeY4b9njDPuV4y4w/k6wMc9ZwNg==
+  dependencies:
+    axios "^0.18.0"
+    lodash "^4.17.11"
+
 axios@^0.18.0:
   version "0.18.0"
   resolved "https://registry.yarnpkg.com/axios/-/axios-0.18.0.tgz#32d53e4851efdc0a11993b6cd000789d70c05102"
