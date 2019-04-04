@@ -24,6 +24,7 @@
     "babel-plugin-import-graphql": "^2.6.2",
     "babel-polyfill": "^6.26.0",
     "bignumber.js": "^8.0.2",
+    "cors": "^2.8.5",
     "flow-bin": "^0.92.1",
     "flow-coverage-report": "^0.6.1",
     "graphql": "^14.1.1",
@@ -43,6 +44,7 @@
     "eslint-plugin-flowtype": "^3.4.2",
     "eslint-plugin-import": "^2.16.0",
     "eslint-plugin-react": "^7.12.4",
+    "express": "^4.16.4",
     "jest": "^24.1.0",
     "prettier-eslint-cli": "^4.7.1"
   },
