@@ -44,18 +44,18 @@ const useSearchData = (query, skip) => {
   )
   const matchedItems = idx(data, (_) => _.blockChainSearch.items) || []
   assert(matchedItems.length <= 1)
-  return {error, loading, searchMatch: matchedItems.length ? matchedItems[0] : null}
+  return {error, loading, searchResult: matchedItems.length ? matchedItems[0] : null}
 }
 
-const getRedirectUrl = (searchMatch) => {
+const getRedirectUrl = (searchResult) => {
   const redirectBuilder = {
-    Address: (searchMatch) => routeTo.address(searchMatch.address58),
-    Transaction: (searchMatch) => routeTo.transaction(searchMatch.txHash),
-    Block: (searchMatch) => routeTo.block(searchMatch.blockHash),
-  }[searchMatch.__typename]
+    Address: (searchResult) => routeTo.address(searchResult.address58),
+    Transaction: (searchResult) => routeTo.transaction(searchResult.txHash),
+    Block: (searchResult) => routeTo.block(searchResult.blockHash),
+  }[searchResult.__typename]
 
   assert(redirectBuilder)
-  return redirectBuilder(searchMatch)
+  return redirectBuilder(searchResult)
 }
 
 const Search = () => {
@@ -67,13 +67,13 @@ const Search = () => {
   const [searchText, setSearchText] = useState('')
 
   const skip = !searchQuery
-  const {error, loading, searchMatch} = useSearchData(searchQuery, skip)
+  const {error, loading, searchResult} = useSearchData(searchQuery, skip)
 
   useEffect(() => {
-    if (searchMatch) {
+    if (searchResult) {
       setSearchQuery('')
       setSearchText('')
-      history.push(getRedirectUrl(searchMatch))
+      history.push(getRedirectUrl(searchResult))
     }
   })
 
@@ -95,7 +95,7 @@ const Search = () => {
         loading={loading}
       />
       {!loading && error && <LoadingError error={error} />}
-      {!loading && !searchMatch && searchQuery && (
+      {!loading && !searchResult && searchQuery && (
         <Typography variant="body1">{tr(text.noData)}</Typography>
       )}
     </React.Fragment>
