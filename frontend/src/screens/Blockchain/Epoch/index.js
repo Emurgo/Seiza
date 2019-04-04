@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import React, {useRef} from 'react'
 import {defineMessages} from 'react-intl'
 import gql from 'graphql-tag'
 import {useQuery} from 'react-apollo-hooks'
@@ -27,6 +27,7 @@ import Blocks from './Blocks'
 import StakingPoolsTab from './StakingPools'
 import {routeTo} from '@/helpers/routes'
 import config from '@/config'
+import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
 
 const messages = defineMessages({
   notAvailable: 'N/A',
@@ -300,45 +301,51 @@ const EpochNavigation = ({currentEpochNumber}) => {
 const EpochScreen = () => {
   const {epochNumber} = useScreenParams()
   const {epochData, error, loading} = useEpochData(epochNumber)
+  const scrollToRef = useRef()
 
   const {translate} = useI18n()
   const blocksInEpoch = idx(epochData, (_) => _.summary.blocksCreated)
+
+  useScrollFromBottom(scrollToRef, [epochData])
+
   return (
-    <SimpleLayout title={translate(messages.header)}>
-      <EpochNavigation currentEpochNumber={epochNumber} />
-      <EntityIdCard
-        showCopyIcon={false}
-        label={translate(messages.entityHeader)}
-        value={epochNumber}
-        iconRenderer={<img alt="" src={EpochIcon} width={40} height={40} />}
-      />
-      {error ? (
-        <LoadingError error={error} />
-      ) : (
-        <React.Fragment>
-          <EpochSummaryCard epoch={epochData} loading={loading} />
-          {config.showStakingData ? (
-            <WithTabState tabNames={TABS.ORDER}>
-              {({setTab, currentTab, currentTabName}) => {
-                const TabContent = TABS.CONTENT[currentTabName]
-                return (
-                  <Card>
-                    <Tabs value={currentTab} onChange={setTab}>
-                      <Tab label={translate(messages.blocksTab)} />
-                      <Tab label={translate(messages.stakingPoolsTab)} />
-                    </Tabs>
-                    <TabContent epochNumber={epochNumber} />
-                  </Card>
-                )
-              }}
-            </WithTabState>
-          ) : (
-            blocksInEpoch != null &&
-            blocksInEpoch > 0 && <Blocks epochNumber={epochNumber} blocksCount={blocksInEpoch} />
-          )}
-        </React.Fragment>
-      )}
-    </SimpleLayout>
+    <div ref={scrollToRef}>
+      <SimpleLayout title={translate(messages.header)}>
+        <EpochNavigation currentEpochNumber={epochNumber} />
+        <EntityIdCard
+          showCopyIcon={false}
+          label={translate(messages.entityHeader)}
+          value={epochNumber}
+          iconRenderer={<img alt="" src={EpochIcon} width={40} height={40} />}
+        />
+        {error ? (
+          <LoadingError error={error} />
+        ) : (
+          <React.Fragment>
+            <EpochSummaryCard epoch={epochData} loading={loading} />
+            {config.showStakingData ? (
+              <WithTabState tabNames={TABS.ORDER}>
+                {({setTab, currentTab, currentTabName}) => {
+                  const TabContent = TABS.CONTENT[currentTabName]
+                  return (
+                    <Card>
+                      <Tabs value={currentTab} onChange={setTab}>
+                        <Tab label={translate(messages.blocksTab)} />
+                        <Tab label={translate(messages.stakingPoolsTab)} />
+                      </Tabs>
+                      <TabContent epochNumber={epochNumber} />
+                    </Card>
+                  )
+                }}
+              </WithTabState>
+            ) : (
+              blocksInEpoch != null &&
+              blocksInEpoch > 0 && <Blocks epochNumber={epochNumber} blocksCount={blocksInEpoch} />
+            )}
+          </React.Fragment>
+        )}
+      </SimpleLayout>
+    </div>
   )
 }
 

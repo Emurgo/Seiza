@@ -1,6 +1,6 @@
 // @flow
 
-import React from 'react'
+import React, {useRef} from 'react'
 import {defineMessages} from 'react-intl'
 import gql from 'graphql-tag'
 import {useQuery} from 'react-apollo-hooks'
@@ -14,6 +14,7 @@ import {
   LoadingError,
 } from '@/components/visual'
 
+import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
 import {useI18n} from '@/i18n/helpers'
 
 const summaryLabels = defineMessages({
@@ -73,20 +74,25 @@ const StakePool = () => {
   } = useReactRouter()
   const {loading, stakePoolData, error} = useStakePoolData(poolHash)
   const {translate} = useI18n()
+  const scrollToRef = useRef()
+
+  useScrollFromBottom(scrollToRef, [stakePoolData])
 
   return (
-    <SimpleLayout title={translate(messages.title)}>
-      <EntityIdCard label={translate(messages.poolHash)} value={poolHash} />
-      {loading ? (
-        <LoadingInProgress />
-      ) : error ? (
-        <LoadingError error={error} />
-      ) : (
-        <React.Fragment>
-          <PoolSummaryCard stakePoolData={stakePoolData} />
-        </React.Fragment>
-      )}
-    </SimpleLayout>
+    <div ref={scrollToRef}>
+      <SimpleLayout title={translate(messages.title)}>
+        <EntityIdCard label={translate(messages.poolHash)} value={poolHash} />
+        {loading ? (
+          <LoadingInProgress />
+        ) : error ? (
+          <LoadingError error={error} />
+        ) : (
+          <React.Fragment>
+            <PoolSummaryCard stakePoolData={stakePoolData} />
+          </React.Fragment>
+        )}
+      </SimpleLayout>
+    </div>
   )
 }
 
