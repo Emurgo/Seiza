@@ -267,6 +267,7 @@ const EpochScreen = () => {
         </Button>
       </div>
       <EntityIdCard
+        showCopyIcon={false}
         label={translate(messages.entityHeader)}
         value={epochNumber}
         iconRenderer={<img alt="" src={EpochIcon} width={40} height={40} />}
