@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import React, {useEffect, useRef} from 'react'
 import {useQuery} from 'react-apollo-hooks'
 import useReactRouter from 'use-react-router'
 import {defineMessages} from 'react-intl'
@@ -329,37 +329,47 @@ const TransactionScreen = () => {
   const {txHash} = useScreenParams()
   const {loading, transactionData, error} = useTransactionData(txHash)
   const {translate} = useI18n()
+  const inputEl = useRef(null)
+
+  useEffect(() => {
+    const offsetTop = idx(inputEl, (_) => _.current.offsetTop)
+
+    // Note: behavior: 'smooth' is not working in `edge` and `safari`
+    window.scrollTo({left: 0, top: offsetTop, behavior: 'smooth'})
+  }, [])
 
   return (
-    <SimpleLayout title={translate(messages.header)}>
-      <EntityIdCard
-        label={translate(messages.transactionId)}
-        value={txHash}
-        iconRenderer={<img alt="" src={AdaIcon} width={40} height={40} />}
-      />
-      {error ? (
-        <LoadingError error={error} />
-      ) : (
-        <React.Fragment>
-          <TransactionSummary loading={loading} transaction={transactionData} />
-          {loading ? (
-            <LoadingInProgress />
-          ) : (
-            <WithModalState>
-              {({isOpen, toggle}) => (
-                <ExpandableCard
-                  expanded={isOpen}
-                  onChange={toggle}
-                  renderHeader={() => <AddressesSummary transaction={transactionData} />}
-                  renderExpandedArea={() => <AddressesBreakdown transaction={transactionData} />}
-                  footer={isOpen ? translate(messages.hideAll) : translate(messages.seeAll)}
-                />
-              )}
-            </WithModalState>
-          )}
-        </React.Fragment>
-      )}
-    </SimpleLayout>
+    <div ref={inputEl}>
+      <SimpleLayout title={translate(messages.header)}>
+        <EntityIdCard
+          label={translate(messages.transactionId)}
+          value={txHash}
+          iconRenderer={<img alt="" src={AdaIcon} width={40} height={40} />}
+        />
+        {error ? (
+          <LoadingError error={error} />
+        ) : (
+          <React.Fragment>
+            <TransactionSummary loading={loading} transaction={transactionData} />
+            {loading ? (
+              <LoadingInProgress />
+            ) : (
+              <WithModalState>
+                {({isOpen, toggle}) => (
+                  <ExpandableCard
+                    expanded={isOpen}
+                    onChange={toggle}
+                    renderHeader={() => <AddressesSummary transaction={transactionData} />}
+                    renderExpandedArea={() => <AddressesBreakdown transaction={transactionData} />}
+                    footer={isOpen ? translate(messages.hideAll) : translate(messages.seeAll)}
+                  />
+                )}
+              </WithModalState>
+            )}
+          </React.Fragment>
+        )}
+      </SimpleLayout>
+    </div>
   )
 }
 
