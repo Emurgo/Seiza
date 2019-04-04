@@ -36,7 +36,7 @@ describe('Cache tests', () => {
   })
 
   test('Cache second request', async () => {
-    const api = getCachedApi({maxAge: 1000 * 10, limit: 10})
+    const api = getCachedApi({maxAge: 1000 * 10})
 
     const res1 = await api.get(`${DOMAIN}:${PORT}/test1`)
     expect(res1.request.fromCache).not.toBe(true)
@@ -46,7 +46,7 @@ describe('Cache tests', () => {
   })
 
   test('Dont cache after max age', async () => {
-    const api = getCachedApi({maxAge: 1000 * 1, limit: 10})
+    const api = getCachedApi({maxAge: 1000 * 1})
 
     const res1 = await api.get(`${DOMAIN}:${PORT}/test1`)
     expect(res1.request.fromCache).not.toBe(true)
@@ -58,7 +58,7 @@ describe('Cache tests', () => {
   })
 
   test('Two endpoints cache', async () => {
-    const api = getCachedApi({maxAge: 1000 * 10, limit: 10})
+    const api = getCachedApi({maxAge: 1000 * 10})
 
     const endpoint1Res1 = await api.get(`${DOMAIN}:${PORT}/test1`)
     expect(endpoint1Res1.request.fromCache).not.toBe(true)
