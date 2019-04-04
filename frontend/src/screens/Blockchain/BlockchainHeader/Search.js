@@ -44,26 +44,18 @@ const useSearchData = (query, skip) => {
   )
   const matchedItems = idx(data, (_) => _.blockChainSearch.items) || []
   assert(matchedItems.length <= 1)
-  return {error, loading, match: matchedItems.length ? matchedItems[0] : null}
+  return {error, loading, searchMatch: matchedItems.length ? matchedItems[0] : null}
 }
 
-const getRedirectUrl = (match) => {
-  let redirectUrl = ''
-  switch (match.__typename) {
-    case 'Address':
-      redirectUrl = routeTo.address(match.address58)
-      break
-    case 'Transaction':
-      redirectUrl = routeTo.transaction(match.txHash)
-      break
-    case 'Block':
-      redirectUrl = routeTo.block(match.blockHash)
-      break
-    default:
-  }
+const getRedirectUrl = (searchMatch) => {
+  const redirectBuilder = {
+    Address: (searchMatch) => routeTo.address(searchMatch.address58),
+    Transaction: (searchMatch) => routeTo.transaction(searchMatch.txHash),
+    Block: (searchMatch) => routeTo.block(searchMatch.blockHash),
+  }[searchMatch.__typename]
 
-  assert(redirectUrl !== '')
-  return redirectUrl
+  assert(redirectBuilder)
+  return redirectBuilder(searchMatch)
 }
 
 const Search = () => {
@@ -71,26 +63,26 @@ const Search = () => {
   const {history} = useReactRouter()
 
   // "submitted query"
-  const [query, setQuery] = useState('')
+  const [searchQuery, setSearchQuery] = useState('')
   const [searchText, setSearchText] = useState('')
 
-  const skip = !query
-  const {error, loading, match} = useSearchData(query, skip)
+  const skip = !searchQuery
+  const {error, loading, searchMatch} = useSearchData(searchQuery, skip)
 
   useEffect(() => {
-    if (match) {
-      setQuery('')
+    if (searchMatch) {
+      setSearchQuery('')
       setSearchText('')
-      history.push(getRedirectUrl(match))
+      history.push(getRedirectUrl(searchMatch))
     }
   })
 
   const onChange = useCallback(
     (value) => {
-      setQuery('')
+      setSearchQuery('') // to cancel grapql search
       setSearchText(value)
     },
-    [setQuery, setSearchText]
+    [setSearchQuery, setSearchText]
   )
 
   return (
@@ -99,11 +91,13 @@ const Search = () => {
         placeholder={tr(text.searchPlaceholder)}
         value={searchText}
         onChange={onChange}
-        onSearch={setQuery}
+        onSearch={setSearchQuery}
         loading={loading}
       />
       {!loading && error && <LoadingError error={error} />}
-      {!loading && !match && query && <Typography variant="body1">{tr(text.noData)}</Typography>}
+      {!loading && !searchMatch && searchQuery && (
+        <Typography variant="body1">{tr(text.noData)}</Typography>
+      )}
     </React.Fragment>
   )
 }
