@@ -9,6 +9,7 @@ import {CssBaseline, Grid} from '@material-ui/core'
 import {makeStyles, ThemeProvider} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
 
+import config from './config'
 import {routeTo} from './helpers/routes'
 import {provideIntl} from './components/HOC/intl'
 import {provideTheme, withTheme, THEME_DEFINITIONS} from './components/HOC/theme'
@@ -46,12 +47,21 @@ const useAppStyles = makeStyles((theme) => ({
   },
 }))
 
-const getTranslatedNavItems = (translate) => [
-  {link: routeTo.home(), label: translate(navigationMessages.home)},
-  {link: routeTo.blockchain(), label: translate(navigationMessages.blockchain)},
-  {link: routeTo.staking.home(), label: translate(navigationMessages.staking)},
-  {link: routeTo.more(), label: translate(navigationMessages.more)},
-]
+const getTranslatedNavItems = (translate) =>
+  [
+    {link: routeTo.home(), label: translate(navigationMessages.home), __hide: false},
+    {link: routeTo.blockchain(), label: translate(navigationMessages.blockchain), __hide: false},
+    {
+      link: routeTo.staking.home(),
+      label: translate(navigationMessages.staking),
+      __hide: !config.showStakingData,
+    },
+    {
+      link: routeTo.more(),
+      label: translate(navigationMessages.more),
+      __hide: !config.showStakingData,
+    },
+  ].filter((item) => !item.__hide)
 
 const TopBar = compose(withRouter)(({location: {pathname}}) => {
   const {translate} = useI18n()
@@ -70,8 +80,8 @@ const TopBar = compose(withRouter)(({location: {pathname}}) => {
       <Grid item>
         <Grid container direction="row" alignItems="center">
           <Navbar currentPathname={pathname} items={getTranslatedNavItems(translate)} />
-          <LanguageSelect />
-          <ThemeSelect />
+          {config.showStakingData && <LanguageSelect />}
+          {config.showStakingData && <ThemeSelect />}
         </Grid>
       </Grid>
     </Grid>
@@ -94,8 +104,10 @@ const App = () => {
               <Redirect exact from="/" to={routeTo.home()} />
               <Route exact path={routeTo.home()} component={Home} />
               <Route path={routeTo.blockchain()} component={Blockchain} />
-              <Route path={routeTo.staking.home()} component={Staking} />
-              <Route path={routeTo.more()} component={More} />
+              {config.showStakingData && (
+                <Route path={routeTo.staking.home()} component={Staking} />
+              )}
+              {config.showStakingData && <Route path={routeTo.more()} component={More} />}
               <Route component={PageNotFound} />
             </Switch>
           </Grid>

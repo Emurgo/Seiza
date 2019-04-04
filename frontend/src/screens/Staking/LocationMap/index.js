@@ -6,6 +6,7 @@ import {Typography} from '@material-ui/core'
 import {LoadScript, GoogleMap, Marker} from '@react-google-maps/api'
 import {defineMessages} from 'react-intl'
 
+import config from '@/config'
 import {useI18n} from '@/i18n/helpers'
 import {VisualHash, Alert, SummaryCard, LoadingInProgress} from '@/components/visual'
 import {dangerouslyEmbedIntoDataURI} from '@/helpers/url'
@@ -86,7 +87,7 @@ const LocationMap = ({pools}) => {
   const [error, setError] = useState()
   const {translate: tr} = useI18n()
 
-  if (!process.env.REACT_APP_GOOGLE_MAPS_API_KEY) {
+  if (!config.googleMapsApiKey) {
     return (
       <div>
         <Typography variant="h4">{tr(messages.missingApiKey)} </Typography>
@@ -98,7 +99,7 @@ const LocationMap = ({pools}) => {
     <Alert message={tr(messages.errorLoadingMap)} />
   ) : (
     <LoadScript
-      googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
+      googleMapsApiKey={config.googleMapsApiKey}
       language={'en'}
       region={'EN'}
       version={'weekly'}
