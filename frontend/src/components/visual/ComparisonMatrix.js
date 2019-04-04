@@ -6,9 +6,9 @@ import {makeStyles} from '@material-ui/styles'
 import {darken, fade} from '@material-ui/core/styles/colorManipulator'
 import {defineMessages} from 'react-intl'
 
-import {Grid, Typography, Tooltip, createStyles} from '@material-ui/core'
+import {Grid, Typography, createStyles} from '@material-ui/core'
 import {useI18n} from '@/i18n/helpers'
-import {VisualHash, ExternalLink} from '@/components/visual'
+import {VisualHash, ExternalLink, Tooltip} from '@/components/visual'
 import CopyToClipboard from '@/components/common/CopyToClipboard'
 
 // TODO: full width scenario
@@ -159,7 +159,6 @@ const useTooltipStyles = makeStyles((theme) => {
   return {
     text: {
       wordBreak: 'break-word',
-      color: 'white',
     },
     copy: {
       cursor: 'pointer',

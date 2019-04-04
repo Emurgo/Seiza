@@ -1,12 +1,14 @@
 import React from 'react'
-import {Tooltip, IconButton} from '@material-ui/core'
+import {IconButton} from '@material-ui/core'
 import {defineMessages} from 'react-intl'
 
 import {withI18n} from '@/i18n/helpers'
 import WithCopyToClipboard from '../headless/copyToClipboard'
+import {Tooltip} from '@/components/visual'
 
 import copyIcon from '@/assets/icons/copy.svg'
 import copiedIcon from '@/assets/icons/copied.svg'
+import {makeStyles} from '@material-ui/styles'
 
 const messages = defineMessages({
   altText: 'Copy to clipboard',
@@ -14,8 +16,15 @@ const messages = defineMessages({
   tooltipCopied: 'Copied!',
 })
 
+const useTooltipStyles = makeStyles(() => ({
+  popper: {
+    top: '-10px !important',
+  },
+}))
+
 const _CopyToClipboard = ({value, i18n, children = null}) => {
   const {translate} = i18n
+  const tooltipClasses = useTooltipStyles()
   return (
     <WithCopyToClipboard value={value}>
       {({copy, isCopied, reset}) => (
@@ -25,6 +34,7 @@ const _CopyToClipboard = ({value, i18n, children = null}) => {
             TransitionProps={{
               onExited: reset,
             }}
+            classes={tooltipClasses}
           >
             {children ? (
               <div onClick={copy}>{children}</div>
