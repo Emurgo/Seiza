@@ -1,5 +1,5 @@
 // @flow
-import React, {useEffect, useRef} from 'react'
+import React, {useRef, useEffect} from 'react'
 import {useQuery} from 'react-apollo-hooks'
 import useReactRouter from 'use-react-router'
 import {defineMessages} from 'react-intl'
