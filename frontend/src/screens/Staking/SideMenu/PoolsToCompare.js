@@ -145,7 +145,7 @@ const StakePoolItem = withStyles(poolsStyles)(_StakePoolItem)
 const Action = withStyles(poolsStyles)(({classes, label, icon, onClick}) => (
   <Grid container direction="row" alignItems="center">
     <Typography className={classes.text}>{label}</Typography>
-    <IconButton onClick={onClick} aria-label={label}>
+    <IconButton onClick={onClick} aria-label={label} color="primary">
       {icon}
     </IconButton>
   </Grid>

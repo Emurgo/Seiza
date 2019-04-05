@@ -129,7 +129,7 @@ const AddressScreen = () => {
             {({isOpen, openModal, closeModal}) => (
               <React.Fragment>
                 <Tooltip title={tr(messages.showQRCode)}>
-                  <IconButton onClick={openModal}>
+                  <IconButton onClick={openModal} color="primary">
                     <img alt="show qr code" src={addressIcon} />
                   </IconButton>
                 </Tooltip>
