@@ -79,10 +79,10 @@ const useSubscribeFooterStyles = makeStyles(({palette, spacing}) => ({
     height: '100%',
   },
   row: {
-    padding: spacing.unit * 1.9,
+    padding: spacing.unit,
   },
-  h1Wrapper: {
-    padding: 12,
+  subscribeHeadlineWrapper: {
+    padding: spacing.unit * 1.5,
   },
 }))
 
@@ -100,7 +100,7 @@ const SubscribeFooter = () => {
     >
       <Grid item className={classes.row}>
         <Grid container direction="column" alignItems="center">
-          <div className={classes.h1Wrapper}>
+          <div className={classes.subscribeHeadlineWrapper}>
             <Typography variant="h1">{tr(subscribeMessages.subscribeHeader)}</Typography>
           </div>
           <Typography variant="body1">{tr(subscribeMessages.subscribeText)}</Typography>
@@ -125,7 +125,7 @@ const SubscribeFooter = () => {
   )
 }
 
-const useMainFooterStyles = makeStyles(({spacing, palette}) => ({
+const useMainFooterStyles = makeStyles(({spacing, palette, typography}) => ({
   socialIcon: {
     color: palette.footer.contrastText,
   },
@@ -135,12 +135,12 @@ const useMainFooterStyles = makeStyles(({spacing, palette}) => ({
   },
   copyright: {
     color: palette.footer.contrastText,
-    fontSize: 10,
+    fontSize: typography.fontSize * 0.5,
     paddingBottom: spacing.unit * 2,
   },
   logo: {
-    paddingBottom: spacing.unit,
-    paddingTop: spacing.unit,
+    paddingBottom: spacing.unit * 1.5,
+    paddingTop: spacing.unit * 1.5,
   },
   nav: {
     listStyleType: 'none',
@@ -148,6 +148,7 @@ const useMainFooterStyles = makeStyles(({spacing, palette}) => ({
   },
   wrapper: {
     backgroundColor: palette.footer.background,
+    padding: spacing.unit * 2,
   },
   link: {
     'textDecoration': 'none',
@@ -161,6 +162,7 @@ const useMainFooterStyles = makeStyles(({spacing, palette}) => ({
   },
   navText: {
     color: palette.footer.contrastText,
+    fontWeight: 700,
   },
 }))
 
@@ -207,7 +209,9 @@ const MainFooter = ({navItems}) => {
         {navItems.map(({link, label}) => (
           <li key={label} className={classes.navItem}>
             <Link className={classes.link} to={link}>
-              <Typography className={classes.navText}>{label}</Typography>
+              <Typography variant="caption" className={classes.navText}>
+                {label}
+              </Typography>
             </Link>
           </li>
         ))}

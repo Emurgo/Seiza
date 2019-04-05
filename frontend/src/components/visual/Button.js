@@ -17,10 +17,10 @@ const useStyles = makeStyles((theme) => ({
     letterSpacing: 1,
   },
   gradient: {
-    'background': theme.palette.buttonsGradient,
+    'background': theme.palette.buttonsGradient.normal,
     'color': theme.palette.getContrastText('#715BD3'),
     '&:hover': {
-      background: theme.palette.primary.main,
+      background: theme.palette.buttonsGradient.hover,
     },
   },
   rounded: {
@@ -49,21 +49,40 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const Button = ({gradient, rounded, secondary, primary, disabled, className, ...props}) => {
+type ButtonProps = {
+  +gradient?: boolean,
+  +rounded?: boolean,
+  +secondary?: boolean,
+  +primary?: boolean,
+  +disabled?: boolean,
+  +className?: string,
+  +children: React$Node,
+}
+
+const Button = ({
+  gradient,
+  rounded,
+  secondary,
+  primary,
+  disabled,
+  className,
+  children,
+  ...props
+}: ButtonProps) => {
   const classes = useStyles()
   return (
     <MaterialButton
-      className={classNames({
-        [classes.root]: true,
+      className={classNames(classes.root, className, {
         [classes.gradient]: gradient,
         [classes.rounded]: rounded,
         [classes.secondary]: secondary,
         [classes.primary]: primary,
         [classes.disabled]: disabled,
-        [className]: className,
       })}
       {...props}
-    />
+    >
+      {children}
+    </MaterialButton>
   )
 }
 
