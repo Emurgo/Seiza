@@ -3,7 +3,7 @@ import React from 'react'
 import {useQuery} from 'react-apollo-hooks'
 import useReactRouter from 'use-react-router'
 import {defineMessages} from 'react-intl'
-import {Tooltip, IconButton, Typography} from '@material-ui/core'
+import {IconButton, Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import idx from 'idx'
 
@@ -21,6 +21,7 @@ import {
   SummaryCard,
   EntityCardContent,
   AdaValue,
+  Tooltip,
 } from '@/components/visual'
 
 import addressIcon from '@/assets/icons/qrcode.svg'
