@@ -34,7 +34,7 @@ const TransactionCard = ({txHash, children}: ExternalProps) => {
           label={tr(messages.transactionId)}
           innerRef={ref}
           value={<Link to={routeTo.transaction(txHash)}>{txHash}</Link>}
-          copyValue={txHash}
+          rawValue={txHash}
         />
       }
     >

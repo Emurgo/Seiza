@@ -57,7 +57,7 @@ const TransactionCard = ({transaction: tx}) => {
         <EntityCardContent
           label={tr(messages.transactionEntity)}
           value={<Link to={routeTo.transaction(tx.txHash)}>{tx.txHash}</Link>}
-          copyValue={tx.txHash}
+          rawValue={tx.txHash}
         />
       </div>
       <Grid container direction="row">
