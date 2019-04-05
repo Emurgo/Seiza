@@ -17,11 +17,11 @@ const text = defineMessages({
   noData: 'No items matching current query',
 })
 
-const useSearchData = (query, skip) => {
+const useSearchData = (searchQuery, skip) => {
   const {error, loading, data} = useQuery(
     gql`
-      query($query: String!) {
-        blockChainSearch(query: $query) {
+      query($searchQuery: String!) {
+        blockChainSearch(query: $searchQuery) {
           items {
             __typename
             ... on Transaction {
@@ -38,7 +38,7 @@ const useSearchData = (query, skip) => {
       }
     `,
     {
-      variables: {query},
+      variables: {searchQuery},
       skip,
     }
   )
