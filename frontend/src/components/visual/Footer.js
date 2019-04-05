@@ -17,7 +17,8 @@ const messages = defineMessages({
 
 const subscribeMessages = defineMessages({
   subscribeHeader: "Let's stay in touch!",
-  subscribeText: 'Get access to subscriber and be the first to know when we launch something new!',
+  subscribeText:
+    'Get access to subscriber and be the first to know when we 🚀launch something new!',
   emailButton: 'Email',
   subscribeButton: 'Subscribe',
 })
@@ -37,7 +38,9 @@ const useRoundedInputStyles = makeStyles((theme) => {
     Input: {
       '&>fieldset': {
         borderRadius: '35px',
+        borderColor: '#9881DC !important',
       },
+      'height': '100%',
     },
     // <input> element
     input: {
@@ -61,21 +64,25 @@ const RoundedInput = React.forwardRef((props, ref) => {
   )
 })
 
-const useSubscribeFooterStyles = makeStyles(({palette}) => ({
+const useSubscribeFooterStyles = makeStyles(({palette, spacing}) => ({
   wrapper: {
-    padding: '10px',
+    padding: spacing.unit * 2,
     background: palette.gradient,
   },
   subscribe: {
-    marginLeft: '10px',
-    marginRight: '10px',
+    marginLeft: spacing.unit * 1.3,
+    marginRight: spacing.unit * 1.3,
     width: '200px',
   },
   email: {
-    width: '200px',
+    width: '280px',
+    height: '100%',
   },
   row: {
-    padding: '5px',
+    padding: spacing.unit * 1.9,
+  },
+  h1Wrapper: {
+    padding: 12,
   },
 }))
 
@@ -92,11 +99,14 @@ const SubscribeFooter = () => {
       alignItems="center"
     >
       <Grid item className={classes.row}>
-        <Typography variant="h1">{tr(subscribeMessages.subscribeHeader)}</Typography>
+        <Grid container direction="column" alignItems="center">
+          <div className={classes.h1Wrapper}>
+            <Typography variant="h1">{tr(subscribeMessages.subscribeHeader)}</Typography>
+          </div>
+          <Typography variant="body1">{tr(subscribeMessages.subscribeText)}</Typography>
+        </Grid>
       </Grid>
-      <Grid item className={classes.row}>
-        <Typography variant="body1">{tr(subscribeMessages.subscribeText)}</Typography>
-      </Grid>
+
       <Grid item className={classes.row}>
         <Grid container direction="row" justify="center">
           <form>
