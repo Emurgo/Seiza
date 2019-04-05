@@ -90,10 +90,14 @@ const EpochSummaryCard = ({epoch, loading}) => {
   const data1 = {
     startTime: formatTimestamp(idx(epoch, (_) => _.startTime), {defaultValue: NA}),
     endTime: formatTimestamp(idx(epoch, (_) => _.endTime), {defaultValue: NA}),
-
     blocksCount: formatInt(idx(epoch, (_) => _.summary.blocksCreated), {defaultValue: NA}),
-
     txCount: formatInt(idx(epoch, (_) => _.summary.transactionCount), {defaultValue: NA}),
+    totalAdaSupply: (
+      <AdaValue value={idx(epoch, (_) => _.summary.totalAdaSupply)} noValue={NA} showCurrency />
+    ),
+    epochFees: (
+      <AdaValue value={idx(epoch, (_) => _.summary.epochFees)} noValue={NA} showCurrency />
+    ),
   }
 
   const card1 = (
@@ -114,16 +118,18 @@ const EpochSummaryCard = ({epoch, loading}) => {
         <Label>{translate(messages.txCount)}</Label>
         <Value>{data1.txCount}</Value>
       </Row>
+      <Row>
+        <Label>{translate(messages.totalAdaCirculation)}</Label>
+        <Value>{data1.totalAdaSupply}</Value>
+      </Row>
+      <Row>
+        <Label>{translate(messages.totalFees)}</Label>
+        <Value>{data1.epochFees}</Value>
+      </Row>
     </SummaryCard>
   )
 
   const data2 = {
-    totalAdaSupply: (
-      <AdaValue value={idx(epoch, (_) => _.summary.totalAdaSupply)} noValue={NA} showCurrency />
-    ),
-    epochFees: (
-      <AdaValue value={idx(epoch, (_) => _.summary.epochFees)} noValue={NA} showCurrency />
-    ),
     totalAdaStaked: (
       <AdaValue value={idx(epoch, (_) => _.summary.totalAdaStaked)} noValue={NA} showCurrency />
     ),
@@ -144,14 +150,6 @@ const EpochSummaryCard = ({epoch, loading}) => {
 
   const card2 = (
     <SummaryCard>
-      <Row>
-        <Label>{translate(messages.totalAdaCirculation)}</Label>
-        <Value>{data2.totalAdaSupply}</Value>
-      </Row>
-      <Row>
-        <Label>{translate(messages.totalFees)}</Label>
-        <Value>{data2.epochFees}</Value>
-      </Row>
       <Row>
         <Label>{translate(messages.totalAdaStaked)}</Label>
         <Value>{data2.totalAdaStaked}</Value>
