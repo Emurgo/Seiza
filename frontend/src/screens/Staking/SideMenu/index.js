@@ -64,7 +64,12 @@ const SideMenu = () => {
         </Link>
         {/* Link to show current saved settings in same tab? */}
       </Grid>
-      <IconButton onClick={onReset} aria-label="Reset settings" className={classes.iconButton}>
+      <IconButton
+        onClick={onReset}
+        aria-label="Reset settings"
+        className={classes.iconButton}
+        color="primary"
+      >
         <Grid container alignItems="center" direction="row">
           <Refresh />
           &nbsp;&nbsp;

@@ -29,7 +29,7 @@ const _CopyToClipboard = ({value, i18n, children = null}) => {
             {children ? (
               <div onClick={copy}>{children}</div>
             ) : (
-              <IconButton onClick={copy}>
+              <IconButton onClick={copy} color="primary">
                 <img alt={messages.altText} src={isCopied ? copiedIcon : copyIcon} />
               </IconButton>
             )}
