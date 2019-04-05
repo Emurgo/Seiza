@@ -41,6 +41,7 @@ const styles = (theme) => {
       },
     },
     primary: {
+      'border': '1px solid transparent',
       'background': theme.palette.primary.main,
       'color': theme.palette.getContrastText(theme.palette.primary.main),
       '&:hover': {
