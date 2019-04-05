@@ -1,9 +1,9 @@
 import React from 'react'
 import {Grid, CircularProgress} from '@material-ui/core'
 
-const LoadingInProgress = () => (
+const LoadingInProgress = ({size = 40}) => (
   <Grid container direction="row" justify="center">
-    <CircularProgress />
+    <CircularProgress size={size} />
   </Grid>
 )
 

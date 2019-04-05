@@ -5,7 +5,7 @@ import {withHandlers} from 'recompose'
 import {compose} from 'redux'
 import {withStyles, createStyles, InputAdornment, TextField, IconButton} from '@material-ui/core'
 import {Close, Search} from '@material-ui/icons'
-import {Button} from '@/components/visual'
+import {Button, LoadingInProgress} from '@/components/visual'
 
 const styles = (theme) =>
   createStyles({
@@ -39,6 +39,7 @@ type ExternalProps = {
   onSearch: (str: string) => any,
   textFieldProps?: Object,
   onChange: (event: any) => any,
+  loading?: boolean,
 }
 
 type Props = {
@@ -62,7 +63,15 @@ class Searchbar extends React.Component<Props> {
   }
 
   render() {
-    const {placeholder, value, handleOnChangeEvent, onSubmit, classes, textFieldProps} = this.props
+    const {
+      placeholder,
+      value,
+      handleOnChangeEvent,
+      onSubmit,
+      classes,
+      textFieldProps,
+      loading,
+    } = this.props
 
     return (
       <form className={classes.container} onSubmit={onSubmit}>
@@ -77,9 +86,13 @@ class Searchbar extends React.Component<Props> {
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
-                <IconButton aria-label="Clear-search" onClick={this.clearInput}>
-                  <Close />
-                </IconButton>
+                {loading ? (
+                  <LoadingInProgress size={30} />
+                ) : (
+                  <IconButton aria-label="Clear-search" onClick={this.clearInput}>
+                    <Close />
+                  </IconButton>
+                )}
               </InputAdornment>
             ),
             className: classes.input,

@@ -12,10 +12,10 @@ export const blockChainSearchResolver = async (root, args, context) => {
     fetchAddress(context.cardanoAPI, query)
       .then(addType('Address'))
       .catch(swallowError),
-    fetchBlockByHash(context.cardanoAPI, query)
+    fetchBlockByHash(context, query)
       .then(addType('Block'))
       .catch(swallowError),
-    fetchTransaction(context.cardanoAPI, query)
+    fetchTransaction(context, query)
       .then(addType('Transaction'))
       .catch(swallowError),
   ])
