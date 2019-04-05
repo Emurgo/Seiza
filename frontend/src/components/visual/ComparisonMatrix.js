@@ -6,9 +6,9 @@ import {makeStyles} from '@material-ui/styles'
 import {darken, fade} from '@material-ui/core/styles/colorManipulator'
 import {defineMessages} from 'react-intl'
 
-import {Grid, Typography, createStyles} from '@material-ui/core'
+import {Grid, Typography, createStyles, Tooltip} from '@material-ui/core'
 import {useI18n} from '@/i18n/helpers'
-import {VisualHash, ExternalLink, Tooltip} from '@/components/visual'
+import {VisualHash, ExternalLink} from '@/components/visual'
 import CopyToClipboard from '@/components/common/CopyToClipboard'
 
 // TODO: full width scenario
@@ -159,6 +159,7 @@ const useTooltipStyles = makeStyles((theme) => {
   return {
     text: {
       wordBreak: 'break-word',
+      color: 'white',
     },
     copy: {
       cursor: 'pointer',
@@ -222,6 +223,8 @@ const useDescriptionStyles = makeStyles((theme) => {
 
 export const FadeoutFieldWithTooltip = ({text, height}: {text: string, height: number}) => {
   const classes = useDescriptionStyles({height})
+  // TODO: the tooltip here is not the one from our visual components
+  // because it looks messy
   return (
     <Tooltip title={<CustomTooltip text={text} />} placement="top" interactive>
       <div className={classes.wrapper}>
