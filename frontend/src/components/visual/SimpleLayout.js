@@ -5,7 +5,7 @@ const styles = ({palette, spacing}) =>
   createStyles({
     container: {
       paddingTop: spacing.unit * 2.5,
-      paddingBottom: spacing.unit * 2.5,
+      paddingBottom: spacing.unit * 7,
     },
     titleWrapper: {
       position: 'relative',
