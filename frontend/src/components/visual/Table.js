@@ -1,24 +1,29 @@
 // @flow
 import React from 'react'
 import {
-  Table,
+  Table as MuiTable,
   TableBody,
   TableHead,
   TableRow as TR,
   TableCell as TD,
   Typography,
   Grid,
-  withStyles,
 } from '@material-ui/core'
+import {makeStyles} from '@material-ui/styles'
 import {darken} from '@material-ui/core/styles/colorManipulator'
-import {compose} from 'redux'
+import {defineMessages} from 'react-intl'
 
 import {Card} from '@/components/visual'
+import {useI18n} from '@/i18n/helpers'
 import Overlay from './Overlay'
 import LoadingOverlay from './LoadingOverlay'
 import ErrorOverlay from './ErrorOverlay'
 
-const tableStyles = (theme) => ({
+const messages = defineMessages({
+  noData: 'No data to show.',
+})
+
+const useTableStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
     overflowX: 'auto',
@@ -39,13 +44,25 @@ const tableStyles = (theme) => ({
   head: {
     textTransform: 'uppercase',
   },
-})
+}))
 
-export default compose(withStyles(tableStyles))(
-  ({i18n, classes, headerData, bodyData, noDataText, loading, error}) => (
+type TableProps = {|
+  headerData: Array<Object>,
+  bodyData: Array<Object>,
+  noDataText?: string,
+  loading: boolean,
+  error: any,
+|}
+
+const Table = ({headerData, bodyData, noDataText, loading, error}: TableProps) => {
+  const classes = useTableStyles()
+  const {translate: tr} = useI18n()
+  const _noDataText = noDataText || tr(messages.noData)
+
+  return (
     <Card classes={{root: classes.root}}>
       <Overlay.Wrapper>
-        <Table>
+        <MuiTable>
           <TableHead className={classes.head}>
             <TR>
               {headerData.map((item, index) => (
@@ -56,7 +73,7 @@ export default compose(withStyles(tableStyles))(
             </TR>
           </TableHead>
           <TableBody>
-            {bodyData ? (
+            {bodyData.length ? (
               bodyData.map((row, outerIndex) => (
                 <TR key={outerIndex} className={classes.row}>
                   {row.map((item, innerIndex) => (
@@ -67,19 +84,26 @@ export default compose(withStyles(tableStyles))(
                 </TR>
               ))
             ) : (
-              <TR>
-                <TD colSpan={headerData.length}>
-                  <Grid container justify="space-around" direction="row">
-                    <Typography variant="caption">{noDataText}</Typography>
-                  </Grid>
-                </TD>
-              </TR>
+              <React.Fragment>
+                <TR>
+                  <TD colSpan={headerData.length} rowSpan={2}>
+                    {!loading && (
+                      <Grid container justify="space-around" direction="row">
+                        <Typography variant="caption">{_noDataText}</Typography>
+                      </Grid>
+                    )}
+                  </TD>
+                </TR>
+                <TR />
+              </React.Fragment>
             )}
           </TableBody>
-        </Table>
+        </MuiTable>
         <LoadingOverlay loading={loading} />
         <ErrorOverlay error={error} />
       </Overlay.Wrapper>
     </Card>
   )
-)
+}
+
+export default Table
