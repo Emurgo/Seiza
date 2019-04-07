@@ -1,7 +1,14 @@
 // @flow
 import moment from 'moment'
-import assert from 'assert'
-import {facadeElasticTransaction} from '../transaction/dataProviders'
+import {facadeTransaction} from '../transaction/dataProviders'
+import type {Elastic} from '../../api/elastic'
+import {parseAdaValue} from '../utils'
+import type {E} from '../../api/elasticHelpers'
+
+type Context = {
+  elastic: Elastic,
+  E: E,
+}
 
 type Summary = {
   slotCount: number,
@@ -52,69 +59,45 @@ export const fetchEpoch = (context: any, epochNumber: number): Promise<Epoch> =>
   return Promise.resolve(mockedEpoch(epochNumber))
 }
 
-export const fetchBlockCount = async ({elastic}: any, epochNumber: number) => {
-  const {
-    hits: {total},
-  } = await elastic.search({
-    index: 'seiza.block',
-    type: 'block',
-    body: {
-      query: elastic._filter([
-        elastic._onlyActiveFork(),
-        elastic._notNull('hash'),
-        elastic._exact('epoch', epochNumber),
-      ]),
-      size: 0,
-    },
-  })
-  return total
+export const fetchBlockCount = ({elastic, E}: Context, epochNumber: number) => {
+  return elastic
+    .q('slot')
+    .filter(E.onlyActiveFork())
+    .filter(E.notNull('hash'))
+    .filter(E.eq('epoch', epochNumber))
+    .getCount()
 }
 
-export const fetchTransactionCount = async ({elastic}: any, epochNumber: number) => {
-  const {
-    hits: {total},
-  } = await elastic.search({
-    index: 'seiza.tx',
-    type: 'tx',
-    body: {
-      query: elastic._filter([elastic._onlyActiveFork(), elastic._exact('epoch', epochNumber)]),
-      size: 0,
-    },
-  })
-  return total
+export const fetchTransactionCount = ({elastic, E}: any, epochNumber: number) => {
+  return elastic
+    .q('tx')
+    .filter(E.onlyActiveFork())
+    .filter(E.eq('epoch', epochNumber))
+    .getCount()
 }
 
-export const fetchTotalAdaSupply = async ({elastic}: any, epochNumber: number) => {
+export const fetchTotalAdaSupply = async ({elastic, E}: Context, epochNumber: number) => {
   // fetch last tx before end of this epoch
 
-  const {hits} = await elastic.search({
-    index: 'seiza.tx',
-    type: 'tx',
-    body: {
-      query: elastic._filter([elastic._onlyActiveFork(), elastic._lte('epoch', epochNumber)]),
-      sort: elastic._orderBy([['epoch', 'desc'], ['slot', 'desc'], ['tx_ordinal', 'desc']]),
-      size: 1,
-    },
-  })
+  const hit = await elastic
+    .q('tx')
+    .filter(E.onlyActiveFork())
+    .filter(E.lte('epoch', epochNumber))
+    .sortBy('epoch', 'desc')
+    .sortBy('tx_ordinal', 'desc')
+    .getFirstHit()
 
-  assert(hits.total >= 1)
-  const lastTx = facadeElasticTransaction(hits.hits[0]._source)
+  const lastTx = facadeTransaction(hit._source)
 
   return lastTx.supplyAfter
 }
 
-export const fetchTotalFees = async ({elastic}: any, epochNumber: number) => {
-  const {aggregations} = await elastic.search({
-    index: 'seiza.tx',
-    type: 'tx',
-    body: {
-      query: elastic._filter([elastic._onlyActiveFork(), elastic._exact('epoch', epochNumber)]),
-      size: 0,
-      aggs: {
-        fees: elastic._sum('fees'),
-      },
-    },
-  })
+export const fetchTotalFees = async ({elastic, E}: Context, epochNumber: number) => {
+  const aggregations = await elastic
+    .q('tx')
+    .filter(E.onlyActiveFork())
+    .filter(E.eq('epoch', epochNumber))
+    .getAggregations(E.sumAda('fees'))
 
-  return aggregations.fees.value
+  return parseAdaValue(E.extractSumAda(aggregations, 'fees'))
 }

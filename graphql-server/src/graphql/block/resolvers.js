@@ -4,30 +4,23 @@ const PAGE_SIZE = 10
 
 export const pagedBlocksResolver = async (parent, args, context) => {
   const {cursor} = args
-  const {elastic} = context
+  const {elastic, E} = context
 
-  const {hits} = await elastic.search({
-    index: 'seiza.block',
-    type: 'block',
-    body: {
-      query: elastic._filter([
-        elastic._onlyActiveFork(),
-        elastic._notNull('hash'),
-        elastic._lte('height', cursor),
-      ]),
-      sort: elastic._orderBy([['height', 'desc']]),
-      size: PAGE_SIZE,
-    },
-  })
+  const {total, hits} = await elastic
+    .q('slot')
+    .filter(E.onlyActiveFork())
+    .filter(E.notNull('hash'))
+    .filter(E.lte('height', cursor))
+    .sortBy('height', 'desc')
+    .getHits(PAGE_SIZE)
 
-  const blockData = hits.hits.map((h) => facadeElasticBlock(h._source))
-  assert(hits.hits.length <= PAGE_SIZE)
+  const blockData = hits.map((h) => facadeElasticBlock(h._source))
   // TODO: maybe return empty result?
-  assert(hits.hits.length > 0)
+  assert(hits.length > 0)
 
   const startHeight = blockData[0].height
   // self-check
-  assert(hits.total === startHeight)
+  assert(total === startHeight)
 
   const nextCursor = startHeight - PAGE_SIZE
 
@@ -39,44 +32,29 @@ export const pagedBlocksResolver = async (parent, args, context) => {
 
 export const pagedBlocksInEpochResolver = async (parent, args, context) => {
   const {cursor, epochNumber: epoch} = args
-  const {elastic} = context
+  const {elastic, E} = context
+
+  const blocks = elastic
+    .q('slot')
+    .filter(E.onlyActiveFork())
+    .filter(E.notNull('hash'))
 
   // Note: this is a workaround
-  const {
-    hits: {total: previousEpochs, hits: previousEnd},
-  } = await elastic.search({
-    index: 'seiza.block',
-    type: 'block',
-    body: {
-      query: elastic._filter([
-        elastic._onlyActiveFork(),
-        elastic._notNull('hash'),
-        elastic._lt('epoch', epoch),
-      ]),
-      sort: elastic._orderBy([['height', 'desc']]),
-      size: 1,
-    },
-  })
+  const {total: previousEpochs, hits: previousEnd} = await blocks
+    .filter(E.lt('epoch', epoch))
+    .sortBy('height', 'desc')
+    .getHits(1)
 
   if (epoch > 0) {
     assert(previousEnd.length > 0)
     assert(previousEnd[0]._source.height === previousEpochs)
   }
 
-  const {hits} = await elastic.search({
-    index: 'seiza.block',
-    type: 'block',
-    body: {
-      query: elastic._filter([
-        elastic._onlyActiveFork(),
-        elastic._notNull('hash'),
-        cursor && elastic._lte('height', cursor + previousEpochs),
-        elastic._exact('epoch', epoch),
-      ]),
-      sort: elastic._orderBy([['height', 'desc']]),
-      size: PAGE_SIZE,
-    },
-  })
+  const hits = await blocks
+    .filter(E.eq('epoch', epoch))
+    .filter(cursor && E.lte('height', cursor + previousEpochs))
+    .sortBy('height', 'desc')
+    .getHits(PAGE_SIZE)
 
   if (cursor) {
     assert(hits.total === cursor)

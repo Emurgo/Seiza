@@ -1,19 +1,6 @@
 import moment from 'moment'
-import Bignumber from 'bignumber.js'
 import assert from 'assert'
-import {ApolloError} from 'apollo-server'
-
-export const facadeBlock = (data) => ({
-  blockHash: data.cbeBlkHash,
-  epoch: data.cbeEpoch,
-  slot: data.cbeSlot,
-  timeIssued: moment.unix(data.cbeTimeIssued),
-  transactionsCount: data.cbeTxNum,
-  totalSend: data.cbeTotalSent.getCoin,
-  size: data.cbeSize,
-  _blockLeader: data.cbeBlockLead,
-  totalFees: data.cbeFees.getCoin,
-})
+import {parseAdaValue} from '../utils'
 
 export const facadeElasticBlock = (data) => ({
   epoch: data.epoch,
@@ -21,78 +8,46 @@ export const facadeElasticBlock = (data) => ({
   blockHash: data.hash,
   timeIssued: moment(data.time),
   transactionsCount: data.tx_num,
-  totalSend: new Bignumber(data.sent),
-  totalFees: new Bignumber(data.fees),
+  totalSend: parseAdaValue(data.sent),
+  totalFees: parseAdaValue(data.fees),
   size: data.size,
   _blockLeader: data.lead,
+  _txs: data.tx.map((tx) => tx.hash),
   // New
   height: data.height,
   blockHeight: data.height,
 })
 
-export const fetchBlockByHash = async ({elastic}, blockHash) => {
+export const fetchBlockByHash = async ({elastic, E}, blockHash) => {
   assert(blockHash)
-  const {hits} = await elastic.search({
-    index: 'seiza.block',
-    type: 'block',
-    body: {
-      query: elastic._matchPhrase('hash', blockHash),
-    },
-  })
+  const hit = await elastic
+    .q('slot')
+    .filter(E.matchPhrase('hash', blockHash))
+    .getSingleHit()
 
-  // TODO: generate only warning for total>0?
-  assert(hits.total <= 1)
-
-  // TODO: better error handling of total==0
-  if (hits.total !== 1) {
-    throw new ApolloError('Block not found', 'NOT_FOUND', {blockHash})
-  }
-  return facadeElasticBlock(hits.hits[0]._source)
+  return facadeElasticBlock(hit._source)
 }
 
-export const fetchLatestBlock = async ({elastic}) => {
-  const {hits} = await elastic.search({
-    index: 'seiza.block',
-    type: 'block',
-    body: {
-      query: elastic._notNull('hash'),
-      sort: elastic._orderBy([['height', 'desc']]),
-      size: 1,
-    },
-  })
+export const fetchLatestBlock = async ({elastic, E}) => {
+  const hit = await elastic
+    .q('slot')
+    .filter(E.notNull('hash'))
+    .sortBy('height', 'desc')
+    .getFirstHit()
 
-  assert(hits.total >= 1)
-
-  return facadeElasticBlock(hits.hits[0]._source)
+  return facadeElasticBlock(hit._source)
 }
 
-export const fetchBlockBySlot = async ({elastic}, {epoch, slot}) => {
+export const fetchBlockBySlot = async ({elastic, E}, {epoch, slot}) => {
   assert(epoch != null)
   assert(slot != null)
 
-  const {hits} = await elastic.search({
-    index: 'seiza.block',
-    type: 'block',
-    body: {
-      query: elastic._filter([
-        elastic._onlyActiveFork(),
-        elastic._exact('epoch', epoch),
-        elastic._exact('slot', slot),
-      ]),
-    },
-  })
+  const hit = await elastic
+    .q('slot')
+    .filter(E.onlyActiveFork())
+    .filter(E.eq('epoch', epoch))
+    .filter(E.eq('slot', slot))
+    .getSingleHit()
 
-  // TODO: generate only warning for total>0?
-  assert(hits.total <= 1)
-
-  // TODO: better error handling of total==0
-  if (hits.total !== 1) {
-    throw new ApolloError('Block not found', 'NOT_FOUND', {epoch, slot})
-  }
-  return facadeElasticBlock(hits.hits[0]._source)
-}
-
-export const fetchBlockTransactionIds = async (api, blockHash) => {
-  const rawResult = await api.get(`blocks/txs/${blockHash}`)
-  return rawResult.map((tx) => tx.ctbId)
+  return facadeElasticBlock(hit._source)
 }

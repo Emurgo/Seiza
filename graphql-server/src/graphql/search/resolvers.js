@@ -9,7 +9,7 @@ export const blockChainSearchResolver = async (root, args, context) => {
   const addType = (type) => (obj) => ({...obj, _type: type})
 
   const items = await Promise.all([
-    fetchAddress(context.cardanoAPI, query)
+    fetchAddress(context, query)
       .then(addType('Address'))
       .catch(swallowError),
     fetchBlockByHash(context, query)

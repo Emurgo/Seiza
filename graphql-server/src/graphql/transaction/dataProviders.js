@@ -1,46 +1,37 @@
 // @flow
-import assert from 'assert'
-import {ApolloError} from 'apollo-server'
+import {parseAdaValue} from '../utils'
 
-export const facadeElasticTransaction = (source: any) => {
+export const facadeTransaction = (source: any) => {
   return {
     txHash: source.hash,
     _epoch_slot: {epoch: source.epoch, slot: source.slot},
-    totalInput: source.sum_inputs,
-    totalOutput: source.sum_outputs,
+    totalInput: parseAdaValue(source.sum_inputs),
+    totalOutput: parseAdaValue(source.sum_outputs),
     // TODO: what about refunds?
-    fees: source.fees,
+    fees: parseAdaValue(source.fees),
 
     // TODO: this is a hack for now
-    inputs: source.txio
-      .map((io) => ({address58: io.address[0], amount: io.val}))
-      .filter(({amount}) => amount < 0)
-      .map(({address58, amount}) => ({address58, amount: -amount})),
-    outputs: source.txio
-      .map((io) => ({address58: io.address[0], amount: io.val}))
-      .filter(({amount}) => amount >= 0),
+    inputs: source.inputs.map((input) => ({
+      address58: input.address,
+      amount: parseAdaValue(input.value),
+    })),
+    outputs: source.outputs.map((output) => ({
+      address58: output.address,
+      amount: parseAdaValue(output.value),
+    })),
 
     // TODO: tx size is missing in data
     size: null,
-    supplyAfter: source.supply,
+    supplyAfter: parseAdaValue(source.supply_after_this_tx),
   }
 }
 
-export const fetchTransaction = async ({elastic}: any, txHash: string) => {
-  const {hits} = await elastic.search({
-    index: 'seiza.tx',
-    type: 'tx',
-    body: {
-      query: elastic._matchPhrase('hash', txHash),
-    },
-  })
+export const fetchTransaction = async ({elastic, E}: any, txHash: string) => {
+  const hit = await elastic
+    .q('tx')
+    // todo: filter on active fork?
+    .filter(E.matchPhrase('hash', txHash))
+    .getSingleHit()
 
-  // TODO: generate only warning for total>0?
-  assert(hits.total <= 1)
-
-  // TODO: better error handling of total==0
-  if (hits.total !== 1) {
-    throw new ApolloError('Transaction not found', 'NOT_FOUND', {txHash})
-  }
-  return facadeElasticTransaction(hits.hits[0]._source)
+  return facadeTransaction(hit._source)
 }

@@ -1,69 +1,35 @@
 // @flow
+import assert from 'assert'
+import {parseAdaValue} from '../utils'
 import BigNumber from 'bignumber.js'
 import _ from 'lodash'
 
-type GetCoin = {
-  getCoin: string,
-}
-type Tx = {
-  ctbId: string,
-  ctbTimeIssued: number,
-  ctbInputs: Array<[string, GetCoin]>,
-  ctbOutputs: Array<[string, GetCoin]>,
-  ctbInputSum: GetCoin,
-  ctbOutputSum: GetCoin,
-}
-export type AddressAPIType = {
-  caAddress: string,
-  caType: string,
-  caTxNum: number,
-  caBalance: GetCoin,
-  caTxList: Array<Tx>,
-}
-export type PartialFacadeAddress = {
-  address58: string,
-  type: string,
-  transactionsCount: number,
-  balance: string,
-}
+const adaSum = (array) => array.reduce((x, y) => x.plus(y), new BigNumber(0))
 
-const sumAmounts = (rawAmounts) =>
-  rawAmounts.reduce((x, y) => x.plus(new BigNumber(y, 10)), new BigNumber(0))
-
-const getTotalAdaSent = (addr, txList) => {
-  const rawAmounts = _(txList)
-    .map((tx) => tx.ctbInputs)
-    .flatten()
-    .filter(([_addr, coin]) => addr === _addr)
-    .map(([addr, coin]) => coin.getCoin)
-    .value()
-
-  return sumAmounts(rawAmounts)
-}
-
-const getTotalAdaReceived = (addr, txList) => {
-  const rawAmounts = _(txList)
-    .map((tx) => tx.ctbOutputs)
-    .flatten()
-    .filter(([_addr, coin]) => addr === _addr)
-    .map(([addr, coin]) => coin.getCoin)
-    .value()
-
-  return sumAmounts(rawAmounts)
-}
-
-export const facadeAddress = (data: AddressAPIType): PartialFacadeAddress => ({
-  address58: data.caAddress,
-  type: data.caType,
-  transactionsCount: data.caTxNum,
-  balance: data.caBalance.getCoin,
-  totalAdaReceived: getTotalAdaReceived(data.caAddress, data.caTxList),
-  totalAdaSent: getTotalAdaSent(data.caAddress, data.caTxList),
-  _transactionIds: data.caTxList.map((tx) => tx.ctbId),
+export const facadeAddress = (source: any, __id: string) => ({
+  address58: __id,
+  type: 'TODO: FIX IN ELASTIC',
+  transactionsCount: source.tx_num,
+  balance: parseAdaValue(source.balance),
+  totalAdaReceived: adaSum(
+    source.ios.filter((io) => io.type === 'output').map((io) => parseAdaValue(io.value))
+  ),
+  totalAdaSent: adaSum(
+    source.ios.filter((io) => io.type === 'input').map((io) => parseAdaValue(io.value))
+  ),
+  _transactionIds: _(source.ios.map((io) => io.tx_hash))
+    .uniq()
+    .reverse() // Note: we want transactions to be sorted newest-to-oldest
+    .value(),
 })
 
-export const fetchAddress = async (api: any, address58: string) => {
-  const rawAddress = await api.get(`addresses/summary/${address58}`)
+export const fetchAddress = async ({elastic, E}: any, address58: string) => {
+  assert(address58)
 
-  return facadeAddress(rawAddress)
+  const hit = await elastic
+    .q('address')
+    .filter(E.matchPhrase('_id', address58))
+    .getSingleHit()
+
+  return facadeAddress(hit._source, hit._id)
 }
