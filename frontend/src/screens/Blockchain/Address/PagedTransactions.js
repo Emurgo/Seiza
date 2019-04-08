@@ -4,11 +4,10 @@ import {compose} from 'redux'
 import {withStateHandlers, withProps} from 'recompose'
 import {defineMessages} from 'react-intl'
 import cn from 'classnames'
-import {Grid, Card, ButtonBase} from '@material-ui/core'
+import {Grid, Card} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
 import Pagination, {getPageCount} from '@/components/visual/Pagination'
-import {NavTypography} from '@/components/visual/Navbar'
 
 import {
   LoadingInProgress,
@@ -16,6 +15,8 @@ import {
   SummaryCard,
   AdaValue,
   Link,
+  LiteTabs,
+  LiteTab,
 } from '@/components/visual'
 import useTabState from '@/components/hooks/useTabState'
 import {ObjectValues} from '@/helpers/flow'
@@ -107,17 +108,9 @@ const TAB_NAMES = {
   RECEIVED: 'RECEIVED',
 }
 
-const TabHeader = ({onClick, isActive, label}) => {
-  return (
-    <ButtonBase onClick={onClick}>
-      <NavTypography isActive={isActive}>{label}</NavTypography>
-    </ButtonBase>
-  )
-}
-
 const TabsHeader = ({tabState, paginationProps}) => {
   const {translate: tr} = useI18n()
-  const {currentTab, setTab} = useTabContext()
+  const {currentTabIndex, setTabByEventIndex} = useTabContext()
   const {totalCount, onChangePage, rowsPerPage, page} = paginationProps
   const tabs = [
     {id: TAB_NAMES.ALL, label: tr(messages.all)},
@@ -129,11 +122,13 @@ const TabsHeader = ({tabState, paginationProps}) => {
     <Grid container direction="row" justify="space-between">
       <Grid item xs={12} sm={6} md={4} lg={3}>
         <Grid container direction="row" justify="space-between">
-          {tabs.map(({id, label}) => (
-            <Grid key={id} item>
-              <TabHeader onClick={() => setTab(id)} isActive={currentTab === id} label={label} />
-            </Grid>
-          ))}
+          <Grid item>
+            <LiteTabs alignLeft value={currentTabIndex} onChange={setTabByEventIndex}>
+              {tabs.map(({id, label}) => (
+                <LiteTab key={id} label={label} />
+              ))}
+            </LiteTabs>
+          </Grid>
         </Grid>
       </Grid>
 
