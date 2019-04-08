@@ -1,16 +1,13 @@
 import React from 'react'
-
-import {Card, Typography, Grid} from '@material-ui/core'
+import {Typography, Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import classNames from 'classnames'
 
+import {Card} from '@/components/visual'
 import CopyToClipboard from '@/components/common/CopyToClipboard'
 import EllipsizeMiddle from '@/components/visual/EllipsizeMiddle'
 
 const useStyles = makeStyles((theme) => ({
-  card: {
-    padding: theme.spacing.unit * 2,
-  },
   cardContent: {
     display: 'flex',
     alignItems: 'center',
@@ -27,10 +24,18 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
+const useCardStyles = makeStyles((theme) => ({
+  root: {
+    padding: theme.spacing.unit * 2,
+    display: 'flex',
+  },
+}))
+
 const EntityIdCard = ({iconRenderer, label, value, badge, showCopyIcon = true, copyValue}) => {
+  const cardClasses = useCardStyles()
   const classes = useStyles()
   return (
-    <Card elevation={6} className={classNames(classes.card, classes.flex)}>
+    <Card classes={cardClasses}>
       {iconRenderer && (
         <Grid item className={classNames(classes.flex, classes.centeredFlex)}>
           {iconRenderer}

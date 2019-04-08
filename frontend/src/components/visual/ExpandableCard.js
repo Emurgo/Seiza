@@ -10,6 +10,7 @@ import {
   Typography,
   Grid,
   IconButton,
+  Card,
 } from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
@@ -91,36 +92,40 @@ const ExpandableCard = (props: ExpandableCardPT) => {
   const footerClasses = useFooterClasses()
 
   return (
-    <Grid container className={className} direction="row">
-      <Paper elevation={6} className="w-100">
-        <Grid item xs={12}>
-          <Paper className={classes.mainContent}>{renderHeader()}</Paper>
-        </Grid>
-        <Grid item xs={12}>
-          <ExpansionPanel classes={expansionPanelClasses} onChange={onChange} expanded={expanded}>
-            <ExpansionPanelDetails classes={detailsClasses}>
-              {renderExpandedArea()}
-            </ExpansionPanelDetails>
-            <ExpansionPanelSummary classes={summaryClasses}>
-              <Grid container justify="center" alignItems="center" direction="row">
-                <Grid item className={classes.spacing}>
-                  <Typography variant="overline" color="primary" classes={footerClasses}>
-                    {footer}
-                  </Typography>
+    <Card>
+      <Grid container className={className} direction="row">
+        <Paper elevation={0} className="w-100">
+          <Grid item xs={12}>
+            <Paper elevation={0} className={classes.mainContent}>
+              {renderHeader()}
+            </Paper>
+          </Grid>
+          <Grid item xs={12}>
+            <ExpansionPanel classes={expansionPanelClasses} onChange={onChange} expanded={expanded}>
+              <ExpansionPanelDetails classes={detailsClasses}>
+                {renderExpandedArea()}
+              </ExpansionPanelDetails>
+              <ExpansionPanelSummary classes={summaryClasses}>
+                <Grid container justify="center" alignItems="center" direction="row">
+                  <Grid item className={classes.spacing}>
+                    <Typography variant="overline" color="primary" classes={footerClasses}>
+                      {footer}
+                    </Typography>
+                  </Grid>
+                  <Grid item>
+                    <IconButton color="primary">
+                      <ExpandMoreIcon
+                        className={classnames(classes.icon, expanded && classes.iconExpanded)}
+                      />
+                    </IconButton>
+                  </Grid>
                 </Grid>
-                <Grid item>
-                  <IconButton color="primary">
-                    <ExpandMoreIcon
-                      className={classnames(classes.icon, expanded && classes.iconExpanded)}
-                    />
-                  </IconButton>
-                </Grid>
-              </Grid>
-            </ExpansionPanelSummary>
-          </ExpansionPanel>
-        </Grid>
-      </Paper>
-    </Grid>
+              </ExpansionPanelSummary>
+            </ExpansionPanel>
+          </Grid>
+        </Paper>
+      </Grid>
+    </Card>
   )
 }
 

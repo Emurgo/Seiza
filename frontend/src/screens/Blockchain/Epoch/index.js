@@ -7,7 +7,7 @@ import idx from 'idx'
 import useReactRouter from 'use-react-router'
 import {Link} from 'react-router-dom'
 
-import {Paper} from '@material-ui/core'
+import {Card} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {
   SummaryCard,
@@ -279,13 +279,13 @@ const EpochScreen = () => {
             {({setTab, currentTab, currentTabName}) => {
               const TabContent = TABS.CONTENT[currentTabName]
               return (
-                <Paper elevation={6}>
+                <Card>
                   <Tabs value={currentTab} onChange={setTab}>
                     <Tab label={translate(messages.blocksTab)} />
                     <Tab label={translate(messages.stakingPoolsTab)} />
                   </Tabs>
                   <TabContent epochNumber={epochNumber} />
-                </Paper>
+                </Card>
               )
             }}
           </WithTabState>

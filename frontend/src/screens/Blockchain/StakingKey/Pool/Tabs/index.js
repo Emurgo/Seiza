@@ -1,6 +1,6 @@
 import React from 'react'
 import {defineMessages} from 'react-intl'
-import {Paper} from '@material-ui/core'
+import {Card} from '@material-ui/core'
 import WithTabState from '@/components/headless/tabState'
 import {Tab, Tabs} from '@/components/visual'
 import {useI18n} from '@/i18n/helpers'
@@ -40,7 +40,7 @@ const StakingPoolTabs = ({stakePool}) => {
       {({setTab, currentTab, currentTabName}) => {
         const TabContent = TABS.RENDER_CONTENT[currentTabName]
         return (
-          <Paper elevation={6}>
+          <Card>
             <Tabs value={currentTab} onChange={setTab}>
               <Tab
                 icon={<HistoryIcon />}
@@ -64,7 +64,7 @@ const StakingPoolTabs = ({stakePool}) => {
               />
             </Tabs>
             <TabContent stakePool={stakePool} />
-          </Paper>
+          </Card>
         )
       }}
     </WithTabState>

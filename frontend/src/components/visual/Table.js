@@ -6,7 +6,6 @@ import {
   TableHead,
   TableRow as TR,
   TableCell as TD,
-  Paper,
   Typography,
   Grid,
   withStyles,
@@ -14,6 +13,7 @@ import {
 import {darken} from '@material-ui/core/styles/colorManipulator'
 import {compose} from 'redux'
 
+import {Card} from '@/components/visual'
 import Overlay from './Overlay'
 import LoadingOverlay from './LoadingOverlay'
 import ErrorOverlay from './ErrorOverlay'
@@ -43,7 +43,7 @@ const tableStyles = (theme) => ({
 
 export default compose(withStyles(tableStyles))(
   ({i18n, classes, headerData, bodyData, noDataText, loading, error}) => (
-    <Paper elevation={6} className={classes.root}>
+    <Card classes={{root: classes.root}}>
       <Overlay.Wrapper>
         <Table>
           <TableHead className={classes.head}>
@@ -80,6 +80,6 @@ export default compose(withStyles(tableStyles))(
         <LoadingOverlay loading={loading} />
         <ErrorOverlay error={error} />
       </Overlay.Wrapper>
-    </Paper>
+    </Card>
   )
 )

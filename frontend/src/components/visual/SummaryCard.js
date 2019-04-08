@@ -1,6 +1,8 @@
 import React from 'react'
 import classnames from 'classnames'
-import {withStyles, createStyles, Card, Typography, Grid} from '@material-ui/core'
+import {withStyles, createStyles, Typography, Grid} from '@material-ui/core'
+
+import {Card} from '@/components/visual'
 
 const styles = ({spacing, palette}) =>
   createStyles({
@@ -24,11 +26,7 @@ const styles = ({spacing, palette}) =>
   })
 
 const _SummaryCard = ({classes, children}) => {
-  return (
-    <Card elevation={6} className={classes.card}>
-      {children}
-    </Card>
-  )
+  return <Card classes={{root: classes.card}}>{children}</Card>
 }
 
 const Row = ({children, classes, className}) => {
