@@ -35,7 +35,9 @@ const navigationMessages = defineMessages({
 })
 
 const useAppStyles = makeStyles((theme) => ({
-  maxHeight: {
+  mainWrapper: {
+    maxWidth: '1920px',
+    margin: 'auto',
     height: '100%',
   },
   contentWrapper: {
@@ -84,7 +86,7 @@ const App = () => {
   return (
     <Router>
       <AutoSyncProvider>
-        <Grid container direction="column" className={classes.maxHeight} wrap="nowrap">
+        <Grid container direction="column" className={classes.mainWrapper} wrap="nowrap">
           <Grid item>
             <CssBaseline />
             <TopBar />
