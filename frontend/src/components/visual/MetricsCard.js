@@ -16,8 +16,8 @@ import {
   ButtonBase,
   Typography,
 } from '@material-ui/core'
-import {fade} from '@material-ui/core/styles/colorManipulator'
 import {MoreVert} from '@material-ui/icons'
+import {fade} from '@material-ui/core/styles/colorManipulator'
 
 import {Card} from '@/components/visual'
 import WithModalState from '@/components/headless/modalState'
@@ -30,8 +30,14 @@ import IconPools from '@/assets/icons/metrics-stakepools.svg'
 const styles = (theme) =>
   createStyles({
     card: {
+      border: '0px solid transparent !important',
       display: 'flex',
       flexDirection: 'row',
+    },
+    clickableCard: {
+      '&:hover': {
+        boxShadow: `0px 20px 40px 0px ${fade(theme.palette.shadowBase, 0.2)} !important`,
+      },
     },
     dropdownArrow: {
       display: 'flex',
@@ -65,18 +71,15 @@ const styles = (theme) =>
       'padding': '4px',
       'width': '100%',
       'display': 'flex',
-      'border': '1px solid transparent',
       'borderRadius': '4px',
-      'transition': theme.transitions.create(['background-color', 'box-shadow', 'border'], {
+      'transition': theme.transitions.create(['background-color', 'box-shadow'], {
         duration: theme.transitions.duration.short,
       }),
       '&:hover': {
-        'backgroundColor': fade(theme.palette.action.active, theme.palette.action.hoverOpacity),
         // Reset on touch devices, it doesn't add specificity
         '@media (hover: none)': {
           backgroundColor: 'transparent',
         },
-        'border': `1px solid ${theme.palette.text.primary}`,
       },
     },
   })
@@ -172,7 +175,11 @@ class MetricsCard extends React.Component<MetricsCardProps> {
       <WithModalState>
         {({isOpen, closeModal: closePopper, toggle: togglePopper}) => (
           <React.Fragment>
-            <Card classes={{root: classnames(classes.card, className)}}>
+            <Card
+              classes={{
+                root: classnames(classes.card, onClick && classes.clickableCard, className),
+              }}
+            >
               <ClickableWrapper {...{onClick, classes}} buttonBaseProps={clickableWrapperProps}>
                 {/* just to center the image */}
                 <Grid container direction="column" justify="space-around" className={classes.icon}>
