@@ -336,7 +336,7 @@ const TransactionScreen = () => {
 
     // Note: behavior: 'smooth' is not working in `edge` and `safari`
     window.scrollTo({left: 0, top: offsetTop, behavior: 'smooth'})
-  }, [])
+  }, [transactionData])
 
   return (
     <div ref={inputEl}>
