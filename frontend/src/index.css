@@ -106,6 +106,10 @@
   font-weight: 900;
   font-style: italic;
 }
+@font-face {
+  font-family: 'DroidSansMono';
+  src: local('DroidSansMono'), url(./assets/fonts/DroidSansMono.ttf) format('truetype');
+}
 
 body {
   margin: 0;
@@ -121,3 +125,4 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
