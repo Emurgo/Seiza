@@ -334,7 +334,7 @@ const TransactionScreen = () => {
   useEffect(() => {
     const offsetTop = idx(inputEl, (_) => _.current.offsetTop)
 
-    window.scrollTo({left: 0, top: offsetTop})
+    window.scrollTo(0, offsetTop)
   }, [transactionData])
 
   return (
