@@ -17,7 +17,6 @@ const Blocks = (props) => {
   const {
     pagedDataResult: {loading, error, pagedData: pagedBlocks},
   } = props
-
   return (
     <Grid container direction="column" justify="flex-end" alignItems="flex-end">
       <Grid item>
@@ -43,6 +42,7 @@ const withData = compose(
     name: 'pagedDataResult',
     options: (props) => ({
       variables: {cursor: props.cursor, epochNumber: props.epochNumber},
+      notifyOnNetworkStatusChange: true,
     }),
   }),
   withProps(({pagedDataResult}) => ({
