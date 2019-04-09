@@ -30,7 +30,6 @@ const tableMessages = defineMessages({
   totalSent: 'total sent (ADA)',
   fees: 'fees (ADA)',
   size: 'size (B)',
-  noDataToShow: 'No data to show.',
 })
 
 export const COLUMNS_MAP = {
@@ -80,7 +79,7 @@ type Props = {
 }
 
 const BlocksTable = ({blocks, columns, loading, error}: Props) => {
-  const {translate, formatInt, formatTimestamp} = useI18n()
+  const {formatInt, formatTimestamp} = useI18n()
 
   const {EPOCH, SLOT, TIME, SLOT_LEADER, TRANSACTIONS, TOTAL_SENT, FEES, SIZE} = COLUMNS_MAP
 
@@ -143,19 +142,11 @@ const BlocksTable = ({blocks, columns, loading, error}: Props) => {
 
   const headerData = columns.map((column) => columnsRenderer[column].header)
 
-  const bodyData =
-    blocks &&
-    blocks.map((block, index) => columns.map((column) => columnsRenderer[column].cell(block)))
+  const bodyData = blocks
+    ? blocks.map((block, index) => columns.map((column) => columnsRenderer[column].cell(block)))
+    : []
 
-  return (
-    <Table
-      noDataText={translate(tableMessages.noDataToShow)}
-      loading={loading}
-      error={error}
-      headerData={headerData}
-      bodyData={bodyData}
-    />
-  )
+  return <Table loading={loading} error={error} headerData={headerData} bodyData={bodyData} />
 }
 
 export default BlocksTable
