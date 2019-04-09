@@ -44,6 +44,12 @@ const styles = (theme) =>
       marginRight: theme.spacing.unit,
       marginLeft: theme.spacing.unit,
     },
+    optionsIcon: {
+      'color': theme.palette.contentUnfocus,
+      '&:hover': {
+        color: theme.palette.primary.main,
+      },
+    },
     bottomSpace: {
       height: '5px',
     },
@@ -188,6 +194,8 @@ class MetricsCard extends React.Component<MetricsCardProps> {
               {options && (
                 <div className={classes.dropdownArrow}>
                   <IconButton
+                    color="primary"
+                    className={classes.optionsIcon}
                     onClick={(event) => {
                       options && togglePopper()
                     }}
