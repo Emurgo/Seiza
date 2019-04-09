@@ -126,12 +126,8 @@ export const THEME_DEFINITIONS = {
     palette: {
       gradient: 'linear-gradient(97deg, #BFADE7 0%, #E0F1F8 100%)',
       buttonsGradient: {
-        direction: 97,
-        start: '#715BD3',
-        end: '#95BAF7',
-        startPercent: 0,
-        endPercent: 100,
-        gradient: 'linear-gradient(97deg, #715BD3 0%, #95BAF7 100%)',
+        normal: 'linear-gradient(90deg, #4D20C0 0%,  #92A7FC 67%, #B1E1F2 100%)',
+        hover: 'linear-gradient(90deg, #4D20C0 0%,  #4D20C0 100%)',
       },
       primary: {
         main: '#4D20C0',
@@ -157,7 +153,7 @@ export const THEME_DEFINITIONS = {
       footer: {
         link: '#6F7290',
         contrastText: '#FFFFFF',
-        background: '#220049',
+        background: '#120546',
       },
       warning: {
         color: '#FF805D',

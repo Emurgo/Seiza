@@ -17,7 +17,8 @@ const messages = defineMessages({
 
 const subscribeMessages = defineMessages({
   subscribeHeader: "Let's stay in touch!",
-  subscribeText: 'Get access to subscriber and be the first to know when we launch something new!',
+  subscribeText:
+    'Get access to subscriber and be the first to know when we 🚀launch something new!',
   emailButton: 'Email',
   subscribeButton: 'Subscribe',
 })
@@ -37,7 +38,9 @@ const useRoundedInputStyles = makeStyles((theme) => {
     Input: {
       '&>fieldset': {
         borderRadius: '35px',
+        borderColor: '#9881DC !important',
       },
+      'height': '100%',
     },
     // <input> element
     input: {
@@ -61,21 +64,25 @@ const RoundedInput = React.forwardRef((props, ref) => {
   )
 })
 
-const useSubscribeFooterStyles = makeStyles(({palette}) => ({
+const useSubscribeFooterStyles = makeStyles(({palette, spacing}) => ({
   wrapper: {
-    padding: '10px',
+    padding: spacing.unit * 2,
     background: palette.gradient,
   },
   subscribe: {
-    marginLeft: '10px',
-    marginRight: '10px',
+    marginLeft: spacing.unit * 1.3,
+    marginRight: spacing.unit * 1.3,
     width: '200px',
   },
   email: {
-    width: '200px',
+    width: '280px',
+    height: '100%',
   },
   row: {
-    padding: '5px',
+    padding: spacing.unit,
+  },
+  subscribeHeadlineWrapper: {
+    padding: spacing.unit * 1.5,
   },
 }))
 
@@ -92,11 +99,14 @@ const SubscribeFooter = () => {
       alignItems="center"
     >
       <Grid item className={classes.row}>
-        <Typography variant="h1">{tr(subscribeMessages.subscribeHeader)}</Typography>
+        <Grid container direction="column" alignItems="center">
+          <div className={classes.subscribeHeadlineWrapper}>
+            <Typography variant="h1">{tr(subscribeMessages.subscribeHeader)}</Typography>
+          </div>
+          <Typography variant="body1">{tr(subscribeMessages.subscribeText)}</Typography>
+        </Grid>
       </Grid>
-      <Grid item className={classes.row}>
-        <Typography variant="body1">{tr(subscribeMessages.subscribeText)}</Typography>
-      </Grid>
+
       <Grid item className={classes.row}>
         <Grid container direction="row" justify="center">
           <form>
@@ -115,7 +125,7 @@ const SubscribeFooter = () => {
   )
 }
 
-const useMainFooterStyles = makeStyles(({spacing, palette}) => ({
+const useMainFooterStyles = makeStyles(({spacing, palette, typography}) => ({
   socialIcon: {
     color: palette.footer.contrastText,
   },
@@ -125,12 +135,12 @@ const useMainFooterStyles = makeStyles(({spacing, palette}) => ({
   },
   copyright: {
     color: palette.footer.contrastText,
-    fontSize: 10,
+    fontSize: typography.fontSize * 0.5,
     paddingBottom: spacing.unit * 2,
   },
   logo: {
-    paddingBottom: spacing.unit,
-    paddingTop: spacing.unit,
+    paddingBottom: spacing.unit * 1.5,
+    paddingTop: spacing.unit * 1.5,
   },
   nav: {
     listStyleType: 'none',
@@ -138,6 +148,7 @@ const useMainFooterStyles = makeStyles(({spacing, palette}) => ({
   },
   wrapper: {
     backgroundColor: palette.footer.background,
+    padding: spacing.unit * 2,
   },
   link: {
     'textDecoration': 'none',
@@ -151,6 +162,7 @@ const useMainFooterStyles = makeStyles(({spacing, palette}) => ({
   },
   navText: {
     color: palette.footer.contrastText,
+    fontWeight: 700,
   },
 }))
 
@@ -197,7 +209,9 @@ const MainFooter = ({navItems}) => {
         {navItems.map(({link, label}) => (
           <li key={label} className={classes.navItem}>
             <Link className={classes.link} to={link}>
-              <Typography className={classes.navText}>{label}</Typography>
+              <Typography variant="caption" className={classes.navText}>
+                {label}
+              </Typography>
             </Link>
           </li>
         ))}
