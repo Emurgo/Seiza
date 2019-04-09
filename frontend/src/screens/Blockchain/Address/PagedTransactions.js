@@ -3,7 +3,6 @@ import React from 'react'
 import {compose} from 'redux'
 import {withStateHandlers, withProps} from 'recompose'
 import {defineMessages} from 'react-intl'
-import cn from 'classnames'
 import {Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
@@ -19,6 +18,7 @@ import {
   LiteTab,
   Card,
 } from '@/components/visual'
+import {getDefaultSpacing} from '@/components/visual/ContentSpacing'
 import useTabState from '@/components/hooks/useTabState'
 import {ObjectValues} from '@/helpers/flow'
 import {useI18n} from '@/i18n/helpers'
@@ -37,18 +37,13 @@ const messages = defineMessages({
   received: 'Received',
 })
 
-const getSpacing = (theme) => theme.spacing.unit * 4
-
 const useStyles = makeStyles((theme) => ({
   txCard: {
-    padding: `${theme.spacing.unit * 2}px ${getSpacing(theme)}px`,
+    padding: `${getDefaultSpacing(theme) * 0.5}px ${getDefaultSpacing(theme)}px`,
     borderBottom: `1px solid ${theme.palette.unobtrusiveContentHighlight}`,
   },
   leftSide: {
     borderRight: `1px solid ${theme.palette.contentUnfocus}`,
-  },
-  bothSides: {
-    padding: getSpacing(theme),
   },
 }))
 
@@ -66,7 +61,7 @@ const TransactionCard = ({transaction: tx}) => {
         />
       </div>
       <Grid container direction="row">
-        <Grid item xs={6} className={cn(classes.leftSide, classes.bothSides)}>
+        <Grid item xs={6} className={classes.leftSide}>
           <Grid container direction="column">
             <Row>
               <Label>{tr(messages.amount)}</Label>
@@ -81,7 +76,7 @@ const TransactionCard = ({transaction: tx}) => {
           </Grid>
         </Grid>
         <Grid item xs={6}>
-          <Grid container direction="column" className={classes.bothSides}>
+          <Grid container direction="column">
             <Row>
               <Label>{tr(messages.epochAndSlot)}</Label>
               <Value>
