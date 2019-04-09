@@ -334,8 +334,7 @@ const TransactionScreen = () => {
   useEffect(() => {
     const offsetTop = idx(inputEl, (_) => _.current.offsetTop)
 
-    // Note: behavior: 'smooth' is not working in `edge` and `safari`
-    window.scrollTo({left: 0, top: offsetTop, behavior: 'smooth'})
+    window.scrollTo({left: 0, top: offsetTop})
   }, [transactionData])
 
   return (
