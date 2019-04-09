@@ -8,10 +8,10 @@ type SlotInfo {
 type GeneralInfo {
   blocksCount: Int!
   txCount: Int!
-  movements: AdaAmount!
-  totalFees: AdaAmount!
-  emptySlotsCount: Int!
-  addresses: AdaAmount!
+  movements: AdaAmount
+  totalFees: AdaAmount
+  emptySlotsCount: Int
+  addresses: AdaAmount
 }
 
 enum InfoPeriod {

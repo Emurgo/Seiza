@@ -9,7 +9,6 @@ const fetchCurrentPrice = async ({pricingAPI}, currency) => {
 export const currentStatusResolver = (root, args, context) => {
   const epochNumberResolver = () => fetchLatestBlock(context).then((block) => block.epoch)
 
-  // TODO: this turn this into blocks once we have that info
   const blockCountResolver = () => fetchLatestBlock(context).then((block) => block.slot)
 
   // TODO: get this info
