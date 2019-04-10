@@ -233,32 +233,47 @@ const TransactionSummary = ({loading, transaction}) => {
     </SummaryCard.Row>
   )
 
-  const epochNumber = idx(transaction, (_) => _.block.epoch)
-  const slot = idx(transaction, (_) => _.block.slot)
-  const blockHash = idx(transaction, (_) => _.block.blockHash)
+  const __ = {
+    epochNumber: idx(transaction, (_) => _.block.epoch),
+    slot: idx(transaction, (_) => _.block.slot),
+    blockHash: idx(transaction, (_) => _.block.blockHash),
+    confirmations: idx(transaction, (_) => _.confirmationsCount),
+    timeIssued: idx(transaction, (_) => _.block.timeIssued),
+    size: idx(transaction, (_) => _.size),
+    fees: idx(transaction, (_) => _.fees),
+  }
 
   const data = {
     assuranceBadge:
-      idx(transaction, (_) => _.confirmationsCount) != null ? (
-        // $FlowFixMe flow does not understand idx precondition
-        <AssuranceChip level={assuranceFromConfirmations(transaction.confirmationsCount)} />
+      __.confirmations != null ? (
+        <AssuranceChip level={assuranceFromConfirmations(__.confirmations)} />
       ) : null,
-    confirmations: translate(messages.confirmations, {
-      count: formatInt(idx(transaction, (_) => _.confirmationsCount), {defaultValue: NA}),
-    }),
+    confirmations:
+      __.confirmations != null
+        ? translate(messages.confirmations, {
+          count: __.confirmations,
+        })
+        : NA,
     epoch:
-      epochNumber != null ? (
-        <Link to={routeTo.epoch(epochNumber)}>{formatInt(epochNumber)}</Link>
+      __.epochNumber != null ? (
+        // $FlowFixMe flow does not understand idx precondition
+        <Link to={routeTo.epoch(__.epochNumber)}>{formatInt(__.epochNumber)}</Link>
       ) : (
         NA
       ),
-    slot: blockHash != null ? <Link to={routeTo.block(blockHash)}>{formatInt(slot)}</Link> : NA,
-    date: formatTimestamp(idx(transaction, (_) => _.block.timeIssued), {
+    slot:
+      __.blockHash != null ? (
+        // $FlowFixMe flow does not understand idx precondition
+        <Link to={routeTo.block(__.blockHash)}>{formatInt(__.slot)}</Link>
+      ) : (
+        NA
+      ),
+    date: formatTimestamp(__.timeIssued, {
       defaultValue: NA,
       format: formatTimestamp.FMT_MONTH_NUMERAL,
     }),
-    size: formatInt(idx(transaction, (_) => _.size), {defaultValue: NA}),
-    fees: <AdaValue value={idx(transaction, (_) => _.fees)} noValue={NA} showCurrency />,
+    size: formatInt(__.size, {defaultValue: NA}),
+    fees: <AdaValue value={__.fees} noValue={NA} showCurrency />,
   }
 
   return (

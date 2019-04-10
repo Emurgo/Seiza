@@ -7,9 +7,10 @@ import marketDataResolvers from './market/resolvers'
 import generalInfoResolvers from './general/resolvers'
 import epochResolvers from './epoch/resolvers'
 import stakepoolsResolvers from './stakingInfo/resolvers'
+import transactionResolvers from './transaction/resolvers'
 
 import {fetchAddress} from './address/dataProviders'
-import {fetchBlockByHash, fetchBlockBySlot} from './block/dataProviders'
+import {fetchBlockByHash} from './block/dataProviders'
 import {fetchTransaction} from './transaction/dataProviders'
 import {fetchBootstrapEraPool, fetchBootstrapEraPoolSummary} from './stakepool/dataProviders'
 
@@ -48,9 +49,6 @@ const _resolvers = {
     transactions: (block, args, context) => block._txs.map((id) => fetchTransaction(context, id)),
     blockLeader: (block, args, context) => fetchBootstrapEraPool(null, block._blockLeader),
   },
-  Transaction: {
-    block: (tx, args, context) => fetchBlockBySlot(context, tx._epoch_slot),
-  },
   Address: {
     transactions: (address, args, context) =>
       Promise.all(address._transactionIds.map((id) => fetchTransaction(context, id))),
@@ -71,4 +69,5 @@ export default [
   generalInfoResolvers,
   epochResolvers,
   stakepoolsResolvers,
+  transactionResolvers,
 ]
