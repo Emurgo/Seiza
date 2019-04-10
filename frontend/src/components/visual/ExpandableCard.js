@@ -10,11 +10,10 @@ import {
   Typography,
   Grid,
   IconButton,
-  Card,
 } from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
-
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
+import {Card} from '@/components/visual'
 
 const useStyles = makeStyles((theme) => ({
   icon: {
