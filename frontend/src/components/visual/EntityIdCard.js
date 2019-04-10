@@ -104,7 +104,7 @@ export const EntityCardContent = ({
           {label}
         </Typography>
         <Grid item className={classes.valueContainer}>
-          <Typography variant="body1" className={classes.hidden}>
+          <Typography style={{fontFamily: 'DroidSansMono'}} className={classes.hidden}>
             <EllipsizeMiddle value={value} />
           </Typography>
           {showCopyIcon && (
