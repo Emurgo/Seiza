@@ -2,6 +2,7 @@
 import React from 'react'
 import classnames from 'classnames'
 import {makeStyles} from '@material-ui/styles'
+import {fade} from '@material-ui/core/styles/colorManipulator'
 
 const useContentStyles = makeStyles((theme) => ({
   overlayContent: {
@@ -14,7 +15,7 @@ const useContentStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-around',
-    background: (props) => props.background || 'rgba(0, 0, 0, 0.2)',
+    background: (props) => props.background || fade(theme.palette.text.primary, 0.2),
   },
 }))
 
