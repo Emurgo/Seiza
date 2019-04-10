@@ -37,20 +37,24 @@ export const fetchGeneralInfo = ({elastic, E}: any, period: string) => {
     blocksCount: () => slots.filter(E.notNull('hash')).getCount(),
     txCount: async () => {
       const res1 = await txs.getCount()
-      const res2 = await slots.getAggregations({txNum: E.sum('tx_num')})
+      const res2 = await slots.getAggregations({txNum: E.agg.sum('tx_num')})
 
-      assert.equal(res1, res2.txNum.value)
+      assert.equal(res1, res2.txNum)
       return res1
     },
     movements: () =>
       slots
-        .getAggregations(E.sumAda('sent'))
-        .then((agg) => E.extractSumAda(agg, 'sent'))
+        .getAggregations({
+          sent: E.agg.sumAda('sent'),
+        })
+        .then(({sent}) => sent)
         .then(parseAdaValue),
     totalFees: () =>
       slots
-        .getAggregations(E.sumAda('fees'))
-        .then((agg) => E.extractSumAda(agg, 'fees'))
+        .getAggregations({
+          fees: E.agg.sumAda('fees'),
+        })
+        .then(({fees}) => fees)
         .then(parseAdaValue),
     addresses: () => -1,
     emptySlotsCount: () => slots.filter(E.isNull('hash')).getCount(),
@@ -64,16 +68,17 @@ export const fetchEpochInfo = ({elastic, E}: any, epoch: number) => {
     .filter(E.eq('epoch', epoch))
 
   const aggregations = slots.getAggregations({
-    ...E.sumAda('sent'),
-    ...E.sumAda('fees'),
-    txCount: E.sum('tx_num'),
-    blocks: {value_count: {field: 'hash.keyword'}},
-    slotsMissed: {missing: {field: 'hash.keyword'}},
+    sent: E.agg.sumAda('sent'),
+    fees: E.agg.sumAda('fees'),
+    txCount: E.agg.sum('tx_num'),
+    // Note: we cannot count on hash
+    blocks: E.agg.countNotNull('hash.keyword'),
+    slotsMissed: E.agg.raw({missing: {field: 'hash.keyword'}}),
   })
 
   return {
     blocksCount: async () => {
-      const cnt = (await aggregations).blocks.value
+      const cnt = (await aggregations).blocks
       // (expensive) sanity check
       assert.equal(cnt, await slots.filter(E.notNull('hash')).getCount())
       return cnt
@@ -85,10 +90,10 @@ export const fetchEpochInfo = ({elastic, E}: any, epoch: number) => {
       assert.equal(cnt, await slots.filter(E.isNull('hash')).getCount())
       return cnt
     },
-    movements: aggregations.then((agg) => E.extractSumAda(agg, 'sent')).then(parseAdaValue),
-    totalFees: aggregations.then((agg) => E.extractSumAda(agg, 'fees')).then(parseAdaValue),
+    movements: aggregations.then(({sent}) => sent).then(parseAdaValue),
+    totalFees: aggregations.then(({fees}) => fees).then(parseAdaValue),
     txCount: async () => {
-      const cnt = (await aggregations).txCount.value
+      const cnt = (await aggregations).txCount
 
       // (expensive) sanity check
       assert.equal(

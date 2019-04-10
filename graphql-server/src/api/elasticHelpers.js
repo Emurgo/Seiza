@@ -1,4 +1,5 @@
 // @flow
+import _ from 'lodash'
 
 export type SortDirection = 'asc' | 'desc'
 
@@ -80,39 +81,54 @@ const filter = (conditions: Array<any>): any => ({
 
 // Aggregations
 
-const sum = (field: string) => ({
-  sum: {
-    field,
-  },
-})
+const encodeAggs = (aggs: any) => _.mapValues(aggs, (x) => x.encode())
 
-const sumAda = (field: string) => ({
-  [`${field}.integers`]: {
-    sum: {
-      field: `${field}.integers`,
-    },
-  },
-  [`${field}.decimals`]: {
-    sum: {
-      field: `${field}.decimals`,
-    },
-  },
-  [`${field}.full`]: {
-    sum: {
-      field: `${field}.full`,
-    },
-  },
-})
+const decodeAggs = (aggs: any, value: any) => _.mapValues(aggs, (x, key) => x.decode(value[key]))
 
-const extractSumAda = (agg: any, prefix: string) => {
-  return {
-    integers: agg[`${prefix}.integers`].value,
-    decimals: agg[`${prefix}.decimals`].value,
-    full: agg[`${prefix}.full`].value,
-  }
+const agg = {
+  _decode: decodeAggs,
+  _encode: encodeAggs,
+  sum: (field: string) => ({
+    encode: () => ({
+      sum: {
+        field,
+      },
+    }),
+    decode: (x: any) => x.value,
+  }),
+  // This is a hack to create nested keys in
+  // aggregation results
+  // as elastic cannot be easily convinced
+  // otherwise
+  nest: (defs: any) => ({
+    encode: () => ({
+      filter: {
+        match_all: {},
+      },
+      aggs: agg._encode(defs),
+    }),
+    decode: (x: any) => agg._decode(defs, x),
+  }),
+  sumAda: (field: string) =>
+    agg.nest({
+      integers: agg.sum(`${field}.integers`),
+      decimals: agg.sum(`${field}.decimals`),
+      full: agg.sum(`${field}.full`),
+    }),
+  raw: (rawDef: any) => ({
+    encode: () => rawDef,
+    decode: (x: any) => x,
+  }),
+  // TODO(ppershing): how does this behave
+  // for repeated fields?
+  countNotNull: (field: string) => ({
+    encode: () => ({value_count: {field}}),
+    decode: (x: any) => x.value,
+  }),
 }
 
 const e = {
+  agg,
   orderBy,
   notNull,
   isNull,
@@ -123,9 +139,6 @@ const e = {
   matchPhrase,
   onlyActiveFork,
   filter,
-  sum,
-  sumAda,
-  extractSumAda,
 }
 
 export type E = typeof e
