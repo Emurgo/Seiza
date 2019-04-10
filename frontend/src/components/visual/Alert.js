@@ -1,7 +1,7 @@
 // @flow
 import React from 'react'
 import type {Node} from 'react'
-import classnames from 'classnames'
+import cn from 'classnames'
 import {defineMessages} from 'react-intl'
 import {Paper, createStyles, Grid, Typography} from '@material-ui/core'
 import {darken} from '@material-ui/core/styles/colorManipulator'
@@ -63,14 +63,15 @@ type PropTypes = {
   title?: Node,
   message: Node,
   type: AlertTypeEnum,
+  className?: string,
 }
 
-const Alert = ({title, type, message}: PropTypes) => {
+const Alert = ({title, type, message, className}: PropTypes) => {
   const classes = useAppStyles()
   const {translate: tr} = useI18n()
   const icon = ICONS[type] && <Grid item>{ICONS[type]}</Grid>
   return (
-    <Paper elevation={0} className={classnames(classes[type], classes.wrapper)}>
+    <Paper elevation={0} className={cn(classes[type], classes.wrapper, className)}>
       <Grid container direction="row" justify="center" alignItems="center" spacing={16}>
         {icon}
         <Grid item className="flex-grow-1">
@@ -78,7 +79,7 @@ const Alert = ({title, type, message}: PropTypes) => {
             container
             direction="column"
             justify="space-around"
-            className={classnames('h-100', 'flex-grow-1')}
+            className={cn('h-100', 'flex-grow-1')}
           >
             <Grid item>
               <Typography variant="overline" color="inherit">

@@ -1,15 +1,16 @@
 // @flow
 import assert from 'assert'
+import cn from 'classnames'
 import idx from 'idx'
 import React, {useState, useEffect, useCallback} from 'react'
 import gql from 'graphql-tag'
 import useReactRouter from 'use-react-router'
 import {useQuery} from 'react-apollo-hooks'
 import {defineMessages} from 'react-intl'
-import {Typography} from '@material-ui/core'
+import {makeStyles} from '@material-ui/styles'
 
 import {useI18n} from '@/i18n/helpers'
-import {Searchbar, LoadingError} from '@/components/visual'
+import {Searchbar, LoadingError, Alert} from '@/components/visual'
 import {routeTo} from '@/helpers/routes'
 
 const text = defineMessages({
@@ -58,9 +59,16 @@ const getRedirectUrl = (searchResult) => {
   return redirectBuilder(searchResult)
 }
 
+const useStyles = makeStyles((theme) => ({
+  gap: {
+    marginTop: theme.spacing.unit * 1.5,
+  },
+}))
+
 const Search = () => {
   const {translate: tr} = useI18n()
   const {history} = useReactRouter()
+  const classes = useStyles()
 
   // "submitted query"
   const [searchQuery, setSearchQuery] = useState('')
@@ -86,7 +94,7 @@ const Search = () => {
   )
 
   return (
-    <React.Fragment>
+    <div className="position-relative">
       <Searchbar
         placeholder={tr(text.searchPlaceholder)}
         value={searchText}
@@ -96,9 +104,13 @@ const Search = () => {
       />
       {!loading && error && <LoadingError error={error} />}
       {!loading && !searchResult && searchQuery && (
-        <Typography variant="body1">{tr(text.noData)}</Typography>
+        <Alert
+          type="warning"
+          className={cn('position-absolute', 'w-100', classes.gap)}
+          message={tr(text.noData)}
+        />
       )}
-    </React.Fragment>
+    </div>
   )
 }
 
