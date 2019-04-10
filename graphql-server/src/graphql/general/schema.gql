@@ -19,8 +19,24 @@ enum InfoPeriod {
   LAST_24_HOURS
 }
 
+scalar Date
+
+type Point {
+  # This is an ugly hack for dates
+  x: String
+  y: Float
+}
+
+type Series {
+  data: [Point!]
+}
+
 type Query {
   generalInfo(infoPeriod: InfoPeriod): GeneralInfo!
   epochInfo(epoch: Int!): GeneralInfo!
   slotInfo(epoch: Int!, slot: Int!): SlotInfo!
+
+  txCountGraph: Series
 }
+
+
