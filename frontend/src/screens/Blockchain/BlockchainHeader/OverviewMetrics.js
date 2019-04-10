@@ -12,6 +12,7 @@ import {getIntlFormatters} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
 import WithNavigateTo from '@/components/headless/navigateTo'
 import {Link} from 'react-router-dom'
+import config from '@/config'
 
 const text = defineMessages({
   not_available: 'N/A',
@@ -58,6 +59,27 @@ const OverviewMetrics = ({intl, data, classes, currency, setCurrency}) => {
   const marketDataLink = routeTo.more()
   const stakePoolsLink = routeTo.staking.home()
 
+  const commonMarketDataProps = {
+    className: classes.card,
+    icon: 'price',
+    metric: translate(text.priceLabel),
+    value: price,
+    options: [
+      {
+        label: 'USD/ADA',
+        onClick: () => setCurrency('USD'),
+      },
+      {
+        label: 'EUR/ADA',
+        onClick: () => setCurrency('EUR'),
+      },
+      {
+        label: 'YEN/ADA',
+        onClick: () => setCurrency('JPY'),
+      },
+    ],
+  }
+
   return (
     <Grid container justify="center" wrap="wrap" direction="row">
       <Grid item className={classes.cardDimensions}>
@@ -82,56 +104,47 @@ const OverviewMetrics = ({intl, data, classes, currency, setCurrency}) => {
           value={blockCount}
         />
       </GridItem>
+      {config.showStakingData && (
+        <GridItem>
+          <MetricsCard
+            className={classes.card}
+            icon="decentralization"
+            metric={translate(text.decentralizationLabel)}
+            value={decentralization}
+          />
+        </GridItem>
+      )}
       <GridItem>
-        <MetricsCard
-          className={classes.card}
-          icon="decentralization"
-          metric={translate(text.decentralizationLabel)}
-          value={decentralization}
-        />
+        {config.showStakingData ? (
+          <WithNavigateTo to={marketDataLink}>
+            {({navigate}) => (
+              <MetricsCard
+                {...commonMarketDataProps}
+                onClick={navigate}
+                clickableWrapperProps={{component: Link, to: marketDataLink}}
+              />
+            )}
+          </WithNavigateTo>
+        ) : (
+          <MetricsCard {...commonMarketDataProps} />
+        )}
       </GridItem>
-      <GridItem>
-        <WithNavigateTo to={marketDataLink}>
-          {({navigate}) => (
-            <MetricsCard
-              className={classes.card}
-              icon="price"
-              metric={translate(text.priceLabel)}
-              value={price}
-              onClick={navigate}
-              options={[
-                {
-                  label: 'USD/ADA',
-                  onClick: () => setCurrency('USD'),
-                },
-                {
-                  label: 'EUR/ADA',
-                  onClick: () => setCurrency('EUR'),
-                },
-                {
-                  label: 'YEN/ADA',
-                  onClick: () => setCurrency('JPY'),
-                },
-              ]}
-              clickableWrapperProps={{component: Link, to: marketDataLink}}
-            />
-          )}
-        </WithNavigateTo>
-      </GridItem>
-      <GridItem>
-        <WithNavigateTo to={stakePoolsLink}>
-          {({navigate}) => (
-            <MetricsCard
-              className={classes.card}
-              icon="pools"
-              metric={translate(text.poolsLabel)}
-              value={pools}
-              onClick={navigate}
-              clickableWrapperProps={{component: Link, to: stakePoolsLink}}
-            />
-          )}
-        </WithNavigateTo>
-      </GridItem>
+      {config.showStakingData && (
+        <GridItem>
+          <WithNavigateTo to={stakePoolsLink}>
+            {({navigate}) => (
+              <MetricsCard
+                className={classes.card}
+                icon="pools"
+                metric={translate(text.poolsLabel)}
+                value={pools}
+                onClick={navigate}
+                clickableWrapperProps={{component: Link, to: stakePoolsLink}}
+              />
+            )}
+          </WithNavigateTo>
+        </GridItem>
+      )}
     </Grid>
   )
 }

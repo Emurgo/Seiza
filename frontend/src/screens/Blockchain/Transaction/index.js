@@ -27,7 +27,7 @@ import WithModalState from '@/components/headless/modalState'
 import AssuranceChip from '@/components/common/AssuranceChip'
 import AdaIcon from '@/assets/icons/transaction-id.svg'
 
-import {ASSURANCE_LEVELS_VALUES} from '@/config'
+import {ASSURANCE_LEVELS_VALUES} from '@/constants'
 import {useI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
 
