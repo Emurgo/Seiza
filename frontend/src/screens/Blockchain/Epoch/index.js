@@ -23,9 +23,10 @@ import {
 import {useI18n} from '@/i18n/helpers'
 import EpochIcon from '@/assets/icons/metrics-epoch.svg'
 import WithTabState from '@/components/headless/tabState'
-import BlocksTab from './Blocks'
+import Blocks from './Blocks'
 import StakingPoolsTab from './StakingPools'
 import {routeTo} from '@/helpers/routes'
+import config from '@/config'
 
 const messages = defineMessages({
   notAvailable: 'N/A',
@@ -76,7 +77,7 @@ const TAB_NAMES = {
 const TABS = {
   ORDER: [TAB_NAMES.BLOCKS, TAB_NAMES.STAKING_POOLS],
   CONTENT: {
-    [TAB_NAMES.BLOCKS]: BlocksTab,
+    [TAB_NAMES.BLOCKS]: Blocks,
     [TAB_NAMES.STAKING_POOLS]: StakingPoolsTab,
   },
 }
@@ -177,10 +178,12 @@ const EpochSummaryCard = ({epoch, loading}) => {
         {card1}
         <LoadingOverlay loading={loading} />
       </Overlay.Wrapper>
-      <Overlay.Wrapper>
-        {card2}
-        <LoadingOverlay loading={loading} />
-      </Overlay.Wrapper>
+      {config.showStakingData && (
+        <Overlay.Wrapper>
+          {card2}
+          <LoadingOverlay loading={loading} />
+        </Overlay.Wrapper>
+      )}
     </React.Fragment>
   )
 }
@@ -299,6 +302,7 @@ const EpochScreen = () => {
   const {epochData, error, loading} = useEpochData(epochNumber)
 
   const {translate} = useI18n()
+  const blocksInEpoch = idx(epochData, (_) => _.summary.blocksCreated)
   return (
     <SimpleLayout title={translate(messages.header)}>
       <EpochNavigation currentEpochNumber={epochNumber} />
@@ -313,20 +317,25 @@ const EpochScreen = () => {
       ) : (
         <React.Fragment>
           <EpochSummaryCard epoch={epochData} loading={loading} />
-          <WithTabState tabNames={TABS.ORDER}>
-            {({setTab, currentTab, currentTabName}) => {
-              const TabContent = TABS.CONTENT[currentTabName]
-              return (
-                <Card>
-                  <Tabs value={currentTab} onChange={setTab}>
-                    <Tab label={translate(messages.blocksTab)} />
-                    <Tab label={translate(messages.stakingPoolsTab)} />
-                  </Tabs>
-                  <TabContent epochNumber={epochNumber} />
-                </Card>
-              )
-            }}
-          </WithTabState>
+          {config.showStakingData ? (
+            <WithTabState tabNames={TABS.ORDER}>
+              {({setTab, currentTab, currentTabName}) => {
+                const TabContent = TABS.CONTENT[currentTabName]
+                return (
+                  <Card>
+                    <Tabs value={currentTab} onChange={setTab}>
+                      <Tab label={translate(messages.blocksTab)} />
+                      <Tab label={translate(messages.stakingPoolsTab)} />
+                    </Tabs>
+                    <TabContent epochNumber={epochNumber} />
+                  </Card>
+                )
+              }}
+            </WithTabState>
+          ) : (
+            blocksInEpoch != null &&
+            blocksInEpoch > 0 && <Blocks epochNumber={epochNumber} blocksCount={blocksInEpoch} />
+          )}
         </React.Fragment>
       )}
     </SimpleLayout>

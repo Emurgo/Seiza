@@ -3,7 +3,7 @@ import React from 'react'
 import {useQuery} from 'react-apollo-hooks'
 import useReactRouter from 'use-react-router'
 import {defineMessages} from 'react-intl'
-import {IconButton, Typography} from '@material-ui/core'
+import {IconButton} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import idx from 'idx'
 
@@ -22,6 +22,7 @@ import {
   EntityCardContent,
   AdaValue,
   Tooltip,
+  EntityHeading,
 } from '@/components/visual'
 
 import addressIcon from '@/assets/icons/qrcode.svg'
@@ -82,27 +83,12 @@ const messages = defineMessages({
   qrCodeDialogEntityLabel: 'Address Id',
 })
 
-const useHeadingStyles = makeStyles((theme) => ({
-  underline: {
-    borderBottom: `1px solid ${theme.palette.text.secondary}`,
-  },
-  wrapper: {
+const useStyles = makeStyles((theme) => ({
+  headingWrapper: {
     marginBottom: theme.spacing.unit * 6,
     marginTop: theme.spacing.unit * 6,
   },
 }))
-
-const Heading = ({txCount}) => {
-  const {translate: tr} = useI18n()
-  const classes = useHeadingStyles()
-  return (
-    <div className={classes.wrapper}>
-      <Typography variant="h2" color="textSecondary">
-        <span className={classes.underline}>{txCount}</span> {tr(messages.transactionsHeading)}
-      </Typography>
-    </div>
-  )
-}
 
 const useAddressSummary = (address58) => {
   const {loading, data, error} = useQuery(GET_ADDRESS_BY_ADDRESS58, {
@@ -120,6 +106,7 @@ const AddressScreen = () => {
   } = useReactRouter()
   const {loading, error, addressSummary} = useAddressSummary(address58)
   const {translate: tr} = useI18n()
+  const classes = useStyles()
   return (
     <SimpleLayout title={tr(messages.title)}>
       <EntityIdCard
@@ -155,7 +142,12 @@ const AddressScreen = () => {
       ) : (
         <React.Fragment>
           <AddressSummaryCard loading={loading} addressSummary={addressSummary} />
-          <Heading txCount={idx(addressSummary, (_) => _.transactionsCount)} />
+          <EntityHeading
+            className={classes.headingWrapper}
+            amount={idx(addressSummary, (_) => _.transactionsCount) || ''}
+          >
+            {tr(messages.transactionsHeading)}
+          </EntityHeading>
           <PagedTransactions
             loading={loading}
             transactions={idx(addressSummary, (_) => _.transactions) || []}

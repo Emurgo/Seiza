@@ -3,29 +3,61 @@ import {graphql} from 'react-apollo'
 import {compose} from 'redux'
 import {withProps} from 'recompose'
 import idx from 'idx'
+import {defineMessages} from 'react-intl'
 import {Grid} from '@material-ui/core'
+import {makeStyles} from '@material-ui/styles'
 
 import {onDidUpdate, onDidMount} from '@/components/HOC/lifecycles'
 import Pagination, {getPageCount} from '@/components/visual/Pagination'
 import {GET_PAGED_BLOCKS_IN_EPOCH} from '@/api/queries'
 import BlocksTable, {COLUMNS_MAP} from '../PagedBlocks/BlocksTable'
 import withPagedData from '@/components/HOC/withPagedData'
+import {useI18n} from '@/i18n/helpers'
+import {EntityHeading} from '@/components/visual'
+
+const useStyles = makeStyles((theme) => ({
+  wrapper: {
+    marginTop: theme.spacing.unit * 3,
+    marginBottom: theme.spacing.unit * 3,
+  },
+}))
+
+const messages = defineMessages({
+  blocks: 'Blocks',
+})
 
 const {SLOT, TIME, SLOT_LEADER, TRANSACTIONS, TOTAL_SENT, FEES, SIZE} = COLUMNS_MAP
 const columns = [SLOT, TIME, SLOT_LEADER, TRANSACTIONS, TOTAL_SENT, FEES, SIZE]
 const Blocks = (props) => {
   const {
     pagedDataResult: {loading, error, pagedData: pagedBlocks},
+    blocksCount,
   } = props
+  const classes = useStyles()
+  const {translate: tr, formatInt} = useI18n()
   return (
-    <Grid container direction="column" justify="flex-end" alignItems="flex-end">
+    <Grid container direction="column">
       <Grid item>
-        <Pagination
-          count={props.totalCount}
-          rowsPerPage={props.rowsPerPage}
-          page={props.page}
-          onChangePage={props.onChangePage}
-        />
+        <Grid
+          container
+          direction="row"
+          justify="space-between"
+          alignItems="center"
+          className={classes.wrapper}
+        >
+          <Grid item>
+            <EntityHeading amount={formatInt(blocksCount)}>{tr(messages.blocks)}</EntityHeading>
+          </Grid>
+          <Grid item>
+            <Pagination
+              count={props.totalCount}
+              rowsPerPage={props.rowsPerPage}
+              page={props.page}
+              onChangePage={props.onChangePage}
+              reverseDirection
+            />
+          </Grid>
+        </Grid>
       </Grid>
       <BlocksTable
         blocks={pagedBlocks && pagedBlocks.blocks}
