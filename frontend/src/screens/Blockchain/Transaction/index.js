@@ -174,7 +174,7 @@ const BreakdownItem = (props) => {
               {captionPrefix}
               <div className={breakdownClasses.spaced}>
                 <Link to={routeTo.address(address58)} underline="none">
-                  <div className={breakdownClasses.underlineHover}>
+                  <div style={{fontFamily: 'PtMono'}} className={breakdownClasses.underlineHover}>
                     <EllipsizeMiddle value={address58} />
                   </div>
                 </Link>
