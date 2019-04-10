@@ -162,13 +162,14 @@ class Query {
     return hits
   }
 
-  getAggregations = async (aggs: any) => {
-    const {aggregations} = await _search(this._type, {
+  getAggregations = async (defs: any) => {
+    const {aggregations: response} = await _search(this._type, {
       query: this._query,
       size: 0,
-      aggs,
+      aggs: E.agg._encode(defs),
     })
-    return aggregations
+
+    return E.agg._decode(defs, response)
   }
 }
 

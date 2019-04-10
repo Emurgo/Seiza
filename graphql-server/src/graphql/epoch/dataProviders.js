@@ -97,7 +97,9 @@ export const fetchTotalFees = async ({elastic, E}: Context, epochNumber: number)
     .q('tx')
     .filter(E.onlyActiveFork())
     .filter(E.eq('epoch', epochNumber))
-    .getAggregations(E.sumAda('fees'))
+    .getAggregations({
+      fees: E.agg.sumAda('fees'),
+    })
 
-  return parseAdaValue(E.extractSumAda(aggregations, 'fees'))
+  return parseAdaValue(aggregations.fees)
 }
