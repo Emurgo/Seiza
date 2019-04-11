@@ -1,5 +1,6 @@
 import React from 'react'
-import {Grid, Typography, withStyles, createStyles} from '@material-ui/core'
+import {Grid, withStyles, createStyles} from '@material-ui/core'
+import EntityHeading from './EntityHeading'
 
 const styles = ({palette, spacing}) =>
   createStyles({
@@ -37,9 +38,7 @@ const SimpleLayout = ({title, classes, children, maxWidth = '1500px'}) => (
     <div style={{width: '85%', maxWidth}}>
       <Grid container direction="row" justify="center">
         <div className={classes.titleWrapper}>
-          <Typography className={classes.title} align="justify" variant="h2" color="textSecondary">
-            {title}
-          </Typography>
+          <EntityHeading className={classes.title}>{title}</EntityHeading>
         </div>
       </Grid>
       <Grid container className={classes.childrenContainer} direction="column" spacing={16}>
