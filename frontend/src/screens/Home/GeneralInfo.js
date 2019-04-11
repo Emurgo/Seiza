@@ -153,10 +153,10 @@ const Row = ({children}) => (
 
 // Note(ppershing): queryData will be undefined if we are skipping the query
 // so we need to deal with it explicitly
-const facadeQueryData = (queryData, dataKey) => ({
+const facadeQueryData = (queryData, dataKey, parentError = null) => ({
   data: queryData && queryData[dataKey],
-  loading: !queryData || queryData.loading,
-  error: queryData && queryData.error,
+  loading: !parentError && (!queryData || queryData.loading),
+  error: parentError || (queryData && queryData.error),
 })
 
 const OVERVIEW_METRICS_QUERY = gql`
@@ -195,11 +195,11 @@ const SlotInfoCard = compose(
     }),
     skip: ({epoch, slot}) => epoch == null || slot == null,
   }),
-  withProps(({i18n, slotInfoProvider, slot}) => ({
+  withProps(({i18n, slotInfoProvider, slot, parentError}) => ({
     cardLabel: i18n.translate(cardHeaders.slotLabel),
     cardValue: slot,
     fields: getSlotFields(i18n),
-    ...facadeQueryData(slotInfoProvider, 'slotInfo'),
+    ...facadeQueryData(slotInfoProvider, 'slotInfo', parentError),
   }))
 )(_InfoCard)
 
@@ -247,12 +247,12 @@ const GeneralInfoLastEpoch = compose(
     }),
     skip: ({epoch}) => epoch == null,
   }),
-  withProps(({i18n, epochInfoProvider, epoch}) => {
+  withProps(({i18n, epochInfoProvider, epoch, parentError}) => {
     return {
       cardLabel: i18n.translate(cardHeaders.epochLabel),
       cardValue: epoch,
       fields: getGeneralFields(i18n),
-      ...facadeQueryData(epochInfoProvider, 'epochInfo'),
+      ...facadeQueryData(epochInfoProvider, 'epochInfo', parentError),
     }
   })
 )(_InfoCard)
@@ -280,7 +280,7 @@ export default compose(
           <GeneralInfoGenesis />
         </Grid>
         <Grid item xs={6}>
-          <GeneralInfoLastEpoch epoch={epoch} />
+          <GeneralInfoLastEpoch epoch={epoch} parentError={error} />
         </Grid>
       </Row>
       <Row>
@@ -288,7 +288,7 @@ export default compose(
           <GeneralInfo24Hours />
         </Grid>
         <Grid item xs={6}>
-          <SlotInfoCard epoch={epoch} slot={slot} />
+          <SlotInfoCard epoch={epoch} slot={slot} parentError={error} />
         </Grid>
       </Row>
     </SimpleLayout>
