@@ -15,7 +15,7 @@ export const parseAdaValue = (value: RawAdaValue): BigNumber => {
 
   const res = new BigNumber(value.integers).times(1000000).plus(value.decimals)
   const resApprox = new BigNumber(value.full)
-  if (res.abs().lt(1.8e16)) {
+  if (res.abs().lt(9e15)) {
     // below this the values should be same
     assert(res.eq(resApprox), 'ADA value should be consistent at this magnitude')
   } else {
@@ -24,7 +24,7 @@ export const parseAdaValue = (value: RawAdaValue): BigNumber => {
       resApprox
         .minus(res)
         .div(res)
-        .lt(1.0e-16),
+        .lt(1.0e-15),
       'Inexact raw ada value is too imprecise. Perhaps a bug?'
     )
   }
