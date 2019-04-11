@@ -28,15 +28,33 @@ type Point {
 }
 
 type Series {
-  data: [Point!]
+  data: [Point!]!
+}
+
+enum SeriesXAxisGroupBy {
+  EPOCH
+  DAY
+}
+
+type AggregateInfo {
+  txCount: Series!
+  totalAdaTransferred: Series!
+  totalUtxoCreated: Series!
+}
+
+input SeriesEpochInterval {
+  from: Int
+  to: Int
+}
+
+input SeriesDateInterval {
+  from: Timestamp
+  to: Timestamp
 }
 
 type Query {
   generalInfo(infoPeriod: InfoPeriod): GeneralInfo!
   epochInfo(epoch: Int!): GeneralInfo!
   slotInfo(epoch: Int!, slot: Int!): SlotInfo!
-
-  txCountGraph: Series
+  aggregateInfo(groupBy: SeriesXAxisGroupBy!, epochInterval: SeriesEpochInterval, dateInterval: SeriesDateInterval): AggregateInfo!
 }
-
-
