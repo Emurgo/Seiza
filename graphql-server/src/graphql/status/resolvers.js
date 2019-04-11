@@ -1,4 +1,5 @@
 import {fetchLatestBlock} from '../block/dataProviders'
+import moment from 'moment'
 
 const fetchCurrentPrice = async ({pricingAPI}, currency) => {
   const result = await pricingAPI.get('price', {fsym: 'ADA', tsyms: currency})
@@ -20,11 +21,23 @@ export const currentStatusResolver = (root, args, context) => {
   // TODO: get this info
   const stakePoolCountResolver = () => null
 
+  const dataAvailableUpToResolver = () => {
+    const {E, elastic} = context
+    return elastic
+      .q('slot')
+      .getAggregations({
+        time: E.agg.max('time'),
+      })
+      .then(({time}) => moment(time))
+  }
+
   return {
     epochNumber: epochNumberResolver,
     blockCount: blockCountResolver,
     decentralization: decentralizationResolver,
     price: priceResolver,
     stakePoolCount: stakePoolCountResolver,
+    dataAvailableUpTo: dataAvailableUpToResolver,
+    currentTime: moment(),
   }
 }

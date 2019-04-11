@@ -6,12 +6,15 @@ import {injectIntl, defineMessages} from 'react-intl'
 import {compose} from 'redux'
 import {withStateHandlers} from 'recompose'
 import {graphql} from 'react-apollo'
+import moment from 'moment'
+
 import {Grid, createStyles, withStyles} from '@material-ui/core'
-import {MetricsCard, LoadingDots} from '@/components/visual'
+import {MetricsCard, LoadingDots, Alert} from '@/components/visual'
 import {getIntlFormatters} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
 import WithNavigateTo from '@/components/headless/navigateTo'
 import {Link} from 'react-router-dom'
+
 import config from '@/config'
 
 const text = defineMessages({
@@ -22,6 +25,8 @@ const text = defineMessages({
   decentralizationLabel: 'Decentralization',
   priceLabel: 'Price',
   poolsLabel: 'Pools',
+  delayedDataTitle: 'We are facing syncing issues on the server',
+  delayedData: 'Displaying blockchain data up to {date}',
   searchPlaceholder: 'Search addresses, epochs & slots on the Cardano network',
 })
 
@@ -58,6 +63,16 @@ const OverviewMetrics = ({intl, data, classes, currency, setCurrency}) => {
   const epochLink = status && routeTo.epoch(status.epochNumber)
   const marketDataLink = routeTo.more()
   const stakePoolsLink = routeTo.staking.home()
+
+  const delayMessage = status
+    ? moment(status.currentTime)
+      .add('minute', -1)
+      .isAfter(moment(status.dataAvailableUpTo))
+      ? translate(text.delayedData, {
+        date: moment(status.dataAvailableUpTo),
+      })
+      : null
+    : null
 
   const commonMarketDataProps = {
     className: classes.card,
@@ -145,6 +160,11 @@ const OverviewMetrics = ({intl, data, classes, currency, setCurrency}) => {
           </WithNavigateTo>
         </GridItem>
       )}
+      {delayMessage && (
+        <Grid container justify="center">
+          <Alert type="warning" title={translate(text.delayedDataTitle)} message={delayMessage} />
+        </Grid>
+      )}
     </Grid>
   )
 }
@@ -157,6 +177,8 @@ const OVERVIEW_METRICS_QUERY = gql`
       decentralization
       price(currency: $currency)
       stakePoolCount
+      currentTime
+      dataAvailableUpTo
     }
   }
 `
