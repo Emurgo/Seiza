@@ -11,6 +11,8 @@ type Status {
   decentralization: Float # todo scalar fraction
   price(currency: CurrencyEnum!): Float
   stakePoolCount: Int
+  dataAvailableUpTo: Timestamp
+  currentTime: Timestamp
 }
 
 type Query {

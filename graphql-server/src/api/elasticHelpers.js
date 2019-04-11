@@ -115,6 +115,14 @@ const agg = {
       decimals: agg.sum(`${field}.decimals`),
       full: agg.sum(`${field}.full`),
     }),
+  max: (field: string) => ({
+    encode: () => ({
+      max: {
+        field,
+      },
+    }),
+    decode: (x: any) => x.value,
+  }),
   raw: (rawDef: any) => ({
     encode: () => rawDef,
     decode: (x: any) => x,
