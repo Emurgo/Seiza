@@ -1,26 +1,44 @@
 import React from 'react'
 import classnames from 'classnames'
 import {withStyles, createStyles, Typography, Grid} from '@material-ui/core'
+import {fade} from '@material-ui/core/styles/colorManipulator'
 
 import {Card} from '@/components/visual'
 
-const styles = ({spacing, palette}) =>
+const styles = ({spacing, hover, palette}) =>
   createStyles({
     card: {
-      padding: spacing.unit * 2,
+      overflow: 'visible',
+    },
+    // See note in KeyValueCard as to why we need this
+    listRowWrapper: {
+      '&:after': {
+        content: '""',
+        display: 'block',
+        marginLeft: spacing.unit * 4,
+        marginRight: spacing.unit * 4,
+        borderBottom: `1px solid ${palette.unobtrusiveContentHighlight}`,
+      },
+      '&:last-child:after': {
+        content: '""',
+        borderBottom: 'none',
+        display: 'block',
+      },
     },
     listRow: {
-      'paddingTop': spacing.unit * 2.5,
-      'paddingBottom': spacing.unit * 2.5,
-
-      '&:not(:last-child)': {
-        borderBottom: `0.5px solid ${palette.unobtrusiveContentHighlight}`,
-      },
-      '&:last-child': {
-        paddingBottom: 0,
-      },
-      '&:first-child': {
-        paddingTop: 0,
+      paddingTop: spacing.unit * 2.5,
+      paddingBottom: spacing.unit * 2.5,
+      paddingLeft: spacing.unit * 4,
+      paddingRight: spacing.unit * 4,
+    },
+    clickableRow: {
+      'transition': hover.transitionOut(['box-shadow']),
+      '&:hover': {
+        marginTop: '-1px',
+        borderTop: `1px solid ${palette.unobtrusiveContentHighlight}`,
+        borderRadius: '3px',
+        boxShadow: `0px 10px 30px ${fade(palette.text.primary, 0.11)}`,
+        transition: hover.transitionIn(['box-shadow']),
       },
     },
   })
@@ -29,17 +47,20 @@ const _SummaryCard = ({classes, children}) => {
   return <Card classes={{root: classes.card}}>{children}</Card>
 }
 
-const Row = ({children, classes, className}) => {
+const Row = ({children, onClick, classes, className}) => {
   return (
-    <Grid
-      container
-      direction="row"
-      justify="space-between"
-      alignItems="center"
-      className={classnames(classes.listRow, className)}
-    >
-      {children}
-    </Grid>
+    <div className={classes.listRowWrapper}>
+      <Grid
+        container
+        direction="row"
+        justify="space-between"
+        alignItems="center"
+        onClick={onClick}
+        className={classnames(classes.listRow, className, {[classes.clickableRow]: !!onClick})}
+      >
+        {children}
+      </Grid>
+    </div>
   )
 }
 

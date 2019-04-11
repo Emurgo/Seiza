@@ -3,6 +3,7 @@ import {compose} from 'redux'
 import {withState, withHandlers} from 'recompose'
 import {createMuiTheme} from '@material-ui/core/styles'
 import {fade} from '@material-ui/core/styles/colorManipulator'
+import muiTransitions from '@material-ui/core/styles/transitions'
 
 import localStorage from '../../helpers/localStorage'
 
@@ -88,6 +89,16 @@ const commonThemeObj = {
     _monospace: {
       fontFamily: '"Lucida Console", Monaco, monospace',
     },
+  },
+  hover: {
+    transitionIn: (cssProps) =>
+      muiTransitions.create(cssProps, {
+        duration: 100,
+      }),
+    transitionOut: (cssProps) =>
+      muiTransitions.create(cssProps, {
+        duration: 500,
+      }),
   },
   shadows: [
     'none',
