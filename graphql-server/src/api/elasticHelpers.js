@@ -59,6 +59,15 @@ const gte = (field: string, value: any) => ({
   },
 })
 
+// greater-than
+const gt = (field: string, value: any) => ({
+  range: {
+    [field]: {
+      gt: value,
+    },
+  },
+})
+
 // equal or exact match
 const eq = (field: string, value: any) => ({
   term: {
@@ -76,6 +85,13 @@ const onlyActiveFork = () => ({
 const filter = (conditions: Array<any>): any => ({
   bool: {
     filter: conditions.filter((c) => !!c),
+  },
+})
+
+const some = (conditions: Array<any>): any => ({
+  bool: {
+    should: conditions.filter((c) => !!c),
+    minimum_should_match: 1,
   },
 })
 
@@ -151,7 +167,10 @@ const e = {
   lte,
   lt,
   gte,
+  gt,
   eq,
+  some,
+  all: filter,
   matchPhrase,
   onlyActiveFork,
   filter,

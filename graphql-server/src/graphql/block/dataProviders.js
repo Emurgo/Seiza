@@ -51,3 +51,57 @@ export const fetchBlockBySlot = async ({elastic, E}, {epoch, slot}) => {
 
   return facadeElasticBlock(hit._source)
 }
+
+export const fetchPreviousBlock = async ({elastic, E}, {epoch, slot}) => {
+  assert(epoch != null)
+  assert(slot != null)
+
+  const hits = await elastic
+    .q('slot')
+    .filter(E.onlyActiveFork())
+    .filter(E.notNull('hash'))
+    .filter(
+      E.some([
+        // Either same epoch and lower slot
+        E.all([E.eq('epoch', epoch), E.lt('slot', slot)]),
+        // Or lower epoch
+        E.lt('epoch', epoch),
+      ])
+    )
+    .sortBy('epoch', 'desc')
+    .sortBy('slot', 'desc')
+    .getHits(1)
+
+  if (hits.total === 0) {
+    return null
+  } else {
+    return facadeElasticBlock(hits.hits[0]._source)
+  }
+}
+
+export const fetchNextBlock = async ({elastic, E}, {epoch, slot}) => {
+  assert(epoch != null)
+  assert(slot != null)
+
+  const hits = await elastic
+    .q('slot')
+    .filter(E.onlyActiveFork())
+    .filter(E.notNull('hash'))
+    .filter(
+      E.some([
+        // Either same epoch and higher slot
+        E.all([E.eq('epoch', epoch), E.gt('slot', slot)]),
+        // Or higher epoch
+        E.gt('epoch', epoch),
+      ])
+    )
+    .sortBy('epoch', 'asc')
+    .sortBy('slot', 'asc')
+    .getHits(1)
+
+  if (hits.total === 0) {
+    return null
+  } else {
+    return facadeElasticBlock(hits.hits[0]._source)
+  }
+}

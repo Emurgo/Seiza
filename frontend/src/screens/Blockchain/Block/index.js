@@ -8,6 +8,8 @@ import gql from 'graphql-tag'
 
 import {defineMessages} from 'react-intl'
 
+import {makeStyles} from '@material-ui/styles'
+import {Link} from 'react-router-dom'
 import {
   EntityIdCard,
   SummaryCard,
@@ -16,6 +18,7 @@ import {
   LoadingInProgress,
   LoadingError,
   AdaValue,
+  Button,
 } from '@/components/visual'
 
 import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
@@ -23,6 +26,7 @@ import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
 import TransactionCard from '@/components/common/TransactionCard'
 
 import {useI18n} from '@/i18n/helpers'
+import {routeTo} from '@/helpers/routes'
 
 const blockSummaryLabels = defineMessages({
   epoch: 'Epoch',
@@ -81,6 +85,12 @@ const BLOCK_INFO_FRAGMENT = gql`
       name
     }
     totalFees
+    previousBlock {
+      blockHash
+    }
+    nextBlock {
+      blockHash
+    }
   }
 `
 
@@ -101,6 +111,82 @@ const TX_INFO_FRAGMENT = gql`
     confirmationsCount
   }
 `
+
+const useBlockNavigation = (block: any) => {
+  const {history} = useReactRouter()
+
+  const prevHash = idx(block, (_) => _.previousBlock.blockHash)
+  const nextHash = idx(block, (_) => _.nextBlock.blockHash)
+  const linkPrev = prevHash ? routeTo.block(prevHash) : null
+  const linkNext = nextHash ? routeTo.block(nextHash) : null
+
+  // TODO: memoize using useCallback
+  const goPrev = () => {
+    history.push(linkPrev)
+  }
+  const goNext = () => {
+    history.push(linkNext)
+  }
+
+  return {
+    hasPrev: !!prevHash,
+    linkPrev,
+    goPrev,
+    hasNext: !!nextHash,
+    linkNext,
+    goNext,
+  }
+}
+
+const useNavigationStyles = makeStyles((theme) => ({
+  navigation: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  navigationButton: {
+    width: '250px',
+    margin: '0 30px',
+  },
+}))
+
+const messages = defineMessages({
+  goPreviousBlock: '← Previous Block',
+  goNextBlock: 'Next Block →',
+})
+
+const BlockNavigation = ({block}) => {
+  const classes = useNavigationStyles()
+  const {translate} = useI18n()
+
+  const nav = useBlockNavigation(block)
+  return (
+    <div className={classes.navigation}>
+      <Button
+        rounded
+        secondary
+        onClick={nav.goPrev}
+        className={classes.navigationButton}
+        disabled={!nav.hasPrev}
+        to={nav.linkPrev}
+        component={Link}
+      >
+        {translate(messages.goPreviousBlock)}
+      </Button>
+      <Button
+        rounded
+        secondary
+        className={classes.navigationButton}
+        onClick={nav.goNext}
+        disabled={!nav.hasNext}
+        to={nav.linkNext}
+        component={Link}
+      >
+        {translate(messages.goNextBlock)}
+      </Button>
+    </div>
+  )
+}
 
 const useBlockData = ({blockHash}) => {
   const result = useQuery(
@@ -178,6 +264,7 @@ const BlockScreen = () => {
   return (
     <div ref={scrollToRef}>
       <SimpleLayout title={translate(blockMessages.title)}>
+        <BlockNavigation block={blockData} />
         <EntityIdCard label={translate(blockMessages.blockHash)} value={blockHash} />
         {error ? (
           <LoadingError error={error} />

@@ -18,6 +18,10 @@ type Block {
 
   blockHeight: Int #TODO: get real number
   blockConfirmations: Int #TODO: get real number
+
+  previousBlock: Block
+  nextBlock: Block
+
 }
 
 type PagedBlocksResult {
