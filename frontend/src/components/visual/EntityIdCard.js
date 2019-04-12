@@ -1,9 +1,10 @@
 import React from 'react'
 import {Typography, Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
-import classNames from 'classnames'
+import cn from 'classnames'
 
 import {Card} from '@/components/visual'
+import {getDefaultSpacing} from '@/components/visual/ContentSpacing'
 import CopyToClipboard from '@/components/common/CopyToClipboard'
 import EllipsizeMiddle from '@/components/visual/EllipsizeMiddle'
 
@@ -11,47 +12,56 @@ const useStyles = makeStyles((theme) => ({
   cardContent: {
     display: 'flex',
     alignItems: 'center',
-    paddingLeft: theme.spacing.unit * 2,
     paddingRight: theme.spacing.unit * 2,
     overflow: 'hidden',
   },
-  flex: {
-    display: 'flex',
+  autoWidth: {
+    width: 'auto',
   },
-  centeredFlex: {
-    alignItems: 'center',
-    justifyContent: 'center',
+  iconAlign: {
+    paddingRight: theme.spacing.unit * 2,
   },
 }))
 
 const useCardStyles = makeStyles((theme) => ({
   root: {
-    padding: theme.spacing.unit * 2,
     display: 'flex',
+    // Note: we cannot use spaced prop on Card,
+    // because it would break ellipsis
+    paddingLeft: getDefaultSpacing(theme),
+    paddingRight: getDefaultSpacing(theme),
+    paddingBottom: getDefaultSpacing(theme) * 0.75,
+    paddingTop: getDefaultSpacing(theme) * 0.75,
   },
 }))
 
 const EntityIdCard = ({iconRenderer, label, value, badge, showCopyIcon = true, copyValue}) => {
   const cardClasses = useCardStyles()
   const classes = useStyles()
+
   return (
     <Card classes={cardClasses}>
       {iconRenderer && (
-        <Grid item className={classNames(classes.flex, classes.centeredFlex)}>
-          {iconRenderer}
+        <Grid
+          container
+          justify="center"
+          alignItems="center"
+          className={cn(classes.autoWidth, classes.iconAlign)}
+        >
+          <Grid item>{iconRenderer}</Grid>
         </Grid>
       )}
-      <Grid item className={classes.cardContent}>
+      <div item className={classes.cardContent}>
         <EntityCardContent
           label={label}
           value={value}
           showCopyIcon={showCopyIcon}
           copyValue={copyValue}
         />
-      </Grid>
+      </div>
       {badge && (
-        <Grid item className={classNames(classes.flex, classes.centeredFlex)}>
-          {badge}
+        <Grid container justify="center" alignItems="center" className={classes.autoWidth}>
+          <Grid item>{badge}</Grid>
         </Grid>
       )}
     </Card>

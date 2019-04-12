@@ -88,6 +88,11 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing.unit * 6,
     marginTop: theme.spacing.unit * 6,
   },
+  // 12px is width of hover part of button
+  alignIconButton: {
+    marginLeft: -12,
+    marginRight: -12,
+  },
 }))
 
 const useAddressSummary = (address58) => {
@@ -117,7 +122,11 @@ const AddressScreen = () => {
             {({isOpen, openModal, closeModal}) => (
               <React.Fragment>
                 <Tooltip title={tr(messages.showQRCode)}>
-                  <IconButton onClick={openModal} color="primary">
+                  <IconButton
+                    className={classes.alignIconButton}
+                    onClick={openModal}
+                    color="primary"
+                  >
                     <img alt="show qr code" src={addressIcon} />
                   </IconButton>
                 </Tooltip>

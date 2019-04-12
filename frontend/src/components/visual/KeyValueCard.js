@@ -2,7 +2,7 @@
 import React from 'react'
 import classnames from 'classnames'
 import {CardHeader, Typography, Grid} from '@material-ui/core'
-import {Card} from '@/components/visual'
+import {Card, ContentSpacing} from '@/components/visual'
 
 import {makeStyles} from '@material-ui/styles'
 import type {Node} from 'react'
@@ -73,23 +73,27 @@ type HeaderProps = {|
 const Header = ({logo, label, value}: HeaderProps) => {
   const classes = useHeaderStyles()
   return (
-    <Grid
-      container
-      alignItems="center"
-      className={classes.wrapper}
-      justify="space-between"
-      direction="row"
-    >
-      {logo && <Grid item>{logo}</Grid>}
-      <Grid item>
-        <Typography variant="body1" color="textSecondary">
-          {label}
-        </Typography>
-      </Grid>
-      <Grid item>
-        <Typography variant="overline">{value}</Typography>
-      </Grid>
-    </Grid>
+    <div className={classes.wrapper}>
+      <ContentSpacing top={0.75} bottom={0.75} left={1.25} right={1.25}>
+        <Grid
+          container
+          alignItems="center"
+          className={classes.wrapper}
+          justify="space-between"
+          direction="row"
+        >
+          {logo && <Grid item>{logo}</Grid>}
+          <Grid item>
+            <Typography variant="body1" color="textSecondary">
+              {label}
+            </Typography>
+          </Grid>
+          <Grid item>
+            <Typography variant="overline">{value}</Typography>
+          </Grid>
+        </Grid>
+      </ContentSpacing>
+    </div>
   )
 }
 

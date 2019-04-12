@@ -3,7 +3,6 @@ import React from 'react'
 import {useQuery} from 'react-apollo-hooks'
 import useReactRouter from 'use-react-router'
 import {defineMessages} from 'react-intl'
-import classnames from 'classnames'
 import idx from 'idx'
 import gql from 'graphql-tag'
 import {makeStyles} from '@material-ui/styles'
@@ -22,6 +21,7 @@ import {
   EllipsizeMiddle,
   Overlay,
   LoadingOverlay,
+  ContentSpacing,
 } from '@/components/visual'
 import WithModalState from '@/components/headless/modalState'
 import AssuranceChip from '@/components/common/AssuranceChip'
@@ -84,9 +84,6 @@ const useAddressSummaryStyles = makeStyles((theme) => ({
   text: {
     textTransform: 'uppercase',
   },
-  padding: {
-    padding: theme.spacing.unit * 4,
-  },
 }))
 
 const AddressesSummary = ({transaction}) => {
@@ -95,45 +92,45 @@ const AddressesSummary = ({transaction}) => {
   const classes = useAddressSummaryStyles()
   return (
     <Grid container direction="row">
-      <Grid item xs={6} className={classnames(commonClasses.leftSide, classes.padding)}>
-        <Summary
-          caption={
-            <React.Fragment>
-              <Typography variant="caption" inline color="textSecondary" className={classes.text}>
-                {translate(messages.from)}
-              </Typography>{' '}
-              <Typography variant="caption" inline color="textPrimary">
-                {translate(messages.addressCount, {count: transaction.inputs.length})}
-              </Typography>
-            </React.Fragment>
-          }
-          value={<AdaValue value={transaction.totalInput} showCurrency showSign="-" />}
-        />
+      <Grid item xs={6} className={commonClasses.leftSide}>
+        <ContentSpacing bottom={0.75} top={0.75}>
+          <Summary
+            caption={
+              <React.Fragment>
+                <Typography variant="caption" inline color="textSecondary" className={classes.text}>
+                  {translate(messages.from)}
+                </Typography>{' '}
+                <Typography variant="caption" inline color="textPrimary">
+                  {translate(messages.addressCount, {count: transaction.inputs.length})}
+                </Typography>
+              </React.Fragment>
+            }
+            value={<AdaValue value={transaction.totalInput} showCurrency showSign="-" />}
+          />
+        </ContentSpacing>
       </Grid>
-      <Grid item xs={6} className={classes.padding}>
-        <Summary
-          caption={
-            <React.Fragment>
-              <Typography variant="caption" inline color="textSecondary" className={classes.text}>
-                {translate(messages.to)}
-              </Typography>{' '}
-              <Typography variant="caption" inline color="textPrimary">
-                {translate(messages.addressCount, {count: transaction.outputs.length})}
-              </Typography>
-            </React.Fragment>
-          }
-          value={<AdaValue value={transaction.totalOutput} showCurrency showSign="+" />}
-        />
+      <Grid item xs={6}>
+        <ContentSpacing bottom={0.75} top={0.75}>
+          <Summary
+            caption={
+              <React.Fragment>
+                <Typography variant="caption" inline color="textSecondary" className={classes.text}>
+                  {translate(messages.to)}
+                </Typography>{' '}
+                <Typography variant="caption" inline color="textPrimary">
+                  {translate(messages.addressCount, {count: transaction.outputs.length})}
+                </Typography>
+              </React.Fragment>
+            }
+            value={<AdaValue value={transaction.totalOutput} showCurrency showSign="+" />}
+          />
+        </ContentSpacing>
       </Grid>
     </Grid>
   )
 }
 
 const useBreakdownStyles = makeStyles((theme) => ({
-  margin: {
-    marginLeft: theme.spacing.unit * 4,
-    marginRight: theme.spacing.unit * 4,
-  },
   rowSpacing: {
     marginTop: theme.spacing.unit * 1.5,
     marginBottom: theme.spacing.unit * 1.5,
@@ -159,7 +156,7 @@ const BreakdownItem = (props) => {
   const {address58, amount} = target
   const breakdownClasses = useBreakdownStyles()
   return (
-    <div className={breakdownClasses.margin}>
+    <ContentSpacing top={0} bottom={0}>
       <Divider light />
       <Grid
         container
@@ -188,7 +185,7 @@ const BreakdownItem = (props) => {
           </Grid>
         </Grid>
       </Grid>
-    </div>
+    </ContentSpacing>
   )
 }
 
