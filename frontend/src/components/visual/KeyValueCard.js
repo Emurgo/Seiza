@@ -11,8 +11,6 @@ const useHeaderStyles = makeStyles(({spacing, palette}) => ({
   wrapper: {
     backgroundColor: palette.unobtrusiveContentHighlight,
     minHeight: '60px',
-    paddingLeft: spacing.unit * 4,
-    paddingRight: spacing.unit * 4,
   },
 }))
 
@@ -74,7 +72,7 @@ const Header = ({logo, label, value}: HeaderProps) => {
   const classes = useHeaderStyles()
   return (
     <div className={classes.wrapper}>
-      <ContentSpacing top={0.75} bottom={0.75} left={1.25} right={1.25}>
+      <ContentSpacing top={0} bottom={0}>
         <Grid
           container
           alignItems="center"
