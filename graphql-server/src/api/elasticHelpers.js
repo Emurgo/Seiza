@@ -127,6 +127,14 @@ const agg = {
     encode: () => rawDef,
     decode: (x: any) => x,
   }),
+  count: (field: string) => ({
+    encode: () => ({
+      value_count: {
+        field,
+      },
+    }),
+    decode: (x: any) => x.value,
+  }),
   // TODO(ppershing): how does this behave
   // for repeated fields?
   countNotNull: (field: string) => ({
