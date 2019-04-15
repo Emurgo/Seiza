@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import React, {useRef} from 'react'
 import {useQuery} from 'react-apollo-hooks'
 import useReactRouter from 'use-react-router'
 import {defineMessages} from 'react-intl'
@@ -9,6 +9,7 @@ import idx from 'idx'
 
 import {GET_ADDRESS_BY_ADDRESS58} from '@/api/queries'
 import {useI18n} from '@/i18n/helpers'
+import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
 
 import WithModalState from '@/components/headless/modalState'
 import PagedTransactions from './PagedTransactions'
@@ -112,58 +113,64 @@ const AddressScreen = () => {
   const {loading, error, addressSummary} = useAddressSummary(address58)
   const {translate: tr} = useI18n()
   const classes = useStyles()
+  const scrollToRef = useRef(null)
+
+  useScrollFromBottom(scrollToRef, addressSummary)
+
   return (
-    <SimpleLayout title={tr(messages.title)}>
-      <EntityIdCard
-        label={tr(summaryMessages.address)}
-        value={address58}
-        iconRenderer={
-          <WithModalState>
-            {({isOpen, openModal, closeModal}) => (
-              <React.Fragment>
-                <Tooltip title={tr(messages.showQRCode)}>
-                  <IconButton
-                    className={classes.alignIconButton}
-                    onClick={openModal}
-                    color="primary"
-                  >
-                    <img alt="show qr code" src={addressIcon} />
-                  </IconButton>
-                </Tooltip>
-                <QRDialog
-                  qrCodeValue={address58}
-                  description={
-                    <EntityCardContent
-                      label={tr(messages.qrCodeDialogEntityLabel)}
-                      value={address58}
-                    />
-                  }
-                  isOpen={isOpen}
-                  onClose={closeModal}
-                />
-              </React.Fragment>
-            )}
-          </WithModalState>
-        }
-      />
-      {error ? (
-        <LoadingError error={error} />
-      ) : (
-        <React.Fragment>
-          <AddressSummaryCard loading={loading} addressSummary={addressSummary} />
-          <EntityHeading
-            className={classes.headingWrapper}
-            amount={idx(addressSummary, (_) => _.transactionsCount) || ''}
-          >
-            {tr(messages.transactionsHeading)}
-          </EntityHeading>
-          <PagedTransactions
-            loading={loading}
-            transactions={idx(addressSummary, (_) => _.transactions) || []}
-          />
-        </React.Fragment>
-      )}
-    </SimpleLayout>
+    <div ref={scrollToRef}>
+      <SimpleLayout title={tr(messages.title)}>
+        <EntityIdCard
+          label={tr(summaryMessages.address)}
+          value={address58}
+          iconRenderer={
+            <WithModalState>
+              {({isOpen, openModal, closeModal}) => (
+                <React.Fragment>
+                  <Tooltip title={tr(messages.showQRCode)}>
+                    <IconButton
+                      className={classes.alignIconButton}
+                      onClick={openModal}
+                      color="primary"
+                    >
+                      <img alt="show qr code" src={addressIcon} />
+                    </IconButton>
+                  </Tooltip>
+                  <QRDialog
+                    qrCodeValue={address58}
+                    description={
+                      <EntityCardContent
+                        label={tr(messages.qrCodeDialogEntityLabel)}
+                        value={address58}
+                      />
+                    }
+                    isOpen={isOpen}
+                    onClose={closeModal}
+                  />
+                </React.Fragment>
+              )}
+            </WithModalState>
+          }
+        />
+        {error ? (
+          <LoadingError error={error} />
+        ) : (
+          <React.Fragment>
+            <AddressSummaryCard loading={loading} addressSummary={addressSummary} />
+            <EntityHeading
+              className={classes.headingWrapper}
+              amount={idx(addressSummary, (_) => _.transactionsCount) || ''}
+            >
+              {tr(messages.transactionsHeading)}
+            </EntityHeading>
+            <PagedTransactions
+              loading={loading}
+              transactions={idx(addressSummary, (_) => _.transactions) || []}
+            />
+          </React.Fragment>
+        )}
+      </SimpleLayout>
+    </div>
   )
 }
 

@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import React, {useRef} from 'react'
 import {useQuery} from 'react-apollo-hooks'
 import useReactRouter from 'use-react-router'
 import {defineMessages} from 'react-intl'
@@ -8,6 +8,7 @@ import gql from 'graphql-tag'
 import {makeStyles} from '@material-ui/styles'
 import {Typography, Grid} from '@material-ui/core'
 
+import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
 import {
   SummaryCard,
   SimpleLayout,
@@ -341,37 +342,42 @@ const TransactionScreen = () => {
   const {txHash} = useScreenParams()
   const {loading, transactionData, error} = useTransactionData(txHash)
   const {translate} = useI18n()
+  const scrollToRef = useRef(null)
+
+  useScrollFromBottom(scrollToRef, transactionData)
 
   return (
-    <SimpleLayout title={translate(messages.header)}>
-      <EntityIdCard
-        label={translate(messages.transactionId)}
-        value={txHash}
-        iconRenderer={<img alt="" src={AdaIcon} width={40} height={40} />}
-      />
-      {error ? (
-        <LoadingError error={error} />
-      ) : (
-        <React.Fragment>
-          <TransactionSummary loading={loading} transaction={transactionData} />
-          {loading ? (
-            <LoadingInProgress />
-          ) : (
-            <WithModalState>
-              {({isOpen, toggle}) => (
-                <ExpandableCard
-                  expanded={isOpen}
-                  onChange={toggle}
-                  renderHeader={() => <AddressesSummary transaction={transactionData} />}
-                  renderExpandedArea={() => <AddressesBreakdown transaction={transactionData} />}
-                  footer={isOpen ? translate(messages.hideAll) : translate(messages.seeAll)}
-                />
-              )}
-            </WithModalState>
-          )}
-        </React.Fragment>
-      )}
-    </SimpleLayout>
+    <div ref={scrollToRef}>
+      <SimpleLayout title={translate(messages.header)}>
+        <EntityIdCard
+          label={translate(messages.transactionId)}
+          value={txHash}
+          iconRenderer={<img alt="" src={AdaIcon} width={40} height={40} />}
+        />
+        {error ? (
+          <LoadingError error={error} />
+        ) : (
+          <React.Fragment>
+            <TransactionSummary loading={loading} transaction={transactionData} />
+            {loading ? (
+              <LoadingInProgress />
+            ) : (
+              <WithModalState>
+                {({isOpen, toggle}) => (
+                  <ExpandableCard
+                    expanded={isOpen}
+                    onChange={toggle}
+                    renderHeader={() => <AddressesSummary transaction={transactionData} />}
+                    renderExpandedArea={() => <AddressesBreakdown transaction={transactionData} />}
+                    footer={isOpen ? translate(messages.hideAll) : translate(messages.seeAll)}
+                  />
+                )}
+              </WithModalState>
+            )}
+          </React.Fragment>
+        )}
+      </SimpleLayout>
+    </div>
   )
 }
 

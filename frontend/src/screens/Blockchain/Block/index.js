@@ -1,6 +1,6 @@
 // @flow
 
-import React from 'react'
+import React, {useRef} from 'react'
 import {useQuery} from 'react-apollo-hooks'
 import useReactRouter from 'use-react-router'
 import idx from 'idx'
@@ -17,6 +17,8 @@ import {
   LoadingError,
   AdaValue,
 } from '@/components/visual'
+
+import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
 
 import TransactionCard from '@/components/common/TransactionCard'
 
@@ -169,19 +171,27 @@ const BlockScreen = () => {
   } = useReactRouter()
   const {loading, blockData, error} = useBlockData({blockHash})
   const {translate} = useI18n()
+  const scrollToRef = useRef()
+
+  useScrollFromBottom(scrollToRef, blockData)
 
   return (
-    <SimpleLayout title={translate(blockMessages.title)}>
-      <EntityIdCard label={translate(blockMessages.blockHash)} value={blockHash} />
-      {error ? (
-        <LoadingError error={error} />
-      ) : (
-        <React.Fragment>
-          <BlockSummaryCard loading={loading} blockData={blockData} />
-          <TransactionList loading={loading} transactions={idx(blockData, (_) => _.transactions)} />
-        </React.Fragment>
-      )}
-    </SimpleLayout>
+    <div ref={scrollToRef}>
+      <SimpleLayout title={translate(blockMessages.title)}>
+        <EntityIdCard label={translate(blockMessages.blockHash)} value={blockHash} />
+        {error ? (
+          <LoadingError error={error} />
+        ) : (
+          <React.Fragment>
+            <BlockSummaryCard loading={loading} blockData={blockData} />
+            <TransactionList
+              loading={loading}
+              transactions={idx(blockData, (_) => _.transactions)}
+            />
+          </React.Fragment>
+        )}
+      </SimpleLayout>
+    </div>
   )
 }
 
