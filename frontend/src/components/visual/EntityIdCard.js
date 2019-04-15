@@ -94,6 +94,7 @@ const useContentStyles = makeStyles((theme) => ({
     display: 'flex',
     overflow: 'hidden',
   },
+  monospace: theme.typography._monospace,
 }))
 
 // Note: User is unable to select whole text at once
@@ -114,7 +115,7 @@ export const EntityCardContent = ({
           {label}
         </Typography>
         <Grid item className={classes.valueContainer}>
-          <Typography variant="body1" className={classes.hidden}>
+          <Typography className={cn(classes.hidden, classes.monospace)}>
             <EllipsizeMiddle value={value} />
           </Typography>
           {showCopyIcon && (
