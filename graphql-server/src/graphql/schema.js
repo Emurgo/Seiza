@@ -2,7 +2,7 @@ import {gql} from 'apollo-server'
 import {mergeTypes} from 'merge-graphql-schemas'
 
 import activecampaignSchema from './activecampaign/schema.gql'
-import transactionSchema from './transaction/types'
+import transactionSchema from './transaction/schema.gql'
 import addressSchema from './address/schema.gql'
 import blockSchema from './block/schema.gql'
 import statusSchema from './status/schema.gql'

@@ -16,7 +16,8 @@ import {
   fetchNextBlock,
   fetchBlockBySlot,
 } from './block/dataProviders'
-import {fetchTransaction} from './transaction/dataProviders'
+
+import {fetchTransaction, fetchTransactionsOnAddress} from './transaction/dataProviders'
 import {fetchBootstrapEraPool, fetchBootstrapEraPoolSummary} from './stakepool/dataProviders'
 import {subscribe} from './activecampaign/dataProviders'
 
@@ -64,7 +65,7 @@ const _resolvers = {
   },
   Address: {
     transactions: (address, args, context) =>
-      Promise.all(address._transactionIds.map((id) => fetchTransaction(context, id))),
+      fetchTransactionsOnAddress(context, address.address58, args.type, args.cursor),
   },
   BlockChainSearchItem: {
     __resolveType: (obj, context, info) => obj._type,
