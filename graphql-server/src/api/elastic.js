@@ -66,7 +66,7 @@ const elasticErrorHandler = (err, meta) => {
 
 const _search = (type: string, body: any) => {
   const request = {
-    index: `seiza.${type}`,
+    index: `seiza2.${type}`,
     type,
     body,
   }
