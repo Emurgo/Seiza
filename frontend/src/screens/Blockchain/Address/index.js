@@ -115,7 +115,7 @@ const AddressScreen = () => {
   const classes = useStyles()
   const scrollToRef = useRef(null)
 
-  useScrollFromBottom(scrollToRef, [addressSummary])
+  useScrollFromBottom(scrollToRef, addressSummary)
 
   return (
     <div ref={scrollToRef}>

@@ -306,7 +306,7 @@ const EpochScreen = () => {
   const {translate} = useI18n()
   const blocksInEpoch = idx(epochData, (_) => _.summary.blocksCreated)
 
-  useScrollFromBottom(scrollToRef, [epochData])
+  useScrollFromBottom(scrollToRef, epochData)
 
   return (
     <div ref={scrollToRef}>

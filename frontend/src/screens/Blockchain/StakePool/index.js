@@ -76,7 +76,7 @@ const StakePool = () => {
   const {translate} = useI18n()
   const scrollToRef = useRef()
 
-  useScrollFromBottom(scrollToRef, [stakePoolData])
+  useScrollFromBottom(scrollToRef, stakePoolData)
 
   return (
     <div ref={scrollToRef}>

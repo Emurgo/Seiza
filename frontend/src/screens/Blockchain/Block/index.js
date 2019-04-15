@@ -173,7 +173,7 @@ const BlockScreen = () => {
   const {translate} = useI18n()
   const scrollToRef = useRef()
 
-  useScrollFromBottom(scrollToRef, [blockData])
+  useScrollFromBottom(scrollToRef, blockData)
 
   return (
     <div ref={scrollToRef}>

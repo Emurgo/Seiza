@@ -344,7 +344,7 @@ const TransactionScreen = () => {
   const {translate} = useI18n()
   const scrollToRef = useRef(null)
 
-  useScrollFromBottom(scrollToRef, [transactionData])
+  useScrollFromBottom(scrollToRef, transactionData)
 
   return (
     <div ref={scrollToRef}>
