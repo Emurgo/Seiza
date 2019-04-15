@@ -117,7 +117,7 @@ const CustomTooltip = ({
 }) => {
   const classes = useStyles()
 
-  if (active) {
+  if (active && payload && payload.length) {
     // TODO: could we directly pass `isLast` prop?
     const extraTooltipText = '' // TODO
 

@@ -26,8 +26,11 @@ export default new GraphQLScalarType({
    * @return {moment} date value
    */
   parseValue(value) {
-    // Figure out what to do with UNIX timestamps
-    throw new Error('Not implemented for now')
+    const date = moment(value)
+    if (!date.isValid()) {
+      throw new GraphQLError('Query error: Invalid date')
+    }
+    return date
   },
 
   /**

@@ -16,6 +16,7 @@ import {
   LoadingError,
 } from '@/components/visual'
 import {useI18n} from '@/i18n/helpers'
+import {useCurrentEpoch} from './common'
 
 // TODO: icons
 // TODO: how often are snapshots created? Do we want to periodically load `Current snapshot`?
@@ -188,21 +189,6 @@ const PerEpochCard = ({cardLabel, cardValue, epoch}: PerEpochCardProps) => {
       {...{cardLabel, cardValue, error, loading, data}}
     />
   )
-}
-
-const useCurrentEpoch = () => {
-  const {error, loading, data} = useQuery(
-    gql`
-      query {
-        currentStatus {
-          epochNumber
-        }
-      }
-    `
-  )
-
-  const currentEpoch = data.currentStatus ? data.currentStatus.epochNumber : null
-  return {error, loading, currentEpoch}
 }
 
 export default () => {
