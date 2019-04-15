@@ -1,25 +1,38 @@
 // @flow
 
-import _ from 'lodash'
+import idx from 'idx'
 import Measure from 'react-measure'
+import gql from 'graphql-tag'
+import {useQuery} from 'react-apollo-hooks'
 import moment from 'moment'
 import React, {useState, useCallback} from 'react'
 import {defineMessages} from 'react-intl'
-import {FormControl, RadioGroup, FormControlLabel, Radio} from '@material-ui/core'
+import {FormControl, RadioGroup, FormControlLabel, Radio, Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
 import {useI18n} from '@/i18n/helpers'
 import {ObjectValues} from '@/helpers/flow'
-import {SimpleLayout, LiteTabs, LiteTab, Card} from '@/components/visual'
+import {
+  SimpleLayout,
+  LiteTabs,
+  LiteTab,
+  Card,
+  LoadingInProgress,
+  LoadingError,
+  Alert,
+} from '@/components/visual'
 import useTabState from '@/components/hooks/useTabState'
 import {TabsProvider as Tabs, TabItem as Tab, useTabContext} from '@/components/context/TabContext'
 import BarChart from './BarChart'
+import {useCurrentEpoch} from '../common'
 
 const messages = defineMessages({
   header: 'Charts',
   totalSentBar: 'Total ADA Sent',
   transactionsCount: 'Transactions Count',
   totalUtxo: 'Total UTXO',
+  noDataTitle: 'No data',
+  noDataMsg: 'There are no data to plot',
 })
 
 const xLabels = defineMessages({
@@ -39,32 +52,10 @@ const X_AXIS = {
   EPOCH: 'EPOCH',
 }
 
-// >>>> TODO: get real data
-const generateEpochData = (fromEpoch, count, unit) => {
-  return _.range(fromEpoch - count, fromEpoch + 1).map((epochNumber) => ({
-    x: epochNumber,
-    y: Math.floor(Math.random() * unit),
-  }))
+const X_AXIS_WINDOW = {
+  DAY: 30, // TODO: what to do when there are missing data?
+  EPOCH: 20,
 }
-
-const generateDayData = (count, unit) => {
-  const m = moment('20.03.2014', 'DD.MM.YYYY')
-  return _.range(0, count).map(() => ({
-    x: m.add(1, 'days').valueOf(),
-    y: Math.floor(Math.random() * unit),
-  }))
-}
-
-const totalAdaEpochData = generateEpochData(30, 20, 1000000000000000)
-const totalAdaDayData = generateDayData(30, 10000000000000)
-
-const transactionsEpochData = generateEpochData(30, 20, 100000)
-const transactionsDayData = generateDayData(30, 1000)
-
-const utxoEpochData = generateEpochData(30, 20, 100000)
-const utxoDayData = generateDayData(30, 1000)
-
-// <<<< TODO: get real data
 
 const useStyles = makeStyles((theme) => ({
   radioWrapper: {
@@ -135,15 +126,68 @@ const XAxisSwitch = ({value, onChange}) => {
   )
 }
 
-// Note: we could closure common props, but it does not play well with hooks
-const ChartTab = ({commonChartProps, xAxisProps, formatY, data, yLabel}) => {
-  // TODO
-  if (!data.length) return null
+const useLoadData = (seriesType, groupBy, epochInterval, dateInterval) => {
+  const {error, loading, data} = useQuery(
+    gql`
+      query($groupBy: SeriesXAxisGroupBy!, $epochInterval: SeriesEpochInterval, $dateInterval: SeriesDateInterval) {
+        aggregateInfo(groupBy: $groupBy, epochInterval: $epochInterval, dateInterval: $dateInterval) {
+          ${seriesType} {
+            data {
+              x
+              y
+            }
+          }
+        }
+      }
+    `,
+    {
+      variables: {groupBy, epochInterval, dateInterval},
+    }
+  )
 
+  return {error, loading, data: idx(data, (_) => _.aggregateInfo[seriesType].data) || []}
+}
+
+const Chart = ({seriesType, commonChartProps, xAxisProps, formatY, yLabel, currentEpoch}) => {
+  const {translate: tr} = useI18n()
+  const groupBy = xAxisProps.value
+  const epochInterval = {from: Math.max((currentEpoch || 0) - X_AXIS_WINDOW.EPOCH, 0)}
+  const dateInterval = {
+    from: moment
+      .utc()
+      .startOf('day')
+      .subtract(X_AXIS_WINDOW.DAY, 'days')
+      .toISOString(),
+  }
+
+  const {error, loading, data} = useLoadData(seriesType, groupBy, epochInterval, dateInterval)
+
+  if (loading) return <LoadingInProgress />
+  if (!loading && error) return <LoadingError error={error} />
+  if (!loading && !error && !data.length) {
+    return (
+      <Alert type="warning" title={tr(messages.noDataTitle)} message={tr(messages.noDataMsg)} />
+    )
+  }
+  return <BarChart {...{data, yLabel, formatY}} {...commonChartProps} />
+}
+
+const ChartTab = ({loading, error, xAxisProps, commonChartProps, ...restProps}) => {
   return (
     <Card>
       <XAxisSwitch {...xAxisProps} />
-      <BarChart {...{data, yLabel, formatY}} {...commonChartProps} />
+      <Grid
+        container
+        alignItems="center"
+        justify="center"
+        style={{width: commonChartProps.width, height: commonChartProps.height}}
+      >
+        {loading && <LoadingInProgress />}
+        {!loading && error && <LoadingError error={error} />}
+        {!loading && !error && (
+          <Chart {...restProps} xAxisProps={xAxisProps} commonChartProps={commonChartProps} />
+        )}
+      </Grid>
     </Card>
   )
 }
@@ -157,6 +201,8 @@ const Charts = () => {
   const {translate: tr, formatAdaSplit} = useI18n()
   const [xAxis, setXAxis] = useState(X_AXIS.DAY)
   const [dimensions, setDimensions] = useState({width: -1, height: -1})
+
+  const {error, loading, currentEpoch} = useCurrentEpoch()
 
   const tabNames = ObjectValues(TAB_NAMES)
   const tabState = useTabState(tabNames)
@@ -192,31 +238,34 @@ const Charts = () => {
 
               <Tab name={TAB_NAMES.TOTAL_ADA_SENT}>
                 <ChartTab
-                  data={xAxis === X_AXIS.DAY ? totalAdaDayData : totalAdaEpochData}
+                  seriesType="totalAdaTransferred"
                   yLabel={tr(yLabels.adaSent)}
                   formatY={formatAdaValue}
                   commonChartProps={commonChartProps}
                   xAxisProps={xAxisProps}
+                  {...{loading, error, currentEpoch}}
                 />
               </Tab>
 
               <Tab name={TAB_NAMES.TRANSACTIONS_COUNT}>
                 <ChartTab
-                  data={xAxis === X_AXIS.DAY ? transactionsDayData : transactionsEpochData}
+                  seriesType="txCount"
                   yLabel={tr(yLabels.txCount)}
                   formatY={identity}
                   commonChartProps={commonChartProps}
                   xAxisProps={xAxisProps}
+                  {...{loading, error, currentEpoch}}
                 />
               </Tab>
 
               <Tab name={TAB_NAMES.TOTAL_UTXO}>
                 <ChartTab
-                  data={xAxis === X_AXIS.DAY ? utxoDayData : utxoEpochData}
+                  seriesType="totalUtxoCreated"
                   yLabel={tr(yLabels.utxo)}
                   formatY={identity}
                   commonChartProps={commonChartProps}
                   xAxisProps={xAxisProps}
+                  {...{loading, error, currentEpoch}}
                 />
               </Tab>
             </Tabs>
