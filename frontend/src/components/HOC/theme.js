@@ -15,7 +15,7 @@ export const THEMES = {
 
 // TODO: Which font families to fallback to?
 const fontFamilies = [
-  'Montserrat',
+  'Roboto',
   '-apple-system',
   'BlinkMacSystemFont',
   '"Segoe UI"',
@@ -24,6 +24,8 @@ const fontFamilies = [
   'Arial',
   'sans-serif',
 ].join(',')
+
+const monospaceFontFamilies = ['"RobotoMono"', 'Monaco', 'monospace'].join(',')
 
 // taken from material-ui's github
 // packages/material-ui/src/styles/shadows.js
@@ -87,7 +89,7 @@ const commonThemeObj = {
     // This is our custom style. <Typography /> does not support it
     // but it is useful to have it here
     _monospace: {
-      fontFamily: '"Lucida Console", Monaco, monospace',
+      fontFamily: monospaceFontFamilies,
     },
   },
   hover: {

@@ -108,6 +108,7 @@ const useContentStyles = makeStyles((theme) => ({
     transition: 'background-color 2s ease',
     backgroundColor: theme.palette.background.paper,
   },
+  monospace: theme.typography._monospace,
 }))
 
 // Note: User is unable to select whole text at once
@@ -130,6 +131,7 @@ export const EntityCardContent = ({
         </Typography>
 
         <Grid item className={classes.valueContainer}>
+
           <ReactCSSTransitionGroup
             transitionName={{
               appear: classes.epochAppear,
@@ -142,10 +144,11 @@ export const EntityCardContent = ({
             transitionAppearTimeout={2000}
             key={rawValue}
           >
-            <Typography variant="body1" className={classes.value}>
+            <Typography variant="body1" className={cn(classes.value, classes.monospace)}>
               <EllipsizeMiddle value={value} />
             </Typography>
           </ReactCSSTransitionGroup>
+
           {showCopyIcon && (
             <div className={classes.copyToClipboard}>
               <CopyToClipboard value={rawValue} />
