@@ -34,7 +34,7 @@ const messages = defineMessages({
   totalUtxo: 'Total UTXO',
   noDataTitle: 'No data',
   noDataMsg: 'There are no data to plot',
-  adaInMillions: '{count}M', // TODO: some better approach to intl millions character?
+  adaInBillions: '{count}B', // TODO: some better approach to intl billions character?
 })
 
 const xLabels = defineMessages({
@@ -238,7 +238,7 @@ const getChartDimensions = (dimensions) => ({
 })
 
 const Charts = () => {
-  const {translate: tr, formatAdaToMillions, formatAdaSplit} = useI18n()
+  const {translate: tr, formatAdaInUnits, formatAdaSplit} = useI18n()
   const [xAxis, setXAxis] = useState(X_AXIS.DAY)
   const [dimensions, setDimensions] = useState({width: -1, height: -1})
 
@@ -249,7 +249,7 @@ const Charts = () => {
 
   // Note: We currently receive number from backend instead of string for ada value
   const formatAdaYAxis = (value) =>
-    tr(messages.adaInMillions, {count: formatAdaToMillions(`${value}`)})
+    tr(messages.adaInBillions, {count: formatAdaInUnits(`${value}`)})
   // Note: For now not showing decimals, as then values are too long
   const formatAdaYTooltip = (value) => formatAdaSplit(`${value}`).integral
   const onXAxisChange = useCallback((e) => setXAxis(e.target.value), [setXAxis])
