@@ -5,7 +5,7 @@ import Measure from 'react-measure'
 import gql from 'graphql-tag'
 import {useQuery} from 'react-apollo-hooks'
 import moment from 'moment'
-import React, {useState, useCallback} from 'react'
+import React, {useState, useCallback, useMemo} from 'react'
 import {defineMessages} from 'react-intl'
 import {FormControl, RadioGroup, FormControlLabel, Radio, Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
@@ -154,7 +154,7 @@ const useLoadData = (seriesType, groupBy, epochInterval, dateInterval) => {
   return {error, loading, data: idx(data, (_) => _.aggregateInfo[seriesType].data) || []}
 }
 
-const useFilterDataBasedOnWidth = (data, groupBy) => {
+const filterDataBasedOnWidth = (data, breakpoint, groupBy) => {
   const breakpointToItemsCount = {
     DAY: {
       xs: 10,
@@ -172,12 +172,13 @@ const useFilterDataBasedOnWidth = (data, groupBy) => {
     },
   }
 
-  const breakpoint = useCurrentBreakpoint()
   return data.slice(-breakpointToItemsCount[groupBy][breakpoint])
 }
 
 const Chart = ({seriesType, xAxisProps, currentEpoch, ...restProps}) => {
   const {translate: tr} = useI18n()
+  const breakpoint = useCurrentBreakpoint()
+
   const groupBy = xAxisProps.value
   const epochInterval = {from: Math.max((currentEpoch || 0) - X_AXIS_WINDOW.EPOCH, 0)}
   const dateInterval = {
@@ -189,9 +190,19 @@ const Chart = ({seriesType, xAxisProps, currentEpoch, ...restProps}) => {
   }
 
   const {error, loading, data} = useLoadData(seriesType, groupBy, epochInterval, dateInterval)
+
+  // Note: `recharts` animation stops working when changing reference to data, therefore
+  // using `useMemo` to memoize it
   // TODO: remove when backend is fixed
-  const dataFix = groupBy === X_AXIS.DAY ? data.slice(-X_AXIS_WINDOW.DAY) : data
-  const _data = useFilterDataBasedOnWidth(dataFix, groupBy)
+  const dataFix = useMemo(() => (groupBy === X_AXIS.DAY ? data.slice(-X_AXIS_WINDOW.DAY) : data), [
+    data,
+    groupBy,
+  ])
+  const _data = useMemo(() => filterDataBasedOnWidth(dataFix, breakpoint, groupBy), [
+    dataFix,
+    breakpoint,
+    groupBy,
+  ])
 
   if (loading) return <LoadingInProgress />
   if (!loading && error) return <LoadingError error={error} />
