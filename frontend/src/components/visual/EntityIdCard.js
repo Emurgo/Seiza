@@ -105,7 +105,7 @@ const useContentStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.secondary.main,
   },
   epochAppearActive: {
-    transition: 'background-color 1.2s ease',
+    transition: 'background-color 2s ease',
     backgroundColor: theme.palette.background.paper,
   },
 }))
@@ -135,6 +135,7 @@ export const EntityCardContent = ({
               appear: classes.epochAppear,
               appearActive: classes.epochAppearActive,
             }}
+            component={React.Fragment}
             transitionLeave={false}
             transitionEnter={false}
             transitionAppear={appearAnimation}
