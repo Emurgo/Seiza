@@ -36,7 +36,7 @@ const styles = (theme) =>
     },
     clickableCard: {
       '&:hover': {
-        boxShadow: `0px 20px 40px 0px ${fade(theme.palette.shadowBase, 0.2)} !important`,
+        boxShadow: `0px 20px 40px 0px ${fade(theme.palette.shadowBase, 0.3)} !important`,
       },
     },
     dropdownArrow: {
