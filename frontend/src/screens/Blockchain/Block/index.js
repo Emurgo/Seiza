@@ -8,7 +8,6 @@ import gql from 'graphql-tag'
 import {defineMessages} from 'react-intl'
 import {makeStyles} from '@material-ui/styles'
 import {Grid} from '@material-ui/core'
-import {Link} from 'react-router-dom'
 
 import {
   EntityIdCard,
@@ -19,6 +18,7 @@ import {
   LoadingError,
   AdaValue,
   Button,
+  Link,
 } from '@/components/visual'
 
 import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
@@ -54,15 +54,36 @@ const BlockSummaryCard = ({blockData, loading}) => {
 
   const NA = loading ? <LoadingDots /> : 'N/A'
 
-  const data = {
-    epoch: formatInt(idx(blockData, (_) => _.epoch), {defaultValue: NA}),
-    slot: formatInt(idx(blockData, (_) => _.slot), {defaultValue: NA}),
-    issuedAt: formatTimestamp(idx(blockData, (_) => _.timeIssued), {defaultValue: NA}),
-    txCount: formatInt(idx(blockData, (_) => _.transactionsCount), {defaultValue: NA}),
-    blockHeight: formatInt(idx(blockData, (_) => _.blockHeight), {defaultValue: NA}),
-    totalSent: <AdaValue value={idx(blockData, (_) => _.totalSent)} noValue={NA} showCurrency />,
-    totalFees: <AdaValue value={idx(blockData, (_) => _.totalFees)} noValue={NA} showCurrency />,
+  const __ = {
+    epochNumber: idx(blockData, (_) => _.epoch),
+    slot: idx(blockData, (_) => _.slot),
+    blockHash: idx(blockData, (_) => _.blockHash),
+    issuedAt: idx(blockData, (_) => _.timeIssued),
+    txCount: idx(blockData, (_) => _.transactionsCount),
+    blockHeight: idx(blockData, (_) => _.blockHeight),
+    totalSent: idx(blockData, (_) => _.totalSent),
+    totalFees: idx(blockData, (_) => _.totalFees),
   }
+
+  const data = {
+
+    epoch:
+      __.epochNumber != null ? (
+        // $FlowFixMe flow does not understand idx precondition
+        <Link to={routeTo.epoch(__.epochNumber)}>{formatInt(__.epochNumber)}</Link>
+      ) : (
+        NA
+      ),
+    slot: formatInt(__.slot, {defaultValue: NA}), // no link, because it would be link to this page
+    issuedAt: formatTimestamp(__.issuedAt, {defaultValue: NA}),
+    txCount: formatInt(__.txCount, {defaultValue: NA}),
+    blockHeight: formatInt(__.blockHeight, {defaultValue: NA}),
+    totalSent: <AdaValue value={__.totalSent} noValue={NA} showCurrency />,
+    totalFees: <AdaValue value={__.totalFees} noValue={NA} showCurrency />,
+
+    
+    
+      }
 
   return (
     <SummaryCard>
