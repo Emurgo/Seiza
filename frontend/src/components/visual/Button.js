@@ -1,12 +1,11 @@
 // @flow
 import React from 'react'
-import classNames from 'classnames'
+import cn from 'classnames'
 import MaterialButton from '@material-ui/core/Button'
 import {makeStyles} from '@material-ui/styles'
-import {fade, darken} from '@material-ui/core/styles/colorManipulator'
+import {fade} from '@material-ui/core/styles/colorManipulator'
 
 const FADE_FACTOR = 0.6
-const DARKEN_FACTOR = 0.1
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -28,11 +27,31 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '1000px',
   },
   secondary: {
-    'border': `1px solid ${theme.palette.primary.main}`,
     'background': theme.palette.background.default,
     'color': theme.palette.primary.main,
+    'borderRadius': ({rounded}) => (rounded ? '1000px' : null),
     '&:hover': {
-      background: darken(theme.palette.background.default, DARKEN_FACTOR),
+      boxShadow: `0px 10px 30px ${fade(theme.palette.text.primary, 0.11)}`,
+      background: theme.palette.background.default,
+    },
+    // eslint-disable-next-line
+    // https://stackoverflow.com/questions/5706963/possible-to-use-border-radius-together-with-a-border-image-which-has-a-gradient
+    '&:after': {
+      position: 'absolute',
+      top: '-1px',
+      bottom: '-1px',
+      left: '-1px',
+      right: '-1px',
+      background: theme.palette.buttonsGradient.normal,
+      content: '""',
+      zIndex: '-1', // Note: non-working when in modal
+      borderRadius: ({rounded}) => (rounded ? '1000px' : '4px'), // 4px is material-ui Button's default
+    },
+    '&:hover:after': {
+      background: theme.palette.buttonsGradient.hover,
+    },
+    '&:focus:after': {
+      background: theme.palette.buttonsGradient.hover,
     },
   },
   primary: {
@@ -44,8 +63,16 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   disabled: {
-    pointerEvents: 'none',
-    opacity: 0.7,
+    background: `${fade(theme.palette.primary.main, 0.25)} !important`,
+    color: `${theme.palette.background.default} !important`,
+  },
+  secondaryDisabled: {
+    'background': 'transparent !important',
+    'color': `${fade(theme.palette.primary.main, 0.35)} !important`,
+    'border': `1px solid ${fade(theme.palette.primary.main, 0.35)}`,
+    '&:after': {
+      background: 'transparent',
+    },
   },
 }))
 
@@ -69,16 +96,19 @@ const Button = ({
   children,
   ...props
 }: ButtonProps) => {
-  const classes = useStyles()
+  const classes = useStyles({rounded})
   return (
     <MaterialButton
-      className={classNames(classes.root, className, {
+      disabled={disabled}
+      className={cn(classes.root, className, {
         [classes.gradient]: gradient,
         [classes.rounded]: rounded,
         [classes.secondary]: secondary,
         [classes.primary]: primary,
-        [classes.disabled]: disabled,
       })}
+      classes={{
+        disabled: cn(classes.disabled, secondary && classes.secondaryDisabled),
+      }}
       {...props}
     >
       {children}

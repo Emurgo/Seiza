@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.6 (67491) - http://www.bohemiancoding.com/sketch -->
+    <title>icon/previous epoch</title>
+    <desc>Created with Sketch.</desc>
+    <g id="icon/previous-epoch" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g fill="#FFFFFF" id="Rectangle" opacity="0">
+            <rect x="0" y="0" width="24" height="24"></rect>
+        </g>
+        <g id="right-arrow" transform="translate(12.000000, 11.500000) scale(-1, 1) translate(-12.000000, -11.500000) translate(3.000000, 5.000000)" fill="currentColor" stroke="currentColor" stroke-width="0.3">
+            <path d="M11.9278125,0.5664375 C11.6865,0.3166875 11.284875,0.3166875 11.035125,0.5664375 C10.7938125,0.80775 10.7938125,1.209375 11.035125,1.450125 L15.5615625,5.9765625 L0.6249375,5.9765625 C0.27675,5.977125 0,6.253875 0,6.6020625 C0,6.95025 0.27675,7.236 0.6249375,7.236 L15.5615625,7.236 L11.035125,11.754 C10.7938125,12.00375 10.7938125,12.4059375 11.035125,12.6466875 C11.284875,12.8964375 11.6870625,12.8964375 11.9278125,12.6466875 L17.5258125,7.0486875 C17.7755625,6.807375 17.7755625,6.40575 17.5258125,6.165 L11.9278125,0.5664375 Z" id="Path"></path>
+        </g>
+    </g>
+</svg>

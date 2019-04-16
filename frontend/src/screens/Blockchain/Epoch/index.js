@@ -28,11 +28,13 @@ import StakingPoolsTab from './StakingPools'
 import {routeTo} from '@/helpers/routes'
 import config from '@/config'
 import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
+import {ReactComponent as NextEpochIcon} from '@/assets/icons/next-epoch.svg'
+import {ReactComponent as PreviousEpochIcon} from '@/assets/icons/previous-epoch.svg'
 
 const messages = defineMessages({
   notAvailable: 'N/A',
-  goPreviousEpoch: '← Previous Epoch',
-  goNextEpoch: 'Next Epoch →',
+  goPreviousEpoch: 'Previous Epoch',
+  goNextEpoch: 'Next Epoch',
   header: 'Epoch',
   entityHeader: 'Epoch Number',
   startTime: 'Start Time',
@@ -198,6 +200,15 @@ const useStyles = makeStyles((theme) => ({
   navigationButton: {
     width: '250px',
     margin: '0 30px',
+    position: 'relative',
+  },
+  prevEpochIcon: {
+    position: 'absolute',
+    left: 15,
+  },
+  nextEpochIcon: {
+    position: 'absolute',
+    right: 15,
   },
 }))
 
@@ -281,7 +292,10 @@ const EpochNavigation = ({currentEpochNumber}) => {
         to={epochNavigation.linkPrev}
         component={Link}
       >
-        {translate(messages.goPreviousEpoch)}
+        <React.Fragment>
+          <PreviousEpochIcon className={classes.prevEpochIcon} />
+          {translate(messages.goPreviousEpoch)}
+        </React.Fragment>
       </Button>
       <Button
         rounded
@@ -292,7 +306,10 @@ const EpochNavigation = ({currentEpochNumber}) => {
         to={epochNavigation.linkNext}
         component={Link}
       >
-        {translate(messages.goNextEpoch)}
+        <React.Fragment>
+          {translate(messages.goNextEpoch)}
+          <NextEpochIcon className={classes.nextEpochIcon} />
+        </React.Fragment>
       </Button>
     </div>
   )
