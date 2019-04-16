@@ -58,6 +58,7 @@ export const GET_ADDRESS_BY_ADDRESS58 = gql`
         txHash
         fees
         block {
+          blockHash
           epoch
           slot
         }

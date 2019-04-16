@@ -8,6 +8,7 @@ import gql from 'graphql-tag'
 import {defineMessages} from 'react-intl'
 import {makeStyles} from '@material-ui/styles'
 import {Grid} from '@material-ui/core'
+import {Link} from 'react-router-dom'
 
 import {
   EntityIdCard,
@@ -18,7 +19,6 @@ import {
   LoadingError,
   AdaValue,
   Button,
-  Link,
 } from '@/components/visual'
 
 import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
@@ -66,7 +66,6 @@ const BlockSummaryCard = ({blockData, loading}) => {
   }
 
   const data = {
-
     epoch:
       __.epochNumber != null ? (
         // $FlowFixMe flow does not understand idx precondition
@@ -80,10 +79,7 @@ const BlockSummaryCard = ({blockData, loading}) => {
     blockHeight: formatInt(__.blockHeight, {defaultValue: NA}),
     totalSent: <AdaValue value={__.totalSent} noValue={NA} showCurrency />,
     totalFees: <AdaValue value={__.totalFees} noValue={NA} showCurrency />,
-
-    
-    
-      }
+  }
 
   return (
     <SummaryCard>
