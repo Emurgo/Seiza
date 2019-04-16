@@ -97,13 +97,6 @@ const TabsHeader = () => {
   )
 }
 
-// TODO: do we want to put it to some utils?
-// TODO: can we create custom moment format and resolve with this function?
-const formatDay = (timestamp) => {
-  const options = {month: 'numeric', day: 'numeric'}
-  return new Date(timestamp).toLocaleDateString(moment.locale(), options)
-}
-
 const identity = (v) => v
 
 const XAxisSwitch = ({value, onChange}) => {
@@ -238,7 +231,7 @@ const getChartDimensions = (dimensions) => ({
 })
 
 const Charts = () => {
-  const {translate: tr, formatAdaInUnits, formatAdaSplit} = useI18n()
+  const {translate: tr, formatAdaInUnits, formatAdaSplit, formatTimestampToDayAndMonth} = useI18n()
   const [xAxis, setXAxis] = useState(X_AXIS.DAY)
   const [dimensions, setDimensions] = useState({width: -1, height: -1})
 
@@ -256,7 +249,7 @@ const Charts = () => {
 
   const commonChartProps = {
     xLabel: tr(xAxis === X_AXIS.DAY ? xLabels.day : xLabels.epoch),
-    formatX: xAxis === X_AXIS.DAY ? formatDay : identity,
+    formatX: xAxis === X_AXIS.DAY ? formatTimestampToDayAndMonth : identity,
     barSize: xAxis === X_AXIS.DAY ? 14 : 20,
     ...getChartDimensions(dimensions),
   }
