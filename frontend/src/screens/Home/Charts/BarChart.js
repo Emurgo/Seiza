@@ -5,7 +5,7 @@ import {BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell, Label} from '
 // $FlowFixMe flow does not know about `useTheme`
 import {makeStyles, useTheme} from '@material-ui/styles'
 import {lighten, fade, darken} from '@material-ui/core/styles/colorManipulator'
-import {Typography} from '@material-ui/core'
+import {Grid, Typography} from '@material-ui/core'
 
 import {Card} from '@/components/visual'
 
@@ -113,21 +113,24 @@ const CustomTooltip = ({
   xLabel,
   formatX,
   formatYTooltip,
+  lastTooltipText,
   ...rest
 }) => {
   const classes = useStyles()
 
   if (active && payload && payload.length) {
-    // TODO: could we directly pass `isLast` prop?
-    const extraTooltipText = '' // TODO
-
     return (
       <Card classes={{root: classes.tooltip}}>
-        {payload[0].payload.x === lastItem.x && <Typography>{extraTooltipText}</Typography>}
-        <Typography>{`${xLabel}: ${formatX(label)}`}</Typography>
-        <Typography>
-          {`${yLabel}: `} {formatYTooltip(payload[0].value)}
-        </Typography>
+        <Grid container>
+          <Typography color="textSecondary">{`${xLabel}:`}&nbsp;</Typography>
+          <Typography>{formatX(label)}</Typography>
+          {/* TODO: could we directly pass `isLast` prop? */}
+          {payload[0].payload.x === lastItem.x && <Typography>&nbsp;{lastTooltipText}</Typography>}
+        </Grid>
+        <Grid container>
+          <Typography color="textSecondary">{`${yLabel}:`}&nbsp;</Typography>
+          <Typography>{formatYTooltip(payload[0].value)}</Typography>
+        </Grid>
       </Card>
     )
   }
@@ -145,6 +148,7 @@ type BarChartProps = {|
   formatYAxis: Function,
   formatYTooltip: Function,
   barSize: number,
+  lastTooltipText: string,
 |}
 
 // Note: can not use `Typography` inside `Label`, children must be a string
@@ -158,6 +162,7 @@ export default ({
   formatYAxis,
   formatYTooltip,
   barSize,
+  lastTooltipText,
 }: BarChartProps) => {
   const [activeBar, setActiveBar] = useState(null)
   const theme = useTheme()
@@ -195,7 +200,7 @@ export default ({
         content={
           // $FlowFixMe recharts pass other props using some `magic`
           <CustomTooltip
-            {...{xLabel, yLabel, formatX, formatYTooltip}}
+            {...{xLabel, yLabel, formatX, formatYTooltip, lastTooltipText}}
             lastItem={data[data.length - 1]}
           />
         }

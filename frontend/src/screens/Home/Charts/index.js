@@ -34,7 +34,8 @@ const messages = defineMessages({
   totalUtxo: 'Total UTXO',
   noDataTitle: 'No data',
   noDataMsg: 'There are no data to plot',
-  adaInBillions: '{count}B', // TODO: some better approach to intl billions character?
+  adaInBillions: '{count}B', // TODO: some better approach to intl billions character?,
+  lastTooltipText: '(in progress)',
 })
 
 const xLabels = defineMessages({
@@ -251,6 +252,7 @@ const Charts = () => {
     xLabel: tr(xAxis === X_AXIS.DAY ? xLabels.day : xLabels.epoch),
     formatX: xAxis === X_AXIS.DAY ? formatTimestampToDayAndMonth : identity,
     barSize: xAxis === X_AXIS.DAY ? 14 : 20,
+    lastTooltipText: tr(messages.lastTooltipText),
     ...getChartDimensions(dimensions),
   }
 
