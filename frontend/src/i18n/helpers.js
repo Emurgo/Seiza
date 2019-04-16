@@ -34,6 +34,14 @@ const _formatAda = (x, options) => {
   return value.dividedBy(MICRO).toFormat(6)
 }
 
+const _formatAdaToMillions = (x, options) => {
+  const value = new BigNumber(x, 10)
+  return value
+    .dividedBy(MICRO)
+    .dividedBy(1000000)
+    .toFormat(0)
+}
+
 const _formatAdaInteger = (x, options) => {
   const value = new BigNumber(x, 10)
   const integral = value.dividedToIntegerBy(MICRO)
@@ -113,6 +121,7 @@ type Formatters = {
   // Ada is always as string
   formatAda: (x: ?string, options?: any) => string,
   formatAdaSplit: (x: ?string, options?: any) => {integral: string, fractional: string},
+  formatAdaToMillions: (x: ?string, options?: any) => string,
   // Timestamp is always as string
   formatTimestamp: (x: ?string, options?: any) => string,
 }
@@ -200,6 +209,7 @@ export const getIntlFormatters = (intl: any): Formatters => {
   const formatFiat = withSignAndDefaultValue(_formatFiat)
 
   const formatTimestamp = withDefaultValue(_formatTimestamp)
+  const formatAdaToMillions = withSignAndDefaultValue(_formatAdaToMillions)
   formatTimestamp.FMT_SHORT_DATE = 'L'
   formatTimestamp.FMT_MONTH_NUMERAL = 'L LTS'
   formatTimestamp.FMT_STANDARD = STANDARD_READABLE_FORMAT
@@ -213,6 +223,7 @@ export const getIntlFormatters = (intl: any): Formatters => {
     formatAda,
     formatAdaSplit,
     formatTimestamp,
+    formatAdaToMillions,
   }
 }
 

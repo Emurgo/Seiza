@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => {
     },
     'barActive': {
       fill: activeColor,
-      animation: 'home-chart-bar 1000ms',
+      animation: 'home-chart-bar 500ms',
     },
     'cursor': {
       fill: fade(darken(theme.palette.background.default, 0.1), 0.5),
@@ -112,7 +112,7 @@ const CustomTooltip = ({
   yLabel,
   xLabel,
   formatX,
-  formatY,
+  formatYTooltip,
   ...rest
 }) => {
   const classes = useStyles()
@@ -126,7 +126,7 @@ const CustomTooltip = ({
         {payload[0].payload.x === lastItem.x && <Typography>{extraTooltipText}</Typography>}
         <Typography>{`${xLabel}: ${formatX(label)}`}</Typography>
         <Typography>
-          {`${yLabel}: `} {formatY(payload[0].value)}
+          {`${yLabel}: `} {formatYTooltip(payload[0].value)}
         </Typography>
       </Card>
     )
@@ -142,11 +142,23 @@ type BarChartProps = {|
   width: number,
   height: number,
   formatX: Function,
-  formatY: Function,
+  formatYAxis: Function,
+  formatYTooltip: Function,
+  barSize: number,
 |}
 
 // Note: can not use `Typography` inside `Label`, children must be a string
-export default ({data, xLabel, yLabel, width, height, formatX, formatY}: BarChartProps) => {
+export default ({
+  data,
+  xLabel,
+  yLabel,
+  width,
+  height,
+  formatX,
+  formatYAxis,
+  formatYTooltip,
+  barSize,
+}: BarChartProps) => {
   const [activeBar, setActiveBar] = useState(null)
   const theme = useTheme()
 
@@ -167,9 +179,8 @@ export default ({data, xLabel, yLabel, width, height, formatX, formatY}: BarChar
         label={{value: xLabel, fill: textColor, position: 'insideBottom'}}
       />
       {/* // use tickFormatter also for yAxis */}
-      <YAxis width={150} dataKey="y" tickFormatter={formatY}>
+      <YAxis width={100} dataKey="y" tickFormatter={formatYAxis}>
         <Label
-          fill={textColor}
           angle={-90}
           offset={-5}
           value={yLabel}
@@ -183,11 +194,14 @@ export default ({data, xLabel, yLabel, width, height, formatX, formatY}: BarChar
         cursor={<CustomCursor setActiveBar={setActiveBar} />}
         content={
           // $FlowFixMe recharts pass other props using some `magic`
-          <CustomTooltip {...{xLabel, yLabel, formatX, formatY}} lastItem={data[data.length - 1]} />
+          <CustomTooltip
+            {...{xLabel, yLabel, formatX, formatYTooltip}}
+            lastItem={data[data.length - 1]}
+          />
         }
       />
       <Bar
-        barSize={20} // TODO: get it as a prop
+        barSize={barSize}
         dataKey="y"
         shape={<CustomBar activeBar={activeBar} itemsCount={data.length} />}
         label={false}

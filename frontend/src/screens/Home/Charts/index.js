@@ -22,6 +22,7 @@ import {
   Alert,
 } from '@/components/visual'
 import useTabState from '@/components/hooks/useTabState'
+import {useCurrentBreakpoint} from '@/components/hooks/useCurrentBreakpoint'
 import {TabsProvider as Tabs, TabItem as Tab, useTabContext} from '@/components/context/TabContext'
 import BarChart from './BarChart'
 import {useCurrentEpoch} from '../common'
@@ -33,6 +34,7 @@ const messages = defineMessages({
   totalUtxo: 'Total UTXO',
   noDataTitle: 'No data',
   noDataMsg: 'There are no data to plot',
+  adaInMillions: '{count}M', // TODO: some better approach to intl millions character?
 })
 
 const xLabels = defineMessages({
@@ -53,7 +55,7 @@ const X_AXIS = {
 }
 
 const X_AXIS_WINDOW = {
-  DAY: 30, // TODO: what to do when there are missing data?
+  DAY: 30,
   EPOCH: 20,
 }
 
@@ -95,8 +97,12 @@ const TabsHeader = () => {
   )
 }
 
-// TODO: get proper format, probably use global constant
-const formatDay = (timestamp) => moment(timestamp).format('DD.MM')
+// TODO: do we want to put it to some utils?
+// TODO: can we create custom moment format and resolve with this function?
+const formatDay = (timestamp) => {
+  const options = {month: 'numeric', day: 'numeric'}
+  return new Date(timestamp).toLocaleDateString(moment.locale(), options)
+}
 
 const identity = (v) => v
 
@@ -148,7 +154,29 @@ const useLoadData = (seriesType, groupBy, epochInterval, dateInterval) => {
   return {error, loading, data: idx(data, (_) => _.aggregateInfo[seriesType].data) || []}
 }
 
-const Chart = ({seriesType, commonChartProps, xAxisProps, formatY, yLabel, currentEpoch}) => {
+const useFilterDataBasedOnWidth = (data, groupBy) => {
+  const breakpointToItemsCount = {
+    DAY: {
+      xs: 10,
+      sm: 14,
+      md: 20,
+      lg: 30,
+      xl: 30,
+    },
+    EPOCH: {
+      xs: 7,
+      sm: 10,
+      md: 14,
+      lg: 20,
+      xl: 20,
+    },
+  }
+
+  const breakpoint = useCurrentBreakpoint()
+  return data.slice(-breakpointToItemsCount[groupBy][breakpoint])
+}
+
+const Chart = ({seriesType, xAxisProps, currentEpoch, ...restProps}) => {
   const {translate: tr} = useI18n()
   const groupBy = xAxisProps.value
   const epochInterval = {from: Math.max((currentEpoch || 0) - X_AXIS_WINDOW.EPOCH, 0)}
@@ -156,11 +184,14 @@ const Chart = ({seriesType, commonChartProps, xAxisProps, formatY, yLabel, curre
     from: moment
       .utc()
       .startOf('day')
-      .subtract(X_AXIS_WINDOW.DAY, 'days')
+      .subtract(X_AXIS_WINDOW.DAY + 300, 'days') // TODO: remove `300` when backend is fixed
       .toISOString(),
   }
 
   const {error, loading, data} = useLoadData(seriesType, groupBy, epochInterval, dateInterval)
+  // TODO: remove when backend is fixed
+  const dataFix = groupBy === X_AXIS.DAY ? data.slice(-X_AXIS_WINDOW.DAY) : data
+  const _data = useFilterDataBasedOnWidth(dataFix, groupBy)
 
   if (loading) return <LoadingInProgress />
   if (!loading && error) return <LoadingError error={error} />
@@ -169,7 +200,7 @@ const Chart = ({seriesType, commonChartProps, xAxisProps, formatY, yLabel, curre
       <Alert type="warning" title={tr(messages.noDataTitle)} message={tr(messages.noDataMsg)} />
     )
   }
-  return <BarChart {...{data, yLabel, formatY}} {...commonChartProps} />
+  return <BarChart data={_data} {...restProps} />
 }
 
 const ChartTab = ({loading, error, xAxisProps, commonChartProps, ...restProps}) => {
@@ -184,9 +215,7 @@ const ChartTab = ({loading, error, xAxisProps, commonChartProps, ...restProps}) 
       >
         {loading && <LoadingInProgress />}
         {!loading && error && <LoadingError error={error} />}
-        {!loading && !error && (
-          <Chart {...restProps} xAxisProps={xAxisProps} commonChartProps={commonChartProps} />
-        )}
+        {!loading && !error && <Chart {...{xAxisProps, ...commonChartProps, ...restProps}} />}
       </Grid>
     </Card>
   )
@@ -198,7 +227,7 @@ const getChartDimensions = (dimensions) => ({
 })
 
 const Charts = () => {
-  const {translate: tr, formatAdaSplit} = useI18n()
+  const {translate: tr, formatAdaToMillions, formatAdaSplit} = useI18n()
   const [xAxis, setXAxis] = useState(X_AXIS.DAY)
   const [dimensions, setDimensions] = useState({width: -1, height: -1})
 
@@ -207,13 +236,17 @@ const Charts = () => {
   const tabNames = ObjectValues(TAB_NAMES)
   const tabState = useTabState(tabNames)
 
+  // Note: We currently receive number from backend instead of string for ada value
+  const formatAdaYAxis = (value) =>
+    tr(messages.adaInMillions, {count: formatAdaToMillions(`${value}`)})
   // Note: For now not showing decimals, as then values are too long
-  const formatAdaValue = (value) => formatAdaSplit(value).integral
+  const formatAdaYTooltip = (value) => formatAdaSplit(`${value}`).integral
   const onXAxisChange = useCallback((e) => setXAxis(e.target.value), [setXAxis])
 
   const commonChartProps = {
     xLabel: tr(xAxis === X_AXIS.DAY ? xLabels.day : xLabels.epoch),
     formatX: xAxis === X_AXIS.DAY ? formatDay : identity,
+    barSize: xAxis === X_AXIS.DAY ? 14 : 20,
     ...getChartDimensions(dimensions),
   }
 
@@ -222,7 +255,6 @@ const Charts = () => {
     onChange: onXAxisChange,
   }
 
-  // TODO: calculate number of ticks based on dimensions
   return (
     <SimpleLayout title={tr(messages.header)} maxWidth="1200px">
       <Measure
@@ -240,7 +272,8 @@ const Charts = () => {
                 <ChartTab
                   seriesType="totalAdaTransferred"
                   yLabel={tr(yLabels.adaSent)}
-                  formatY={formatAdaValue}
+                  formatYTooltip={formatAdaYTooltip}
+                  formatYAxis={formatAdaYAxis}
                   commonChartProps={commonChartProps}
                   xAxisProps={xAxisProps}
                   {...{loading, error, currentEpoch}}
@@ -251,7 +284,8 @@ const Charts = () => {
                 <ChartTab
                   seriesType="txCount"
                   yLabel={tr(yLabels.txCount)}
-                  formatY={identity}
+                  formatYAxis={identity}
+                  formatYTooltip={identity}
                   commonChartProps={commonChartProps}
                   xAxisProps={xAxisProps}
                   {...{loading, error, currentEpoch}}
@@ -262,7 +296,8 @@ const Charts = () => {
                 <ChartTab
                   seriesType="totalUtxoCreated"
                   yLabel={tr(yLabels.utxo)}
-                  formatY={identity}
+                  formatYAxis={identity}
+                  formatYTooltip={identity}
                   commonChartProps={commonChartProps}
                   xAxisProps={xAxisProps}
                   {...{loading, error, currentEpoch}}
