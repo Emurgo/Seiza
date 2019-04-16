@@ -5,11 +5,11 @@ import {useQuery} from 'react-apollo-hooks'
 import useReactRouter from 'use-react-router'
 import idx from 'idx'
 import gql from 'graphql-tag'
-
 import {defineMessages} from 'react-intl'
-
 import {makeStyles} from '@material-ui/styles'
+import {Grid} from '@material-ui/core'
 import {Link} from 'react-router-dom'
+
 import {
   EntityIdCard,
   SummaryCard,
@@ -139,11 +139,6 @@ const useBlockNavigation = (block: any) => {
 }
 
 const useNavigationStyles = makeStyles((theme) => ({
-  navigation: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'center',
-  },
   navigationButton: {
     width: '250px',
     margin: '0 30px',
@@ -161,7 +156,7 @@ const BlockNavigation = ({block}) => {
 
   const nav = useBlockNavigation(block)
   return (
-    <div className={classes.navigation}>
+    <Grid container direction="row" justify="center">
       <Button
         rounded
         secondary
@@ -184,7 +179,7 @@ const BlockNavigation = ({block}) => {
       >
         {translate(messages.goNextBlock)}
       </Button>
-    </div>
+    </Grid>
   )
 }
 

@@ -52,6 +52,7 @@ export const fetchBlockBySlot = async ({elastic, E}, {epoch, slot}) => {
   return facadeElasticBlock(hit._source)
 }
 
+// TODO: extract repetitive code
 export const fetchPreviousBlock = async ({elastic, E}, {epoch, slot}) => {
   assert(epoch != null)
   assert(slot != null)
@@ -79,6 +80,7 @@ export const fetchPreviousBlock = async ({elastic, E}, {epoch, slot}) => {
   }
 }
 
+// TODO: extract repetitive code
 export const fetchNextBlock = async ({elastic, E}, {epoch, slot}) => {
   assert(epoch != null)
   assert(slot != null)
