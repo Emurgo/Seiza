@@ -3,6 +3,7 @@ import assert from 'assert'
 import cn from 'classnames'
 import idx from 'idx'
 import React, {useState, useEffect, useCallback} from 'react'
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 import gql from 'graphql-tag'
 import useReactRouter from 'use-react-router'
 import {useQuery} from 'react-apollo-hooks'
@@ -80,6 +81,20 @@ const useStyles = makeStyles((theme) => ({
   helpTextHidden: {
     visibility: 'hidden',
   },
+  alertAppear: {
+    opacity: 0,
+  },
+  alertAppearActive: {
+    opacity: 1,
+    transition: 'opacity 700ms',
+  },
+  alertLeave: {
+    opacity: 1,
+  },
+  alertLeaveActive: {
+    opacity: 0,
+    transition: 'opacity 500ms',
+  },
 }))
 
 const Search = () => {
@@ -124,15 +139,29 @@ const Search = () => {
         loading={loading}
       />
       {!loading && error && <LoadingError error={error} />}
-      {showAlert && (
-        <Alert
-          type="noResults"
-          className={classes.gap}
-          message={tr(text.noData)}
-          title=""
-          onClose={onAlertClose}
-        />
-      )}
+      <ReactCSSTransitionGroup
+        transitionName={{
+          leave: classes.alertLeave,
+          leaveActive: classes.alertLeaveActive,
+          enter: classes.alertAppear,
+          enterActive: classes.alertAppearActive,
+        }}
+        transitionAppear={false}
+        transitionEnterTimeout={700}
+        transitionLeaveTimeout={500}
+        transitionLeave
+        transitionEnter
+      >
+        {showAlert && (
+          <Alert
+            type="noResults"
+            className={classes.gap}
+            message={tr(text.noData)}
+            title=""
+            onClose={onAlertClose}
+          />
+        )}
+      </ReactCSSTransitionGroup>
       <Typography
         variant="caption"
         color="textSecondary"
