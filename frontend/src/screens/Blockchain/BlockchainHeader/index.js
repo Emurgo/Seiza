@@ -30,10 +30,6 @@ const styles = ({palette, spacing}) =>
         marginBottom: spacing.unit * 1.25,
       },
     },
-    subtitleWrapper: {
-      marginLeft: spacing.unit * 4,
-      marginRight: spacing.unit * 4,
-    },
   })
 
 const BlockchainHeader = ({classes, i18n: {translate}}) => (
@@ -55,16 +51,6 @@ const BlockchainHeader = ({classes, i18n: {translate}}) => (
             {translate(messages.header)}
           </Typography>
           <Search />
-          <Typography
-            variant="caption"
-            color="textSecondary"
-            className={classes.subtitleWrapper}
-            align="center"
-          >
-            Lorem ipsum dolor sit amet, meis partem equidem ut nec. Malorum sensibus dissentiet pro
-            ea, to facete inciderint nam. Ad dico abhorreant sed. lus libris intellegam ne, aperiri
-            scaevola ei cum.
-          </Typography>
         </Grid>
       </Grid>
     </Grid>

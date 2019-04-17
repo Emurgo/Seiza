@@ -179,6 +179,10 @@ export const THEME_DEFINITIONS = {
         color: '#8AE8D4',
         background: '#EAF8F9',
       },
+      noResults: {
+        color: '#C9BEF1',
+        background: '#CEC0F2',
+      },
       background: {
         paperContrast: '#F4F5FC',
         paper: '#FFFFFF',
@@ -242,6 +246,10 @@ export const THEME_DEFINITIONS = {
       emphasis: {
         color: '#8AE8D4',
         background: '#EAF8F9',
+      },
+      noResults: {
+        color: '#C9BEF1',
+        background: '#CEC0F2',
       },
       background: {
         default: '#34005A',
