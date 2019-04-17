@@ -9,7 +9,7 @@ export const BLOCK_INFO_FRAGMENT = gql`
     slot
     timeIssued
     transactionsCount
-    totalSend
+    totalSent
     size
     blockLeader {
       poolHash
