@@ -7,9 +7,12 @@ import GeneralInfo from './GeneralInfo'
 import StakePoolsInfo from './StakePoolsInfo'
 import Charts from './Charts'
 
+import SyncIssuesBar from '@/components/common/SyncIssuesBar'
+
 export default () => (
   <React.Fragment>
     <BlockchainHeader />
+    <SyncIssuesBar />
     <Charts />
     {config.showStakingData && <StakePoolsInfo />}
     <GeneralInfo />

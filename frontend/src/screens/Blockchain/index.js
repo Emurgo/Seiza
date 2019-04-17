@@ -3,6 +3,8 @@ import {Grid} from '@material-ui/core'
 import {Switch, Route} from 'react-router-dom'
 
 import {routeTo} from '@/helpers/routes'
+import SyncIssuesBar from '@/components/common/SyncIssuesBar'
+import config from '@/config'
 
 import Transaction from './Transaction'
 import Address from './Address'
@@ -14,11 +16,11 @@ import StakePool from './StakePool'
 import StakingKey from './StakingKey'
 import Slot from './Block/Slot'
 import NotFound from './NotFound'
-import config from '@/config'
 
 export default (props) => (
   <Grid container direction="column" style={{overflow: 'hidden'}}>
     <BlockchainHeader />
+    <SyncIssuesBar />
     <Switch>
       <Route exact path={routeTo.blockchain()} component={PagedBlocks} />
       <Route path={routeTo.transaction(':txHash')} component={Transaction} />
