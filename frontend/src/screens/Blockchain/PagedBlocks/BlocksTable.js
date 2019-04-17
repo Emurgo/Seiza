@@ -120,7 +120,7 @@ const BlocksTable = ({blocks, columns, loading, error}: Props) => {
       header: <TH Icon={TotalSentIcon} label={tableMessages.totalSent} />,
       cell: (block) => (
         <FixWidth key={5} width={100}>
-          <AdaValue value={block.totalSend} />
+          <AdaValue value={block.totalSent} />
         </FixWidth>
       ),
     },

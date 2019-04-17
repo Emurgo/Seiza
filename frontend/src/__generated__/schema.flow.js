@@ -19,7 +19,7 @@ export type Block = {
   timeIssued: Timestamp,
   transactionsCount: number,
   transactions?: ?Array<Transaction>,
-  totalSend: AdaAmount,
+  totalSent: AdaAmount,
   totalFees: AdaAmount,
   size: number,
   blockLeader: BootstrapEraStakePool,

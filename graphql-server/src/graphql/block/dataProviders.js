@@ -8,7 +8,7 @@ export const facadeElasticBlock = (data) => ({
   blockHash: data.hash,
   timeIssued: moment(data.time),
   transactionsCount: data.tx_num,
-  totalSend: parseAdaValue(data.sent),
+  totalSent: parseAdaValue(data.sent),
   totalFees: parseAdaValue(data.fees),
   size: data.size,
   _blockLeader: data.lead,
