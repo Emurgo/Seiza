@@ -3,18 +3,22 @@ import React from 'react'
 import type {Node} from 'react'
 import cn from 'classnames'
 import {defineMessages} from 'react-intl'
-import {Paper, createStyles, Grid, Typography} from '@material-ui/core'
+import {Paper, createStyles, Grid, Typography, IconButton} from '@material-ui/core'
 import {darken} from '@material-ui/core/styles/colorManipulator'
 import {makeStyles} from '@material-ui/styles'
+
 import emphasisIcon from '@/assets/icons/emphasis.svg'
 import warningIcon from '@/assets/icons/warning.svg'
 import alertIcon from '@/assets/icons/alert.svg'
+import noResultsIcon from '@/assets/icons/sad-smile.svg'
 import {useI18n} from '@/i18n/helpers'
+import {ReactComponent as Close} from '@/assets/icons/close.svg'
 
 const TYPES = Object.freeze({
   EMPHASIS: 'emphasis',
   WARNING: 'warning',
   ALERT: 'alert',
+  NO_RESULTS: 'noResults',
   NEUTRAL: 'neutral',
 })
 type AlertTypeEnum = $Values<typeof TYPES>
@@ -24,6 +28,7 @@ const messages = defineMessages({
   emphasis: 'Emphasis',
   warning: 'Warning',
   alert: 'Alert',
+  noResults: 'No results',
   neutral: 'Message',
 })
 
@@ -32,9 +37,15 @@ const getBorderColorStyle = (backgroundColor) => darken(backgroundColor, 0.05)
 const useAppStyles = makeStyles(({type, spacing, palette}) =>
   createStyles({
     wrapper: {
-      padding: spacing.unit * 2,
-      paddingLeft: spacing.unit * 4,
-      paddingRight: spacing.unit * 4,
+      padding: spacing.unit * 1.5,
+      paddingLeft: spacing.unit * 2,
+      paddingRight: spacing.unit * 2,
+    },
+    close: {
+      'color': darken(palette.contentUnfocus, 0.3),
+      '&:hover': {
+        color: palette.primary.main,
+      },
     },
     [TYPES.EMPHASIS]: {
       backgroundColor: palette.emphasis.background,
@@ -48,6 +59,10 @@ const useAppStyles = makeStyles(({type, spacing, palette}) =>
       backgroundColor: palette.alertStrong.background,
       border: `1px solid ${getBorderColorStyle(palette.alertStrong.background)}`,
     },
+    [TYPES.NO_RESULTS]: {
+      backgroundColor: palette.noResults.background,
+      border: `1px solid ${getBorderColorStyle(palette.noResults.background)}`,
+    },
     [TYPES.NEUTRAL]: {},
   })
 )
@@ -56,6 +71,7 @@ const ICONS = {
   [TYPES.EMPHASIS]: <img alt="" src={emphasisIcon} />,
   [TYPES.WARNING]: <img alt="" src={warningIcon} />,
   [TYPES.ALERT]: <img alt="" src={alertIcon} />,
+  [TYPES.NO_RESULTS]: <img alt="" src={noResultsIcon} />,
   [TYPES.NEUTRAL]: null,
 }
 
@@ -64,9 +80,10 @@ type PropTypes = {
   message: Node,
   type: AlertTypeEnum,
   className?: string,
+  onClose?: Function,
 }
 
-const Alert = ({title, type, message, className}: PropTypes) => {
+const Alert = ({title, type, message, className, onClose}: PropTypes) => {
   const classes = useAppStyles()
   const {translate: tr} = useI18n()
   const icon = ICONS[type] && <Grid item>{ICONS[type]}</Grid>
@@ -83,7 +100,8 @@ const Alert = ({title, type, message, className}: PropTypes) => {
           >
             <Grid item>
               <Typography variant="overline" color="inherit">
-                {title || tr(messages[type])}
+                {/* Compare to null so we can hide title by setting it to empty string */}
+                {title == null ? tr(messages[type]) : title}
               </Typography>
             </Grid>
             <Grid item>
@@ -93,6 +111,16 @@ const Alert = ({title, type, message, className}: PropTypes) => {
             </Grid>
           </Grid>
         </Grid>
+        {onClose && (
+          <IconButton
+            color="primary"
+            className={classes.close}
+            aria-label="Clear-search"
+            onClick={onClose}
+          >
+            <Close />
+          </IconButton>
+        )}
       </Grid>
     </Paper>
   )

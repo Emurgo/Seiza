@@ -8,6 +8,7 @@ import useReactRouter from 'use-react-router'
 import {useQuery} from 'react-apollo-hooks'
 import {defineMessages} from 'react-intl'
 import {makeStyles} from '@material-ui/styles'
+import {Typography} from '@material-ui/core'
 
 import {useI18n} from '@/i18n/helpers'
 import {Searchbar, LoadingError, Alert} from '@/components/visual'
@@ -16,6 +17,9 @@ import {routeTo} from '@/helpers/routes'
 const text = defineMessages({
   searchPlaceholder: 'Search addresses, epochs & slots on the Cardano network',
   noData: 'No items matching current query',
+  helpText: `Lorem ipsum dolor sit amet, meis partem equidem ut nec. Malorum sensibus dissentiet pro
+  ea, to facete inciderint nam. Ad dico abhorreant sed. lus libris intellegam ne, aperiri
+  scaevola ei cum.`,
 })
 
 const useSearchData = (searchQuery, skip) => {
@@ -60,8 +64,21 @@ const getRedirectUrl = (searchResult) => {
 }
 
 const useStyles = makeStyles((theme) => ({
+  wrapper: {
+    position: 'relative',
+  },
   gap: {
     marginTop: theme.spacing.unit * 1.5,
+    position: 'absolute',
+    width: '100%',
+  },
+  helpText: {
+    marginLeft: theme.spacing.unit * 4,
+    marginRight: theme.spacing.unit * 4,
+    marginTop: theme.spacing.unit * 2,
+  },
+  helpTextHidden: {
+    visibility: 'hidden',
   },
 }))
 
@@ -93,8 +110,12 @@ const Search = () => {
     [setSearchQuery, setSearchText]
   )
 
+  const onAlertClose = useCallback(() => setSearchQuery(''), [setSearchQuery])
+
+  const showAlert = !loading && !searchResult && searchQuery
+
   return (
-    <div className="position-relative">
+    <div className={classes.wrapper}>
       <Searchbar
         placeholder={tr(text.searchPlaceholder)}
         value={searchText}
@@ -103,13 +124,23 @@ const Search = () => {
         loading={loading}
       />
       {!loading && error && <LoadingError error={error} />}
-      {!loading && !searchResult && searchQuery && (
+      {showAlert && (
         <Alert
-          type="warning"
-          className={cn('position-absolute', 'w-100', classes.gap)}
+          type="noResults"
+          className={classes.gap}
           message={tr(text.noData)}
+          title=""
+          onClose={onAlertClose}
         />
       )}
+      <Typography
+        variant="caption"
+        color="textSecondary"
+        className={cn(classes.helpText, showAlert && classes.helpTextHidden)}
+        align="center"
+      >
+        {tr(text.helpText)}
+      </Typography>
     </div>
   )
 }
