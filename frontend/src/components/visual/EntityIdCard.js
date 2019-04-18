@@ -94,7 +94,7 @@ const useContentStyles = makeStyles((theme) => ({
   },
   value: {
     overflow: 'hidden',
-    padding: theme.spacing.unit * (2 / 3),
+    padding: ({appearAnimation}) => (appearAnimation ? theme.spacing.unit * (2 / 3) : 0),
   },
   correctureWrapper: {
     display: 'flex',
@@ -120,7 +120,7 @@ export const EntityCardContent = ({
   rawValue,
   appearAnimation,
 }) => {
-  const classes = useContentStyles({showCopyIcon})
+  const classes = useContentStyles({showCopyIcon, appearAnimation})
 
   return (
     <div className={classes.correctureWrapper}>
