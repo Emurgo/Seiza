@@ -292,10 +292,8 @@ const EpochNavigation = ({currentEpochNumber}) => {
         to={epochNavigation.linkPrev}
         component={Link}
       >
-        <React.Fragment>
-          <PreviousEpochIcon className={classes.prevEpochIcon} />
-          {translate(messages.goPreviousEpoch)}
-        </React.Fragment>
+        <PreviousEpochIcon className={classes.prevEpochIcon} />
+        {translate(messages.goPreviousEpoch)}
       </Button>
       <Button
         rounded
@@ -306,10 +304,8 @@ const EpochNavigation = ({currentEpochNumber}) => {
         to={epochNavigation.linkNext}
         component={Link}
       >
-        <React.Fragment>
-          {translate(messages.goNextEpoch)}
-          <NextEpochIcon className={classes.nextEpochIcon} />
-        </React.Fragment>
+        {translate(messages.goNextEpoch)}
+        <NextEpochIcon className={classes.nextEpochIcon} />
       </Button>
     </div>
   )
