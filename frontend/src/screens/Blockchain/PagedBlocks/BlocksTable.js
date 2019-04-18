@@ -118,37 +118,32 @@ const BlocksTable = ({blocks, columns, loading, error}: Props) => {
     },
     [TOTAL_SENT]: {
       header: <TH Icon={TotalSentIcon} label={tableMessages.totalSent} />,
-      cell: (block) => (
-        <FixWidth key={5} width={100}>
-          <AdaValue value={block.totalSent} />
-        </FixWidth>
-      ),
+      cell: (block) => <AdaValue key={5} value={block.totalSent} />,
+      align: 'right',
     },
     [FEES]: {
       header: <TH Icon={FeeIcon} label={tableMessages.fees} />,
-      cell: (block) => (
-        <FixWidth key={6} width={100}>
-          <AdaValue value={block.totalFees} />
-        </FixWidth>
-      ),
+      cell: (block) => <AdaValue key={6} value={block.totalFees} />,
+      align: 'right',
     },
     [SIZE]: {
       header: <TH Icon={SizeIcon} label={tableMessages.size} />,
       cell: (block) => formatInt(block.size),
+      align: 'right',
     },
   }
-  // Hotfix before we support proper table column formatting
-  const FixWidth = ({width, children}) => <div style={{width, textAlign: 'right'}}>{children}</div>
 
   const headerData = columns.map((column) => columnsRenderer[column].header)
+
+  const fieldsConfig = columns.map((column) => ({
+    align: columnsRenderer[column].align || 'left',
+  }))
 
   const bodyData = blocks
     ? blocks.map((block, index) => columns.map((column) => columnsRenderer[column].cell(block)))
     : []
 
-  return (
-    <Table hoverable loading={loading} error={error} headerData={headerData} bodyData={bodyData} />
-  )
+  return <Table hoverable {...{loading, error, headerData, bodyData, fieldsConfig}} />
 }
 
 export default BlocksTable
