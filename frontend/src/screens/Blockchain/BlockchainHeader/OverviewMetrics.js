@@ -54,13 +54,14 @@ const OverviewMetrics = ({intl, data, classes, currency, setCurrency}) => {
 
   const NA = loading ? <LoadingDots /> : translate(error ? text.error : text.not_available)
 
-  const epochNumber = formatInt(idx(status, (s) => s.epochNumber), {defaultValue: NA})
+  const epochNumber = formatInt(idx(status, (s) => s.latestBlock.epoch), {defaultValue: NA})
   const blockCount = formatInt(idx(status, (s) => s.blockCount), {defaultValue: NA})
   const decentralization = formatPercent(idx(status, (s) => s.decentralization), {defaultValue: NA})
   const price = formatFiat(idx(status, (s) => s.price), {currency, defaultValue: NA})
   const pools = formatInt(idx(status, (s) => s.stakePoolCount), {defaultValue: NA})
 
-  const epochLink = status && routeTo.epoch(status.epochNumber)
+  const epochLink = status && routeTo.epoch(status.latestBlock.epoch)
+  const blockLink = status && routeTo.block(status.latestBlock.blockHash)
   const marketDataLink = routeTo.more()
   const stakePoolsLink = routeTo.staking.home()
 
@@ -112,12 +113,18 @@ const OverviewMetrics = ({intl, data, classes, currency, setCurrency}) => {
         </WithNavigateTo>
       </Grid>
       <GridItem>
-        <MetricsCard
-          className={classes.card}
-          icon="blocks"
-          metric={translate(text.blocksLabel)}
-          value={blockCount}
-        />
+        <WithNavigateTo to={stakePoolsLink}>
+          {({navigate}) => (
+            <MetricsCard
+              className={classes.card}
+              icon="blocks"
+              metric={translate(text.blocksLabel)}
+              value={blockCount}
+              onClick={navigate}
+              clickableWrapperProps={{component: Link, to: blockLink}}
+            />
+          )}
+        </WithNavigateTo>
       </GridItem>
       {config.showStakingData && (
         <GridItem>
@@ -172,8 +179,11 @@ const OverviewMetrics = ({intl, data, classes, currency, setCurrency}) => {
 const OVERVIEW_METRICS_QUERY = gql`
   query($currency: CurrencyEnum!) {
     currentStatus {
-      epochNumber
       blockCount
+      latestBlock {
+        blockHash
+        epoch
+      }
       decentralization
       price(currency: $currency)
       stakePoolCount
