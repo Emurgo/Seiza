@@ -148,7 +148,7 @@ export const EntityCardContent = ({
           </ReactCSSTransitionGroup>
           {showCopyIcon && (
             <div className={classes.copyToClipboard}>
-              <CopyToClipboard value={rawValue} />
+              <CopyToClipboard value={rawValue || value} />
             </div>
           )}
         </Grid>
