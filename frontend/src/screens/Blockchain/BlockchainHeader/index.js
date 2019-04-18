@@ -45,7 +45,7 @@ const BlockchainHeader = ({classes, i18n: {translate}}) => (
         <OverviewMetrics />
       </Grid>
 
-      <Grid item xs={10} md={8} lg={6}>
+      <Grid item xs={10} md={8} lg={6} className="w-100">
         <Grid container direction="column" alignItems="stretch" className={classes.searchWrapper}>
           <Typography variant="h1" align="center">
             {translate(messages.header)}

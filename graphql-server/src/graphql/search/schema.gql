@@ -2,7 +2,7 @@
 #
 #}
 
-union BlockChainSearchItem = Block | Transaction | Address
+union BlockChainSearchItem = Block | Transaction | Address | Epoch
 
 type BlockChainSearchResult {
     items: [BlockChainSearchItem!]!

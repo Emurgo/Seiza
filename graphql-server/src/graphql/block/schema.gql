@@ -1,5 +1,6 @@
 type Block {
-  blockHash: String!
+  # Not set in case when Slot is empty
+  blockHash: String
   epoch: Int!
   slot: Int!
   # TODO: bad naming, should be issuedAt
@@ -13,13 +14,15 @@ type Block {
   # TODO: bad naming, should be sizeInBytes
   size: Int!
 
-  blockLeader: BootstrapEraStakePool!
+  # Not set in case when Slot is empty
+  blockLeader: BootstrapEraStakePool
 
   blockHeight: Int #TODO: get real number
   blockConfirmations: Int #TODO: get real number
 
   previousBlock: Block
   nextBlock: Block
+  isEmpty: Boolean!
 
 }
 
@@ -33,4 +36,5 @@ type Query {
   pagedBlocks(cursor: Int): PagedBlocksResult!
   pagedBlocksInEpoch(epochNumber: Int!, cursor: Int): PagedBlocksResult!
   block(blockHash: String!): Block
+  slot(epoch: Int, slot: Int): Block
 }
