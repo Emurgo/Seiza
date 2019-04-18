@@ -57,11 +57,16 @@ const useTableStyles = makeStyles(({hover, palette}) => ({
 type TableProps = {|
   headerData: Array<Object>,
   bodyData: Array<Object>,
+  fieldsConfig?: Array<{|
+    align?: string,
+  |}>,
   noDataText?: string,
   loading: boolean,
   error: any,
   hoverable?: boolean,
 |}
+
+const getAlignment = (fieldsConfig, index) => (fieldsConfig ? fieldsConfig[index].align : 'left')
 
 const Table = ({
   headerData,
@@ -69,12 +74,15 @@ const Table = ({
   noDataText,
   loading,
   error,
+  fieldsConfig,
   hoverable = false,
 }: TableProps) => {
   const classes = useTableStyles()
   const {translate: tr} = useI18n()
   const _noDataText = noDataText || tr(messages.noData)
 
+  // TODO: We could have different config/data structure, but I would suggest to refactor that
+  // when we have more config options, and better see the requirements
   return (
     <Card classes={{root: classes.root}}>
       <Overlay.Wrapper>
@@ -82,7 +90,7 @@ const Table = ({
           <TableHead className={classes.head}>
             <TR>
               {headerData.map((item, index) => (
-                <TD key={index} align="left" className={classes.cell}>
+                <TD key={index} align={getAlignment(fieldsConfig, index)} className={classes.cell}>
                   {item}
                 </TD>
               ))}
@@ -93,7 +101,11 @@ const Table = ({
               bodyData.map((row, outerIndex) => (
                 <TR key={outerIndex} className={cn(classes.row, hoverable && classes.hoverableRow)}>
                   {row.map((item, innerIndex) => (
-                    <TD key={innerIndex} align="left" className={classes.cell}>
+                    <TD
+                      key={innerIndex}
+                      align={getAlignment(fieldsConfig, innerIndex)}
+                      className={classes.cell}
+                    >
                       {item}
                     </TD>
                   ))}
