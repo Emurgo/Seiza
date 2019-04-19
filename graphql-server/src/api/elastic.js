@@ -1,5 +1,6 @@
 // @flow
 import {Client, errors as ElasticsearchErrors} from '@elastic/elasticsearch'
+import legacyClient from 'elasticsearch'
 import httpAWSES from 'http-aws-es'
 import AWS from 'aws-sdk'
 import {ApolloError} from 'apollo-server'
@@ -18,7 +19,7 @@ const getClient = () => {
     process.env.AWS_REGION
   ) {
     const options = {
-      node: ELASTIC_URL,
+      host: ELASTIC_URL,
       credentials: new AWS.Credentials({
         accessKeyId: process.env.AWS_ACCESS_KEY_ID,
         secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
@@ -33,7 +34,7 @@ const getClient = () => {
       }),
     })
 
-    const awsClient = new Client(config)
+    const awsClient = new legacyClient.Client(config)
     return awsClient
   } else {
     const plainClient = new Client({node: ELASTIC_URL})
