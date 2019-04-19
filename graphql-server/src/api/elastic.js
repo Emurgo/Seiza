@@ -10,6 +10,8 @@ import type {SortDirection} from './elasticHelpers'
 
 assert(process.env.ELASTIC_URL)
 const ELASTIC_URL = process.env.ELASTIC_URL
+assert(process.env.ELASTIC_INDEX)
+const ELASTIC_INDEX = process.env.ELASTIC_INDEX
 
 // if AWS credentials were provided via env, we use 'aws-elasticsearch-client'
 const getClient = () => {
@@ -99,7 +101,7 @@ const elasticErrorHandler = (err, meta) => {
 
 const _search = (type: string, body: any) => {
   const request = {
-    index: `seiza2.${type}`,
+    index: `{ELASTIC_INDEX}.${type}`,
     type,
     body,
   }
