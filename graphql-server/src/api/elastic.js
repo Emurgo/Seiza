@@ -8,9 +8,9 @@ import assert from 'assert'
 import E from './elasticHelpers'
 import type {SortDirection} from './elasticHelpers'
 
-assert(process.env.ELASTIC_URL)
+assert(process.env.ELASTIC_URL, 'Please provide $ELASTIC_URL env variable')
 const ELASTIC_URL = process.env.ELASTIC_URL
-assert(process.env.ELASTIC_INDEX)
+assert(process.env.ELASTIC_INDEX, 'Please provide ELASTIC_INDEX env variable')
 const ELASTIC_INDEX = process.env.ELASTIC_INDEX
 
 // if AWS credentials were provided via env, we use 'aws-elasticsearch-client'
@@ -22,6 +22,8 @@ const getClient = () => {
   ) {
     const options = {
       host: ELASTIC_URL,
+      // HACK: this is not used, it's just to avoid eslint warn...
+      index: ELASTIC_INDEX,
       credentials: new AWS.Credentials({
         accessKeyId: process.env.AWS_ACCESS_KEY_ID,
         secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
