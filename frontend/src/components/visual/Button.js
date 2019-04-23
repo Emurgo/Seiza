@@ -6,6 +6,8 @@ import {makeStyles} from '@material-ui/styles'
 import {fade} from '@material-ui/core/styles/colorManipulator'
 
 const FADE_FACTOR = 0.6
+// not sure REFERENCE_GRADIENT is the best naming, it was copied from
+// https://codepen.io/miraviolet/pen/ZobWEg and extracted to this constant here
 const REFERENCE_GRADIENT = 'linear-gradient(rgba(255, 255, 255, 0), rgba(255, 255, 255, 0))'
 
 const useStyles = makeStyles((theme) => ({
@@ -19,7 +21,9 @@ const useStyles = makeStyles((theme) => ({
   gradient: {
     'background': theme.palette.buttonsGradient.normal,
     'color': theme.palette.getContrastText('#715BD3'),
+    'boxShadow': `0px 8px 20px ${fade(theme.palette.text.primary, 0.08)}`,
     '&:hover': {
+      boxShadow: `0px 10px 30px ${fade(theme.palette.text.primary, 0.14)}`,
       background: theme.palette.buttonsGradient.hover,
     },
   },
@@ -50,7 +54,10 @@ const useStyles = makeStyles((theme) => ({
       height: '100%',
       background: 'transparent',
       bottom: -1,
-      boxShadow: `0px 10px 30px ${fade(theme.palette.text.primary, 0.11)}`,
+      boxShadow: `0px 8px 20px ${fade(theme.palette.text.primary, 0.08)}`,
+    },
+    '&:hover:after': {
+      boxShadow: `0px 10px 30px ${fade(theme.palette.text.primary, 0.14)}`,
     },
   },
   primary: {
@@ -64,6 +71,7 @@ const useStyles = makeStyles((theme) => ({
   disabled: {
     background: `${fade(theme.palette.primary.main, 0.25)} !important`,
     color: `${theme.palette.background.default} !important`,
+    boxShadow: 'none',
   },
   secondaryDisabled: {
     backgroundImage: `${REFERENCE_GRADIENT},
