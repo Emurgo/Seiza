@@ -114,7 +114,7 @@ export const fetchSlotInfo = (context: any, epoch: number, slot: number) => {
   return fetchBlockBySlot(context, {epoch, slot}).then((block) => ({
     __epoch_slot: {epoch, slot},
     txCount: block.transactionsCount,
-    totalSent: block.totalSend,
+    totalSent: block.totalSent,
     totalFees: block.totalFees,
   }))
 }

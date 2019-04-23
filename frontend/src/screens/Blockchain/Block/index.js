@@ -32,7 +32,10 @@ const blockSummaryLabels = defineMessages({
   epoch: 'Epoch',
   slot: 'Slot',
   issuedAt: 'Timestamp',
-  transactionsCount: '# Transactions',
+  transactionsCount: 'Transactions',
+  blockHeight: 'Block Height',
+  totalFees: 'Total Fees',
+  totalSent: 'Total ADA Sent',
 })
 
 const BlockSummaryCard = ({blockData, loading}) => {
@@ -54,6 +57,9 @@ const BlockSummaryCard = ({blockData, loading}) => {
     slot: formatInt(idx(blockData, (_) => _.slot), {defaultValue: NA}),
     issuedAt: formatTimestamp(idx(blockData, (_) => _.timeIssued), {defaultValue: NA}),
     txCount: formatInt(idx(blockData, (_) => _.transactionsCount), {defaultValue: NA}),
+    blockHeight: formatInt(idx(blockData, (_) => _.blockHeight), {defaultValue: NA}),
+    totalSent: <AdaValue value={idx(blockData, (_) => _.totalSent)} noValue={NA} showCurrency />,
+    totalFees: <AdaValue value={idx(blockData, (_) => _.totalFees)} noValue={NA} showCurrency />,
   }
 
   return (
@@ -62,6 +68,9 @@ const BlockSummaryCard = ({blockData, loading}) => {
       <Item label={label.slot}>{data.slot}</Item>
       <Item label={label.issuedAt}>{data.issuedAt}</Item>
       <Item label={label.transactionsCount}>{data.txCount}</Item>
+      <Item label={label.blockHeight}>{data.blockHeight}</Item>
+      <Item label={label.totalFees}>{data.totalFees}</Item>
+      <Item label={label.totalSent}>{data.totalSent}</Item>
     </SummaryCard>
   )
 }
@@ -78,13 +87,14 @@ const BLOCK_INFO_FRAGMENT = gql`
     slot
     timeIssued
     transactionsCount
-    totalSend
+    totalSent
     size
     blockLeader {
       poolHash
       name
     }
     totalFees
+    blockHeight
     previousBlock {
       blockHash
     }

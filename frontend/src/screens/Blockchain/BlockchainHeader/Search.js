@@ -1,20 +1,26 @@
 // @flow
 import assert from 'assert'
+import cn from 'classnames'
 import idx from 'idx'
 import React, {useState, useEffect, useCallback} from 'react'
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 import gql from 'graphql-tag'
 import useReactRouter from 'use-react-router'
 import {useQuery} from 'react-apollo-hooks'
 import {defineMessages} from 'react-intl'
+import {makeStyles} from '@material-ui/styles'
 import {Typography} from '@material-ui/core'
 
 import {useI18n} from '@/i18n/helpers'
-import {Searchbar, LoadingError} from '@/components/visual'
+import {Searchbar, LoadingError, Alert} from '@/components/visual'
 import {routeTo} from '@/helpers/routes'
 
 const text = defineMessages({
   searchPlaceholder: 'Search addresses, epochs & slots on the Cardano network',
   noData: 'No items matching current query',
+  helpText: `Lorem ipsum dolor sit amet, meis partem equidem ut nec. Malorum sensibus dissentiet pro
+  ea, to facete inciderint nam. Ad dico abhorreant sed. lus libris intellegam ne, aperiri
+  scaevola ei cum.`,
 })
 
 const useSearchData = (searchQuery, skip) => {
@@ -58,9 +64,43 @@ const getRedirectUrl = (searchResult) => {
   return redirectBuilder(searchResult)
 }
 
+const useStyles = makeStyles((theme) => ({
+  wrapper: {
+    position: 'relative',
+  },
+  gap: {
+    marginTop: theme.spacing.unit * 1.5,
+    position: 'absolute',
+    width: '100%',
+  },
+  helpText: {
+    marginLeft: theme.spacing.unit * 4,
+    marginRight: theme.spacing.unit * 4,
+    marginTop: theme.spacing.unit * 2,
+  },
+  helpTextHidden: {
+    visibility: 'hidden',
+  },
+  alertAppear: {
+    opacity: 0,
+  },
+  alertAppearActive: {
+    opacity: 1,
+    transition: 'opacity 700ms',
+  },
+  alertLeave: {
+    opacity: 1,
+  },
+  alertLeaveActive: {
+    opacity: 0,
+    transition: 'opacity 500ms',
+  },
+}))
+
 const Search = () => {
   const {translate: tr} = useI18n()
   const {history} = useReactRouter()
+  const classes = useStyles()
 
   // "submitted query"
   const [searchQuery, setSearchQuery] = useState('')
@@ -85,8 +125,12 @@ const Search = () => {
     [setSearchQuery, setSearchText]
   )
 
+  const onAlertClose = useCallback(() => setSearchQuery(''), [setSearchQuery])
+
+  const showAlert = !loading && !searchResult && searchQuery
+
   return (
-    <React.Fragment>
+    <div className={classes.wrapper}>
       <Searchbar
         placeholder={tr(text.searchPlaceholder)}
         value={searchText}
@@ -95,10 +139,38 @@ const Search = () => {
         loading={loading}
       />
       {!loading && error && <LoadingError error={error} />}
-      {!loading && !searchResult && searchQuery && (
-        <Typography variant="body1">{tr(text.noData)}</Typography>
-      )}
-    </React.Fragment>
+      <ReactCSSTransitionGroup
+        transitionName={{
+          leave: classes.alertLeave,
+          leaveActive: classes.alertLeaveActive,
+          enter: classes.alertAppear,
+          enterActive: classes.alertAppearActive,
+        }}
+        transitionAppear={false}
+        transitionEnterTimeout={700}
+        transitionLeaveTimeout={500}
+        transitionLeave
+        transitionEnter
+      >
+        {showAlert && (
+          <Alert
+            type="noResults"
+            className={classes.gap}
+            message={tr(text.noData)}
+            title=""
+            onClose={onAlertClose}
+          />
+        )}
+      </ReactCSSTransitionGroup>
+      <Typography
+        variant="caption"
+        color="textSecondary"
+        className={cn(classes.helpText, showAlert && classes.helpTextHidden)}
+        align="center"
+      >
+        {tr(text.helpText)}
+      </Typography>
+    </div>
   )
 }
 

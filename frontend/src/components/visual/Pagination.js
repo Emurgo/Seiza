@@ -58,7 +58,7 @@ export default compose(
   withProps((props) => ({
     pageCount: getPageCount(props.count, props.rowsPerPage),
   })),
-  withStateHandlers((props) => ({goToPage: props.page + 1}), {
+  withStateHandlers((props) => ({goToPage: props.pageCount > 0 ? props.page + 1 : 0}), {
     setGoToPage: () => (goToPage) => ({goToPage}),
   }),
   onDidUpdate(

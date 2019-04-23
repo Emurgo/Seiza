@@ -57,7 +57,7 @@
   "screens.Blockchain.Block.index.outputsCount": "Number of Outputs:",
   "screens.Blockchain.Block.index.slot": "Slot",
   "screens.Blockchain.Block.index.title": "Block",
-  "screens.Blockchain.Block.index.transactionsCount": "# Transactions",
+  "screens.Blockchain.Block.index.transactionsCount": "Transactions",
   "screens.Blockchain.Block.index.value": "Value:",
   "screens.Blockchain.BlockchainHeader.OverviewMetrics.blocksLabel": "Blocks",
   "screens.Blockchain.BlockchainHeader.OverviewMetrics.decentralizationLabel": "Decentralization",

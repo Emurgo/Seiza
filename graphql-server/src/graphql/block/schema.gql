@@ -7,8 +7,7 @@ type Block {
   transactionsCount: Int!
   transactions: [Transaction!]
 
-  # TODO: bad naming, should be totalSent
-  totalSend: AdaAmount!
+  totalSent: AdaAmount!
   totalFees: AdaAmount!
 
   # TODO: bad naming, should be sizeInBytes

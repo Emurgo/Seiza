@@ -5,13 +5,15 @@ import httpAWSES from 'http-aws-es'
 import AWS from 'aws-sdk'
 import {ApolloError} from 'apollo-server'
 import assert from 'assert'
+
+import {validate} from '../graphql/utils'
 import E from './elasticHelpers'
 import type {SortDirection} from './elasticHelpers'
 
-assert(process.env.ELASTIC_URL, 'Please provide $ELASTIC_URL env variable')
 const ELASTIC_URL = process.env.ELASTIC_URL
-assert(process.env.ELASTIC_INDEX, 'Please provide ELASTIC_INDEX env variable')
 const ELASTIC_INDEX = process.env.ELASTIC_INDEX
+validate(!!ELASTIC_INDEX, 'Elastic index must be set', {value: ELASTIC_INDEX})
+validate(!!ELASTIC_URL, 'Elastic url must be set', {value: ELASTIC_URL})
 
 // if AWS credentials were provided via env, we use 'aws-elasticsearch-client'
 const getClient = () => {
@@ -103,7 +105,8 @@ const elasticErrorHandler = (err, meta) => {
 
 const _search = (type: string, body: any) => {
   const request = {
-    index: `{ELASTIC_INDEX}.${type}`,
+    // $FlowFixMe validated above using `validate`
+    index: `${ELASTIC_INDEX}.${type}`,
     type,
     body,
   }

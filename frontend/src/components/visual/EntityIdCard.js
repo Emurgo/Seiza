@@ -1,5 +1,7 @@
 import React from 'react'
 import {Typography, Grid} from '@material-ui/core'
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
+
 import {makeStyles} from '@material-ui/styles'
 import cn from 'classnames'
 
@@ -35,7 +37,15 @@ const useCardStyles = makeStyles((theme) => ({
   },
 }))
 
-const EntityIdCard = ({iconRenderer, label, value, badge, showCopyIcon = true, copyValue}) => {
+const EntityIdCard = ({
+  iconRenderer,
+  label,
+  value,
+  badge,
+  showCopyIcon = true,
+  rawValue,
+  appearAnimation = false,
+}) => {
   const cardClasses = useCardStyles()
   const classes = useStyles()
 
@@ -52,12 +62,7 @@ const EntityIdCard = ({iconRenderer, label, value, badge, showCopyIcon = true, c
         </Grid>
       )}
       <div item className={classes.cardContent}>
-        <EntityCardContent
-          label={label}
-          value={value}
-          showCopyIcon={showCopyIcon}
-          copyValue={copyValue}
-        />
+        <EntityCardContent {...{label, value, showCopyIcon, rawValue, appearAnimation}} />
       </div>
       {badge && (
         <Grid container justify="center" alignItems="center" className={classes.autoWidth}>
@@ -87,12 +92,21 @@ const useContentStyles = makeStyles((theme) => ({
     top: -12, // 1/4 of clipboard icon height to center
     right: 0,
   },
-  hidden: {
+  value: {
     overflow: 'hidden',
+    padding: ({appearAnimation}) => (appearAnimation ? theme.spacing.unit * (2 / 3) : 0),
   },
   correctureWrapper: {
     display: 'flex',
     overflow: 'hidden',
+  },
+  epochAppear: {
+    borderRadius: 10,
+    backgroundColor: theme.palette.secondary.main,
+  },
+  epochAppearActive: {
+    transition: 'background-color 2s ease',
+    backgroundColor: theme.palette.background.paper,
   },
 }))
 
@@ -103,9 +117,10 @@ export const EntityCardContent = ({
   value = '',
   innerRef,
   showCopyIcon = true,
-  copyValue,
+  rawValue,
+  appearAnimation,
 }) => {
-  const classes = useContentStyles({showCopyIcon})
+  const classes = useContentStyles({showCopyIcon, appearAnimation})
 
   return (
     <div className={classes.correctureWrapper}>
@@ -113,13 +128,27 @@ export const EntityCardContent = ({
         <Typography variant="overline" color="textSecondary">
           {label}
         </Typography>
+
         <Grid item className={classes.valueContainer}>
-          <Typography variant="body1" className={classes.hidden}>
-            <EllipsizeMiddle value={value} />
-          </Typography>
+          <ReactCSSTransitionGroup
+            transitionName={{
+              appear: classes.epochAppear,
+              appearActive: classes.epochAppearActive,
+            }}
+            component={React.Fragment}
+            transitionLeave={false}
+            transitionEnter={false}
+            transitionAppear={appearAnimation}
+            transitionAppearTimeout={2000}
+            key={rawValue}
+          >
+            <Typography variant="body1" className={classes.value}>
+              <EllipsizeMiddle value={value} />
+            </Typography>
+          </ReactCSSTransitionGroup>
           {showCopyIcon && (
             <div className={classes.copyToClipboard}>
-              <CopyToClipboard value={copyValue || value} />
+              <CopyToClipboard value={rawValue || value} />
             </div>
           )}
         </Grid>

@@ -334,6 +334,8 @@ const EpochScreen = () => {
           label={translate(messages.entityHeader)}
           value={epochNumber}
           iconRenderer={<img alt="" src={EpochIcon} width={40} height={40} />}
+          appearAnimation
+          rawValue={epochNumber}
         />
         {error ? (
           <LoadingError error={error} />
