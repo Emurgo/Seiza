@@ -6,16 +6,17 @@ enum CurrencyEnum {
 
 # Not sure if Status is a good name
 type Status {
-  epochNumber: Int
-  blockCount: Int
+  epochNumber: Int!
+  blockCount: Int!
+  latestBlock: Block!,
   decentralization: Float # todo scalar fraction
-  price(currency: CurrencyEnum!): Float
+  price(currency: CurrencyEnum!): Float!
   stakePoolCount: Int
-  dataAvailableUpTo: Timestamp
-  currentTime: Timestamp
+  dataAvailableUpTo: Timestamp!
+  currentTime: Timestamp!
 }
 
 type Query {
-  currentStatus: Status
+  currentStatus: Status!
 }
 

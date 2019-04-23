@@ -8,9 +8,11 @@ const fetchCurrentPrice = async ({pricingAPI}, currency) => {
 }
 
 export const currentStatusResolver = (root, args, context) => {
-  const epochNumberResolver = () => fetchLatestBlock(context).then((block) => block.epoch)
+  const latestBlockResolver = () => fetchLatestBlock(context)
 
-  const blockCountResolver = () => fetchLatestBlock(context).then((block) => block.slot)
+  const epochNumberResolver = () => latestBlockResolver().then((block) => block.epoch)
+
+  const blockCountResolver = () => latestBlockResolver().then((block) => block.slot)
 
   // TODO: get this info
   const decentralizationResolver = () => 0
@@ -34,6 +36,7 @@ export const currentStatusResolver = (root, args, context) => {
   return {
     epochNumber: epochNumberResolver,
     blockCount: blockCountResolver,
+    latestBlock: latestBlockResolver,
     decentralization: decentralizationResolver,
     price: priceResolver,
     stakePoolCount: stakePoolCountResolver,
