@@ -140,12 +140,13 @@ export const getIntlFormatters = (intl: any): Formatters => {
 
   const _formatPercent = (x, options) => formatNumber(x, {style: 'percent', ...options})
   const _formatFiat = (x, options = {}) => {
-    const {currency, digits = 4} = options
+    const {currency, digits = 4, ...rest} = options
     return formatNumber(x, {
       style: 'currency',
       currency,
       minimumFractionDigits: digits,
       maximumFractionDigits: digits,
+      ...rest,
     })
   }
 

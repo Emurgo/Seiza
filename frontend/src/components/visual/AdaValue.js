@@ -61,7 +61,11 @@ const AdaFiatTooltip = ({value}) => {
         tr(tooltipMessages.priceError)
       ) : (
         tr(tooltipMessages.currentPrice, {
-          value: formatFiat(convertAdaToFiat(value, price), {currency, digits: 2}),
+          value: formatFiat(convertAdaToFiat(value, price), {
+            currency,
+            currencyDisplay: 'code',
+            digits: 2,
+          }),
         })
       )}
     </div>
@@ -175,7 +179,7 @@ const AdaValue = ({value, noValue, showCurrency, showSign = 'auto', colorful = f
   const {integral, fractional} = formatAdaSplit(value, {showSign})
 
   return (
-    <Tooltip enterDelay={1000} title={<AdaFiatTooltip value={value} />} placement="top">
+    <Tooltip enterDelay={250} title={<AdaFiatTooltip value={value} />} placement="top">
       <span>
         <Typography
           variant="body1"
