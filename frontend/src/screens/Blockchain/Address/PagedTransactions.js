@@ -3,6 +3,7 @@ import React from 'react'
 import {compose} from 'redux'
 import {withStateHandlers, withProps} from 'recompose'
 import {defineMessages} from 'react-intl'
+import idx from 'idx'
 import {Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
@@ -35,6 +36,7 @@ const messages = defineMessages({
   all: 'All',
   sent: 'Sent',
   received: 'Received',
+  NA: 'N/A',
 })
 
 const useStyles = makeStyles((theme) => ({
@@ -48,9 +50,40 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const TransactionCard = ({transaction: tx}) => {
-  const {translate: tr, formatInt} = useI18n()
+  const {translate: tr, formatInt, formatTimestamp} = useI18n()
   const classes = useStyles()
   const {Row, Label, Value} = SummaryCard
+  const NA = tr(messages.NA)
+
+  const data = {
+    amount: idx(tx, (_) => _.amount),
+    fees: idx(tx, (_) => _.fees),
+    blockHash: idx(tx, (_) => _.block.blockHash),
+    epoch: idx(tx, (_) => _.block.epoch),
+    slot: idx(tx, (_) => _.block.slot),
+    creationDate: idx(tx, (_) => _.creationDate),
+  }
+
+  const __ = {
+    amount: <AdaValue showCurrency value={data.amount} noValue={NA} />,
+    fees: <AdaValue showCurrency value={data.fees} noValue={NA} />,
+    epoch:
+      data.epoch != null ? (
+        // $FlowFixMe flow does not understand idx precondition
+        <Link to={routeTo.epoch(data.epoch)}>{formatInt(data.epoch)}</Link>
+      ) : (
+        NA
+      ),
+    slot:
+      data.slot != null ? (
+        // $FlowFixMe flow does not understand idx precondition
+        <Link to={routeTo.block(data.blockHash)}>{formatInt(data.slot)}</Link>
+      ) : (
+        NA
+      ),
+    creationDate: formatTimestamp(data.creationDate, {defaultValue: NA}),
+  }
+
   return (
     <Card>
       <div className={classes.txCard}>
@@ -65,13 +98,11 @@ const TransactionCard = ({transaction: tx}) => {
           <Grid container direction="column">
             <Row>
               <Label>{tr(messages.amount)}</Label>
-              <Value>TODO</Value>
+              <Value>{__.amount}</Value>
             </Row>
             <Row>
               <Label>{tr(messages.fee)}</Label>
-              <Value>
-                <AdaValue showCurrency value={tx.fees} />
-              </Value>
+              <Value>{__.fees}</Value>
             </Row>
           </Grid>
         </Grid>
@@ -80,12 +111,12 @@ const TransactionCard = ({transaction: tx}) => {
             <Row>
               <Label>{tr(messages.epochAndSlot)}</Label>
               <Value>
-                {formatInt(tx.block.epoch)} / {formatInt(tx.block.slot)}
+                {__.epoch} / {__.slot}
               </Value>
             </Row>
             <Row>
               <Label>{tr(messages.creationDate)}</Label>
-              <Value>TODO</Value>
+              <Value>{__.creationDate}</Value>
             </Row>
           </Grid>
         </Grid>
