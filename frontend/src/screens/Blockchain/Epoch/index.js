@@ -42,7 +42,7 @@ const messages = defineMessages({
   blocksCount: 'Blocks',
   blocksOutOfSlots: '{blocks} out of {slots} slots',
   txCount: 'Transactions',
-  totalAdaCirculation: 'Total ADA Circulation',
+  totalAdaSupply: 'Total ADA supply',
   totalFees: 'Total Fees',
   totalAdaStaked: 'Total ADA Staked',
   totalStakingRewards: 'Total Staking Rewards',
@@ -125,7 +125,7 @@ const EpochSummaryCard = ({epoch, loading}) => {
         <Value>{data1.txCount}</Value>
       </Row>
       <Row>
-        <Label>{translate(messages.totalAdaCirculation)}</Label>
+        <Label>{translate(messages.totalAdaSupply)}</Label>
         <Value>{data1.totalAdaSupply}</Value>
       </Row>
       <Row>
