@@ -27,6 +27,8 @@ import TransactionCard from '@/components/common/TransactionCard'
 
 import {useI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
+import {ReactComponent as NextBlockIcon} from '@/assets/icons/next-epoch.svg'
+import {ReactComponent as PreviousBlockIcon} from '@/assets/icons/previous-epoch.svg'
 
 const blockSummaryLabels = defineMessages({
   epoch: 'Epoch',
@@ -153,11 +155,19 @@ const useNavigationStyles = makeStyles((theme) => ({
     width: '250px',
     margin: '0 30px',
   },
+  prevBlockIcon: {
+    position: 'absolute',
+    left: 15,
+  },
+  nextBlockIcon: {
+    position: 'absolute',
+    right: 15,
+  },
 }))
 
 const messages = defineMessages({
-  goPreviousBlock: '← Previous Block',
-  goNextBlock: 'Next Block →',
+  goPreviousBlock: 'Previous Block',
+  goNextBlock: 'Next Block',
 })
 
 const BlockNavigation = ({block}) => {
@@ -165,6 +175,7 @@ const BlockNavigation = ({block}) => {
   const {translate} = useI18n()
 
   const nav = useBlockNavigation(block)
+  // TODO: consider creating abstraction for this layout as it is same as on Epoch screen
   return (
     <Grid container direction="row" justify="center">
       <Button
@@ -176,6 +187,7 @@ const BlockNavigation = ({block}) => {
         to={nav.linkPrev}
         component={Link}
       >
+        <PreviousBlockIcon className={classes.prevBlockIcon} />
         {translate(messages.goPreviousBlock)}
       </Button>
       <Button
@@ -187,6 +199,7 @@ const BlockNavigation = ({block}) => {
         to={nav.linkNext}
         component={Link}
       >
+        <NextBlockIcon className={classes.nextBlockIcon} />
         {translate(messages.goNextBlock)}
       </Button>
     </Grid>

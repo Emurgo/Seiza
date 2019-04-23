@@ -6,6 +6,9 @@ import {makeStyles} from '@material-ui/styles'
 import {fade} from '@material-ui/core/styles/colorManipulator'
 
 const FADE_FACTOR = 0.6
+// not sure REFERENCE_GRADIENT is the best naming, it was copied from
+// https://codepen.io/miraviolet/pen/ZobWEg and extracted to this constant here
+const REFERENCE_GRADIENT = 'linear-gradient(rgba(255, 255, 255, 0), rgba(255, 255, 255, 0))'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -18,7 +21,9 @@ const useStyles = makeStyles((theme) => ({
   gradient: {
     'background': theme.palette.buttonsGradient.normal,
     'color': theme.palette.getContrastText('#715BD3'),
+    'boxShadow': `0px 8px 20px ${fade(theme.palette.text.primary, 0.08)}`,
     '&:hover': {
+      boxShadow: `0px 10px 30px ${fade(theme.palette.text.primary, 0.14)}`,
       background: theme.palette.buttonsGradient.hover,
     },
   },
@@ -27,31 +32,32 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '1000px',
   },
   secondary: {
+    // https://codepen.io/miraviolet/pen/ZobWEg
     'background': theme.palette.background.default,
     'color': theme.palette.primary.main,
     'borderRadius': ({rounded}) => (rounded ? '1000px' : null),
+
     '&:hover': {
-      boxShadow: `0px 10px 30px ${fade(theme.palette.text.primary, 0.11)}`,
-      background: theme.palette.background.default,
+      backgroundImage: `${REFERENCE_GRADIENT}, ${theme.palette.buttonsGradient.hover}`,
     },
-    // eslint-disable-next-line
-    // https://stackoverflow.com/questions/5706963/possible-to-use-border-radius-together-with-a-border-image-which-has-a-gradient
+    'border': '1px solid transparent',
+    'backgroundImage': `${REFERENCE_GRADIENT}, ${theme.palette.buttonsGradient.normal}`,
+    'backgroundOrigin': 'border-box',
+    'backgroundClip': 'content-box, border-box',
+    'boxShadow': `2px 1000px 1px ${theme.palette.background.default} inset`,
+    // :after is used only for proper shadow
     '&:after': {
-      position: 'absolute',
-      top: '-1px',
-      bottom: '-1px',
-      left: '-1px',
-      right: '-1px',
-      background: theme.palette.buttonsGradient.normal,
-      content: '""',
-      zIndex: '-1', // Note: non-working when in modal
       borderRadius: ({rounded}) => (rounded ? '1000px' : '4px'), // 4px is material-ui Button's default
+      content: '""',
+      position: 'absolute',
+      width: '100%',
+      height: '100%',
+      background: 'transparent',
+      bottom: -1,
+      boxShadow: `0px 8px 20px ${fade(theme.palette.text.primary, 0.08)}`,
     },
     '&:hover:after': {
-      background: theme.palette.buttonsGradient.hover,
-    },
-    '&:focus:after': {
-      background: theme.palette.buttonsGradient.hover,
+      boxShadow: `0px 10px 30px ${fade(theme.palette.text.primary, 0.14)}`,
     },
   },
   primary: {
@@ -65,14 +71,14 @@ const useStyles = makeStyles((theme) => ({
   disabled: {
     background: `${fade(theme.palette.primary.main, 0.25)} !important`,
     color: `${theme.palette.background.default} !important`,
+    boxShadow: 'none',
   },
   secondaryDisabled: {
-    'background': 'transparent !important',
-    'color': `${fade(theme.palette.primary.main, 0.35)} !important`,
-    'border': `1px solid ${fade(theme.palette.primary.main, 0.35)}`,
-    '&:after': {
-      background: 'transparent',
-    },
+    backgroundImage: `${REFERENCE_GRADIENT},
+      ${theme.palette.buttonsGradient.hover}
+    } !important`,
+    color: `${theme.palette.primary.main} !important`,
+    opacity: 0.35,
   },
 }))
 
@@ -107,7 +113,7 @@ const Button = ({
         [classes.primary]: primary,
       })}
       classes={{
-        disabled: cn(classes.disabled, secondary && classes.secondaryDisabled),
+        disabled: cn(!secondary && classes.disabled, secondary && classes.secondaryDisabled),
       }}
       {...props}
     >
