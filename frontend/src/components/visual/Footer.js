@@ -170,7 +170,7 @@ const SocialIcon = ({to, className}) => {
   const classes = useMainFooterStyles()
   return (
     <span className={classes.socialIconWrapper}>
-      <ExternalLink to={to}>
+      <ExternalLink to={to} target="_blank">
         <i className={classnames(classes.socialIcon, className)} />
       </ExternalLink>
     </span>

@@ -3919,4 +3919,5 @@ declare module '@material-ui/core' {
   declare export var createStyles: <T>(arg: T) => T
 
   declare export var Popper: any
+  declare export var Link: any
 }
