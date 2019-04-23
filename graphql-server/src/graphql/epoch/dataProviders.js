@@ -41,6 +41,7 @@ const mockedEpoch = (epochNumber: number): Epoch => {
     currentTs <= startTs ? 0 : currentTs >= endTs ? 1 : (currentTs - startTs) / (endTs - startTs)
 
   return {
+    epochNumber,
     startTime: moment(startTs * 1000),
     endTime: moment(endTs * 1000),
     progress,

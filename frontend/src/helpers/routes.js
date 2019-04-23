@@ -8,6 +8,7 @@ export const routeTo = {
   blockchain: () => BLOCKCHAIN_ROUTE,
   transaction: (txHash: string) => `${BLOCKCHAIN_ROUTE}/transaction/${txHash}`,
   block: (blockHash: string) => `${BLOCKCHAIN_ROUTE}/block/${blockHash}`,
+  slot: (epoch: string, slot: string) => `${BLOCKCHAIN_ROUTE}/epoch/${epoch}/slot/${slot}`,
   address: (address58: string) => `${BLOCKCHAIN_ROUTE}/address/${address58}`,
   stakepool: (poolHash: string) => `${BLOCKCHAIN_ROUTE}/stakepool/${poolHash}`,
   epoch: (epochNumber: number) => `${BLOCKCHAIN_ROUTE}/epoch/${epochNumber}`,

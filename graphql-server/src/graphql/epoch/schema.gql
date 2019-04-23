@@ -11,6 +11,7 @@ type EpochSummary {
 }
 
 type Epoch {
+  epochNumber: Int!
   startTime: Timestamp!
   endTime: Timestamp!
   progress: Int!

@@ -17,6 +17,9 @@ export const validate = (cond: boolean, message: string, ctx: any) => {
   }
 }
 
+// TODO: type better or use other compose function
+export const compose = (...fns: any) => (x: any) => fns.reduceRight((y, f) => f(y), x)
+
 export const parseAdaValue = (value: RawAdaValue): BigNumber => {
   validate(value.integers != null, 'Invalid raw ada value', {value})
   validate(value.decimals != null, 'Invalid raw ada value', {value})

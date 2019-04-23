@@ -10,7 +10,12 @@ import stakepoolsResolvers from './stakingInfo/resolvers'
 import transactionResolvers from './transaction/resolvers'
 
 import {fetchAddress} from './address/dataProviders'
-import {fetchBlockByHash, fetchPreviousBlock, fetchNextBlock} from './block/dataProviders'
+import {
+  fetchBlockByHash,
+  fetchPreviousBlock,
+  fetchNextBlock,
+  fetchBlockBySlot,
+} from './block/dataProviders'
 import {fetchTransaction} from './transaction/dataProviders'
 import {fetchBootstrapEraPool, fetchBootstrapEraPoolSummary} from './stakepool/dataProviders'
 
@@ -42,10 +47,13 @@ const _resolvers = {
         hasMore: result.cursor > 0,
       }
     },
+    // TODO: move to Block folder
     block: (root, args, context) => fetchBlockByHash(context, args.blockHash),
+    slot: (root, args, context) => fetchBlockBySlot(context, {epoch: args.epoch, slot: args.slot}),
     blockChainSearch: blockChainSearchResolver,
   },
   Block: {
+    isEmpty: (block) => block.blockHash == null,
     transactions: (block, args, context) => block._txs.map((id) => fetchTransaction(context, id)),
     blockLeader: (block, args, context) => fetchBootstrapEraPool(null, block._blockLeader),
     previousBlock: (block, args, context) =>

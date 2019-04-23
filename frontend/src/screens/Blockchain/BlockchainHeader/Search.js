@@ -18,9 +18,7 @@ import {routeTo} from '@/helpers/routes'
 const text = defineMessages({
   searchPlaceholder: 'Search addresses, epochs & slots on the Cardano network',
   noData: 'No items matching current query',
-  helpText: `Lorem ipsum dolor sit amet, meis partem equidem ut nec. Malorum sensibus dissentiet pro
-  ea, to facete inciderint nam. Ad dico abhorreant sed. lus libris intellegam ne, aperiri
-  scaevola ei cum.`,
+  helpText: 'Search for entity using its "hash" or use "epoch:number,slot:number" syntax',
 })
 
 const useSearchData = (searchQuery, skip) => {
@@ -38,6 +36,11 @@ const useSearchData = (searchQuery, skip) => {
             }
             ... on Block {
               blockHash
+              epoch
+              slot
+            }
+            ... on Epoch {
+              epochNumber
             }
           }
         }
@@ -48,6 +51,7 @@ const useSearchData = (searchQuery, skip) => {
       skip,
     }
   )
+
   const matchedItems = idx(data, (_) => _.blockChainSearch.items) || []
   assert(matchedItems.length <= 1)
   return {error, loading, searchResult: matchedItems.length ? matchedItems[0] : null}
@@ -57,7 +61,11 @@ const getRedirectUrl = (searchResult) => {
   const redirectBuilder = {
     Address: (searchResult) => routeTo.address(searchResult.address58),
     Transaction: (searchResult) => routeTo.transaction(searchResult.txHash),
-    Block: (searchResult) => routeTo.block(searchResult.blockHash),
+    Block: (searchResult) =>
+      searchResult.blockHash
+        ? routeTo.block(searchResult.blockHash)
+        : routeTo.slot(searchResult.epoch, searchResult.slot),
+    Epoch: (searchResult) => routeTo.epoch(searchResult.epochNumber),
   }[searchResult.__typename]
 
   assert(redirectBuilder)
@@ -127,7 +135,7 @@ const Search = () => {
 
   const onAlertClose = useCallback(() => setSearchQuery(''), [setSearchQuery])
 
-  const showAlert = !loading && !searchResult && searchQuery
+  const showAlert = searchQuery && !error && !loading && !searchResult
 
   return (
     <div className={classes.wrapper}>
