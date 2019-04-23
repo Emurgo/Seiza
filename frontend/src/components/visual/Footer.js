@@ -18,7 +18,7 @@ const messages = defineMessages({
 const subscribeMessages = defineMessages({
   subscribeHeader: "Let's stay in touch!",
   subscribeText:
-    'Get access to subscriber and be the first to know when we 🚀launch something new!',
+    'Subscribe to Seiza to receive news and updates about staking, rewards and new features 🚀!',
   emailButton: 'Email',
   subscribeButton: 'Subscribe',
 })
