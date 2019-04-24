@@ -5,6 +5,7 @@ import useReactRouter from 'use-react-router'
 import {defineMessages} from 'react-intl'
 import idx from 'idx'
 import gql from 'graphql-tag'
+import cn from 'classnames'
 import {makeStyles} from '@material-ui/styles'
 import {Typography, Grid} from '@material-ui/core'
 
@@ -150,6 +151,7 @@ const useBreakdownStyles = makeStyles((theme) => ({
       marginBottom: -4,
     },
   },
+  monospace: theme.typography._monospace,
 }))
 
 const BreakdownItem = (props) => {
@@ -172,7 +174,7 @@ const BreakdownItem = (props) => {
               {captionPrefix}
               <div className={breakdownClasses.spaced}>
                 <Link to={routeTo.address(address58)} underline="none">
-                  <div className={breakdownClasses.underlineHover}>
+                  <div className={cn(breakdownClasses.underlineHover, breakdownClasses.monospace)}>
                     <EllipsizeMiddle value={address58} />
                   </div>
                 </Link>
