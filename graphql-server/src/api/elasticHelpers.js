@@ -116,7 +116,7 @@ const agg = {
   // aggregation results
   // as elastic cannot be easily convinced
   // otherwise
-  nest: (defs: any) => ({
+  _nest: (defs: any) => ({
     encode: () => ({
       filter: {
         match_all: {},
@@ -126,7 +126,7 @@ const agg = {
     decode: (x: any) => agg._decode(defs, x),
   }),
   sumAda: (field: string) =>
-    agg.nest({
+    agg._nest({
       integers: agg.sum(`${field}.integers`),
       decimals: agg.sum(`${field}.decimals`),
       full: agg.sum(`${field}.full`),
@@ -155,6 +155,27 @@ const agg = {
   // for repeated fields?
   countNotNull: (field: string) => ({
     encode: () => ({value_count: {field}}),
+    decode: (x: any) => x.value,
+  }),
+  countNull: (field: string) => ({
+    encode: () => ({missing: {field}}),
+    // Grr, elastic is just plain weird. Every other aggregation is .value
+    decode: (x: any) => x.doc_count,
+  }),
+  // Note(ppershing): Precision is some opaque value with maximum 40000
+  // This guarantees generally <1% error
+  // For details see
+  // eslint-disable-next-line max-len
+  // https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-metrics-cardinality-aggregation.html#_counts_are_approximate
+  countDistinctApprox: (field: string, precision: number = 40000) => ({
+    encode: () => ({
+      cardinality: {
+        field,
+        // Note: in case you need to include nulls in the result
+        // add "missing: 'default value'" property
+        precision_threshold: precision,
+      },
+    }),
     decode: (x: any) => x.value,
   }),
 }

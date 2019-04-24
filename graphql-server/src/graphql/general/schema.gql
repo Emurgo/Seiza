@@ -12,7 +12,7 @@ type GeneralInfo {
   movements: AdaAmount
   totalFees: AdaAmount
   emptySlotsCount: Int
-  addresses: AdaAmount
+  activeAddresses: AdaAmount
 }
 
 enum InfoPeriod {

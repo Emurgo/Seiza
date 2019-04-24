@@ -34,7 +34,7 @@ const generalInfoMessages = defineMessages({
   transactions: 'Txs:',
   movements: 'Movements:',
   totalFees: 'Fees:',
-  addresses: 'Addresses:',
+  activeAddresses: 'Active addresses:',
   emptySlotsCount: 'Empty slots:',
 })
 
@@ -77,8 +77,8 @@ const getGeneralFields = ({translate, formatAda, formatInt}) => [
     getValue: (rawValue) => <AdaValue value={rawValue} />,
   },
   {
-    id: 'addresses',
-    label: translate(generalInfoMessages.addresses),
+    id: 'activeAddresses',
+    label: translate(generalInfoMessages.activeAddresses),
     getValue: (rawValue) => formatInt(rawValue),
   },
   {
@@ -122,7 +122,7 @@ export const GENERAL_INFO_FRAGMENT = gql`
     txCount
     totalFees
     movements
-    addresses
+    activeAddresses
     emptySlotsCount
   }
 `
