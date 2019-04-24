@@ -11,6 +11,7 @@ import {makeStyles} from '@material-ui/styles'
 import {Tooltip} from '@/components/visual'
 import type {ShowSign} from '@/i18n/helpers'
 import {useI18n} from '@/i18n/helpers'
+import useCurrency from '@/components/hooks/useCurrency'
 import LoadingDots from './LoadingDots'
 
 const useCurrentPrice = (currency) => {
@@ -49,8 +50,7 @@ const convertAdaToFiat = (amount: string, rate: number): number => {
 }
 
 const AdaFiatTooltip = ({value}) => {
-  // TODO: get this from context
-  const currency = 'USD'
+  const [currency] = useCurrency()
   const {loading, error, price} = useCurrentPrice(currency)
   const {formatFiat, translate: tr} = useI18n()
   return (
