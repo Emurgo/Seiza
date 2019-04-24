@@ -44,7 +44,7 @@ const messages = defineMessages({
   size: 'Size:',
   fees: 'Transaction Fees:',
   notAvailable: 'N/A',
-  addressCount: '#{count, plural, =0 {# addresses} one {# address} other {# addresses}}',
+  addressCount: '{count, plural, =0 {# addresses} one {# address} other {# addresses}}',
   from: 'From:',
   to: 'To:',
   seeAll: 'See all addresses',
