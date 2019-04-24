@@ -9,7 +9,6 @@ import {
   AdaValue,
   CircularProgressBar,
   VisualHash,
-  Card,
 } from '@/components/visual'
 import WithModalState from '@/components/headless/modalState'
 import {withI18n} from '@/i18n/helpers'
@@ -198,15 +197,13 @@ const ExtraContent = withStyles(contentStyles)(({data, classes}) => (
 const StakePool = ({classes, data, i18n: {translate}}) => (
   <WithModalState>
     {({isOpen, toggle}) => (
-      <Card>
-        <ExpandableCard
-          expanded={isOpen}
-          onChange={toggle}
-          renderHeader={() => <Content data={data} />}
-          renderExpandedArea={() => <ExtraContent data={data} />}
-          footer={translate(isOpen ? messages.hideDesc : messages.showDesc)}
-        />
-      </Card>
+      <ExpandableCard
+        expanded={isOpen}
+        onChange={toggle}
+        renderHeader={() => <Content data={data} />}
+        renderExpandedArea={() => <ExtraContent data={data} />}
+        footer={translate(isOpen ? messages.hideDesc : messages.showDesc)}
+      />
     )}
   </WithModalState>
 )

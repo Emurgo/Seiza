@@ -13,6 +13,7 @@ import {
 } from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
+import {Card} from '@/components/visual'
 
 const useStyles = makeStyles((theme) => ({
   icon: {
@@ -48,7 +49,7 @@ const useSummaryClasses = makeStyles((theme) => ({
   root: {
     margin: '0 !important',
     minHeight: 'auto !important',
-    borderTop: `1px solid ${theme.palette.unobtrusiveContentHighlight}`,
+    borderTop: `1px solid ${theme.palette.contentUnfocus}`,
   },
   content: {
     margin: '0 !important',
@@ -79,7 +80,7 @@ type ExpandableCardPT = {
   className?: string,
 }
 
-const ExpandableCardContent = (props: ExpandableCardPT) => {
+export const ExpandableCardContent = (props: ExpandableCardPT) => {
   const {expanded, onChange, renderExpandedArea, renderHeader, footer, className} = props
 
   const classes = useStyles()
@@ -125,4 +126,10 @@ const ExpandableCardContent = (props: ExpandableCardPT) => {
   )
 }
 
-export default ExpandableCardContent
+const ExpandableCard = (props: ExpandableCardPT) => (
+  <Card>
+    <ExpandableCardContent {...props} />
+  </Card>
+)
+
+export default ExpandableCard

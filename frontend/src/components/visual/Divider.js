@@ -6,10 +6,10 @@ import {mergeStylesheets} from '@/helpers/styles'
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    color: theme.palette.contentUnfocus,
+    backgroundColor: theme.palette.contentUnfocus,
   },
   light: {
-    color: theme.palette.unobtrusiveContentHighlight,
+    backgroundColor: theme.palette.unobtrusiveContentHighlight,
   },
 }))
 

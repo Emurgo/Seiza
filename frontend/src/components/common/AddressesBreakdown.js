@@ -4,18 +4,21 @@ import cn from 'classnames'
 import {defineMessages} from 'react-intl'
 import WithModalState from '@/components/headless/modalState'
 import {
-  ExpandableCard,
+  ExpandableCardContent,
   Divider,
   EllipsizeMiddle,
   ContentSpacing,
   AdaValue,
   Link,
+  Card,
 } from '@/components/visual'
 import {makeStyles} from '@material-ui/styles'
 import {Typography, Grid} from '@material-ui/core'
 
 import {useI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
+
+import type {Transaction} from '@/__generated__/schema.flow'
 
 const messages = defineMessages({
   addressCount: '{count, plural, =0 {# addresses} one {# address} other {# addresses}}',
@@ -28,12 +31,8 @@ const messages = defineMessages({
 const HeaderContent = ({caption, value}) => {
   return (
     <Grid container justify="space-between" alignItems="center" direction="row">
-      <Grid item>
-        <Typography variant="caption">{caption}</Typography>
-      </Grid>
-      <Grid item>
-        <Typography variant="body1">{value}</Typography>
-      </Grid>
+      <Grid item>{caption}</Grid>
+      <Grid item>{value}</Grid>
     </Grid>
   )
 }
@@ -44,16 +43,9 @@ const useCommonStyles = makeStyles((theme) => ({
   },
 }))
 
-const useHeaderStyles = makeStyles((theme) => ({
-  text: {
-    textTransform: 'uppercase',
-  },
-}))
-
 const Header = ({transaction}) => {
   const {translate: tr} = useI18n()
   const commonClasses = useCommonStyles()
-  const classes = useHeaderStyles()
   return (
     <Grid container direction="row">
       <Grid item xs={6} className={commonClasses.leftSide}>
@@ -61,10 +53,10 @@ const Header = ({transaction}) => {
           <HeaderContent
             caption={
               <React.Fragment>
-                <Typography variant="caption" inline color="textSecondary" className={classes.text}>
+                <Typography variant="body1" inline color="textSecondary">
                   {tr(messages.from)}
                 </Typography>{' '}
-                <Typography variant="caption" inline color="textPrimary">
+                <Typography variant="body1" inline color="textPrimary">
                   {tr(messages.addressCount, {count: transaction.inputs.length})}
                 </Typography>
               </React.Fragment>
@@ -78,10 +70,10 @@ const Header = ({transaction}) => {
           <HeaderContent
             caption={
               <React.Fragment>
-                <Typography variant="caption" inline color="textSecondary" className={classes.text}>
+                <Typography variant="body1" inline color="textSecondary">
                   {tr(messages.to)}
                 </Typography>{' '}
-                <Typography variant="caption" inline color="textPrimary">
+                <Typography variant="body1" inline color="textPrimary">
                   {tr(messages.addressCount, {count: transaction.outputs.length})}
                 </Typography>
               </React.Fragment>
@@ -95,28 +87,17 @@ const Header = ({transaction}) => {
 }
 
 const BreakdownList = ({transaction}) => {
-  const {formatInt} = useI18n()
   const commonClasses = useCommonStyles()
   return (
     <Grid container direction="row">
       <Grid item xs={6} className={commonClasses.leftSide}>
         {transaction.inputs.map((input, index, items) => (
-          <BreakdownItem
-            key={index}
-            target={input}
-            captionPrefix={<React.Fragment>#&nbsp;{formatInt(index + 1)}&nbsp;</React.Fragment>}
-            valuePrefix={'-'}
-          />
+          <BreakdownItem key={index} target={input} valuePrefix={'-'} />
         ))}
       </Grid>
       <Grid item xs={6}>
         {transaction.outputs.map((output, index, items) => (
-          <BreakdownItem
-            key={index}
-            target={output}
-            captionPrefix={<React.Fragment>#&nbsp;{formatInt(index + 1)}&nbsp;</React.Fragment>}
-            valuePrefix={'+'}
-          />
+          <BreakdownItem key={index} target={output} valuePrefix={'+'} />
         ))}
       </Grid>
     </Grid>
@@ -146,7 +127,7 @@ const useBreakdownItemStyles = makeStyles((theme) => ({
 }))
 
 const BreakdownItem = (props) => {
-  const {valuePrefix, captionPrefix, target} = props
+  const {valuePrefix, target} = props
   const {address58, amount} = target
   const breakdownClasses = useBreakdownItemStyles()
   return (
@@ -160,9 +141,8 @@ const BreakdownItem = (props) => {
         className={breakdownClasses.rowSpacing}
       >
         <Grid item xs={6}>
-          <Typography variant="caption" color="textSecondary">
+          <Typography variant="body1" color="textSecondary">
             <div className="d-flex">
-              {captionPrefix}
               <div className={breakdownClasses.spaced}>
                 <Link to={routeTo.address(address58)} underline="none">
                   <div className={cn(breakdownClasses.underlineHover, breakdownClasses.monospace)}>
@@ -183,28 +163,16 @@ const BreakdownItem = (props) => {
   )
 }
 
-type Address58Amount = {
-  address58: string,
-  amount: string,
-}
-
-type RequiredTxProps = {
-  totalInput: string,
-  totalOutput: string,
-  inputs: Array<Address58Amount>,
-  outputs: Array<Address58Amount>,
-}
-
 type Props = {
-  tx: RequiredTxProps,
+  tx: Transaction,
 }
 
-const AddressesBreakdown = ({tx}: Props) => {
+export const AddressesBreakdownContent = ({tx}: Props) => {
   const {translate: tr} = useI18n()
   return (
     <WithModalState>
       {({isOpen, toggle}) => (
-        <ExpandableCard
+        <ExpandableCardContent
           expanded={isOpen}
           onChange={toggle}
           renderHeader={() => <Header transaction={tx} />}
@@ -215,5 +183,11 @@ const AddressesBreakdown = ({tx}: Props) => {
     </WithModalState>
   )
 }
+
+const AddressesBreakdown = (props: Props) => (
+  <Card>
+    <AddressesBreakdownContent {...props} />
+  </Card>
+)
 
 export default AddressesBreakdown
