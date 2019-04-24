@@ -10,7 +10,7 @@ import {makeStyles, ThemeProvider} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
 
 import config from './config'
-import {routeTo} from './helpers/routes'
+import {routeTo, isBlockchainTabActive} from './helpers/routes'
 import {provideIntl} from './components/HOC/intl'
 import {provideTheme, withTheme, THEME_DEFINITIONS} from './components/HOC/theme'
 import {Navbar, Footer} from './components/visual'
@@ -21,7 +21,6 @@ import Home from './screens/Home'
 import Blockchain from './screens/Blockchain'
 import Staking from './screens/Staking'
 import More from './screens/More'
-import PageNotFound from './screens/PageNotFound'
 import LanguageSelect from '@/components/common/LanguageSelect'
 import ThemeSelect from '@/components/common/ThemeSelect'
 
@@ -52,7 +51,12 @@ const useAppStyles = makeStyles((theme) => ({
 const getTranslatedNavItems = (translate) =>
   [
     {link: routeTo.home(), label: translate(navigationMessages.home), __hide: false},
-    {link: routeTo.blockchain(), label: translate(navigationMessages.blockchain), __hide: false},
+    {
+      link: routeTo.blockchain(),
+      label: translate(navigationMessages.blockchain),
+      __hide: false,
+      getIsActive: isBlockchainTabActive,
+    },
     {
       link: routeTo.staking.home(),
       label: translate(navigationMessages.staking),
@@ -105,12 +109,13 @@ const App = () => {
             <Switch>
               <Redirect exact from="/" to={routeTo.home()} />
               <Route exact path={routeTo.home()} component={Home} />
-              <Route path={routeTo.blockchain()} component={Blockchain} />
               {config.showStakingData && (
                 <Route path={routeTo.staking.home()} component={Staking} />
               )}
               {config.showStakingData && <Route path={routeTo.more()} component={More} />}
-              <Route component={PageNotFound} />
+              {/* We route all other routes to Blockchain, so the pageNotFound is rendered within
+                  blockchain layout. Consider moving all blockchain routes here instead. */}
+              <Route component={Blockchain} />
             </Switch>
           </Grid>
           <Grid item>

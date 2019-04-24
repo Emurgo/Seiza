@@ -1,17 +1,54 @@
 // @flow
-const BLOCKCHAIN_ROUTE = '/blockchain'
+import {ObjectValues} from '@/helpers/flow'
 const STAKING_ROUTE = '/staking'
-const STAKING_KEY_ROUTE = `${BLOCKCHAIN_ROUTE}/staking-key`
+
+// TODO: should this be added to blockchain routes?
+const STAKING_KEY_ROUTE = '/staking-key'
+
+const BLOCKCHAIN_ROUTES = {
+  SLOT: {
+    doesMatch: (pathname) => pathname.match(/^\/epoch\/([^/]*)\/slot\/([^/]*)$/),
+    routeTo: (epoch: string, slot: string) => `/epoch/${epoch}/slot/${slot}`,
+  },
+  BLOCK: {
+    doesMatch: (pathname) => pathname.match(/^\/block\/([^/]*)$/),
+    routeTo: (blockHash: string) => `/block/${blockHash}`,
+  },
+  BLOCKS: {
+    doesMatch: (pathname) => pathname.match(/^\/blocks$/),
+    routeTo: () => '/blocks',
+  },
+  EPOCH: {
+    doesMatch: (pathname) => pathname.match(/^\/epoch\/([^/]*)$/),
+    routeTo: (epochNumber: number) => `/epoch/${epochNumber}`,
+  },
+  TRANSACTION: {
+    doesMatch: (pathname) => pathname.match(/^\/transaction\/([^/]*)$/),
+    routeTo: (txHash: string) => `/transaction/${txHash}`,
+  },
+  ADDRESS: {
+    doesMatch: (pathname) => pathname.match(/^\/address\/([^/]*)$/),
+    routeTo: (address58: string) => `/address/${address58}`,
+  },
+  STAKE_POOL: {
+    doesMatch: (pathname) => pathname.match(/^\/stakepool\/([^/]*)$/),
+    routeTo: (poolHash: string) => `/stakepool/${poolHash}`,
+  },
+}
+
+export const isBlockchainTabActive = (pathname: string) => {
+  return ObjectValues(BLOCKCHAIN_ROUTES).some(({doesMatch}) => doesMatch(pathname))
+}
 
 export const routeTo = {
   home: () => '/home',
-  blockchain: () => BLOCKCHAIN_ROUTE,
-  transaction: (txHash: string) => `${BLOCKCHAIN_ROUTE}/transaction/${txHash}`,
-  block: (blockHash: string) => `${BLOCKCHAIN_ROUTE}/block/${blockHash}`,
-  slot: (epoch: string, slot: string) => `${BLOCKCHAIN_ROUTE}/epoch/${epoch}/slot/${slot}`,
-  address: (address58: string) => `${BLOCKCHAIN_ROUTE}/address/${address58}`,
-  stakepool: (poolHash: string) => `${BLOCKCHAIN_ROUTE}/stakepool/${poolHash}`,
-  epoch: (epochNumber: number) => `${BLOCKCHAIN_ROUTE}/epoch/${epochNumber}`,
+  blockchain: BLOCKCHAIN_ROUTES.BLOCKS.routeTo,
+  transaction: BLOCKCHAIN_ROUTES.TRANSACTION.routeTo,
+  block: BLOCKCHAIN_ROUTES.BLOCK.routeTo,
+  slot: BLOCKCHAIN_ROUTES.SLOT.routeTo,
+  address: BLOCKCHAIN_ROUTES.ADDRESS.routeTo,
+  stakepool: BLOCKCHAIN_ROUTES.STAKE_POOL.routeTo,
+  epoch: BLOCKCHAIN_ROUTES.EPOCH.routeTo,
   more: () => '/more',
   stakingKey: {
     home: (stakingKey: string) => `${STAKING_KEY_ROUTE}/${stakingKey}`,

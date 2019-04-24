@@ -23,9 +23,9 @@ const styles = ({palette}) =>
 const Navbar = ({items = [], currentPathname, classes}) => (
   <nav>
     <ul className={classes.list}>
-      {items.map(({link, label}) => (
+      {items.map(({link, label, getIsActive}) => (
         <li key={label} className={classes.item}>
-          <NavLink className={classes.link} to={link}>
+          <NavLink className={classes.link} to={link} getIsActive={getIsActive}>
             {(isActive) => <NavTypography isActive={isActive}>{label}</NavTypography>}
           </NavLink>
         </li>
