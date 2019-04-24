@@ -1,37 +1,59 @@
 // @flow
+import {matchPath} from 'react-router-dom'
 import {ObjectValues} from '@/helpers/flow'
-const STAKING_ROUTE = '/staking'
 
+const STAKING_ROUTE = '/staking'
 // TODO: should this be added to blockchain routes?
 const STAKING_KEY_ROUTE = '/staking-key'
 
 const BLOCKCHAIN_ROUTES = {
   SLOT: {
-    doesMatch: (pathname) => pathname.match(/^\/epoch\/([^/]*)\/slot\/([^/]*)$/),
+    doesMatch: (pathname) =>
+      matchPath(pathname, {
+        path: '/epoch/:epochNumber/slot/:slotNumber',
+      }),
     routeTo: (epoch: string, slot: string) => `/epoch/${epoch}/slot/${slot}`,
   },
   BLOCK: {
-    doesMatch: (pathname) => pathname.match(/^\/block\/([^/]*)$/),
+    doesMatch: (pathname) =>
+      matchPath(pathname, {
+        path: '/block/:blockHash',
+      }),
     routeTo: (blockHash: string) => `/block/${blockHash}`,
   },
   BLOCKS: {
-    doesMatch: (pathname) => pathname.match(/^\/blocks$/),
+    doesMatch: (pathname) =>
+      matchPath(pathname, {
+        path: '/blocks',
+      }),
     routeTo: () => '/blocks',
   },
   EPOCH: {
-    doesMatch: (pathname) => pathname.match(/^\/epoch\/([^/]*)$/),
+    doesMatch: (pathname) =>
+      matchPath(pathname, {
+        path: '/epoch/:epochNumber',
+      }),
     routeTo: (epochNumber: number) => `/epoch/${epochNumber}`,
   },
   TRANSACTION: {
-    doesMatch: (pathname) => pathname.match(/^\/transaction\/([^/]*)$/),
+    doesMatch: (pathname) =>
+      matchPath(pathname, {
+        path: '/transaction/:txHash',
+      }),
     routeTo: (txHash: string) => `/transaction/${txHash}`,
   },
   ADDRESS: {
-    doesMatch: (pathname) => pathname.match(/^\/address\/([^/]*)$/),
+    doesMatch: (pathname) =>
+      matchPath(pathname, {
+        path: '/address/:address58',
+      }),
     routeTo: (address58: string) => `/address/${address58}`,
   },
   STAKE_POOL: {
-    doesMatch: (pathname) => pathname.match(/^\/stakepool\/([^/]*)$/),
+    doesMatch: (pathname) =>
+      matchPath(pathname, {
+        path: '/stakepool/:poolHash',
+      }),
     routeTo: (poolHash: string) => `/stakepool/${poolHash}`,
   },
 }
