@@ -146,8 +146,10 @@ const GET_SLOT_INFO = gql`
 `
 
 const Row = ({children}) => (
-  <Grid container direction="row" justify="space-around" spacing={24}>
-    {children}
+  <Grid item>
+    <Grid container direction="row" justify="space-around" spacing={24}>
+      {children}
+    </Grid>
   </Grid>
 )
 
