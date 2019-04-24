@@ -2,7 +2,7 @@
 import {fetchBlockBySlot} from '../block/dataProviders'
 import moment from 'moment'
 import assert from 'assert'
-import {parseAdaValue} from '../utils'
+import {parseAdaValue, runConsistencyCheck} from '../utils'
 
 // TODO: unify properties naming with the rest endpoints once the final fields are determined
 export type GeneralInfo = {|
@@ -27,15 +27,22 @@ const _getGeneralInfo = ({q, E}) => {
   return {
     blocksCount: async () => {
       const cnt = (await aggregations).blocks
+
       // (expensive) sanity check
-      assert.equal(cnt, await q.slots.filter(E.notNull('hash')).getCount())
+      await runConsistencyCheck(async () => {
+        assert.equal(cnt, await q.slots.filter(E.notNull('hash')).getCount())
+      })
+
       return cnt
     },
     emptySlotsCount: async () => {
       const cnt = (await aggregations).slotsMissed
 
       // (expensive) sanity check
-      assert.equal(cnt, await q.slots.filter(E.isNull('hash')).getCount())
+      await runConsistencyCheck(async () => {
+        assert.equal(cnt, await q.slots.filter(E.isNull('hash')).getCount())
+      })
+
       return cnt
     },
     movements: aggregations.then(({sent}) => parseAdaValue(sent)),
@@ -44,19 +51,27 @@ const _getGeneralInfo = ({q, E}) => {
       const cnt = (await aggregations).txCount
 
       // (expensive) sanity check
-      assert.equal(cnt, await q.txs.getCount())
+      await runConsistencyCheck(async () => {
+        assert.equal(cnt, await q.txs.getCount())
+      })
+
       return cnt
     },
     activeAddresses: async () => {
       const precise = await q.addresses.getCount()
-      const approx = await q.txios
-        .getAggregations({
-          addresses: E.agg.countDistinctApprox('address.keyword', 40000),
-        })
-        .then(({addresses}) => addresses)
 
-      // allow up to 1% difference
-      assert(Math.abs((approx - precise) / (precise + 1e-6)) < 0.01)
+      // (expensive) sanity check
+      await runConsistencyCheck(async () => {
+        // allow up to 1% difference
+        const threshold = 0.01
+        const approx = await q.txios
+          .getAggregations({
+            addresses: E.agg.countDistinctApprox('address.keyword'),
+          })
+          .then(({addresses}) => addresses)
+
+        assert(Math.abs((approx - precise) / (precise + 1e-6)) <= threshold)
+      })
 
       return precise
     },

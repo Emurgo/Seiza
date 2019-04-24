@@ -17,6 +17,15 @@ export const validate = (cond: boolean, message: string, ctx: any) => {
   }
 }
 
+// For now, it runs "synchrously" the check
+// Alternative implementations for production:
+// 1) skip the check at all (if load is big)
+// 2) do the check in runaway promise (if we can affort the load but not the latency) and report
+// errors to sentry
+export const runConsistencyCheck = async (callback: Function) => {
+  return await callback()
+}
+
 // TODO: type better or use other compose function
 export const compose = (...fns: any) => (x: any) => fns.reduceRight((y, f) => f(y), x)
 
