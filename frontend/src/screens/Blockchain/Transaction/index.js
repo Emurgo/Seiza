@@ -21,7 +21,6 @@ import {
   AdaValue,
   Link,
   Divider,
-  EllipsizeMiddle,
   Overlay,
   LoadingOverlay,
   ContentSpacing,
@@ -176,7 +175,7 @@ const BreakdownItem = (props) => {
               <div className={breakdownClasses.spaced}>
                 <Link to={routeTo.address(address58)} underline="none">
                   <div className={cn(breakdownClasses.underlineHover, breakdownClasses.monospace)}>
-                    <EllipsizeMiddle value={address58} />
+                    <Typography noWrap>{address58}</Typography>
                   </div>
                 </Link>
               </div>
