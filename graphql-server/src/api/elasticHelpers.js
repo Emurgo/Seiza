@@ -157,12 +157,18 @@ const agg = {
     encode: () => ({value_count: {field}}),
     decode: (x: any) => x.value,
   }),
-  countDistinctApprox: (field: string, precision?: number) => ({
+  // Note(ppershing): Precision is some opaque value with maximum 40000
+  // This guarantees generally <1% error
+  // For details see
+  // eslint-disable-next-line max-len
+  // https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-metrics-cardinality-aggregation.html#_counts_are_approximate
+  countDistinctApprox: (field: string, precision: number = 40000) => ({
     encode: () => ({
       cardinality: {
         field,
-        /* missing: 'default value', */
-        precision_threshold: precision || 40000,
+        // Note: in case you need to include nulls in the result
+        // add "missing: 'default value'" property
+        precision_threshold: precision,
       },
     }),
     decode: (x: any) => x.value,
