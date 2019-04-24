@@ -11,7 +11,7 @@ import AWS from 'aws-sdk'
 import {ApolloError} from 'apollo-server'
 import assert from 'assert'
 
-import {validate} from '../graphql/utils'
+import {validate, EntityNotFoundError} from '../graphql/utils'
 import E from './elasticHelpers'
 import type {SortDirection} from './elasticHelpers'
 
@@ -176,7 +176,9 @@ const _getSingleHit = async (type: string, query: any) => {
   })
 
   assert(hits.total <= 1, 'Too many hits')
-  assert(hits.total > 0, 'TODO: Throw better error here')
+  if (hits.total === 0) {
+    throw new EntityNotFoundError('Entity Not Found', {type, query})
+  }
   return hits.hits[0]
 }
 

@@ -27,6 +27,7 @@ import {
 } from '@/components/visual'
 
 import addressIcon from '@/assets/icons/qrcode.svg'
+import {extractError} from '@/helpers/errors'
 
 const summaryMessages = defineMessages({
   NA: 'N/A',
@@ -101,7 +102,7 @@ const useAddressSummary = (address58) => {
     variables: {address58},
   })
 
-  return {loading, error, addressSummary: data.address}
+  return {loading, error: extractError(error, ['address']), addressSummary: data.address}
 }
 
 const AddressScreen = () => {
