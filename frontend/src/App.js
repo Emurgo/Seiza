@@ -33,7 +33,9 @@ const navigationMessages = defineMessages({
   home: 'Home',
   blockchain: 'Blockchain',
   staking: 'Staking',
+  stakePools: 'Stake pools',
   more: 'More',
+  disabledText: 'Coming soon',
 })
 
 const useAppStyles = makeStyles((theme) => ({
@@ -50,6 +52,8 @@ const useAppStyles = makeStyles((theme) => ({
   },
 }))
 
+// Note: using `disabledText` as boolean and string at once, to have fewer config options
+// and due it is mostly temporary feature
 const getTranslatedNavItems = (translate) =>
   [
     {link: routeTo.home(), label: translate(navigationMessages.home), __hide: false},
@@ -57,7 +61,14 @@ const getTranslatedNavItems = (translate) =>
     {
       link: routeTo.staking.home(),
       label: translate(navigationMessages.staking),
-      __hide: !config.showStakingData,
+      disabledText: !config.showStakingData ? translate(navigationMessages.disabledText) : null,
+      __hide: false,
+    },
+    {
+      link: routeTo.staking.home(), // Note: not yet implemented screen
+      label: translate(navigationMessages.stakePools),
+      disabledText: !config.showStakingData ? translate(navigationMessages.disabledText) : null,
+      __hide: false,
     },
     {
       link: routeTo.more(),
