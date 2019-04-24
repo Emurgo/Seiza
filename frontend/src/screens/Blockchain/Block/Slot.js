@@ -13,6 +13,7 @@ import {SimpleLayout, SummaryCard, LoadingDots, LoadingError} from '@/components
 import {useI18n} from '@/i18n/helpers'
 import {isInteger} from '@/helpers/validators'
 import {routeTo} from '@/helpers/routes'
+import SlotNavigation from './SlotNavigation'
 
 const messages = defineMessages({
   title: 'Slot',
@@ -104,6 +105,7 @@ const EmptySlot = () => {
 
   return (
     <SimpleLayout title={tr(isEmpty ? messages.emptySlotTitle : messages.title)}>
+      <SlotNavigation slot={slotData} />
       {error ? <LoadingError error={error} /> : <SlotSummaryCard {...{loading, slotData}} />}
     </SimpleLayout>
   )

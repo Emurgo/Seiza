@@ -6,8 +6,6 @@ import useReactRouter from 'use-react-router'
 import idx from 'idx'
 import gql from 'graphql-tag'
 import {defineMessages} from 'react-intl'
-import {makeStyles} from '@material-ui/styles'
-import {Grid} from '@material-ui/core'
 import {Link} from 'react-router-dom'
 
 import {
@@ -18,7 +16,6 @@ import {
   LoadingInProgress,
   LoadingError,
   AdaValue,
-  Button,
 } from '@/components/visual'
 
 import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
@@ -27,9 +24,8 @@ import TransactionCard from '@/components/common/TransactionCard'
 
 import {useI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
-import {ReactComponent as NextBlockIcon} from '@/assets/icons/next-epoch.svg'
-import {ReactComponent as PreviousBlockIcon} from '@/assets/icons/previous-epoch.svg'
 import {extractError} from '@/helpers/errors'
+import SlotNavigation from './SlotNavigation'
 
 const blockSummaryLabels = defineMessages({
   epoch: 'Epoch',
@@ -142,88 +138,6 @@ const TX_INFO_FRAGMENT = gql`
   }
 `
 
-const useBlockNavigation = (block: any) => {
-  const {history} = useReactRouter()
-
-  const prevHash = idx(block, (_) => _.previousBlock.blockHash)
-  const nextHash = idx(block, (_) => _.nextBlock.blockHash)
-  const linkPrev = prevHash ? routeTo.block(prevHash) : null
-  const linkNext = nextHash ? routeTo.block(nextHash) : null
-
-  // TODO: memoize using useCallback
-  const goPrev = () => {
-    history.push(linkPrev)
-  }
-  const goNext = () => {
-    history.push(linkNext)
-  }
-
-  return {
-    hasPrev: !!prevHash,
-    linkPrev,
-    goPrev,
-    hasNext: !!nextHash,
-    linkNext,
-    goNext,
-  }
-}
-
-const useNavigationStyles = makeStyles((theme) => ({
-  navigationButton: {
-    width: '250px',
-    margin: '0 30px',
-  },
-  prevBlockIcon: {
-    position: 'absolute',
-    left: 15,
-  },
-  nextBlockIcon: {
-    position: 'absolute',
-    right: 15,
-  },
-}))
-
-const messages = defineMessages({
-  goPreviousBlock: 'Previous Block',
-  goNextBlock: 'Next Block',
-})
-
-const BlockNavigation = ({block}) => {
-  const classes = useNavigationStyles()
-  const {translate} = useI18n()
-
-  const nav = useBlockNavigation(block)
-  // TODO: consider creating abstraction for this layout as it is same as on Epoch screen
-  return (
-    <Grid container direction="row" justify="center">
-      <Button
-        rounded
-        secondary
-        onClick={nav.goPrev}
-        className={classes.navigationButton}
-        disabled={!nav.hasPrev}
-        to={nav.linkPrev}
-        component={Link}
-      >
-        <PreviousBlockIcon className={classes.prevBlockIcon} />
-        {translate(messages.goPreviousBlock)}
-      </Button>
-      <Button
-        rounded
-        secondary
-        className={classes.navigationButton}
-        onClick={nav.goNext}
-        disabled={!nav.hasNext}
-        to={nav.linkNext}
-        component={Link}
-      >
-        <NextBlockIcon className={classes.nextBlockIcon} />
-        {translate(messages.goNextBlock)}
-      </Button>
-    </Grid>
-  )
-}
-
 const useBlockData = ({blockHash}) => {
   const result = useQuery(
     gql`
@@ -300,7 +214,7 @@ const BlockScreen = () => {
   return (
     <div ref={scrollToRef}>
       <SimpleLayout title={translate(blockMessages.title)}>
-        <BlockNavigation block={blockData} />
+        <SlotNavigation slot={blockData} />
         <EntityIdCard label={translate(blockMessages.blockHash)} value={blockHash} />
         {error ? (
           <LoadingError error={error} />
