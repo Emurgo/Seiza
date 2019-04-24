@@ -18,6 +18,7 @@ import {
   LiteTabs,
   LiteTab,
   Card,
+  Divider,
 } from '@/components/visual'
 import {getDefaultSpacing} from '@/components/visual/ContentSpacing'
 import useTabState from '@/components/hooks/useTabState'
@@ -25,7 +26,7 @@ import {ObjectValues} from '@/helpers/flow'
 import {useI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
 import {TabsProvider as Tabs, TabItem as Tab, useTabContext} from '@/components/context/TabContext'
-import type {Transaction} from '@/__generated__/schema.flow'
+import AddressesBreakdown from '@/components/common/AddressesBreakdown'
 
 const messages = defineMessages({
   transactionEntity: 'Transaction Id',
@@ -121,6 +122,9 @@ const TransactionCard = ({transaction: tx}) => {
           </Grid>
         </Grid>
       </Grid>
+      <Divider />
+
+      <AddressesBreakdown tx={tx} />
     </Card>
   )
 }

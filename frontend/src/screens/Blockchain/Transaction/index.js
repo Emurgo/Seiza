@@ -18,6 +18,7 @@ import {
   Link,
   Overlay,
   LoadingOverlay,
+  Card,
 } from '@/components/visual'
 import AddressesBreakdown from '@/components/common/AddressesBreakdown'
 import AssuranceChip from '@/components/common/AssuranceChip'
@@ -192,7 +193,13 @@ const TransactionScreen = () => {
         ) : (
           <React.Fragment>
             <TransactionSummary loading={loading} transaction={transactionData} />
-            {loading ? <LoadingInProgress /> : <AddressesBreakdown tx={transactionData} />}
+            {loading ? (
+              <LoadingInProgress />
+            ) : (
+              <Card>
+                <AddressesBreakdown tx={transactionData} />
+              </Card>
+            )}
           </React.Fragment>
         )}
       </SimpleLayout>

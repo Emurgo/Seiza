@@ -1,7 +1,7 @@
 // @flow
 import React from 'react'
 import type {Node} from 'react'
-import classnames from 'classnames'
+import cn from 'classnames'
 import {
   ExpansionPanel,
   ExpansionPanelSummary,
@@ -13,7 +13,6 @@ import {
 } from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
-import {Card} from '@/components/visual'
 
 const useStyles = makeStyles((theme) => ({
   icon: {
@@ -80,7 +79,7 @@ type ExpandableCardPT = {
   className?: string,
 }
 
-const ExpandableCard = (props: ExpandableCardPT) => {
+const ExpandableCardContent = (props: ExpandableCardPT) => {
   const {expanded, onChange, renderExpandedArea, renderHeader, footer, className} = props
 
   const classes = useStyles()
@@ -91,41 +90,39 @@ const ExpandableCard = (props: ExpandableCardPT) => {
   const footerClasses = useFooterClasses()
 
   return (
-    <Card>
-      <Grid container className={className} direction="row">
-        <Paper elevation={0} className="w-100">
-          <Grid item xs={12}>
-            <Paper elevation={0} className={classes.mainContent}>
-              {renderHeader()}
-            </Paper>
-          </Grid>
-          <Grid item xs={12}>
-            <ExpansionPanel classes={expansionPanelClasses} onChange={onChange} expanded={expanded}>
-              <ExpansionPanelDetails classes={detailsClasses}>
-                {renderExpandedArea()}
-              </ExpansionPanelDetails>
-              <ExpansionPanelSummary classes={summaryClasses}>
-                <Grid container justify="center" alignItems="center" direction="row">
-                  <Grid item className={classes.spacing}>
-                    <Typography variant="overline" color="primary" classes={footerClasses}>
-                      {footer}
-                    </Typography>
-                  </Grid>
-                  <Grid item>
-                    <IconButton color="primary">
-                      <ExpandMoreIcon
-                        className={classnames(classes.icon, expanded && classes.iconExpanded)}
-                      />
-                    </IconButton>
-                  </Grid>
+    <Grid container className={className} direction="row">
+      <Paper elevation={0} className="w-100">
+        <Grid item xs={12}>
+          <Paper elevation={0} className={classes.mainContent}>
+            {renderHeader()}
+          </Paper>
+        </Grid>
+        <Grid item xs={12}>
+          <ExpansionPanel classes={expansionPanelClasses} onChange={onChange} expanded={expanded}>
+            <ExpansionPanelDetails classes={detailsClasses}>
+              {renderExpandedArea()}
+            </ExpansionPanelDetails>
+            <ExpansionPanelSummary classes={summaryClasses}>
+              <Grid container justify="center" alignItems="center" direction="row">
+                <Grid item className={classes.spacing}>
+                  <Typography variant="overline" color="primary" classes={footerClasses}>
+                    {footer}
+                  </Typography>
                 </Grid>
-              </ExpansionPanelSummary>
-            </ExpansionPanel>
-          </Grid>
-        </Paper>
-      </Grid>
-    </Card>
+                <Grid item>
+                  <IconButton color="primary">
+                    <ExpandMoreIcon
+                      className={cn(classes.icon, expanded && classes.iconExpanded)}
+                    />
+                  </IconButton>
+                </Grid>
+              </Grid>
+            </ExpansionPanelSummary>
+          </ExpansionPanel>
+        </Grid>
+      </Paper>
+    </Grid>
   )
 }
 
-export default ExpandableCard
+export default ExpandableCardContent

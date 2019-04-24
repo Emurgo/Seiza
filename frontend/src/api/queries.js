@@ -62,6 +62,16 @@ export const GET_ADDRESS_BY_ADDRESS58 = gql`
           epoch
           slot
         }
+        totalInput
+        totalOutput
+        inputs {
+          address58
+          amount
+        }
+        outputs {
+          address58
+          amount
+        }
       }
     }
   }
