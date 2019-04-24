@@ -157,6 +157,11 @@ const agg = {
     encode: () => ({value_count: {field}}),
     decode: (x: any) => x.value,
   }),
+  countNull: (field: string) => ({
+    encode: () => ({missing: {field}}),
+    // Grr, elastic is just plain weird. Every other aggregation is .value
+    decode: (x: any) => x.doc_count,
+  }),
   // Note(ppershing): Precision is some opaque value with maximum 40000
   // This guarantees generally <1% error
   // For details see

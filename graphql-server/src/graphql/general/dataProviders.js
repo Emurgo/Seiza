@@ -21,7 +21,7 @@ const _getGeneralInfo = ({q, E}) => {
     txCount: E.agg.sum('tx_num'),
     // Note: we cannot count on hash
     blocks: E.agg.countNotNull('hash.keyword'),
-    slotsMissed: E.agg.raw({missing: {field: 'hash.keyword'}}),
+    slotsMissed: E.agg.countNull('hash.keyword'),
   })
 
   return {
@@ -32,8 +32,8 @@ const _getGeneralInfo = ({q, E}) => {
       return cnt
     },
     emptySlotsCount: async () => {
-      // Grr, elastic is just plain weird. Every other aggregation is .value
-      const cnt = (await aggregations).slotsMissed.doc_count
+      const cnt = (await aggregations).slotsMissed
+
       // (expensive) sanity check
       assert.equal(cnt, await q.slots.filter(E.isNull('hash')).getCount())
       return cnt
