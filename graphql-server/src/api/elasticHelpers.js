@@ -116,7 +116,7 @@ const agg = {
   // aggregation results
   // as elastic cannot be easily convinced
   // otherwise
-  nest: (defs: any) => ({
+  _nest: (defs: any) => ({
     encode: () => ({
       filter: {
         match_all: {},
@@ -126,7 +126,7 @@ const agg = {
     decode: (x: any) => agg._decode(defs, x),
   }),
   sumAda: (field: string) =>
-    agg.nest({
+    agg._nest({
       integers: agg.sum(`${field}.integers`),
       decimals: agg.sum(`${field}.decimals`),
       full: agg.sum(`${field}.full`),
@@ -155,6 +155,16 @@ const agg = {
   // for repeated fields?
   countNotNull: (field: string) => ({
     encode: () => ({value_count: {field}}),
+    decode: (x: any) => x.value,
+  }),
+  countDistinctApprox: (field: string, precision?: number) => ({
+    encode: () => ({
+      cardinality: {
+        field,
+        /* missing: 'default value', */
+        precision_threshold: precision || 40000,
+      },
+    }),
     decode: (x: any) => x.value,
   }),
 }
