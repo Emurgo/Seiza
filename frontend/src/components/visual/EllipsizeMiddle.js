@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const EllipsizeMiddle = ({value, endCharactersCount = 6}) => {
+const EllipsizeMiddle = ({value, endCharactersCount = 15}) => {
   const classes = useStyles()
   return typeof value === 'string' && value.length > endCharactersCount ? (
     <span className={classes.wrapper}>
