@@ -12,6 +12,9 @@ const useHeaderStyles = makeStyles(({spacing, palette}) => ({
     backgroundColor: palette.unobtrusiveContentHighlight,
     minHeight: '60px',
   },
+  leftOffset: {
+    paddingLeft: spacing.unit * 2,
+  },
 }))
 
 const useBodyStyles = makeStyles(({spacing, palette}) => ({
@@ -31,12 +34,6 @@ const useBodyStyles = makeStyles(({spacing, palette}) => ({
     '&:last-child:after': {
       content: 'none',
     },
-  },
-  row: {
-    paddingTop: spacing.unit * 2.5,
-    paddingBottom: spacing.unit * 2.5,
-    paddingLeft: spacing.unit * 4,
-    paddingRight: spacing.unit * 4,
   },
 }))
 
@@ -63,32 +60,24 @@ const KeyValueCard = ({children, header, className}: MainProps) => {
 }
 
 type HeaderProps = {|
-  +logo?: Node,
+  +icon?: Node,
   +label: string,
   +value: string,
 |}
 
-const Header = ({logo, label, value}: HeaderProps) => {
+const Header = ({icon, label, value}: HeaderProps) => {
   const classes = useHeaderStyles()
   return (
     <div className={classes.wrapper}>
-      <ContentSpacing top={0} bottom={0}>
-        <Grid
-          container
-          alignItems="center"
-          className={classes.wrapper}
-          justify="space-between"
-          direction="row"
-        >
-          {logo && <Grid item>{logo}</Grid>}
-          <Grid item>
-            <Typography variant="body1" color="textSecondary">
-              {label}
-            </Typography>
-          </Grid>
-          <Grid item>
-            <Typography variant="overline">{value}</Typography>
-          </Grid>
+      <ContentSpacing top={0.3} bottom={0.3}>
+        <Grid container alignItems="center" className={classes.wrapper} direction="row">
+          {icon}
+          <Typography className={classes.leftOffset} variant="overline" color="textSecondary">
+            {label}
+          </Typography>
+          <Typography className={classes.leftOffset} variant="overline">
+            {value}
+          </Typography>
         </Grid>
       </ContentSpacing>
     </div>
@@ -107,22 +96,14 @@ const Body = ({items}: BodyProps) => {
   const classes = useBodyStyles()
   return items.map(({label, value}) => (
     <div key={label} className={classes.rowWrapper}>
-      <Grid
-        container
-        justify="space-between"
-        alignItems="center"
-        className={classes.row}
-        direction="row"
-      >
-        <Grid item>
+      <ContentSpacing top={0.5} bottom={0.5}>
+        <Grid container justify="space-between" alignItems="center" direction="row">
           <Typography variant="body1" color="textSecondary">
             {label}
           </Typography>
-        </Grid>
-        <Grid item>
           <Typography variant="body1">{value}</Typography>
         </Grid>
-      </Grid>
+      </ContentSpacing>
     </div>
   ))
 }

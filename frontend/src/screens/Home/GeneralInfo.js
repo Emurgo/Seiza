@@ -17,6 +17,11 @@ import {
 } from '@/components/visual'
 import {withI18n} from '@/i18n/helpers'
 
+import {ReactComponent as EpochIcon} from '@/assets/icons/epoch.svg'
+import {ReactComponent as SlotIcon} from '@/assets/icons/slot.svg'
+import {ReactComponent as TimeIcon} from '@/assets/icons/time.svg'
+import {ReactComponent as FromGenesisIcon} from '@/assets/icons/from-genesis.svg'
+
 const POLL_INTERVAL = 1000 * 60
 const SLOT_POLL_INTERVAL = 1000 * 10
 
@@ -38,15 +43,16 @@ const slotInfoMessages = defineMessages({
   transactions: 'Txs:',
   totalSent: 'Sent:',
   totalFees: 'Fees:',
+  timeIssued: 'Time:',
 })
 
 const cardHeaders = defineMessages({
-  totalLabel: 'Total',
+  totalLabel: 'Total:',
   totalValue: 'From Genesis',
-  epochLabel: 'Epoch',
-  last24HoursLabel: 'Last',
+  epochLabel: 'Epoch:',
+  last24HoursLabel: 'Last:',
   last24HoursValue: '24 Hours',
-  slotLabel: 'Slot',
+  slotLabel: 'Slot:',
 })
 
 const getGeneralFields = ({translate, formatAda, formatInt}) => [
@@ -87,6 +93,11 @@ const getSlotFields = ({translate, formatAda, formatInt, formatTimestamp}) => [
     id: 'supply',
     label: translate(slotInfoMessages.supply),
     getValue: (rawValue) => <AdaValue value={rawValue} />,
+  },
+  {
+    id: 'timeIssued',
+    label: translate(slotInfoMessages.timeIssued),
+    getValue: (rawValue) => formatTimestamp(rawValue),
   },
   {
     id: 'txCount',
@@ -141,6 +152,7 @@ const GET_SLOT_INFO = gql`
       txCount
       totalSent
       totalFees
+      timeIssued
     }
   }
 `
@@ -170,15 +182,18 @@ const OVERVIEW_METRICS_QUERY = gql`
   }
 `
 
-const _InfoCard = ({data, fields, cardLabel, cardValue, loading, error}) => {
+const _InfoCard = ({data, fields, cardLabel, cardValue, loading, error, icon}) => {
   const items = fields.map((fieldDesc) => ({
     label: fieldDesc.label,
     value: data && fieldDesc.getValue(data[fieldDesc.id]),
   }))
 
   return (
-    <Overlay.Wrapper>
-      <KeyValueCard header={<KeyValueCard.Header label={cardLabel} value={cardValue} />}>
+    <Overlay.Wrapper className="h-100">
+      <KeyValueCard
+        className="h-100"
+        header={<KeyValueCard.Header label={cardLabel} value={cardValue} icon={icon} />}
+      >
         <KeyValueCard.Body items={items} />
         <LoadingOverlay loading={loading} />
         <ErrorOverlay error={!loading && error} />
@@ -199,7 +214,7 @@ const SlotInfoCard = compose(
   }),
   withProps(({i18n, slotInfoProvider, slot, parentError}) => ({
     cardLabel: i18n.translate(cardHeaders.slotLabel),
-    cardValue: slot,
+    cardValue: i18n.formatInt(slot),
     fields: getSlotFields(i18n),
     ...facadeQueryData(slotInfoProvider, 'slotInfo', parentError),
   }))
@@ -252,7 +267,7 @@ const GeneralInfoLastEpoch = compose(
   withProps(({i18n, epochInfoProvider, epoch, parentError}) => {
     return {
       cardLabel: i18n.translate(cardHeaders.epochLabel),
-      cardValue: epoch,
+      cardValue: i18n.formatInt(epoch),
       fields: getGeneralFields(i18n),
       ...facadeQueryData(epochInfoProvider, 'epochInfo', parentError),
     }
@@ -279,18 +294,18 @@ export default compose(
     <SimpleLayout title={translate(messages.header)} maxWidth="1200px">
       <Row>
         <Grid item xs={6}>
-          <GeneralInfoGenesis />
+          <SlotInfoCard epoch={epoch} slot={slot} parentError={error} icon={<SlotIcon />} />
         </Grid>
         <Grid item xs={6}>
-          <GeneralInfoLastEpoch epoch={epoch} parentError={error} />
+          <GeneralInfo24Hours icon={<TimeIcon />} />
         </Grid>
       </Row>
       <Row>
         <Grid item xs={6}>
-          <GeneralInfo24Hours />
+          <GeneralInfoLastEpoch epoch={epoch} parentError={error} icon={<EpochIcon />} />
         </Grid>
         <Grid item xs={6}>
-          <SlotInfoCard epoch={epoch} slot={slot} parentError={error} />
+          <GeneralInfoGenesis icon={<FromGenesisIcon />} />
         </Grid>
       </Row>
     </SimpleLayout>
