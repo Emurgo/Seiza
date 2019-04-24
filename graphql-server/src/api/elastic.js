@@ -1,5 +1,11 @@
 // @flow
-import {Client, errors as ElasticsearchErrors} from '@elastic/elasticsearch'
+
+// Note: we are forced to use legacy client until http-aws-es is fixed
+// https://github.com/TheDeveloper/http-aws-es/issues/63
+
+//import {Client, errors as ElasticsearchErrors} from '@elastic/elasticsearch'
+import {Client as LegacyClient, errors as LegacyErrors} from 'elasticsearch'
+
 import httpAWSES from 'http-aws-es'
 import AWS from 'aws-sdk'
 import {ApolloError} from 'apollo-server'
@@ -21,8 +27,10 @@ const getClient = () => {
     process.env.AWS_SECRET_ACCESS_KEY &&
     process.env.AWS_REGION
   ) {
+    // eslint-disable-next-line no-console
+    console.log('Using AWS auth')
     const options = {
-      node: ELASTIC_URL,
+      host: ELASTIC_URL,
       credentials: new AWS.Credentials({
         accessKeyId: process.env.AWS_ACCESS_KEY_ID,
         secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
@@ -37,15 +45,19 @@ const getClient = () => {
       }),
     })
 
-    const awsClient = new Client(config)
+    const awsClient = new LegacyClient(config)
     return awsClient
   } else {
-    const plainClient = new Client({node: ELASTIC_URL})
+    // eslint-disable-next-line no-console
+    console.log('Using normal http')
+    const plainClient = new LegacyClient({host: ELASTIC_URL})
     return plainClient
   }
 }
 
 const client = getClient()
+
+/* Note: non-legacy code commented out for now
 
 // This checks elastic response for validaty.
 // For now we prefer to be rather strict than to return partial data
@@ -80,6 +92,7 @@ const checkResponse = (response: any, meta: any = {}) => {
   return response
 }
 
+
 // Converts elasticsearch Client error into ApolloError
 // Note that this is called only when request totally afails/times out
 // and we do not get *any* response.
@@ -99,6 +112,27 @@ const elasticErrorHandler = (err, meta) => {
 
   throw new ApolloError('Could not reach database', 'DB_UNREACHABLE', {...meta, err})
 }
+*/
+
+const legacyErrorHandler = (err, meta) => {
+  assert(err instanceof LegacyErrors._Abstract)
+
+  if (
+    err instanceof LegacyErrors.ConnectionFault ||
+    err instanceof LegacyErrors.RequestTimeout ||
+    err instanceof LegacyErrors.NoConnections
+  ) {
+    throw new ApolloError('Could not reach database', 'DB_UNREACHABLE', {...meta, err})
+  }
+
+  throw new ApolloError('Bad response from database', 'DB_ERROR', {
+    ...meta,
+    reason: 'response error',
+    err,
+    response: err.response,
+    status: err.status,
+  })
+}
 
 const _search = (type: string, body: any) => {
   const request = {
@@ -108,11 +142,11 @@ const _search = (type: string, body: any) => {
     body,
   }
 
-  return client
-    .search(request)
-    .catch((err) => elasticErrorHandler(err, {request}))
-    .then((response) => checkResponse(response, {request}))
-    .then((response) => response.body)
+  return client.search(request).catch((err) => legacyErrorHandler(err, {request}))
+  // Non-legacy version
+  //.catch((err) => elasticErrorHandler(err, {request}))
+  //.then((response) => checkResponse(response, {request}))
+  //.then((response) => response.body)
 }
 
 const _getCount = async (type: string, query: any) => {
