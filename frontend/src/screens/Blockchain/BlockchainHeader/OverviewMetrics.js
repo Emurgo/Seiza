@@ -4,8 +4,6 @@ import gql from 'graphql-tag'
 import idx from 'idx'
 import {injectIntl, defineMessages} from 'react-intl'
 import {compose} from 'redux'
-import {withStateHandlers} from 'recompose'
-import {graphql} from 'react-apollo'
 
 import {Grid, createStyles, withStyles} from '@material-ui/core'
 import {MetricsCard, LoadingDots} from '@/components/visual'
@@ -15,6 +13,8 @@ import WithNavigateTo from '@/components/headless/navigateTo'
 import {Link} from 'react-router-dom'
 
 import config from '@/config'
+import useCurrency, {CURRENCIES} from '@/components/hooks/useCurrency'
+import {useQuery} from 'react-apollo-hooks'
 
 const text = defineMessages({
   not_available: 'N/A',
@@ -45,9 +45,35 @@ const GridItem = withStyles(styles)(({children, classes}) => (
   </Grid>
 ))
 
-const OverviewMetrics = ({intl, data, classes, currency, setCurrency}) => {
+const OVERVIEW_METRICS_QUERY = gql`
+  query($currency: CurrencyEnum!) {
+    currentStatus {
+      blockCount
+      latestBlock {
+        blockHash
+        epoch
+      }
+      decentralization
+      price(currency: $currency)
+      stakePoolCount
+    }
+  }
+`
+const STATUS_REFRESH_INTERVAL = 20 * 1000
+
+const OverviewMetrics = ({intl, data, classes}) => {
+  const [currency, setCurrency] = useCurrency()
+  const {
+    data: {currentStatus: status},
+    loading,
+    error,
+  } = useQuery(OVERVIEW_METRICS_QUERY, {
+    pollInterval: STATUS_REFRESH_INTERVAL,
+    variables: {
+      currency,
+    },
+  })
   const {translate, formatInt, formatPercent, formatFiat} = getIntlFormatters(intl)
-  const {currentStatus: status, loading, error} = data
 
   const NA = loading ? <LoadingDots /> : translate(error ? text.error : text.not_available)
 
@@ -70,15 +96,15 @@ const OverviewMetrics = ({intl, data, classes, currency, setCurrency}) => {
     options: [
       {
         label: 'USD/ADA',
-        onClick: () => setCurrency('USD'),
+        onClick: () => setCurrency(CURRENCIES.USD),
       },
       {
         label: 'EUR/ADA',
-        onClick: () => setCurrency('EUR'),
+        onClick: () => setCurrency(CURRENCIES.EUR),
       },
       {
         label: 'YEN/ADA',
-        onClick: () => setCurrency('JPY'),
+        onClick: () => setCurrency(CURRENCIES.JPY),
       },
     ],
   }
@@ -158,42 +184,7 @@ const OverviewMetrics = ({intl, data, classes, currency, setCurrency}) => {
   )
 }
 
-const OVERVIEW_METRICS_QUERY = gql`
-  query($currency: CurrencyEnum!) {
-    currentStatus {
-      blockCount
-      latestBlock {
-        blockHash
-        epoch
-      }
-      decentralization
-      price(currency: $currency)
-      stakePoolCount
-    }
-  }
-`
-
-const STATUS_REFRESH_INTERVAL = 20 * 1000
-
-const withOverviewMetricsData = graphql(OVERVIEW_METRICS_QUERY, {
-  options: ({currency}) => ({
-    pollInterval: STATUS_REFRESH_INTERVAL,
-    variables: {
-      currency,
-    },
-  }),
-})
-
 export default compose(
   injectIntl,
-  withStyles(styles),
-  withStateHandlers(
-    {
-      currency: 'USD',
-    },
-    {
-      setCurrency: () => (currency) => ({currency}),
-    }
-  ),
-  withOverviewMetricsData
+  withStyles(styles)
 )(OverviewMetrics)

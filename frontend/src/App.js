@@ -24,6 +24,7 @@ import More from './screens/More'
 import PageNotFound from './screens/PageNotFound'
 import LanguageSelect from '@/components/common/LanguageSelect'
 import ThemeSelect from '@/components/common/ThemeSelect'
+import {CurrencyProvider} from '@/components/hooks/useCurrency'
 
 import './App.css'
 import seizaLogo from './assets/icons/logo-seiza.svg'
@@ -93,31 +94,34 @@ const TopBar = compose(withRouter)(({location: {pathname}}) => {
 const App = () => {
   const classes = useAppStyles()
   const {translate} = useI18n()
+
   return (
     <Router>
-      <AutoSyncProvider>
-        <Grid container direction="column" className={classes.mainWrapper} wrap="nowrap">
-          <Grid item>
-            <CssBaseline />
-            <TopBar />
+      <CurrencyProvider>
+        <AutoSyncProvider>
+          <Grid container direction="column" className={classes.mainWrapper} wrap="nowrap">
+            <Grid item>
+              <CssBaseline />
+              <TopBar />
+            </Grid>
+            <Grid item className={classes.contentWrapper}>
+              <Switch>
+                <Redirect exact from="/" to={routeTo.home()} />
+                <Route exact path={routeTo.home()} component={Home} />
+                <Route path={routeTo.blockchain()} component={Blockchain} />
+                {config.showStakingData && (
+                  <Route path={routeTo.staking.home()} component={Staking} />
+                )}
+                {config.showStakingData && <Route path={routeTo.more()} component={More} />}
+                <Route component={PageNotFound} />
+              </Switch>
+            </Grid>
+            <Grid item>
+              <Footer navItems={getTranslatedNavItems(translate)} />
+            </Grid>
           </Grid>
-          <Grid item className={classes.contentWrapper}>
-            <Switch>
-              <Redirect exact from="/" to={routeTo.home()} />
-              <Route exact path={routeTo.home()} component={Home} />
-              <Route path={routeTo.blockchain()} component={Blockchain} />
-              {config.showStakingData && (
-                <Route path={routeTo.staking.home()} component={Staking} />
-              )}
-              {config.showStakingData && <Route path={routeTo.more()} component={More} />}
-              <Route component={PageNotFound} />
-            </Switch>
-          </Grid>
-          <Grid item>
-            <Footer navItems={getTranslatedNavItems(translate)} />
-          </Grid>
-        </Grid>
-      </AutoSyncProvider>
+        </AutoSyncProvider>
+      </CurrencyProvider>
     </Router>
   )
 }
