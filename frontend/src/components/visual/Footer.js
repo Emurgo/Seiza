@@ -1,14 +1,15 @@
 // @flow
 
 import React from 'react'
-import classnames from 'classnames'
+import cn from 'classnames'
 import {Link} from 'react-router-dom'
 import {defineMessages} from 'react-intl'
 import {Grid, Typography, TextField} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
+import {darken} from '@material-ui/core/styles/colorManipulator'
 
 import {useI18n} from '@/i18n/helpers'
-import {Button, ExternalLink} from '@/components/visual'
+import {Button, ExternalLink, Tooltip} from '@/components/visual'
 import logo from '../../assets/icons/logo-seiza-white.svg'
 
 const messages = defineMessages({
@@ -115,7 +116,7 @@ const SubscribeFooter = () => {
               placeholder={tr(subscribeMessages.emailButton)}
               type="email"
             />
-            <Button rounded gradient className={classnames(classes.subscribe)} type="submit">
+            <Button rounded gradient className={cn(classes.subscribe)} type="submit">
               {tr(subscribeMessages.subscribeButton)}
             </Button>
           </form>
@@ -164,6 +165,10 @@ const useMainFooterStyles = makeStyles(({spacing, palette, typography}) => ({
     color: palette.footer.contrastText,
     fontWeight: 700,
   },
+  disabled: {
+    color: darken(palette.footer.contrastText, 0.25),
+    pointerEvents: 'none',
+  },
 }))
 
 const SocialIcon = ({to, className}) => {
@@ -171,9 +176,23 @@ const SocialIcon = ({to, className}) => {
   return (
     <span className={classes.socialIconWrapper}>
       <ExternalLink to={to} target="_blank">
-        <i className={classnames(classes.socialIcon, className)} />
+        <i className={cn(classes.socialIcon, className)} />
       </ExternalLink>
     </span>
+  )
+}
+
+const DisabledLink = ({label, disabledText}) => {
+  const classes = useMainFooterStyles()
+  return (
+    <Tooltip title={disabledText}>
+      {/* Tooltip is not shown without this wrapper */}
+      <div className="d-flex">
+        <Typography variant="caption" className={classes.disabled}>
+          {label}
+        </Typography>
+      </div>
+    </Tooltip>
   )
 }
 
@@ -206,13 +225,17 @@ const MainFooter = ({navItems}) => {
       </Grid>
 
       <ul className={classes.nav}>
-        {navItems.map(({link, label}) => (
+        {navItems.map(({link, label, disabledText}) => (
           <li key={label} className={classes.navItem}>
-            <Link className={classes.link} to={link}>
-              <Typography variant="caption" className={classes.navText}>
-                {label}
-              </Typography>
-            </Link>
+            {disabledText ? (
+              <DisabledLink {...{label, disabledText}} />
+            ) : (
+              <Link className={classes.link} to={link}>
+                <Typography variant="caption" className={classes.navText}>
+                  {label}
+                </Typography>
+              </Link>
+            )}
           </li>
         ))}
       </ul>
@@ -221,7 +244,7 @@ const MainFooter = ({navItems}) => {
 }
 
 type FooterProps = {|
-  navItems: $ReadOnlyArray<{link: string, label: string}>,
+  navItems: $ReadOnlyArray<{link: string, label: string, disabledText?: ?string}>,
 |}
 
 const Footer = ({navItems}: FooterProps) => (
