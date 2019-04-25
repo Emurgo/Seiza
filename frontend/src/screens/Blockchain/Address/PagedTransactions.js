@@ -32,7 +32,7 @@ const messages = defineMessages({
   amount: 'Amount:',
   fee: 'Fee:',
   epochAndSlot: 'Epoch / Slot:',
-  creationDate: 'Creation Date:',
+  creationDate: 'Date:',
   all: 'All',
   sent: 'Sent',
   received: 'Received',
