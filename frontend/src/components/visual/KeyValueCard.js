@@ -1,6 +1,6 @@
 // @flow
 import React from 'react'
-import classnames from 'classnames'
+import cn from 'classnames'
 import {CardHeader, Typography, Grid} from '@material-ui/core'
 import {Card, ContentSpacing} from '@/components/visual'
 
@@ -18,22 +18,11 @@ const useHeaderStyles = makeStyles(({spacing, palette}) => ({
 }))
 
 const useBodyStyles = makeStyles(({spacing, palette}) => ({
-  // Note(ppershing): we need rowWrapper because
-  // :after applied on flex-container (.row) does not work as you would think.
-  // At the same time, we do not want to apply margins to the row
-  // as it messes up with the background
   rowWrapper: {
-    '&:after': {
-      content: '""',
-      display: 'block',
-      marginLeft: spacing.unit * 4,
-      marginRight: spacing.unit * 4,
-      marginTop: '-1px', // move border into the row
-      borderBottom: `1px solid ${palette.unobtrusiveContentHighlight}`,
-    },
-    '&:last-child:after': {
-      content: 'none',
-    },
+    borderBottom: `1px solid ${palette.unobtrusiveContentHighlight}`,
+  },
+  lastRow: {
+    borderBottom: 'none',
   },
 }))
 
@@ -52,7 +41,7 @@ type MainProps = {|
 const KeyValueCard = ({children, header, className}: MainProps) => {
   const classes = useMainStyles()
   return (
-    <Card classes={{root: classnames(classes.root, className)}}>
+    <Card classes={{root: cn(classes.root, className)}}>
       <CardHeader component={() => header} />
       {children}
     </Card>
@@ -69,7 +58,7 @@ const Header = ({icon, label, value}: HeaderProps) => {
   const classes = useHeaderStyles()
   return (
     <div className={classes.wrapper}>
-      <ContentSpacing top={0.3} bottom={0.3}>
+      <ContentSpacing left={1.5} right={1.5} top={0.3} bottom={0.3}>
         <Grid container alignItems="center" className={classes.wrapper} direction="row">
           {icon}
           <Typography className={classes.leftOffset} variant="overline" color="textSecondary">
@@ -92,21 +81,37 @@ type BodyProps = {|
   +items: $ReadOnlyArray<{+label: string, +value: Node}>,
 |}
 
-const Body = ({items}: BodyProps) => {
+const RowSpacing = ({children, isLast = false}) => {
   const classes = useBodyStyles()
-  return items.map(({label, value}) => (
-    <div key={label} className={classes.rowWrapper}>
-      <ContentSpacing top={0.5} bottom={0.5}>
+  return (
+    <ContentSpacing type="margin" top={0} bottom={0} left={1.5} right={1.5}>
+      <ContentSpacing
+        top={0.5}
+        bottom={0.5}
+        left={0}
+        right={0}
+        className={cn(classes.rowWrapper, isLast && classes.lastRow)}
+      >
+        {children}
+      </ContentSpacing>
+    </ContentSpacing>
+  )
+}
+
+const Body = ({items}: BodyProps) => (
+  <ContentSpacing top={0.5} bottom={0.5} left={0} right={0}>
+    {items.map(({label, value}, index, array) => (
+      <RowSpacing key={label} isLast={index === array.length - 1}>
         <Grid container justify="space-between" alignItems="center" direction="row">
           <Typography variant="body1" color="textSecondary">
             {label}
           </Typography>
           <Typography variant="body1">{value}</Typography>
         </Grid>
-      </ContentSpacing>
-    </div>
-  ))
-}
+      </RowSpacing>
+    ))}
+  </ContentSpacing>
+)
 
 KeyValueCard.Body = Body
 

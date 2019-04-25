@@ -50,7 +50,7 @@ const ContentSpacing = ({
   className,
 }: ContentSpacingProps) => {
   const classes = useStyles({type, top, bottom, left, right})
-  return <div className={cn(className, classes.root)}>{children}</div>
+  return <div className={cn(classes.root, className)}>{children}</div>
 }
 
 export default ContentSpacing
