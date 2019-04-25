@@ -13,6 +13,7 @@ import {SimpleLayout, SummaryCard, LoadingDots, LoadingError} from '@/components
 import {useI18n} from '@/i18n/helpers'
 import {isInteger} from '@/helpers/validators'
 import {routeTo} from '@/helpers/routes'
+import {extractError} from '@/helpers/errors'
 import SlotNavigation from './SlotNavigation'
 
 const messages = defineMessages({
@@ -80,7 +81,7 @@ const useSlotData = (epoch: number, slot: number) => {
     }
   )
   const {loading, error, data} = result
-  return {loading, error, slotData: data.slot}
+  return {loading, error: extractError(error, ['slot']), slotData: data.slot}
 }
 
 const validateParam = (param: string) => isInteger(param) && parseInt(param, 10) >= 0

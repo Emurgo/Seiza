@@ -17,6 +17,7 @@ const text = defineMessages({
   NOT_FOUND__ADDRESS: 'Address does not exist',
   NOT_FOUND__TRANSACTION: 'Transaction does not exist',
   NOT_FOUND__BLOCK: 'Block does not exist',
+  NOT_FOUND__SLOT: 'Slot does not exist',
 
   GENERIC: 'There was an error loading the data',
 })
@@ -33,6 +34,8 @@ const formatErrorMessage = (error, tr) => {
           return tr(text.NOT_FOUND__TRANSACTION)
         case 'Block':
           return tr(text.NOT_FOUND__BLOCK)
+        case 'Slot':
+          return tr(text.NOT_FOUND__SLOT)
         default:
           return tr(text.NOT_FOUND__GENERIC)
       }
