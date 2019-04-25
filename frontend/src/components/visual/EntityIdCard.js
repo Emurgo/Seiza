@@ -8,7 +8,6 @@ import cn from 'classnames'
 import {Card} from '@/components/visual'
 import {getDefaultSpacing} from '@/components/visual/ContentSpacing'
 import CopyToClipboard from '@/components/common/CopyToClipboard'
-import EllipsizeMiddle from '@/components/visual/EllipsizeMiddle'
 
 const useStyles = makeStyles((theme) => ({
   cardContent: {
@@ -131,7 +130,6 @@ export const EntityCardContent = ({
         </Typography>
 
         <Grid item className={classes.valueContainer}>
-
           <ReactCSSTransitionGroup
             transitionName={{
               appear: classes.epochAppear,
@@ -144,8 +142,8 @@ export const EntityCardContent = ({
             transitionAppearTimeout={2000}
             key={rawValue}
           >
-            <Typography variant="body1" className={cn(classes.value, classes.monospace)}>
-              <EllipsizeMiddle value={value} />
+            <Typography noWrap variant="body1" className={cn(classes.value, classes.monospace)}>
+              {value}
             </Typography>
           </ReactCSSTransitionGroup>
 
