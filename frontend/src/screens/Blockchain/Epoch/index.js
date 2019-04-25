@@ -1,13 +1,11 @@
 // @flow
-import React, {useRef} from 'react'
+import React, {useRef, useCallback} from 'react'
 import {defineMessages} from 'react-intl'
 import gql from 'graphql-tag'
 import {useQuery} from 'react-apollo-hooks'
 import idx from 'idx'
 import useReactRouter from 'use-react-router'
-import {Link} from 'react-router-dom'
 import {Card} from '@material-ui/core'
-import {makeStyles} from '@material-ui/styles'
 import {
   SummaryCard,
   SimpleLayout,
@@ -16,7 +14,6 @@ import {
   AdaValue,
   Tab,
   Tabs,
-  Button,
   Overlay,
   LoadingOverlay,
 } from '@/components/visual'
@@ -28,8 +25,8 @@ import StakingPoolsTab from './StakingPools'
 import {routeTo} from '@/helpers/routes'
 import config from '@/config'
 import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
-import {ReactComponent as NextEpochIcon} from '@/assets/icons/next-epoch.svg'
-import {ReactComponent as PreviousEpochIcon} from '@/assets/icons/previous-epoch.svg'
+
+import NavigationButtons from '../NavigationButtons'
 
 const messages = defineMessages({
   notAvailable: 'N/A',
@@ -191,40 +188,14 @@ const EpochSummaryCard = ({epoch, loading}) => {
   )
 }
 
-const useStyles = makeStyles((theme) => ({
-  navigation: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'center',
-  },
-  navigationButton: {
-    width: '250px',
-    margin: '0 30px',
-    position: 'relative',
-  },
-  prevEpochIcon: {
-    position: 'absolute',
-    left: 15,
-  },
-  nextEpochIcon: {
-    position: 'absolute',
-    right: 15,
-  },
-}))
-
 const useEpochNavigation = (epochNumber: number) => {
   const {history} = useReactRouter()
 
   const linkPrev = routeTo.epoch(epochNumber - 1)
   const linkNext = routeTo.epoch(epochNumber + 1)
 
-  // TODO: memoize using useCallback
-  const goPrev = () => {
-    history.push(linkPrev)
-  }
-  const goNext = () => {
-    history.push(linkNext)
-  }
+  const goPrev = useCallback(() => history.push(linkPrev), [history, linkPrev])
+  const goNext = useCallback(() => history.push(linkNext), [history, linkNext])
 
   return {
     hasPrev: epochNumber > 0,
@@ -277,37 +248,15 @@ const useScreenParams = () => {
 }
 
 const EpochNavigation = ({currentEpochNumber}) => {
-  const classes = useStyles()
   const {translate} = useI18n()
 
-  const epochNavigation = useEpochNavigation(currentEpochNumber)
+  const nav = useEpochNavigation(currentEpochNumber)
   return (
-    <div className={classes.navigation}>
-      <Button
-        rounded
-        secondary
-        onClick={epochNavigation.goPrev}
-        className={classes.navigationButton}
-        disabled={!epochNavigation.hasPrev}
-        to={epochNavigation.linkPrev}
-        component={Link}
-      >
-        <PreviousEpochIcon className={classes.prevEpochIcon} />
-        {translate(messages.goPreviousEpoch)}
-      </Button>
-      <Button
-        rounded
-        secondary
-        className={classes.navigationButton}
-        onClick={epochNavigation.goNext}
-        disabled={!epochNavigation.hasNext}
-        to={epochNavigation.linkNext}
-        component={Link}
-      >
-        {translate(messages.goNextEpoch)}
-        <NextEpochIcon className={classes.nextEpochIcon} />
-      </Button>
-    </div>
+    <NavigationButtons
+      {...nav}
+      prevMessage={translate(messages.goPreviousEpoch)}
+      nextMessage={translate(messages.goNextEpoch)}
+    />
   )
 }
 
