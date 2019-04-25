@@ -2,7 +2,6 @@
 
 import React from 'react'
 import cn from 'classnames'
-import moment from 'moment'
 import {Grid, Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {fade} from '@material-ui/core/styles/colorManipulator'
@@ -34,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 export default () => {
-  const {translate: tr} = useI18n()
+  const {translate: tr, formatTimestamp} = useI18n()
   const classes = useStyles()
 
   // TODO: do we want to handle error here in any way?
@@ -54,7 +53,7 @@ export default () => {
         {tr(text.title)}
       </Typography>
       <Typography variant="caption" className={classes.text}>
-        {tr(text.dataUpTo, {date: moment(syncedUpTo)})}
+        {tr(text.dataUpTo, {date: formatTimestamp(syncedUpTo)})}
       </Typography>
     </Grid>
   )
