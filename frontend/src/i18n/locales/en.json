@@ -220,7 +220,7 @@
   "screens.Blockchain.Transaction.index.transactionId": "Transaction Id",
   "screens.Home.Charts.index.adaInBillions": "{count}B",
   "screens.Home.Charts.index.adaSent": "Total Ada Sent",
-  "screens.Home.Charts.index.day": "Day",
+  "screens.Home.Charts.index.day": "Day (UTC)",
   "screens.Home.Charts.index.epoch": "Epoch",
   "screens.Home.Charts.index.header": "Charts",
   "screens.Home.Charts.index.lastTooltipText": "(in progress)",

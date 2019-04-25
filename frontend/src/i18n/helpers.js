@@ -1,6 +1,6 @@
 // @flow
 import BigNumber from 'bignumber.js'
-import moment from 'moment'
+import moment from 'moment-timezone'
 import {injectIntl} from 'react-intl'
 import React, {useContext} from 'react'
 import {compose} from 'redux'
@@ -25,7 +25,7 @@ BigNumber.config({
   FORMAT: defaultNumberFmt,
 })
 
-const STANDARD_READABLE_FORMAT = 'LL LTS'
+const STANDARD_READABLE_FORMAT = 'LL LTS z'
 
 const MICRO = 1000000
 
@@ -156,7 +156,9 @@ export const getIntlFormatters = (intl: any): Formatters => {
 
   const _formatTimestamp = (x, options: FormatTimestampOptions) => {
     const desiredFormat = options.format || STANDARD_READABLE_FORMAT
-    const ts = moment(x).locale(intl.locale)
+    const ts = moment(x)
+      .locale(intl.locale)
+      .tz(moment.tz.guess())
     if (!ts.isValid) throw new Error('bad timestamp')
     return ts.format(desiredFormat)
   }

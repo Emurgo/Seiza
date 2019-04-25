@@ -39,7 +39,7 @@ const messages = defineMessages({
 })
 
 const xLabels = defineMessages({
-  day: 'Day',
+  day: 'Day (UTC)',
   epoch: 'Epoch',
 })
 
