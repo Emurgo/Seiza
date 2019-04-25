@@ -8,6 +8,7 @@ import {Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
 import Pagination, {getPageCount} from '@/components/visual/Pagination'
+import type {Transaction} from '@/__generated__/schema.flow'
 
 import {
   LoadingInProgress,
@@ -25,7 +26,7 @@ import {ObjectValues} from '@/helpers/flow'
 import {useI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
 import {TabsProvider as Tabs, TabItem as Tab, useTabContext} from '@/components/context/TabContext'
-import type {Transaction} from '@/__generated__/schema.flow'
+import {AddressesBreakdownContent} from '@/components/common/AddressesBreakdown'
 
 const messages = defineMessages({
   transactionEntity: 'Transaction Id',
@@ -100,7 +101,7 @@ const TransactionCard = ({transaction: tx}) => {
               <Label>{tr(messages.amount)}</Label>
               <Value>{__.amount}</Value>
             </Row>
-            <Row>
+            <Row showLastSeparator>
               <Label>{tr(messages.fee)}</Label>
               <Value>{__.fees}</Value>
             </Row>
@@ -114,13 +115,15 @@ const TransactionCard = ({transaction: tx}) => {
                 {__.epoch} / {__.slot}
               </Value>
             </Row>
-            <Row>
+            <Row showLastSeparator>
               <Label>{tr(messages.creationDate)}</Label>
               <Value>{__.creationDate}</Value>
             </Row>
           </Grid>
         </Grid>
       </Grid>
+
+      <AddressesBreakdownContent tx={tx} />
     </Card>
   )
 }
