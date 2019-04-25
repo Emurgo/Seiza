@@ -5,70 +5,24 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 import {makeStyles} from '@material-ui/styles'
 import cn from 'classnames'
 
-import {Card} from '@/components/visual'
-import {getDefaultSpacing} from '@/components/visual/ContentSpacing'
+import {Card, ContentSpacing} from '@/components/visual'
 import CopyToClipboard from '@/components/common/CopyToClipboard'
 
-const useStyles = makeStyles((theme) => ({
-  cardContent: {
-    display: 'flex',
-    alignItems: 'center',
-    paddingRight: theme.spacing.unit * 2,
-    overflow: 'hidden',
-  },
-  autoWidth: {
-    width: 'auto',
-  },
-  iconAlign: {
-    paddingRight: theme.spacing.unit * 2,
-  },
-}))
-
-const useCardStyles = makeStyles((theme) => ({
-  root: {
-    display: 'flex',
-    // Note: we cannot use spaced prop on Card,
-    // because it would break ellipsis
-    paddingLeft: getDefaultSpacing(theme),
-    paddingRight: getDefaultSpacing(theme),
-    paddingBottom: getDefaultSpacing(theme) * 0.75,
-    paddingTop: getDefaultSpacing(theme) * 0.75,
-  },
-}))
-
-const EntityIdCard = ({
-  iconRenderer,
-  label,
-  value,
-  badge,
-  showCopyIcon = true,
-  rawValue,
-  appearAnimation = false,
-}) => {
-  const cardClasses = useCardStyles()
-  const classes = useStyles()
-
+export const EntityCardShell = ({children}) => {
   return (
-    <Card classes={cardClasses}>
-      {iconRenderer && (
-        <Grid
-          container
-          justify="center"
-          alignItems="center"
-          className={cn(classes.autoWidth, classes.iconAlign)}
-        >
-          <Grid item>{iconRenderer}</Grid>
-        </Grid>
-      )}
-      <div className={classes.cardContent}>
-        <EntityCardContent {...{label, value, showCopyIcon, rawValue, appearAnimation}} />
-      </div>
-      {badge && (
-        <Grid container justify="center" alignItems="center" className={classes.autoWidth}>
-          <Grid item>{badge}</Grid>
-        </Grid>
-      )}
+    <Card>
+      <ContentSpacing bottom={0.75} top={0.75}>
+        {children}
+      </ContentSpacing>
     </Card>
+  )
+}
+
+const EntityIdCard = (props) => {
+  return (
+    <EntityCardShell>
+      <EntityCardContent {...props} />
+    </EntityCardShell>
   )
 }
 
@@ -108,6 +62,18 @@ const useContentStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.paper,
   },
   monospace: theme.typography._monospace,
+  cardContent: {
+    display: 'flex',
+    alignItems: 'center',
+    paddingRight: theme.spacing.unit * 2,
+    overflow: 'hidden',
+  },
+  autoWidth: {
+    width: 'auto',
+  },
+  iconAlign: {
+    paddingRight: theme.spacing.unit * 2,
+  },
 }))
 
 // Note: User is unable to select whole text at once
@@ -119,41 +85,67 @@ export const EntityCardContent = ({
   showCopyIcon = true,
   rawValue,
   appearAnimation,
+  iconRenderer,
+  badge,
+  ellipsizeValue = true,
 }) => {
   const classes = useContentStyles({showCopyIcon, appearAnimation})
 
   return (
-    <div className={classes.correctureWrapper}>
-      <div ref={innerRef} className={classes.wrapper}>
-        <Typography variant="overline" color="textSecondary">
-          {label}
-        </Typography>
-
-        <Grid item className={classes.valueContainer}>
-          <ReactCSSTransitionGroup
-            transitionName={{
-              appear: classes.epochAppear,
-              appearActive: classes.epochAppearActive,
-            }}
-            component={React.Fragment}
-            transitionLeave={false}
-            transitionEnter={false}
-            transitionAppear={appearAnimation}
-            transitionAppearTimeout={2000}
-            key={rawValue}
-          >
-            <Typography noWrap variant="body1" className={cn(classes.value, classes.monospace)}>
-              {value}
-            </Typography>
-          </ReactCSSTransitionGroup>
-
-          {showCopyIcon && (
-            <div className={classes.copyToClipboard}>
-              <CopyToClipboard value={rawValue || value} />
-            </div>
-          )}
+    <div className="d-flex">
+      {iconRenderer && (
+        <Grid
+          container
+          justify="center"
+          alignItems="center"
+          className={cn(classes.autoWidth, classes.iconAlign)}
+        >
+          <Grid item>{iconRenderer}</Grid>
         </Grid>
+      )}
+      <div className={classes.cardContent}>
+        <div className={classes.correctureWrapper}>
+          <div ref={innerRef} className={classes.wrapper}>
+            <Typography variant="overline" color="textSecondary">
+              {label}
+            </Typography>
+
+            <Grid item className={classes.valueContainer}>
+              <ReactCSSTransitionGroup
+                transitionName={{
+                  appear: classes.epochAppear,
+                  appearActive: classes.epochAppearActive,
+                }}
+                component={React.Fragment}
+                transitionLeave={false}
+                transitionEnter={false}
+                transitionAppear={appearAnimation}
+                transitionAppearTimeout={2000}
+                key={rawValue}
+              >
+                <Typography
+                  noWrap={ellipsizeValue}
+                  variant="body1"
+                  className={cn(classes.value, classes.monospace)}
+                >
+                  {value}
+                </Typography>
+              </ReactCSSTransitionGroup>
+
+              {showCopyIcon && (
+                <div className={classes.copyToClipboard}>
+                  <CopyToClipboard value={rawValue || value} />
+                </div>
+              )}
+            </Grid>
+          </div>
+        </div>
       </div>
+      {badge && (
+        <Grid container justify="center" alignItems="center" className={classes.autoWidth}>
+          <Grid item>{badge}</Grid>
+        </Grid>
+      )}
     </div>
   )
 }
