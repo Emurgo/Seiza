@@ -120,7 +120,6 @@ const Search = () => {
   useEffect(() => {
     if (searchResult) {
       setSearchQuery('')
-      setSearchText('')
       history.push(getRedirectUrl(searchResult))
     }
   })
