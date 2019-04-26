@@ -9,12 +9,12 @@ import {Grid, createStyles, withStyles} from '@material-ui/core'
 import {MetricsCard, LoadingDots} from '@/components/visual'
 import {getIntlFormatters} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
-import WithNavigateTo from '@/components/headless/navigateTo'
 import {Link} from 'react-router-dom'
 
 import config from '@/config'
 import useCurrency, {CURRENCIES} from '@/components/hooks/useCurrency'
 import {useQuery} from 'react-apollo-hooks'
+import useNavigateTo from '@/components/hooks/useNavigateTo'
 
 const text = defineMessages({
   not_available: 'N/A',
@@ -60,6 +60,16 @@ const OVERVIEW_METRICS_QUERY = gql`
   }
 `
 const STATUS_REFRESH_INTERVAL = 20 * 1000
+
+const MetricWithLink = ({to, ...props}) => {
+  const handler = useNavigateTo(to)
+
+  return to ? (
+    <MetricsCard onClick={handler} clickableWrapperProps={{component: Link, to}} {...props} />
+  ) : (
+    <MetricsCard {...props} />
+  )
+}
 
 const OverviewMetrics = ({intl, data, classes}) => {
   const [currency, setCurrency] = useCurrency()
@@ -112,32 +122,22 @@ const OverviewMetrics = ({intl, data, classes}) => {
   return (
     <Grid container justify="center" wrap="wrap" direction="row">
       <Grid item className={classes.cardDimensions}>
-        <WithNavigateTo to={epochLink}>
-          {({navigate}) => (
-            <MetricsCard
-              className={classes.card}
-              icon="epoch"
-              metric={translate(text.epochLabel)}
-              value={epochNumber}
-              onClick={navigate}
-              clickableWrapperProps={{component: Link, to: epochLink}}
-            />
-          )}
-        </WithNavigateTo>
+        <MetricWithLink
+          className={classes.card}
+          icon="epoch"
+          metric={translate(text.epochLabel)}
+          value={epochNumber}
+          to={epochLink}
+        />
       </Grid>
       <GridItem>
-        <WithNavigateTo to={stakePoolsLink}>
-          {({navigate}) => (
-            <MetricsCard
-              className={classes.card}
-              icon="blocks"
-              metric={translate(text.blocksLabel)}
-              value={blockCount}
-              onClick={navigate}
-              clickableWrapperProps={{component: Link, to: blockLink}}
-            />
-          )}
-        </WithNavigateTo>
+        <MetricWithLink
+          className={classes.card}
+          icon="blocks"
+          metric={translate(text.blocksLabel)}
+          value={blockCount}
+          to={blockLink}
+        />
       </GridItem>
       {config.showStakingData && (
         <GridItem>
@@ -150,34 +150,20 @@ const OverviewMetrics = ({intl, data, classes}) => {
         </GridItem>
       )}
       <GridItem>
-        {config.showStakingData ? (
-          <WithNavigateTo to={marketDataLink}>
-            {({navigate}) => (
-              <MetricsCard
-                {...commonMarketDataProps}
-                onClick={navigate}
-                clickableWrapperProps={{component: Link, to: marketDataLink}}
-              />
-            )}
-          </WithNavigateTo>
-        ) : (
-          <MetricsCard {...commonMarketDataProps} />
-        )}
+        <MetricWithLink
+          {...commonMarketDataProps}
+          to={config.showStakingData ? marketDataLink : null}
+        />
       </GridItem>
       {config.showStakingData && (
         <GridItem>
-          <WithNavigateTo to={stakePoolsLink}>
-            {({navigate}) => (
-              <MetricsCard
-                className={classes.card}
-                icon="pools"
-                metric={translate(text.poolsLabel)}
-                value={pools}
-                onClick={navigate}
-                clickableWrapperProps={{component: Link, to: stakePoolsLink}}
-              />
-            )}
-          </WithNavigateTo>
+          <MetricWithLink
+            className={classes.card}
+            icon="pools"
+            metric={translate(text.poolsLabel)}
+            value={pools}
+            to={stakePoolsLink}
+          />
         </GridItem>
       )}
     </Grid>
