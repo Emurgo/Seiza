@@ -16,7 +16,6 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 700,
     paddingTop: theme.spacing.unit * 1.5,
     paddingBottom: theme.spacing.unit * 1.5,
-    letterSpacing: 1,
   },
   gradient: {
     'background': theme.palette.buttonsGradient.normal,

@@ -76,13 +76,13 @@ const commonThemeObj = {
     },
     button: {
       fontWeight: 700,
-      letterSpacing: 2,
+      letterSpacing: 1,
     },
     caption: {
       fontSize: 12,
     },
     overline: {
-      letterSpacing: 1.5,
+      letterSpacing: 1,
       fontSize: 13,
       lineHeight: 1.5,
     },
