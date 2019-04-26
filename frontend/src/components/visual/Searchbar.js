@@ -104,7 +104,10 @@ class Searchbar extends React.Component<Props> {
                   >
                     <Close />
                   </IconButton>
-                ) : null}
+                ) : (
+                  /* InputAdornment requires non-null children */
+                  <React.Fragment />
+                )}
               </InputAdornment>
             ),
             className: classes.input,

@@ -60,7 +60,7 @@ const EntityIdCard = ({
           <Grid item>{iconRenderer}</Grid>
         </Grid>
       )}
-      <div item className={classes.cardContent}>
+      <div className={classes.cardContent}>
         <EntityCardContent {...{label, value, showCopyIcon, rawValue, appearAnimation}} />
       </div>
       {badge && (

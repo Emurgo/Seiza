@@ -144,7 +144,7 @@ type MetricsCardProps = {
   icon: $Keys<typeof ICONS>,
   className: any,
   options?: Array<Option>,
-  onClick?: () => any,
+  onClick?: (() => any) | null,
   classes: Object,
   clickableWrapperProps?: any,
 }
