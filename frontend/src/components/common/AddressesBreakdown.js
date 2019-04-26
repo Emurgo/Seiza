@@ -17,6 +17,7 @@ import {Typography, Grid} from '@material-ui/core'
 
 import {useI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
+import CopyToClipboard from '@/components/common/CopyToClipboard'
 
 import type {Transaction} from '@/__generated__/schema.flow'
 
@@ -124,7 +125,12 @@ const useBreakdownItemStyles = makeStyles((theme) => ({
     },
   },
   monospace: theme.typography._monospace,
+  copy: {
+    marginLeft: theme.spacing.unit,
+  },
 }))
+
+const IMG_DIMENSIONS = {width: 15, height: 15}
 
 const BreakdownItem = (props) => {
   const {valuePrefix, target} = props
@@ -142,7 +148,7 @@ const BreakdownItem = (props) => {
       >
         <Grid item xs={6}>
           <Typography variant="body1" color="textSecondary">
-            <div className="d-flex">
+            <Grid container direction="row" alignItems="center" wrap="nowrap">
               <div className={breakdownClasses.spaced}>
                 <Link to={routeTo.address(address58)} underline="none">
                   <div className={cn(breakdownClasses.underlineHover, breakdownClasses.monospace)}>
@@ -150,7 +156,10 @@ const BreakdownItem = (props) => {
                   </div>
                 </Link>
               </div>
-            </div>
+              <div className={breakdownClasses.copy}>
+                <CopyToClipboard value={address58} imgDimensions={IMG_DIMENSIONS} outlineSize={4} />
+              </div>
+            </Grid>
           </Typography>
         </Grid>
         <Grid item xs={6}>

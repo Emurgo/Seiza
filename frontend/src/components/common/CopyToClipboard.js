@@ -22,7 +22,13 @@ const useTooltipStyles = makeStyles(() => ({
   },
 }))
 
-const _CopyToClipboard = ({value, i18n, children = null}) => {
+const _CopyToClipboard = ({
+  value,
+  i18n,
+  children = null,
+  imgDimensions = {},
+  outlineSize = null,
+}) => {
   const {translate} = i18n
   const tooltipClasses = useTooltipStyles()
   return (
@@ -39,8 +45,16 @@ const _CopyToClipboard = ({value, i18n, children = null}) => {
             {children ? (
               <div onClick={copy}>{children}</div>
             ) : (
-              <IconButton onClick={copy} color="primary">
-                <img alt={messages.altText} src={isCopied ? copiedIcon : copyIcon} />
+              <IconButton
+                onClick={copy}
+                color="primary"
+                style={outlineSize ? {padding: outlineSize} : {}}
+              >
+                <img
+                  alt={messages.altText}
+                  {...imgDimensions}
+                  src={isCopied ? copiedIcon : copyIcon}
+                />
               </IconButton>
             )}
           </Tooltip>
