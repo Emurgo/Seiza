@@ -24,6 +24,7 @@ import More from './screens/More'
 import PageNotFound from './screens/PageNotFound'
 import LanguageSelect from '@/components/common/LanguageSelect'
 import ThemeSelect from '@/components/common/ThemeSelect'
+import DefaultErrorBoundary from '@/components/common/DefaultErrorBoundary'
 import {CurrencyProvider} from '@/components/hooks/useCurrency'
 
 import './App.css'
@@ -107,33 +108,39 @@ const App = () => {
   const {translate} = useI18n()
 
   return (
-    <Router>
-      <CurrencyProvider>
-        <AutoSyncProvider>
-          <Grid container direction="column" className={classes.mainWrapper} wrap="nowrap">
-            <Grid item>
-              <CssBaseline />
-              <TopBar />
+    <DefaultErrorBoundary>
+      <Router>
+        <CurrencyProvider>
+          <AutoSyncProvider>
+            <Grid container direction="column" className={classes.mainWrapper} wrap="nowrap">
+              <Grid item>
+                <CssBaseline />
+                <TopBar />
+              </Grid>
+              <DefaultErrorBoundary>
+                <React.Fragment>
+                  <Grid item className={classes.contentWrapper}>
+                    <Switch>
+                      <Redirect exact from="/" to={routeTo.home()} />
+                      <Route exact path={routeTo.home()} component={Home} />
+                      <Route path={routeTo.blockchain()} component={Blockchain} />
+                      {config.showStakingData && (
+                        <Route path={routeTo.staking.home()} component={Staking} />
+                      )}
+                      {config.showStakingData && <Route path={routeTo.more()} component={More} />}
+                      <Route component={PageNotFound} />
+                    </Switch>
+                  </Grid>
+                  <Grid item>
+                    <Footer navItems={getTranslatedNavItems(translate)} />
+                  </Grid>
+                </React.Fragment>
+              </DefaultErrorBoundary>
             </Grid>
-            <Grid item className={classes.contentWrapper}>
-              <Switch>
-                <Redirect exact from="/" to={routeTo.home()} />
-                <Route exact path={routeTo.home()} component={Home} />
-                <Route path={routeTo.blockchain()} component={Blockchain} />
-                {config.showStakingData && (
-                  <Route path={routeTo.staking.home()} component={Staking} />
-                )}
-                {config.showStakingData && <Route path={routeTo.more()} component={More} />}
-                <Route component={PageNotFound} />
-              </Switch>
-            </Grid>
-            <Grid item>
-              <Footer navItems={getTranslatedNavItems(translate)} />
-            </Grid>
-          </Grid>
-        </AutoSyncProvider>
-      </CurrencyProvider>
-    </Router>
+          </AutoSyncProvider>
+        </CurrencyProvider>
+      </Router>
+    </DefaultErrorBoundary>
   )
 }
 
