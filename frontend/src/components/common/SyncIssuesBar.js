@@ -9,6 +9,7 @@ import {defineMessages} from 'react-intl'
 
 import {useI18n} from '@/i18n/helpers'
 import {useBackendSyncingStatus} from '@/components/hooks/useBackendSyncingStatus'
+import SyncingAlertIcon from '@/assets/icons/syncing-alert.svg'
 
 const text = defineMessages({
   title: 'We are facing syncing issues on the server:',
@@ -27,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
   text: {
     color: theme.palette.background.paper,
   },
-  title: {
+  paddedRight: {
     paddingRight: theme.spacing.unit,
   },
 }))
@@ -49,7 +50,8 @@ export default () => {
       justify="center"
       alignItems="center"
     >
-      <Typography variant="overline" className={cn(classes.text, classes.title)}>
+      <img alt="" src={SyncingAlertIcon} className={classes.paddedRight} />
+      <Typography variant="overline" className={cn(classes.text, classes.paddedRight)}>
         {tr(text.title)}
       </Typography>
       <Typography variant="caption" className={classes.text}>
