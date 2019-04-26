@@ -34,8 +34,8 @@ const styles = (theme) =>
       minHeight: '75px',
     },
     cardDimensions: {
-      marginRight: '20px',
-      marginLeft: '20px',
+      marginRight: theme.spacing.unit * 1.5,
+      marginLeft: theme.spacing.unit * 1.5,
     },
   })
 
