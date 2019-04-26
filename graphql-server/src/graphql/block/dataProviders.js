@@ -49,7 +49,7 @@ export const fetchBlockBySlot = async ({elastic, E}, {epoch, slot}) => {
     .filter(E.eq('epoch', epoch))
     .filter(E.eq('slot', slot))
     .getSingleHit()
-    .catch(annotateNotFoundError({entity: 'Block'}))
+    .catch(annotateNotFoundError({entity: 'Slot'}))
 
   return facadeElasticBlock(hit._source)
 }
