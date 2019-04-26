@@ -4,7 +4,7 @@ import idx from 'idx'
 import Measure from 'react-measure'
 import gql from 'graphql-tag'
 import {useQuery} from 'react-apollo-hooks'
-import moment from 'moment'
+import moment from 'moment-timezone'
 import React, {useState, useCallback, useMemo} from 'react'
 import {defineMessages} from 'react-intl'
 import {FormControl, RadioGroup, FormControlLabel, Radio, Grid} from '@material-ui/core'
@@ -39,7 +39,7 @@ const messages = defineMessages({
 })
 
 const xLabels = defineMessages({
-  day: 'Day',
+  day: 'Day (UTC)',
   epoch: 'Epoch',
 })
 
@@ -232,7 +232,12 @@ const getChartDimensions = (dimensions) => ({
 })
 
 const Charts = () => {
-  const {translate: tr, formatAdaInUnits, formatAdaSplit, formatTimestampToDayAndMonth} = useI18n()
+  const {
+    translate: tr,
+    formatAdaInUnits,
+    formatAdaSplit,
+    formatTimestampToUtcDayAndMonth,
+  } = useI18n()
   const [xAxis, setXAxis] = useState(X_AXIS.DAY)
   const [dimensions, setDimensions] = useState({width: -1, height: -1})
 
@@ -250,7 +255,7 @@ const Charts = () => {
 
   const commonChartProps = {
     xLabel: tr(xAxis === X_AXIS.DAY ? xLabels.day : xLabels.epoch),
-    formatX: xAxis === X_AXIS.DAY ? formatTimestampToDayAndMonth : identity,
+    formatX: xAxis === X_AXIS.DAY ? formatTimestampToUtcDayAndMonth : identity,
     barSize: xAxis === X_AXIS.DAY ? 14 : 20,
     lastTooltipText: tr(messages.lastTooltipText),
     ...getChartDimensions(dimensions),

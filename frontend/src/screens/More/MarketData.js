@@ -3,7 +3,7 @@ import {ResponsiveLine} from '@nivo/line'
 import gql from 'graphql-tag'
 import {compose} from 'redux'
 import {graphql} from 'react-apollo'
-import moment from 'moment'
+import moment from 'moment-timezone'
 
 import {LoadingInProgress, DebugApolloError} from '@/components/visual'
 
