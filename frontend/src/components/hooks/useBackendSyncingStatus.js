@@ -1,7 +1,7 @@
 // @flow
 import idx from 'idx'
 import gql from 'graphql-tag'
-import moment from 'moment'
+import moment from 'moment-timezone'
 import {useQuery} from 'react-apollo-hooks'
 
 export const useBackendSyncingStatus = () => {
