@@ -73,7 +73,7 @@ const useNavTypographyStyles = makeStyles(({palette}) => ({
     'display': 'inline-block',
     'textTransform': 'uppercase',
     'position': 'relative',
-    'letterSpacing': 1.2,
+    'letterSpacing': 1,
     '&:hover': {
       color: palette.primary.dark,
     },
