@@ -47,33 +47,37 @@ const NavigationButtons = ({
   const classes = useStyles()
 
   return (
-    <Grid container direction="row" justify="center">
-      <Button
-        rounded
-        secondary
-        onClick={goPrev}
-        className={classes.navigationButton}
-        disabled={!hasPrev}
-        /* Link requires `to` prop even if disabled */
-        to={linkPrev || ''}
-        component={Link}
-      >
-        <PreviousIcon className={classes.prevIcon} />
-        {prevMessage}
-      </Button>
-      <Button
-        rounded
-        secondary
-        className={classes.navigationButton}
-        onClick={goNext}
-        disabled={!hasNext}
-        /* Link requires `to` prop even if disabled */
-        to={linkNext || ''}
-        component={Link}
-      >
-        {nextMessage}
-        <NextIcon className={classes.nextIcon} />
-      </Button>
+    <Grid container direction="row" justify="center" spacing={16}>
+      <Grid item>
+        <Button
+          rounded
+          secondary
+          onClick={goPrev}
+          className={classes.navigationButton}
+          disabled={!hasPrev}
+          /* Link requires `to` prop even if disabled */
+          to={linkPrev || ''}
+          component={Link}
+        >
+          <PreviousIcon className={classes.prevIcon} />
+          {prevMessage}
+        </Button>
+      </Grid>
+      <Grid item>
+        <Button
+          rounded
+          secondary
+          className={classes.navigationButton}
+          onClick={goNext}
+          disabled={!hasNext}
+          /* Link requires `to` prop even if disabled */
+          to={linkNext || ''}
+          component={Link}
+        >
+          {nextMessage}
+          <NextIcon className={classes.nextIcon} />
+        </Button>
+      </Grid>
     </Grid>
   )
 }

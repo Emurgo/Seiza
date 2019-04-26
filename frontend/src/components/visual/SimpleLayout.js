@@ -35,7 +35,7 @@ const styles = ({palette, spacing}) =>
 
 const SimpleLayout = ({title, classes, children, maxWidth = '1500px'}) => (
   <Grid container className={classes.container} direction="row" justify="space-around">
-    <div style={{width: '85%', maxWidth}}>
+    <div style={{width: '85vw', maxWidth}}>
       <Grid container direction="row" justify="center">
         <div className={classes.titleWrapper}>
           <EntityHeading className={classes.title}>{title}</EntityHeading>

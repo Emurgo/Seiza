@@ -109,18 +109,22 @@ const SubscribeFooter = () => {
       </Grid>
 
       <Grid item className={classes.row}>
-        <Grid container direction="row" justify="center">
-          <form>
-            <RoundedInput
-              className={classes.email}
-              placeholder={tr(subscribeMessages.emailButton)}
-              type="email"
-            />
-            <Button rounded gradient className={cn(classes.subscribe)} type="submit">
-              {tr(subscribeMessages.subscribeButton)}
-            </Button>
-          </form>
-        </Grid>
+        <form>
+          <Grid container direction="row" justify="center" spacing={16}>
+            <Grid item>
+              <RoundedInput
+                className={classes.email}
+                placeholder={tr(subscribeMessages.emailButton)}
+                type="email"
+              />
+            </Grid>
+            <Grid item>
+              <Button rounded gradient className={cn(classes.subscribe)} type="submit">
+                {tr(subscribeMessages.subscribeButton)}
+              </Button>
+            </Grid>
+          </Grid>
+        </form>
       </Grid>
     </Grid>
   )
