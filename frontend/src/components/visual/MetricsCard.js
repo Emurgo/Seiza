@@ -47,8 +47,8 @@ const styles = (theme) =>
     },
     icon: {
       width: 50,
-      marginRight: theme.spacing.unit,
-      marginLeft: theme.spacing.unit,
+      marginRight: theme.spacing.unit * 2,
+      marginLeft: theme.spacing.unit * 2,
     },
     optionsIcon: {
       'color': theme.palette.contentUnfocus,
@@ -185,7 +185,7 @@ class MetricsCard extends React.Component<MetricsCardProps> {
                 <Grid container direction="column" justify="space-around" className={classes.icon}>
                   <img alt="" src={ICONS[icon]} />
                 </Grid>
-                <Grid container direction="column" justify="center" alignItems="center" item>
+                <Grid container direction="column" justify="center">
                   <Grid item>
                     <Typography variant="h2" className={classes.value}>
                       {value}
