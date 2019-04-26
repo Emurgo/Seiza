@@ -124,7 +124,7 @@ type Formatters = {
   formatAdaInUnits: (x: ?string, options?: any) => string,
   // Timestamp is always as string
   formatTimestamp: (x: ?string, options?: any) => string,
-  formatTimestampToDayAndMonth: (x: ?string, options?: any) => string,
+  formatTimestampToUtcDayAndMonth: (x: ?string, options?: any) => string,
 }
 
 export const getIntlFormatters = (intl: any): Formatters => {
@@ -164,8 +164,9 @@ export const getIntlFormatters = (intl: any): Formatters => {
   }
 
   // TODO: consider creating new format for moment
-  const _formatTimestampToDayAndMonth = (timestamp, options = {}) => {
-    return new Date(timestamp).toLocaleDateString('en', {month: '2-digit', day: '2-digit'})
+  const _formatTimestampToUtcDayAndMonth = (timestamp, options = {}) => {
+    const utcDate = moment.utc(timestamp).toDate()
+    return utcDate.toLocaleDateString('en', {month: '2-digit', day: '2-digit'})
   }
 
   const withDefaultValue = (formatter): any => (x, options = {}) => {
@@ -218,7 +219,7 @@ export const getIntlFormatters = (intl: any): Formatters => {
   const formatFiat = withSignAndDefaultValue(_formatFiat)
 
   const formatTimestamp = withDefaultValue(_formatTimestamp)
-  const formatTimestampToDayAndMonth = withDefaultValue(_formatTimestampToDayAndMonth)
+  const formatTimestampToUtcDayAndMonth = withDefaultValue(_formatTimestampToUtcDayAndMonth)
   const formatAdaInUnits = withSignAndDefaultValue(_formatAdaInUnits)
   formatTimestamp.FMT_SHORT_DATE = 'L'
   formatTimestamp.FMT_MONTH_NUMERAL = 'L LTS'
@@ -234,7 +235,7 @@ export const getIntlFormatters = (intl: any): Formatters => {
     formatAdaSplit,
     formatTimestamp,
     formatAdaInUnits,
-    formatTimestampToDayAndMonth,
+    formatTimestampToUtcDayAndMonth,
   }
 }
 
