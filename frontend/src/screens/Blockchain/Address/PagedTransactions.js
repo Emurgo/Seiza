@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const TransactionCard = ({transaction: tx}) => {
+const TransactionCard = ({transaction: tx, targetAddress}) => {
   const {translate: tr, formatInt, formatTimestamp} = useI18n()
   const classes = useStyles()
   const {Row, Label, Value} = SummaryCard
@@ -123,13 +123,15 @@ const TransactionCard = ({transaction: tx}) => {
         </Grid>
       </Grid>
 
-      <AddressesBreakdownContent tx={tx} />
+      <AddressesBreakdownContent targetAddress={targetAddress} tx={tx} />
     </Card>
   )
 }
 
-const TransactionList = ({transactions = []}) => {
-  return transactions.map((tx) => <TransactionCard key={tx.txHash} transaction={tx} />)
+const TransactionList = ({transactions = [], targetAddress}) => {
+  return transactions.map((tx) => (
+    <TransactionCard targetAddress={targetAddress} key={tx.txHash} transaction={tx} />
+  ))
 }
 
 const TAB_NAMES = {
@@ -183,6 +185,7 @@ const PagedTransactions = ({
   onChangePage,
   rowsPerPage,
   page,
+  targetAddress,
 }) => {
   const tabNames = ObjectValues(TAB_NAMES)
   const tabState = useTabState(tabNames)
@@ -192,13 +195,13 @@ const PagedTransactions = ({
     <Tabs {...tabState}>
       <TabsHeader paginationProps={{totalCount, onChangePage, rowsPerPage, page}} />
       <Tab name={TAB_NAMES.ALL}>
-        <TransactionList transactions={currentTransactions} />
+        <TransactionList targetAddress={targetAddress} transactions={currentTransactions} />
       </Tab>
       <Tab name={TAB_NAMES.SENT}>
-        <TransactionList transactions={currentTransactions} />
+        <TransactionList targetAddress={targetAddress} transactions={currentTransactions} />
       </Tab>
       <Tab name={TAB_NAMES.RECEIVED}>
-        <TransactionList transactions={currentTransactions} />
+        <TransactionList targetAddress={targetAddress} transactions={currentTransactions} />
       </Tab>
     </Tabs>
   )
