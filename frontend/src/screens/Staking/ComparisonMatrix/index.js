@@ -142,29 +142,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const PoolDataFragment = gql`
-  fragment ComparisonMatrixDataFragment on BootstrapEraStakePool {
-    poolHash
-    name
-    createdAt
-    description
-    website
-    summary {
-      revenue
-      performance
-      adaStaked
-      rewards
-      keysDelegating
-      fullness
-      margins
-      ownerPledge {
-        actual
-        declared
-      }
-    }
-  }
-`
-
 const ComparisonMatrixScreen = () => {
   const classes = useStyles()
   const {translate: tr} = useI18n()
@@ -174,10 +151,26 @@ const ComparisonMatrixScreen = () => {
     gql`
       query($poolHashes: [String!]!) {
         stakePools(poolHashes: $poolHashes) {
-          ...ComparisonMatrixDataFragment
+          poolHash
+          name
+          createdAt
+          description
+          website
+          summary {
+            revenue
+            performance
+            adaStaked
+            rewards
+            keysDelegating
+            fullness
+            margins
+            ownerPledge {
+              actual
+              declared
+            }
+          }
         }
       }
-      ${PoolDataFragment}
     `,
     {
       variables: {poolHashes},

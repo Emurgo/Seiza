@@ -54,33 +54,26 @@ const mockedOwners = [
   },
 ]
 
-const PoolDataFragment = gql`
-  fragment ComparisonMatrixDataFragment on BootstrapEraStakePool {
-    poolHash
-    name
-    summary {
-      adaStaked
-      stakersCount
-      averageUserStaking
-      usersAdaStaked
-      ownerPledge {
-        declared
-        actual
-      }
-    }
-  }
-`
-
 const useLoadPoolsData = () => {
   const {selectedPools: poolHashes} = useSelectedPoolsContext()
   const {error, loading, data} = useQuery(
     gql`
       query($poolHashes: [String!]!) {
         stakePools(poolHashes: $poolHashes) {
-          ...ComparisonMatrixDataFragment
+          poolHash
+          name
+          summary {
+            adaStaked
+            stakersCount
+            averageUserStaking
+            usersAdaStaked
+            ownerPledge {
+              declared
+              actual
+            }
+          }
         }
       }
-      ${PoolDataFragment}
     `,
     {
       variables: {poolHashes},
