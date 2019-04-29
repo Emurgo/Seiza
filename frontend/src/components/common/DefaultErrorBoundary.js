@@ -6,7 +6,7 @@ import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
 
 import {useI18n} from '@/i18n/helpers'
-import {logError} from '@/helpers/logging'
+import {logError} from '@/helpers/errorReporting'
 import errorImage from '@/assets/error-screen.svg'
 
 const messages = defineMessages({
@@ -64,7 +64,6 @@ class DefaultErrorBoundary extends React.Component<Props, State> {
   }
 
   componentDidCatch(error: any, info: any) {
-    console.error('Unexpected error', error) // eslint-disable-line
     logError(error, info)
   }
 
