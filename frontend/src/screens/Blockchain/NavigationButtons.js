@@ -54,7 +54,8 @@ const NavigationButtons = ({
         onClick={goPrev}
         className={classes.navigationButton}
         disabled={!hasPrev}
-        to={linkPrev}
+        /* Link requires `to` prop even if disabled */
+        to={linkPrev || ''}
         component={Link}
       >
         <PreviousIcon className={classes.prevIcon} />
@@ -66,7 +67,8 @@ const NavigationButtons = ({
         className={classes.navigationButton}
         onClick={goNext}
         disabled={!hasNext}
-        to={linkNext}
+        /* Link requires `to` prop even if disabled */
+        to={linkNext || ''}
         component={Link}
       >
         {nextMessage}

@@ -147,20 +147,20 @@ const BreakdownItem = (props) => {
         className={breakdownClasses.rowSpacing}
       >
         <Grid item xs={6}>
-          <Typography variant="body1" color="textSecondary">
-            <Grid container direction="row" alignItems="center" wrap="nowrap">
-              <div className={breakdownClasses.spaced}>
+          <Grid container direction="row" alignItems="center" wrap="nowrap">
+            <div className={breakdownClasses.spaced}>
+              <Typography variant="body1" color="textSecondary" component="div">
                 <Link to={routeTo.address(address58)} underline="none">
                   <div className={cn(breakdownClasses.underlineHover, breakdownClasses.monospace)}>
                     <EllipsizeMiddle value={address58} />
                   </div>
                 </Link>
-              </div>
-              <div className={breakdownClasses.copy}>
-                <CopyToClipboard value={address58} imgDimensions={IMG_DIMENSIONS} outlineSize={4} />
-              </div>
-            </Grid>
-          </Typography>
+              </Typography>
+            </div>
+            <div className={breakdownClasses.copy}>
+              <CopyToClipboard value={address58} imgDimensions={IMG_DIMENSIONS} outlineSize={4} />
+            </div>
+          </Grid>
         </Grid>
         <Grid item xs={6}>
           <Grid container justify="flex-end" direction="row">
