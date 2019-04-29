@@ -100,7 +100,7 @@
   "screens.Blockchain.BlockchainHeader.OverviewMetrics.slotsLabel": "Slot",
   "screens.Blockchain.BlockchainHeader.Search.helpText": "Search for entity using its \"hash\" or use \"epoch:number,slot:number\" syntax",
   "screens.Blockchain.BlockchainHeader.Search.noData": "No items matching current query",
-  "screens.Blockchain.BlockchainHeader.Search.searchPlaceholder": "Search addresses, epochs & slots on the Cardano network",
+  "screens.Blockchain.BlockchainHeader.Search.searchPlaceholder": "Search addresses, transactions, epochs & slots on the Cardano network",
   "screens.Blockchain.BlockchainHeader.index.header": "Ada Blockchain Explorer",
   "screens.Blockchain.Epoch.Blocks.blocks": "Blocks",
   "screens.Blockchain.Epoch.StakingPools.adaStaked": "ADA Staked",
