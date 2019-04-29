@@ -7,7 +7,6 @@ import PageNotFound from '../PageNotFound'
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {
-    marginTop: 100,
     minHeight: 300,
   },
 }))
