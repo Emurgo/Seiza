@@ -36,6 +36,7 @@ const navigationMessages = defineMessages({
   staking: 'Staking',
   stakePools: 'Stake pools',
   more: 'More',
+  termsOfUse: 'Terms of use',
   disabledText: 'Coming soon',
 })
 
@@ -77,6 +78,14 @@ const getTranslatedNavItems = (translate) =>
       __hide: !config.showStakingData,
     },
   ].filter((item) => !item.__hide)
+
+const getTranslatedFooterNavItems = (translate) => {
+  const mainNavItems = getTranslatedNavItems(translate)
+  return [
+    ...mainNavItems,
+    {link: routeTo.termsOfUse(), label: translate(navigationMessages.termsOfUse), __hide: false},
+  ]
+}
 
 const TopBar = compose(withRouter)(({location: {pathname}}) => {
   const {translate} = useI18n()
@@ -132,7 +141,7 @@ const App = () => {
                     </Switch>
                   </Grid>
                   <Grid item>
-                    <Footer navItems={getTranslatedNavItems(translate)} />
+                    <Footer navItems={getTranslatedFooterNavItems(translate)} />
                   </Grid>
                 </React.Fragment>
               </DefaultErrorBoundary>
