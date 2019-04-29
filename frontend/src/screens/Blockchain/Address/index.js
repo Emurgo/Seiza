@@ -166,6 +166,7 @@ const AddressScreen = () => {
             </EntityHeading>
             <PagedTransactions
               loading={loading}
+              targetAddress={address58}
               transactions={idx(addressSummary, (_) => _.transactions) || []}
             />
           </React.Fragment>
