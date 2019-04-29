@@ -5,11 +5,12 @@ import gql from 'graphql-tag'
 import {useQuery} from 'react-apollo-hooks'
 import idx from 'idx'
 import useReactRouter from 'use-react-router'
-import {Card} from '@material-ui/core'
+import {Card, Grid, Typography} from '@material-ui/core'
 import {
   SummaryCard,
   SimpleLayout,
-  EntityIdCard,
+  EntityCardContent,
+  EntityCardShell,
   LoadingError,
   AdaValue,
   Tab,
@@ -18,6 +19,7 @@ import {
   LoadingOverlay,
 } from '@/components/visual'
 import {useI18n} from '@/i18n/helpers'
+import EpochNumberIcon from '@/assets/icons/epoch-number.svg'
 import EpochIcon from '@/assets/icons/metrics-epoch.svg'
 import WithTabState from '@/components/headless/tabState'
 import Blocks from './Blocks'
@@ -34,8 +36,7 @@ const messages = defineMessages({
   goNextEpoch: 'Next Epoch',
   header: 'Epoch',
   entityHeader: 'Epoch Number',
-  startTime: 'Start Time',
-  endTime: 'End Time',
+  timePeriod: 'Time Period',
   blocksCount: 'Blocks',
   blocksOutOfSlots: '{blocks} out of {slots} slots',
   txCount: 'Transactions',
@@ -84,12 +85,10 @@ const TABS = {
 
 const EpochSummaryCard = ({epoch, loading}) => {
   const {Row, Label, Value} = SummaryCard
-  const {translate, formatTimestamp, formatInt} = useI18n()
+  const {translate, formatInt} = useI18n()
   const NA = translate(messages.notAvailable)
 
   const data1 = {
-    startTime: formatTimestamp(idx(epoch, (_) => _.startTime), {defaultValue: NA}),
-    endTime: formatTimestamp(idx(epoch, (_) => _.endTime), {defaultValue: NA}),
     blocksCount: translate(messages.blocksOutOfSlots, {
       blocks: formatInt(idx(epoch, (_) => _.summary.blocksCreated), {defaultValue: NA}),
       slots: formatInt(idx(epoch, (_) => _.summary.slotCount), {defaultValue: NA}),
@@ -105,14 +104,6 @@ const EpochSummaryCard = ({epoch, loading}) => {
 
   const card1 = (
     <SummaryCard>
-      <Row>
-        <Label>{translate(messages.startTime)}</Label>
-        <Value>{data1.startTime}</Value>
-      </Row>
-      <Row>
-        <Label>{translate(messages.endTime)}</Label>
-        <Value>{data1.endTime}</Value>
-      </Row>
       <Row>
         <Label>{translate(messages.blocksCount)}</Label>
         <Value>{data1.blocksCount}</Value>
@@ -260,27 +251,72 @@ const EpochNavigation = ({currentEpochNumber}) => {
   )
 }
 
+const EpochEntityCard = ({epochNumber, startTime, endTime}) => {
+  const {translate: tr, formatTimestamp} = useI18n()
+  const NA = tr(messages.notAvailable)
+  const start = formatTimestamp(startTime, {
+    format: formatTimestamp.FMT_MONTH_NUMERAL,
+    defaultValue: NA,
+  })
+  const end = formatTimestamp(endTime, {
+    format: formatTimestamp.FMT_MONTH_NUMERAL,
+    defaultValue: NA,
+  })
+  return (
+    <EntityCardShell>
+      <Grid container>
+        <Grid item xs={6}>
+          <EntityCardContent
+            showCopyIcon={false}
+            label={tr(messages.entityHeader)}
+            value={epochNumber}
+            iconRenderer={<img alt="" src={EpochNumberIcon} width={48} height={48} />}
+            appearAnimation
+            rawValue={epochNumber}
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <EntityCardContent
+            label={tr(messages.timePeriod)}
+            showCopyIcon={false}
+            ellipsizeValue={false}
+            iconRenderer={<img alt="" src={EpochIcon} width={48} height={48} />}
+            value={
+              <React.Fragment>
+                <Typography variant="body1" inline>
+                  {start}
+                </Typography>
+                {' — '}
+                <Typography variant="body1" inline>
+                  {end}
+                </Typography>
+              </React.Fragment>
+            }
+          />
+        </Grid>
+      </Grid>
+    </EntityCardShell>
+  )
+}
+
 const EpochScreen = () => {
   const {epochNumber} = useScreenParams()
   const {epochData, error, loading} = useEpochData(epochNumber)
   const scrollToRef = useRef()
 
-  const {translate} = useI18n()
+  const {translate: tr} = useI18n()
   const blocksInEpoch = idx(epochData, (_) => _.summary.blocksCreated)
 
   useScrollFromBottom(scrollToRef, epochData)
 
   return (
     <div ref={scrollToRef}>
-      <SimpleLayout title={translate(messages.header)}>
+      <SimpleLayout title={tr(messages.header)}>
         <EpochNavigation currentEpochNumber={epochNumber} />
-        <EntityIdCard
-          showCopyIcon={false}
-          label={translate(messages.entityHeader)}
-          value={epochNumber}
-          iconRenderer={<img alt="" src={EpochIcon} width={40} height={40} />}
-          appearAnimation
-          rawValue={epochNumber}
+        <EpochEntityCard
+          epochNumber={epochNumber}
+          startTime={idx(epochData, (_) => _.startTime)}
+          endTime={idx(epochData, (_) => _.endTime)}
         />
         {error ? (
           <LoadingError error={error} />
@@ -294,8 +330,8 @@ const EpochScreen = () => {
                   return (
                     <Card>
                       <Tabs value={currentTab} onChange={setTab}>
-                        <Tab label={translate(messages.blocksTab)} />
-                        <Tab label={translate(messages.stakingPoolsTab)} />
+                        <Tab label={tr(messages.blocksTab)} />
+                        <Tab label={tr(messages.stakingPoolsTab)} />
                       </Tabs>
                       <TabContent epochNumber={epochNumber} />
                     </Card>
