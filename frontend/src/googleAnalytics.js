@@ -31,7 +31,9 @@ const initDataLayer = () => {
     window.dataLayer.push(arguments)
   }
   gtag('js', new Date())
-  gtag('config', googleAnalyticsId)
+  // https://developers.google.com/analytics/devguides/collection/gtagjs/ip-anonymization
+  gtag('config', googleAnalyticsId, {anonymize_ip: true})
+  gtag('set', 'anonymizeIp', true)
 
   /*eslint-enable */
   // Google code
