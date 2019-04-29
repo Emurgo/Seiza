@@ -33,7 +33,7 @@ import seizaLogo from './assets/icons/logo-seiza.svg'
 const navigationMessages = defineMessages({
   home: 'Home',
   blockchain: 'Blockchain',
-  staking: 'Staking',
+  staking: 'Staking simulator',
   stakePools: 'Stake pools',
   more: 'More',
   termsOfUse: 'Terms of use',
