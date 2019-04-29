@@ -20,7 +20,7 @@ const text = defineMessages({
   not_available: 'N/A',
   error: 'Err',
   epochLabel: 'Epoch',
-  blocksLabel: 'Blocks',
+  slotsLabel: 'Slot',
   decentralizationLabel: 'Decentralization',
   priceLabel: 'Price',
   poolsLabel: 'Pools',
@@ -50,7 +50,6 @@ const OVERVIEW_METRICS_QUERY = gql`
     currentStatus {
       blockCount
       latestBlock {
-        blockHash
         epoch
       }
       decentralization
@@ -94,7 +93,7 @@ const OverviewMetrics = ({intl, data, classes}) => {
   const pools = formatInt(idx(status, (s) => s.stakePoolCount), {defaultValue: NA})
 
   const epochLink = status && routeTo.epoch(status.latestBlock.epoch)
-  const blockLink = status && routeTo.block(status.latestBlock.blockHash)
+  const blockLink = routeTo.blockchain()
   const marketDataLink = routeTo.more()
   const stakePoolsLink = routeTo.staking.home()
 
@@ -134,7 +133,7 @@ const OverviewMetrics = ({intl, data, classes}) => {
         <MetricWithLink
           className={classes.card}
           icon="blocks"
-          metric={translate(text.blocksLabel)}
+          metric={translate(text.slotsLabel)}
           value={blockCount}
           to={blockLink}
         />
