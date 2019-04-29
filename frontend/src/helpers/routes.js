@@ -27,4 +27,5 @@ export const routeTo = {
     location: () => `${STAKING_ROUTE}/location`,
     people: () => `${STAKING_ROUTE}/people`,
   },
+  termsOfUse: () => '/terms',
 }

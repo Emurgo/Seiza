@@ -131,25 +131,31 @@ const useMainFooterStyles = makeStyles(({spacing, palette, typography}) => ({
     color: palette.footer.contrastText,
   },
   socialIconWrapper: {
-    marginRight: spacing.unit * 1.4,
+    marginLeft: spacing.unit * 1.7,
     marginBottom: spacing.unit * 0.75,
   },
   copyright: {
     color: palette.footer.contrastText,
     fontSize: typography.fontSize * 0.5,
-    paddingBottom: spacing.unit * 2,
-  },
-  logo: {
-    paddingBottom: spacing.unit * 1.5,
-    paddingTop: spacing.unit * 1.5,
   },
   nav: {
     listStyleType: 'none',
+    padding: 0,
+    margin: 0,
+    marginBottom: spacing.unit,
     display: 'flex',
+    justifyContent: 'space-between',
+  },
+  navigationWrapper: {
+    minWidth: '370px',
   },
   wrapper: {
     backgroundColor: palette.footer.background,
-    padding: spacing.unit * 2,
+    padding: `${spacing.unit * 2}px ${spacing.unit * 1.5}px`,
+  },
+  innerWrapper: {
+    maxWidth: 600,
+    margin: 'auto',
   },
   link: {
     'textDecoration': 'none',
@@ -157,9 +163,6 @@ const useMainFooterStyles = makeStyles(({spacing, palette, typography}) => ({
       textDecoration: 'underline',
       color: palette.background.paper,
     },
-  },
-  navItem: {
-    paddingLeft: '50px',
   },
   navText: {
     color: palette.footer.contrastText,
@@ -200,46 +203,59 @@ const MainFooter = ({navItems}) => {
   const classes = useMainFooterStyles()
   const {translate: tr} = useI18n()
   return (
-    <Grid container direction="row" justify="center" className={classes.wrapper}>
-      <Grid item>
-        <Grid container direction="column" alignItems="flex-start">
-          <Grid item>
-            <img className={classes.logo} alt="" src={logo} />
-          </Grid>
-          <Grid item>
-            <Grid container justify="center" alignItems="center">
-              <SocialIcon to={SOCIAL_LINKS.FACEBOOK} className="fa fa-facebook-square" />
-              <SocialIcon to={SOCIAL_LINKS.TWITTER} className="fa fa-twitter" />
-              <SocialIcon to={SOCIAL_LINKS.YOUTUBE} className="fa fa-youtube-play" />
-              <SocialIcon to={SOCIAL_LINKS.MEDIUM} className="fa fa-medium" />
-              <SocialIcon to={SOCIAL_LINKS.REDDIT} className="fa fa-reddit-alien" />
-              <SocialIcon to={SOCIAL_LINKS.LINKEDIN} className="fa fa-linkedin-square" />
+    <div className={classes.wrapper}>
+      <Grid
+        container
+        direction="row"
+        justify="space-between"
+        alignItems="center"
+        className={classes.innerWrapper}
+      >
+        <Grid item>
+          <img alt="" src={logo} />
+        </Grid>
+
+        <Grid item className={classes.navigationWrapper}>
+          <Grid container direction="column" justifyContent="center">
+            <Grid item>
+              <ul className={classes.nav}>
+                {navItems.map(({link, label, disabledText}) => (
+                  <li key={label}>
+                    {disabledText ? (
+                      <DisabledLink {...{label, disabledText}} />
+                    ) : (
+                      <Link className={classes.link} to={link}>
+                        <Typography variant="caption" className={classes.navText}>
+                          {label}
+                        </Typography>
+                      </Link>
+                    )}
+                  </li>
+                ))}
+              </ul>
             </Grid>
-          </Grid>
-          <Grid item>
-            <Typography className={classes.copyright}>
-              {tr(messages.copyright)} | &#169;2019 EMURGO Co., Ltd
-            </Typography>
+            <Grid item>
+              <Grid container justify="space-between" alignItems="center">
+                <Grid item>
+                  <Typography className={classes.copyright}>
+                    {tr(messages.copyright)} | &#169;2019 EMURGO Co., Ltd
+                  </Typography>
+                </Grid>
+
+                <Grid item>
+                  <SocialIcon to={SOCIAL_LINKS.FACEBOOK} className="fa fa-facebook-square" />
+                  <SocialIcon to={SOCIAL_LINKS.TWITTER} className="fa fa-twitter" />
+                  <SocialIcon to={SOCIAL_LINKS.YOUTUBE} className="fa fa-youtube-play" />
+                  <SocialIcon to={SOCIAL_LINKS.MEDIUM} className="fa fa-medium" />
+                  <SocialIcon to={SOCIAL_LINKS.REDDIT} className="fa fa-reddit-alien" />
+                  <SocialIcon to={SOCIAL_LINKS.LINKEDIN} className="fa fa-linkedin-square" />
+                </Grid>
+              </Grid>
+            </Grid>
           </Grid>
         </Grid>
       </Grid>
-
-      <ul className={classes.nav}>
-        {navItems.map(({link, label, disabledText}) => (
-          <li key={label} className={classes.navItem}>
-            {disabledText ? (
-              <DisabledLink {...{label, disabledText}} />
-            ) : (
-              <Link className={classes.link} to={link}>
-                <Typography variant="caption" className={classes.navText}>
-                  {label}
-                </Typography>
-              </Link>
-            )}
-          </li>
-        ))}
-      </ul>
-    </Grid>
+    </div>
   )
 }
 
