@@ -293,18 +293,18 @@ export default compose(
   return (
     <SimpleLayout title={translate(messages.header)} maxWidth="1200px">
       <Row>
-        <Grid item xs={6}>
+        <Grid item xs={12} sm={10} md={6}>
           <SlotInfoCard epoch={epoch} slot={slot} parentError={error} icon={<SlotIcon />} />
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={12} sm={10} md={6}>
           <GeneralInfo24Hours icon={<TimeIcon />} />
         </Grid>
       </Row>
       <Row>
-        <Grid item xs={6}>
+        <Grid item xs={12} sm={10} md={6}>
           <GeneralInfoLastEpoch epoch={epoch} parentError={error} icon={<EpochIcon />} />
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={12} sm={10} md={6}>
           <GeneralInfoGenesis icon={<FromGenesisIcon />} />
         </Grid>
       </Row>

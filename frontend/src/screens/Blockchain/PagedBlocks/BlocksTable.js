@@ -2,7 +2,7 @@
 import React from 'react'
 import {defineMessages} from 'react-intl'
 import {makeStyles} from '@material-ui/styles'
-import {Grid} from '@material-ui/core'
+import {Grid, Hidden} from '@material-ui/core'
 
 import Table from '@/components/visual/Table'
 import {AdaValue, Link} from '@/components/visual'
@@ -22,14 +22,14 @@ import type {Block} from '@/__generated__/schema.flow'
 
 // TODO?: aria-label messages
 const tableMessages = defineMessages({
-  epoch: 'epoch',
-  slot: 'slot',
-  slotLeader: 'slot leader',
-  time: 'time',
-  transactions: 'transactions',
-  totalSent: 'total sent (ADA)',
-  fees: 'fees (ADA)',
-  size: 'size (B)',
+  epoch: 'Epoch',
+  slot: 'Slot',
+  slotLeader: 'Slot leader',
+  time: 'Time',
+  transactions: 'Transactions',
+  totalSent: 'Total sent (ADA)',
+  fees: 'Fees (ADA)',
+  size: 'Size (B)',
 })
 
 export const COLUMNS_MAP = {
@@ -54,10 +54,9 @@ const useTHStyles = makeStyles((theme) => ({
     width: '20px',
     height: '20px',
     flexShrink: 0,
+    marginRight: '6px',
   },
-  content: {
-    marginLeft: '6px',
-  },
+  content: {},
 }))
 
 const TH = ({Icon, label}) => {
@@ -65,8 +64,14 @@ const TH = ({Icon, label}) => {
   const classes = useTHStyles()
   return (
     <Grid container direction="row" alignItems="center" wrap="nowrap">
-      <Icon />
-      <span className={classes.content}>{translate(label)}</span>
+      <Hidden smDown implementation="css">
+        <Grid item>
+          <Icon />
+        </Grid>
+      </Hidden>
+      <Grid item>
+        <span className={classes.content}>{translate(label)}</span>
+      </Grid>
     </Grid>
   )
 }

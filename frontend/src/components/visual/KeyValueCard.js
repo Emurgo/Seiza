@@ -17,12 +17,20 @@ const useHeaderStyles = makeStyles(({spacing, palette}) => ({
   },
 }))
 
-const useBodyStyles = makeStyles(({spacing, palette}) => ({
+const useBodyStyles = makeStyles(({spacing, palette, breakpoints}) => ({
   rowWrapper: {
     borderBottom: `1px solid ${palette.unobtrusiveContentHighlight}`,
   },
   lastRow: {
     borderBottom: 'none',
+  },
+  value: {
+    /* Responsive layout tricks */
+    width: '100%',
+    textAlign: 'right',
+    [breakpoints.down('xs')]: {
+      textAlign: 'left',
+    },
   },
 }))
 
@@ -98,20 +106,29 @@ const RowSpacing = ({children, isLast = false}) => {
   )
 }
 
-const Body = ({items}: BodyProps) => (
-  <ContentSpacing top={0.5} bottom={0.5} left={0} right={0}>
-    {items.map(({label, value}, index, array) => (
-      <RowSpacing key={label} isLast={index === array.length - 1}>
-        <Grid container justify="space-between" alignItems="center" direction="row">
-          <Typography variant="body1" color="textSecondary">
-            {label}
-          </Typography>
-          <Typography variant="body1">{value}</Typography>
-        </Grid>
-      </RowSpacing>
-    ))}
-  </ContentSpacing>
-)
+const Body = ({items}: BodyProps) => {
+  const classes = useBodyStyles()
+  return (
+    <ContentSpacing top={0.5} bottom={0.5} left={0} right={0}>
+      {items.map(({label, value}, index, array) => (
+        <RowSpacing key={label} isLast={index === array.length - 1}>
+          <Grid container justify="space-between" alignItems="center" direction="row">
+            <Grid item xs={12} sm={4}>
+              <Typography variant="body1" color="textSecondary">
+                {label}
+              </Typography>
+            </Grid>
+            <Grid item container xs={12} sm={8}>
+              <Typography variant="body1" className={classes.value}>
+                {value}
+              </Typography>
+            </Grid>
+          </Grid>
+        </RowSpacing>
+      ))}
+    </ContentSpacing>
+  )
+}
 
 KeyValueCard.Body = Body
 

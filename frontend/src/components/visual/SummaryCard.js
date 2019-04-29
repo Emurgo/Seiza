@@ -81,20 +81,34 @@ const Row = ({children, onClick, className, showLastSeparator = false}) => {
   )
 }
 const Label = ({children}) => (
-  <Grid item>
+  <Grid item xs={12} sm={4}>
     <Typography variant="body1" color="textSecondary">
       {children}
     </Typography>
   </Grid>
 )
 
-const Value = ({children}) => (
-  <Grid item>
-    <Typography variant="body1" component="span">
-      {children}
-    </Typography>
-  </Grid>
-)
+const useValueStyles = makeStyles((theme) => ({
+  value: {
+    /* Responsive layout tricks */
+    width: '100%',
+    textAlign: 'right',
+    [theme.breakpoints.down('xs')]: {
+      textAlign: 'left',
+    },
+  },
+}))
+
+const Value = ({children}) => {
+  const classes = useValueStyles()
+  return (
+    <Grid container item xs={12} sm={8}>
+      <Typography variant="body1" component="span" className={classes.value}>
+        {children}
+      </Typography>
+    </Grid>
+  )
+}
 
 SummaryCard.Row = Row
 SummaryCard.Label = Label
