@@ -1,14 +1,14 @@
 // @flow
 import React from 'react'
-import {compose} from 'redux'
-import {withStateHandlers, withProps} from 'recompose'
 import {defineMessages} from 'react-intl'
 import idx from 'idx'
 import {Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
-import Pagination, {getPageCount} from '@/components/visual/Pagination'
-import type {Transaction} from '@/__generated__/schema.flow'
+import {useManageQueryValue} from '@/components/hooks/useManageQueryValue'
+import {toIntOrNull} from '@/helpers/utils'
+import Pagination from '@/components/visual/Pagination'
+// import type {Transaction} from '@/__generated__/schema.flow'
 
 import {
   LoadingInProgress,
@@ -178,19 +178,44 @@ const TabsHeader = ({tabState, paginationProps}) => {
   )
 }
 
-const PagedTransactions = ({
-  loading,
-  currentTransactions,
-  totalCount,
-  onChangePage,
-  rowsPerPage,
-  page,
-  targetAddress,
-}) => {
+const ROWS_PER_PAGE = 3
+
+type Props = {|
+  loading: boolean,
+  targetAddress: string,
+  // Note: amount, creation are incompatible with backend schema
+  transactions: Array<Object>, // Array<Transaction>,
+|}
+
+const useManagePaginations = (currentTab) => {
+  const [tabOnePage, onTabOnePageChange] = useManageQueryValue(TAB_NAMES.ALL, 0, toIntOrNull)
+  const [tabTwoPage, onTabTwoPageChange] = useManageQueryValue(TAB_NAMES.SENT, 0, toIntOrNull)
+  const [tabThreePage, onTabThreePageChange] = useManageQueryValue(
+    TAB_NAMES.RECEIVED,
+    0,
+    toIntOrNull
+  )
+
+  return {
+    [TAB_NAMES.ALL]: [tabOnePage, onTabOnePageChange],
+    [TAB_NAMES.SENT]: [tabTwoPage, onTabTwoPageChange],
+    [TAB_NAMES.RECEIVED]: [tabThreePage, onTabThreePageChange],
+  }[currentTab]
+}
+
+const PagedTransactions = ({loading, transactions, targetAddress}: Props) => {
+  const rowsPerPage = ROWS_PER_PAGE
+
   const tabNames = ObjectValues(TAB_NAMES)
   const tabState = useTabState(tabNames)
+  const [page, onChangePage] = useManagePaginations(tabState.currentTab)
+
   // TODO: better handle loading
   if (loading) return <LoadingInProgress />
+
+  const totalCount = transactions.length
+  const from = page * rowsPerPage
+  const currentTransactions = transactions.slice(from, from + rowsPerPage)
   return (
     <Tabs {...tabState}>
       <TabsHeader paginationProps={{totalCount, onChangePage, rowsPerPage, page}} />
@@ -207,28 +232,4 @@ const PagedTransactions = ({
   )
 }
 
-type ExternalProps = {
-  transactions: Array<Transaction>,
-}
-
-const ROWS_PER_PAGE = 3
-
-export default (compose(
-  withProps((props) => {
-    const totalCount = props.transactions.length
-    const pageCount = getPageCount(totalCount, ROWS_PER_PAGE)
-    return {totalCount, pageCount, rowsPerPage: ROWS_PER_PAGE}
-  }),
-  withStateHandlers(
-    {page: 0},
-    {
-      onChangePage: () => (page) => ({page}),
-    }
-  ),
-  withProps(({page, totalCount, pageCount, transactions, rowsPerPage}) => {
-    const from = page * rowsPerPage
-    return {
-      currentTransactions: transactions.slice(from, from + rowsPerPage),
-    }
-  })
-)(PagedTransactions): React$ComponentType<ExternalProps>)
+export default PagedTransactions

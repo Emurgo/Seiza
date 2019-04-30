@@ -61,9 +61,11 @@ export default compose(
   withStateHandlers((props) => ({goToPage: props.pageCount > 0 ? props.page + 1 : 0}), {
     setGoToPage: () => (goToPage) => ({goToPage}),
   }),
-  onDidUpdate(
-    (props, prevProps) => prevProps.page !== props.page && props.setGoToPage(props.page + 1)
-  ),
+  onDidUpdate((props, prevProps) => {
+    ;((props.pageCount > 0 && prevProps.pageCount !== props.pageCount) ||
+      prevProps.page !== props.page) &&
+      props.setGoToPage(props.page + 1)
+  }),
   withHandlers({
     onFirstPageButtonClick: ({onChangePage}) => (event) => onChangePage(0),
     onBackButtonClick: ({onChangePage, page}) => (event) => onChangePage(page - 1),

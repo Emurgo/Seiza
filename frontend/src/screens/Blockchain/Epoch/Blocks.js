@@ -1,19 +1,21 @@
-import React from 'react'
-import {graphql} from 'react-apollo'
-import {compose} from 'redux'
-import {withProps} from 'recompose'
+import React, {useState} from 'react'
 import idx from 'idx'
 import {defineMessages} from 'react-intl'
 import {Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
-import {onDidUpdate, onDidMount} from '@/components/HOC/lifecycles'
-import Pagination, {getPageCount} from '@/components/visual/Pagination'
+import Pagination from '@/components/visual/Pagination'
 import {GET_PAGED_BLOCKS_IN_EPOCH} from '@/api/queries'
-import BlocksTable, {COLUMNS_MAP} from '../PagedBlocks/BlocksTable'
-import withPagedData from '@/components/HOC/withPagedData'
 import {useI18n} from '@/i18n/helpers'
+import {
+  useBlocksTablePagedProps,
+  useTotalItemsCount,
+} from '@/components/hooks/useBlocksTablePagedProps'
+import {useQueryNotBugged} from '@/components/hooks/useQueryNotBugged'
 import {EntityHeading} from '@/components/visual'
+import {useManageQueryValue} from '@/components/hooks/useManageQueryValue'
+import {toIntOrNull} from '@/helpers/utils'
+import BlocksTable, {COLUMNS_MAP} from '../PagedBlocks/BlocksTable'
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {
@@ -26,15 +28,46 @@ const messages = defineMessages({
   blocks: 'Blocks',
 })
 
+const useLoadData = (cursor, epochNumber) => {
+  const {error, loading, data} = useQueryNotBugged(GET_PAGED_BLOCKS_IN_EPOCH, {
+    variables: {cursor, epochNumber},
+    notifyOnNetworkStatusChange: true,
+  })
+
+  const pagedData = idx(data.pagedBlocksInEpoch, (_) => _.blocks)
+
+  return {
+    error,
+    loading,
+    pagedDataResult: {
+      ...data.pagedBlocksInEpoch,
+      pagedData,
+    },
+  }
+}
+
 const {SLOT, TIME, SLOT_LEADER, TRANSACTIONS, TOTAL_SENT, FEES, SIZE} = COLUMNS_MAP
 const columns = [SLOT, TIME, SLOT_LEADER, TRANSACTIONS, TOTAL_SENT, FEES, SIZE]
-const Blocks = (props) => {
-  const {
-    pagedDataResult: {loading, error, pagedData: pagedBlocks},
-    blocksCount,
-  } = props
+
+const Blocks = ({blocksCount, epochNumber}) => {
   const classes = useStyles()
   const {translate: tr, formatInt} = useI18n()
+
+  const [page, setPage] = useManageQueryValue('page', null, toIntOrNull)
+  const [cursor, setCursor] = useState(null)
+
+  const {pagedDataResult, loading, error} = useLoadData(cursor, epochNumber)
+  const [totalItemsCount, setTotalItemsCount] = useTotalItemsCount(pagedDataResult)
+
+  const {onChangePage, rowsPerPage} = useBlocksTablePagedProps(
+    page,
+    setPage,
+    setCursor,
+    totalItemsCount,
+    setTotalItemsCount
+  )
+  const {blocks} = pagedDataResult
+
   return (
     <Grid container direction="column">
       <Grid item>
@@ -50,61 +83,18 @@ const Blocks = (props) => {
           </Grid>
           <Grid item>
             <Pagination
-              count={props.totalCount}
-              rowsPerPage={props.rowsPerPage}
-              page={props.page}
-              onChangePage={props.onChangePage}
+              count={totalItemsCount}
+              rowsPerPage={rowsPerPage}
+              page={page || 0}
+              onChangePage={onChangePage}
               reverseDirection
             />
           </Grid>
         </Grid>
       </Grid>
-      <BlocksTable
-        blocks={pagedBlocks && pagedBlocks.blocks}
-        columns={columns}
-        loading={loading}
-        error={error}
-      />
+      <BlocksTable {...{blocks, columns, loading, error}} />
     </Grid>
   )
 }
 
-const withData = compose(
-  graphql(GET_PAGED_BLOCKS_IN_EPOCH, {
-    name: 'pagedDataResult',
-    options: (props) => ({
-      variables: {cursor: props.cursor, epochNumber: props.epochNumber},
-      notifyOnNetworkStatusChange: true,
-    }),
-  }),
-  withProps(({pagedDataResult}) => ({
-    pagedDataResult: {
-      ...pagedDataResult,
-      pagedData: idx(pagedDataResult, (_) => _.pagedBlocksInEpoch),
-    },
-  }))
-)
-
-const _updateTotalPageCount = ({pagedDataResult, rowsPerPage, setTotalCount, setPage}) => {
-  const blocksCount = idx(pagedDataResult, (_) => _.pagedData.blocks.length)
-  if (blocksCount) {
-    const itemsCount = blocksCount + pagedDataResult.pagedData.cursor
-    setTotalCount(itemsCount)
-    setPage(getPageCount(itemsCount, rowsPerPage) - 1)
-  }
-}
-
-const withSetTotalPageCount = compose(
-  onDidMount(_updateTotalPageCount),
-  onDidUpdate((props, prevProps) => {
-    if (
-      (props.autoUpdate &&
-        prevProps.pagedDataResult.pagedData !== props.pagedDataResult.pagedData) ||
-      !props.totalCount
-    ) {
-      _updateTotalPageCount(props)
-    }
-  })
-)
-
-export default withPagedData({withData, withSetTotalPageCount, initialAutoUpdate: false})(Blocks)
+export default Blocks
