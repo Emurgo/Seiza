@@ -1,6 +1,8 @@
 import React from 'react'
 import classnames from 'classnames'
-import {Route, Link} from 'react-router-dom'
+import {Route} from 'react-router-dom'
+
+import {Link} from '@/components/visual'
 
 // TODO: make this reuseable and also use for main navigation
 // eslint-disable-next-line

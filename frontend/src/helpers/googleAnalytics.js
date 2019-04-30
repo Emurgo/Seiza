@@ -34,6 +34,12 @@ const trackCurrencyChanged = (to: string) => {
   return trackEvent('currency', 'changed', to)
 }
 
+const trackUrlChange = (screenName: string) => {
+  // According to docs `screen_view` is special typo of event
+  // https://developers.google.com/analytics/devguides/collection/gtagjs/screens
+  gtag('event', 'screen_view', {screen_name: screenName})
+}
+
 const includeAnalyticsScript = () => {
   const {googleAnalyticsId} = config
   const googleAnalyticsUrl = `https://www.googletagmanager.com/gtag/js?id=${googleAnalyticsId}`
@@ -65,5 +71,6 @@ export default {
   trackSearchEvent,
   trackChartEvent,
   trackCurrencyChanged,
+  trackUrlChange,
   initGoogleAnalytics,
 }

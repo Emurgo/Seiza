@@ -1,7 +1,6 @@
 // @flow
 import React, {useCallback, useState} from 'react'
 import cn from 'classnames'
-import {Link} from 'react-router-dom'
 import {defineMessages} from 'react-intl'
 import gql from 'graphql-tag'
 import {useMutation} from 'react-apollo-hooks'
@@ -11,7 +10,7 @@ import {makeStyles} from '@material-ui/styles'
 import {darken} from '@material-ui/core/styles/colorManipulator'
 
 import {useI18n} from '@/i18n/helpers'
-import {Button, ExternalLink, Tooltip} from '@/components/visual'
+import {Button, ExternalLink, Tooltip, Link} from '@/components/visual'
 import logo from '../../assets/icons/logo-seiza-white.svg'
 
 const messages = defineMessages({

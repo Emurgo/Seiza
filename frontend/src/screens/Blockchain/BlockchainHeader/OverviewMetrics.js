@@ -6,10 +6,9 @@ import {injectIntl, defineMessages} from 'react-intl'
 import {compose} from 'redux'
 
 import {Grid, createStyles, withStyles} from '@material-ui/core'
-import {MetricsCard, LoadingDots} from '@/components/visual'
+import {MetricsCard, LoadingDots, Link} from '@/components/visual'
 import {getIntlFormatters} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
-import {Link} from 'react-router-dom'
 
 import config from '@/config'
 import useCurrency, {CURRENCIES} from '@/components/hooks/useCurrency'
