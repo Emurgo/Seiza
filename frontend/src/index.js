@@ -17,7 +17,7 @@ import App from './App'
 import config from './config'
 import * as serviceWorker from './serviceWorker'
 import {dataIdFromObject} from './helpers/apollo'
-import {initGoogleAnalytics} from './googleAnalytics'
+import {initGoogleAnalytics} from '@/helpers/googleAnalytics'
 
 const client = new ApolloClient({
   // $FlowFixMe Not sure why ApolloLink is not compatible with HttpLink

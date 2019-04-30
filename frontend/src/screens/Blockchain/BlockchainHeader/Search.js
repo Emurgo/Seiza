@@ -14,6 +14,7 @@ import {Typography} from '@material-ui/core'
 import {useI18n} from '@/i18n/helpers'
 import {Searchbar, LoadingError, Alert} from '@/components/visual'
 import {routeTo} from '@/helpers/routes'
+import * as analytics from '@/helpers/googleAnalytics'
 
 const text = defineMessages({
   searchPlaceholder: 'Search addresses, transactions, epochs & slots on the Cardano network',
@@ -58,18 +59,35 @@ const useSearchData = (searchQuery, skip) => {
 }
 
 const getRedirectUrl = (searchResult) => {
-  const redirectBuilder = {
-    Address: (searchResult) => routeTo.address(searchResult.address58),
-    Transaction: (searchResult) => routeTo.transaction(searchResult.txHash),
-    Block: (searchResult) =>
-      searchResult.blockHash
-        ? routeTo.block(searchResult.blockHash)
-        : routeTo.slot(searchResult.epoch, searchResult.slot),
-    Epoch: (searchResult) => routeTo.epoch(searchResult.epochNumber),
+  const actionBuilder = {
+    Address: {
+      redirect: (searchResult) => routeTo.address(searchResult.address58),
+      logToAnalytics: (searchResult) => analytics.logSearchEvent('address'),
+    },
+    Transaction: {
+      redirect: (searchResult) => routeTo.transaction(searchResult.txHash),
+      logToAnalytics: (searchResult) => analytics.logSearchEvent('transaction'),
+    },
+    Block: {
+      redirect: (searchResult) =>
+        searchResult.blockHash
+          ? routeTo.block(searchResult.blockHash)
+          : routeTo.slot(searchResult.epoch, searchResult.slot),
+      // TODO: now we dont distinguish whether we search by blockHash or by epoch/slot
+      logToAnalytics: () =>
+        searchResult.blockHash
+          ? analytics.logSearchEvent('slot')
+          : analytics.logSearchEvent('slot', {emptySlot: true}),
+    },
+    Epoch: {
+      redirect: (searchResult) => routeTo.epoch(searchResult.epochNumber),
+      logToAnalytics: (searchResult) => analytics.logSearchEvent('epoch'),
+    },
   }[searchResult.__typename]
 
-  assert(redirectBuilder)
-  return redirectBuilder(searchResult)
+  assert(actionBuilder)
+  actionBuilder.logToAnalytics(searchResult)
+  return actionBuilder.redirect(searchResult)
 }
 
 const useStyles = makeStyles((theme) => ({
