@@ -134,6 +134,7 @@
   "screens.Blockchain.PagedBlocks.BlocksTable.time": "Time",
   "screens.Blockchain.PagedBlocks.BlocksTable.totalSent": "Total sent (ADA)",
   "screens.Blockchain.PagedBlocks.BlocksTable.transactions": "Transactions",
+  "screens.Blockchain.PagedBlocks.BlocksTable.txs": "Txs",
   "screens.Blockchain.PagedBlocks.index.header": "Recent blocks",
   "screens.Blockchain.PagedBlocks.index.refreshState": "Refresh state:",
   "screens.Blockchain.StakePool.index.description": "Description",

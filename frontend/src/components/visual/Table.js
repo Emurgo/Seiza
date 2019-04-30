@@ -61,6 +61,7 @@ type TableProps = {|
   bodyData: Array<Object>,
   fieldsConfig?: Array<{|
     align?: string,
+    thAlign?: string,
   |}>,
   noDataText?: string,
   loading: boolean,
@@ -69,6 +70,9 @@ type TableProps = {|
 |}
 
 const getAlignment = (fieldsConfig, index) => (fieldsConfig ? fieldsConfig[index].align : 'left')
+
+const getThAlignment = (fieldsConfig, index) =>
+  fieldsConfig ? fieldsConfig[index].thAlign || fieldsConfig[index].align : 'left'
 
 const NormalTable = ({
   headerData,
@@ -92,7 +96,11 @@ const NormalTable = ({
           <TableHead className={classes.head}>
             <TR>
               {headerData.map((item, index) => (
-                <TD key={index} align={getAlignment(fieldsConfig, index)} className={classes.cell}>
+                <TD
+                  key={index}
+                  align={getThAlignment(fieldsConfig, index)}
+                  className={classes.cell}
+                >
                   {item}
                 </TD>
               ))}
