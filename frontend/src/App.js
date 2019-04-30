@@ -17,6 +17,7 @@ import {Navbar, Footer} from './components/visual'
 import {useI18n, InjectHookIntlContext} from '@/i18n/helpers'
 import {AutoSyncProvider} from './screens/Staking/context/autoSync'
 
+import Terms from './screens/Terms'
 import Home from './screens/Home'
 import Blockchain from './screens/Blockchain'
 import Staking from './screens/Staking'
@@ -137,6 +138,7 @@ const App = () => {
                         <Route path={routeTo.staking.home()} component={Staking} />
                       )}
                       {config.showStakingData && <Route path={routeTo.more()} component={More} />}
+                      <Route exact path={routeTo.termsOfUse()} component={Terms} />
                       <Route component={PageNotFound} />
                     </Switch>
                   </Grid>

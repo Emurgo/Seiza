@@ -46,6 +46,7 @@
     "react-apollo-hooks": "^0.4.3",
     "react-dom": "^16.8.0",
     "react-intl": "^2.8.0",
+    "react-markdown": "^4.0.8",
     "react-measure": "^2.2.6",
     "react-router": "^4.4.0-beta.7",
     "react-router-dom": "^4.4.0-beta.7",
