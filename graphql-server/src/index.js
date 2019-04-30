@@ -4,6 +4,7 @@ import './loadEnv'
 
 import {ApolloServer} from 'apollo-server'
 
+import * as ActiveCampaign from './api/activeCampaign'
 import schema from './graphql/schema'
 import resolvers from './graphql/resolvers'
 
@@ -42,6 +43,7 @@ const server = new ApolloServer({
     return response
   },
   context: () => ({
+    activeCampaign: ActiveCampaign,
     pricingAPI,
     elastic,
     E: elastic.E,

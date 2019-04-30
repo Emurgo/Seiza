@@ -18,6 +18,7 @@ import {
 } from './block/dataProviders'
 import {fetchTransaction} from './transaction/dataProviders'
 import {fetchBootstrapEraPool, fetchBootstrapEraPoolSummary} from './stakepool/dataProviders'
+import {subscribe} from './activecampaign/dataProviders'
 
 import Timestamp from './scalars/timestamp'
 import AdaAmount from './scalars/adaAmount'
@@ -71,6 +72,9 @@ const _resolvers = {
   BootstrapEraStakePool: {
     summary: (pool, args, context) =>
       fetchBootstrapEraPoolSummary(null, pool.poolHash, pool._epochNumber),
+  },
+  Mutation: {
+    subscribeToNewsletter: (root, args, context) => subscribe(context, args.email),
   },
 }
 

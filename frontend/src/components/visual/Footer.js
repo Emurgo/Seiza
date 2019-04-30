@@ -1,9 +1,11 @@
 // @flow
-
-import React from 'react'
+import React, {useCallback, useState} from 'react'
 import cn from 'classnames'
 import {Link} from 'react-router-dom'
 import {defineMessages} from 'react-intl'
+import gql from 'graphql-tag'
+import {useMutation} from 'react-apollo-hooks'
+import IsEmail from 'isemail'
 import {Grid, Typography, TextField} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {darken} from '@material-ui/core/styles/colorManipulator'
@@ -65,6 +67,13 @@ const RoundedInput = React.forwardRef((props, ref) => {
   )
 })
 
+const SUBSCRIBE_MUTATION = gql`
+  mutation subscribeToNewsletter($email: String!) {
+    subscribeToNewsletter(email: $email)
+  }
+`
+const useSubscribeMutation = (email) => useMutation(SUBSCRIBE_MUTATION, {variables: {email}})
+
 const useSubscribeFooterStyles = makeStyles(({palette, spacing}) => ({
   wrapper: {
     padding: spacing.unit * 2,
@@ -87,9 +96,25 @@ const useSubscribeFooterStyles = makeStyles(({palette, spacing}) => ({
   },
 }))
 
+// TODO: Save subscribed boolean to local storage and hide this section
 const SubscribeFooter = () => {
   const classes = useSubscribeFooterStyles()
   const {translate: tr} = useI18n()
+  const [email, setEmail] = useState('')
+  const subscribe = useSubscribeMutation(email)
+  const onEmailChange = useCallback((event) => setEmail(event.target.value), [setEmail])
+  const validateAndSubscribe = useCallback(
+    (event) => {
+      event.preventDefault()
+      // TODO: some visual feedback for user in case of invalid email?
+      if (IsEmail.validate(email)) {
+        subscribe(email)
+        setEmail('')
+      }
+      // TODO: Add some visual feedback for the user that he successfully subscribed / error ocurred
+    },
+    [email, subscribe]
+  )
 
   return (
     <Grid
@@ -116,10 +141,17 @@ const SubscribeFooter = () => {
                 className={classes.email}
                 placeholder={tr(subscribeMessages.emailButton)}
                 type="email"
+                onChange={onEmailChange}
               />
             </Grid>
             <Grid item>
-              <Button rounded gradient className={cn(classes.subscribe)} type="submit">
+              <Button
+                rounded
+                gradient
+                className={cn(classes.subscribe)}
+                type="submit"
+                onClick={validateAndSubscribe}
+              >
                 {tr(subscribeMessages.subscribeButton)}
               </Button>
             </Grid>

@@ -1,6 +1,7 @@
 import {gql} from 'apollo-server'
 import {mergeTypes} from 'merge-graphql-schemas'
 
+import activecampaignSchema from './activecampaign/schema.gql'
 import transactionSchema from './transaction/types'
 import addressSchema from './address/schema.gql'
 import blockSchema from './block/schema.gql'
@@ -21,6 +22,7 @@ const globalTypes = gql`
 export default mergeTypes(
   [
     globalTypes,
+    activecampaignSchema,
     addressSchema,
     transactionSchema,
     blockSchema,
