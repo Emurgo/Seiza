@@ -28,30 +28,6 @@
     },
     "REACT_APP_GOOGLE_ANALYTICS_ID": {
       "required": true
-    },
-    "ACTIVE_CAMPAIGN_KEY": {
-      "required": true
-    },
-    "ACTIVE_CAMPAIGN_LIST_ID": {
-      "required": true
-    },
-    "ACTIVE_CAMPAIGN_URL": {
-      "required": true
-    },
-    "ELASTIC_INDEX": {
-      "required": true
-    },
-    "ELASTIC_URL": {
-      "required": true
-    },
-    "AWS_SECRET_ACCESS_KEY": {
-      "required": true
-    },
-    "AWS_ACCESS_KEY_ID": {
-      "required": true
-    },
-    "AWS_REGION": {
-      "required": true
     }
   },
   "formation": {
