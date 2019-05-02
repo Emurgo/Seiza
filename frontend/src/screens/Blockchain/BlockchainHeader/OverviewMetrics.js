@@ -6,6 +6,7 @@ import {injectIntl, defineMessages} from 'react-intl'
 import {compose} from 'redux'
 
 import {Grid, createStyles, withStyles} from '@material-ui/core'
+import {makeStyles} from '@material-ui/styles'
 import {MetricsCard, LoadingDots} from '@/components/visual'
 import {getIntlFormatters} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
@@ -61,6 +62,22 @@ const OVERVIEW_METRICS_QUERY = gql`
 `
 const STATUS_REFRESH_INTERVAL = 20 * 1000
 
+const usePriceItemStyles = makeStyles((theme) => ({
+  ada: {
+    fontWeight: 300,
+  },
+}))
+
+const PriceItem = ({currency}) => {
+  const classes = usePriceItemStyles()
+  return (
+    <React.Fragment>
+      <span>{currency}&nbsp;/</span>
+      <span className={classes.ada}>&nbsp;ADA</span>
+    </React.Fragment>
+  )
+}
+
 const MetricWithLink = ({to, ...props}) => {
   const handler = useNavigateTo(to)
 
@@ -105,21 +122,21 @@ const OverviewMetrics = ({intl, data, classes}) => {
     value: price,
     options: [
       {
-        label: 'USD/ADA',
+        label: <PriceItem currency="USD" />,
         onClick: () => {
           analytics.trackCurrencyChanged(CURRENCIES.USD)
           setCurrency(CURRENCIES.USD)
         },
       },
       {
-        label: 'EUR/ADA',
+        label: <PriceItem currency="EUR" />,
         onClick: () => {
           analytics.trackCurrencyChanged(CURRENCIES.EUR)
           setCurrency(CURRENCIES.EUR)
         },
       },
       {
-        label: 'YEN/ADA',
+        label: <PriceItem currency="YEN" />,
         onClick: () => {
           analytics.trackCurrencyChanged(CURRENCIES.JPY)
           setCurrency(CURRENCIES.JPY)
