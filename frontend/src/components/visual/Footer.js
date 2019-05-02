@@ -12,6 +12,7 @@ import {darken} from '@material-ui/core/styles/colorManipulator'
 
 import {useI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
+import analytics from '@/helpers/googleAnalytics'
 import {Button, ExternalLink, Tooltip} from '@/components/visual'
 import logo from '../../assets/icons/logo-seiza-white.svg'
 
@@ -216,11 +217,16 @@ const useMainFooterStyles = makeStyles(({spacing, palette, typography}) => ({
   },
 }))
 
-const SocialIcon = ({to, icon, className}) => {
+const SocialIcon = ({to, icon, className, iconName}) => {
   const classes = useMainFooterStyles()
+
+  const onClick = useCallback(() => {
+    analytics.trackSocialIconLink(iconName)
+  }, [iconName])
+
   return (
     <span className={classes.socialIconWrapper}>
-      <ExternalLink to={to} target="_blank">
+      <ExternalLink to={to} target="_blank" onClick={onClick}>
         <img src={icon} alt="" />
       </ExternalLink>
     </span>
@@ -291,13 +297,25 @@ const MainFooter = ({navItems}) => {
 
                 <Grid item>
                   <Grid container alignItems="center">
-                    <SocialIcon to={SOCIAL_LINKS.FACEBOOK} icon={fbIcon} />
-                    <SocialIcon to={SOCIAL_LINKS.TWITTER} icon={twitterEmurgoIcon} />
-                    <SocialIcon to={SOCIAL_LINKS.TWITTER} icon={twitterSeizaIcon} />
-                    <SocialIcon to={SOCIAL_LINKS.YOUTUBE} icon={youtubeIcon} />
-                    <SocialIcon to={SOCIAL_LINKS.MEDIUM} icon={mediumIcon} />
-                    <SocialIcon to={SOCIAL_LINKS.REDDIT} icon={redditIcon} />
-                    <SocialIcon to={SOCIAL_LINKS.LINKEDIN} icon={linkedInIcon} />
+                    <SocialIcon to={SOCIAL_LINKS.FACEBOOK} icon={fbIcon} iconName="facebook" />
+                    <SocialIcon
+                      to={SOCIAL_LINKS.TWITTER}
+                      icon={twitterEmurgoIcon}
+                      iconName="emurgo twitter"
+                    />
+                    <SocialIcon
+                      to={SOCIAL_LINKS.TWITTER}
+                      icon={twitterSeizaIcon}
+                      iconName="seiza twitter"
+                    />
+                    <SocialIcon to={SOCIAL_LINKS.YOUTUBE} icon={youtubeIcon} iconName="youtube" />
+                    <SocialIcon to={SOCIAL_LINKS.MEDIUM} icon={mediumIcon} iconName="medium" />
+                    <SocialIcon to={SOCIAL_LINKS.REDDIT} icon={redditIcon} iconName="reddit" />
+                    <SocialIcon
+                      to={SOCIAL_LINKS.LINKEDIN}
+                      icon={linkedInIcon}
+                      iconName="linkedin"
+                    />
                   </Grid>
                 </Grid>
               </Grid>

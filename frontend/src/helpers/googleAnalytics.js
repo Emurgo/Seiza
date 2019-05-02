@@ -13,7 +13,11 @@ export function gtag(...args: any) {
 }
 // >>>> Google code
 
-const formatter = (v: string) => _.capitalize(v)
+const formatter = (v: string) =>
+  v
+    .split(' ')
+    .map(_.capitalize)
+    .join(' ')
 
 // TODO: (discuss with Nico) consider using `event_category` instead of padding both category
 // and action to one string.
@@ -32,6 +36,10 @@ const trackChartEvent = () => {
 
 const trackCurrencyChanged = (to: string) => {
   return trackEvent('currency', 'changed', to)
+}
+
+const trackSocialIconLink = (linkName: string) => {
+  return trackEvent(linkName, 'link clicked')
 }
 
 const includeAnalyticsScript = () => {
@@ -66,4 +74,5 @@ export default {
   trackChartEvent,
   trackCurrencyChanged,
   initGoogleAnalytics,
+  trackSocialIconLink,
 }
