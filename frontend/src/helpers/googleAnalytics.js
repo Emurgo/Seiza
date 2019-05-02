@@ -15,9 +15,23 @@ export function gtag(...args: any) {
 
 const formatter = (v: string) => _.capitalize(v)
 
-export const logSearchEvent = (resourceName: string, extras: {} = {}) => {
+// TODO: (discuss with Nico) consider using `event_category` instead of padding both category
+// and action to one string.
+const trackEvent = (resourceName: string, actionName: string, label?: string) => {
   const f = formatter
-  gtag('event', `${f(resourceName)} ${f('searched')}`, extras)
+  gtag('event', `${f(resourceName)} ${f(actionName)}`, label ? {event_label: label} : {})
+}
+
+const trackSearchEvent = (resourceName: string) => {
+  return trackEvent(resourceName, 'searched')
+}
+
+const trackChartEvent = () => {
+  return trackEvent('chart', 'interacted')
+}
+
+const trackCurrencyChanged = (to: string) => {
+  return trackEvent('currency', 'changed', to)
 }
 
 const includeAnalyticsScript = () => {
@@ -42,7 +56,14 @@ const initDataLayer = () => {
   gtag('set', 'anonymizeIp', true)
 }
 
-export const initGoogleAnalytics = () => {
+const initGoogleAnalytics = () => {
   includeAnalyticsScript()
   initDataLayer()
+}
+
+export default {
+  trackSearchEvent,
+  trackChartEvent,
+  trackCurrencyChanged,
+  initGoogleAnalytics,
 }
