@@ -15,6 +15,7 @@ import config from '@/config'
 import useCurrency, {CURRENCIES} from '@/components/hooks/useCurrency'
 import {useQuery} from 'react-apollo-hooks'
 import useNavigateTo from '@/components/hooks/useNavigateTo'
+import analytics from '@/helpers/googleAnalytics'
 
 const text = defineMessages({
   not_available: 'N/A',
@@ -105,15 +106,24 @@ const OverviewMetrics = ({intl, data, classes}) => {
     options: [
       {
         label: 'USD/ADA',
-        onClick: () => setCurrency(CURRENCIES.USD),
+        onClick: () => {
+          analytics.trackCurrencyChanged(CURRENCIES.USD)
+          setCurrency(CURRENCIES.USD)
+        },
       },
       {
         label: 'EUR/ADA',
-        onClick: () => setCurrency(CURRENCIES.EUR),
+        onClick: () => {
+          analytics.trackCurrencyChanged(CURRENCIES.EUR)
+          setCurrency(CURRENCIES.EUR)
+        },
       },
       {
         label: 'YEN/ADA',
-        onClick: () => setCurrency(CURRENCIES.JPY),
+        onClick: () => {
+          analytics.trackCurrencyChanged(CURRENCIES.JPY)
+          setCurrency(CURRENCIES.JPY)
+        },
       },
     ],
   }

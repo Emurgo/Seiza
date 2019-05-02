@@ -12,6 +12,7 @@ import {makeStyles} from '@material-ui/styles'
 
 import {useI18n} from '@/i18n/helpers'
 import {ObjectValues} from '@/helpers/flow'
+import analytics from '@/helpers/googleAnalytics'
 import {
   SimpleLayout,
   LiteTabs,
@@ -89,8 +90,16 @@ const TabsHeader = () => {
     {id: TAB_NAMES.TOTAL_UTXO, label: tr(messages.totalUtxo)},
   ]
 
+  const onChange = useCallback(
+    (...args) => {
+      analytics.trackChartEvent()
+      setTabByEventIndex(...args)
+    },
+    [setTabByEventIndex]
+  )
+
   return (
-    <LiteTabs alignLeft value={currentTabIndex} onChange={setTabByEventIndex}>
+    <LiteTabs alignLeft value={currentTabIndex} onChange={onChange}>
       {tabs.map(({id, label}) => (
         <LiteTab key={id} label={label} />
       ))}
@@ -251,7 +260,13 @@ const Charts = () => {
     tr(messages.adaInBillions, {count: formatAdaInUnits(`${value}`)})
   // Note: For now not showing decimals, as then values are too long
   const formatAdaYTooltip = (value) => formatAdaSplit(`${value}`).integral
-  const onXAxisChange = useCallback((e) => setXAxis(e.target.value), [setXAxis])
+  const onXAxisChange = useCallback(
+    (e) => {
+      setXAxis(e.target.value)
+      analytics.trackChartEvent()
+    },
+    [setXAxis]
+  )
 
   const commonChartProps = {
     xLabel: tr(xAxis === X_AXIS.DAY ? xLabels.day : xLabels.epoch),

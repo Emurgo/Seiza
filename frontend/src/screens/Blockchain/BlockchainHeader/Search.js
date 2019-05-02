@@ -14,7 +14,7 @@ import {Typography} from '@material-ui/core'
 import {useI18n} from '@/i18n/helpers'
 import {Searchbar, LoadingError, Alert} from '@/components/visual'
 import {routeTo} from '@/helpers/routes'
-import * as analytics from '@/helpers/googleAnalytics'
+import analytics from '@/helpers/googleAnalytics'
 
 const text = defineMessages({
   searchPlaceholder: 'Search addresses, transactions, epochs & slots on the Cardano network',
@@ -62,11 +62,11 @@ const getRedirectUrl = (searchResult) => {
   const actionBuilder = {
     Address: {
       redirect: (searchResult) => routeTo.address(searchResult.address58),
-      logToAnalytics: (searchResult) => analytics.logSearchEvent('address'),
+      logToAnalytics: (searchResult) => analytics.trackSearchEvent('address'),
     },
     Transaction: {
       redirect: (searchResult) => routeTo.transaction(searchResult.txHash),
-      logToAnalytics: (searchResult) => analytics.logSearchEvent('transaction'),
+      logToAnalytics: (searchResult) => analytics.trackSearchEvent('transaction'),
     },
     Block: {
       redirect: (searchResult) =>
@@ -74,14 +74,11 @@ const getRedirectUrl = (searchResult) => {
           ? routeTo.block(searchResult.blockHash)
           : routeTo.slot(searchResult.epoch, searchResult.slot),
       // TODO: now we dont distinguish whether we search by blockHash or by epoch/slot
-      logToAnalytics: () =>
-        searchResult.blockHash
-          ? analytics.logSearchEvent('slot')
-          : analytics.logSearchEvent('slot', {emptySlot: true}),
+      logToAnalytics: () => analytics.trackSearchEvent('slot'),
     },
     Epoch: {
       redirect: (searchResult) => routeTo.epoch(searchResult.epochNumber),
-      logToAnalytics: (searchResult) => analytics.logSearchEvent('epoch'),
+      logToAnalytics: (searchResult) => analytics.trackSearchEvent('epoch'),
     },
   }[searchResult.__typename]
 
