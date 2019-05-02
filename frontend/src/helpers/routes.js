@@ -28,4 +28,5 @@ export const routeTo = {
     people: () => `${STAKING_ROUTE}/people`,
   },
   termsOfUse: () => '/terms',
+  subscribe: () => '/subscribe',
 }
