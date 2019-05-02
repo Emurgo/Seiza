@@ -2,7 +2,6 @@
 import React, {useRef, useCallback} from 'react'
 import {defineMessages} from 'react-intl'
 import gql from 'graphql-tag'
-import {useQuery} from 'react-apollo-hooks'
 import idx from 'idx'
 import useReactRouter from 'use-react-router'
 import {Card, Grid, Typography} from '@material-ui/core'
@@ -26,6 +25,7 @@ import Blocks from './Blocks'
 import StakingPoolsTab from './StakingPools'
 import {routeTo} from '@/helpers/routes'
 import config from '@/config'
+import {useQueryNotBugged} from '@/components/hooks/useQueryNotBugged'
 import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
 
 import NavigationButtons from '../NavigationButtons'
@@ -196,21 +196,6 @@ const useEpochNavigation = (epochNumber: number) => {
     linkNext,
     goNext,
   }
-}
-
-// https://github.com/trojanowski/react-apollo-hooks/issues/117
-// Note: this will hopefully go away in the next version of react-apollo-hooks
-const useQueryNotBugged = (...args) => {
-  const [notNullData, setNotNullData] = React.useState({})
-  const {data, error, loading} = useQuery(...args)
-
-  React.useEffect(() => {
-    if (data && !loading) {
-      setNotNullData(data)
-    }
-  }, [data, loading])
-
-  return {data: notNullData, error, loading}
 }
 
 const useEpochData = (epochNumber) => {
