@@ -118,7 +118,7 @@ const BlocksTable = ({blocks, columns, loading, error}: Props) => {
           {formatInt(block.epoch)}
         </Link>
       ),
-      align: 'center',
+      align: 'left',
     },
     [SLOT]: {
       header: {
@@ -130,7 +130,7 @@ const BlocksTable = ({blocks, columns, loading, error}: Props) => {
           {formatInt(block.slot)}
         </Link>
       ),
-      align: 'center',
+      align: 'left',
     },
     [TIME]: {
       header: {
@@ -138,7 +138,7 @@ const BlocksTable = ({blocks, columns, loading, error}: Props) => {
         label: tr(tableMessages.time),
       },
       cell: (block) => formatTimestamp(block.timeIssued),
-      thAlign: 'center',
+      align: 'left',
     },
     [SLOT_LEADER]: {
       header: {
@@ -150,7 +150,7 @@ const BlocksTable = ({blocks, columns, loading, error}: Props) => {
           {block.blockLeader.name}
         </Link>
       ),
-      thAlign: 'center',
+      align: 'left',
     },
     [TRANSACTIONS]: {
       header: {
@@ -162,7 +162,7 @@ const BlocksTable = ({blocks, columns, loading, error}: Props) => {
         ),
       },
       cell: (block) => formatInt(block.transactionsCount),
-      align: 'center',
+      align: 'left',
     },
     [TOTAL_SENT]: {
       header: {
