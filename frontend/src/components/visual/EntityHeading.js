@@ -1,5 +1,6 @@
 // @flow
 import React from 'react'
+import cn from 'classnames'
 import {Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
@@ -7,26 +8,42 @@ const useStyles = makeStyles((theme) => ({
   underline: {
     borderBottom: `1px solid ${theme.palette.text.secondary}`,
   },
+  title: {
+    '&:after': {
+      content: '""',
+      background: theme.palette.text.secondary,
+      position: 'absolute',
+      bottom: -8,
+      left: '25%',
+      right: '25%',
+      width: '50%',
+      height: '1px',
+    },
+  },
+  wrapper: {
+    display: 'inline-block',
+    position: 'relative',
+  },
 }))
 
 type ExternalProps = {
-  amount?: string,
   children: string,
   className?: string,
 }
 
-const EntityHeading = ({amount, children, className}: ExternalProps) => {
+const EntityHeading = ({children, className}: ExternalProps) => {
   const classes = useStyles()
   return (
-    <Typography variant="h2" color="textSecondary" align="justify" className={className}>
-      {amount ? (
-        <React.Fragment>
-          <span className={classes.underline}>{amount}</span> {children}
-        </React.Fragment>
-      ) : (
-        children
-      )}
-    </Typography>
+    <div className={classes.wrapper}>
+      <Typography
+        variant="h2"
+        color="textSecondary"
+        align="justify"
+        className={cn(classes.title, className)}
+      >
+        {children}
+      </Typography>
+    </div>
   )
 }
 

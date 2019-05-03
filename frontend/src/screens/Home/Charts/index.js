@@ -287,58 +287,56 @@ const Charts = () => {
 
   return (
     <SimpleLayout title={tr(messages.header)} maxWidth="1200px" className={classes.layout}>
-      <Grid item>
-        <Measure
-          bounds
-          onResize={(contentRect) => {
-            setDimensions(contentRect.bounds)
-          }}
-        >
-          {({measureRef}) => (
-            <div ref={measureRef}>
-              <Tabs {...tabState}>
-                <TabsHeader />
+      <Measure
+        bounds
+        onResize={(contentRect) => {
+          setDimensions(contentRect.bounds)
+        }}
+      >
+        {({measureRef}) => (
+          <div ref={measureRef}>
+            <Tabs {...tabState}>
+              <TabsHeader />
 
-                <Tab name={TAB_NAMES.TOTAL_ADA_SENT}>
-                  <ChartTab
-                    seriesType="totalAdaTransferred"
-                    yLabel={tr(yLabels.adaSent)}
-                    formatYTooltip={formatAdaYTooltip}
-                    formatYAxis={formatAdaYAxis}
-                    commonChartProps={commonChartProps}
-                    xAxisProps={xAxisProps}
-                    {...{loading, error, currentEpoch}}
-                  />
-                </Tab>
+              <Tab name={TAB_NAMES.TOTAL_ADA_SENT}>
+                <ChartTab
+                  seriesType="totalAdaTransferred"
+                  yLabel={tr(yLabels.adaSent)}
+                  formatYTooltip={formatAdaYTooltip}
+                  formatYAxis={formatAdaYAxis}
+                  commonChartProps={commonChartProps}
+                  xAxisProps={xAxisProps}
+                  {...{loading, error, currentEpoch}}
+                />
+              </Tab>
 
-                <Tab name={TAB_NAMES.TRANSACTIONS_COUNT}>
-                  <ChartTab
-                    seriesType="txCount"
-                    yLabel={tr(yLabels.txCount)}
-                    formatYAxis={identity}
-                    formatYTooltip={identity}
-                    commonChartProps={commonChartProps}
-                    xAxisProps={xAxisProps}
-                    {...{loading, error, currentEpoch}}
-                  />
-                </Tab>
+              <Tab name={TAB_NAMES.TRANSACTIONS_COUNT}>
+                <ChartTab
+                  seriesType="txCount"
+                  yLabel={tr(yLabels.txCount)}
+                  formatYAxis={identity}
+                  formatYTooltip={identity}
+                  commonChartProps={commonChartProps}
+                  xAxisProps={xAxisProps}
+                  {...{loading, error, currentEpoch}}
+                />
+              </Tab>
 
-                <Tab name={TAB_NAMES.TOTAL_UTXO}>
-                  <ChartTab
-                    seriesType="totalUtxoCreated"
-                    yLabel={tr(yLabels.utxo)}
-                    formatYAxis={identity}
-                    formatYTooltip={identity}
-                    commonChartProps={commonChartProps}
-                    xAxisProps={xAxisProps}
-                    {...{loading, error, currentEpoch}}
-                  />
-                </Tab>
-              </Tabs>
-            </div>
-          )}
-        </Measure>
-      </Grid>
+              <Tab name={TAB_NAMES.TOTAL_UTXO}>
+                <ChartTab
+                  seriesType="totalUtxoCreated"
+                  yLabel={tr(yLabels.utxo)}
+                  formatYAxis={identity}
+                  formatYTooltip={identity}
+                  commonChartProps={commonChartProps}
+                  xAxisProps={xAxisProps}
+                  {...{loading, error, currentEpoch}}
+                />
+              </Tab>
+            </Tabs>
+          </div>
+        )}
+      </Measure>
     </SimpleLayout>
   )
 }
