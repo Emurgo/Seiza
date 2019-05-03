@@ -45,6 +45,10 @@ const useContentStyles = makeStyles((theme) => ({
     top: -12, // 1/4 of clipboard icon height to center
     right: 0,
   },
+  label: {
+    // Needed so that `value` and `label` are aligned in case of animation
+    marginLeft: ({appearAnimation}) => (appearAnimation ? theme.spacing.unit * (2 / 3) : 0),
+  },
   value: {
     overflow: 'hidden',
     padding: ({appearAnimation}) => (appearAnimation ? theme.spacing.unit * (2 / 3) : 0),
@@ -106,7 +110,7 @@ export const EntityCardContent = ({
       <div className={classes.cardContent}>
         <div className={classes.correctureWrapper}>
           <div ref={innerRef} className={classes.wrapper}>
-            <Typography variant="overline" color="textSecondary">
+            <Typography variant="overline" color="textSecondary" className={classes.label}>
               {label}
             </Typography>
 
