@@ -28,6 +28,21 @@
     },
     "REACT_APP_GOOGLE_ANALYTICS_ID": {
       "required": true
+    },
+    "REACT_APP_SENTRY_DSN": {
+      "required": true
+    },
+    "SENTRY_AUTH_TOKEN": {
+      "required": true
+    },
+    "SENTRY_ORG": {
+      "required": true
+    },
+    "SENTRY_PROJECT": {
+      "required": true
+    },
+    "SENTRY_LOG_LEVEL": {
+      "required": true
     }
   },
   "formation": {
