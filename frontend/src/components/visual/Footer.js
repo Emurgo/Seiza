@@ -11,11 +11,22 @@ import {makeStyles} from '@material-ui/styles'
 import {darken} from '@material-ui/core/styles/colorManipulator'
 
 import {useI18n} from '@/i18n/helpers'
+import {routeTo} from '@/helpers/routes'
+import analytics from '@/helpers/googleAnalytics'
 import {Button, ExternalLink, Tooltip} from '@/components/visual'
 import logo from '../../assets/icons/logo-seiza-white.svg'
 
+import fbIcon from '@/assets/icons/social/fb.svg'
+import linkedInIcon from '@/assets/icons/social/linkedin.svg'
+import mediumIcon from '@/assets/icons/social/medium.svg'
+import redditIcon from '@/assets/icons/social/reddit.svg'
+import twitterEmurgoIcon from '@/assets/icons/social/twitter-emurgo.svg'
+import twitterSeizaIcon from '@/assets/icons/social/twitter-seiza.svg'
+import youtubeIcon from '@/assets/icons/social/youtube.svg'
+
 const messages = defineMessages({
   copyright: 'All rights reserved',
+  subscribeToNewsletter: 'Subscribe to newsletter',
 })
 
 const subscribeMessages = defineMessages({
@@ -163,12 +174,8 @@ const SubscribeFooter = () => {
 }
 
 const useMainFooterStyles = makeStyles(({spacing, palette, typography}) => ({
-  socialIcon: {
-    color: palette.footer.contrastText,
-  },
   socialIconWrapper: {
     marginLeft: spacing.unit * 1.7,
-    marginBottom: spacing.unit * 0.75,
   },
   copyright: {
     color: palette.footer.contrastText,
@@ -183,14 +190,14 @@ const useMainFooterStyles = makeStyles(({spacing, palette, typography}) => ({
     justifyContent: 'space-between',
   },
   navigationWrapper: {
-    minWidth: '370px',
+    minWidth: '450px',
   },
   wrapper: {
     backgroundColor: palette.footer.background,
     padding: `${spacing.unit * 2}px ${spacing.unit * 1.5}px`,
   },
   innerWrapper: {
-    maxWidth: 600,
+    maxWidth: 900,
     margin: 'auto',
   },
   link: {
@@ -210,12 +217,17 @@ const useMainFooterStyles = makeStyles(({spacing, palette, typography}) => ({
   },
 }))
 
-const SocialIcon = ({to, className}) => {
+const SocialIcon = ({to, icon, className, iconName}) => {
   const classes = useMainFooterStyles()
+
+  const onClick = useCallback(() => {
+    analytics.trackSocialIconLink(iconName)
+  }, [iconName])
+
   return (
     <span className={classes.socialIconWrapper}>
-      <ExternalLink to={to} target="_blank">
-        <i className={cn(classes.socialIcon, className)} />
+      <ExternalLink to={to} target="_blank" onClick={onClick}>
+        <img src={icon} alt="" />
       </ExternalLink>
     </span>
   )
@@ -244,11 +256,14 @@ const MainFooter = ({navItems}) => {
         container
         direction="row"
         justify="space-between"
-        alignItems="center"
+        alignItems="flex-end"
         className={classes.innerWrapper}
       >
         <Grid item>
           <img alt="" src={logo} />
+          <Typography className={classes.copyright}>
+            {tr(messages.copyright)} | &#169;2019 EMURGO PTE. Ltd
+          </Typography>
         </Grid>
 
         <Grid item className={classes.navigationWrapper}>
@@ -273,18 +288,35 @@ const MainFooter = ({navItems}) => {
             <Grid item>
               <Grid container justify="space-between" alignItems="center">
                 <Grid item>
-                  <Typography className={classes.copyright}>
-                    {tr(messages.copyright)} | &#169;2019 EMURGO Co., Ltd
-                  </Typography>
+                  <Link className={classes.link} to={routeTo.subscribe()}>
+                    <Typography variant="caption" className={classes.navText}>
+                      {tr(messages.subscribeToNewsletter)}
+                    </Typography>
+                  </Link>
                 </Grid>
 
                 <Grid item>
-                  <SocialIcon to={SOCIAL_LINKS.FACEBOOK} className="fa fa-facebook-square" />
-                  <SocialIcon to={SOCIAL_LINKS.TWITTER} className="fa fa-twitter" />
-                  <SocialIcon to={SOCIAL_LINKS.YOUTUBE} className="fa fa-youtube-play" />
-                  <SocialIcon to={SOCIAL_LINKS.MEDIUM} className="fa fa-medium" />
-                  <SocialIcon to={SOCIAL_LINKS.REDDIT} className="fa fa-reddit-alien" />
-                  <SocialIcon to={SOCIAL_LINKS.LINKEDIN} className="fa fa-linkedin-square" />
+                  <Grid container alignItems="center">
+                    <SocialIcon to={SOCIAL_LINKS.FACEBOOK} icon={fbIcon} iconName="facebook" />
+                    <SocialIcon
+                      to={SOCIAL_LINKS.TWITTER}
+                      icon={twitterEmurgoIcon}
+                      iconName="emurgo twitter"
+                    />
+                    <SocialIcon
+                      to={SOCIAL_LINKS.TWITTER}
+                      icon={twitterSeizaIcon}
+                      iconName="seiza twitter"
+                    />
+                    <SocialIcon to={SOCIAL_LINKS.YOUTUBE} icon={youtubeIcon} iconName="youtube" />
+                    <SocialIcon to={SOCIAL_LINKS.MEDIUM} icon={mediumIcon} iconName="medium" />
+                    <SocialIcon to={SOCIAL_LINKS.REDDIT} icon={redditIcon} iconName="reddit" />
+                    <SocialIcon
+                      to={SOCIAL_LINKS.LINKEDIN}
+                      icon={linkedInIcon}
+                      iconName="linkedin"
+                    />
+                  </Grid>
                 </Grid>
               </Grid>
             </Grid>
