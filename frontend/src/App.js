@@ -51,7 +51,7 @@ const useAppStyles = makeStyles((theme) => ({
     flex: 1,
   },
   topBar: {
-    padding: theme.spacing.unit,
+    padding: `${theme.spacing.unit}px ${theme.spacing.unit * 0}px`,
   },
 }))
 

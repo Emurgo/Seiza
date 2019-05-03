@@ -15,7 +15,7 @@ const styles = ({palette}) =>
     item: {
       display: 'inline',
       margin: '5px',
-      marginRight: '40px',
+      marginLeft: '40px',
     },
     link: {
       textDecoration: 'none',
