@@ -73,6 +73,9 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'row',
     justifyContent: 'flex-end',
   },
+  layout: {
+    paddingBottom: theme.spacing.unit * 2.5,
+  },
 }))
 
 const TAB_NAMES = {
@@ -241,6 +244,7 @@ const getChartDimensions = (dimensions) => ({
 })
 
 const Charts = () => {
+  const classes = useStyles()
   const {
     translate: tr,
     formatAdaInUnits,
@@ -282,7 +286,7 @@ const Charts = () => {
   }
 
   return (
-    <SimpleLayout title={tr(messages.header)} maxWidth="1200px">
+    <SimpleLayout title={tr(messages.header)} maxWidth="1200px" className={classes.layout}>
       <Grid item>
         <Measure
           bounds

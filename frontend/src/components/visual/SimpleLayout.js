@@ -1,4 +1,5 @@
 import React from 'react'
+import cn from 'classnames'
 import {Grid, withStyles, createStyles} from '@material-ui/core'
 import EntityHeading from './EntityHeading'
 
@@ -10,7 +11,7 @@ const styles = ({palette, spacing}) =>
     },
     titleWrapper: {
       position: 'relative',
-      margin: spacing.unit * 4,
+      margin: spacing.unit * 3,
     },
     title: {
       'marginBottom': spacing.unit * 2.5,
@@ -33,8 +34,13 @@ const styles = ({palette, spacing}) =>
     },
   })
 
-const SimpleLayout = ({title, classes, children, maxWidth = '1500px'}) => (
-  <Grid container className={classes.container} direction="row" justify="space-around">
+const SimpleLayout = ({title, classes, children, className, maxWidth = '1500px'}) => (
+  <Grid
+    container
+    className={cn(classes.container, className)}
+    direction="row"
+    justify="space-around"
+  >
     <div style={{width: '85vw', maxWidth}}>
       <Grid container direction="row" justify="center">
         <div className={classes.titleWrapper}>
