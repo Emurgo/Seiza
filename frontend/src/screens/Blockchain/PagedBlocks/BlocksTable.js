@@ -1,6 +1,7 @@
 // @flow
 import React from 'react'
 import {defineMessages} from 'react-intl'
+import {Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
 import Table from '@/components/visual/Table'
@@ -43,8 +44,7 @@ export const COLUMNS_MAP = {
 }
 export const ALL_COLUMNS = Object.values(COLUMNS_MAP)
 
-// Width under which icon moves to the top
-const ICON_TOP_WIDTH = 1470
+const SHOW_ICON_WIDTH = 1470
 
 const useTHStyles = makeStyles((theme) => ({
   root: {
@@ -53,31 +53,19 @@ const useTHStyles = makeStyles((theme) => ({
     alignItems: 'center',
   },
   icon: {
-    marginRight: '0px',
+    marginRight: theme.spacing.unit * 0.5,
     display: 'inline-block',
     height: '100%',
     verticalAlign: 'middle',
-    [`@media(mid-width: ${ICON_TOP_WIDTH}px)`]: {
-      marginRight: 6,
-    },
-    [theme.breakpoints.down('sm')]: {
-      marginRight: 6,
-    },
-    [theme.breakpoints.down('xs')]: {
+    [`@media(max-width: ${SHOW_ICON_WIDTH}px)`]: {
       display: 'none',
     },
   },
   content: {
     textAlign: 'center',
   },
-  br: {
-    [`@media(min-width: ${ICON_TOP_WIDTH}px)`]: {
-      display: 'none',
-    },
-    // We switch to mobile layout when <= sm
-    [theme.breakpoints.down('sm')]: {
-      display: 'none',
-    },
+  label: {
+    display: 'inline-block',
   },
 }))
 
@@ -89,8 +77,9 @@ const TH = ({Icon, label}) => {
       <div className={classes.icon}>
         <Icon alt="" />
       </div>
-      <br className={classes.br} />
-      <span>{label}</span>
+      <Typography className={classes.label} color="textSecondary" variant="overline">
+        {label}
+      </Typography>
     </React.Fragment>
   )
 }

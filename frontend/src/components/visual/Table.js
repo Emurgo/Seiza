@@ -51,6 +51,9 @@ const useTableStyles = makeStyles(({hover, palette}) => ({
     // Reset paddingRight to same value as paddingLeft
     paddingRight: '24px',
   },
+  bodyCell: {
+    border: 'none',
+  },
   head: {
     textTransform: 'uppercase',
   },
@@ -114,7 +117,7 @@ const NormalTable = ({
                     <TD
                       key={innerIndex}
                       align={getAlignment(fieldsConfig, innerIndex)}
-                      className={classes.cell}
+                      className={cn(classes.cell, classes.bodyCell)}
                     >
                       {item}
                     </TD>
