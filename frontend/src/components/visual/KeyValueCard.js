@@ -13,7 +13,7 @@ const useHeaderStyles = makeStyles(({spacing, palette}) => ({
     minHeight: '60px',
   },
   leftOffset: {
-    paddingLeft: spacing.unit * 2,
+    paddingLeft: spacing.unit,
   },
 }))
 
