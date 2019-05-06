@@ -8,6 +8,7 @@ import {compose} from 'redux'
 import {CssBaseline, Grid} from '@material-ui/core'
 import {makeStyles, ThemeProvider} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
+import {fade} from '@material-ui/core/styles/colorManipulator'
 
 import config from './config'
 import {routeTo} from './helpers/routes'
@@ -51,7 +52,10 @@ const useAppStyles = makeStyles((theme) => ({
     flex: 1,
   },
   topBar: {
-    padding: theme.spacing.unit,
+    position: 'relative',
+    background: theme.palette.background.paper,
+    boxShadow: `0px 5px 25px ${fade(theme.palette.shadowBase, 0.12)}`,
+    padding: `${theme.spacing.unit}px ${theme.spacing.unit * 5}px`,
   },
 }))
 
