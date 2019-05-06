@@ -5,7 +5,7 @@
   "scripts": {
     "start": "react-app-rewired start",
     "build": "SENTRY_COMMIT_HASH=`sentry-cli releases propose-version` react-app-rewired build",
-    "build:heroku": "env; export SENTRY_LOG_LEVEL=info SENTRY_ORG=emurgo-i9 SENTRY_PROJECT=react SENTRY_AUTH_TOKEN=1c59693ee11a4192a4fb3b299c27c3ba31e85b862fe34ba5b7ecaa6b9863eeb9 REACT_APP_SENTRY_DSN=https://173cc86a349d42f7869ab7c81521edc9@sentry.io/1453571; test -z $HEROKU_SLUG_COMMIT && HEROKU_SLUG_COMMIT=$SOURCE_VERSION; echo $HEROKU_SLUG_COMMIT; sentry-cli releases new $HEROKU_SLUG_COMMIT; SENTRY_COMMIT_HASH=$HEROKU_SLUG_COMMIT react-app-rewired build",
+    "build:heroku": "env; export SENTRY_LOG_LEVEL=info SENTRY_ORG=emurgo-i9 SENTRY_PROJECT=react SENTRY_AUTH_TOKEN=1c59693ee11a4192a4fb3b299c27c3ba31e85b862fe34ba5b7ecaa6b9863eeb9 REACT_APP_SENTRY_DSN=https://173cc86a349d42f7869ab7c81521edc9@sentry.io/1453571; test -z $HEROKU_SLUG_COMMIT && HEROKU_SLUG_COMMIT=$SOURCE_VERSION; echo $HEROKU_SLUG_COMMIT; sentry-cli releases new $HEROKU_SLUG_COMMIT; REACT_APP_SENTRY_RELEASE_VERSION=$HEROKU_SLUG_COMMIT react-app-rewired build",
     "heroku-postbuild": "yarn build:heroku",
     "eject": "react-app-rewired eject",
     "eslint": "eslint src --max-warnings=0",
