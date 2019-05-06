@@ -597,7 +597,7 @@ const MainFooter = ({navItems}) => {
         </Grid>
 
         <Grid item className={classes.navigationWrapper}>
-          <Grid container direction="column" justifyContent="center">
+          <Grid container direction="column" justify="center">
             <Grid item>
               <ul className={classes.nav}>
                 {navItems.map(({link, label, disabledText}) => (
