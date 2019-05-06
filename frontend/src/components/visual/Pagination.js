@@ -10,9 +10,11 @@ import {ReactComponent as FirstPageArrow} from '@/assets/icons/arrow-first-page.
 import {ReactComponent as LastPageArrow} from '@/assets/icons/arrow-last-page.svg'
 import {ReactComponent as ArrowLeft} from '@/assets/icons/arrow-left.svg'
 import {ReactComponent as ArrowRight} from '@/assets/icons/arrow-right.svg'
-import {onDidUpdate} from '@/components/HOC/lifecycles'
+import {onDidUpdate, onDidMount} from '@/components/HOC/lifecycles'
 import {isInRange} from '@/helpers/validators'
 import {withI18n} from '@/i18n/helpers'
+
+// Note!!!: pages are numbered from 1 so that urls is consistent with the rest of UI
 
 const INPUT_PADDING = 10
 
@@ -53,34 +55,56 @@ export const getPageCount = (itemsCount: number, rowsPerPage: number) =>
 
 const inputProps = {style: {textAlign: 'center', padding: '6px 0 6px'}}
 
+// TODO: refactor this whole `composition` of hell
 export default compose(
   withI18n,
   withProps((props) => ({
+    page: props.page == null ? 1 : props.page,
     pageCount: getPageCount(props.count, props.rowsPerPage),
   })),
-  withStateHandlers((props) => ({goToPage: props.pageCount > 0 ? props.page + 1 : 0}), {
-    setGoToPage: () => (goToPage) => ({goToPage}),
-  }),
-  onDidUpdate((props, prevProps) => {
-    ;((props.pageCount > 0 && prevProps.pageCount !== props.pageCount) ||
-      prevProps.page !== props.page) &&
-      props.setGoToPage(props.page + 1)
+  withStateHandlers((props) => ({goToPageValue: props.pageCount > 0 ? props.page : 0}), {
+    setGoToPageValue: () => (goToPageValue) => ({goToPageValue}),
   }),
   withHandlers({
-    onFirstPageButtonClick: ({onChangePage}) => (event) => onChangePage(0),
+    setValidatedPage: ({onChangePage, reverseDirection, setGoToPageValue, pageCount}) => (page) => {
+      // TODO: handle invalid page input some better way
+      if (!pageCount) return
+      let _page = page
+      if (page < 1 || page > pageCount) {
+        _page = reverseDirection ? pageCount : 1
+        onChangePage(_page)
+      }
+      setGoToPageValue(_page)
+    },
+  }),
+  onDidMount((props) => {
+    props.setValidatedPage(props.page)
+  }),
+  onDidUpdate((props, prevProps) => {
+    if (
+      (props.pageCount > 0 && prevProps.pageCount !== props.pageCount) ||
+      prevProps.page !== props.page
+    ) {
+      props.setValidatedPage(props.page)
+    }
+  }),
+  withHandlers({
+    onFirstPageButtonClick: ({onChangePage}) => (event) => onChangePage(1),
     onBackButtonClick: ({onChangePage, page}) => (event) => onChangePage(page - 1),
     onNextButtonClick: ({onChangePage, page}) => (event) => onChangePage(page + 1),
     onLastPageButtonClick: ({onChangePage, pageCount}) => (event) =>
-      onChangePage(Math.max(0, pageCount - 1)),
-    onGoToPageChange: ({setGoToPage, pageCount, goToPage, jozo}) => (event) => {
+      onChangePage(Math.max(1, pageCount)),
+    onGoToPageChange: ({setGoToPageValue, pageCount, goToPageValue}) => (event) => {
       const value = event.target.value
-      if (value === '') return setGoToPage(value)
-      return setGoToPage(isInRange(value, 1, pageCount + 1) ? parseInt(value, 10) : goToPage)
+      if (value === '') return setGoToPageValue(value)
+      return setGoToPageValue(
+        isInRange(value, 1, pageCount + 1) ? parseInt(value, 10) : goToPageValue
+      )
     },
-    onGoToPageSubmit: ({onChangePage, goToPage}) => (e) => {
+    onGoToPageSubmit: ({onChangePage, goToPageValue}) => (e) => {
       e.preventDefault()
-      if (goToPage === '') return
-      onChangePage(goToPage - 1)
+      if (goToPageValue === '') return
+      onChangePage(goToPageValue)
     },
   }),
   withStyles(styles),
@@ -95,15 +119,15 @@ export default compose(
     pageCount,
     page,
     classes,
-    goToPage,
+    goToPageValue,
     onGoToPageChange,
     onGoToPageSubmit,
     reverseDirection,
     i18n: {translate},
   }) => {
     const inputStyle = {width: `${getEstimatedInputWidth(pageCount)}px`}
-    const isFirstPage = page === 0
-    const isLastPage = page >= pageCount - 1
+    const isFirstPage = page <= 1
+    const isLastPage = page >= pageCount
 
     const LeftSideArrows = (
       <React.Fragment>
@@ -174,7 +198,7 @@ export default compose(
             <Input
               style={inputStyle}
               disableUnderline
-              value={goToPage}
+              value={goToPageValue}
               onChange={onGoToPageChange}
               className={classnames(classes.editableInput)}
               inputProps={inputProps}
