@@ -54,8 +54,8 @@ const useAppStyles = makeStyles((theme) => ({
   topBar: {
     position: 'relative',
     background: theme.palette.background.paper,
-    boxShadow: `0px 2px 5px ${fade(theme.palette.shadowBase, 0.12)}`,
-    padding: theme.spacing.unit,
+    boxShadow: `0px 5px 25px ${fade(theme.palette.shadowBase, 0.12)}`,
+    padding: `${theme.spacing.unit}px ${theme.spacing.unit * 5}px`,
   },
 }))
 

@@ -7,7 +7,7 @@ import {fade} from '@material-ui/core/styles/colorManipulator'
 import NavLink from '@/components/common/NavLink'
 import {Tooltip} from '@/components/visual'
 
-const styles = ({palette}) =>
+const styles = ({spacing, palette}) =>
   createStyles({
     list: {
       listStyleType: 'none',
@@ -15,7 +15,7 @@ const styles = ({palette}) =>
     item: {
       display: 'inline',
       margin: '5px',
-      marginRight: '40px',
+      marginLeft: spacing.unit * 5,
     },
     link: {
       textDecoration: 'none',
