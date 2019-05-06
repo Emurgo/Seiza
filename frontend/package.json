@@ -5,8 +5,7 @@
   "scripts": {
     "start": "react-app-rewired start",
     "build": "SENTRY_COMMIT_HASH=`sentry-cli releases propose-version` react-app-rewired build",
-    "build:heroku": "test -z $HEROKU_SLUG_COMMIT && HEROKU_SLUG_COMMIT=$(cat .git-commit-deployed); SENTRY_COMMIT_HASH=$HEROKU_SLUG_COMMIT react-app-rewired build",
-    "heroku-prebuild": "git rev-parse --short HEAD > .git-commit-deployed",
+    "build:heroku": "test -z $HEROKU_SLUG_COMMIT && HEROKU_SLUG_COMMIT=$SOURCE_VERSION; echo $HEROKU_SLUG_COMMIT; SENTRY_COMMIT_HASH=$HEROKU_SLUG_COMMIT react-app-rewired build",
     "heroku-postbuild": "yarn build:heroku",
     "eject": "react-app-rewired eject",
     "eslint": "eslint src --max-warnings=0",
