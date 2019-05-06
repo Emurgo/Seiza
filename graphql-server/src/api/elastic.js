@@ -134,6 +134,17 @@ const legacyErrorHandler = (err, meta) => {
   })
 }
 
+const _logElasticTiming = (request, response, tookMs) => {
+  /* eslint-disable no-console */
+  const log = (key, value) => console.log(` - ${key}: ${JSON.stringify(value)}`)
+
+  console.log('Timing>')
+  log('Query', request)
+  log('Internal elastic time', response.took)
+  log('Total network time', tookMs)
+  /* eslint-enable no-console */
+}
+
 const _search = (type: string, body: any) => {
   const request = {
     // $FlowFixMe validated above using `validate`
@@ -142,7 +153,18 @@ const _search = (type: string, body: any) => {
     body,
   }
 
-  return client.search(request).catch((err) => legacyErrorHandler(err, {request}))
+  const currentTs = () => new Date().getTime()
+
+  const startTs = currentTs()
+
+  return client
+    .search(request)
+    .catch((err) => legacyErrorHandler(err, {request}))
+    .then((response) => {
+      const endTs = currentTs()
+      _logElasticTiming(request, response, endTs - startTs)
+      return response
+    })
   // Non-legacy version
   //.catch((err) => elasticErrorHandler(err, {request}))
   //.then((response) => checkResponse(response, {request}))
