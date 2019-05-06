@@ -52,6 +52,7 @@
   },
   "name": "Seiza",
   "scripts": {
+    "heroku-postbuild": "yarn build:heroku"
   },
   "stack": "heroku-18"
 }
