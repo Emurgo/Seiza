@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const messages = defineMessages({
-  blocks: 'Blocks',
+  blocks: ' {count} {count, plural, =0 {Blocks} one {Block} other {Blocks}}',
 })
 
 const useLoadData = (cursor, epochNumber) => {
@@ -79,7 +79,7 @@ const Blocks = ({blocksCount, epochNumber}) => {
           className={classes.wrapper}
         >
           <Grid item>
-            <EntityHeading amount={formatInt(blocksCount)}>{tr(messages.blocks)}</EntityHeading>
+            <EntityHeading>{tr(messages.blocks, {count: formatInt(blocksCount)})}</EntityHeading>
           </Grid>
           <Grid item>
             <Pagination

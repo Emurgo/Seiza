@@ -10,11 +10,10 @@ const styles = ({palette, spacing}) =>
       paddingBottom: spacing.unit * 7,
     },
     titleWrapper: {
-      position: 'relative',
-      margin: spacing.unit * 3,
+      margin: spacing.unit * 4,
     },
     title: {
-      'marginBottom': spacing.unit * 2.5,
+      'margin': spacing.unit * 3,
       '&:after': {
         content: '""',
         background: palette.text.secondary,
@@ -27,6 +26,11 @@ const styles = ({palette, spacing}) =>
       },
     },
     childrenContainer: {
+      // Note: using Grid Container requires always properly setting Grid, otherwise
+      // there are some "strange offsets" in layout. Using only flex should be quick
+      // workaround, before some major refactor.
+      'display': 'flex',
+      'flexDirection': 'column',
       '& > *': {
         marginBottom: spacing.unit * 2.5,
         width: '100%',
@@ -44,12 +48,10 @@ const SimpleLayout = ({title, classes, children, className, maxWidth = '1500px'}
     <div style={{width: '85vw', maxWidth}}>
       <Grid container direction="row" justify="center">
         <div className={classes.titleWrapper}>
-          <EntityHeading className={classes.title}>{title}</EntityHeading>
+          <EntityHeading>{title}</EntityHeading>
         </div>
       </Grid>
-      <Grid container className={classes.childrenContainer} direction="column" spacing={16}>
-        {children}
-      </Grid>
+      <div className={classes.childrenContainer}>{children}</div>
     </div>
   </Grid>
 )
