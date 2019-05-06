@@ -168,9 +168,9 @@ const MobileTable = ({
         <MuiTable>
           <TableHead />
           {bodyData.length ? (
-            bodyData.map((row, outerIndex) => (
-              <TR key={outerIndex} className={cn(classes.row, hoverable && classes.hoverableRow)}>
-                <TD className={classes.cell}>
+            <TableBody>
+              {bodyData.map((row, outerIndex) => (
+                <TR key={outerIndex} className={cn(classes.row, hoverable && classes.hoverableRow)}>
                   {/* This div is needed for fitting KeyValueCard to the cell */}
                   <div>
                     <KeyValueCard.Body
@@ -180,9 +180,9 @@ const MobileTable = ({
                       }))}
                     />
                   </div>
-                </TD>
-              </TR>
-            ))
+                </TR>
+              ))}
+            </TableBody>
           ) : (
             <React.Fragment>
               <TR>
