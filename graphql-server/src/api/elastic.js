@@ -14,6 +14,7 @@ import assert from 'assert'
 import {validate, EntityNotFoundError} from '../graphql/utils'
 import E from './elasticHelpers'
 import type {SortDirection} from './elasticHelpers'
+import https from 'https'
 
 const ELASTIC_URL = process.env.ELASTIC_URL
 const ELASTIC_INDEX = process.env.ELASTIC_INDEX
@@ -40,6 +41,20 @@ const getClient = () => {
     const config = Object.assign({}, options, {
       connectionClass: httpAWSES,
       awsConfig: new AWS.Config({
+        httpOptions: {
+          // Note(ppershing): Copied from
+          // eslint-disable-next-line max-len
+          // https://github.com/elastic/elasticsearch-js-legacy/blob/16.x/src/lib/connectors/http.js#L42
+          // however official node docs do not seem to have all the keepalive options
+          // https://nodejs.org/api/http.html#http_new_agent_options
+          agent: new https.Agent({
+            maxSockets: Infinity,
+            keepAlive: true,
+            keepAliveInterval: 1000,
+            keepAliveMaxFreeSockets: 256,
+            keepAliveFreeSocketTimeout: 60000,
+          }),
+        },
         region: process.env.AWS_REGION,
         credentials: options.credentials,
       }),
