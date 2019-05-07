@@ -1,11 +1,11 @@
 // @flow
 import React from 'react'
 import {defineMessages} from 'react-intl'
+import {Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
-import {Grid} from '@material-ui/core'
 
 import Table from '@/components/visual/Table'
-import {AdaValue, Link} from '@/components/visual'
+import {AdaValue, Link, Tooltip} from '@/components/visual'
 import {useI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
 
@@ -17,19 +17,19 @@ import {ReactComponent as TransactionsIcon} from '@/assets/icons/transactions.sv
 import {ReactComponent as TotalSentIcon} from '@/assets/icons/total-sent.svg'
 import {ReactComponent as FeeIcon} from '@/assets/icons/fee.svg'
 import {ReactComponent as SizeIcon} from '@/assets/icons/size.svg'
-
 import type {Block} from '@/__generated__/schema.flow'
 
 // TODO?: aria-label messages
 const tableMessages = defineMessages({
-  epoch: 'epoch',
-  slot: 'slot',
-  slotLeader: 'slot leader',
-  time: 'time',
-  transactions: 'transactions',
-  totalSent: 'total sent (ADA)',
-  fees: 'fees (ADA)',
-  size: 'size (B)',
+  epoch: 'Epoch',
+  slot: 'Slot',
+  slotLeader: 'Slot leader',
+  time: 'Time',
+  txs: 'Txs',
+  transactions: 'Transactions',
+  totalSent: 'Total sent (ADA)',
+  fees: 'Fees (ADA)',
+  size: 'Size (B)',
 })
 
 export const COLUMNS_MAP = {
@@ -44,6 +44,8 @@ export const COLUMNS_MAP = {
 }
 export const ALL_COLUMNS = Object.values(COLUMNS_MAP)
 
+const SHOW_ICON_WIDTH = 1470
+
 const useTHStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
@@ -51,23 +53,34 @@ const useTHStyles = makeStyles((theme) => ({
     alignItems: 'center',
   },
   icon: {
-    width: '20px',
-    height: '20px',
-    flexShrink: 0,
+    marginRight: theme.spacing.unit * 0.5,
+    display: 'inline-block',
+    height: '100%',
+    verticalAlign: 'middle',
+    [`@media(max-width: ${SHOW_ICON_WIDTH}px)`]: {
+      display: 'none',
+    },
   },
   content: {
-    marginLeft: '6px',
+    textAlign: 'center',
+  },
+  label: {
+    display: 'inline-block',
   },
 }))
 
 const TH = ({Icon, label}) => {
-  const {translate} = useI18n()
   const classes = useTHStyles()
+
   return (
-    <Grid container direction="row" alignItems="center" wrap="nowrap">
-      <Icon />
-      <span className={classes.content}>{translate(label)}</span>
-    </Grid>
+    <React.Fragment>
+      <div className={classes.icon}>
+        <Icon alt="" />
+      </div>
+      <Typography className={classes.label} color="textSecondary" variant="overline">
+        {label}
+      </Typography>
+    </React.Fragment>
   )
 }
 
@@ -79,69 +92,105 @@ type Props = {
 }
 
 const BlocksTable = ({blocks, columns, loading, error}: Props) => {
-  const {formatInt, formatTimestamp} = useI18n()
+  const {formatInt, formatTimestamp, translate: tr} = useI18n()
 
   const {EPOCH, SLOT, TIME, SLOT_LEADER, TRANSACTIONS, TOTAL_SENT, FEES, SIZE} = COLUMNS_MAP
 
   const columnsRenderer = {
     [EPOCH]: {
-      header: <TH Icon={EpochIcon} label={tableMessages.epoch} />,
+      header: {
+        icon: EpochIcon,
+        label: tr(tableMessages.epoch),
+      },
       cell: (block) => (
         <Link key={0} to={routeTo.epoch(block.epoch)}>
           {formatInt(block.epoch)}
         </Link>
       ),
+      align: 'left',
     },
     [SLOT]: {
-      header: <TH Icon={SlotIcon} label={tableMessages.slot} />,
+      header: {
+        icon: SlotIcon,
+        label: tr(tableMessages.slot),
+      },
       cell: (block) => (
         <Link key={1} to={routeTo.block(block.blockHash)}>
           {formatInt(block.slot)}
         </Link>
       ),
+      align: 'left',
     },
     [TIME]: {
-      header: <TH Icon={TimeIcon} label={tableMessages.time} />,
+      header: {
+        icon: TimeIcon,
+        label: tr(tableMessages.time),
+      },
       cell: (block) => formatTimestamp(block.timeIssued),
+      align: 'left',
     },
     [SLOT_LEADER]: {
-      header: <TH Icon={SlotLeaderIcon} label={tableMessages.slotLeader} />,
+      header: {
+        icon: SlotLeaderIcon,
+        label: tr(tableMessages.slotLeader),
+      },
       cell: (block) => (
         <Link key={3} to={routeTo.stakepool(block.blockLeader.poolHash)}>
           {block.blockLeader.name}
         </Link>
       ),
+      align: 'left',
     },
     [TRANSACTIONS]: {
-      header: <TH Icon={TransactionsIcon} label={tableMessages.transactions} />,
+      header: {
+        icon: TransactionsIcon,
+        label: (
+          <Tooltip title={tr(tableMessages.transactions)} placement="top">
+            <span style={{borderBottom: '1px dotted gray'}}>{tr(tableMessages.txs)}</span>
+          </Tooltip>
+        ),
+      },
       cell: (block) => formatInt(block.transactionsCount),
+      align: 'left',
     },
     [TOTAL_SENT]: {
-      header: <TH Icon={TotalSentIcon} label={tableMessages.totalSent} />,
+      header: {
+        icon: TotalSentIcon,
+        label: tr(tableMessages.totalSent),
+      },
       cell: (block) => <AdaValue key={5} value={block.totalSent} />,
       align: 'right',
     },
     [FEES]: {
-      header: <TH Icon={FeeIcon} label={tableMessages.fees} />,
+      header: {
+        icon: FeeIcon,
+        label: tr(tableMessages.fees),
+      },
       cell: (block) => <AdaValue key={6} value={block.totalFees} />,
       align: 'right',
     },
     [SIZE]: {
-      header: <TH Icon={SizeIcon} label={tableMessages.size} />,
+      header: {
+        icon: SizeIcon,
+        label: tr(tableMessages.size),
+      },
       cell: (block) => formatInt(block.size),
       align: 'right',
     },
   }
 
-  const headerData = columns.map((column) => columnsRenderer[column].header)
+  const fields = columns.map((column) => columnsRenderer[column])
 
-  const fieldsConfig = columns.map((column) => ({
-    align: columnsRenderer[column].align || 'left',
+  const headerData = fields.map(({header}, i) => (
+    <TH key={i} Icon={header.icon} label={header.label} />
+  ))
+
+  const fieldsConfig = fields.map(({align, thAlign}) => ({
+    align: align || 'left',
+    thAlign: thAlign || align || 'left',
   }))
 
-  const bodyData = blocks
-    ? blocks.map((block, index) => columns.map((column) => columnsRenderer[column].cell(block)))
-    : []
+  const bodyData = blocks ? blocks.map((block, index) => fields.map(({cell}) => cell(block))) : []
 
   return <Table hoverable {...{loading, error, headerData, bodyData, fieldsConfig}} />
 }

@@ -1,4 +1,5 @@
 // @flow
+import './initErrorReporter'
 import './index.css'
 import './utils.css'
 import 'font-awesome/css/font-awesome.min.css'
@@ -17,6 +18,7 @@ import App from './App'
 import config from './config'
 import * as serviceWorker from './serviceWorker'
 import {dataIdFromObject} from './helpers/apollo'
+import analytics from '@/helpers/googleAnalytics'
 
 const client = new ApolloClient({
   // $FlowFixMe Not sure why ApolloLink is not compatible with HttpLink
@@ -25,6 +27,8 @@ const client = new ApolloClient({
     dataIdFromObject,
   }),
 })
+
+analytics.initGoogleAnalytics()
 
 const render = (Component) => {
   const root = document.getElementById('root')

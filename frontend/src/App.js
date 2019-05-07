@@ -5,18 +5,20 @@ import React from 'react'
 import {BrowserRouter as Router, Route, Switch, Redirect} from 'react-router-dom'
 import {withRouter} from 'react-router'
 import {compose} from 'redux'
-import {CssBaseline, Grid} from '@material-ui/core'
+import {CssBaseline, Grid, Hidden} from '@material-ui/core'
 import {makeStyles, ThemeProvider} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
+import {fade} from '@material-ui/core/styles/colorManipulator'
 
 import config from './config'
 import {routeTo} from './helpers/routes'
 import {provideIntl} from './components/HOC/intl'
 import {provideTheme, withTheme, THEME_DEFINITIONS} from './components/HOC/theme'
-import {Navbar, Footer} from './components/visual'
+import {Navbar, MobileNavbar, Footer} from './components/visual'
 import {useI18n, InjectHookIntlContext} from '@/i18n/helpers'
 import {AutoSyncProvider} from './screens/Staking/context/autoSync'
 
+import Terms from './screens/Terms'
 import Home from './screens/Home'
 import Blockchain from './screens/Blockchain'
 import Staking from './screens/Staking'
@@ -24,6 +26,8 @@ import More from './screens/More'
 import PageNotFound from './screens/PageNotFound'
 import LanguageSelect from '@/components/common/LanguageSelect'
 import ThemeSelect from '@/components/common/ThemeSelect'
+import DefaultErrorBoundary from '@/components/common/DefaultErrorBoundary'
+import {SubscribeProvider} from '@/components/context/SubscribeContext'
 import {CurrencyProvider} from '@/components/hooks/useCurrency'
 
 import './App.css'
@@ -32,9 +36,10 @@ import seizaLogo from './assets/icons/logo-seiza.svg'
 const navigationMessages = defineMessages({
   home: 'Home',
   blockchain: 'Blockchain',
-  staking: 'Staking',
+  staking: 'Staking simulator',
   stakePools: 'Stake pools',
   more: 'More',
+  termsOfUse: 'Terms of use',
   disabledText: 'Coming soon',
 })
 
@@ -48,7 +53,10 @@ const useAppStyles = makeStyles((theme) => ({
     flex: 1,
   },
   topBar: {
-    padding: theme.spacing.unit,
+    position: 'relative',
+    background: theme.palette.background.paper,
+    boxShadow: `0px 5px 25px ${fade(theme.palette.shadowBase, 0.12)}`,
+    padding: `${theme.spacing.unit}px ${theme.spacing.unit * 5}px`,
   },
 }))
 
@@ -77,6 +85,14 @@ const getTranslatedNavItems = (translate) =>
     },
   ].filter((item) => !item.__hide)
 
+const getTranslatedFooterNavItems = (translate) => {
+  const mainNavItems = getTranslatedNavItems(translate)
+  return [
+    ...mainNavItems,
+    {link: routeTo.termsOfUse(), label: translate(navigationMessages.termsOfUse), __hide: false},
+  ]
+}
+
 const TopBar = compose(withRouter)(({location: {pathname}}) => {
   const {translate} = useI18n()
   const classes = useAppStyles()
@@ -88,12 +104,21 @@ const TopBar = compose(withRouter)(({location: {pathname}}) => {
       alignItems="center"
       className={classes.topBar}
     >
-      <Grid item>
-        <img alt="" src={seizaLogo} />
-      </Grid>
+      <Hidden mdUp>
+        <Grid item>
+          <MobileNavbar currentPathname={pathname} items={getTranslatedNavItems(translate)} />
+        </Grid>
+      </Hidden>
+      <Hidden smDown>
+        <Grid item>
+          <img alt="" src={seizaLogo} />
+        </Grid>
+      </Hidden>
       <Grid item>
         <Grid container direction="row" alignItems="center">
-          <Navbar currentPathname={pathname} items={getTranslatedNavItems(translate)} />
+          <Hidden smDown>
+            <Navbar currentPathname={pathname} items={getTranslatedNavItems(translate)} />
+          </Hidden>
           {config.showStakingData && <LanguageSelect />}
           {config.showStakingData && <ThemeSelect />}
         </Grid>
@@ -107,33 +132,42 @@ const App = () => {
   const {translate} = useI18n()
 
   return (
-    <Router>
-      <CurrencyProvider>
-        <AutoSyncProvider>
-          <Grid container direction="column" className={classes.mainWrapper} wrap="nowrap">
-            <Grid item>
-              <CssBaseline />
-              <TopBar />
-            </Grid>
-            <Grid item className={classes.contentWrapper}>
-              <Switch>
-                <Redirect exact from="/" to={routeTo.home()} />
-                <Route exact path={routeTo.home()} component={Home} />
-                <Route path={routeTo.blockchain()} component={Blockchain} />
-                {config.showStakingData && (
-                  <Route path={routeTo.staking.home()} component={Staking} />
-                )}
-                {config.showStakingData && <Route path={routeTo.more()} component={More} />}
-                <Route component={PageNotFound} />
-              </Switch>
-            </Grid>
-            <Grid item>
-              <Footer navItems={getTranslatedNavItems(translate)} />
-            </Grid>
-          </Grid>
-        </AutoSyncProvider>
-      </CurrencyProvider>
-    </Router>
+    <DefaultErrorBoundary>
+      <Router>
+        <CurrencyProvider>
+          <SubscribeProvider>
+            <AutoSyncProvider>
+              <Grid container direction="column" className={classes.mainWrapper} wrap="nowrap">
+                <Grid item>
+                  <CssBaseline />
+                  <TopBar />
+                </Grid>
+                <DefaultErrorBoundary>
+                  <React.Fragment>
+                    <Grid item className={classes.contentWrapper}>
+                      <Switch>
+                        <Redirect exact from="/" to={routeTo.home()} />
+                        <Route exact path={routeTo.home()} component={Home} />
+                        <Route path={routeTo.blockchain()} component={Blockchain} />
+                        {config.showStakingData && (
+                          <Route path={routeTo.staking.home()} component={Staking} />
+                        )}
+                        {config.showStakingData && <Route path={routeTo.more()} component={More} />}
+                        <Route exact path={routeTo.termsOfUse()} component={Terms} />
+                        <Route component={PageNotFound} />
+                      </Switch>
+                    </Grid>
+                    <Grid item>
+                      <Footer navItems={getTranslatedFooterNavItems(translate)} />
+                    </Grid>
+                  </React.Fragment>
+                </DefaultErrorBoundary>
+              </Grid>
+            </AutoSyncProvider>
+          </SubscribeProvider>
+        </CurrencyProvider>
+      </Router>
+    </DefaultErrorBoundary>
   )
 }
 

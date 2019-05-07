@@ -136,7 +136,17 @@ const commonThemeObj = {
 export const THEME_DEFINITIONS = {
   [THEMES.BRIGHT]: createMuiTheme({
     ...commonThemeObj,
+    overrides: {
+      MuiTouchRipple: {
+        root: {
+          color: 'rgba(77, 32, 192, 0.4)',
+        },
+      },
+    },
     palette: {
+      action: {
+        hover: '#F4F6FC',
+      },
       gradient: 'linear-gradient(97deg, #BFADE7 0%, #E0F1F8 100%)',
       buttonsGradient: {
         normal: 'linear-gradient(90deg, #4D20C0 0%,  #92A7FC 67%, #B1E1F2 100%)',

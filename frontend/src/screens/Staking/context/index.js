@@ -8,7 +8,7 @@ import {SortByProvider, useSortByContext} from './sortBy'
 import {SearchTextProvider, useSearchTextContext} from './searchText'
 import {PerformanceProvider, usePerformanceContext} from './performance'
 
-import {useUrlManager} from './utils'
+import {useUrlManager} from '@/components/hooks/useUrlManager'
 
 type ProviderProps = {|
   children: React.Node,

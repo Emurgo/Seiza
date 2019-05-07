@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import React, {useCallback} from 'react'
 import cn from 'classnames'
 import {defineMessages} from 'react-intl'
 import WithModalState from '@/components/headless/modalState'
@@ -87,18 +87,32 @@ const Header = ({transaction}) => {
   )
 }
 
-const BreakdownList = ({transaction}) => {
+const BreakdownList = ({transaction, targetAddress}) => {
   const commonClasses = useCommonStyles()
+  const getHasHighlight = useCallback(
+    (inputOrOutput) => targetAddress && inputOrOutput.address58 === targetAddress,
+    [targetAddress]
+  )
   return (
     <Grid container direction="row">
       <Grid item xs={6} className={commonClasses.leftSide}>
         {transaction.inputs.map((input, index, items) => (
-          <BreakdownItem key={index} target={input} valuePrefix={'-'} />
+          <BreakdownItem
+            hasHighlight={getHasHighlight(input)}
+            key={index}
+            target={input}
+            valuePrefix={'-'}
+          />
         ))}
       </Grid>
       <Grid item xs={6}>
         {transaction.outputs.map((output, index, items) => (
-          <BreakdownItem key={index} target={output} valuePrefix={'+'} />
+          <BreakdownItem
+            hasHighlight={getHasHighlight(output)}
+            key={index}
+            target={output}
+            valuePrefix={'+'}
+          />
         ))}
       </Grid>
     </Grid>
@@ -128,6 +142,9 @@ const useBreakdownItemStyles = makeStyles((theme) => ({
   copy: {
     marginLeft: theme.spacing.unit,
   },
+  typographyWrapper: {
+    fontWeight: ({hasHighlight}) => (hasHighlight ? 700 : 'initial'),
+  },
 }))
 
 const IMG_DIMENSIONS = {width: 15, height: 15}
@@ -135,7 +152,7 @@ const IMG_DIMENSIONS = {width: 15, height: 15}
 const BreakdownItem = (props) => {
   const {valuePrefix, target} = props
   const {address58, amount} = target
-  const breakdownClasses = useBreakdownItemStyles()
+  const breakdownClasses = useBreakdownItemStyles(props)
   return (
     <ContentSpacing top={0} bottom={0}>
       <Divider light />
@@ -147,20 +164,25 @@ const BreakdownItem = (props) => {
         className={breakdownClasses.rowSpacing}
       >
         <Grid item xs={6}>
-          <Typography variant="body1" color="textSecondary">
-            <Grid container direction="row" alignItems="center" wrap="nowrap">
-              <div className={breakdownClasses.spaced}>
+          <Grid container direction="row" alignItems="center" wrap="nowrap">
+            <div className={breakdownClasses.spaced}>
+              <Typography
+                variant="body1"
+                color="textSecondary"
+                component="div"
+                className={breakdownClasses.typographyWrapper}
+              >
                 <Link to={routeTo.address(address58)} underline="none">
                   <div className={cn(breakdownClasses.underlineHover, breakdownClasses.monospace)}>
                     <EllipsizeMiddle value={address58} />
                   </div>
                 </Link>
-              </div>
-              <div className={breakdownClasses.copy}>
-                <CopyToClipboard value={address58} imgDimensions={IMG_DIMENSIONS} outlineSize={4} />
-              </div>
-            </Grid>
-          </Typography>
+              </Typography>
+            </div>
+            <div className={breakdownClasses.copy}>
+              <CopyToClipboard value={address58} imgDimensions={IMG_DIMENSIONS} outlineSize={4} />
+            </div>
+          </Grid>
         </Grid>
         <Grid item xs={6}>
           <Grid container justify="flex-end" direction="row">
@@ -174,9 +196,10 @@ const BreakdownItem = (props) => {
 
 type Props = {
   tx: Transaction,
+  targetAddress?: string,
 }
 
-export const AddressesBreakdownContent = ({tx}: Props) => {
+export const AddressesBreakdownContent = ({tx, targetAddress}: Props) => {
   const {translate: tr} = useI18n()
   return (
     <WithModalState>
@@ -185,7 +208,9 @@ export const AddressesBreakdownContent = ({tx}: Props) => {
           expanded={isOpen}
           onChange={toggle}
           renderHeader={() => <Header transaction={tx} />}
-          renderExpandedArea={() => <BreakdownList transaction={tx} />}
+          renderExpandedArea={() => (
+            <BreakdownList transaction={tx} targetAddress={targetAddress} />
+          )}
           footer={isOpen ? tr(messages.hideAll) : tr(messages.seeAll)}
         />
       )}

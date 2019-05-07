@@ -6,6 +6,7 @@
   "scripts": {
     "start": "babel-watch src/index.js -w src/graphql",
     "build": "rm -rf build && babel src --out-dir build",
+    "build:heroku": "yarn build",
     "serve": "node build/index.js",
     "eslint": "eslint src --max-warnings=0",
     "flow-stop": "flow stop",
@@ -33,6 +34,7 @@
     "graphql": "^14.1.1",
     "graphql-bigint": "^1.0.0",
     "http-aws-es": "^6.0.0",
+    "isemail": "^3.2.0",
     "merge-graphql-schemas": "^1.5.8",
     "moment": "^2.24.0"
   },

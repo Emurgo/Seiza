@@ -13,12 +13,13 @@ type Props = {
   to: string,
   target?: string,
   children: React$Node,
+  onClick?: Function,
 }
 
-const ExternalLink = ({to, target, children}: Props) => {
+const ExternalLink = ({to, target, children, onClick}: Props) => {
   const classes = useStyles()
   return (
-    <MuiLink className={classes.standardLink} href={to} target={target}>
+    <MuiLink className={classes.standardLink} href={to} target={target} onClick={onClick}>
       {children}
     </MuiLink>
   )
