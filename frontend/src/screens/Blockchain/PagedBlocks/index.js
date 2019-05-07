@@ -1,33 +1,38 @@
 // @flow
-import React from 'react'
-import {graphql} from 'react-apollo'
-import {compose} from 'redux'
+import React, {useState} from 'react'
 import {defineMessages} from 'react-intl'
-import {withProps} from 'recompose'
 import idx from 'idx'
-import {Switch, Typography, Grid, withStyles, createStyles} from '@material-ui/core'
+import {Switch, Typography, Grid} from '@material-ui/core'
+import {makeStyles} from '@material-ui/styles'
 
-import {onDidUpdate, onDidMount} from '@/components/HOC/lifecycles'
-import Pagination, {getPageCount} from '@/components/visual/Pagination'
+import Pagination from '@/components/visual/Pagination'
 import {SimpleLayout} from '@/components/visual'
-import BlocksTable, {ALL_COLUMNS} from './BlocksTable'
 import {GET_PAGED_BLOCKS} from '@/api/queries'
 import {useI18n} from '@/i18n/helpers'
-import withPagedData from '@/components/HOC/withPagedData'
+import {
+  useBlocksTablePagedProps,
+  useTotalItemsCount,
+} from '@/components/hooks/useBlocksTablePagedProps'
+import {useQueryNotBugged} from '@/components/hooks/useQueryNotBugged'
+import {useManageQueryValue} from '@/components/hooks/useManageQueryValue'
+import {toIntOrNull} from '@/helpers/utils'
+import BlocksTable, {ALL_COLUMNS} from './BlocksTable'
+
+const AUTOUPDATE_REFRESH_INTERVAL = 10 * 1000
 
 const messages = defineMessages({
   refreshState: 'Refresh state:',
   header: 'Recent blocks',
 })
 
-const autoUpdateStyles = (theme) =>
-  createStyles({
-    text: {
-      textTransform: 'uppercase',
-    },
-  })
+const useAutoUpdateStyles = makeStyles((theme) => ({
+  text: {
+    textTransform: 'uppercase',
+  },
+}))
 
-const AutoUpdateSwitch = compose(withStyles(autoUpdateStyles))(({checked, onChange, classes}) => {
+const AutoUpdateSwitch = ({checked, onChange}) => {
+  const classes = useAutoUpdateStyles()
   const {translate} = useI18n()
   return (
     <Grid container direction="row" justify="flex-start" alignItems="center">
@@ -39,21 +44,60 @@ const AutoUpdateSwitch = compose(withStyles(autoUpdateStyles))(({checked, onChan
       </Grid>
     </Grid>
   )
-})
+}
 
-const styles = (theme) =>
-  createStyles({
-    wrapper: {
-      padding: '5px 10px',
-    },
+const useStyles = makeStyles((theme) => ({
+  wrapper: {
+    padding: '5px 10px',
+  },
+}))
+
+const useLoadData = (cursor, autoUpdate) => {
+  const dataKey = 'pagedBlocks'
+
+  const {error, loading, data, startPolling, stopPolling} = useQueryNotBugged(GET_PAGED_BLOCKS, {
+    variables: {cursor},
+    notifyOnNetworkStatusChange: true,
+    shouldInvalidatePreviousData: autoUpdate,
   })
 
-const PagedBlocks = (props) => {
-  const {
-    pagedDataResult: {loading, error, pagedData: pagedBlocks},
-    classes,
-  } = props
+  autoUpdate ? startPolling(AUTOUPDATE_REFRESH_INTERVAL) : stopPolling()
+
+  const pagedData = idx(data[dataKey], (_) => _.blocks)
+
+  return {
+    error,
+    loading,
+    pagedDataResult: {
+      ...data[dataKey],
+      pagedData,
+    },
+  }
+}
+
+const PagedBlocks = () => {
+  const classes = useStyles()
   const {translate} = useI18n()
+  const [page, setPage] = useManageQueryValue('page', null, toIntOrNull)
+
+  const [cursor, setCursor] = useState(null)
+  const [autoUpdate, setAutoupdate] = useState(true)
+
+  const {pagedDataResult, loading, error} = useLoadData(cursor, autoUpdate)
+  const [totalItemsCount, setTotalItemsCount] = useTotalItemsCount(pagedDataResult, autoUpdate)
+
+  const {onChangePage, rowsPerPage, onChangeAutoUpdate} = useBlocksTablePagedProps(
+    page,
+    setPage,
+    setCursor,
+    totalItemsCount,
+    setTotalItemsCount,
+    autoUpdate,
+    setAutoupdate
+  )
+
+  const pagedBlocks = pagedDataResult.pagedData
+
   return (
     <SimpleLayout title={translate(messages.header)}>
       <Grid
@@ -64,73 +108,21 @@ const PagedBlocks = (props) => {
         justify="space-between"
       >
         <Grid item>
-          <AutoUpdateSwitch checked={props.autoUpdate} onChange={props.onChangeAutoUpdate} />
+          <AutoUpdateSwitch checked={autoUpdate} onChange={onChangeAutoUpdate} />
         </Grid>
         <Grid item>
           <Pagination
-            count={props.totalCount}
-            rowsPerPage={props.rowsPerPage}
-            page={props.page}
-            onChangePage={props.onChangePage}
+            count={totalItemsCount}
+            rowsPerPage={rowsPerPage}
+            page={page || 0}
+            onChangePage={onChangePage}
             reverseDirection
           />
         </Grid>
       </Grid>
-      <BlocksTable
-        loading={loading}
-        error={error}
-        blocks={pagedBlocks && pagedBlocks.blocks}
-        columns={ALL_COLUMNS}
-      />
+      <BlocksTable loading={loading} error={error} blocks={pagedBlocks} columns={ALL_COLUMNS} />
     </SimpleLayout>
   )
 }
 
-const AUTOUPDATE_REFRESH_INTERVAL = 10 * 1000
-const AUTOUPDATE_REFRESH_INTERVAL_OFF = 0
-const withData = compose(
-  graphql(GET_PAGED_BLOCKS, {
-    name: 'pagedDataResult',
-    // $FlowFixMe somehow notifyOnNetworkStatusChange is missing in typedef
-    options: (props) => ({
-      variables: {cursor: props.cursor},
-      pollInterval: props.autoUpdate
-        ? AUTOUPDATE_REFRESH_INTERVAL
-        : AUTOUPDATE_REFRESH_INTERVAL_OFF,
-      notifyOnNetworkStatusChange: true,
-    }),
-  }),
-  withProps(({pagedDataResult}) => ({
-    pagedDataResult: {
-      ...pagedDataResult,
-      pagedData: idx(pagedDataResult, (_) => _.pagedBlocks),
-    },
-  }))
-)
-
-const _updateTotalPageCount = ({pagedDataResult, rowsPerPage, setTotalCount, setPage}) => {
-  const blocksCount = idx(pagedDataResult, (_) => _.pagedData.blocks.length)
-  if (blocksCount) {
-    const itemsCount = blocksCount + pagedDataResult.pagedData.cursor
-    setTotalCount(itemsCount)
-    setPage(getPageCount(itemsCount, rowsPerPage) - 1)
-  }
-}
-
-const withSetTotalPageCount = compose(
-  onDidMount(_updateTotalPageCount),
-  onDidUpdate((props, prevProps) => {
-    if (
-      (props.autoUpdate &&
-        prevProps.pagedDataResult.pagedData !== props.pagedDataResult.pagedData) ||
-      !props.totalCount
-    ) {
-      _updateTotalPageCount(props)
-    }
-  })
-)
-
-export default compose(
-  withStyles(styles),
-  withPagedData({withData, withSetTotalPageCount, initialAutoUpdate: true})
-)(PagedBlocks)
+export default PagedBlocks

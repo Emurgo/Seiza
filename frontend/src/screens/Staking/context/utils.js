@@ -3,11 +3,10 @@
 import * as React from 'react'
 import _ from 'lodash'
 
-import useReactRouter from 'use-react-router'
-
 import * as urlUtils from '@/helpers/url'
 import localStorage from '@/helpers/localStorage'
 import sessionStorage from '@/helpers/sessionStorage'
+import {useUrlManager} from '@/components/hooks/useUrlManager'
 
 // Note: dont set `defaultValue` in below function to `null` as due to query-string api,
 // we sometimes need default value to be `undefined` which `null` overrides
@@ -23,40 +22,6 @@ export const getStorageData = (key: string, defaultValue: any, autoSync: ?boolea
   }
   // This also applies for `null` case, when `autoSync` was not determined yet
   return localStorage.getItem(key) || defaultValue
-}
-
-export const useUrlManager = () => {
-  const {history, location} = useReactRouter()
-
-  const setQueryParam = React.useCallback(
-    (key: string, value: any) => {
-      history.replace({
-        pathname: location.pathname,
-        search: urlUtils.replaceQueryParam(location.search, key, value),
-      })
-    },
-    [history, location]
-  )
-
-  const getQueryParam = React.useCallback(
-    (paramKey: string, query?: string): any => {
-      const parsed = urlUtils.parse(query || location.search)
-      return parsed[paramKey]
-    },
-    [location]
-  )
-
-  const setQuery = React.useCallback(
-    (query: string) => {
-      history.replace({
-        pathname: location.pathname,
-        search: query,
-      })
-    },
-    [history, location]
-  )
-
-  return {setQueryParam, getQueryParam, setQuery}
 }
 
 export const useManageSimpleContextValue = (

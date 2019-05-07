@@ -81,7 +81,8 @@ const AddressSummaryCard = ({addressSummary, loading}) => {
 const messages = defineMessages({
   title: 'Address',
   showQRCode: 'Show QR code',
-  transactionsHeading: 'Transactions',
+  transactionsHeading:
+    '{count} {count, plural, =0 {Transactions} one {Transaction} other {Transactions}}',
   qrCodeDialogEntityLabel: 'Address Id',
 })
 
@@ -158,14 +159,16 @@ const AddressScreen = () => {
         ) : (
           <React.Fragment>
             <AddressSummaryCard loading={loading} addressSummary={addressSummary} />
-            <EntityHeading
-              className={classes.headingWrapper}
-              amount={idx(addressSummary, (_) => _.transactionsCount) || ''}
-            >
-              {tr(messages.transactionsHeading)}
-            </EntityHeading>
+            <div className={classes.headingWrapper}>
+              <EntityHeading>
+                {tr(messages.transactionsHeading, {
+                  count: idx(addressSummary, (_) => _.transactionsCount) || '',
+                })}
+              </EntityHeading>
+            </div>
             <PagedTransactions
               loading={loading}
+              targetAddress={address58}
               transactions={idx(addressSummary, (_) => _.transactions) || []}
             />
           </React.Fragment>

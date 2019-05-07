@@ -6,21 +6,23 @@ import {injectIntl, defineMessages} from 'react-intl'
 import {compose} from 'redux'
 
 import {Grid, createStyles, withStyles} from '@material-ui/core'
+import {makeStyles} from '@material-ui/styles'
 import {MetricsCard, LoadingDots} from '@/components/visual'
 import {getIntlFormatters} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
-import WithNavigateTo from '@/components/headless/navigateTo'
 import {Link} from 'react-router-dom'
 
 import config from '@/config'
 import useCurrency, {CURRENCIES} from '@/components/hooks/useCurrency'
 import {useQuery} from 'react-apollo-hooks'
+import useNavigateTo from '@/components/hooks/useNavigateTo'
+import analytics from '@/helpers/googleAnalytics'
 
 const text = defineMessages({
   not_available: 'N/A',
   error: 'Err',
   epochLabel: 'Epoch',
-  blocksLabel: 'Blocks',
+  slotsLabel: 'Slot',
   decentralizationLabel: 'Decentralization',
   priceLabel: 'Price',
   poolsLabel: 'Pools',
@@ -50,7 +52,6 @@ const OVERVIEW_METRICS_QUERY = gql`
     currentStatus {
       blockCount
       latestBlock {
-        blockHash
         epoch
       }
       decentralization
@@ -60,6 +61,32 @@ const OVERVIEW_METRICS_QUERY = gql`
   }
 `
 const STATUS_REFRESH_INTERVAL = 20 * 1000
+
+const usePriceItemStyles = makeStyles((theme) => ({
+  ada: {
+    fontWeight: 300,
+  },
+}))
+
+const PriceItem = ({currency}) => {
+  const classes = usePriceItemStyles()
+  return (
+    <React.Fragment>
+      <span>{currency}&nbsp;/</span>
+      <span className={classes.ada}>&nbsp;ADA</span>
+    </React.Fragment>
+  )
+}
+
+const MetricWithLink = ({to, ...props}) => {
+  const handler = useNavigateTo(to)
+
+  return to ? (
+    <MetricsCard onClick={handler} clickableWrapperProps={{component: Link, to}} {...props} />
+  ) : (
+    <MetricsCard {...props} />
+  )
+}
 
 const OverviewMetrics = ({intl, data, classes}) => {
   const [currency, setCurrency] = useCurrency()
@@ -84,7 +111,7 @@ const OverviewMetrics = ({intl, data, classes}) => {
   const pools = formatInt(idx(status, (s) => s.stakePoolCount), {defaultValue: NA})
 
   const epochLink = status && routeTo.epoch(status.latestBlock.epoch)
-  const blockLink = status && routeTo.block(status.latestBlock.blockHash)
+  const blockLink = routeTo.blockchain()
   const marketDataLink = routeTo.more()
   const stakePoolsLink = routeTo.staking.home()
 
@@ -95,16 +122,25 @@ const OverviewMetrics = ({intl, data, classes}) => {
     value: price,
     options: [
       {
-        label: 'USD/ADA',
-        onClick: () => setCurrency(CURRENCIES.USD),
+        label: <PriceItem currency="USD" />,
+        onClick: () => {
+          analytics.trackCurrencyChanged(CURRENCIES.USD)
+          setCurrency(CURRENCIES.USD)
+        },
       },
       {
-        label: 'EUR/ADA',
-        onClick: () => setCurrency(CURRENCIES.EUR),
+        label: <PriceItem currency="EUR" />,
+        onClick: () => {
+          analytics.trackCurrencyChanged(CURRENCIES.EUR)
+          setCurrency(CURRENCIES.EUR)
+        },
       },
       {
-        label: 'YEN/ADA',
-        onClick: () => setCurrency(CURRENCIES.JPY),
+        label: <PriceItem currency="YEN" />,
+        onClick: () => {
+          analytics.trackCurrencyChanged(CURRENCIES.JPY)
+          setCurrency(CURRENCIES.JPY)
+        },
       },
     ],
   }
@@ -112,32 +148,22 @@ const OverviewMetrics = ({intl, data, classes}) => {
   return (
     <Grid container justify="center" wrap="wrap" direction="row">
       <Grid item className={classes.cardDimensions}>
-        <WithNavigateTo to={epochLink}>
-          {({navigate}) => (
-            <MetricsCard
-              className={classes.card}
-              icon="epoch"
-              metric={translate(text.epochLabel)}
-              value={epochNumber}
-              onClick={navigate}
-              clickableWrapperProps={{component: Link, to: epochLink}}
-            />
-          )}
-        </WithNavigateTo>
+        <MetricWithLink
+          className={classes.card}
+          icon="epoch"
+          metric={translate(text.epochLabel)}
+          value={epochNumber}
+          to={epochLink}
+        />
       </Grid>
       <GridItem>
-        <WithNavigateTo to={stakePoolsLink}>
-          {({navigate}) => (
-            <MetricsCard
-              className={classes.card}
-              icon="blocks"
-              metric={translate(text.blocksLabel)}
-              value={blockCount}
-              onClick={navigate}
-              clickableWrapperProps={{component: Link, to: blockLink}}
-            />
-          )}
-        </WithNavigateTo>
+        <MetricWithLink
+          className={classes.card}
+          icon="blocks"
+          metric={translate(text.slotsLabel)}
+          value={blockCount}
+          to={blockLink}
+        />
       </GridItem>
       {config.showStakingData && (
         <GridItem>
@@ -150,34 +176,20 @@ const OverviewMetrics = ({intl, data, classes}) => {
         </GridItem>
       )}
       <GridItem>
-        {config.showStakingData ? (
-          <WithNavigateTo to={marketDataLink}>
-            {({navigate}) => (
-              <MetricsCard
-                {...commonMarketDataProps}
-                onClick={navigate}
-                clickableWrapperProps={{component: Link, to: marketDataLink}}
-              />
-            )}
-          </WithNavigateTo>
-        ) : (
-          <MetricsCard {...commonMarketDataProps} />
-        )}
+        <MetricWithLink
+          {...commonMarketDataProps}
+          to={config.showStakingData ? marketDataLink : null}
+        />
       </GridItem>
       {config.showStakingData && (
         <GridItem>
-          <WithNavigateTo to={stakePoolsLink}>
-            {({navigate}) => (
-              <MetricsCard
-                className={classes.card}
-                icon="pools"
-                metric={translate(text.poolsLabel)}
-                value={pools}
-                onClick={navigate}
-                clickableWrapperProps={{component: Link, to: stakePoolsLink}}
-              />
-            )}
-          </WithNavigateTo>
+          <MetricWithLink
+            className={classes.card}
+            icon="pools"
+            metric={translate(text.poolsLabel)}
+            value={pools}
+            to={stakePoolsLink}
+          />
         </GridItem>
       )}
     </Grid>

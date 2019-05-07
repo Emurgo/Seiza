@@ -12,6 +12,7 @@ import {makeStyles} from '@material-ui/styles'
 
 import {useI18n} from '@/i18n/helpers'
 import {ObjectValues} from '@/helpers/flow'
+import analytics from '@/helpers/googleAnalytics'
 import {
   SimpleLayout,
   LiteTabs,
@@ -72,6 +73,9 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'row',
     justifyContent: 'flex-end',
   },
+  layout: {
+    paddingBottom: theme.spacing.unit * 2.5,
+  },
 }))
 
 const TAB_NAMES = {
@@ -89,8 +93,16 @@ const TabsHeader = () => {
     {id: TAB_NAMES.TOTAL_UTXO, label: tr(messages.totalUtxo)},
   ]
 
+  const onChange = useCallback(
+    (...args) => {
+      analytics.trackChartEvent()
+      setTabByEventIndex(...args)
+    },
+    [setTabByEventIndex]
+  )
+
   return (
-    <LiteTabs alignLeft value={currentTabIndex} onChange={setTabByEventIndex}>
+    <LiteTabs alignLeft value={currentTabIndex} onChange={onChange}>
       {tabs.map(({id, label}) => (
         <LiteTab key={id} label={label} />
       ))}
@@ -232,6 +244,7 @@ const getChartDimensions = (dimensions) => ({
 })
 
 const Charts = () => {
+  const classes = useStyles()
   const {
     translate: tr,
     formatAdaInUnits,
@@ -251,7 +264,13 @@ const Charts = () => {
     tr(messages.adaInBillions, {count: formatAdaInUnits(`${value}`)})
   // Note: For now not showing decimals, as then values are too long
   const formatAdaYTooltip = (value) => formatAdaSplit(`${value}`).integral
-  const onXAxisChange = useCallback((e) => setXAxis(e.target.value), [setXAxis])
+  const onXAxisChange = useCallback(
+    (e) => {
+      setXAxis(e.target.value)
+      analytics.trackChartEvent()
+    },
+    [setXAxis]
+  )
 
   const commonChartProps = {
     xLabel: tr(xAxis === X_AXIS.DAY ? xLabels.day : xLabels.epoch),
@@ -267,59 +286,57 @@ const Charts = () => {
   }
 
   return (
-    <SimpleLayout title={tr(messages.header)} maxWidth="1200px">
-      <Grid item>
-        <Measure
-          bounds
-          onResize={(contentRect) => {
-            setDimensions(contentRect.bounds)
-          }}
-        >
-          {({measureRef}) => (
-            <div ref={measureRef}>
-              <Tabs {...tabState}>
-                <TabsHeader />
+    <SimpleLayout title={tr(messages.header)} maxWidth="1200px" className={classes.layout}>
+      <Measure
+        bounds
+        onResize={(contentRect) => {
+          setDimensions(contentRect.bounds)
+        }}
+      >
+        {({measureRef}) => (
+          <div ref={measureRef}>
+            <Tabs {...tabState}>
+              <TabsHeader />
 
-                <Tab name={TAB_NAMES.TOTAL_ADA_SENT}>
-                  <ChartTab
-                    seriesType="totalAdaTransferred"
-                    yLabel={tr(yLabels.adaSent)}
-                    formatYTooltip={formatAdaYTooltip}
-                    formatYAxis={formatAdaYAxis}
-                    commonChartProps={commonChartProps}
-                    xAxisProps={xAxisProps}
-                    {...{loading, error, currentEpoch}}
-                  />
-                </Tab>
+              <Tab name={TAB_NAMES.TOTAL_ADA_SENT}>
+                <ChartTab
+                  seriesType="totalAdaTransferred"
+                  yLabel={tr(yLabels.adaSent)}
+                  formatYTooltip={formatAdaYTooltip}
+                  formatYAxis={formatAdaYAxis}
+                  commonChartProps={commonChartProps}
+                  xAxisProps={xAxisProps}
+                  {...{loading, error, currentEpoch}}
+                />
+              </Tab>
 
-                <Tab name={TAB_NAMES.TRANSACTIONS_COUNT}>
-                  <ChartTab
-                    seriesType="txCount"
-                    yLabel={tr(yLabels.txCount)}
-                    formatYAxis={identity}
-                    formatYTooltip={identity}
-                    commonChartProps={commonChartProps}
-                    xAxisProps={xAxisProps}
-                    {...{loading, error, currentEpoch}}
-                  />
-                </Tab>
+              <Tab name={TAB_NAMES.TRANSACTIONS_COUNT}>
+                <ChartTab
+                  seriesType="txCount"
+                  yLabel={tr(yLabels.txCount)}
+                  formatYAxis={identity}
+                  formatYTooltip={identity}
+                  commonChartProps={commonChartProps}
+                  xAxisProps={xAxisProps}
+                  {...{loading, error, currentEpoch}}
+                />
+              </Tab>
 
-                <Tab name={TAB_NAMES.TOTAL_UTXO}>
-                  <ChartTab
-                    seriesType="totalUtxoCreated"
-                    yLabel={tr(yLabels.utxo)}
-                    formatYAxis={identity}
-                    formatYTooltip={identity}
-                    commonChartProps={commonChartProps}
-                    xAxisProps={xAxisProps}
-                    {...{loading, error, currentEpoch}}
-                  />
-                </Tab>
-              </Tabs>
-            </div>
-          )}
-        </Measure>
-      </Grid>
+              <Tab name={TAB_NAMES.TOTAL_UTXO}>
+                <ChartTab
+                  seriesType="totalUtxoCreated"
+                  yLabel={tr(yLabels.utxo)}
+                  formatYAxis={identity}
+                  formatYTooltip={identity}
+                  commonChartProps={commonChartProps}
+                  xAxisProps={xAxisProps}
+                  {...{loading, error, currentEpoch}}
+                />
+              </Tab>
+            </Tabs>
+          </div>
+        )}
+      </Measure>
     </SimpleLayout>
   )
 }

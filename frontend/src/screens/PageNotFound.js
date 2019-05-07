@@ -1,34 +1,42 @@
 import React from 'react'
-import {Grid, Typography, withStyles, createStyles} from '@material-ui/core'
+import {Grid, Typography} from '@material-ui/core'
+import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
-import {compose} from 'redux'
 
-import {withI18n} from '@/i18n/helpers'
+import {useI18n} from '@/i18n/helpers'
+import errorImage from '@/assets/error-screen.svg'
 
 const messages = defineMessages({
   notFound: 'We are sorry, but the requested url could not be found.',
 })
 
-const styles = createStyles({
+const useStyles = makeStyles((theme) => ({
   wrapper: {
     height: '100%',
+    padding: theme.spacing.unit * 6,
   },
-})
+  message: {
+    marginTop: theme.spacing.unit * 3,
+  },
+}))
 
-const PageNotFound = ({classes, i18n: {translate}}) => (
-  <Grid
-    className={classes.wrapper}
-    container
-    justify="center"
-    alignItems="center"
-    direction="column"
-  >
-    <Typography variant="h1">404</Typography>
-    <Typography variant="h6">{translate(messages.notFound)}</Typography>
-  </Grid>
-)
+const PageNotFound = () => {
+  const classes = useStyles()
+  const {translate: tr} = useI18n()
+  return (
+    <Grid
+      className={classes.wrapper}
+      container
+      justify="center"
+      alignItems="center"
+      direction="column"
+    >
+      <img src={errorImage} alt="" />
+      <Typography className={classes.message} variant="h6">
+        {tr(messages.notFound)}
+      </Typography>
+    </Grid>
+  )
+}
 
-export default compose(
-  withI18n,
-  withStyles(styles)
-)(PageNotFound)
+export default PageNotFound

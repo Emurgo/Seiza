@@ -61,9 +61,11 @@ export default compose(
   withStateHandlers((props) => ({goToPage: props.pageCount > 0 ? props.page + 1 : 0}), {
     setGoToPage: () => (goToPage) => ({goToPage}),
   }),
-  onDidUpdate(
-    (props, prevProps) => prevProps.page !== props.page && props.setGoToPage(props.page + 1)
-  ),
+  onDidUpdate((props, prevProps) => {
+    ;((props.pageCount > 0 && prevProps.pageCount !== props.pageCount) ||
+      prevProps.page !== props.page) &&
+      props.setGoToPage(props.page + 1)
+  }),
   withHandlers({
     onFirstPageButtonClick: ({onChangePage}) => (event) => onChangePage(0),
     onBackButtonClick: ({onChangePage, page}) => (event) => onChangePage(page - 1),
@@ -72,9 +74,8 @@ export default compose(
       onChangePage(Math.max(0, pageCount - 1)),
     onGoToPageChange: ({setGoToPage, pageCount, goToPage, jozo}) => (event) => {
       const value = event.target.value
-      return setGoToPage(
-        value === '' || isInRange(value, 1, pageCount + 1) ? parseInt(value, 10) : goToPage
-      )
+      if (value === '') return setGoToPage(value)
+      return setGoToPage(isInRange(value, 1, pageCount + 1) ? parseInt(value, 10) : goToPage)
     },
     onGoToPageSubmit: ({onChangePage, goToPage}) => (e) => {
       e.preventDefault()

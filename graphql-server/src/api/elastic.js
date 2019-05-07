@@ -14,6 +14,7 @@ import assert from 'assert'
 import {validate, EntityNotFoundError} from '../graphql/utils'
 import E from './elasticHelpers'
 import type {SortDirection} from './elasticHelpers'
+import https from 'https'
 
 const ELASTIC_URL = process.env.ELASTIC_URL
 const ELASTIC_INDEX = process.env.ELASTIC_INDEX
@@ -40,6 +41,20 @@ const getClient = () => {
     const config = Object.assign({}, options, {
       connectionClass: httpAWSES,
       awsConfig: new AWS.Config({
+        httpOptions: {
+          // Note(ppershing): Copied from
+          // eslint-disable-next-line max-len
+          // https://github.com/elastic/elasticsearch-js-legacy/blob/16.x/src/lib/connectors/http.js#L42
+          // however official node docs do not seem to have all the keepalive options
+          // https://nodejs.org/api/http.html#http_new_agent_options
+          agent: new https.Agent({
+            maxSockets: Infinity,
+            keepAlive: true,
+            keepAliveInterval: 1000,
+            keepAliveMaxFreeSockets: 256,
+            keepAliveFreeSocketTimeout: 60000,
+          }),
+        },
         region: process.env.AWS_REGION,
         credentials: options.credentials,
       }),
@@ -134,6 +149,17 @@ const legacyErrorHandler = (err, meta) => {
   })
 }
 
+const _logElasticTiming = (request, response, tookMs) => {
+  /* eslint-disable no-console */
+  const log = (key, value) => console.log(` - ${key}: ${JSON.stringify(value)}`)
+
+  console.log('Timing>')
+  log('Query', request)
+  log('Internal elastic time', response.took)
+  log('Total network time', tookMs)
+  /* eslint-enable no-console */
+}
+
 const _search = (type: string, body: any) => {
   const request = {
     // $FlowFixMe validated above using `validate`
@@ -142,7 +168,18 @@ const _search = (type: string, body: any) => {
     body,
   }
 
-  return client.search(request).catch((err) => legacyErrorHandler(err, {request}))
+  const currentTs = () => new Date().getTime()
+
+  const startTs = currentTs()
+
+  return client
+    .search(request)
+    .catch((err) => legacyErrorHandler(err, {request}))
+    .then((response) => {
+      const endTs = currentTs()
+      _logElasticTiming(request, response, endTs - startTs)
+      return response
+    })
   // Non-legacy version
   //.catch((err) => elasticErrorHandler(err, {request}))
   //.then((response) => checkResponse(response, {request}))

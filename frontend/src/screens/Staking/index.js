@@ -28,9 +28,6 @@ const useStyles = makeStyles((theme) => {
   // Note: we use `width` instead of `flex: 0 0 width` as it is causing spaces at the bottom of div
   const sidebarWidth = 450
   return {
-    notFound: {
-      marginTop: '100px',
-    },
     layoutWrapper: {
       display: 'flex',
       width: '100%',
@@ -62,15 +59,6 @@ const useStyles = makeStyles((theme) => {
     },
   }
 })
-
-const NotFound = () => {
-  const classes = useStyles()
-  return (
-    <div className={classes.notFound}>
-      <PageNotFound />
-    </div>
-  )
-}
 
 // Note: URL vs Storage: no merging: either url or localStorage wins
 const synchronizedScreenFactory = (Screen, useSetScreenStorageFromQuery) => () => {
@@ -115,12 +103,12 @@ const LayoutedComparisonMatrix = () => (
 )
 const LayoutedHistory = () => (
   <CenteredLayout>
-    <NotFound />
+    <PageNotFound />
   </CenteredLayout>
 )
 const LayoutedCharts = () => (
   <CenteredLayout>
-    <NotFound />
+    <PageNotFound />
   </CenteredLayout>
 )
 const LayoutedLocation = () => (
@@ -215,7 +203,7 @@ export default () => {
           <Route exact path={routeTo.staking.charts()} component={ChartsQuerySynchronizer} />
           <Route exact path={routeTo.staking.location()} component={LocationQuerySynchronizer} />
           <Route exact path={routeTo.staking.people()} component={PeopleQuerySynchronizer} />
-          <Route component={NotFound} />
+          <Route component={PageNotFound} />
         </Switch>
       </Grid>
     </StakingContextProvider>

@@ -3,10 +3,9 @@ import React from 'react'
 import type {ElementRef} from 'react'
 import {withHandlers} from 'recompose'
 import {compose} from 'redux'
-import {withStyles, createStyles, InputAdornment, TextField, IconButton} from '@material-ui/core'
+import {withStyles, createStyles, InputAdornment, TextField} from '@material-ui/core'
 import {Search} from '@material-ui/icons'
-import {ReactComponent as Close} from '@/assets/icons/close.svg'
-import {Button, LoadingInProgress} from '@/components/visual'
+import {Button, LoadingInProgress, CloseIconButton} from '@/components/visual'
 
 const styles = (theme) =>
   createStyles({
@@ -31,12 +30,6 @@ const styles = (theme) =>
     container: {
       display: 'flex',
       flex: 1,
-    },
-    iconButton: {
-      'color': theme.palette.contentUnfocus,
-      '&:hover': {
-        color: theme.palette.primary.main,
-      },
     },
   })
 
@@ -95,16 +88,9 @@ class Searchbar extends React.Component<Props> {
               <InputAdornment position="end">
                 {loading ? (
                   <LoadingInProgress size={30} />
-                ) : this.props.value ? (
-                  <IconButton
-                    className={classes.iconButton}
-                    color="primary"
-                    aria-label="Clear-search"
-                    onClick={this.clearInput}
-                  >
-                    <Close />
-                  </IconButton>
-                ) : null}
+                ) : (
+                  <CloseIconButton aria-label="Clear-search" onClick={this.clearInput} />
+                )}
               </InputAdornment>
             ),
             className: classes.input,

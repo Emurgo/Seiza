@@ -1,5 +1,4 @@
 import React from 'react'
-import {Grid} from '@material-ui/core'
 import {Switch, Route} from 'react-router-dom'
 
 import {routeTo} from '@/helpers/routes'
@@ -18,7 +17,7 @@ import Slot from './Block/Slot'
 import NotFound from './NotFound'
 
 export default (props) => (
-  <Grid container direction="column" style={{overflow: 'hidden'}}>
+  <React.Fragment>
     <BlockchainHeader />
     <SyncIssuesBar />
     <Switch>
@@ -34,5 +33,5 @@ export default (props) => (
       <Route path={routeTo.stakepool(':poolHash')} component={StakePool} />
       <Route component={NotFound} />
     </Switch>
-  </Grid>
+  </React.Fragment>
 )
