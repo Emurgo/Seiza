@@ -32,12 +32,19 @@ const text = defineMessages({
 const styles = (theme) =>
   createStyles({
     card: {
-      minWidth: '200px',
+      minWidth: 0,
+      [theme.breakpoints.up('md')]: {
+        minWidth: '200px',
+      },
       minHeight: '75px',
     },
     cardDimensions: {
-      marginRight: theme.spacing.unit * 1.5,
-      marginLeft: theme.spacing.unit * 1.5,
+      marginRight: theme.spacing.unit * 0.5,
+      marginLeft: theme.spacing.unit * 0.5,
+      [theme.breakpoints.up('sm')]: {
+        marginRight: theme.spacing.unit * 1.5,
+        marginLeft: theme.spacing.unit * 1.5,
+      },
     },
   })
 
