@@ -1,6 +1,7 @@
 // @flow
 
 import './initMaterialUI'
+import cn from 'classnames'
 import React from 'react'
 import {BrowserRouter as Router, Route, Switch, Redirect} from 'react-router-dom'
 import {withRouter} from 'react-router'
@@ -29,6 +30,7 @@ import ThemeSelect from '@/components/common/ThemeSelect'
 import DefaultErrorBoundary from '@/components/common/DefaultErrorBoundary'
 import {SubscribeProvider} from '@/components/context/SubscribeContext'
 import {CurrencyProvider} from '@/components/hooks/useCurrency'
+import Search from './screens/Blockchain/BlockchainHeader/Search'
 
 import './App.css'
 import seizaLogo from './assets/icons/logo-seiza.svg'
@@ -56,7 +58,17 @@ const useAppStyles = makeStyles((theme) => ({
     position: 'relative',
     background: theme.palette.background.paper,
     boxShadow: `0px 5px 25px ${fade(theme.palette.shadowBase, 0.12)}`,
-    padding: `${theme.spacing.unit}px ${theme.spacing.unit * 5}px`,
+    padding: theme.spacing.unit,
+    [theme.breakpoints.up('sm')]: {
+      padding: `${theme.spacing.unit}px ${theme.spacing.unit * 5}px`,
+    },
+  },
+  mobileSearch: {
+    flex: 1,
+    marginLeft: 0,
+    [theme.breakpoints.up('sm')]: {
+      marginLeft: theme.spacing.unit * 2,
+    },
   },
 }))
 
@@ -97,33 +109,38 @@ const TopBar = compose(withRouter)(({location: {pathname}}) => {
   const {translate} = useI18n()
   const classes = useAppStyles()
   return (
-    <Grid
-      container
-      direction="row"
-      justify="space-between"
-      alignItems="center"
-      className={classes.topBar}
-    >
-      <Hidden mdUp>
-        <Grid item>
-          <MobileNavbar currentPathname={pathname} items={getTranslatedNavItems(translate)} />
-        </Grid>
-      </Hidden>
+    <React.Fragment>
       <Hidden smDown>
-        <Grid item>
-          <img alt="" src={seizaLogo} />
+        <Grid
+          container
+          direction="row"
+          justify="space-between"
+          alignItems="center"
+          className={classes.topBar}
+        >
+          <Grid item>
+            <img alt="" src={seizaLogo} />
+          </Grid>
+          <Grid item>
+            <Grid container direction="row" alignItems="center">
+              <Navbar currentPathname={pathname} items={getTranslatedNavItems(translate)} />
+              {config.showStakingData && <LanguageSelect />}
+              {config.showStakingData && <ThemeSelect />}
+            </Grid>
+          </Grid>
         </Grid>
       </Hidden>
-      <Grid item>
-        <Grid container direction="row" alignItems="center">
-          <Hidden smDown>
-            <Navbar currentPathname={pathname} items={getTranslatedNavItems(translate)} />
-          </Hidden>
+      <Hidden mdUp>
+        <div className={cn(classes.topBar, 'd-flex')}>
+          <MobileNavbar currentPathname={pathname} items={getTranslatedNavItems(translate)} />
+          <div className={classes.mobileSearch}>
+            <Search isMobile />
+          </div>
           {config.showStakingData && <LanguageSelect />}
           {config.showStakingData && <ThemeSelect />}
-        </Grid>
-      </Grid>
-    </Grid>
+        </div>
+      </Hidden>
+    </React.Fragment>
   )
 })
 
