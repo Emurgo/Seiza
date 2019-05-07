@@ -5,7 +5,7 @@ import React from 'react'
 import {BrowserRouter as Router, Route, Switch, Redirect} from 'react-router-dom'
 import {withRouter} from 'react-router'
 import {compose} from 'redux'
-import {CssBaseline, Grid} from '@material-ui/core'
+import {CssBaseline, Grid, Hidden} from '@material-ui/core'
 import {makeStyles, ThemeProvider} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
 import {fade} from '@material-ui/core/styles/colorManipulator'
@@ -14,7 +14,7 @@ import config from './config'
 import {routeTo} from './helpers/routes'
 import {provideIntl} from './components/HOC/intl'
 import {provideTheme, withTheme, THEME_DEFINITIONS} from './components/HOC/theme'
-import {Navbar, Footer} from './components/visual'
+import {Navbar, MobileNavbar, Footer} from './components/visual'
 import {useI18n, InjectHookIntlContext} from '@/i18n/helpers'
 import {AutoSyncProvider} from './screens/Staking/context/autoSync'
 
@@ -103,12 +103,21 @@ const TopBar = compose(withRouter)(({location: {pathname}}) => {
       alignItems="center"
       className={classes.topBar}
     >
-      <Grid item>
-        <img alt="" src={seizaLogo} />
-      </Grid>
+      <Hidden mdUp>
+        <Grid item>
+          <MobileNavbar currentPathname={pathname} items={getTranslatedNavItems(translate)} />
+        </Grid>
+      </Hidden>
+      <Hidden smDown>
+        <Grid item>
+          <img alt="" src={seizaLogo} />
+        </Grid>
+      </Hidden>
       <Grid item>
         <Grid container direction="row" alignItems="center">
-          <Navbar currentPathname={pathname} items={getTranslatedNavItems(translate)} />
+          <Hidden smDown>
+            <Navbar currentPathname={pathname} items={getTranslatedNavItems(translate)} />
+          </Hidden>
           {config.showStakingData && <LanguageSelect />}
           {config.showStakingData && <ThemeSelect />}
         </Grid>

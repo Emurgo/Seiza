@@ -1,26 +1,53 @@
-import React from 'react'
+import React, {useState, useCallback} from 'react'
 import cn from 'classnames'
-import {Typography, withStyles, createStyles} from '@material-ui/core'
+import {
+  Typography,
+  Grow,
+  Card,
+  Popper,
+  ClickAwayListener,
+  MenuList,
+  MenuItem,
+} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {fade} from '@material-ui/core/styles/colorManipulator'
+import ArrowDownIcon from '@material-ui/icons/ArrowDropDown'
+import seizaLogo from '@/assets/icons/seiza-symbol.svg'
 
 import NavLink from '@/components/common/NavLink'
 import {Tooltip} from '@/components/visual'
 
-const styles = ({spacing, palette}) =>
-  createStyles({
-    list: {
-      listStyleType: 'none',
-    },
-    item: {
-      display: 'inline',
-      margin: '5px',
-      marginLeft: spacing.unit * 5,
-    },
-    link: {
-      textDecoration: 'none',
-    },
-  })
+const useStyles = makeStyles(({palette, spacing}) => ({
+  list: {
+    listStyleType: 'none',
+  },
+  item: {
+    display: 'inline',
+    margin: '5px',
+    marginRight: spacing.unit * 5,
+  },
+  link: {
+    textDecoration: 'none',
+  },
+  mobileLink: {
+    width: '100%',
+    padding: `${spacing.unit}px ${spacing.unit * 2}px`,
+  },
+  menuItem: {
+    padding: 0,
+    height: '100%',
+  },
+  mobileWrapper: {
+    'display': 'flex',
+    'alignItems': 'center',
+    'cursor': 'pointer',
+    // Fix 'blinking' effect on mobile
+    '-webkit-tap-highlight-color': 'transparent',
+  },
+  mobileMenuWrapper: {
+    padding: spacing.unit,
+  },
+}))
 
 const useDisabledLinkStyles = makeStyles(({palette}) => ({
   disabled: {
@@ -34,36 +61,44 @@ const useDisabledLinkStyles = makeStyles(({palette}) => ({
   },
 }))
 
-const DisabledLink = ({label, disabledText}) => {
+const DisabledLink = ({label, disabledText, className}) => {
   const classes = useDisabledLinkStyles()
 
   return (
     <Tooltip title={disabledText}>
       {/* Tooltip is not shown without this wrapper */}
       <div className={classes.disabledWrapper}>
-        <NavTypography className={classes.disabled}>{label}</NavTypography>
+        <NavTypography className={cn(classes.disabled, className)}>{label}</NavTypography>
       </div>
     </Tooltip>
   )
 }
 
-const Navbar = ({items = [], currentPathname, classes}) => (
-  <nav>
-    <ul className={classes.list}>
-      {items.map(({link, label, disabledText}) => (
-        <li key={label} className={classes.item}>
-          {disabledText ? (
-            <DisabledLink {...{label, disabledText}} />
-          ) : (
-            <NavLink className={classes.link} to={link}>
-              {(isActive) => <NavTypography isActive={isActive}>{label}</NavTypography>}
-            </NavLink>
-          )}
-        </li>
-      ))}
-    </ul>
-  </nav>
-)
+const NavMenuItem = ({disabledText, label, link, isMobile}) => {
+  const classes = useStyles()
+  return disabledText ? (
+    <DisabledLink {...{label, disabledText}} className={cn(isMobile && classes.mobileLink)} />
+  ) : (
+    <NavLink className={cn(classes.link, isMobile && classes.mobileLink)} to={link}>
+      {(isActive) => <NavTypography {...{isActive, isMobile}}>{label}</NavTypography>}
+    </NavLink>
+  )
+}
+
+export const Navbar = ({items = [], currentPathname}) => {
+  const classes = useStyles()
+  return (
+    <nav>
+      <ul className={classes.list}>
+        {items.map(({link, label, disabledText}) => (
+          <li key={label} className={classes.item}>
+            <NavMenuItem {...{disabledText, link, label}} />
+          </li>
+        ))}
+      </ul>
+    </nav>
+  )
+}
 
 const useNavTypographyStyles = makeStyles(({palette}) => ({
   linkText: {
@@ -90,14 +125,21 @@ const useNavTypographyStyles = makeStyles(({palette}) => ({
       height: '1px',
     },
   },
+  activeMobile: {
+    color: palette.primary.main,
+  },
 }))
 
-export const NavTypography = ({isActive, children, className}) => {
+export const NavTypography = ({isActive, children, className, isMobile}) => {
   const classes = useNavTypographyStyles()
 
   return (
     <Typography
-      className={cn(classes.linkText, isActive && classes.active, className)}
+      className={cn(
+        classes.linkText,
+        isActive && (isMobile ? classes.activeMobile : classes.active),
+        className
+      )}
       variant="body1"
     >
       {children}
@@ -105,4 +147,56 @@ export const NavTypography = ({isActive, children, className}) => {
   )
 }
 
-export default withStyles(styles)(Navbar)
+export const MobileNavbar = ({items = [], currentPathname}) => {
+  const classes = useStyles()
+  const [isOpen, setIsOpen] = useState(false)
+  const [anchorEl, setAnchorEl] = useState(null)
+
+  const onClose = useCallback(() => {
+    // Note: this is hack
+    // Without `setTimeout` click event is not "propagated" to Link
+    // TODO: investigate if we can do better
+    setTimeout(() => setIsOpen(false), 500)
+  }, [setIsOpen])
+
+  const onClick = useCallback(
+    (event) => {
+      !anchorEl && setAnchorEl(event.currentTarget)
+      setIsOpen(!isOpen)
+    },
+    [setIsOpen, anchorEl, setAnchorEl, isOpen]
+  )
+
+  return (
+    <ClickAwayListener onClickAway={onClose}>
+      {/* Note: not using IconButton as its hover does not look good when it wraps both icons,
+          and also on mobile that hover will not be visible anyway. */}
+      <div className={classes.mobileWrapper} onClick={onClick}>
+        <img src={seizaLogo} alt="logo" />
+        <ArrowDownIcon />
+      </div>
+      {isOpen && (
+        <Popper open={isOpen} anchorEl={anchorEl} transition placement="bottom-end">
+          {({TransitionProps}) => (
+            <Grow {...TransitionProps}>
+              <Card classes={{root: classes.mobileMenuWrapper}}>
+                <MenuList>
+                  {items.map(({link, label, disabledText}) => (
+                    <MenuItem
+                      key={label}
+                      disabled={disabledText}
+                      onClick={onClose}
+                      className={classes.menuItem}
+                    >
+                      <NavMenuItem {...{disabledText, link, label}} isMobile />
+                    </MenuItem>
+                  ))}
+                </MenuList>
+              </Card>
+            </Grow>
+          )}
+        </Popper>
+      )}
+    </ClickAwayListener>
+  )
+}
