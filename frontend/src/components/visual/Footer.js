@@ -127,7 +127,7 @@ const SUBSCRIBE_MUTATION = gql`
 `
 const useSubscribeMutation = (email) => useMutation(SUBSCRIBE_MUTATION, {variables: {email}})
 
-const LARGEST_FOOTER_HEIGHT = 260
+const LARGEST_FOOTER_HEIGHT = 320
 
 const useSubscribeFooterStyles = makeStyles(({palette, spacing, breakpoints}) => ({
   '@global': {
@@ -163,13 +163,13 @@ const useSubscribeFooterStyles = makeStyles(({palette, spacing, breakpoints}) =>
     },
   },
   'wrapper': {
+    height: LARGEST_FOOTER_HEIGHT,
     overflow: 'hidden',
     padding: spacing.unit * 2,
     background: palette.gradient,
     position: 'relative',
-    height: 200,
-    [breakpoints.down('xs')]: {
-      height: LARGEST_FOOTER_HEIGHT,
+    [breakpoints.up('sm')]: {
+      height: 200,
     },
   },
   'subscribe': {
@@ -439,32 +439,74 @@ const SubscribeFooter = () => {
   )
 }
 
-const useMainFooterStyles = makeStyles(({spacing, palette, typography}) => ({
+const useMainFooterStyles = makeStyles(({spacing, palette, typography, breakpoints}) => ({
   socialIconWrapper: {
-    marginLeft: spacing.unit * 1.7,
+    marginLeft: 0,
+    marginRight: spacing.unit * 1.7,
+    marginTop: spacing.unit,
+
+    [breakpoints.up('sm')]: {
+      marginLeft: spacing.unit * 1.7,
+      marginRight: 0,
+      marginTop: 0,
+    },
   },
   copyright: {
     color: palette.footer.contrastText,
     fontSize: typography.fontSize * 0.5,
   },
   nav: {
-    listStyleType: 'none',
-    padding: 0,
-    margin: 0,
-    marginBottom: spacing.unit,
-    display: 'flex',
-    justifyContent: 'space-between',
+    'listStyleType': 'none',
+    'padding': 0,
+    'margin': 0,
+    'marginBottom': spacing.unit,
+    'display': 'flex',
+    'justifyContent': 'space-between',
+    'flexDirection': 'column',
+    [breakpoints.up('sm')]: {
+      flexDirection: 'row',
+    },
+    '& > *': {
+      marginRight: spacing.unit * 2,
+    },
+    '& > :last-child': {
+      marginRight: 0,
+    },
+    [breakpoints.up('md')]: {
+      '& > *': {
+        marginRight: spacing.unit * 4,
+      },
+      '& > :last-child': {
+        marginRight: 0,
+      },
+    },
   },
   navigationWrapper: {
-    minWidth: '450px',
+    marginTop: spacing.unit * 2,
+    [breakpoints.up('sm')]: {
+      marginTop: spacing.unit * 2,
+    },
+    [breakpoints.up('md')]: {
+      marginTop: 0,
+    },
   },
   wrapper: {
     backgroundColor: palette.footer.background,
     padding: `${spacing.unit * 2}px ${spacing.unit * 1.5}px`,
   },
   innerWrapper: {
+    justifyContent: 'space-between',
     maxWidth: 900,
     margin: 'auto',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    paddingLeft: spacing.unit * 3,
+
+    [breakpoints.up('sm')]: {
+      flexDirection: 'row',
+      alignItems: 'flex-end',
+      paddingLeft: 0,
+    },
   },
   link: {
     'textDecoration': 'none',
@@ -485,6 +527,16 @@ const useMainFooterStyles = makeStyles(({spacing, palette, typography}) => ({
     cursor: 'pointer',
     height: '100%',
     fontSize: typography.fontSize * 0.7,
+  },
+  bottomBarContainer: {
+    justifyContent: 'space-between',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+
+    [breakpoints.up('sm')]: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
   },
 }))
 
@@ -534,13 +586,7 @@ const MainFooter = ({navItems}) => {
 
   return (
     <div className={classes.wrapper}>
-      <Grid
-        container
-        direction="row"
-        justify="space-between"
-        alignItems="flex-end"
-        className={classes.innerWrapper}
-      >
+      <Grid container className={classes.innerWrapper}>
         <Grid item>
           <img alt="" src={logo} />
           <Typography className={classes.copyright}>
@@ -568,7 +614,7 @@ const MainFooter = ({navItems}) => {
               </ul>
             </Grid>
             <Grid item>
-              <Grid container justify="space-between" alignItems="center">
+              <Grid container className={classes.bottomBarContainer}>
                 <Grid item>
                   {hidden && (
                     <Typography
