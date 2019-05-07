@@ -3,7 +3,7 @@ import React from 'react'
 import type {Node} from 'react'
 import cn from 'classnames'
 import {defineMessages} from 'react-intl'
-import {Paper, createStyles, Grid, Typography, IconButton} from '@material-ui/core'
+import {Paper, createStyles, Grid, Typography} from '@material-ui/core'
 import {darken} from '@material-ui/core/styles/colorManipulator'
 import {makeStyles} from '@material-ui/styles'
 
@@ -12,7 +12,7 @@ import warningIcon from '@/assets/icons/warning.svg'
 import alertIcon from '@/assets/icons/alert.svg'
 import noResultsIcon from '@/assets/icons/sad-smile.svg'
 import {useI18n} from '@/i18n/helpers'
-import {ReactComponent as Close} from '@/assets/icons/close.svg'
+import {CloseIconButton} from '@/components/visual'
 
 const TYPES = Object.freeze({
   EMPHASIS: 'emphasis',
@@ -40,12 +40,6 @@ const useAppStyles = makeStyles(({type, spacing, palette}) =>
       padding: spacing.unit * 1.5,
       paddingLeft: spacing.unit * 2,
       paddingRight: spacing.unit * 2,
-    },
-    close: {
-      'color': darken(palette.contentUnfocus, 0.3),
-      '&:hover': {
-        color: palette.primary.main,
-      },
     },
     [TYPES.EMPHASIS]: {
       backgroundColor: palette.emphasis.background,
@@ -111,16 +105,7 @@ const Alert = ({title, type, message, className, onClose}: PropTypes) => {
             </Grid>
           </Grid>
         </Grid>
-        {onClose && (
-          <IconButton
-            color="primary"
-            className={classes.close}
-            aria-label="Clear-search"
-            onClick={onClose}
-          >
-            <Close />
-          </IconButton>
-        )}
+        {onClose && <CloseIconButton onClick={onClose} />}
       </Grid>
     </Paper>
   )
