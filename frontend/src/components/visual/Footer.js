@@ -20,13 +20,12 @@ import {makeStyles} from '@material-ui/styles'
 import {darken} from '@material-ui/core/styles/colorManipulator'
 
 import {useI18n} from '@/i18n/helpers'
-import {routeTo} from '@/helpers/routes'
 import analytics from '@/helpers/googleAnalytics'
 import {Button, ExternalLink, Tooltip, CloseIconButton, LoadingOverlay} from '@/components/visual'
 import logo from '@/assets/icons/logo-seiza-white.svg'
 import alertIcon from '@/assets/icons/alert.svg'
 import subscribedIcon from '@/assets/icons/subscribed.svg'
-import useLocalStorage from '@/components/hooks/useLocalStorage'
+import {useSubscribeContext} from '@/components/context/SubscribeContext'
 
 import fbIcon from '@/assets/icons/social/fb.svg'
 import linkedInIcon from '@/assets/icons/social/linkedin.svg'
@@ -35,6 +34,8 @@ import redditIcon from '@/assets/icons/social/reddit.svg'
 import twitterEmurgoIcon from '@/assets/icons/social/twitter-emurgo.svg'
 import twitterSeizaIcon from '@/assets/icons/social/twitter-seiza.svg'
 import youtubeIcon from '@/assets/icons/social/youtube.svg'
+
+// TODO: divide footer to multiple files
 
 const messages = defineMessages({
   copyright: 'All rights reserved',
@@ -108,11 +109,13 @@ const RoundedInput = ({errorMessage, ...props}) => {
         }
         {...props}
       />
-      <div className={classes.relative}>
-        <FormHelperText error className={classes.errorLabel}>
-          {errorMessage}
-        </FormHelperText>
-      </div>
+      {errorMessage && (
+        <div className={classes.relative}>
+          <FormHelperText error className={classes.errorLabel}>
+            {errorMessage}
+          </FormHelperText>
+        </div>
+      )}
     </FormControl>
   )
 }
@@ -143,8 +146,24 @@ const useSubscribeFooterStyles = makeStyles(({palette, spacing, breakpoints}) =>
         opacity: 0,
       },
     },
+    '@keyframes footer-enter': {
+      '0%': {
+        maxHeight: 0,
+        padding: 0,
+        opacity: 0,
+      },
+      '30%': {
+        opacity: 0,
+        maxHeight: LARGEST_FOOTER_HEIGHT,
+      },
+      '100%': {
+        opacity: 1,
+        maxHeight: LARGEST_FOOTER_HEIGHT,
+      },
+    },
   },
   'wrapper': {
+    overflow: 'hidden',
     padding: spacing.unit * 2,
     background: palette.gradient,
     position: 'relative',
@@ -200,9 +219,13 @@ const useSubscribeFooterStyles = makeStyles(({palette, spacing, breakpoints}) =>
     transition: 'all 1s ease-in-out 500ms',
     transform: 'translateX(0px)',
   },
-  'hideLeave': {}, // must be defined anyway
-  'hideLeaveActive': {
-    animation: 'footer-leave 2000ms',
+  'leaveSubscribe': {}, // must be defined anyway
+  'leaveSubscribeActive': {
+    animation: 'footer-leave 1500ms',
+  },
+  'enterSubscribe': {}, // must be defined anyway
+  'enterSubscribeActive': {
+    animation: 'footer-enter 2000ms',
   },
 }))
 
@@ -218,9 +241,20 @@ const useUIState = (initialUIState: UiState) => {
     },
     [setUIState]
   )
-  const setLoading = useCallback(() => setUIState('loading'), [setUIState])
-  const setSuccess = useCallback(() => setUIState('success'), [setUIState])
-  const setInit = useCallback(() => setUIState('init'), [setUIState])
+  const setLoading = useCallback(() => {
+    setUIState('loading')
+    setErrorMessage(null)
+  }, [setUIState, setErrorMessage])
+
+  const setSuccess = useCallback(() => {
+    setUIState('success')
+    setErrorMessage(null)
+  }, [setUIState, setErrorMessage])
+
+  const setInit = useCallback(() => {
+    setUIState('init')
+    setErrorMessage(null)
+  }, [setUIState, setErrorMessage])
 
   return {
     uiState,
@@ -239,10 +273,17 @@ const SubscribeFooter = () => {
   const classes = useSubscribeFooterStyles()
   const {translate: tr} = useI18n()
   const [email, setEmail] = useState('')
-  const [hidden, setHidden] = useLocalStorage('subscribedToNewsletter', false)
-  const {uiState, setError, setSuccess, setLoading, errorMessage} = useUIState('init')
+  const {hidden, hideSubscribe} = useSubscribeContext()
+  const {uiState, setError, setInit, setSuccess, setLoading, errorMessage} = useUIState('init')
 
   const subscribe = useSubscribeMutation(email)
+
+  const onHide = useCallback(() => {
+    // setTimeout is used to avoid changing text while animating
+    setTimeout(setInit)
+    setEmail('')
+    hideSubscribe()
+  }, [hideSubscribe, setInit])
 
   const onEmailChange = useCallback((event) => setEmail(event.target.value), [setEmail])
 
@@ -252,10 +293,6 @@ const SubscribeFooter = () => {
     },
     [setError, tr]
   )
-
-  const onHide = useCallback(() => {
-    setHidden(true)
-  }, [setHidden])
 
   const validateAndSubscribe = useCallback(
     (event) => {
@@ -288,11 +325,13 @@ const SubscribeFooter = () => {
   return (
     <ReactCSSTransitionGroup
       transitionName={{
-        leave: classes.hideLeave,
-        leaveActive: classes.hideLeaveActive,
+        enter: classes.enterSubscribe,
+        enterActive: classes.enterSubscribeActive,
+        leave: classes.leaveSubscribe,
+        leaveActive: classes.leaveSubscribeActive,
       }}
       transitionLeave
-      transitionEnter={false}
+      transitionEnter
       transitionAppear={false}
       component="div"
     >
@@ -442,6 +481,11 @@ const useMainFooterStyles = makeStyles(({spacing, palette, typography}) => ({
     color: darken(palette.footer.contrastText, 0.25),
     pointerEvents: 'none',
   },
+  subscribe: {
+    cursor: 'pointer',
+    height: '100%',
+    fontSize: typography.fontSize * 0.7,
+  },
 }))
 
 const SocialIcon = ({to, icon, className, iconName}) => {
@@ -475,8 +519,19 @@ const DisabledLink = ({label, disabledText}) => {
 }
 
 const MainFooter = ({navItems}) => {
+  const {showSubscribe, hidden} = useSubscribeContext()
   const classes = useMainFooterStyles()
   const {translate: tr} = useI18n()
+
+  const onShowSubscribe = useCallback(() => {
+    showSubscribe()
+    setTimeout(
+      // $FlowFixMe (scrollHeight) should be always defined
+      () => window.scrollTo({left: 0, top: document.body.scrollHeight, behavior: 'smooth'}),
+      600 // TODO: get rid of this ad-hoc value
+    )
+  }, [showSubscribe])
+
   return (
     <div className={classes.wrapper}>
       <Grid
@@ -515,11 +570,15 @@ const MainFooter = ({navItems}) => {
             <Grid item>
               <Grid container justify="space-between" alignItems="center">
                 <Grid item>
-                  <Link className={classes.link} to={routeTo.subscribe()}>
-                    <Typography variant="caption" className={classes.navText}>
+                  {hidden && (
+                    <Typography
+                      variant="caption"
+                      className={cn(classes.navText, classes.link, classes.subscribe)}
+                      onClick={onShowSubscribe}
+                    >
                       {tr(messages.subscribeToNewsletter)}
                     </Typography>
-                  </Link>
+                  )}
                 </Grid>
 
                 <Grid item>
