@@ -53,9 +53,10 @@ export const useBlocksTablePagedProps = (
 
   const onChangeAutoUpdate = useCallback(
     (event: any) => {
-      setAutoUpdate(event.target.checked)
-      setCursor(null)
-      setPage(null)
+      const newAutoUpdate = event.target.checked
+      setAutoUpdate(newAutoUpdate)
+      newAutoUpdate && setCursor(null)
+      newAutoUpdate && setPage(null)
     },
     [setAutoUpdate, setCursor, setPage]
   )
