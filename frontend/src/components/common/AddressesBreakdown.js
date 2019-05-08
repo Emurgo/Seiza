@@ -29,27 +29,37 @@ const messages = defineMessages({
   hideAll: 'Hide all addresses',
 })
 
+const useCommonStyles = makeStyles((theme) => ({
+  leftSide: {
+    borderRight: `1px solid ${theme.palette.contentUnfocus}`,
+  },
+  headerContent: {
+    justifyContent: 'space-between',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    [theme.breakpoints.up('sm')]: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+  },
+}))
+
 const HeaderContent = ({caption, value}) => {
+  const commonClasses = useCommonStyles()
   return (
-    <Grid container justify="space-between" alignItems="center" direction="row">
+    <Grid container className={commonClasses.headerContent}>
       <Grid item>{caption}</Grid>
       <Grid item>{value}</Grid>
     </Grid>
   )
 }
 
-const useCommonStyles = makeStyles((theme) => ({
-  leftSide: {
-    borderRight: `1px solid ${theme.palette.contentUnfocus}`,
-  },
-}))
-
 const Header = ({transaction}) => {
   const {translate: tr} = useI18n()
   const commonClasses = useCommonStyles()
   return (
     <Grid container direction="row">
-      <Grid item xs={6} className={commonClasses.leftSide}>
+      <Grid item xs={12} md={6} className={commonClasses.leftSide}>
         <ContentSpacing bottom={0.75} top={0.75}>
           <HeaderContent
             caption={
@@ -66,7 +76,7 @@ const Header = ({transaction}) => {
           />
         </ContentSpacing>
       </Grid>
-      <Grid item xs={6}>
+      <Grid item xs={12} md={6}>
         <ContentSpacing bottom={0.75} top={0.75}>
           <HeaderContent
             caption={
@@ -95,7 +105,7 @@ const BreakdownList = ({transaction, targetAddress}) => {
   )
   return (
     <Grid container direction="row">
-      <Grid item xs={6} className={commonClasses.leftSide}>
+      <Grid item xs={12} md={6} className={commonClasses.leftSide}>
         {transaction.inputs.map((input, index, items) => (
           <BreakdownItem
             hasHighlight={getHasHighlight(input)}
@@ -105,7 +115,7 @@ const BreakdownList = ({transaction, targetAddress}) => {
           />
         ))}
       </Grid>
-      <Grid item xs={6}>
+      <Grid item xs={12} md={6}>
         {transaction.outputs.map((output, index, items) => (
           <BreakdownItem
             hasHighlight={getHasHighlight(output)}
@@ -163,7 +173,7 @@ const BreakdownItem = (props) => {
         direction="row"
         className={breakdownClasses.rowSpacing}
       >
-        <Grid item xs={6}>
+        <Grid item xs={12} sm={6}>
           <Grid container direction="row" alignItems="center" wrap="nowrap">
             <div className={breakdownClasses.spaced}>
               <Typography
@@ -184,7 +194,7 @@ const BreakdownItem = (props) => {
             </div>
           </Grid>
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={12} sm={6}>
           <Grid container justify="flex-end" direction="row">
             <AdaValue value={amount} showSign={valuePrefix} showCurrency />
           </Grid>
