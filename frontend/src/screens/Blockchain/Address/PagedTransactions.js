@@ -2,7 +2,7 @@
 import React from 'react'
 import {defineMessages} from 'react-intl'
 import idx from 'idx'
-import {Grid} from '@material-ui/core'
+import {Grid, Hidden} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
 import {useManageQueryValue} from '@/components/hooks/useManageQueryValue'
@@ -47,6 +47,13 @@ const useStyles = makeStyles((theme) => ({
   },
   leftSide: {
     borderRight: `1px solid ${theme.palette.contentUnfocus}`,
+  },
+  headerWrapper: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    [theme.breakpoints.down('sm')]: {
+      flexDirection: 'column',
+    },
   },
 }))
 
@@ -140,10 +147,10 @@ const TAB_NAMES = {
   RECEIVED: 'RECEIVED',
 }
 
-const TabsHeader = ({tabState, paginationProps}) => {
+const TabsHeader = ({tabState, pagination}) => {
+  const classes = useStyles()
   const {translate: tr} = useI18n()
   const {currentTabIndex, setTabByEventIndex} = useTabContext()
-  const {totalCount, onChangePage, rowsPerPage, page} = paginationProps
   const tabs = [
     {id: TAB_NAMES.ALL, label: tr(messages.all)},
     {id: TAB_NAMES.SENT, label: tr(messages.sent)},
@@ -151,29 +158,16 @@ const TabsHeader = ({tabState, paginationProps}) => {
   ]
 
   return (
-    <Grid container direction="row" justify="space-between">
-      <Grid item xs={12} sm={6} md={4} lg={3}>
-        <Grid container direction="row" justify="space-between">
-          <Grid item>
-            <LiteTabs alignLeft value={currentTabIndex} onChange={setTabByEventIndex}>
-              {tabs.map(({id, label}) => (
-                <LiteTab key={id} label={label} />
-              ))}
-            </LiteTabs>
-          </Grid>
-        </Grid>
+    <Grid container className={classes.headerWrapper}>
+      <Grid item>
+        <LiteTabs alignLeft value={currentTabIndex} onChange={setTabByEventIndex}>
+          {tabs.map(({id, label}) => (
+            <LiteTab key={id} label={label} />
+          ))}
+        </LiteTabs>
       </Grid>
 
-      <Grid item xs={12} sm={6} md={4} lg={3}>
-        <Grid container direction="row" justify="flex-end">
-          <Pagination
-            count={totalCount}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onChangePage={onChangePage}
-          />
-        </Grid>
-      </Grid>
+      <Grid item>{pagination}</Grid>
     </Grid>
   )
 }
@@ -216,19 +210,32 @@ const PagedTransactions = ({loading, transactions, targetAddress}: Props) => {
   const totalCount = transactions.length
   const from = page * rowsPerPage
   const currentTransactions = transactions.slice(from, from + rowsPerPage)
+
+  const pagination = (
+    <Pagination
+      count={totalCount}
+      rowsPerPage={rowsPerPage}
+      page={page}
+      onChangePage={onChangePage}
+    />
+  )
+
   return (
-    <Tabs {...tabState}>
-      <TabsHeader paginationProps={{totalCount, onChangePage, rowsPerPage, page}} />
-      <Tab name={TAB_NAMES.ALL}>
-        <TransactionList targetAddress={targetAddress} transactions={currentTransactions} />
-      </Tab>
-      <Tab name={TAB_NAMES.SENT}>
-        <TransactionList targetAddress={targetAddress} transactions={currentTransactions} />
-      </Tab>
-      <Tab name={TAB_NAMES.RECEIVED}>
-        <TransactionList targetAddress={targetAddress} transactions={currentTransactions} />
-      </Tab>
-    </Tabs>
+    <React.Fragment>
+      <Tabs {...tabState}>
+        <TabsHeader pagination={pagination} />
+        <Tab name={TAB_NAMES.ALL}>
+          <TransactionList targetAddress={targetAddress} transactions={currentTransactions} />
+        </Tab>
+        <Tab name={TAB_NAMES.SENT}>
+          <TransactionList targetAddress={targetAddress} transactions={currentTransactions} />
+        </Tab>
+        <Tab name={TAB_NAMES.RECEIVED}>
+          <TransactionList targetAddress={targetAddress} transactions={currentTransactions} />
+        </Tab>
+      </Tabs>
+      <Hidden mdUp>{pagination}</Hidden>
+    </React.Fragment>
   )
 }
 
