@@ -4,12 +4,17 @@ import './loadEnv'
 
 import CostAnalysis from './costAnalysis'
 import {ApolloServer} from 'apollo-server'
+import {GraphQLError} from 'graphql'
 
 import * as ActiveCampaign from './api/activeCampaign'
 import schema from './graphql/schema'
 import resolvers from './graphql/resolvers'
+import {initErrorReporting, reportError} from './utils/errorReporting'
+import {isProduction} from './config'
 
 import {pricingAPI, elastic} from './api'
+
+isProduction && initErrorReporting()
 
 export type Parent = any
 
@@ -63,8 +68,9 @@ const server = new ApolloServer({
     apiKey: process.env.APOLLO_ENGINE_API_KEY,
   },
   // TODO: replace with production-ready logger
-  formatError: (error: any): any => {
+  formatError: (error: GraphQLError): any => {
     logError(error)
+    isProduction && reportError(error)
     stripSensitiveInfoFromError(error)
     return error
   },
