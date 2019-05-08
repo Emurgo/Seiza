@@ -27,6 +27,7 @@ import {routeTo} from '@/helpers/routes'
 import config from '@/config'
 import {useQueryNotBugged} from '@/components/hooks/useQueryNotBugged'
 import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
+import analytics from '@/helpers/googleAnalytics'
 
 import NavigationButtons from '../NavigationButtons'
 
@@ -291,6 +292,8 @@ const EpochScreen = () => {
 
   const {translate: tr} = useI18n()
   const blocksInEpoch = idx(epochData, (_) => _.summary.blocksCreated)
+
+  analytics.useTrackPageVisitEvent('epoch')
 
   useScrollFromBottom(scrollToRef, epochData)
 

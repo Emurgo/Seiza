@@ -19,6 +19,7 @@ import {
 } from '@/components/visual'
 
 import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
+import analytics from '@/helpers/googleAnalytics'
 
 import TransactionCard from '@/components/common/TransactionCard'
 
@@ -208,6 +209,8 @@ const BlockScreen = () => {
   const {loading, blockData, error} = useBlockData({blockHash})
   const {translate} = useI18n()
   const scrollToRef = useRef()
+
+  analytics.useTrackPageVisitEvent('block')
 
   useScrollFromBottom(scrollToRef, blockData)
 

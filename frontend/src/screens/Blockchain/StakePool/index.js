@@ -16,6 +16,7 @@ import {
 
 import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
 import {useI18n} from '@/i18n/helpers'
+import analytics from '@/helpers/googleAnalytics'
 
 const summaryLabels = defineMessages({
   name: 'Name',
@@ -75,6 +76,8 @@ const StakePool = () => {
   const {loading, stakePoolData, error} = useStakePoolData(poolHash)
   const {translate} = useI18n()
   const scrollToRef = useRef()
+
+  analytics.useTrackPageVisitEvent('stakepool')
 
   useScrollFromBottom(scrollToRef, stakePoolData)
 

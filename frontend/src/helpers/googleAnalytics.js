@@ -1,5 +1,6 @@
 // @flow
 
+import {useEffect} from 'react'
 import _ from 'lodash'
 import config from '@/config'
 
@@ -24,6 +25,14 @@ const formatter = (v: string) =>
 const trackEvent = (resourceName: string, actionName: string, label?: string) => {
   const f = formatter
   gtag('event', `${f(resourceName)} ${f(actionName)}`, label ? {event_label: label} : {})
+}
+
+const useTrackPageVisitEvent = (screenName: string) => {
+  const f = formatter
+  useEffect(() => {
+    gtag('event', 'screen_view', {screen_name: f(screenName)})
+    // We want to call this only once
+  }, []) // eslint-disable-line
 }
 
 const trackSearchEvent = (resourceName: string) => {
@@ -70,6 +79,7 @@ const initGoogleAnalytics = () => {
 }
 
 export default {
+  useTrackPageVisitEvent,
   trackSearchEvent,
   trackChartEvent,
   trackCurrencyChanged,

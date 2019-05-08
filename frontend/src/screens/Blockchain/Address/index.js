@@ -10,6 +10,7 @@ import idx from 'idx'
 import {GET_ADDRESS_BY_ADDRESS58} from '@/api/queries'
 import {useI18n} from '@/i18n/helpers'
 import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
+import analytics from '@/helpers/googleAnalytics'
 
 import WithModalState from '@/components/headless/modalState'
 import PagedTransactions from './PagedTransactions'
@@ -116,6 +117,8 @@ const AddressScreen = () => {
   const {translate: tr} = useI18n()
   const classes = useStyles()
   const scrollToRef = useRef(null)
+
+  analytics.useTrackPageVisitEvent('address')
 
   useScrollFromBottom(scrollToRef, addressSummary)
 

@@ -4,6 +4,7 @@ import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
 
 import {useI18n} from '@/i18n/helpers'
+import analytics from '@/helpers/googleAnalytics'
 import errorImage from '@/assets/error-screen.svg'
 
 const messages = defineMessages({
@@ -23,6 +24,9 @@ const useStyles = makeStyles((theme) => ({
 const PageNotFound = () => {
   const classes = useStyles()
   const {translate: tr} = useI18n()
+
+  analytics.useTrackPageVisitEvent('404')
+
   return (
     <Grid
       className={classes.wrapper}
