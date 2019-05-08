@@ -6,7 +6,6 @@ import useReactRouter from 'use-react-router'
 import idx from 'idx'
 import gql from 'graphql-tag'
 import {defineMessages} from 'react-intl'
-import {Link} from 'react-router-dom'
 
 import {
   EntityIdCard,
@@ -16,6 +15,7 @@ import {
   LoadingInProgress,
   LoadingError,
   AdaValue,
+  Link,
 } from '@/components/visual'
 
 import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
