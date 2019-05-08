@@ -102,7 +102,7 @@ const TabsHeader = () => {
   )
 
   return (
-    <LiteTabs alignLeft value={currentTabIndex} onChange={onChange}>
+    <LiteTabs value={currentTabIndex} onChange={onChange}>
       {tabs.map(({id, label}) => (
         <LiteTab key={id} label={label} />
       ))}

@@ -26,13 +26,29 @@ const useTabStyles = makeStyles((theme) => ({
 
 const useTabsStyles = makeStyles((theme) => ({
   root: {
-    marginLeft: ({alignLeft}) => (alignLeft ? -getPadding(theme) : 'initial'),
     // need to have for indicator correctly under labels
     minHeight: 'auto !important',
     // minHeight is set by default to 48px in material-ui
     // 'auto' makes it 24px,
     // so we apply remaining 24px to bottom
     marginBottom: 24,
+  },
+  flexContainer: {
+    '& > :first-child': {
+      // Needed for scrolling
+      paddingLeft: 0,
+    },
+  },
+  fixed: {
+    // Note:.
+    // We could set <Tabs variant="scrolling" scrollButtons="on" />, but then there is always
+    // and offset at the left side of tabs,
+    // which we can not simply determine when to hide and when not.
+    // For now not showing scrollBar as it mess up with tabs underline.
+    'overflowX': 'auto',
+    '&::-webkit-scrollbar': {
+      display: 'none',
+    },
   },
 }))
 
@@ -44,13 +60,16 @@ const useWrapperStyles = makeStyles((theme) => ({
 
 const useTabIndicatorStyles = makeStyles((theme) => ({
   root: {
-    width: '100%',
-    height: '1px',
-    bottom: '0',
-    position: 'absolute',
-    transition: 'all 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
-    backgroundColor: theme.palette.tertiary.main,
-    marginLeft: ({alignLeft}) => (alignLeft ? -getPadding(theme) : 'initial'),
+    display: 'none',
+    [theme.breakpoints.up('sm')]: {
+      display: 'block',
+      width: '100%',
+      height: '1px',
+      bottom: '0',
+      position: 'absolute',
+      transition: 'all 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
+      backgroundColor: theme.palette.tertiary.main,
+    },
   },
 }))
 
@@ -79,10 +98,10 @@ const TAB_INDICATOR_WIDTH = 0.5
 const getWidthOfCurrentTabIndicator = (tabLabelRef) =>
   (labelRectFromTabRef(tabLabelRef).width || 0) * TAB_INDICATOR_WIDTH
 
-export const LiteTabs = ({children, alignLeft, ...props}) => {
+export const LiteTabs = ({children, ...props}) => {
   const classes = useWrapperStyles()
-  const tabsClasses = useTabsStyles({alignLeft})
-  const indicatorClassName = useTabIndicatorStyles({alignLeft}).root
+  const tabsClasses = useTabsStyles()
+  const indicatorClassName = useTabIndicatorStyles().root
   const tabsRef = useRef(null)
 
   // https://stackoverflow.com/questions/54633690
