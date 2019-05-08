@@ -35,21 +35,15 @@ const useTrackPageVisitEvent = (screenName: string) => {
   }, []) // eslint-disable-line
 }
 
-const trackSearchEvent = (resourceName: string) => {
-  return trackEvent(resourceName, 'searched')
-}
+const trackSearchEvent = (resourceName: string) => trackEvent(resourceName, 'searched')
 
-const trackChartEvent = () => {
-  return trackEvent('chart', 'interacted')
-}
+const trackChartEvent = () => trackEvent('chart', 'interacted')
 
-const trackCurrencyChanged = (to: string) => {
-  return trackEvent('currency', 'changed', to)
-}
+const trackSubscription = () => trackEvent('subscription', 'requested')
 
-const trackSocialIconLink = (linkName: string) => {
-  return trackEvent(linkName, 'link clicked')
-}
+const trackCurrencyChanged = (to: string) => trackEvent('currency', 'changed', to)
+
+const trackSocialIconLink = (linkName: string) => trackEvent(linkName, 'link clicked')
 
 const includeAnalyticsScript = () => {
   const {googleAnalyticsId} = config
@@ -85,4 +79,5 @@ export default {
   trackCurrencyChanged,
   initGoogleAnalytics,
   trackSocialIconLink,
+  trackSubscription,
 }

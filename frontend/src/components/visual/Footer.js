@@ -296,6 +296,8 @@ const SubscribeFooter = () => {
 
   const validateAndSubscribe = useCallback(
     (event) => {
+      // Do we want to track only if email was valid?
+      analytics.trackSubscription()
       event.preventDefault()
       if (!IsEmail.validate(email)) {
         setInvalidEmailError()
