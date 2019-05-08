@@ -1,4 +1,4 @@
-type EpochSummary {
+type EpochSummary @cost(complexity: 20) {
   slotCount: Int!
   blocksCreated: Int!
   transactionCount: Int!

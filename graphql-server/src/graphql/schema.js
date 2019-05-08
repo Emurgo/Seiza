@@ -17,6 +17,8 @@ const globalTypes = gql`
   scalar Timestamp
   scalar AdaAmount
   scalar URL
+
+  directive @cost(complexity: Int, multipliers: [String | Int]) on FIELD | OBJECT | FIELD_DEFINITION
 `
 
 export default mergeTypes(

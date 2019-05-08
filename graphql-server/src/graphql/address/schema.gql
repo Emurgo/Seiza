@@ -1,8 +1,9 @@
-type Address {
+type Address @cost(complexity: 10) {
   address58: ID!
   type: String!
   transactionsCount: Int
-  transactions: [Transaction]
+  # TODO: paging + use cost from pageSize
+  transactions: [Transaction] @cost(multipliers: [10])
 
   totalAdaSent: AdaAmount
   totalAdaReceived: AdaAmount

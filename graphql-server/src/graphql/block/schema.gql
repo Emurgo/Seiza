@@ -1,4 +1,4 @@
-type Block {
+type Block @cost(complexity: 10) {
   # Not set in case when Slot is empty
   blockHash: String
   epoch: Int!
@@ -6,7 +6,8 @@ type Block {
   # TODO: bad naming, should be issuedAt
   timeIssued: Timestamp!
   transactionsCount: Int!
-  transactions: [Transaction!]
+  # TODO: use pageSize for cost
+  transactions:[Transaction!] @cost(multipliers: [10])
 
   totalSent: AdaAmount!
   totalFees: AdaAmount!
@@ -26,10 +27,11 @@ type Block {
 
 }
 
-type PagedBlocksResult {
+type PagedBlocksResult{
   cursor: Int
   hasMore: Boolean!
-  blocks: [Block]!
+  # TODO: use pageSize for cost
+  blocks: [Block]! @cost(multipliers: [10])
 }
 
 type Query {

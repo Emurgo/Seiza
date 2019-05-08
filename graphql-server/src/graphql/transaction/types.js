@@ -12,7 +12,7 @@ export default gql`
     amount: AdaAmount!
   }
 
-  type Transaction {
+  type Transaction @cost(complexity: 10) {
     txHash: ID!
     block: Block!
     totalInput: AdaAmount!
@@ -20,7 +20,7 @@ export default gql`
     fees: AdaAmount!
     inputs: [TransactionInput!]!
     outputs: [TransactionOutput!]!
-    confirmationsCount: Int!
+    confirmationsCount: Int! @cost(complexity: 10)
     size: Int
   }
 
