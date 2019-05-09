@@ -12,8 +12,8 @@ import {ApolloError} from 'apollo-server'
 import assert from 'assert'
 
 import {validate, EntityNotFoundError} from '../graphql/utils'
-import E from './elasticHelpers'
-import type {SortDirection} from './elasticHelpers'
+import E, {Query} from './elasticHelpers'
+
 import https from 'https'
 
 const ELASTIC_URL = process.env.ELASTIC_URL
@@ -219,31 +219,10 @@ const _getSingleHit = async (type: string, query: any) => {
   return hits.hits[0]
 }
 
-class Query {
-  _type: string
-  _filter: Array<any>
-  _sort: Array<any>
-
-  constructor(type: string, _filter: Array<any> = [], _sort: Array<any> = []) {
-    this._type = type
-    this._filter = _filter
-    this._sort = _sort
-  }
-
-  filter = (condition: any) => {
-    return new Query(this._type, [...this._filter, condition], this._sort)
-  }
-
-  sortBy = (field: string, order: SortDirection) => {
-    return new Query(this._type, this._filter, [...this._sort, [field, order]])
-  }
-
-  get _query(): any {
-    return {
-      bool: {
-        filter: this._filter.filter((c) => !!c),
-      },
-    }
+class SearchUsingQuery extends Query {
+  // Override construction
+  _new(...args: any) {
+    return new SearchUsingQuery(...args)
   }
 
   getSingleHit = () => {
@@ -284,7 +263,7 @@ class Query {
 }
 
 const elastic = {
-  q: (type: string) => new Query(type),
+  q: (q: string | Query) => new SearchUsingQuery(q),
   rawSearch: _search,
   E,
 }
