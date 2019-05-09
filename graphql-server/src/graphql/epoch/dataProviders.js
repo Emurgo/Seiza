@@ -3,11 +3,11 @@ import moment from 'moment'
 import {facadeTransaction} from '../transaction/dataProviders'
 import type {Elastic} from '../../api/elastic'
 import {parseAdaValue} from '../utils'
-import type {E} from '../../api/elasticHelpers'
+import E from '../../api/elasticHelpers'
 
 type Context = {
   elastic: Elastic,
-  E: E,
+  E: typeof E,
 }
 
 type Summary = {
@@ -54,30 +54,30 @@ export const fetchEpoch = (context: any, epochNumber: number): Promise<Epoch> =>
   return Promise.resolve(mockedEpoch(epochNumber))
 }
 
-export const fetchBlockCount = ({elastic, E}: Context, epochNumber: number) => {
-  return elastic
-    .q('slot')
+const epochBlocks = (epochNumber) =>
+  E.q('slot')
     .filter(E.onlyActiveFork())
     .filter(E.notNull('hash'))
     .filter(E.eq('epoch', epochNumber))
-    .getCount()
+
+const epochTxs = (epochNumber) =>
+  E.q('tx')
+    .filter(E.onlyActiveFork())
+    .filter(E.eq('epoch', epochNumber))
+
+export const fetchBlockCount = ({elastic, E}: Context, epochNumber: number) => {
+  return elastic.q(epochBlocks(epochNumber)).getCount()
 }
 
 export const fetchTransactionCount = ({elastic, E}: any, epochNumber: number) => {
-  return elastic
-    .q('tx')
-    .filter(E.onlyActiveFork())
-    .filter(E.eq('epoch', epochNumber))
-    .getCount()
+  return elastic.q(epochTxs(epochNumber)).getCount()
 }
 
 export const fetchTotalAdaSupply = async ({elastic, E}: Context, epochNumber: number) => {
   // fetch last tx before end of this epoch
 
   const hit = await elastic
-    .q('tx')
-    .filter(E.onlyActiveFork())
-    .filter(E.lte('epoch', epochNumber))
+    .q(epochTxs(epochNumber))
     .sortBy('epoch', 'desc')
     .sortBy('tx_ordinal', 'desc')
     .getFirstHit()
@@ -88,13 +88,9 @@ export const fetchTotalAdaSupply = async ({elastic, E}: Context, epochNumber: nu
 }
 
 export const fetchTotalFees = async ({elastic, E}: Context, epochNumber: number) => {
-  const aggregations = await elastic
-    .q('tx')
-    .filter(E.onlyActiveFork())
-    .filter(E.eq('epoch', epochNumber))
-    .getAggregations({
-      fees: E.agg.sumAda('fees'),
-    })
+  const aggregations = await elastic.q(epochTxs(epochNumber)).getAggregations({
+    fees: E.agg.sumAda('fees'),
+  })
 
   return parseAdaValue(aggregations.fees)
 }

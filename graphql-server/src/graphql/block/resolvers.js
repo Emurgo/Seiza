@@ -1,15 +1,19 @@
 import {facadeElasticBlock} from './dataProviders'
 import assert from 'assert'
+import E from '../../api/elasticHelpers'
+
 const PAGE_SIZE = 10
+
+const currentBlocks = E.q('slot')
+  .filter(E.onlyActiveFork())
+  .filter(E.notNull('hash'))
 
 export const pagedBlocksResolver = async (parent, args, context) => {
   const {cursor} = args
   const {elastic, E} = context
 
   const {total, hits} = await elastic
-    .q('slot')
-    .filter(E.onlyActiveFork())
-    .filter(E.notNull('hash'))
+    .q(currentBlocks)
     .filter(E.lte('height', cursor))
     .sortBy('height', 'desc')
     .getHits(PAGE_SIZE)
@@ -34,13 +38,9 @@ export const pagedBlocksInEpochResolver = async (parent, args, context) => {
   const {cursor, epochNumber: epoch} = args
   const {elastic, E} = context
 
-  const blocks = elastic
-    .q('slot')
-    .filter(E.onlyActiveFork())
-    .filter(E.notNull('hash'))
-
   // Note: this is a workaround
-  const {total: previousEpochs, hits: previousEnd} = await blocks
+  const {total: previousEpochs, hits: previousEnd} = await elastic
+    .q(currentBlocks)
     .filter(E.lt('epoch', epoch))
     .sortBy('height', 'desc')
     .getHits(1)
@@ -50,7 +50,8 @@ export const pagedBlocksInEpochResolver = async (parent, args, context) => {
     assert(previousEnd[0]._source.height === previousEpochs)
   }
 
-  const hits = await blocks
+  const hits = await elastic
+    .q(currentBlocks)
     .filter(E.eq('epoch', epoch))
     .filter(cursor && E.lte('height', cursor + previousEpochs))
     .sortBy('height', 'desc')

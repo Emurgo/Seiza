@@ -180,6 +180,36 @@ const agg = {
   }),
 }
 
+export class Query {
+  _type: string
+  _filter: Array<any>
+  _sort: Array<any>
+
+  constructor(type: string, _filter: Array<any> = [], _sort: Array<any> = []) {
+    this._type = type
+    this._filter = _filter
+    this._sort = _sort
+  }
+
+  filter = (condition: any) => {
+    return new Query(this._type, [...this._filter, condition], this._sort)
+  }
+
+  sortBy = (field: string, order: SortDirection) => {
+    return new Query(this._type, this._filter, [...this._sort, [field, order]])
+  }
+
+  get _query(): any {
+    return {
+      bool: {
+        filter: this._filter.filter((c) => !!c),
+      },
+    }
+  }
+}
+
+const q = (type: string) => new Query(type)
+
 const e = {
   agg,
   orderBy,
@@ -195,6 +225,7 @@ const e = {
   matchPhrase,
   onlyActiveFork,
   filter,
+  q,
 }
 
 export type E = typeof e

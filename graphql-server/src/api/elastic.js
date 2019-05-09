@@ -12,8 +12,8 @@ import {ApolloError} from 'apollo-server'
 import assert from 'assert'
 
 import {validate, EntityNotFoundError} from '../graphql/utils'
-import E from './elasticHelpers'
-import type {SortDirection} from './elasticHelpers'
+import E, {Query} from './elasticHelpers'
+
 import https from 'https'
 
 const ELASTIC_URL = process.env.ELASTIC_URL
@@ -219,62 +219,49 @@ const _getSingleHit = async (type: string, query: any) => {
   return hits.hits[0]
 }
 
-class Query {
-  _type: string
-  _filter: Array<any>
-  _sort: Array<any>
-
-  constructor(type: string, _filter: Array<any> = [], _sort: Array<any> = []) {
-    this._type = type
-    this._filter = _filter
-    this._sort = _sort
-  }
-
-  filter = (condition: any) => {
-    return new Query(this._type, [...this._filter, condition], this._sort)
-  }
-
-  sortBy = (field: string, order: SortDirection) => {
-    return new Query(this._type, this._filter, [...this._sort, [field, order]])
-  }
-
-  get _query(): any {
-    return {
-      bool: {
-        filter: this._filter.filter((c) => !!c),
-      },
+class SearchUsingQuery {
+  q: Query
+  constructor(arg: string | Query) {
+    if (arg instanceof Query) {
+      this.q = arg
+    } else {
+      this.q = new Query(arg)
     }
   }
 
+  filter = (...args: any) => new SearchUsingQuery(this.q.filter(...args))
+
+  sortBy = (...args: any) => new SearchUsingQuery(this.q.sortBy(...args))
+
   getSingleHit = () => {
-    assert(this._sort.length === 0, 'Cannot have sortBy in this query')
-    return _getSingleHit(this._type, this._query)
+    assert(this.q._sort.length === 0, 'Cannot have sortBy in this query')
+    return _getSingleHit(this.q._type, this.q._query)
   }
 
   getCount = () => {
-    assert(this._sort.length === 0, 'Cannot have sortBy in this query')
-    return _getCount(this._type, this._query)
+    assert(this.q._sort.length === 0, 'Cannot have sortBy in this query')
+    return _getCount(this.q._type, this.q._query)
   }
 
   getFirstHit = () => {
-    assert(this._sort.length > 0, 'Must have sortBy')
-    return _getFirstHit(this._type, this._query, E.orderBy(this._sort))
+    assert(this.q._sort.length > 0, 'Must have sortBy')
+    return _getFirstHit(this.q._type, this.q._query, E.orderBy(this.q._sort))
   }
 
   getHits = async (pageSize: number) => {
     assert(pageSize)
-    const {hits} = await _search(this._type, {
-      query: this._query,
+    const {hits} = await _search(this.q._type, {
+      query: this.q._query,
       size: pageSize,
-      sort: E.orderBy(this._sort),
+      sort: E.orderBy(this.q._sort),
     })
     assert(hits.hits.length <= pageSize)
     return hits
   }
 
   getAggregations = async (defs: any) => {
-    const {aggregations: response} = await _search(this._type, {
-      query: this._query,
+    const {aggregations: response} = await _search(this.q._type, {
+      query: this.q._query,
       size: 0,
       aggs: E.agg._encode(defs),
     })
@@ -284,7 +271,7 @@ class Query {
 }
 
 const elastic = {
-  q: (type: string) => new Query(type),
+  q: (q: string | Query) => new SearchUsingQuery(q),
   rawSearch: _search,
   E,
 }

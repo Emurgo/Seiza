@@ -1,6 +1,7 @@
 import moment from 'moment'
 import assert from 'assert'
 import {parseAdaValue, annotateNotFoundError} from '../utils'
+import E from '../../api/elasticHelpers'
 
 export const facadeElasticBlock = (data) => ({
   epoch: data.epoch,
@@ -18,10 +19,14 @@ export const facadeElasticBlock = (data) => ({
   blockHeight: data.height,
 })
 
+const currentBlocks = E.q('slot')
+  .filter(E.onlyActiveFork())
+  .filter(E.notNull('hash'))
+
 export const fetchBlockByHash = async ({elastic, E}, blockHash) => {
   assert(blockHash)
   const hit = await elastic
-    .q('slot')
+    .q(currentBlocks)
     .filter(E.matchPhrase('hash', blockHash))
     .getSingleHit()
     .catch(annotateNotFoundError({entity: 'Block'}))
@@ -31,8 +36,7 @@ export const fetchBlockByHash = async ({elastic, E}, blockHash) => {
 
 export const fetchLatestBlock = async ({elastic, E}) => {
   const hit = await elastic
-    .q('slot')
-    .filter(E.notNull('hash'))
+    .q(currentBlocks)
     .sortBy('height', 'desc')
     .getFirstHit()
 
@@ -44,8 +48,7 @@ export const fetchBlockBySlot = async ({elastic, E}, {epoch, slot}) => {
   assert(slot != null)
 
   const hit = await elastic
-    .q('slot')
-    .filter(E.onlyActiveFork())
+    .q(currentBlocks)
     .filter(E.eq('epoch', epoch))
     .filter(E.eq('slot', slot))
     .getSingleHit()
@@ -54,23 +57,30 @@ export const fetchBlockBySlot = async ({elastic, E}, {epoch, slot}) => {
   return facadeElasticBlock(hit._source)
 }
 
+const tupleLt = (key1, key2) => (value1, value2) =>
+  E.some([
+    // either first is smaller
+    E.lt(key1, value1),
+    // or second is smaller
+    E.all([E.eq(key1, value1), E.lt(key2, value2)]),
+  ])
+
+const tupleGt = (key1, key2) => (value1, value2) =>
+  E.some([
+    // either first is smaller
+    E.gt(key1, value1),
+    // or second is smaller
+    E.all([E.eq(key1, value1), E.gt(key2, value2)]),
+  ])
+
 // TODO: extract repetitive code
 export const fetchPreviousBlock = async ({elastic, E}, {epoch, slot}) => {
   assert(epoch != null)
   assert(slot != null)
 
   const hits = await elastic
-    .q('slot')
-    .filter(E.onlyActiveFork())
-    .filter(E.notNull('hash'))
-    .filter(
-      E.some([
-        // Either same epoch and lower slot
-        E.all([E.eq('epoch', epoch), E.lt('slot', slot)]),
-        // Or lower epoch
-        E.lt('epoch', epoch),
-      ])
-    )
+    .q(currentBlocks)
+    .filter(tupleLt('epoch', 'slot')(epoch, slot))
     .sortBy('epoch', 'desc')
     .sortBy('slot', 'desc')
     .getHits(1)
@@ -88,17 +98,8 @@ export const fetchNextBlock = async ({elastic, E}, {epoch, slot}) => {
   assert(slot != null)
 
   const hits = await elastic
-    .q('slot')
-    .filter(E.onlyActiveFork())
-    .filter(E.notNull('hash'))
-    .filter(
-      E.some([
-        // Either same epoch and higher slot
-        E.all([E.eq('epoch', epoch), E.gt('slot', slot)]),
-        // Or higher epoch
-        E.gt('epoch', epoch),
-      ])
-    )
+    .q(currentBlocks)
+    .filter(tupleGt('epoch', 'slot')(epoch, slot))
     .sortBy('epoch', 'asc')
     .sortBy('slot', 'asc')
     .getHits(1)

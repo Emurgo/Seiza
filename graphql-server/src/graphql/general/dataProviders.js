@@ -3,6 +3,7 @@ import {fetchBlockBySlot} from '../block/dataProviders'
 import moment from 'moment'
 import assert from 'assert'
 import {parseAdaValue, runConsistencyCheck} from '../utils'
+import E from '../../api/elasticHelpers'
 
 // TODO: unify properties naming with the rest endpoints once the final fields are determined
 export type GeneralInfo = {|
@@ -14,8 +15,8 @@ export type GeneralInfo = {|
   activeAddresses: string,
 |}
 
-const _getGeneralInfo = ({q, E}) => {
-  const aggregations = q.slots.getAggregations({
+const _getGeneralInfo = ({elastic}, {slots, txs, addresses, txios}) => {
+  const slotAggregations = elastic.q(slots).getAggregations({
     sent: E.agg.sumAda('sent'),
     fees: E.agg.sumAda('fees'),
     txCount: E.agg.sum('tx_num'),
@@ -25,46 +26,59 @@ const _getGeneralInfo = ({q, E}) => {
   })
 
   const blocksCount = async () => {
-    const cnt = (await aggregations).blocks
+    const cnt = (await slotAggregations).blocks
 
     // (expensive) sanity check
     await runConsistencyCheck(async () => {
-      assert.equal(cnt, await q.slots.filter(E.notNull('hash')).getCount())
+      assert.equal(
+        cnt,
+        await elastic
+          .q(slots)
+          .filter(E.notNull('hash'))
+          .getCount()
+      )
     })
 
     return cnt
   }
 
   const emptySlotsCount = async () => {
-    const cnt = (await aggregations).slotsMissed
+    const cnt = (await slotAggregations).slotsMissed
 
     // (expensive) sanity check
     await runConsistencyCheck(async () => {
-      assert.equal(cnt, await q.slots.filter(E.isNull('hash')).getCount())
+      assert.equal(
+        cnt,
+        await elastic
+          .q(slots)
+          .filter(E.isNull('hash'))
+          .getCount()
+      )
     })
 
     return cnt
   }
 
   const txCount = async () => {
-    const cnt = (await aggregations).txCount
+    const cnt = (await slotAggregations).txCount
 
     // (expensive) sanity check
     await runConsistencyCheck(async () => {
-      assert.equal(cnt, await q.txs.getCount())
+      assert.equal(cnt, await elastic.q(txs).getCount())
     })
 
     return cnt
   }
 
   const activeAddresses = async () => {
-    const precise = await q.addresses.getCount()
+    const precise = await elastic.q(addresses).getCount()
 
     // (expensive) sanity check
     await runConsistencyCheck(async () => {
       // allow up to 1% difference
       const threshold = 0.01
-      const approx = await q.txios
+      const approx = await elastic
+        .q(txios)
         .getAggregations({
           addresses: E.agg.countDistinctApprox('address.keyword'),
         })
@@ -79,15 +93,29 @@ const _getGeneralInfo = ({q, E}) => {
   return {
     blocksCount,
     emptySlotsCount,
-    movements: aggregations.then(({sent}) => parseAdaValue(sent)),
-    totalFees: aggregations.then(({fees}) => parseAdaValue(fees)),
+    movements: slotAggregations.then(({sent}) => parseAdaValue(sent)),
+    totalFees: slotAggregations.then(({fees}) => parseAdaValue(fees)),
     txCount,
     activeAddresses,
   }
 }
 
 export type EpochInfo = GeneralInfo
-export const fetchGeneralInfo = ({elastic, E}: any, period: string) => {
+
+const generalInfoQ = (since) => ({
+  txs: E.q('tx')
+    .filter(E.onlyActiveFork())
+    .filter(since && E.gte('time', since)),
+  txios: E.q('txio')
+    .filter(E.onlyActiveFork())
+    .filter(since && E.gte('time', since)),
+  slots: E.q('slot')
+    .filter(E.onlyActiveFork())
+    .filter(since && E.gte('time', since)),
+  addresses: E.q('address').filter(since && E.gte('ios.time', since)),
+})
+
+export const fetchGeneralInfo = (context: any, period: string) => {
   const since =
     period === 'LAST_24_HOURS'
       ? moment()
@@ -95,42 +123,24 @@ export const fetchGeneralInfo = ({elastic, E}: any, period: string) => {
         .toISOString()
       : null
 
-  const q = {
-    txs: elastic
-      .q('tx')
-      .filter(E.onlyActiveFork())
-      .filter(since && E.gte('time', since)),
-    txios: elastic
-      .q('txio')
-      .filter(E.onlyActiveFork())
-      .filter(since && E.gte('time', since)),
-    slots: elastic
-      .q('slot')
-      .filter(E.onlyActiveFork())
-      .filter(since && E.gte('time', since)),
-    addresses: elastic.q('address').filter(since && E.gte('ios.time', since)),
-  }
-
-  return _getGeneralInfo({q, E})
+  return _getGeneralInfo(context, generalInfoQ(since))
 }
 
-export const fetchEpochInfo = ({elastic, E}: any, epoch: number) => {
-  const q = {
-    txs: elastic
-      .q('tx')
-      .filter(E.onlyActiveFork())
-      .filter(E.eq('epoch', epoch)),
-    txios: elastic
-      .q('txio')
-      .filter(E.onlyActiveFork())
-      .filter(E.eq('epoch', epoch)),
-    slots: elastic
-      .q('slot')
-      .filter(E.onlyActiveFork())
-      .filter(E.eq('epoch', epoch)),
-    addresses: elastic.q('address').filter(E.eq('ios.epoch', epoch)),
-  }
-  return _getGeneralInfo({q, E})
+const epochInfoQ = (epoch) => ({
+  txs: E.q('tx')
+    .filter(E.onlyActiveFork())
+    .filter(E.eq('epoch', epoch)),
+  txios: E.q('txio')
+    .filter(E.onlyActiveFork())
+    .filter(E.eq('epoch', epoch)),
+  slots: E.q('slot')
+    .filter(E.onlyActiveFork())
+    .filter(E.eq('epoch', epoch)),
+  addresses: E.q('address').filter(E.eq('ios.epoch', epoch)),
+})
+
+export const fetchEpochInfo = (context: any, epoch: number) => {
+  return _getGeneralInfo(context, epochInfoQ(epoch))
 }
 
 // TODO: (refactor) directly use `fetchBlockBySlot`?
