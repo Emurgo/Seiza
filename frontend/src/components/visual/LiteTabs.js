@@ -31,9 +31,8 @@ const useTabsStyles = makeStyles((theme) => ({
     minHeight: 'auto !important',
     // minHeight is set by default to 48px in material-ui
     // 'auto' makes it 24px,
-    // so we apply 12 to bottom and top
-    marginTop: 12,
-    marginBottom: 12,
+    // so we apply remaining 24px to bottom
+    marginBottom: 24,
   },
 }))
 
