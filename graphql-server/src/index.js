@@ -59,6 +59,9 @@ ApolloServer.prototype.createGraphQLServerOptions = _new
 const server = new ApolloServer({
   typeDefs: schema,
   resolvers,
+  engine: {
+    apiKey: process.env.APOLLO_ENGINE_API_KEY,
+  },
   // TODO: replace with production-ready logger
   formatError: (error: any): any => {
     logError(error)
