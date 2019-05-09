@@ -5,6 +5,7 @@ import gql from 'graphql-tag'
 import idx from 'idx'
 import useReactRouter from 'use-react-router'
 import {Card, Grid, Typography} from '@material-ui/core'
+import {makeStyles} from '@material-ui/styles'
 import {
   SummaryCard,
   SimpleLayout,
@@ -50,6 +51,15 @@ const messages = defineMessages({
   blocksTab: 'Blocks',
   stakingPoolsTab: 'Staking Pools',
 })
+
+const useStyles = makeStyles((theme) => ({
+  timeHeader: {
+    marginTop: theme.spacing.unit * 2,
+    [theme.breakpoints.up('md')]: {
+      marginTop: 0,
+    },
+  },
+}))
 
 const GET_EPOCH_BY_NUMBER = gql`
   query($epochNumber: Int!) {
@@ -231,6 +241,7 @@ const EpochNavigation = ({currentEpochNumber}) => {
 }
 
 const EpochEntityCard = ({epochNumber, startTime, endTime}) => {
+  const classes = useStyles()
   const {translate: tr, formatTimestamp} = useI18n()
   const NA = tr(messages.notAvailable)
   const start = formatTimestamp(startTime, {
@@ -243,8 +254,8 @@ const EpochEntityCard = ({epochNumber, startTime, endTime}) => {
   })
   return (
     <EntityCardShell>
-      <Grid container>
-        <Grid item xs={6}>
+      <Grid container alignItems="center">
+        <Grid item xs={12} md={6}>
           <EntityCardContent
             showCopyIcon={false}
             label={tr(messages.entityHeader)}
@@ -254,7 +265,7 @@ const EpochEntityCard = ({epochNumber, startTime, endTime}) => {
             rawValue={epochNumber}
           />
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={12} md={6} className={classes.timeHeader}>
           <EntityCardContent
             label={tr(messages.timePeriod)}
             showCopyIcon={false}
