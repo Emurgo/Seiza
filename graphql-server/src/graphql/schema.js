@@ -18,7 +18,10 @@ const globalTypes = gql`
   scalar AdaAmount
   scalar URL
 
-  directive @cost(complexity: Int, multipliers: [String | Int]) on FIELD | OBJECT | FIELD_DEFINITION
+  # Note(ppershing): this should be
+  # multipliers: [String | Int] but gql does not support
+  # scalar union and String seems to work even for Ints
+  directive @cost(complexity: Int, multipliers: [String]) on FIELD | OBJECT | FIELD_DEFINITION
 `
 
 export default mergeTypes(
