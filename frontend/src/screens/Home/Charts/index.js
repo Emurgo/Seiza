@@ -163,7 +163,7 @@ const useLoadData = (seriesType, groupBy, epochInterval, dateInterval) => {
 const filterDataBasedOnWidth = (data, breakpoint, groupBy) => {
   const breakpointToItemsCount = {
     DAY: {
-      xs: 10,
+      xs: 9,
       sm: 14,
       md: 20,
       lg: 30,
