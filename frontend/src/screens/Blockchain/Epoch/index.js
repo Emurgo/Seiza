@@ -1,5 +1,5 @@
 // @flow
-import React, {useRef, useCallback} from 'react'
+import React, {useRef} from 'react'
 import {defineMessages} from 'react-intl'
 import gql from 'graphql-tag'
 import idx from 'idx'
@@ -181,21 +181,14 @@ const EpochSummaryCard = ({epoch, loading}) => {
 }
 
 const useEpochNavigation = (epochNumber: number) => {
-  const {history} = useReactRouter()
-
   const linkPrev = routeTo.epoch(epochNumber - 1)
   const linkNext = routeTo.epoch(epochNumber + 1)
-
-  const goPrev = useCallback(() => history.push(linkPrev), [history, linkPrev])
-  const goNext = useCallback(() => history.push(linkNext), [history, linkNext])
 
   return {
     hasPrev: epochNumber > 0,
     linkPrev,
-    goPrev,
     hasNext: epochNumber != null, // For now we always have more epochs
     linkNext,
-    goNext,
   }
 }
 
