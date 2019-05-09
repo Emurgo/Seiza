@@ -147,6 +147,15 @@ const Search = () => {
     [setSearchQuery, setSearchText]
   )
 
+  const onSearch = useCallback(
+    (value) => {
+      const trimmed = value.trim()
+      setSearchQuery(trimmed)
+      setSearchText(trimmed)
+    },
+    [setSearchQuery, setSearchText]
+  )
+
   const onAlertClose = useCallback(() => setSearchQuery(''), [setSearchQuery])
 
   const showAlert = searchQuery && !error && !loading && !searchResult
@@ -157,7 +166,7 @@ const Search = () => {
         placeholder={tr(text.searchPlaceholder)}
         value={searchText}
         onChange={onChange}
-        onSearch={setSearchQuery}
+        onSearch={onSearch}
         loading={loading}
       />
       {!loading && error && <LoadingError error={error} />}
