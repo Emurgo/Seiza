@@ -1,10 +1,11 @@
 // @flow
 import React, {useRef} from 'react'
 import {defineMessages} from 'react-intl'
+import moment from 'moment-timezone'
 import gql from 'graphql-tag'
 import idx from 'idx'
 import useReactRouter from 'use-react-router'
-import {Card, Grid, Typography} from '@material-ui/core'
+import {Card, Grid, Chip, Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {
   SummaryCard,
@@ -50,6 +51,8 @@ const messages = defineMessages({
   stakingPoolsCount: 'Total Pools Count',
   blocksTab: 'Blocks',
   stakingPoolsTab: 'Staking Pools',
+  future: 'Future',
+  current: 'Current',
 })
 
 const useStyles = makeStyles((theme) => ({
@@ -58,6 +61,17 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up('md')]: {
       marginTop: 0,
     },
+  },
+  chip: {
+    // TODO: use color from theme someday
+    color: 'white',
+    background: '#ABABAB',
+    textTransform: 'uppercase',
+    marginRight: theme.spacing.unit,
+  },
+  date: {
+    display: 'inline-block',
+    fontStyle: ({chipLabel}) => (chipLabel ? 'italic' : 'normal'),
   },
 }))
 
@@ -240,8 +254,9 @@ const EpochNavigation = ({currentEpochNumber}) => {
   )
 }
 
+const getIsInFuture = (ts) => (ts ? moment(ts).isAfter(moment()) : false)
+
 const EpochEntityCard = ({epochNumber, startTime, endTime}) => {
-  const classes = useStyles()
   const {translate: tr, formatTimestamp} = useI18n()
   const NA = tr(messages.notAvailable)
   const start = formatTimestamp(startTime, {
@@ -252,10 +267,16 @@ const EpochEntityCard = ({epochNumber, startTime, endTime}) => {
     format: formatTimestamp.FMT_MONTH_NUMERAL,
     defaultValue: NA,
   })
+  const isInFuture = getIsInFuture(startTime)
+  const isCurrent = getIsInFuture(endTime) && !getIsInFuture(startTime)
+  const chipLabel =
+    isInFuture || isCurrent ? tr(isInFuture ? messages.future : messages.current) : null
+  const classes = useStyles({chipLabel})
+
   return (
     <EntityCardShell>
       <Grid container alignItems="center">
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={chipLabel ? 3 : 4} lg={chipLabel ? 5 : 6}>
           <EntityCardContent
             showCopyIcon={false}
             label={tr(messages.entityHeader)}
@@ -265,22 +286,25 @@ const EpochEntityCard = ({epochNumber, startTime, endTime}) => {
             rawValue={epochNumber}
           />
         </Grid>
-        <Grid item xs={12} md={6} className={classes.timeHeader}>
+        <Grid
+          item
+          xs={12}
+          md={chipLabel ? 9 : 8}
+          lg={chipLabel ? 7 : 6}
+          className={classes.timeHeader}
+        >
           <EntityCardContent
             label={tr(messages.timePeriod)}
             showCopyIcon={false}
             ellipsizeValue={false}
             iconRenderer={<img alt="" src={EpochIcon} width={48} height={48} />}
             value={
-              <React.Fragment>
-                <Typography variant="body1" inline>
-                  {start}
+              <div>
+                {chipLabel && <Chip className={classes.chip} label={chipLabel} />}
+                <Typography variant="body1" inline className={classes.date}>
+                  {start} {' — '} {end}
                 </Typography>
-                {' — '}
-                <Typography variant="body1" inline>
-                  {end}
-                </Typography>
-              </React.Fragment>
+              </div>
             }
           />
         </Grid>
