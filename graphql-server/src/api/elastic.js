@@ -219,41 +219,45 @@ const _getSingleHit = async (type: string, query: any) => {
   return hits.hits[0]
 }
 
-class SearchUsingQuery extends Query {
-  // Override construction
-  _new(...args: any) {
-    return new SearchUsingQuery(...args)
+class SearchUsingQuery {
+  q: Query
+  constructor(...args: any) {
+    this.q = new Query(...args)
   }
 
+  filter = (...args: any) => new SearchUsingQuery(this.q.filter(...args))
+
+  sortBy = (...args: any) => new SearchUsingQuery(this.q.sortBy(...args))
+
   getSingleHit = () => {
-    assert(this._sort.length === 0, 'Cannot have sortBy in this query')
-    return _getSingleHit(this._type, this._query)
+    assert(this.q._sort.length === 0, 'Cannot have sortBy in this query')
+    return _getSingleHit(this.q._type, this.q._query)
   }
 
   getCount = () => {
-    assert(this._sort.length === 0, 'Cannot have sortBy in this query')
-    return _getCount(this._type, this._query)
+    assert(this.q._sort.length === 0, 'Cannot have sortBy in this query')
+    return _getCount(this.q._type, this.q._query)
   }
 
   getFirstHit = () => {
-    assert(this._sort.length > 0, 'Must have sortBy')
-    return _getFirstHit(this._type, this._query, E.orderBy(this._sort))
+    assert(this.q._sort.length > 0, 'Must have sortBy')
+    return _getFirstHit(this.q._type, this.q._query, E.orderBy(this.q._sort))
   }
 
   getHits = async (pageSize: number) => {
     assert(pageSize)
-    const {hits} = await _search(this._type, {
-      query: this._query,
+    const {hits} = await _search(this.q._type, {
+      query: this.q._query,
       size: pageSize,
-      sort: E.orderBy(this._sort),
+      sort: E.orderBy(this.q._sort),
     })
     assert(hits.hits.length <= pageSize)
     return hits
   }
 
   getAggregations = async (defs: any) => {
-    const {aggregations: response} = await _search(this._type, {
-      query: this._query,
+    const {aggregations: response} = await _search(this.q._type, {
+      query: this.q._query,
       size: 0,
       aggs: E.agg._encode(defs),
     })
