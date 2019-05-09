@@ -24,57 +24,65 @@ const _getGeneralInfo = ({q, E}) => {
     slotsMissed: E.agg.countNull('hash.keyword'),
   })
 
+  const blocksCount = async () => {
+    const cnt = (await aggregations).blocks
+
+    // (expensive) sanity check
+    await runConsistencyCheck(async () => {
+      assert.equal(cnt, await q.slots.filter(E.notNull('hash')).getCount())
+    })
+
+    return cnt
+  }
+
+  const emptySlotsCount = async () => {
+    const cnt = (await aggregations).slotsMissed
+
+    // (expensive) sanity check
+    await runConsistencyCheck(async () => {
+      assert.equal(cnt, await q.slots.filter(E.isNull('hash')).getCount())
+    })
+
+    return cnt
+  }
+
+  const txCount = async () => {
+    const cnt = (await aggregations).txCount
+
+    // (expensive) sanity check
+    await runConsistencyCheck(async () => {
+      assert.equal(cnt, await q.txs.getCount())
+    })
+
+    return cnt
+  }
+
+  const activeAddresses = async () => {
+    const precise = await q.addresses.getCount()
+
+    // (expensive) sanity check
+    await runConsistencyCheck(async () => {
+      // allow up to 1% difference
+      const threshold = 0.01
+      const approx = await q.txios
+        .getAggregations({
+          addresses: E.agg.countDistinctApprox('address.keyword'),
+        })
+        .then(({addresses}) => addresses)
+
+      assert(Math.abs((approx - precise) / (precise + 1e-6)) <= threshold)
+    })
+
+    return precise
+  }
+
   return {
-    blocksCount: async () => {
-      const cnt = (await aggregations).blocks
-
-      // (expensive) sanity check
-      await runConsistencyCheck(async () => {
-        assert.equal(cnt, await q.slots.filter(E.notNull('hash')).getCount())
-      })
-
-      return cnt
-    },
-    emptySlotsCount: async () => {
-      const cnt = (await aggregations).slotsMissed
-
-      // (expensive) sanity check
-      await runConsistencyCheck(async () => {
-        assert.equal(cnt, await q.slots.filter(E.isNull('hash')).getCount())
-      })
-
-      return cnt
-    },
+    blocksCount,
+    emptySlotsCount,
     movements: aggregations.then(({sent}) => parseAdaValue(sent)),
     totalFees: aggregations.then(({fees}) => parseAdaValue(fees)),
-    txCount: async () => {
-      const cnt = (await aggregations).txCount
-
-      // (expensive) sanity check
-      await runConsistencyCheck(async () => {
-        assert.equal(cnt, await q.txs.getCount())
-      })
-
-      return cnt
-    },
-    activeAddresses: async () => {
-      const precise = await q.addresses.getCount()
-
-      // (expensive) sanity check
-      await runConsistencyCheck(async () => {
-        // allow up to 1% difference
-        const threshold = 0.01
-        const approx = await q.txios
-          .getAggregations({
-            addresses: E.agg.countDistinctApprox('address.keyword'),
-          })
-          .then(({addresses}) => addresses)
-
-        assert(Math.abs((approx - precise) / (precise + 1e-6)) <= threshold)
-      })
-
-      return precise
-    },
+    txCount,
+    activeAddresses,
   }
 }
 
