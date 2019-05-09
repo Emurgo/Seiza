@@ -6,13 +6,13 @@ enum CurrencyEnum {
 
 # Not sure if Status is a good name
 type Status {
-  epochNumber: Int!
-  blockCount: Int!
-  latestBlock: Block!,
+  epochNumber: Int! @cost(complexity: 5)
+  blockCount: Int! @cost(complexity: 5)
+  latestBlock: Block!
   decentralization: Float # todo scalar fraction
-  price(currency: CurrencyEnum!): Float!
-  stakePoolCount: Int
-  dataAvailableUpTo: Timestamp!
+  price(currency: CurrencyEnum!): Float! @cost(complexity: 10)
+  stakePoolCount: Int @cost(complexity:5)
+  dataAvailableUpTo: Timestamp! @cost(complexity:5)
   currentTime: Timestamp!
 }
 
