@@ -26,8 +26,10 @@ import More from './screens/More'
 import PageNotFound from './screens/PageNotFound'
 import LanguageSelect from '@/components/common/LanguageSelect'
 import ThemeSelect from '@/components/common/ThemeSelect'
+import CookiesBanner from '@/components/common/CookiesBanner'
 import DefaultErrorBoundary from '@/components/common/DefaultErrorBoundary'
 import {SubscribeProvider} from '@/components/context/SubscribeContext'
+import {CookiesProvider} from '@/components/context/CookiesContext'
 import {CurrencyProvider} from '@/components/hooks/useCurrency'
 
 import './App.css'
@@ -127,6 +129,16 @@ const TopBar = compose(withRouter)(({location: {pathname}}) => {
   )
 })
 
+const Providers = ({children}) => (
+  <CookiesProvider>
+    <CurrencyProvider>
+      <SubscribeProvider>
+        <AutoSyncProvider>{children}</AutoSyncProvider>
+      </SubscribeProvider>
+    </CurrencyProvider>
+  </CookiesProvider>
+)
+
 const App = () => {
   const classes = useAppStyles()
   const {translate} = useI18n()
@@ -134,38 +146,36 @@ const App = () => {
   return (
     <DefaultErrorBoundary>
       <Router>
-        <CurrencyProvider>
-          <SubscribeProvider>
-            <AutoSyncProvider>
-              <Grid container direction="column" className={classes.mainWrapper} wrap="nowrap">
-                <Grid item>
-                  <CssBaseline />
-                  <TopBar />
+        <Providers>
+          <Grid container direction="column" className={classes.mainWrapper} wrap="nowrap">
+            <CookiesBanner />
+
+            <Grid item>
+              <CssBaseline />
+              <TopBar />
+            </Grid>
+            <DefaultErrorBoundary>
+              <React.Fragment>
+                <Grid item className={classes.contentWrapper}>
+                  <Switch>
+                    <Redirect exact from="/" to={routeTo.home()} />
+                    <Route exact path={routeTo.home()} component={Home} />
+                    <Route path={routeTo.blockchain()} component={Blockchain} />
+                    {config.showStakingData && (
+                      <Route path={routeTo.staking.home()} component={Staking} />
+                    )}
+                    {config.showStakingData && <Route path={routeTo.more()} component={More} />}
+                    <Route exact path={routeTo.termsOfUse()} component={Terms} />
+                    <Route component={PageNotFound} />
+                  </Switch>
                 </Grid>
-                <DefaultErrorBoundary>
-                  <React.Fragment>
-                    <Grid item className={classes.contentWrapper}>
-                      <Switch>
-                        <Redirect exact from="/" to={routeTo.home()} />
-                        <Route exact path={routeTo.home()} component={Home} />
-                        <Route path={routeTo.blockchain()} component={Blockchain} />
-                        {config.showStakingData && (
-                          <Route path={routeTo.staking.home()} component={Staking} />
-                        )}
-                        {config.showStakingData && <Route path={routeTo.more()} component={More} />}
-                        <Route exact path={routeTo.termsOfUse()} component={Terms} />
-                        <Route component={PageNotFound} />
-                      </Switch>
-                    </Grid>
-                    <Grid item>
-                      <Footer navItems={getTranslatedFooterNavItems(translate)} />
-                    </Grid>
-                  </React.Fragment>
-                </DefaultErrorBoundary>
-              </Grid>
-            </AutoSyncProvider>
-          </SubscribeProvider>
-        </CurrencyProvider>
+                <Grid item>
+                  <Footer navItems={getTranslatedFooterNavItems(translate)} />
+                </Grid>
+              </React.Fragment>
+            </DefaultErrorBoundary>
+          </Grid>
+        </Providers>
       </Router>
     </DefaultErrorBoundary>
   )
