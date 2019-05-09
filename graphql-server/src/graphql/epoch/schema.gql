@@ -14,7 +14,8 @@ type Epoch {
   epochNumber: Int!
   startTime: Timestamp!
   endTime: Timestamp!
-  progress: Int!
+  # Todo: make custom 0-1 float scalar type
+  progress: Float!
   summary: EpochSummary
 }
 
