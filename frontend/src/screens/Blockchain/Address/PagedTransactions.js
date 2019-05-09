@@ -182,11 +182,11 @@ type Props = {|
 |}
 
 const useManagePaginations = (currentTab) => {
-  const [tabOnePage, onTabOnePageChange] = useManageQueryValue(TAB_NAMES.ALL, 0, toIntOrNull)
-  const [tabTwoPage, onTabTwoPageChange] = useManageQueryValue(TAB_NAMES.SENT, 0, toIntOrNull)
+  const [tabOnePage, onTabOnePageChange] = useManageQueryValue(TAB_NAMES.ALL, 1, toIntOrNull)
+  const [tabTwoPage, onTabTwoPageChange] = useManageQueryValue(TAB_NAMES.SENT, 1, toIntOrNull)
   const [tabThreePage, onTabThreePageChange] = useManageQueryValue(
     TAB_NAMES.RECEIVED,
-    0,
+    1,
     toIntOrNull
   )
 
@@ -199,16 +199,18 @@ const useManagePaginations = (currentTab) => {
 
 const PagedTransactions = ({loading, transactions, targetAddress}: Props) => {
   const rowsPerPage = ROWS_PER_PAGE
-
   const tabNames = ObjectValues(TAB_NAMES)
-  const tabState = useTabState(tabNames)
+
+  const [currentTab, setTab] = useManageQueryValue('tab', tabNames[0])
+  const tabState = useTabState(tabNames, null, currentTab, setTab)
+
   const [page, onChangePage] = useManagePaginations(tabState.currentTab)
 
   // TODO: better handle loading
   if (loading) return <LoadingInProgress />
 
   const totalCount = transactions.length
-  const from = page * rowsPerPage
+  const from = (page - 1) * rowsPerPage
   const currentTransactions = transactions.slice(from, from + rowsPerPage)
 
   const pagination = (
