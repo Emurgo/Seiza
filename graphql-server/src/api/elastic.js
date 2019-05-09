@@ -221,8 +221,12 @@ const _getSingleHit = async (type: string, query: any) => {
 
 class SearchUsingQuery {
   q: Query
-  constructor(...args: any) {
-    this.q = new Query(...args)
+  constructor(arg: string | Query) {
+    if (arg instanceof Query) {
+      this.q = arg
+    } else {
+      this.q = new Query(arg)
+    }
   }
 
   filter = (...args: any) => new SearchUsingQuery(this.q.filter(...args))
