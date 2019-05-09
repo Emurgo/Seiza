@@ -2,7 +2,7 @@
 import React, {useState} from 'react'
 import {defineMessages} from 'react-intl'
 import idx from 'idx'
-import {Switch, Typography, Grid} from '@material-ui/core'
+import {Switch, Typography, Grid, Hidden} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
 import Pagination from '@/components/visual/Pagination'
@@ -50,6 +50,9 @@ const AutoUpdateSwitch = ({checked, onChange}) => {
 const useStyles = makeStyles((theme) => ({
   wrapper: {
     padding: '5px 10px',
+  },
+  bottomPagination: {
+    marginTop: theme.spacing.unit * 3,
   },
 }))
 
@@ -101,6 +104,16 @@ const PagedBlocks = () => {
 
   analytics.useTrackPageVisitEvent('blocks')
 
+  const pagination = (
+    <Pagination
+      count={totalItemsCount}
+      rowsPerPage={rowsPerPage}
+      page={page || 0}
+      onChangePage={onChangePage}
+      reverseDirection
+    />
+  )
+
   return (
     <SimpleLayout title={translate(messages.header)}>
       <Grid
@@ -124,6 +137,11 @@ const PagedBlocks = () => {
         </Grid>
       </Grid>
       <BlocksTable loading={loading} error={error} blocks={pagedBlocks} columns={ALL_COLUMNS} />
+      <Hidden mdUp>
+        <Grid item className={classes.bottomPagination}>
+          {pagination}
+        </Grid>
+      </Hidden>
     </SimpleLayout>
   )
 }

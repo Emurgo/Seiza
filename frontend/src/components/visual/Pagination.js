@@ -1,7 +1,7 @@
 // @flow
 import React from 'react'
 import classnames from 'classnames'
-import {IconButton, Grid, Input, withStyles, withTheme} from '@material-ui/core'
+import {IconButton, Grid, Input, Hidden, withStyles, withTheme} from '@material-ui/core'
 import {compose} from 'redux'
 import {withHandlers, withStateHandlers, withProps} from 'recompose'
 import {defineMessages} from 'react-intl'
@@ -105,8 +105,8 @@ export default compose(
     const isFirstPage = page === 0
     const isLastPage = page >= pageCount - 1
 
-    return (
-      <Grid container wrap="nowrap" direction="row" justify="center" alignItems="center">
+    const LeftSideArrows = (
+      <React.Fragment>
         <Grid item className={classes.arrowWrapper}>
           <IconButton
             className={classes.arrow}
@@ -133,29 +133,11 @@ export default compose(
             {theme.direction === 'rtl' ? <ArrowRight /> : <ArrowLeft />}
           </IconButton>
         </Grid>
-        <Grid item>
-          <Grid container direction="row" alignItems="center" justify="center">
-            <form onSubmit={onGoToPageSubmit}>
-              <Input
-                style={inputStyle}
-                disableUnderline
-                value={goToPage}
-                onChange={onGoToPageChange}
-                className={classnames(classes.editableInput)}
-                inputProps={inputProps}
-              />
-            </form>
-            <span className={classes.divider}>/</span>
-            <Input
-              style={inputStyle}
-              disableUnderline
-              readOnly
-              value={pageCount}
-              className={classes.input}
-              inputProps={inputProps}
-            />
-          </Grid>
-        </Grid>
+      </React.Fragment>
+    )
+
+    const RightSideArrows = (
+      <React.Fragment>
         <Grid item className={classes.arrowWrapper}>
           <IconButton
             className={classes.arrow}
@@ -182,7 +164,54 @@ export default compose(
             {theme.direction === 'rtl' ? <FirstPageArrow /> : <LastPageArrow />}
           </IconButton>
         </Grid>
+      </React.Fragment>
+    )
+
+    const Controls = (
+      <Grid item>
+        <Grid container direction="row" alignItems="center" justify="center">
+          <form onSubmit={onGoToPageSubmit}>
+            <Input
+              style={inputStyle}
+              disableUnderline
+              value={goToPage}
+              onChange={onGoToPageChange}
+              className={classnames(classes.editableInput)}
+              inputProps={inputProps}
+            />
+          </form>
+          <span className={classes.divider}>/</span>
+          <Input
+            style={inputStyle}
+            disableUnderline
+            readOnly
+            value={pageCount}
+            className={classes.input}
+            inputProps={inputProps}
+          />
+        </Grid>
       </Grid>
+    )
+
+    return (
+      <React.Fragment>
+        <Hidden xsDown>
+          <Grid container wrap="nowrap" direction="row" justify="center" alignItems="center">
+            {LeftSideArrows}
+            {Controls}
+            {RightSideArrows}
+          </Grid>
+        </Hidden>
+        <Hidden smUp>
+          <Grid container wrap="nowrap" direction="row" justify="center" alignItems="center">
+            {Controls}
+          </Grid>
+          <Grid container wrap="nowrap" direction="row" justify="center" alignItems="center">
+            {LeftSideArrows}
+            {RightSideArrows}
+          </Grid>
+        </Hidden>
+      </React.Fragment>
     )
   }
 )
