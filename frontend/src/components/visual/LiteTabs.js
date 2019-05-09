@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom'
 import _ from 'lodash'
 import idx from 'idx'
 import assert from 'assert'
+import cn from 'classnames'
 import {Tabs as MuiTabs, Tab as MuiTab} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {mergeStylesheets} from '@/helpers/styles'
@@ -26,6 +27,18 @@ const useTabStyles = makeStyles((theme) => ({
 const useTabsStyles = makeStyles((theme) => ({
   root: {
     marginLeft: ({alignLeft}) => (alignLeft ? -getPadding(theme) : 'initial'),
+    // need to have for indicator correctly under labels
+    minHeight: 'auto !important',
+    // minHeight is set by default to 48px in material-ui
+    // 'auto' makes it 24px,
+    // so we apply remaining 24px to bottom
+    marginBottom: 24,
+  },
+}))
+
+const useWrapperStyles = makeStyles((theme) => ({
+  wrapper: {
+    position: 'relative',
   },
 }))
 
@@ -37,6 +50,7 @@ const useTabIndicatorStyles = makeStyles((theme) => ({
     position: 'absolute',
     transition: 'all 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
     backgroundColor: theme.palette.tertiary.main,
+    marginLeft: ({alignLeft}) => (alignLeft ? -getPadding(theme) : 'initial'),
   },
 }))
 
@@ -66,8 +80,9 @@ const getWidthOfCurrentTabIndicator = (tabLabelRef) =>
   (labelRectFromTabRef(tabLabelRef).width || 0) * TAB_INDICATOR_WIDTH
 
 export const LiteTabs = ({children, alignLeft, ...props}) => {
-  const classes = useTabsStyles({alignLeft})
-  const indicatorClassName = useTabIndicatorStyles().root
+  const classes = useWrapperStyles()
+  const tabsClasses = useTabsStyles({alignLeft})
+  const indicatorClassName = useTabIndicatorStyles({alignLeft}).root
   const tabsRef = useRef(null)
 
   // https://stackoverflow.com/questions/54633690
@@ -97,16 +112,18 @@ export const LiteTabs = ({children, alignLeft, ...props}) => {
   const indicator = <div style={{...indicatorLocation}} className={indicatorClassName} />
 
   return (
-    <MuiTabs
-      ref={tabsRef}
-      TabIndicatorProps={TAB_INDICATOR_PROPS}
-      classes={mergeStylesheets(classes, props.classes)}
-      textColor="primary"
-      {...props}
-    >
-      {children}
+    <div className={cn(props.className, classes.wrapper)}>
+      <MuiTabs
+        ref={tabsRef}
+        TabIndicatorProps={TAB_INDICATOR_PROPS}
+        classes={mergeStylesheets(tabsClasses, props.classes)}
+        textColor="primary"
+        {...props}
+      >
+        {children}
+      </MuiTabs>
       {indicator}
-    </MuiTabs>
+    </div>
   )
 }
 
