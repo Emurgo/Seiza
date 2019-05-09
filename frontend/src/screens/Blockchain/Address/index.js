@@ -33,7 +33,6 @@ import {extractError} from '@/helpers/errors'
 const summaryMessages = defineMessages({
   NA: 'N/A',
   address: 'Address ID',
-  addressType: 'Address type',
   transactionsCount: 'Total transactions for address',
   balance: 'Address Balance',
   totalAdaReceived: 'Total received ADA',
@@ -59,7 +58,6 @@ const AddressSummaryCard = ({addressSummary, loading}) => {
   addressSummary = loading ? null : addressSummary
 
   const data = {
-    type: idx(addressSummary, (_) => _.type) || NA,
     txCount: formatInt(idx(addressSummary, (_) => _.transactionsCount), {defaultValue: NA}),
     balance: <AdaValue value={idx(addressSummary, (_) => _.balance)} noValue={NA} />,
     totalAdaReceived: (
@@ -70,7 +68,6 @@ const AddressSummaryCard = ({addressSummary, loading}) => {
 
   return (
     <SummaryCard>
-      <Row label={labels.addressType} value={data.type} />
       <Row label={labels.transactionsCount} value={data.txCount} />
       <Row label={labels.balance} value={data.balance} />
       <Row label={labels.totalAdaReceived} value={data.totalAdaReceived} />
