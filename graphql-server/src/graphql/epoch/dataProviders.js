@@ -25,7 +25,6 @@ type Summary = {
 type Epoch = {
   startTime: Object,
   endTime: Object,
-  progress: number,
   summary: Summary,
 }
 
@@ -36,15 +35,10 @@ const mockedEpoch = (epochNumber: number): Epoch => {
   const startTs = 1506203091 + slotCount * slotDuration * epochNumber
   const endTs = startTs + slotCount * slotDuration
 
-  const currentTs = moment().unix()
-  const progress =
-    currentTs <= startTs ? 0 : currentTs >= endTs ? 1 : (currentTs - startTs) / (endTs - startTs)
-
   return {
     epochNumber,
     startTime: moment(startTs * 1000),
     endTime: moment(endTs * 1000),
-    progress,
     summary: {
       _epochNumber: epochNumber,
       slotCount,

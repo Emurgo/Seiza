@@ -7,6 +7,18 @@ const fetchCurrentPrice = async ({pricingAPI}, currency) => {
   return result[currency]
 }
 
+export const fetchCurrentSyncTime = (context) => {
+  const {E, elastic} = context
+
+  return elastic
+    .q('slot')
+    .filter(E.onlyActiveFork())
+    .getAggregations({
+      time: E.agg.max('time'),
+    })
+    .then(({time}) => moment(time))
+}
+
 export const currentStatusResolver = (root, args, context) => {
   const latestBlockResolver = () => fetchLatestBlock(context)
 
@@ -23,15 +35,7 @@ export const currentStatusResolver = (root, args, context) => {
   // TODO: get this info
   const stakePoolCountResolver = () => null
 
-  const dataAvailableUpToResolver = () => {
-    const {E, elastic} = context
-    return elastic
-      .q('slot')
-      .getAggregations({
-        time: E.agg.max('time'),
-      })
-      .then(({time}) => moment(time))
-  }
+  const dataAvailableUpToResolver = () => fetchCurrentSyncTime(context)
 
   return {
     epochNumber: epochNumberResolver,
