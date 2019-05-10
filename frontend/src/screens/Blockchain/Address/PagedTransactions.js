@@ -160,13 +160,12 @@ const TabsHeader = ({tabState, pagination}) => {
   return (
     <Grid container className={classes.headerWrapper}>
       <Grid item>
-        <LiteTabs alignLeft value={currentTabIndex} onChange={setTabByEventIndex}>
+        <LiteTabs value={currentTabIndex} onChange={setTabByEventIndex}>
           {tabs.map(({id, label}) => (
             <LiteTab key={id} label={label} />
           ))}
         </LiteTabs>
       </Grid>
-
       <Grid item>{pagination}</Grid>
     </Grid>
   )
