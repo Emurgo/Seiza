@@ -34,6 +34,9 @@ const useStyles = makeStyles((theme) => ({
       maxWidth: 800,
       width: 800,
     },
+    [theme.breakpoints.up('xl')]: {
+      right: 'calc((100% - 1920px) / 2)',
+    },
   },
   header: {
     textAlign: 'center',
