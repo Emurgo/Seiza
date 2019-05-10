@@ -4,7 +4,7 @@
   "main": "src/index.js",
   "license": "MIT",
   "scripts": {
-    "start": "if test $NODE_ENV == production; then yarn start:production; else NODE_ENV=development babel-watch src/index.js -w src/graphql; fi",
+    "start": "if test $NODE_ENV = production; then yarn start:production; else NODE_ENV=development babel-watch src/index.js -w src/graphql; fi",
     "start:production":"NODE_ENV=production node build/index.js",
     "build": "rm -rf build && babel src --out-dir build",
     "build:heroku": "yarn build",
