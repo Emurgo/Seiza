@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "if test $NODE_ENV = production; then yarn start:heroku; else react-app-rewired start; fi",
-    "start:heroku": "NODE_ENV=production http-server ./build",
+    "start:heroku": "node heroku.js",
     "build": "SENTRY_COMMIT_HASH=`sentry-cli releases propose-version` react-app-rewired build",
     "build:heroku": "sentry-cli releases new $SOURCE_VERSION; REACT_APP_SENTRY_RELEASE_VERSION=$SOURCE_VERSION react-app-rewired build",
     "heroku-postbuild": "yarn build:heroku",
