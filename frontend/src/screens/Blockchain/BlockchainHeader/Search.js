@@ -91,10 +91,11 @@ const useStyles = makeStyles((theme) => ({
   wrapper: {
     position: 'relative',
   },
-  gap: {
+  alert: {
     marginTop: theme.spacing.unit * 1.5,
     position: 'absolute',
     width: '100%',
+    zIndex: 1,
   },
   helpText: {
     marginLeft: theme.spacing.unit * 4,
@@ -120,7 +121,30 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const Search = () => {
+type SearchHelpTextProps = {|
+  className?: string,
+|}
+
+export const SearchHelpText = ({className}: SearchHelpTextProps) => {
+  const classes = useStyles()
+  const {translate: tr} = useI18n()
+  return (
+    <Typography
+      variant="caption"
+      color="textSecondary"
+      className={cn(classes.helpText, className)}
+      align="center"
+    >
+      {tr(text.helpText)}
+    </Typography>
+  )
+}
+
+type SearchProps = {|
+  isMobile?: boolean,
+|}
+
+const Search = ({isMobile = false}: SearchProps) => {
   const {translate: tr} = useI18n()
   const {history} = useReactRouter()
   const classes = useStyles()
@@ -169,7 +193,11 @@ const Search = () => {
         onSearch={onSearch}
         loading={loading}
       />
-      {!loading && error && <LoadingError error={error} />}
+      {!loading && error && (
+        <div className={classes.alert}>
+          <LoadingError error={error} />
+        </div>
+      )}
       <ReactCSSTransitionGroup
         transitionName={{
           leave: classes.alertLeave,
@@ -186,21 +214,14 @@ const Search = () => {
         {showAlert && (
           <Alert
             type="noResults"
-            className={classes.gap}
+            className={classes.alert}
             message={tr(text.noData)}
             title=""
             onClose={onAlertClose}
           />
         )}
       </ReactCSSTransitionGroup>
-      <Typography
-        variant="caption"
-        color="textSecondary"
-        className={cn(classes.helpText, showAlert && classes.helpTextHidden)}
-        align="center"
-      >
-        {tr(text.helpText)}
-      </Typography>
+      {!isMobile && <SearchHelpText className={showAlert ? classes.helpTextHidden : ''} />}
     </div>
   )
 }
