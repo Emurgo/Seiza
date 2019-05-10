@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "react-app-rewired start",
+    "start": "if test $NODE_ENV = production; then yarn start:production; else react-app-rewired start; fi",
+    "start:production": "NODE_ENV=production http-server",
     "build": "SENTRY_COMMIT_HASH=`sentry-cli releases propose-version` react-app-rewired build",
     "build:heroku": "sentry-cli releases new $SOURCE_VERSION; REACT_APP_SENTRY_RELEASE_VERSION=$SOURCE_VERSION react-app-rewired build",
     "heroku-postbuild": "yarn build:heroku",
@@ -36,6 +37,7 @@
     "font-awesome": "^4.7.0",
     "graphql": "^14.1.1",
     "graphql-tag": "^2.10.1",
+    "http-server": "^0.11.1",
     "idx": "^2.5.3",
     "isemail": "^3.2.0",
     "jdenticon": "^2.1.1",
