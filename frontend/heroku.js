@@ -1,8 +1,14 @@
-var express = require('express')
-var app = express()
+const express = require('express');
+const app = express();
+const path = require('path');
+const port = process.env.PORT || 4000;
 
-app.get('/*', function(req, res) {
-    res.sendFile(__dirname + '/build/index.html');
+app.use(express.static(path.join(__dirname, 'build')));
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname = 'build/index.html'));
 })
 
-app.listen(process.env.PORT);
+//start server
+app.listen(port, (req, res) => {
+  console.log( `server listening on port: ${port}`);
+})
