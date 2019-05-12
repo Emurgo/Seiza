@@ -4,7 +4,7 @@ import React from 'react'
 import {makeStyles} from '@material-ui/styles'
 
 import PageNotFound from '../PageNotFound'
-import analytics from '@/helpers/googleAnalytics'
+import {useAnalytics} from '@/helpers/googleAnalytics'
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {
@@ -18,6 +18,7 @@ const useStyles = makeStyles((theme) => ({
 export default () => {
   const classes = useStyles()
 
+  const analytics = useAnalytics()
   analytics.useTrackPageVisitEvent('404-blockchain')
 
   return (

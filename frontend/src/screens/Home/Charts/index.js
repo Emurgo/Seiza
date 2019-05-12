@@ -12,7 +12,7 @@ import {makeStyles} from '@material-ui/styles'
 
 import {useI18n} from '@/i18n/helpers'
 import {ObjectValues} from '@/helpers/flow'
-import analytics from '@/helpers/googleAnalytics'
+import {useAnalytics} from '@/helpers/googleAnalytics'
 import {
   SimpleLayout,
   LiteTabs,
@@ -86,6 +86,7 @@ const TAB_NAMES = {
 
 const TabsHeader = () => {
   const {translate: tr} = useI18n()
+  const analytics = useAnalytics()
   const {currentTabIndex, setTabByEventIndex} = useTabContext()
   const tabs = [
     {id: TAB_NAMES.TOTAL_ADA_SENT, label: tr(messages.totalSentBar)},
@@ -98,7 +99,7 @@ const TabsHeader = () => {
       analytics.trackChartEvent()
       setTabByEventIndex(...args)
     },
-    [setTabByEventIndex]
+    [analytics, setTabByEventIndex]
   )
 
   return (
@@ -251,6 +252,7 @@ const Charts = () => {
     formatAdaSplit,
     formatTimestampToUtcDayAndMonth,
   } = useI18n()
+  const analytics = useAnalytics()
   const [xAxis, setXAxis] = useState(X_AXIS.DAY)
   const [dimensions, setDimensions] = useState({width: -1, height: -1})
 
@@ -269,7 +271,7 @@ const Charts = () => {
       setXAxis(e.target.value)
       analytics.trackChartEvent()
     },
-    [setXAxis]
+    [analytics]
   )
 
   const commonChartProps = {

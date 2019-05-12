@@ -14,7 +14,7 @@ import {Typography} from '@material-ui/core'
 import {useI18n} from '@/i18n/helpers'
 import {Searchbar, LoadingError, Alert} from '@/components/visual'
 import {routeTo} from '@/helpers/routes'
-import analytics from '@/helpers/googleAnalytics'
+import {useAnalytics} from '@/helpers/googleAnalytics'
 
 const text = defineMessages({
   searchPlaceholder: 'Search addresses, transactions, epochs & slots on the Cardano network',
@@ -58,7 +58,7 @@ const useSearchData = (searchQuery, skip) => {
   return {error, loading, searchResult: matchedItems.length ? matchedItems[0] : null}
 }
 
-const getRedirectUrl = (searchResult) => {
+const getRedirectUrl = (analytics, searchResult) => {
   const actionBuilder = {
     Address: {
       redirect: (searchResult) => routeTo.address(searchResult.address58),
@@ -148,6 +148,7 @@ const Search = ({isMobile = false}: SearchProps) => {
   const {translate: tr} = useI18n()
   const {history} = useReactRouter()
   const classes = useStyles()
+  const analytics = useAnalytics()
 
   // "submitted query"
   const [searchQuery, setSearchQuery] = useState('')
@@ -159,7 +160,7 @@ const Search = ({isMobile = false}: SearchProps) => {
   useEffect(() => {
     if (searchResult) {
       setSearchQuery('')
-      history.push(getRedirectUrl(searchResult))
+      history.push(getRedirectUrl(analytics, searchResult))
     }
   })
 

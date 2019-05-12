@@ -20,7 +20,7 @@ import {makeStyles} from '@material-ui/styles'
 import {darken} from '@material-ui/core/styles/colorManipulator'
 
 import {useI18n} from '@/i18n/helpers'
-import analytics from '@/helpers/googleAnalytics'
+import {useAnalytics} from '@/helpers/googleAnalytics'
 import {Button, ExternalLink, Tooltip, CloseIconButton, LoadingOverlay} from '@/components/visual'
 import logo from '@/assets/icons/logo-seiza-white.svg'
 import alertIcon from '@/assets/icons/alert.svg'
@@ -275,6 +275,7 @@ const SubscribeFooter = () => {
   const [email, setEmail] = useState('')
   const {hidden, hideSubscribe} = useSubscribeContext()
   const {uiState, setError, setInit, setSuccess, setLoading, errorMessage} = useUIState('init')
+  const analytics = useAnalytics()
 
   const subscribe = useSubscribeMutation(email)
 
@@ -321,7 +322,17 @@ const SubscribeFooter = () => {
           })
       }
     },
-    [email, setInvalidEmailError, setLoading, subscribe, setSuccess, onHide, setError, tr]
+    [
+      analytics,
+      email,
+      setInvalidEmailError,
+      setLoading,
+      subscribe,
+      setSuccess,
+      onHide,
+      setError,
+      tr,
+    ]
   )
 
   return (
@@ -544,10 +555,11 @@ const useMainFooterStyles = makeStyles(({spacing, palette, typography, breakpoin
 
 const SocialIcon = ({to, icon, className, iconName}) => {
   const classes = useMainFooterStyles()
+  const analytics = useAnalytics()
 
   const onClick = useCallback(() => {
     analytics.trackSocialIconLink(iconName)
-  }, [iconName])
+  }, [analytics, iconName])
 
   return (
     <span className={classes.socialIconWrapper}>
