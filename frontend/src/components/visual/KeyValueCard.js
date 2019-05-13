@@ -28,9 +28,6 @@ const useBodyStyles = makeStyles(({spacing, palette, breakpoints}) => ({
     /* Responsive layout tricks */
     width: '100%',
     textAlign: 'right',
-    [breakpoints.down('xs')]: {
-      textAlign: 'left',
-    },
   },
 }))
 
@@ -113,12 +110,12 @@ const Body = ({items}: BodyProps) => {
       {items.map(({label, value}, index, array) => (
         <RowSpacing key={index} isLast={index === array.length - 1}>
           <Grid container justify="space-between" alignItems="center" direction="row">
-            <Grid item xs={12} sm={4}>
+            <Grid item xs={4}>
               <Typography variant="body1" color="textSecondary">
                 {label}
               </Typography>
             </Grid>
-            <Grid item container xs={12} sm={8}>
+            <Grid item container xs={8}>
               <Typography variant="body1" className={classes.value}>
                 {value}
               </Typography>
