@@ -458,7 +458,7 @@ const useMainFooterStyles = makeStyles(({spacing, palette, typography, breakpoin
     marginRight: spacing.unit * 1.7,
     marginTop: spacing.unit,
 
-    [breakpoints.up('sm')]: {
+    [breakpoints.up('md')]: {
       marginLeft: spacing.unit * 1.7,
       marginRight: 0,
       marginTop: 0,
@@ -515,7 +515,7 @@ const useMainFooterStyles = makeStyles(({spacing, palette, typography, breakpoin
     alignItems: 'flex-start',
     paddingLeft: spacing.unit * 3,
 
-    [breakpoints.up('sm')]: {
+    [breakpoints.up('md')]: {
       flexDirection: 'row',
       alignItems: 'flex-end',
       paddingLeft: 0,
@@ -546,7 +546,7 @@ const useMainFooterStyles = makeStyles(({spacing, palette, typography, breakpoin
     flexDirection: 'column',
     alignItems: 'flex-start',
 
-    [breakpoints.up('sm')]: {
+    [breakpoints.up('md')]: {
       flexDirection: 'row',
       alignItems: 'center',
     },

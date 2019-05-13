@@ -1,14 +1,14 @@
 // @flow
-import React from 'react'
+import React, {useRef} from 'react'
 import _ from 'lodash'
 import ReactMarkdown from 'react-markdown'
 
 import {Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {SimpleLayout, ExpansionPanel} from '@/components/visual'
+import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
 
 import {useI18n} from '@/i18n/helpers'
-import messages from './tos.en'
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -75,20 +75,26 @@ const Preamble = ({head, content}) => {
   )
 }
 
-const Terms = () => {
+const LegalTermsLayout = ({messages}: {messages: any}) => {
   const {translate: tr} = useI18n()
+  const scrollToRef = useRef(null)
+
+  useScrollFromBottom(scrollToRef)
+
   return (
-    <SimpleLayout maxWidth="800px">
-      <Preamble head={tr(messages.heading)} content={tr(messages.preamble)} />
-      {_.range(11).map((i) => (
-        <Panel
-          key={i}
-          head={`${i + 1}. ${tr(messages[`h${i + 1}`])}`}
-          content={tr(messages[`p${i + 1}`])}
-        />
-      ))}
-    </SimpleLayout>
+    <div ref={scrollToRef}>
+      <SimpleLayout maxWidth="800px">
+        <Preamble head={tr(messages.heading)} content={tr(messages.preamble)} />
+        {_.range(11).map((i) => (
+          <Panel
+            key={i}
+            head={`${i + 1}. ${tr(messages[`h${i + 1}`])}`}
+            content={tr(messages[`p${i + 1}`])}
+          />
+        ))}
+      </SimpleLayout>
+    </div>
   )
 }
 
-export default Terms
+export default LegalTermsLayout
