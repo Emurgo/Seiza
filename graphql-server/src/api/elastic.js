@@ -18,7 +18,9 @@ import https from 'https'
 
 const ELASTIC_URL = process.env.ELASTIC_URL
 const ELASTIC_INDEX = process.env.ELASTIC_INDEX
-validate(!!ELASTIC_INDEX, 'Elastic index must be set', {value: ELASTIC_INDEX})
+validate(!!ELASTIC_INDEX, 'Elastic index must be set', {
+  value: ELASTIC_INDEX,
+})
 validate(!!ELASTIC_URL, 'Elastic url must be set', {value: ELASTIC_URL})
 
 // if AWS credentials were provided via env, we use 'aws-elasticsearch-client'
@@ -137,7 +139,10 @@ const legacyErrorHandler = (err, meta) => {
     err instanceof LegacyErrors.RequestTimeout ||
     err instanceof LegacyErrors.NoConnections
   ) {
-    throw new ApolloError('Could not reach database', 'DB_UNREACHABLE', {...meta, err})
+    throw new ApolloError('Could not reach database', 'DB_UNREACHABLE', {
+      ...meta,
+      err,
+    })
   }
 
   throw new ApolloError('Bad response from database', 'DB_ERROR', {

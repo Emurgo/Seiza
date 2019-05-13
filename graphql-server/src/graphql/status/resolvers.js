@@ -2,7 +2,10 @@ import {fetchLatestBlock} from '../block/dataProviders'
 import moment from 'moment'
 
 const fetchCurrentPrice = async ({pricingAPI}, currency) => {
-  const result = await pricingAPI.get('price', {fsym: 'ADA', tsyms: currency})
+  const result = await pricingAPI.get('price', {
+    fsym: 'ADA',
+    tsyms: currency,
+  })
 
   return result[currency]
 }
