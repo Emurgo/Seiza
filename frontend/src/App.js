@@ -19,7 +19,8 @@ import {Navbar, MobileNavbar, Footer} from './components/visual'
 import {useI18n, InjectHookIntlContext} from '@/i18n/helpers'
 import {AutoSyncProvider} from './screens/Staking/context/autoSync'
 
-import Terms from './screens/Terms'
+import Terms from './screens/Officials/Terms'
+import Privacy from './screens/Officials/Privacy'
 import Home from './screens/Home'
 import Blockchain from './screens/Blockchain'
 import Staking from './screens/Staking'
@@ -45,6 +46,7 @@ const navigationMessages = defineMessages({
   stakePools: 'Stake pools',
   more: 'More',
   termsOfUse: 'Terms of use',
+  privacy: 'Privacy',
   disabledText: 'Coming soon',
 })
 
@@ -105,6 +107,7 @@ const getTranslatedFooterNavItems = (translate) => {
   return [
     ...mainNavItems,
     {link: routeTo.termsOfUse(), label: translate(navigationMessages.termsOfUse), __hide: false},
+    {link: routeTo.privacy(), label: translate(navigationMessages.privacy), __hide: false},
   ]
 }
 
@@ -184,6 +187,7 @@ const AppLayout = () => {
               )}
               {config.showStakingData && <Route path={routeTo.more()} component={More} />}
               <Route exact path={routeTo.termsOfUse()} component={Terms} />
+              <Route exact path={routeTo.privacy()} component={Privacy} />
               <Route component={PageNotFound} />
             </Switch>
           </Grid>

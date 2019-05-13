@@ -7,6 +7,7 @@ import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
 
 import {Card, Link, ContentSpacing, Button} from '@/components/visual'
+import {routeTo} from '@/helpers/routes'
 import {useI18n} from '@/i18n/helpers'
 import {useCookiesContext} from '@/components/context/CookiesContext'
 import cookiesIcon from '@/assets/icons/cookies.svg'
@@ -88,7 +89,8 @@ const CookiesBanner = () => {
                   </Typography>
                   <Typography>{tr(messages.textPartOne)}</Typography>
                   <Typography>
-                    {tr(messages.textPartTwo)} <Link to={null}>{tr(messages.linkText)}</Link>
+                    {tr(messages.textPartTwo)}{' '}
+                    <Link to={routeTo.privacy()}>{tr(messages.linkText)}</Link>
                   </Typography>
                 </Grid>
               </Grid>
