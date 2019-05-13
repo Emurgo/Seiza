@@ -23,6 +23,7 @@ import Terms from './screens/Officials/Terms'
 import Privacy from './screens/Officials/Privacy'
 import Home from './screens/Home'
 import Blockchain from './screens/Blockchain'
+import BlockchainHeader from './screens/Blockchain/BlockchainHeader'
 import Staking from './screens/Staking'
 import More from './screens/More'
 import PageNotFound from './screens/PageNotFound'
@@ -195,8 +196,13 @@ const AppLayout = () => {
           <Grid item className={classes.contentWrapper}>
             <Switch>
               <Redirect exact from="/" to={routeTo.home()} />
-              <Route exact path={routeTo.home()} component={Home} />
-              <Route path={routeTo.blockchain()} component={Blockchain} />
+
+              <Route path={`:path(${routeTo.home()}|${routeTo.blockchain()})`}>
+                <BlockchainHeader />
+                <Route exact path={routeTo.home()} component={Home} />
+                <Route path={routeTo.blockchain()} component={Blockchain} />
+              </Route>
+
               {config.showStakingData && (
                 <Route path={routeTo.staking.home()} component={Staking} />
               )}

@@ -3,7 +3,6 @@ import React, {useRef} from 'react'
 
 import config from '@/config'
 import {useAnalytics} from '@/helpers/googleAnalytics'
-import BlockchainHeader from '@/screens/Blockchain/BlockchainHeader'
 import GeneralInfo from './GeneralInfo'
 import StakePoolsInfo from './StakePoolsInfo'
 import Charts from './Charts'
@@ -21,7 +20,6 @@ export default () => {
 
   return (
     <React.Fragment>
-      <BlockchainHeader />
       <SyncIssuesBar />
       <div ref={scrollToRef}>
         <Charts />
