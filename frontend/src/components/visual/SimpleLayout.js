@@ -3,7 +3,7 @@ import cn from 'classnames'
 import {Grid, withStyles, createStyles} from '@material-ui/core'
 import EntityHeading from './EntityHeading'
 
-const styles = ({palette, spacing}) =>
+const styles = ({palette, spacing, breakpoints}) =>
   createStyles({
     container: {
       paddingTop: spacing.unit * 2.5,
@@ -23,6 +23,14 @@ const styles = ({palette, spacing}) =>
         right: '25%',
         width: '50%',
         height: '1px',
+      },
+    },
+    content: {
+      // Pretty tight margins on mobile
+      width: `calc(100vw - ${spacing.unit * 6}px)`,
+      [breakpoints.up('sm')]: {
+        // Wide margins on desktop
+        width: '85vw',
       },
     },
     childrenContainer: {
@@ -45,7 +53,7 @@ const SimpleLayout = ({title, classes, children, className, maxWidth = '1500px'}
     direction="row"
     justify="space-around"
   >
-    <div style={{width: '85vw', maxWidth}}>
+    <div className={classes.content} style={{maxWidth}}>
       <Grid container direction="row" justify="center">
         <div className={classes.titleWrapper}>
           <EntityHeading>{title}</EntityHeading>
