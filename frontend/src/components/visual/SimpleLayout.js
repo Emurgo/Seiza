@@ -26,9 +26,11 @@ const styles = ({palette, spacing, breakpoints}) =>
       },
     },
     content: {
-      width: '85vw',
-      [breakpoints.down('xs')]: {
-        width: `calc(100vw - ${spacing.unit * 6}px)`,
+      // Pretty tight margins on mobile
+      width: `calc(100vw - ${spacing.unit * 6}px)`,
+      [breakpoints.up('sm')]: {
+        // Wide margins on desktop
+        width: '85vw',
       },
     },
     childrenContainer: {
