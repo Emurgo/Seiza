@@ -1,5 +1,5 @@
 // @flow
-import React, {useState} from 'react'
+import React, {useState, useRef} from 'react'
 import {defineMessages} from 'react-intl'
 import idx from 'idx'
 import {Switch, Typography, Grid, Hidden} from '@material-ui/core'
@@ -15,6 +15,7 @@ import {
 } from '@/components/hooks/useBlocksTablePagedProps'
 import {useQueryNotBugged} from '@/components/hooks/useQueryNotBugged'
 import {useManageQueryValue} from '@/components/hooks/useManageQueryValue'
+import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
 import {toIntOrNull} from '@/helpers/utils'
 import BlocksTable, {ALL_COLUMNS} from './BlocksTable'
 import {useAnalytics} from '@/helpers/googleAnalytics'
@@ -105,6 +106,9 @@ const PagedBlocks = () => {
   const analytics = useAnalytics()
   analytics.useTrackPageVisitEvent('blocks')
 
+  const scrollToRef = useRef(null)
+  useScrollFromBottom(scrollToRef, pagedBlocks)
+
   const pagination = (
     <Pagination
       count={totalItemsCount}
@@ -116,34 +120,36 @@ const PagedBlocks = () => {
   )
 
   return (
-    <SimpleLayout title={translate(messages.header)}>
-      <Grid
-        className={classes.wrapper}
-        container
-        direction="row"
-        alignItems="center"
-        justify="space-between"
-      >
-        <Grid item>
-          <AutoUpdateSwitch checked={autoUpdate} onChange={onChangeAutoUpdate} />
+    <div ref={scrollToRef}>
+      <SimpleLayout title={translate(messages.header)}>
+        <Grid
+          className={classes.wrapper}
+          container
+          direction="row"
+          alignItems="center"
+          justify="space-between"
+        >
+          <Grid item>
+            <AutoUpdateSwitch checked={autoUpdate} onChange={onChangeAutoUpdate} />
+          </Grid>
+          <Grid item>
+            <Pagination
+              count={totalItemsCount}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onChangePage={onChangePage}
+              reverseDirection
+            />
+          </Grid>
         </Grid>
-        <Grid item>
-          <Pagination
-            count={totalItemsCount}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onChangePage={onChangePage}
-            reverseDirection
-          />
-        </Grid>
-      </Grid>
-      <BlocksTable loading={loading} error={error} blocks={pagedBlocks} columns={ALL_COLUMNS} />
-      <Hidden mdUp>
-        <Grid item className={classes.bottomPagination}>
-          {pagination}
-        </Grid>
-      </Hidden>
-    </SimpleLayout>
+        <BlocksTable loading={loading} error={error} blocks={pagedBlocks} columns={ALL_COLUMNS} />
+        <Hidden mdUp>
+          <Grid item className={classes.bottomPagination}>
+            {pagination}
+          </Grid>
+        </Hidden>
+      </SimpleLayout>
+    </div>
   )
 }
 
