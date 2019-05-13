@@ -9,7 +9,6 @@ import {
   TableCell as TD,
   Typography,
   Grid,
-  Hidden,
 } from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
@@ -18,16 +17,23 @@ import {fade} from '@material-ui/core/styles/colorManipulator'
 
 import {Card, KeyValueCard} from '@/components/visual'
 import {useI18n} from '@/i18n/helpers'
+import {useIsBreakpointDown} from '@/components/hooks/useIsBreakpointDown'
+
 import Overlay from './Overlay'
 import LoadingOverlay from './LoadingOverlay'
 import ErrorOverlay from './ErrorOverlay'
+
+export const ROW_TYPE = {
+  DATA: 'data',
+  SEPARATOR: 'separator',
+}
 
 const messages = defineMessages({
   noData: 'No data to show.',
 })
 
 const useTableStyles = makeStyles(({hover, palette}) => ({
-  root: {
+  wrapperRoot: {
     width: '100%',
     overflowX: 'auto',
   },
@@ -57,6 +63,19 @@ const useTableStyles = makeStyles(({hover, palette}) => ({
   head: {
     textTransform: 'uppercase',
   },
+  separatorContainerDesktop: {
+    height: '20px',
+    padding: '0px',
+    borderTop: '1px solid transparent',
+  },
+  separatorLine: {
+    borderBottom: '1px solid #aaa',
+    flexGrow: 1,
+    margin: '10px 10px 10px 10px',
+  },
+  mobileTable: {
+    minHeight: '100px',
+  },
 }))
 
 type TableProps = {|
@@ -66,10 +85,14 @@ type TableProps = {|
     align?: string,
     thAlign?: string,
   |}>,
-  noDataText?: string,
   loading: boolean,
   error: any,
   hoverable?: boolean,
+|}
+
+type _TableProps = {|
+  ...TableProps,
+  noDataRenderer: any,
 |}
 
 const getAlignment = (fieldsConfig, index) => (fieldsConfig ? fieldsConfig[index].align : 'left')
@@ -77,127 +100,175 @@ const getAlignment = (fieldsConfig, index) => (fieldsConfig ? fieldsConfig[index
 const getThAlignment = (fieldsConfig, index) =>
   fieldsConfig ? fieldsConfig[index].thAlign || fieldsConfig[index].align : 'left'
 
-const NormalTable = ({
+const DesktopTHead = ({headerData, fieldsConfig}) => {
+  const classes = useTableStyles()
+  return (
+    <TableHead className={classes.head}>
+      <TR>
+        {headerData.map((item, index) => (
+          <TD key={index} align={getThAlignment(fieldsConfig, index)} className={classes.cell}>
+            {item}
+          </TD>
+        ))}
+      </TR>
+    </TableHead>
+  )
+}
+
+const DesktopRowData = ({row: {data}, fieldsConfig}) => {
+  const classes = useTableStyles()
+
+  return (
+    <React.Fragment>
+      {data.map((item, index) => (
+        <TD
+          key={index}
+          align={getAlignment(fieldsConfig, index)}
+          className={cn(classes.cell, classes.bodyCell)}
+        >
+          {item}
+        </TD>
+      ))}
+    </React.Fragment>
+  )
+}
+
+const DesktopSeparator = ({fieldsConfig, row: {text}}) => {
+  const classes = useTableStyles()
+  return (
+    <td colSpan="8" className={classes.separatorContainerDesktop}>
+      <Grid container>
+        <div className={classes.separatorLine} />
+        <span>{text}</span>
+        <div className={classes.separatorLine} />
+      </Grid>
+    </td>
+  )
+}
+
+const DesktopTable = ({
   headerData,
   bodyData,
-  noDataText,
   loading,
   error,
   fieldsConfig,
   hoverable = false,
-}: TableProps) => {
+  noDataRenderer,
+}: _TableProps) => {
   const classes = useTableStyles()
-  const {translate: tr} = useI18n()
-  const _noDataText = noDataText || tr(messages.noData)
 
   // TODO: We could have different config/data structure, but I would suggest to refactor that
   // when we have more config options, and better see the requirements
   return (
-    <Card classes={{root: classes.root}}>
-      <Overlay.Wrapper>
-        <MuiTable>
-          <TableHead className={classes.head}>
+    <MuiTable>
+      <DesktopTHead headerData={headerData} fieldsConfig={fieldsConfig} />
+      <TableBody>
+        {bodyData.length > 0 ? (
+          bodyData.map((row, index) => {
+            const Renderer = {
+              [ROW_TYPE.DATA]: DesktopRowData,
+              [ROW_TYPE.SEPARATOR]: DesktopSeparator,
+            }[row.type]
+
+            return (
+              <TR
+                key={index}
+                className={cn(
+                  classes.row,
+                  hoverable && row.type === ROW_TYPE.DATA && classes.hoverableRow
+                )}
+              >
+                <Renderer {...{row, fieldsConfig}} />
+              </TR>
+            )
+          })
+        ) : (
+          <React.Fragment>
             <TR>
-              {headerData.map((item, index) => (
-                <TD
-                  key={index}
-                  align={getThAlignment(fieldsConfig, index)}
-                  className={classes.cell}
-                >
-                  {item}
-                </TD>
-              ))}
+              <TD colSpan={headerData.length} rowSpan={2}>
+                {noDataRenderer()}
+              </TD>
             </TR>
-          </TableHead>
-          <TableBody>
-            {bodyData.length ? (
-              bodyData.map((row, outerIndex) => (
-                <TR key={outerIndex} className={cn(classes.row, hoverable && classes.hoverableRow)}>
-                  {row.map((item, innerIndex) => (
-                    <TD
-                      key={innerIndex}
-                      align={getAlignment(fieldsConfig, innerIndex)}
-                      className={cn(classes.cell, classes.bodyCell)}
-                    >
-                      {item}
-                    </TD>
-                  ))}
-                </TR>
-              ))
-            ) : (
-              <React.Fragment>
-                <TR>
-                  <TD colSpan={headerData.length} rowSpan={2}>
-                    {!loading && (
-                      <Grid container justify="space-around" direction="row">
-                        <Typography variant="caption">{_noDataText}</Typography>
-                      </Grid>
-                    )}
-                  </TD>
-                </TR>
-                <TR />
-              </React.Fragment>
-            )}
-          </TableBody>
-        </MuiTable>
-        <LoadingOverlay loading={loading} />
-        <ErrorOverlay error={error} />
-      </Overlay.Wrapper>
-    </Card>
+            <TR />
+          </React.Fragment>
+        )}
+      </TableBody>
+    </MuiTable>
+  )
+}
+
+const MobileBodyData = ({fieldsConfig, row, headerData, hoverable}) => {
+  return (
+    <KeyValueCard.Body
+      items={_.zip(headerData, row.data).map(([head, item]) => ({
+        label: head,
+        value: item,
+      }))}
+    />
+  )
+}
+
+const MobileSeparator = ({fieldsConfig, row: {text}, hoverable}) => {
+  const classes = useTableStyles()
+  return (
+    <Grid container>
+      <div className={classes.separatorLine} />
+      <span>{text}</span>
+      <div className={classes.separatorLine} />
+    </Grid>
   )
 }
 
 const MobileTable = ({
   headerData,
   bodyData,
-  noDataText,
   loading,
   error,
   fieldsConfig,
   hoverable = false,
-}: TableProps) => {
+  noDataRenderer,
+}: _TableProps) => {
   const classes = useTableStyles()
-  const {translate: tr} = useI18n()
-  const _noDataText = noDataText || tr(messages.noData)
 
   // TODO: We could have different config/data structure, but I would suggest to refactor that
   // when we have more config options, and better see the requirements
   return (
-    <Card classes={{root: classes.root}}>
+    <div className={classes.mobileTable}>
+      {bodyData.length > 0 ? (
+        bodyData.map((row, index) => {
+          const Renderer = {
+            [ROW_TYPE.DATA]: MobileBodyData,
+            [ROW_TYPE.SEPARATOR]: MobileSeparator,
+          }[row.type]
+
+          return (
+            <div
+              key={index}
+              className={cn(
+                classes.row,
+                hoverable && row.type === ROW_TYPE.DATA && classes.hoverableRow
+              )}
+            >
+              <Renderer {...{row, fieldsConfig, headerData}} />
+            </div>
+          )
+        })
+      ) : (
+        <Grid style={{height: 100}} container direction="column" justify="space-around">
+          {noDataRenderer()}
+        </Grid>
+      )}
+    </div>
+  )
+}
+
+const TableWrapper = ({loading, error, children}: any) => {
+  const classes = useTableStyles()
+
+  return (
+    <Card classes={{root: classes.wrapperRoot}}>
       <Overlay.Wrapper>
-        <MuiTable>
-          <TableHead />
-          {bodyData.length ? (
-            <TableBody>
-              {bodyData.map((row, outerIndex) => (
-                <TR key={outerIndex} className={cn(classes.row, hoverable && classes.hoverableRow)}>
-                  {/* This div is needed for fitting KeyValueCard to the cell */}
-                  <div>
-                    <KeyValueCard.Body
-                      items={_.zip(headerData, row).map(([head, item]) => ({
-                        label: head,
-                        value: item,
-                      }))}
-                    />
-                  </div>
-                </TR>
-              ))}
-            </TableBody>
-          ) : (
-            <React.Fragment>
-              <TR>
-                <TD colSpan={headerData.length} rowSpan={2}>
-                  {!loading && (
-                    <Grid container justify="space-around" direction="row">
-                      <Typography variant="caption">{_noDataText}</Typography>
-                    </Grid>
-                  )}
-                </TD>
-              </TR>
-              <TR />
-            </React.Fragment>
-          )}
-        </MuiTable>
+        {children}
         <LoadingOverlay loading={loading} />
         <ErrorOverlay error={error} />
       </Overlay.Wrapper>
@@ -206,15 +277,23 @@ const MobileTable = ({
 }
 
 const Table = (props: TableProps) => {
+  const {translate: tr} = useI18n()
+  const _noDataText = tr(messages.noData)
+  const isMobile = useIsBreakpointDown('sm')
+
+  const noDataRenderer = () =>
+    !props.loading && (
+      <Grid container justify="space-around" direction="row">
+        <Typography variant="caption">{_noDataText}</Typography>
+      </Grid>
+    )
+
+  const TableImpl = isMobile ? MobileTable : DesktopTable
+
   return (
-    <React.Fragment>
-      <Hidden smDown>
-        <NormalTable {...props} />
-      </Hidden>
-      <Hidden mdUp>
-        <MobileTable {...props} />
-      </Hidden>
-    </React.Fragment>
+    <TableWrapper loading={props.loading} error={props.error}>
+      <TableImpl {...props} noDataRenderer={noDataRenderer} />
+    </TableWrapper>
   )
 }
 export default Table
