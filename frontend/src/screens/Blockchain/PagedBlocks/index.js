@@ -17,7 +17,7 @@ import {useQueryNotBugged} from '@/components/hooks/useQueryNotBugged'
 import {useManageQueryValue} from '@/components/hooks/useManageQueryValue'
 import {toIntOrNull} from '@/helpers/utils'
 import BlocksTable, {ALL_COLUMNS} from './BlocksTable'
-import analytics from '@/helpers/googleAnalytics'
+import {useAnalytics} from '@/helpers/googleAnalytics'
 
 const AUTOUPDATE_REFRESH_INTERVAL = 10 * 1000
 
@@ -102,6 +102,7 @@ const PagedBlocks = () => {
 
   const pagedBlocks = pagedDataResult.pagedData
 
+  const analytics = useAnalytics()
   analytics.useTrackPageVisitEvent('blocks')
 
   const pagination = (
