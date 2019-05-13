@@ -8,7 +8,7 @@ const graphQLServerUrl = process.env.REACT_APP_GRAPHQL_SERVER_URL
 assert(graphQLServerUrl)
 
 const googleAnalyticsId = process.env.REACT_APP_GOOGLE_ANALYTICS_ID
-assert(googleAnalyticsId)
+isProduction && assert(googleAnalyticsId)
 
 const sentryDSN = process.env.REACT_APP_SENTRY_DSN
 isProduction && assert(sentryDSN)
