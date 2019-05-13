@@ -175,7 +175,13 @@ const useSubscribeFooterStyles = makeStyles(({palette, spacing, breakpoints}) =>
   'subscribe': {
     marginLeft: spacing.unit * 1.3,
     marginRight: spacing.unit * 1.3,
+    marginTop: spacing.unit,
+    marginBottom: spacing.unit,
     width: '200px',
+    [breakpoints.up('sm')]: {
+      marginTop: 0,
+      marginBottom: 0,
+    },
   },
   'email': {
     width: '280px',
@@ -480,12 +486,14 @@ const useMainFooterStyles = makeStyles(({spacing, palette, typography, breakpoin
       flexDirection: 'row',
     },
     '& > *': {
+      marginTop: spacing.unit * 0.5,
       marginRight: spacing.unit * 2,
     },
     '& > :last-child': {
       marginRight: 0,
     },
     [breakpoints.up('md')]: {
+      'marginTop': 0,
       '& > *': {
         marginRight: spacing.unit * 4,
       },
