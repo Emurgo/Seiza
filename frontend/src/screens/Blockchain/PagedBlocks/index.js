@@ -51,6 +51,10 @@ const AutoUpdateSwitch = ({checked, onChange}) => {
 const useStyles = makeStyles((theme) => ({
   wrapper: {
     padding: '5px 10px',
+    flexDirection: 'column',
+    [theme.breakpoints.up('sm')]: {
+      flexDirection: 'row',
+    },
   },
   bottomPagination: {
     marginTop: theme.spacing.unit * 3,
@@ -122,13 +126,7 @@ const PagedBlocks = () => {
   return (
     <div ref={scrollToRef}>
       <SimpleLayout title={translate(messages.header)}>
-        <Grid
-          className={classes.wrapper}
-          container
-          direction="row"
-          alignItems="center"
-          justify="space-between"
-        >
+        <Grid className={classes.wrapper} container alignItems="center" justify="space-between">
           <Grid item>
             <AutoUpdateSwitch checked={autoUpdate} onChange={onChangeAutoUpdate} />
           </Grid>
