@@ -548,6 +548,12 @@ const useMainFooterStyles = makeStyles(({spacing, palette, typography, breakpoin
     cursor: 'pointer',
     height: '100%',
     fontSize: typography.fontSize * 0.7,
+    marginTop: spacing.unit * 0.5,
+    marginBottom: spacing.unit * 0.5,
+    [breakpoints.up('sm')]: {
+      marginTop: 0,
+      marginBottom: 0,
+    },
   },
   bottomBarContainer: {
     justifyContent: 'space-between',
