@@ -21,7 +21,7 @@ import {toIntOrNull} from '@/helpers/utils'
 import BlocksTable, {ALL_COLUMNS} from './BlocksTable'
 import {useAnalytics} from '@/helpers/googleAnalytics'
 
-const AUTOUPDATE_REFRESH_INTERVAL = 10 * 1000
+const AUTOUPDATE_REFRESH_INTERVAL = 20 * 1000
 
 const messages = defineMessages({
   refreshState: 'Refresh state:',
