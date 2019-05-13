@@ -1,7 +1,8 @@
 // @flow
 
 import React from 'react'
-import {Grid, Typography, Fade} from '@material-ui/core'
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
+import {Grid, Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
 
@@ -46,6 +47,13 @@ const useStyles = makeStyles((theme) => ({
       textAlign: 'left',
     },
   },
+  leave: {
+    opacity: 1,
+  },
+  leaveActive: {
+    opacity: 0,
+    transition: 'opacity 1000ms',
+  },
 }))
 
 const CookiesBanner = () => {
@@ -53,40 +61,49 @@ const CookiesBanner = () => {
   const {translate: tr} = useI18n()
   const {cookiesAccepted, acceptCookies} = useCookiesContext()
 
-  const show = !cookiesAccepted
-
   return (
-    <Fade in={show} timeout={show ? 0 : 500}>
-      <Card className={classes.card}>
-        <ContentSpacing top={0.6} bottom={0.6} left={0.6} right={0.6}>
-          <Grid container alignItems="center" spacing={16}>
-            <Grid item xs={12} md={2}>
-              <Grid container justify="center">
-                <img src={cookiesIcon} alt="" />
+    <ReactCSSTransitionGroup
+      transitionName={{
+        leave: classes.leave,
+        leaveActive: classes.leaveActive,
+      }}
+      transitionLeave
+      transitionLeaveTimeout={1000}
+      transitionAppear={false}
+      transitionEnter={false}
+    >
+      {!cookiesAccepted && (
+        <Card className={classes.card}>
+          <ContentSpacing top={0.6} bottom={0.6} left={0.6} right={0.6}>
+            <Grid container alignItems="center" spacing={16}>
+              <Grid item xs={12} md={2}>
+                <Grid container justify="center">
+                  <img src={cookiesIcon} alt="" />
+                </Grid>
+              </Grid>
+              <Grid item xs={12} md={7}>
+                <Grid container direction="column">
+                  <Typography variant="overline" className={classes.header}>
+                    {tr(messages.header)}
+                  </Typography>
+                  <Typography>{tr(messages.textPartOne)}</Typography>
+                  <Typography>
+                    {tr(messages.textPartTwo)} <Link to={null}>{tr(messages.linkText)}</Link>
+                  </Typography>
+                </Grid>
+              </Grid>
+              <Grid item xs={12} md={3}>
+                <Grid container justify="center">
+                  <Button onClick={acceptCookies} color="primary">
+                    {tr(messages.confirm)}
+                  </Button>
+                </Grid>
               </Grid>
             </Grid>
-            <Grid item xs={12} md={7}>
-              <Grid container direction="column">
-                <Typography variant="overline" className={classes.header}>
-                  {tr(messages.header)}
-                </Typography>
-                <Typography>{tr(messages.textPartOne)}</Typography>
-                <Typography>
-                  {tr(messages.textPartTwo)} <Link to={null}>{tr(messages.linkText)}</Link>
-                </Typography>
-              </Grid>
-            </Grid>
-            <Grid item xs={12} md={3}>
-              <Grid container justify="center">
-                <Button onClick={acceptCookies} color="primary">
-                  {tr(messages.confirm)}
-                </Button>
-              </Grid>
-            </Grid>
-          </Grid>
-        </ContentSpacing>
-      </Card>
-    </Fade>
+          </ContentSpacing>
+        </Card>
+      )}
+    </ReactCSSTransitionGroup>
   )
 }
 
