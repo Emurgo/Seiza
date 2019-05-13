@@ -76,8 +76,12 @@ export const fetchTransactionCount = ({elastic, E}: any, epochNumber: number) =>
 export const fetchTotalAdaSupply = async ({elastic, E}: Context, epochNumber: number) => {
   // fetch last tx before end of this epoch
 
+  // Note(ppershing): in order to support *future* epochs, we use
+  // lte instead of eq!
   const hit = await elastic
-    .q(epochTxs(epochNumber))
+    .q('tx')
+    .filter(E.onlyActiveFork())
+    .filter(E.lte('epoch', epochNumber))
     .sortBy('epoch', 'desc')
     .sortBy('tx_ordinal', 'desc')
     .getFirstHit()
