@@ -56,6 +56,9 @@ const useAppStyles = makeStyles((theme) => ({
     margin: 'auto',
     height: '100%',
     overflow: 'auto', // Needed by mobile "sticky" header
+    [theme.breakpoints.up('md')]: {
+      overflow: 'visible',
+    },
   },
   contentWrapper: {
     flex: 1,
