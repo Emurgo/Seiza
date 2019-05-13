@@ -15,7 +15,7 @@ import config from './config'
 import {routeTo} from './helpers/routes'
 import {provideIntl} from './components/HOC/intl'
 import {provideTheme, withTheme, THEME_DEFINITIONS} from './components/HOC/theme'
-import {Navbar, MobileNavbar, Footer} from './components/visual'
+import {Navbar, MobileNavbar, Footer, Link} from './components/visual'
 import {useI18n, InjectHookIntlContext} from '@/i18n/helpers'
 import {AutoSyncProvider} from './screens/Staking/context/autoSync'
 
@@ -138,7 +138,9 @@ const TopBar = compose(withRouter)(({location: {pathname}}) => {
           className={classes.topBar}
         >
           <Grid item>
-            <img alt="" src={seizaLogo} />
+            <Link to={routeTo.home()}>
+              <img alt="" src={seizaLogo} />
+            </Link>
           </Grid>
           <Grid item>
             <Grid container direction="row" alignItems="center">
