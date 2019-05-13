@@ -12,22 +12,29 @@ const messages = defineMessages({
   header: 'Ada Blockchain Explorer',
 })
 
-const styles = ({palette, spacing}) =>
+const styles = ({palette, spacing, breakpoints}) =>
   createStyles({
     wrapper: {
       background: palette.gradient,
     },
     metricsWrapper: {
-      marginTop: spacing.unit * 5,
-      marginBottom: spacing.unit * 5,
+      marginTop: spacing.unit * 2,
+      marginBottom: spacing.unit * 1,
+      [breakpoints.up('md')]: {
+        marginTop: spacing.unit * 5,
+        marginBottom: spacing.unit * 5,
+      },
     },
     searchWrapper: {
       'marginLeft': 'auto',
       'marginRight': 'auto',
-      'marginBottom': spacing.unit * 6.5,
+      'marginBottom': spacing.unit * 1,
       '& > *': {
         marginTop: spacing.unit * 1.25,
         marginBottom: spacing.unit * 1.25,
+      },
+      [breakpoints.up('md')]: {
+        marginBottom: spacing.unit * 6.5,
       },
     },
   })
