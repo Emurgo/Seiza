@@ -53,6 +53,7 @@ const useAppStyles = makeStyles((theme) => ({
     maxWidth: '1920px',
     margin: 'auto',
     height: '100%',
+    overflow: 'auto', // Needed by mobile "sticky" header
   },
   contentWrapper: {
     flex: 1,
@@ -71,6 +72,15 @@ const useAppStyles = makeStyles((theme) => ({
     marginLeft: 0,
     [theme.breakpoints.up('sm')]: {
       marginLeft: theme.spacing.unit * 2,
+    },
+  },
+  navHeaderWrapper: {
+    position: 'sticky',
+    top: 0,
+    zIndex: 1,
+    [theme.breakpoints.up('md')]: {
+      position: 'static',
+      zIndex: 0,
     },
   },
 }))
@@ -168,7 +178,7 @@ const AppLayout = () => {
     <Grid container direction="column" className={classes.mainWrapper} wrap="nowrap">
       <CookiesBanner />
 
-      <Grid item>
+      <Grid item className={classes.navHeaderWrapper}>
         <CssBaseline />
         <TopBar />
       </Grid>
