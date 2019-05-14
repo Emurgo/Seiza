@@ -101,7 +101,7 @@ const TransactionCard = ({transaction: tx, targetAddress}) => {
         <Grid item xs={12} sm={12} md={6} className={classes.leftSide}>
           <Grid container direction="row">
             <Grid item xs={12}>
-              <Row>
+              <Row showLastSeparator>
                 <Label>{tr(messages.amount)}</Label>
                 <Value>{__.amount}</Value>
               </Row>
@@ -117,7 +117,7 @@ const TransactionCard = ({transaction: tx, targetAddress}) => {
         <Grid item xs={12} sm={12} md={6}>
           <Grid container direction="row">
             <Grid item xs={12}>
-              <Row>
+              <Row showLastSeparator>
                 <Label>{tr(messages.epochAndSlot)}</Label>
                 <Value>
                   {__.epoch} / {__.slot}
