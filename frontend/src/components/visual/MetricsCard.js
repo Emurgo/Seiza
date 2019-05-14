@@ -94,7 +94,7 @@ const styles = (theme) =>
     },
     value: {
       paddingBottom: theme.spacing.unit * 0.5,
-      fontSize: theme.typography.h2.fontSize * 0.85,
+      fontSize: theme.typography.h2.fontSize * 0.8,
       [theme.breakpoints.up('sm')]: {
         fontSize: theme.typography.h2.fontSize,
       },
