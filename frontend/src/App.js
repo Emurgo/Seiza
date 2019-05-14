@@ -146,7 +146,7 @@ const TopBar = compose(withRouter)(({location: {pathname}}) => {
           <Grid item>
             <Grid container direction="row" alignItems="center">
               <Navbar currentPathname={pathname} items={getTranslatedNavItems(translate)} />
-              {config.showStakingData && <LanguageSelect />}
+              <LanguageSelect />
               {config.showStakingData && <ThemeSelect />}
             </Grid>
           </Grid>
