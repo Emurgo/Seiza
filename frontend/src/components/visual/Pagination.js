@@ -70,7 +70,7 @@ const useStyles = makeStyles(({palette, typography, breakpoints, spacing}) => ({
 const getEstimatedInputWidth = (pageCount: number, isDesktop): number => {
   // Note: those values are quite ad-hoc
   const padding = isDesktop ? INPUT_PADDING_DESKTOP : INPUT_PADDING_MOBILE
-  const baseWidth = padding * 2 + 5
+  const baseWidth = padding * 2 + 10
   const charSize = isDesktop ? 11 : 8
   return String(pageCount).length * charSize + baseWidth
 }
