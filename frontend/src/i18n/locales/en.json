@@ -18,7 +18,7 @@
   "components.common.CopyToClipboard.tooltipCopied": "Copied!",
   "components.common.CopyToClipboard.tooltipCopy": "Copy to clipboard",
   "components.common.DefaultErrorBoundary.errorMsg": "Please refresh the page",
-  "components.common.DefaultErrorBoundary.errorTitle": "Ooops something went wrong",
+  "components.common.DefaultErrorBoundary.errorTitle": "Oops! Something went wrong",
   "components.common.SyncIssuesBar.dataUpTo": "Displaying blockchain data up to {date}",
   "components.common.SyncIssuesBar.title": "We are facing syncing issues on the server:",
   "components.common.ThemeSelect.bright": "Light",
