@@ -103,7 +103,7 @@ const TabsHeader = () => {
   )
 
   return (
-    <LiteTabs value={currentTabIndex} onChange={onChange}>
+    <LiteTabs defaultBottomOffset value={currentTabIndex} onChange={onChange}>
       {tabs.map(({id, label}) => (
         <LiteTab key={id} label={label} />
       ))}
