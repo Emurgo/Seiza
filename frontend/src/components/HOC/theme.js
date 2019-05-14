@@ -157,6 +157,7 @@ export const THEME_DEFINITIONS = {
       action: {
         hover: '#F4F6FC',
       },
+      sectionLabel: '#8791AD',
       gradient: 'linear-gradient(97deg, #BFADE7 0%, #E0F1F8 100%)',
       buttonsGradient: {
         normal: 'linear-gradient(90deg, #4D20C0 0%,  #92A7FC 67%, #B1E1F2 100%)',
@@ -229,6 +230,7 @@ export const THEME_DEFINITIONS = {
     },
     palette: {
       type: 'dark',
+      sectionLabel: '#8791AD',
       gradient: 'linear-gradient(97deg, #8673EC 0%, #99B0EA 100%)',
       buttonsGradient: {
         direction: 97,

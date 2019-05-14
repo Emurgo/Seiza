@@ -9,6 +9,7 @@ const useStyles = makeStyles((theme) => ({
     borderBottom: `1px solid ${theme.palette.text.secondary}`,
   },
   title: {
+    'color': theme.palette.sectionLabel,
     '&:after': {
       content: '""',
       background: theme.palette.text.secondary,
