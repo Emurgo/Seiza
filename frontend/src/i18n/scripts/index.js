@@ -94,6 +94,31 @@ module.exports = async (locales, pattern, buildDir, opts) => {
 
   const newLocaleMaps = await extractReactIntl(locales, pattern, extractorOptions)
 
+  /* added code begins */
+  // Index by same value in default locale
+  const sameValueMap = {}
+
+  const inserter = ([key, value]) => {
+    if (!sameValueMap[value]) sameValueMap[value] = new Set()
+    sameValueMap[value].add(key)
+  }
+  Object.entries(oldLocaleMaps[defaultLocale]).forEach(inserter)
+  Object.entries(newLocaleMaps[defaultLocale]).forEach(inserter)
+
+  // Clear single values
+  Object.entries(sameValueMap).forEach(([key, value]) => {
+    if (value.size < 2) delete sameValueMap[key]
+  })
+  // Ok, now we have duplicate entries, let's reindex them
+
+  const duplicates = {}
+  Object.values(sameValueMap).forEach((value) => {
+    value.forEach((v) => {
+      duplicates[v] = value
+    })
+  })
+  /* added code ends */
+
   return Promise.all(
     locales.map((locale) => {
       // If the default locale, overwrite the origin file
@@ -104,6 +129,25 @@ module.exports = async (locales, pattern, buildDir, opts) => {
           : {...newLocaleMaps[locale], ...oldLocaleMaps[locale]}
       // Only keep existing keys
       localeMap = pick(localeMap, Object.keys(newLocaleMaps[locale]))
+
+      /* added code begins */
+      Object.keys(localeMap).forEach((key) => {
+        if (localeMap[key]) return
+        const old = oldLocaleMaps[locale]
+        // eslint-disable-next-line no-console
+        console.log(locale, 'missing', key)
+        // try finding alternative key with the same translation
+        for (const k of duplicates[key] || []) {
+          if (old[k]) {
+            localeMap[key] = old[k]
+            // eslint-disable-next-line no-console
+            console.log('   filling in', key, 'from', k)
+            break
+          }
+        }
+      })
+
+      /* added code ends */
 
       const fomattedLocaleMap = opts.flat
         ? sortKeys(localeMap, {deep: true})
