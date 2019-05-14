@@ -3,9 +3,9 @@ import _ from 'lodash'
 
 export type SortDirection = 'asc' | 'desc'
 
-const orderBy = (fields: Array<[string, SortDirection]>): any =>
-  fields.map(([field, order]) => ({
-    [field]: {order},
+const orderBy = (fields: Array<[string, SortDirection, Object]>): any =>
+  fields.map(([field, order, additionalData = {}]) => ({
+    [field]: {order, ...additionalData},
   }))
 
 const notNull = (field: string) => ({
@@ -21,6 +21,12 @@ const isNull = (field: string) => ({
         field,
       },
     },
+  },
+})
+
+const match = (field: string, phrase: string) => ({
+  match: {
+    [field]: phrase,
   },
 })
 
@@ -92,6 +98,13 @@ const some = (conditions: Array<any>): any => ({
   bool: {
     should: conditions.filter((c) => !!c),
     minimum_should_match: 1,
+  },
+})
+
+const nested = (path: string, def: any): any => ({
+  nested: {
+    path,
+    ...def,
   },
 })
 
@@ -195,8 +208,8 @@ export class Query {
     return new Query(this._type, [...this._filter, condition], this._sort)
   }
 
-  sortBy = (field: string, order: SortDirection) => {
-    return new Query(this._type, this._filter, [...this._sort, [field, order]])
+  sortBy = (field: string, order: SortDirection, additionalData: Object) => {
+    return new Query(this._type, this._filter, [...this._sort, [field, order, additionalData]])
   }
 
   get _query(): any {
@@ -221,8 +234,10 @@ const e = {
   gt,
   eq,
   some,
+  nested,
   all: filter,
   matchPhrase,
+  match,
   onlyActiveFork,
   filter,
   q,

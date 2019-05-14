@@ -54,23 +54,34 @@ export const GET_ADDRESS_BY_ADDRESS58 = gql`
       balance
       totalAdaSent
       totalAdaReceived
-      transactions {
-        txHash
-        fees
-        block {
-          blockHash
-          epoch
-          slot
-        }
-        totalInput
-        totalOutput
-        inputs {
-          address58
-          amount
-        }
-        outputs {
-          address58
-          amount
+    }
+  }
+`
+
+export const GET_TXS_BY_ADDRESS = gql`
+  query($address58: String!, $filterType: AddressTxsFilter!, $cursor: Int) {
+    address(address58: $address58) {
+      transactions(type: $filterType, cursor: $cursor) {
+        totalCount
+        transactions {
+          txHash
+          fees
+          block {
+            blockHash
+            epoch
+            slot
+            timeIssued
+          }
+          totalInput
+          totalOutput
+          inputs {
+            address58
+            amount
+          }
+          outputs {
+            address58
+            amount
+          }
         }
       }
     }

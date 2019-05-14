@@ -1,10 +1,21 @@
+enum AddressTxsFilter {
+  SENT
+  RECEIVED
+  ALL
+}
+
+type PagedTransactions {
+  cursor: Int
+  hasMore: Boolean!
+  transactions: [Transaction!]! @cost(multipliers: [10])
+  totalCount: Int!
+}
 type Address @cost(complexity: 10) {
   address58: ID!
   type: String!
   transactionsCount: Int
   # TODO: paging + use cost from pageSize
-  transactions: [Transaction] @cost(multipliers: [10])
-
+  transactions(type: AddressTxsFilter!, cursor: Int): PagedTransactions!
   totalAdaSent: AdaAmount
   totalAdaReceived: AdaAmount
   balance: AdaAmount

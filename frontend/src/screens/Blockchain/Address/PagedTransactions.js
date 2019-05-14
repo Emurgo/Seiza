@@ -1,17 +1,14 @@
 // @flow
-import React from 'react'
+import React, {useCallback} from 'react'
 import {defineMessages} from 'react-intl'
 import idx from 'idx'
 import {Grid, Hidden} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
-
-import {useManageQueryValue} from '@/components/hooks/useManageQueryValue'
-import {toIntOrNull} from '@/helpers/utils'
-import Pagination from '@/components/visual/Pagination'
 // import type {Transaction} from '@/__generated__/schema.flow'
 
 import {
   LoadingInProgress,
+  LoadingError,
   EntityCardContent,
   SummaryCard,
   AdaValue,
@@ -21,12 +18,11 @@ import {
   Card,
 } from '@/components/visual'
 import {getDefaultSpacing} from '@/components/visual/ContentSpacing'
-import useTabState from '@/components/hooks/useTabState'
-import {ObjectValues} from '@/helpers/flow'
 import {useI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
 import {TabsProvider as Tabs, TabItem as Tab, useTabContext} from '@/components/context/TabContext'
 import {AddressesBreakdownContent} from '@/components/common/AddressesBreakdown'
+import {FILTER_TYPES} from './constants'
 
 const messages = defineMessages({
   transactionEntity: 'Transaction Id',
@@ -64,12 +60,12 @@ const TransactionCard = ({transaction: tx, targetAddress}) => {
   const NA = tr(messages.NA)
 
   const data = {
-    amount: idx(tx, (_) => _.amount),
+    amount: idx(tx, (_) => _.totalOutput),
     fees: idx(tx, (_) => _.fees),
     blockHash: idx(tx, (_) => _.block.blockHash),
     epoch: idx(tx, (_) => _.block.epoch),
     slot: idx(tx, (_) => _.block.slot),
-    creationDate: idx(tx, (_) => _.creationDate),
+    creationDate: idx(tx, (_) => _.block.timeIssued),
   }
 
   const __ = {
@@ -141,28 +137,28 @@ const TransactionList = ({transactions = [], targetAddress}) => {
   ))
 }
 
-const TAB_NAMES = {
-  ALL: 'ALL',
-  SENT: 'SENT',
-  RECEIVED: 'RECEIVED',
-}
-
-const TabsHeader = ({tabState, pagination}) => {
+const TabsHeader = ({pagination, changeFilterType}) => {
   const classes = useStyles()
   const {translate: tr} = useI18n()
   const {currentTabIndex, setTabByEventIndex} = useTabContext()
+  const useClickHandler = (type) => useCallback(() => changeFilterType(type), [type])
+
+  const allOnClick = useClickHandler(FILTER_TYPES.ALL)
+  const sentOnClick = useClickHandler(FILTER_TYPES.SENT)
+  const receivedOnClick = useClickHandler(FILTER_TYPES.RECEIVED)
+
   const tabs = [
-    {id: TAB_NAMES.ALL, label: tr(messages.all)},
-    {id: TAB_NAMES.SENT, label: tr(messages.sent)},
-    {id: TAB_NAMES.RECEIVED, label: tr(messages.received)},
+    {id: FILTER_TYPES.ALL, label: tr(messages.all), onClick: allOnClick},
+    {id: FILTER_TYPES.SENT, label: tr(messages.sent), onClick: sentOnClick},
+    {id: FILTER_TYPES.RECEIVED, label: tr(messages.received), onClick: receivedOnClick},
   ]
 
   return (
     <Grid container className={classes.headerWrapper}>
       <Grid item>
         <LiteTabs value={currentTabIndex} onChange={setTabByEventIndex}>
-          {tabs.map(({id, label}) => (
-            <LiteTab key={id} label={label} />
+          {tabs.map(({id, label, onClick}) => (
+            <LiteTab key={id} label={label} onClick={onClick} />
           ))}
         </LiteTabs>
       </Grid>
@@ -171,69 +167,44 @@ const TabsHeader = ({tabState, pagination}) => {
   )
 }
 
-const ROWS_PER_PAGE = 3
-
 type Props = {|
+  error: any,
   loading: boolean,
   targetAddress: string,
   // Note: amount, creation are incompatible with backend schema
   transactions: Array<Object>, // Array<Transaction>,
+  filterType: string,
+  changeFilterType: Function,
+  tabState: Object,
+  pagination: React$Node,
 |}
 
-const useManagePaginations = (currentTab) => {
-  const [tabOnePage, onTabOnePageChange] = useManageQueryValue(TAB_NAMES.ALL, 1, toIntOrNull)
-  const [tabTwoPage, onTabTwoPageChange] = useManageQueryValue(TAB_NAMES.SENT, 1, toIntOrNull)
-  const [tabThreePage, onTabThreePageChange] = useManageQueryValue(
-    TAB_NAMES.RECEIVED,
-    1,
-    toIntOrNull
-  )
-
-  return {
-    [TAB_NAMES.ALL]: [tabOnePage, onTabOnePageChange],
-    [TAB_NAMES.SENT]: [tabTwoPage, onTabTwoPageChange],
-    [TAB_NAMES.RECEIVED]: [tabThreePage, onTabThreePageChange],
-  }[currentTab]
-}
-
-const PagedTransactions = ({loading, transactions, targetAddress}: Props) => {
-  const rowsPerPage = ROWS_PER_PAGE
-  const tabNames = ObjectValues(TAB_NAMES)
-
-  const [currentTab, setTab] = useManageQueryValue('tab', tabNames[0])
-  const tabState = useTabState(tabNames, null, currentTab, setTab)
-
-  const [page, onChangePage] = useManagePaginations(tabState.currentTab)
-
-  // TODO: better handle loading
-  if (loading) return <LoadingInProgress />
-
-  const totalCount = transactions.length
-  const from = (page - 1) * rowsPerPage
-  const currentTransactions = transactions.slice(from, from + rowsPerPage)
-
-  const pagination = (
-    <Pagination
-      count={totalCount}
-      rowsPerPage={rowsPerPage}
-      page={page}
-      onChangePage={onChangePage}
-    />
+const PagedTransactions = ({
+  error,
+  loading,
+  transactions,
+  targetAddress,
+  filterType,
+  changeFilterType,
+  paginationProps,
+  tabState,
+  pagination,
+}: Props) => {
+  const tabContent = loading ? (
+    <LoadingInProgress />
+  ) : error ? (
+    <LoadingError error={error} />
+  ) : (
+    <TransactionList targetAddress={targetAddress} transactions={transactions} />
   )
 
   return (
     <React.Fragment>
       <Tabs {...tabState}>
-        <TabsHeader pagination={pagination} />
-        <Tab name={TAB_NAMES.ALL}>
-          <TransactionList targetAddress={targetAddress} transactions={currentTransactions} />
-        </Tab>
-        <Tab name={TAB_NAMES.SENT}>
-          <TransactionList targetAddress={targetAddress} transactions={currentTransactions} />
-        </Tab>
-        <Tab name={TAB_NAMES.RECEIVED}>
-          <TransactionList targetAddress={targetAddress} transactions={currentTransactions} />
-        </Tab>
+        <TabsHeader changeFilterType={changeFilterType} pagination={pagination} />
+        <Tab name={FILTER_TYPES.ALL}>{tabContent}</Tab>
+        <Tab name={FILTER_TYPES.SENT}>{tabContent}</Tab>
+        <Tab name={FILTER_TYPES.RECEIVED}>{tabContent}</Tab>
       </Tabs>
       <Hidden mdUp>{pagination}</Hidden>
     </React.Fragment>
