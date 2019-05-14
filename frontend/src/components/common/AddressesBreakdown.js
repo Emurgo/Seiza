@@ -157,7 +157,7 @@ const useBreakdownItemStyles = makeStyles((theme) => ({
   },
 }))
 
-const IMG_DIMENSIONS = {width: 15, height: 15}
+const IMG_DIMENSIONS = {width: 20, height: 20}
 
 const BreakdownItem = (props) => {
   const {valuePrefix, target} = props
