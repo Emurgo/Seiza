@@ -51,6 +51,15 @@ function createShadow(shadowColors = DEFAULT_SHADOW_COLORS, ...px) {
 // TODO: adjust for dark theme
 const SHADOW_COLORS = getShadowColors('#412596')
 
+const commonOverrides = {
+  MuiChip: {
+    root: {
+      height: 24,
+      borderRadius: 5,
+    },
+  },
+}
+
 const commonThemeObj = {
   typography: {
     useNextVariants: true,
@@ -137,6 +146,7 @@ export const THEME_DEFINITIONS = {
   [THEMES.BRIGHT]: createMuiTheme({
     ...commonThemeObj,
     overrides: {
+      ...commonOverrides,
       MuiTouchRipple: {
         root: {
           color: 'rgba(77, 32, 192, 0.4)',
@@ -214,6 +224,9 @@ export const THEME_DEFINITIONS = {
   }),
   [THEMES.DARK]: createMuiTheme({
     ...commonThemeObj,
+    overrides: {
+      ...commonOverrides,
+    },
     palette: {
       type: 'dark',
       gradient: 'linear-gradient(97deg, #8673EC 0%, #99B0EA 100%)',

@@ -21,15 +21,23 @@ const messages = defineMessages({
 const useStyles = makeStyles((theme) => ({
   LOW: {
     color: 'white',
-    backgroundColor: '#FF3860',
+    backgroundColor: '#F8D8E6',
   },
   MEDIUM: {
-    color: 'black',
-    backgroundColor: '#FFDD57',
+    color: 'white',
+    backgroundColor: '#F07C5C',
   },
   HIGH: {
     color: 'white',
     backgroundColor: '#87E6D4',
+  },
+  PENDING: {
+    color: 'white',
+    backgroundColor: '#ABABAB',
+  },
+  FAILED: {
+    color: 'white',
+    backgroundColor: '#ED5354',
   },
   uppercase: {
     textTransform: 'uppercase',
