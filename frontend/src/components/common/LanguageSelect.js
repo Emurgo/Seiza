@@ -7,9 +7,9 @@ import {NavTypography} from '@/components/visual/Navbar'
 
 import EnglishFlag from '@/assets/icons/flags/english.svg'
 import JapaneseFlag from '@/assets/icons/flags/japanese.svg'
-import RussianFlag from '@/assets/icons/flags/russian.svg'
-import ChineseFlag from '@/assets/icons/flags/chinese.svg'
-import KoreanFlag from '@/assets/icons/flags/korean.svg'
+// import RussianFlag from '@/assets/icons/flags/russian.svg'
+// import ChineseFlag from '@/assets/icons/flags/chinese.svg'
+// import KoreanFlag from '@/assets/icons/flags/korean.svg'
 
 const Label = ({langCode, flagSrc}) => (
   <Grid container direction="row" justify="space-around" alignItems="center" wrap="nowrap">
@@ -27,7 +27,7 @@ const LANGUAGES = [
     locale: 'ja',
     label: <Label langCode="JA" flagSrc={JapaneseFlag} />,
   },
-  {
+  /*{
     locale: 'ru',
     label: <Label langCode="RU" flagSrc={RussianFlag} />,
   },
@@ -38,7 +38,7 @@ const LANGUAGES = [
   {
     locale: 'kr',
     label: <Label langCode="KR" flagSrc={KoreanFlag} />,
-  },
+  },*/
 ].map(({locale, label}) => ({value: locale, label}))
 
 export default withSetLocale(({setLocale, locale}) => (
