@@ -21,7 +21,13 @@ const useStyles = makeStyles(({palette, typography, spacing}) => ({
 const Tooltip = ({classes: customClasses, ...props}) => {
   const classes = useStyles()
 
-  return <MuiTooltip classes={mergeStylesheets(classes, customClasses)} {...props} />
+  return (
+    <MuiTooltip
+      enterTouchDelay={100}
+      classes={mergeStylesheets(classes, customClasses)}
+      {...props}
+    />
+  )
 }
 
 export default Tooltip
