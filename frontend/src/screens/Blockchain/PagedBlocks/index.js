@@ -113,7 +113,7 @@ const PagedBlocks = () => {
     <Pagination
       count={totalItemsCount}
       rowsPerPage={rowsPerPage}
-      page={page || 0}
+      page={page}
       onChangePage={onChangePage}
       reverseDirection
     />
