@@ -8,7 +8,8 @@ import {useAnalytics} from '@/helpers/googleAnalytics'
 import errorImage from '@/assets/error-screen.svg'
 
 const messages = defineMessages({
-  notFound: 'We are sorry, but the requested url could not be found.',
+  notFoundHeader: 'We are sorry!',
+  notFound: 'The requested url could not be found',
 })
 
 const useStyles = makeStyles((theme) => ({
@@ -17,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing.unit * 6,
   },
   message: {
-    marginTop: theme.spacing.unit * 3,
+    marginBottom: theme.spacing.unit * 3,
   },
 }))
 
@@ -36,10 +37,13 @@ const PageNotFound = () => {
       alignItems="center"
       direction="column"
     >
-      <img src={errorImage} alt="" />
-      <Typography className={classes.message} variant="h6">
+      <Typography className={classes.message} variant="h2">
+        {tr(messages.notFoundHeader)}
+      </Typography>
+      <Typography className={classes.message} variant="h4">
         {tr(messages.notFound)}
       </Typography>
+      <img src={errorImage} alt="" />
     </Grid>
   )
 }
