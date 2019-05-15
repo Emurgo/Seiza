@@ -8,12 +8,14 @@ import {
   ClickAwayListener,
   MenuList,
   MenuItem,
+  Divider,
 } from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {fade} from '@material-ui/core/styles/colorManipulator'
 import ArrowDownIcon from '@material-ui/icons/ArrowDropDown'
 import seizaLogo from '@/assets/icons/seiza-symbol.svg'
 
+import {MobileLanguage} from '@/components/common/LanguageSelect'
 import NavLink from '@/components/common/NavLink'
 import {Tooltip} from '@/components/visual'
 
@@ -46,6 +48,10 @@ const useStyles = makeStyles(({palette, spacing}) => ({
   },
   mobileMenuWrapper: {
     padding: spacing.unit,
+  },
+  languageWrapper: {
+    padding: spacing.unit * 1.5,
+    paddinBottom: spacing.unit,
   },
 }))
 
@@ -192,6 +198,10 @@ export const MobileNavbar = ({items = [], currentPathname}) => {
                     </MenuItem>
                   ))}
                 </MenuList>
+                <Divider />
+                <div className={classes.languageWrapper}>
+                  <MobileLanguage />
+                </div>
               </Card>
             </Grow>
           )}
