@@ -80,7 +80,7 @@ export const getPageCount = (itemsCount: number, rowsPerPage: number) =>
 
 const inputProps = {style: {textAlign: 'center', padding: '6px 0 6px'}}
 
-const _Pagination = ({
+const Pagination = ({
   onFirstPageButtonClick,
   onBackButtonClick,
   onNextButtonClick,
@@ -243,4 +243,4 @@ export default compose(
       onChangePage(goToPageValue)
     },
   })
-)((props) => <_Pagination {...props} />)
+)((props) => <Pagination {...props} />)
