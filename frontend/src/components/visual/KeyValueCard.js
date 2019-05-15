@@ -134,7 +134,7 @@ const Body = ({items}: BodyProps) => {
     <ContentSpacing top={0.5} bottom={0.5} left={0} right={0}>
       {items.map(({label, value}, index, array) => (
         <RowSpacing key={index} isLast={index === array.length - 1}>
-          <Grid container justify="space-between" alignItems="center" direction="row">
+          <Grid container justify="space-between" alignItems="flex-start" direction="row">
             <Grid item xs={4}>
               <Typography variant="body1" color="textSecondary">
                 {label}

@@ -59,6 +59,12 @@ const useStyles = makeStyles((theme) => ({
   bottomPagination: {
     marginTop: theme.spacing.unit * 3,
   },
+  upperPagination: {
+    marginTop: theme.spacing.unit * 2.5,
+    [theme.breakpoints.up('sm')]: {
+      marginTop: 0,
+    },
+  },
 }))
 
 const useLoadData = (cursor, autoUpdate) => {
@@ -130,7 +136,7 @@ const PagedBlocks = () => {
           <Grid item>
             <AutoUpdateSwitch checked={autoUpdate} onChange={onChangeAutoUpdate} />
           </Grid>
-          <Grid item>
+          <Grid item className={classes.upperPagination}>
             <Pagination
               count={totalItemsCount}
               rowsPerPage={rowsPerPage}
