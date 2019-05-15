@@ -144,7 +144,8 @@ const usePaginations = () => {
 }
 const ROWS_PER_PAGE = 10
 
-const cursorFromPage = (page: number): number => (page - 1) * ROWS_PER_PAGE
+// Note: Math.max is used because user may change url to invalid number
+const cursorFromPage = (page: number): number => Math.max((page - 1) * ROWS_PER_PAGE, 0)
 
 const useTransactionsData = (address58, paginations) => {
   // We query all three different types for all/sent/received
