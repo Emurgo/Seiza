@@ -99,7 +99,7 @@ const Header = ({transaction}) => {
 
 const BreakdownList = ({transaction, targetAddress}) => {
   const commonClasses = useCommonStyles()
-  const getHasHighlight = useCallback(
+  const hasTargetAddress = useCallback(
     (inputOrOutput) => targetAddress && inputOrOutput.address58 === targetAddress,
     [targetAddress]
   )
@@ -108,7 +108,8 @@ const BreakdownList = ({transaction, targetAddress}) => {
       <Grid item xs={12} md={6} className={commonClasses.leftSide}>
         {transaction.inputs.map((input, index, items) => (
           <BreakdownItem
-            hasHighlight={getHasHighlight(input)}
+            hasHighlight={hasTargetAddress(input)}
+            isLink={!hasTargetAddress(input)}
             key={index}
             target={input}
             valuePrefix={'-'}
@@ -118,7 +119,8 @@ const BreakdownList = ({transaction, targetAddress}) => {
       <Grid item xs={12} md={6}>
         {transaction.outputs.map((output, index, items) => (
           <BreakdownItem
-            hasHighlight={getHasHighlight(output)}
+            hasHighlight={hasTargetAddress(output)}
+            isLink={!hasTargetAddress(output)}
             key={index}
             target={output}
             valuePrefix={'+'}
@@ -129,13 +131,12 @@ const BreakdownList = ({transaction, targetAddress}) => {
   )
 }
 
-const useBreakdownItemStyles = makeStyles((theme) => ({
-  rowSpacing: {
-    marginTop: theme.spacing.unit * 1.5,
-    marginBottom: theme.spacing.unit * 1.5,
-  },
+const useAddressHashStyles = makeStyles((theme) => ({
   spaced: {
     width: '95%',
+  },
+  typographyWrapper: {
+    fontWeight: ({hasHighlight}) => (hasHighlight ? 700 : 'initial'),
   },
   underlineHover: {
     // hidden border so that text does not jump on hover
@@ -149,20 +150,52 @@ const useBreakdownItemStyles = makeStyles((theme) => ({
     },
   },
   monospace: theme.typography._monospace,
+}))
+
+const AddressHash = ({address58, isLink, hasHighlight}) => {
+  const breakdownClasses = useAddressHashStyles({hasHighlight})
+
+  const ellipsizedAddress58 = <EllipsizeMiddle value={address58} />
+  const content = isLink ? (
+    <Link to={routeTo.address(address58)} underline="none">
+      <div className={cn(breakdownClasses.underlineHover, breakdownClasses.monospace)}>
+        {ellipsizedAddress58}
+      </div>
+    </Link>
+  ) : (
+    <div className={breakdownClasses.monospace}>{ellipsizedAddress58}</div>
+  )
+
+  return (
+    <div className={breakdownClasses.spaced}>
+      <Typography
+        variant="body1"
+        color="textPrimary"
+        component="div"
+        className={breakdownClasses.typographyWrapper}
+      >
+        {content}
+      </Typography>
+    </div>
+  )
+}
+
+const useBreakdownItemStyles = makeStyles((theme) => ({
+  rowSpacing: {
+    marginTop: theme.spacing.unit * 1.5,
+    marginBottom: theme.spacing.unit * 1.5,
+  },
   copy: {
     marginLeft: theme.spacing.unit,
-  },
-  typographyWrapper: {
-    fontWeight: ({hasHighlight}) => (hasHighlight ? 700 : 'initial'),
   },
 }))
 
 const IMG_DIMENSIONS = {width: 20, height: 20}
 
 const BreakdownItem = (props) => {
-  const {valuePrefix, target} = props
+  const {valuePrefix, target, hasHighlight, isLink} = props
   const {address58, amount} = target
-  const breakdownClasses = useBreakdownItemStyles(props)
+  const breakdownClasses = useBreakdownItemStyles()
   return (
     <ContentSpacing top={0} bottom={0}>
       <Divider light />
@@ -175,20 +208,8 @@ const BreakdownItem = (props) => {
       >
         <Grid item xs={12} sm={6}>
           <Grid container direction="row" alignItems="center" wrap="nowrap">
-            <div className={breakdownClasses.spaced}>
-              <Typography
-                variant="body1"
-                color="textSecondary"
-                component="div"
-                className={breakdownClasses.typographyWrapper}
-              >
-                <Link to={routeTo.address(address58)} underline="none">
-                  <div className={cn(breakdownClasses.underlineHover, breakdownClasses.monospace)}>
-                    <EllipsizeMiddle value={address58} />
-                  </div>
-                </Link>
-              </Typography>
-            </div>
+            <AddressHash {...{hasHighlight, isLink, address58}} />
+
             <div className={breakdownClasses.copy}>
               <CopyToClipboard value={address58} imgDimensions={IMG_DIMENSIONS} outlineSize={4} />
             </div>
