@@ -172,7 +172,7 @@ export const THEME_DEFINITIONS = {
       // <Typography color="textSecondary"> ---> selects palette.text.secondary
       text: {
         primary: '#120546',
-        secondary: '#8791AD',
+        secondary: '#6F7290',
       },
       secondary: {
         main: 'rgba(77, 32, 192, 0.1)', // or #E7E4F8 ?
@@ -210,7 +210,7 @@ export const THEME_DEFINITIONS = {
         paper: '#FFFFFF',
         default: '#F9FAFF',
       },
-      contentFocus: '#8791AD',
+      contentFocus: '#6F7290',
       contentUnfocus: '#BFC5D2',
       unobtrusiveContentHighlight: '#F4F6FC',
       disabled: 'rgba(146, 185, 252, 0.05)',
@@ -281,7 +281,7 @@ export const THEME_DEFINITIONS = {
         paper: '#3D1769',
         paperContrast: '#220049',
       },
-      contentFocus: '#8791AD',
+      contentFocus: '#6F7290',
       contentUnfocus: '#BFC5D2',
       unobtrusiveContentHighlight: '#6F5B93',
       disabled: 'rgba(146, 185, 252, 0.05)',
