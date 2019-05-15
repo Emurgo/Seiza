@@ -99,29 +99,37 @@ const TransactionCard = ({transaction: tx, targetAddress}) => {
       </div>
       <Grid container direction="row">
         <Grid item xs={12} sm={12} md={6} className={classes.leftSide}>
-          <Grid container direction="column">
-            <Row>
-              <Label>{tr(messages.amount)}</Label>
-              <Value>{__.amount}</Value>
-            </Row>
-            <Row showLastSeparator>
-              <Label>{tr(messages.fee)}</Label>
-              <Value>{__.fees}</Value>
-            </Row>
+          <Grid container direction="row">
+            <Grid item xs={12}>
+              <Row showLastSeparator>
+                <Label>{tr(messages.amount)}</Label>
+                <Value>{__.amount}</Value>
+              </Row>
+            </Grid>
+            <Grid item xs={12}>
+              <Row showLastSeparator>
+                <Label>{tr(messages.fee)}</Label>
+                <Value>{__.fees}</Value>
+              </Row>
+            </Grid>
           </Grid>
         </Grid>
         <Grid item xs={12} sm={12} md={6}>
-          <Grid container direction="column">
-            <Row>
-              <Label>{tr(messages.epochAndSlot)}</Label>
-              <Value>
-                {__.epoch} / {__.slot}
-              </Value>
-            </Row>
-            <Row showLastSeparator>
-              <Label>{tr(messages.creationDate)}</Label>
-              <Value>{__.creationDate}</Value>
-            </Row>
+          <Grid container direction="row">
+            <Grid item xs={12}>
+              <Row showLastSeparator>
+                <Label>{tr(messages.epochAndSlot)}</Label>
+                <Value>
+                  {__.epoch} / {__.slot}
+                </Value>
+              </Row>
+            </Grid>
+            <Grid item xs={12}>
+              <Row showLastSeparator>
+                <Label>{tr(messages.creationDate)}</Label>
+                <Value>{__.creationDate}</Value>
+              </Row>
+            </Grid>
           </Grid>
         </Grid>
       </Grid>
