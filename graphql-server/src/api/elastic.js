@@ -131,6 +131,20 @@ const elasticErrorHandler = (err, meta) => {
 }
 */
 
+const legacyCheckResponse = (response: any, meta: any = {}) => {
+  assert(response._shards != null)
+
+  if (response._shards.failed !== 0) {
+    throw new ApolloError('Bad response from database', 'DB_ERROR', {
+      ...meta,
+      reason: 'failed shards',
+      response,
+    })
+  }
+
+  return response
+}
+
 const legacyErrorHandler = (err, meta) => {
   assert(err instanceof LegacyErrors._Abstract)
 
@@ -180,6 +194,7 @@ const _search = (type: string, body: any) => {
   return client
     .search(request)
     .catch((err) => legacyErrorHandler(err, {request}))
+    .then((response) => legacyCheckResponse(response, {request}))
     .then((response) => {
       const endTs = currentTs()
       _logElasticTiming(request, response, endTs - startTs)
