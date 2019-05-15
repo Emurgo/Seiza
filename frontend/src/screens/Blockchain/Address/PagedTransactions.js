@@ -2,7 +2,7 @@
 import React, {useCallback} from 'react'
 import {defineMessages} from 'react-intl'
 import idx from 'idx'
-import {Grid, Hidden} from '@material-ui/core'
+import {Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 // import type {Transaction} from '@/__generated__/schema.flow'
 
@@ -214,7 +214,7 @@ const PagedTransactions = ({
         <Tab name={FILTER_TYPES.SENT}>{tabContent}</Tab>
         <Tab name={FILTER_TYPES.RECEIVED}>{tabContent}</Tab>
       </Tabs>
-      <Hidden mdUp>{pagination}</Hidden>
+      {pagination}
     </React.Fragment>
   )
 }
