@@ -18,6 +18,7 @@ export const reportError = (error: any, info: any) => {
 
 export const initErrorReporting = () => {
   Sentry.init({dsn: process.env.SENTRY_DSN})
+  Sentry.configureScope((scope) => scope.setTag('source', 'backend'))
   // unhandledRejection is handled in @sentry/node out of the box
   process.on('uncaughtException', (error) => {
     // eslint-disable-next-line no-console
