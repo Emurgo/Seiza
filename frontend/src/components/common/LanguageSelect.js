@@ -1,6 +1,6 @@
 // @flow
 import React from 'react'
-import {Grid} from '@material-ui/core'
+import {Grid, withStyles} from '@material-ui/core'
 import {withSetLocale} from '@/components/HOC/intl'
 import {Select} from '@/components/visual'
 import {NavTypography} from '@/components/visual/Navbar'
@@ -11,12 +11,25 @@ import JapaneseFlag from '@/assets/icons/flags/japanese.svg'
 // import ChineseFlag from '@/assets/icons/flags/chinese.svg'
 // import KoreanFlag from '@/assets/icons/flags/korean.svg'
 
-const Label = ({langCode, flagSrc}) => (
-  <Grid container direction="row" justify="space-around" alignItems="center" wrap="nowrap">
+const styles = {
+  wrapper: {
+    cursor: 'pointer',
+  },
+}
+
+const Label = withStyles(styles)(({langCode, flagSrc, classes}) => (
+  <Grid
+    container
+    direction="row"
+    justify="space-around"
+    alignItems="center"
+    wrap="nowrap"
+    className={classes.wrapper}
+  >
     <img alt="" src={flagSrc} />
     <NavTypography>{langCode}</NavTypography>
   </Grid>
-)
+))
 
 const LANGUAGES = [
   {
@@ -48,4 +61,14 @@ export default withSetLocale(({setLocale, locale}) => (
     onChange={(e) => setLocale(e.target.value)}
     options={LANGUAGES}
   />
+))
+
+export const MobileLanguage = withSetLocale(({setLocale, locale}) => (
+  <Grid container justify="space-between">
+    {LANGUAGES.map(({label, value}) => (
+      <Grid item key={value} onClick={(e) => setLocale(value)}>
+        {label}
+      </Grid>
+    ))}
+  </Grid>
 ))
