@@ -19,7 +19,7 @@ import {useAnalytics} from '@/helpers/googleAnalytics'
 const text = defineMessages({
   searchPlaceholder: 'Search addresses, transactions, epochs & slots on the Cardano network',
   noData: 'No items matching current query',
-  helpText: 'Search for entity using its "hash" or use "epoch:number,slot:number" syntax',
+  helpText: 'Search for entity using its "hash" or use "epoch:number slot:number" syntax',
 })
 
 const useSearchData = (searchQuery, skip) => {
