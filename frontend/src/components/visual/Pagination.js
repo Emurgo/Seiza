@@ -44,7 +44,7 @@ const useStyles = makeStyles(({palette, typography, breakpoints, spacing}) => ({
     },
   },
   arrowWrapper: {
-    padding: '0px !important',
+    padding: '3px !important',
     [breakpoints.up('md')]: {
       padding: '4px !important',
     },
