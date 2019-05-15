@@ -5,14 +5,15 @@ import './loadEnv'
 import CostAnalysis from './costAnalysis'
 import {ApolloServer} from 'apollo-server'
 import {GraphQLError} from 'graphql'
+import uuidv1 from 'uuid/v1'
 
-import * as ActiveCampaign from './api/activeCampaign'
+import {getActiveCampaign} from './api/activeCampaign'
 import schema from './graphql/schema'
 import resolvers from './graphql/resolvers'
 import {initErrorReporting, reportError} from './utils/errorReporting'
 import {isProduction} from './config'
 
-import {pricingAPI, elastic} from './api'
+import {pricingAPI, getElastic} from './api'
 
 isProduction && initErrorReporting()
 
@@ -61,6 +62,20 @@ async function _new(req, res) {
 ApolloServer.prototype.createGraphQLServerOptions = _new
 // end of workaround
 
+const getLogger = (uuid) => {
+  const logToJSON = (v) => console.log(JSON.stringify(v, null, 2)) // eslint-disable-line
+  return {
+    log: (value, options = {}) => {
+      const toLog = {
+        logType: options.type || 'default',
+        uuid,
+        value,
+      }
+      logToJSON(toLog)
+    },
+  }
+}
+
 const server = new ApolloServer({
   typeDefs: schema,
   resolvers,
@@ -69,6 +84,7 @@ const server = new ApolloServer({
   },
   // TODO: replace with production-ready logger
   formatError: (error: GraphQLError): any => {
+    // TODO: how can we get Context here, so that we can connect error to request uuid?
     logError(error)
     isProduction && reportError(error)
     stripSensitiveInfoFromError(error)
@@ -78,12 +94,19 @@ const server = new ApolloServer({
     console.log(response) // eslint-disable-line
     return response
   },
-  context: () => ({
-    activeCampaign: ActiveCampaign,
-    pricingAPI,
-    elastic,
-    E: elastic.E,
-  }),
+  context: ({req}) => {
+    const reqId = req.headers['x-request-id'] || uuidv1()
+    const logger = getLogger(reqId)
+    const elastic = getElastic(logger)
+    const activeCampaign = getActiveCampaign(logger)
+    return {
+      activeCampaign,
+      pricingAPI,
+      elastic,
+      E: elastic.E,
+      reqId,
+    }
+  },
 })
 
 server.listen({port: process.env.PORT || 4000}).then(({url}) => {
