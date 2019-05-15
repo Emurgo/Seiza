@@ -1,6 +1,13 @@
 import moment from 'moment'
 import assert from 'assert'
-import {parseAdaValue, annotateNotFoundError, runConsistencyCheck, validate} from '../utils'
+
+import {
+  parseAdaValue,
+  annotateNotFoundError,
+  runConsistencyCheck,
+  getEstimatedSlotTimestamp,
+  validate,
+} from '../utils'
 import E from '../../api/elasticHelpers'
 
 export const facadeElasticBlock = (data) => ({
@@ -18,6 +25,17 @@ export const facadeElasticBlock = (data) => ({
   height: data.height,
   blockHeight: data.height,
 })
+
+const facadeAndValidate = async (data) => {
+  await runConsistencyCheck(() => {
+    validate(
+      getEstimatedSlotTimestamp(data.epoch, data.slot) === moment(data.time).unix(),
+      'Slot timestamp vs estimated timestamp mismatch',
+      {data}
+    )
+  })
+  return facadeElasticBlock(data)
+}
 
 const currentBlocks = E.q('slot')
   .filter(E.onlyActiveFork())
@@ -44,7 +62,7 @@ export const fetchBlockByHash = async ({elastic, E}, blockHash) => {
     })
   })
 
-  return facadeElasticBlock(hit._source)
+  return facadeAndValidate(hit._source)
 }
 
 export const fetchLatestBlock = async ({elastic, E}) => {
@@ -53,7 +71,7 @@ export const fetchLatestBlock = async ({elastic, E}) => {
     .sortBy('height', 'desc')
     .getFirstHit()
 
-  return facadeElasticBlock(hit._source)
+  return facadeAndValidate(hit._source)
 }
 
 export const fetchBlockBySlot = async ({elastic, E}, {epoch, slot}) => {
@@ -67,7 +85,7 @@ export const fetchBlockBySlot = async ({elastic, E}, {epoch, slot}) => {
     .getSingleHit()
     .catch(annotateNotFoundError({entity: 'Slot'}))
 
-  return facadeElasticBlock(hit._source)
+  return facadeAndValidate(hit._source)
 }
 
 const tupleLt = (key1, key2) => (value1, value2) =>
@@ -101,7 +119,7 @@ export const fetchPreviousBlock = async ({elastic, E}, {epoch, slot}) => {
   if (hits.total === 0) {
     return null
   } else {
-    return facadeElasticBlock(hits.hits[0]._source)
+    return facadeAndValidate(hits.hits[0]._source)
   }
 }
 
@@ -120,6 +138,6 @@ export const fetchNextBlock = async ({elastic, E}, {epoch, slot}) => {
   if (hits.total === 0) {
     return null
   } else {
-    return facadeElasticBlock(hits.hits[0]._source)
+    return facadeAndValidate(hits.hits[0]._source)
   }
 }
