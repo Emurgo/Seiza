@@ -46,6 +46,7 @@ const useStyles = makeStyles((theme) => ({
   },
   headerWrapper: {
     flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'space-between',
     [theme.breakpoints.down('sm')]: {
       flexDirection: 'column',

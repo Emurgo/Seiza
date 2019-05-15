@@ -31,7 +31,7 @@ const useTabsStyles = makeStyles((theme) => ({
     // minHeight is set by default to 48px in material-ui
     // 'auto' makes it 24px,
     // so we apply remaining 24px to bottom
-    marginBottom: 24,
+    marginBottom: ({defaultBottomOffset}) => (defaultBottomOffset ? 24 : 0),
   },
   flexContainer: {
     '& > :first-child': {
@@ -98,9 +98,9 @@ const TAB_INDICATOR_WIDTH = 0.5
 const getWidthOfCurrentTabIndicator = (tabLabelRef) =>
   (labelRectFromTabRef(tabLabelRef).width || 0) * TAB_INDICATOR_WIDTH
 
-export const LiteTabs = ({children, ...props}) => {
+export const LiteTabs = ({children, defaultBottomOffset, ...props}) => {
   const classes = useWrapperStyles()
-  const tabsClasses = useTabsStyles()
+  const tabsClasses = useTabsStyles({defaultBottomOffset})
   const indicatorClassName = useTabIndicatorStyles().root
   const tabsRef = useRef(null)
 

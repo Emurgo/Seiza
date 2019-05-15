@@ -95,6 +95,8 @@ const useStyles = makeStyles((theme) => ({
   headingWrapper: {
     marginBottom: theme.spacing.unit * 6,
     marginTop: theme.spacing.unit * 6,
+    display: 'flex',
+    justifyContent: 'center',
   },
   // 12px is width of hover part of button
   alignIconButton: {

@@ -20,9 +20,9 @@ import BlocksTable, {COLUMNS_MAP} from '../PagedBlocks/BlocksTable'
 const useStyles = makeStyles((theme) => ({
   wrapper: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
     alignItems: 'center',
-    marginTop: theme.spacing.unit * 3,
+    marginTop: theme.spacing.unit,
     marginBottom: theme.spacing.unit * 3,
     [theme.breakpoints.down('sm')]: {
       flexDirection: 'column',
@@ -30,6 +30,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   heading: {
+    marginTop: theme.spacing.unit * 3,
     [theme.breakpoints.down('sm')]: {
       marginBottom: theme.spacing.unit * 3,
     },
@@ -95,11 +96,13 @@ const Blocks = ({blocksCount, epochNumber}) => {
 
   return (
     <Grid container direction="column">
+      <Grid item className={classes.heading}>
+        <Grid container justify="center">
+          <EntityHeading>{tr(messages.blocks, {count: formatInt(blocksCount)})}</EntityHeading>
+        </Grid>
+      </Grid>
       <Grid item>
         <Grid container className={classes.wrapper}>
-          <Grid item className={classes.heading}>
-            <EntityHeading>{tr(messages.blocks, {count: formatInt(blocksCount)})}</EntityHeading>
-          </Grid>
           <Grid item>{pagination}</Grid>
         </Grid>
       </Grid>
