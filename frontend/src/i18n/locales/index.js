@@ -2,6 +2,7 @@
 
 //$FlowFixMe fix json imports
 import en from './en.json'
+//$FlowFixMe fix json imports
 import ja from './ja-JP.json'
 
 import _ from 'lodash' // eslint-disable-line no-unused-vars
