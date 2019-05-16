@@ -65,13 +65,13 @@ const useStyles = makeStyles((theme) => ({
   chip: {
     // TODO: use color from theme someday
     color: 'white',
-    background: '#ABABAB',
+    background: '#BFC5D2',
     textTransform: 'uppercase',
-    marginRight: theme.spacing.unit,
+    fontSize: theme.typography.fontSize * 0.8125,
+    marginLeft: theme.spacing.unit,
   },
   date: {
     display: 'inline-block',
-    fontStyle: ({chipLabel}) => (chipLabel ? 'italic' : 'normal'),
   },
 }))
 
@@ -271,7 +271,7 @@ const EpochEntityCard = ({epochNumber, startTime, endTime}) => {
   const isCurrent = getIsInFuture(endTime) && !getIsInFuture(startTime)
   const chipLabel =
     isInFuture || isCurrent ? tr(isInFuture ? messages.future : messages.current) : null
-  const classes = useStyles({chipLabel})
+  const classes = useStyles()
 
   return (
     <EntityCardShell>
@@ -289,10 +289,10 @@ const EpochEntityCard = ({epochNumber, startTime, endTime}) => {
         <Grid item xs={12} md={8} lg={6} className={classes.timeHeader}>
           <EntityCardContent
             label={
-              <span>
-                {tr(messages.timePeriod)}{' '}
+              <Grid container alignItems="center">
+                <span>{tr(messages.timePeriod)}</span>
                 {chipLabel && <Chip className={classes.chip} label={chipLabel} />}
-              </span>
+              </Grid>
             }
             showCopyIcon={false}
             ellipsizeValue={false}
