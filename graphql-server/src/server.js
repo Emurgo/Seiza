@@ -2,6 +2,8 @@
 import 'babel-polyfill'
 import './loadEnv'
 
+// TODO: how to distinguish between _logger and logger with request id closured in it?
+import _logger from './logger'
 import CostAnalysis from './costAnalysis'
 import {ApolloServer} from 'apollo-server'
 import {GraphQLError} from 'graphql'
@@ -19,13 +21,7 @@ isProduction && initErrorReporting()
 
 export type Parent = any
 
-const logError = (error: any) => {
-  /* eslint-disable no-console */
-  console.log('--------------------')
-  console.dir(error, {depth: 4})
-  console.log('--------------------')
-  /* eslint-enable no-console */
-}
+const logError = (error: any) => _logger.log({level: 'error', error})
 
 const stripSensitiveInfoFromError = (error: any) => {
   if (error.extensions.code === 'INTERNAL_SERVER_ERROR') {
@@ -63,7 +59,6 @@ ApolloServer.prototype.createGraphQLServerOptions = _new
 // end of workaround
 
 const getLogger = (uuid) => {
-  const logToJSON = (v) => console.log(JSON.stringify(v, null, 2)) // eslint-disable-line
   return {
     log: (value, options = {}) => {
       const toLog = {
@@ -71,7 +66,7 @@ const getLogger = (uuid) => {
         uuid,
         value,
       }
-      logToJSON(toLog)
+      _logger.log({level: 'info', logValue: toLog})
     },
   }
 }
@@ -92,7 +87,8 @@ const createServer = () =>
       return error
     },
     formatResponse: (response: any): any => {
-      console.log(response) // eslint-disable-line
+      // TODO: do we want to log responses?
+      // _logger.info('RESPONSE', response)
       return response
     },
     context: ({req}) => {
