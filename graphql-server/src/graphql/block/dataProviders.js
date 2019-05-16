@@ -1,6 +1,6 @@
 import moment from 'moment'
 import assert from 'assert'
-import {parseAdaValue, annotateNotFoundError} from '../utils'
+import {parseAdaValue, annotateNotFoundError, runConsistencyCheck, validate} from '../utils'
 import E from '../../api/elasticHelpers'
 
 export const facadeElasticBlock = (data) => ({
@@ -30,6 +30,19 @@ export const fetchBlockByHash = async ({elastic, E}, blockHash) => {
     .filter(E.matchPhrase('hash', blockHash))
     .getSingleHit()
     .catch(annotateNotFoundError({entity: 'Block'}))
+
+  await runConsistencyCheck(async () => {
+    const txCnt = await elastic
+      .q('tx')
+      .filter(E.onlyActiveFork())
+      .filter(E.matchPhrase('block_hash', blockHash))
+      .getCount()
+
+    validate(txCnt === hit._source.tx_num, 'Tx count inconsistency', {
+      fromBlocks: hit._source.tx_num,
+      fromTransactions: txCnt,
+    })
+  })
 
   return facadeElasticBlock(hit._source)
 }
