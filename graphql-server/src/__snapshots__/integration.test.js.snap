@@ -1,0 +1,22 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Gets correct results for huge address 1`] = `
+Object {
+  "data": Object {
+    "address": Object {
+      "address58": "DdzFFzCqrhsfkegDcdUJAGBRoUP2LVakkby6ntdckcURzBsKmNJ7HmQ6LBwLZxTRVBvhZzuFuX9KUpraDcqhJavm35yeXgS2keJPHfKB",
+      "balance": "27275000000",
+      "totalAdaReceived": "10041919586122765",
+      "totalAdaSent": "10041946861122765",
+      "transactionsCount": 102757,
+    },
+  },
+  "errors": undefined,
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;

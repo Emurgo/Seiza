@@ -23,7 +23,7 @@ const getDummyServer = (port) => {
 }
 
 describe('Cache tests', () => {
-  const PORT = 3008
+  const PORT = 47123 // hopefully nobody uses this port
   const DOMAIN = 'http://localhost'
   let server = null
 
