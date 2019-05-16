@@ -50,8 +50,7 @@ const useStyles = makeStyles(({palette, spacing}) => ({
     padding: spacing.unit,
   },
   languageWrapper: {
-    padding: spacing.unit * 1.5,
-    paddinBottom: spacing.unit,
+    padding: `${spacing.unit * 0.75}px ${spacing.unit * 1.5}px`,
   },
 }))
 

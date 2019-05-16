@@ -1,5 +1,6 @@
 // @flow
 import React from 'react'
+import cn from 'classnames'
 import {Grid, withStyles} from '@material-ui/core'
 import {withSetLocale} from '@/components/HOC/intl'
 import {Select} from '@/components/visual'
@@ -11,34 +12,43 @@ import JapaneseFlag from '@/assets/icons/flags/japanese.svg'
 // import ChineseFlag from '@/assets/icons/flags/chinese.svg'
 // import KoreanFlag from '@/assets/icons/flags/korean.svg'
 
-const styles = {
+const styles = (theme) => ({
   wrapper: {
     cursor: 'pointer',
   },
-}
+  mobileWrapper: {
+    paddingTop: theme.spacing.unit * 0.625,
+    paddingBottom: theme.spacing.unit * 0.625,
+  },
+})
 
-const Label = withStyles(styles)(({langCode, flagSrc, classes}) => (
-  <Grid
-    container
-    direction="row"
-    justify="space-around"
-    alignItems="center"
-    wrap="nowrap"
-    className={classes.wrapper}
-  >
-    <img alt="" src={flagSrc} />
-    <NavTypography>{langCode}</NavTypography>
-  </Grid>
-))
+const Label = withStyles(styles)(({langCode, flagSrc, mobile, classes}) => {
+  const imgSize = mobile ? 34 : 24
+  return (
+    <Grid
+      container
+      direction="row"
+      justify="space-around"
+      alignItems="center"
+      wrap="nowrap"
+      className={cn(classes.wrapper, mobile && classes.mobileWrapper)}
+    >
+      <img alt="" width={imgSize} height={imgSize} src={flagSrc} />
+      <NavTypography>{langCode}</NavTypography>
+    </Grid>
+  )
+})
 
 const LANGUAGES = [
   {
     locale: 'en',
     label: <Label langCode="EN" flagSrc={EnglishFlag} />,
+    mobileLabel: <Label langCode="EN" flagSrc={EnglishFlag} mobile />,
   },
   {
     locale: 'ja',
     label: <Label langCode="JA" flagSrc={JapaneseFlag} />,
+    mobileLabel: <Label langCode="JA" flagSrc={JapaneseFlag} mobile />,
   },
   /*{
     locale: 'ru',
@@ -52,7 +62,7 @@ const LANGUAGES = [
     locale: 'kr',
     label: <Label langCode="KR" flagSrc={KoreanFlag} />,
   },*/
-].map(({locale, label}) => ({value: locale, label}))
+].map(({locale, label, mobileLabel}) => ({value: locale, label, mobileLabel}))
 
 export default withSetLocale(({setLocale, locale}) => (
   <Select
@@ -65,9 +75,9 @@ export default withSetLocale(({setLocale, locale}) => (
 
 export const MobileLanguage = withSetLocale(({setLocale, locale}) => (
   <Grid container justify="space-between">
-    {LANGUAGES.map(({label, value}) => (
+    {LANGUAGES.map(({mobileLabel, value}) => (
       <Grid item key={value} onClick={(e) => setLocale(value)}>
-        {label}
+        {mobileLabel}
       </Grid>
     ))}
   </Grid>
