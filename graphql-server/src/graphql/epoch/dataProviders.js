@@ -2,7 +2,7 @@
 import moment from 'moment'
 import {facadeTransaction} from '../transaction/dataProviders'
 import type {Elastic} from '../../api/elastic'
-import {parseAdaValue} from '../utils'
+import {parseAdaValue, runConsistencyCheck, validate} from '../utils'
 import E from '../../api/elasticHelpers'
 
 type Context = {
@@ -69,8 +69,23 @@ export const fetchBlockCount = ({elastic, E}: Context, epochNumber: number) => {
   return elastic.q(epochBlocks(epochNumber)).getCount()
 }
 
-export const fetchTransactionCount = ({elastic, E}: any, epochNumber: number) => {
-  return elastic.q(epochTxs(epochNumber)).getCount()
+export const fetchTransactionCount = async ({elastic, E}: any, epochNumber: number) => {
+  const txCount = await elastic.q(epochTxs(epochNumber)).getCount()
+
+  await runConsistencyCheck(async () => {
+    const tmpCnt = await elastic
+      .q(epochBlocks(epochNumber))
+      .getAggregations({
+        cnt: E.agg.sum('tx_num'),
+      })
+      // eslint-disable-next-line camelcase
+      .then(({tx_num}) => tx_num)
+    validate(tmpCnt === txCount, 'TxCount inconsistency on epoch', {
+      fromTxs: txCount,
+      fromBlocks: tmpCnt,
+    })
+  })
+  return txCount
 }
 
 export const fetchTotalAdaSupply = async ({elastic, E}: Context, epochNumber: number) => {
@@ -96,5 +111,18 @@ export const fetchTotalFees = async ({elastic, E}: Context, epochNumber: number)
     fees: E.agg.sumAda('fees'),
   })
 
-  return parseAdaValue(aggregations.fees)
+  const fees = parseAdaValue(aggregations.fees)
+
+  await runConsistencyCheck(async () => {
+    const tmp = await elastic.q(epochBlocks(epochNumber)).getAggregations({
+      fees: E.agg.sumAda('fees'),
+    })
+
+    validate(fees.eq(parseAdaValue(tmp.fees)), 'Fees inconsistency on epoch', {
+      fromTxs: aggregations.fees,
+      fromBlocks: tmp,
+    })
+  })
+
+  return fees
 }
