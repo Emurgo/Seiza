@@ -7,17 +7,13 @@ import localStorage from '../../helpers/localStorage'
 // Note: see https://medium.com/@shalkam/create-react-app-i18n-the-easy-way-b05536c594cb
 // for more info
 
-// Note: for demonstration
 import jaLocaleData from 'react-intl/locale-data/ja'
-import ruLocaleData from 'react-intl/locale-data/ru'
 
 import translations from '../../i18n/locales'
 
-// Note: for demonstration
 // Note: This needs to be added otherwise react-intl doesn't know about locale even if you provide
 // translations
 addLocaleData(jaLocaleData)
-addLocaleData(ruLocaleData)
 
 const Context = React.createContext({
   setLanguage: null,

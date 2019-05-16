@@ -2,10 +2,13 @@
 
 //$FlowFixMe fix json imports
 import en from './en.json'
-import _ from 'lodash'
+import ja from './ja-JP.json'
+
+import _ from 'lodash' // eslint-disable-line no-unused-vars
 
 // "Translates" a string or a function returning string
 // into random characters from targetChars
+// eslint-disable-next-line no-unused-vars
 const dummyTranslate = (targetChars: string) => (msg: string): string => {
   // Note: This function deals only heuristically with
   // intl format. We don't want DSL parser as this is only
@@ -45,7 +48,7 @@ const dummyTranslate = (targetChars: string) => (msg: string): string => {
   return result
 }
 
-const ja = _.mapValues(en, dummyTranslate('インポートしようとしたウ'))
-const ru = _.mapValues(en, dummyTranslate('абвгдеёжзийклмнопрстуфхцчшщъыьэюя'))
+// Demonstration of dummy translate
+// const ru = _.mapValues(en, dummyTranslate('абвгдеёжзийклмнопрстуфхцчшщъыьэюя'))
 
-export default {en, ja, ru}
+export default {en, ja}
