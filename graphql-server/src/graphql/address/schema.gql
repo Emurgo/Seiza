@@ -12,7 +12,6 @@ type PagedTransactions {
 }
 type Address @cost(complexity: 10) {
   address58: ID!
-  type: String!
   transactionsCount: Int
   # TODO: paging + use cost from pageSize
   transactions(type: AddressTxsFilter!, cursor: Int): PagedTransactions!
