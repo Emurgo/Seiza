@@ -49,7 +49,6 @@ export const GET_ADDRESS_BY_ADDRESS58 = gql`
   query($address58: String!) {
     address(address58: $address58) {
       address58
-      type
       transactionsCount
       balance
       totalAdaSent
