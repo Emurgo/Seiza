@@ -65,13 +65,13 @@ const useStyles = makeStyles((theme) => ({
   chip: {
     // TODO: use color from theme someday
     color: 'white',
-    background: '#ABABAB',
+    background: '#BFC5D2',
     textTransform: 'uppercase',
-    marginRight: theme.spacing.unit,
+    fontSize: theme.typography.fontSize * 0.8125,
+    marginLeft: theme.spacing.unit,
   },
   date: {
     display: 'inline-block',
-    fontStyle: ({chipLabel}) => (chipLabel ? 'italic' : 'normal'),
   },
 }))
 
@@ -271,12 +271,12 @@ const EpochEntityCard = ({epochNumber, startTime, endTime}) => {
   const isCurrent = getIsInFuture(endTime) && !getIsInFuture(startTime)
   const chipLabel =
     isInFuture || isCurrent ? tr(isInFuture ? messages.future : messages.current) : null
-  const classes = useStyles({chipLabel})
+  const classes = useStyles()
 
   return (
     <EntityCardShell>
       <Grid container alignItems="center">
-        <Grid item xs={12} md={chipLabel ? 3 : 4} lg={chipLabel ? 5 : 6}>
+        <Grid item xs={12} md={4} lg={6}>
           <EntityCardContent
             showCopyIcon={false}
             label={tr(messages.entityHeader)}
@@ -286,25 +286,21 @@ const EpochEntityCard = ({epochNumber, startTime, endTime}) => {
             rawValue={epochNumber}
           />
         </Grid>
-        <Grid
-          item
-          xs={12}
-          md={chipLabel ? 9 : 8}
-          lg={chipLabel ? 7 : 6}
-          className={classes.timeHeader}
-        >
+        <Grid item xs={12} md={8} lg={6} className={classes.timeHeader}>
           <EntityCardContent
-            label={tr(messages.timePeriod)}
+            label={
+              <Grid container alignItems="center">
+                <span>{tr(messages.timePeriod)}</span>
+                {chipLabel && <Chip className={classes.chip} label={chipLabel} />}
+              </Grid>
+            }
             showCopyIcon={false}
             ellipsizeValue={false}
             iconRenderer={<img alt="" src={EpochIcon} width={48} height={48} />}
             value={
-              <div>
-                {chipLabel && <Chip className={classes.chip} label={chipLabel} />}
-                <Typography variant="body1" inline className={classes.date}>
-                  {start} {' — '} {end}
-                </Typography>
-              </div>
+              <Typography variant="body1" inline className={classes.date}>
+                {start} {' — '} {end}
+              </Typography>
             }
           />
         </Grid>
