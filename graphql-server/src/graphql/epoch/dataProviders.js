@@ -2,7 +2,7 @@
 import moment from 'moment'
 import {facadeTransaction} from '../transaction/dataProviders'
 import type {Elastic} from '../../api/elastic'
-import {parseAdaValue, runConsistencyCheck, validate} from '../utils'
+import {parseAdaValue, runConsistencyCheck, validate, slotCount, getEstimatedSlotTimestamp} from '../utils'
 import E from '../../api/elasticHelpers'
 
 type Context = {
@@ -29,11 +29,8 @@ type Epoch = {
 }
 
 const mockedEpoch = (epochNumber: number): Epoch => {
-  const slotCount = 21600
-  const slotDuration = 20
-  // Note(ppershing): not sure why it started at such weird (not modulo 20) timestamp
-  const startTs = 1506203091 + slotCount * slotDuration * epochNumber
-  const endTs = startTs + slotCount * slotDuration
+  const startTs = getEstimatedSlotTimestamp(epochNumber, 0)
+  const endTs = getEstimatedSlotTimestamp(epochNumber + 1, 0)
 
   return {
     epochNumber,

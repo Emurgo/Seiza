@@ -1,5 +1,5 @@
 // @flow
-import {AssertionError} from 'assert'
+import assert, {AssertionError} from 'assert'
 import {ApolloError} from 'apollo-server'
 import BigNumber from 'bignumber.js'
 
@@ -72,4 +72,17 @@ export const annotateNotFoundError = (annotation: any) => (err: any) => {
     throw new ApolloError('Not found', 'NOT_FOUND', annotation)
   }
   throw err
+}
+
+export const slotCount = 21600
+const slotDurationSec = 20
+
+export const getEstimatedSlotTimestamp = (epoch: number, slot: number) => {
+  assert(epoch >= 0)
+  assert(slot >= 0 && slot < slotCount)
+
+  // Note(ppershing): not sure why it started at such weird (not modulo 20) timestamp
+  // Note: there is not `epoch - 1` as epochs starts from 0
+  const startTs = 1506203091 + slot * slotDurationSec + epoch * slotCount * slotDurationSec
+  return startTs
 }
