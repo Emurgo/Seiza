@@ -147,11 +147,13 @@ const PagedBlocks = () => {
           </Grid>
         </Grid>
         <BlocksTable loading={loading} error={error} blocks={pagedBlocks} columns={ALL_COLUMNS} />
-        <Hidden mdUp>
-          <Grid item className={classes.bottomPagination}>
-            {pagination}
-          </Grid>
-        </Hidden>
+        {pagedBlocks && (
+          <Hidden mdUp>
+            <Grid item className={classes.bottomPagination}>
+              {pagination}
+            </Grid>
+          </Hidden>
+        )}
       </SimpleLayout>
     </div>
   )

@@ -107,11 +107,13 @@ const Blocks = ({blocksCount, epochNumber}) => {
         </Grid>
       </Grid>
       <BlocksTable {...{blocks, columns, loading, error}} />
-      <Hidden mdUp>
-        <Grid item className={classes.bottomPagination}>
-          {pagination}
-        </Grid>
-      </Hidden>
+      {blocks && (
+        <Hidden mdUp>
+          <Grid item className={classes.bottomPagination}>
+            {pagination}
+          </Grid>
+        </Hidden>
+      )}
     </Grid>
   )
 }

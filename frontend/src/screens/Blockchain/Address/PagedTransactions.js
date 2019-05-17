@@ -215,7 +215,7 @@ const PagedTransactions = ({
         <Tab name={FILTER_TYPES.SENT}>{tabContent}</Tab>
         <Tab name={FILTER_TYPES.RECEIVED}>{tabContent}</Tab>
       </Tabs>
-      {pagination}
+      {transactions && transactions.length > 0 && pagination}
     </React.Fragment>
   )
 }
