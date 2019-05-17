@@ -2,7 +2,7 @@
 import React, {useCallback, useState} from 'react'
 import cn from 'classnames'
 import {Link} from 'react-router-dom'
-import {defineMessages} from 'react-intl'
+import {defineMessages, FormattedMessage} from 'react-intl'
 import gql from 'graphql-tag'
 import {useMutation} from 'react-apollo-hooks'
 import IsEmail from 'isemail'
@@ -20,8 +20,16 @@ import {makeStyles} from '@material-ui/styles'
 import {darken} from '@material-ui/core/styles/colorManipulator'
 
 import {useI18n} from '@/i18n/helpers'
+import {routeTo} from '@/helpers/routes'
 import {useAnalytics} from '@/helpers/googleAnalytics'
-import {Button, ExternalLink, Tooltip, CloseIconButton, LoadingOverlay} from '@/components/visual'
+import {
+  Button,
+  ExternalLink,
+  Tooltip,
+  CloseIconButton,
+  LoadingOverlay,
+  Link as CustomLink,
+} from '@/components/visual'
 import logo from '@/assets/icons/logo-seiza-white.svg'
 import alertIcon from '@/assets/icons/alert.svg'
 import subscribedIcon from '@/assets/icons/subscribed.svg'
@@ -40,6 +48,9 @@ import youtubeIcon from '@/assets/icons/social/youtube.svg'
 const messages = defineMessages({
   copyright: 'All rights reserved',
   subscribeToNewsletter: 'Subscribe to newsletter',
+  subscribeInfo:
+    'By subscribing, you agree to receive news and updates about our new features and products in accordance with our {privacyLink}.',
+  privacyLink: 'Privacy and Cookie policy',
 })
 
 const subscribeMessages = defineMessages({
@@ -127,9 +138,9 @@ const SUBSCRIBE_MUTATION = gql`
 `
 const useSubscribeMutation = (email) => useMutation(SUBSCRIBE_MUTATION, {variables: {email}})
 
-const LARGEST_FOOTER_HEIGHT = 320
+const LARGEST_FOOTER_HEIGHT = 420
 
-const useSubscribeFooterStyles = makeStyles(({palette, spacing, breakpoints}) => ({
+const useSubscribeFooterStyles = makeStyles(({palette, spacing, breakpoints, typography}) => ({
   '@global': {
     '@keyframes footer-leave': {
       '0%': {
@@ -169,7 +180,10 @@ const useSubscribeFooterStyles = makeStyles(({palette, spacing, breakpoints}) =>
     background: palette.gradient,
     position: 'relative',
     [breakpoints.up('sm')]: {
-      height: 200,
+      height: 250,
+    },
+    [breakpoints.up('md')]: {
+      height: 220,
     },
   },
   'subscribe': {
@@ -232,6 +246,9 @@ const useSubscribeFooterStyles = makeStyles(({palette, spacing, breakpoints}) =>
   'enterSubscribe': {}, // must be defined anyway
   'enterSubscribeActive': {
     animation: 'footer-enter 2000ms',
+  },
+  'subscribeInfo': {
+    fontSize: typography.fontSize * 0.8,
   },
 }))
 
@@ -411,6 +428,20 @@ const SubscribeFooter = () => {
                     </div>
                     <Typography variant="body1">{tr(subscribeMessages.subscribeText)}</Typography>
                   </Grid>
+                </Grid>
+
+                <Grid item className={classes.row}>
+                  <Typography className={classes.subscribeInfo}>
+                    <FormattedMessage
+                      // $FlowFixMe
+                      id={messages.subscribeInfo.id}
+                      values={{
+                        privacyLink: (
+                          <CustomLink to={routeTo.privacy()}>{tr(messages.privacyLink)}</CustomLink>
+                        ),
+                      }}
+                    />
+                  </Typography>
                 </Grid>
 
                 <Grid item className={classes.row}>
