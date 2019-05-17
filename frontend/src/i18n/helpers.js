@@ -166,7 +166,7 @@ export const getIntlFormatters = (intl: any): Formatters => {
   // TODO: consider creating new format for moment
   const _formatTimestampToUtcDayAndMonth = (timestamp, options = {}) => {
     const utcDate = moment.utc(timestamp).toDate()
-    return utcDate.toLocaleDateString('en', {month: '2-digit', day: '2-digit'})
+    return utcDate.toLocaleDateString(intl.locale, {month: '2-digit', day: '2-digit'})
   }
 
   const withDefaultValue = (formatter): any => (x, options = {}) => {

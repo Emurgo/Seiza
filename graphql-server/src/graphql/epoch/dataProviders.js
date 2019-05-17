@@ -2,7 +2,13 @@
 import moment from 'moment'
 import {facadeTransaction} from '../transaction/dataProviders'
 import type {Elastic} from '../../api/elastic'
-import {parseAdaValue, runConsistencyCheck, validate, slotCount, getEstimatedSlotTimestamp} from '../utils'
+import {
+  parseAdaValue,
+  runConsistencyCheck,
+  validate,
+  slotCount,
+  getEstimatedSlotTimestamp,
+} from '../utils'
 import E from '../../api/elasticHelpers'
 
 type Context = {
@@ -75,8 +81,8 @@ export const fetchTransactionCount = async ({elastic, E}: any, epochNumber: numb
       .getAggregations({
         cnt: E.agg.sum('tx_num'),
       })
-      // eslint-disable-next-line camelcase
-      .then(({tx_num}) => tx_num)
+      .then(({cnt}) => cnt)
+
     validate(tmpCnt === txCount, 'TxCount inconsistency on epoch', {
       fromTxs: txCount,
       fromBlocks: tmpCnt,
