@@ -1,13 +1,14 @@
 // @flow
 import React, {useRef} from 'react'
-import _ from 'lodash'
 import ReactMarkdown from 'react-markdown'
 
 import {Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
-import {SimpleLayout, ExpansionPanel} from '@/components/visual'
+
+import {SimpleLayout, ExpansionPanel, ExternalLink} from '@/components/visual'
 import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
 
+import {routeTo} from '@/helpers/routes'
 import {useI18n} from '@/i18n/helpers'
 
 const useStyles = makeStyles((theme) => ({
@@ -37,27 +38,39 @@ const MdParagraph = ({children}) => {
   )
 }
 
+const LinkRenderer = (props) => {
+  // We treat all links as external
+  return (
+    <ExternalLink target="_blank" to={props.href}>
+      {props.children}
+    </ExternalLink>
+  )
+}
+
 const renderers = {
   paragraph: MdParagraph,
+  link: LinkRenderer,
   /* Customize if required
   strong: ({children}) => <strong>{children}</strong>,
   emphasis: ({children}) => <em>{children}</em>,
   */
 }
 
+const replaceBreak = (content: string): string => content.replace(/<br\/>/g, '&nbsp;  ')
+
 const Markdown = ({children}) => <ReactMarkdown renderers={renderers} source={children} />
 
 type PanelProps = {
   head: string,
-  content: React$Node,
+  content: string,
 }
 
 const Panel = ({head, content}: PanelProps) => {
   const classes = useStyles()
   return (
-    <ExpansionPanel summary={<Typography variant="title">{head}</Typography>}>
+    <ExpansionPanel summary={<Typography variant="title">{replaceBreak(head)}</Typography>}>
       <div className={classes.panelContent}>
-        <Markdown>{content}</Markdown>
+        <Markdown>{replaceBreak(content)}</Markdown>
       </div>
     </ExpansionPanel>
   )
@@ -68,29 +81,50 @@ const Preamble = ({head, content}) => {
   return (
     <div className={classes.preamble}>
       <Typography variant="h2" className={classes.heading}>
-        {head}
+        {replaceBreak(head)}
       </Typography>
-      <Markdown>{content}</Markdown>
+      <Markdown>{replaceBreak(content)}</Markdown>
     </div>
   )
 }
 
-const LegalTermsLayout = ({messages}: {messages: any}) => {
+const getPanelMessages = (messages, tr, links) => {
+  const panelMessages = []
+
+  let i = 1
+  const _getHead = (i) => (messages[`h${i}`] != null ? `${i}. ${tr(messages[`h${i}`])}` : '')
+  const _getContent = (i) => (messages[`p${i}`] != null ? tr(messages[`p${i}`], links) : '')
+
+  while (_getHead(i) !== '' || _getContent(i) !== '') {
+    panelMessages.push({head: _getHead(i), content: _getContent(i)})
+    i += 1
+  }
+  return panelMessages
+}
+
+const LegalTermsLayout = ({messages, paragrahpsCount}: {messages: any}) => {
   const {translate: tr} = useI18n()
   const scrollToRef = useRef(null)
 
   useScrollFromBottom(scrollToRef)
 
+  const links = {
+    // We we create "external" links from internal ones
+
+    // eslint-disable-next-line no-restricted-globals
+    privacyUrl: `${location.origin}${routeTo.privacy()}`,
+    // eslint-disable-next-line no-restricted-globals
+    termsUrl: `${location.origin}${routeTo.termsOfUse()}`,
+  }
+
+  const panelMessages = getPanelMessages(messages, tr, links)
+
   return (
     <div ref={scrollToRef}>
       <SimpleLayout maxWidth="800px">
-        <Preamble head={tr(messages.heading)} content={tr(messages.preamble)} />
-        {_.range(11).map((i) => (
-          <Panel
-            key={i}
-            head={`${i + 1}. ${tr(messages[`h${i + 1}`])}`}
-            content={tr(messages[`p${i + 1}`])}
-          />
+        <Preamble head={tr(messages.heading)} content={tr(messages.preamble, links)} />
+        {panelMessages.map(({head, content}, i) => (
+          <Panel key={i} head={head} content={content} />
         ))}
       </SimpleLayout>
     </div>
