@@ -4,7 +4,7 @@ import React from 'react'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 import {Grid, Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
-import {defineMessages} from 'react-intl'
+import {defineMessages, FormattedMessage} from 'react-intl'
 
 import {Card, Link, ContentSpacing, Button} from '@/components/visual'
 import {routeTo} from '@/helpers/routes'
@@ -14,11 +14,11 @@ import cookiesIcon from '@/assets/icons/cookies.svg'
 
 const messages = defineMessages({
   header: 'We use cookies!',
-  textPartOne:
-    'Please accept cookies to enhance your browsing experience and to continue exploring our website.',
-  textPartTwo: 'You can learn more about it',
-  linkText: 'here', // How will this behave for other languages? :thinking-face,
+  cookieBannerText:
+    'This website uses cookies to offer you a better browsing experience and anonymous analytics in order to continuously improve our services. You can agree to our use of cookies by clicking {accept}.{break}Want to know more? Check out our {privacyLink}.',
   confirm: 'I accept cookies',
+  privacyLink: 'Privacy and Cookies Policy',
+  accept: 'Accept',
 })
 
 const useStyles = makeStyles((theme) => ({
@@ -33,8 +33,8 @@ const useStyles = makeStyles((theme) => ({
       maxWidth: 400,
     },
     [theme.breakpoints.up('md')]: {
-      maxWidth: 800,
-      width: 800,
+      maxWidth: 850,
+      width: 850,
     },
     [theme.breakpoints.up('xl')]: {
       right: 'calc((100% - 1920px) / 2)',
@@ -54,6 +54,13 @@ const useStyles = makeStyles((theme) => ({
   leaveActive: {
     opacity: 0,
     transition: 'opacity 1000ms',
+  },
+  accept: {
+    'color': theme.palette.primary.main,
+    'cursor': 'pointer',
+    ':hover': {
+      textDecoration: 'underline',
+    },
   },
 }))
 
@@ -87,10 +94,20 @@ const CookiesBanner = () => {
                   <Typography variant="overline" className={classes.header}>
                     {tr(messages.header)}
                   </Typography>
-                  <Typography>{tr(messages.textPartOne)}</Typography>
                   <Typography>
-                    {tr(messages.textPartTwo)}{' '}
-                    <Link to={routeTo.privacy()}>{tr(messages.linkText)}</Link>
+                    <FormattedMessage
+                      // $FlowFixMe (flow does not know about `id`)
+                      id={messages.cookieBannerText.id}
+                      values={{
+                        accept: (
+                          <span className={classes.accept} onClick={acceptCookies}>
+                            {tr(messages.accept)}
+                          </span>
+                        ),
+                        privacyLink: <Link to={routeTo.privacy()}>{tr(messages.privacyLink)}</Link>,
+                        break: <br />,
+                      }}
+                    />
                   </Typography>
                 </Grid>
               </Grid>
