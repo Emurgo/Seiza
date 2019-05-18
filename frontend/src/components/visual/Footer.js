@@ -69,7 +69,8 @@ const SOCIAL_LINKS = {
   YOUTUBE: 'https://www.youtube.com/channel/UCgFQ0hHuPO1QDcyP6t9KZTQ',
   MEDIUM: 'https://medium.com/@emurgo_io',
   REDDIT: 'https://reddit.com/r/cardano',
-  TWITTER: 'https://twitter.com/emurgo_io',
+  TWITTER_EMURGO: 'https://twitter.com/emurgo_io',
+  TWITTER_SEIZA: 'https://twitter.com/seiza_com',
   LINKEDIN: 'https://www.linkedin.com/company/emurgo_io',
 }
 
@@ -690,12 +691,12 @@ const MainFooter = ({navItems}) => {
                   <Grid container alignItems="center">
                     <SocialIcon to={SOCIAL_LINKS.FACEBOOK} icon={fbIcon} iconName="facebook" />
                     <SocialIcon
-                      to={SOCIAL_LINKS.TWITTER}
+                      to={SOCIAL_LINKS.TWITTER_EMURGO}
                       icon={twitterEmurgoIcon}
                       iconName="emurgo twitter"
                     />
                     <SocialIcon
-                      to={SOCIAL_LINKS.TWITTER}
+                      to={SOCIAL_LINKS.TWITTER_SEIZA}
                       icon={twitterSeizaIcon}
                       iconName="seiza twitter"
                     />
