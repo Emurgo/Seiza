@@ -7,7 +7,7 @@
     "start": "if test $NODE_ENV = production; then yarn start:production; else NODE_ENV=development babel-watch src/index.js -w src/graphql; fi",
     "start:production": "NODE_ENV=production SENTRY_RELEASE_VERSION=`sentry-cli releases propose-version` node build/index.js",
     "start:heroku": "`sentry-cli releases new $HEROKU_SLUG_COMMIT; SENTRY_RELEASE_VERSION=$HEROKU_SLUG_COMMIT node build/index.js`",
-    "build": "rm -rf build && babel src --out-dir build",
+    "build": "rm -rf build && babel src --out-dir build --source-maps",
     "build:heroku": "yarn build",
     "serve": "node build/index.js",
     "eslint": "eslint src --max-warnings=0",

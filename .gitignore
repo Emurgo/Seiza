@@ -3,3 +3,5 @@
 *.swo
 node_modules
 .history
+graphql-server/.idea
+.idea
