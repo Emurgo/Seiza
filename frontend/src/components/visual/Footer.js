@@ -492,7 +492,7 @@ const SubscribeFooter = () => {
 const useMainFooterStyles = makeStyles(({spacing, palette, typography, breakpoints}) => ({
   socialIconWrapper: {
     marginLeft: 0,
-    marginRight: spacing.unit * 1.7,
+    marginRight: spacing.unit * 2.5,
     marginTop: spacing.unit,
 
     [breakpoints.up('md')]: {
@@ -517,7 +517,7 @@ const useMainFooterStyles = makeStyles(({spacing, palette, typography, breakpoin
       flexDirection: 'row',
     },
     '& > *': {
-      marginTop: spacing.unit * 0.5,
+      marginTop: spacing.unit * 1.2,
       marginRight: spacing.unit * 2,
     },
     '& > :last-child': {
