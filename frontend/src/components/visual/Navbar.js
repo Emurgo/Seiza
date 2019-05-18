@@ -52,6 +52,9 @@ const useStyles = makeStyles(({palette, spacing}) => ({
   languageWrapper: {
     padding: `${spacing.unit * 0.75}px ${spacing.unit * 1.5}px`,
   },
+  dropdownIcon: {
+    color: '#BFC5D2', // TODO: consider adding to theme
+  },
 }))
 
 const useDisabledLinkStyles = makeStyles(({palette}) => ({
@@ -178,7 +181,7 @@ export const MobileNavbar = ({items = [], currentPathname}) => {
           and also on mobile that hover will not be visible anyway. */}
       <div className={classes.mobileWrapper} onClick={onClick}>
         <img src={seizaLogo} alt="logo" />
-        <ArrowDownIcon />
+        <ArrowDownIcon className={classes.dropdownIcon} />
       </div>
       {isOpen && (
         <Popper open={isOpen} anchorEl={anchorEl} transition placement="bottom-end">
