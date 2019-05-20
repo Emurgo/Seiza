@@ -84,12 +84,9 @@ const paddingSides = {
 const useRoundedInputStyles = makeStyles((theme) => {
   return {
     input: {
-      'paddingTop': MATERIAL_UI_DEFAULT_TOP_PADDING,
-      'paddingBottom': MATERIAL_UI_DEFAULT_TOP_PADDING,
+      paddingTop: MATERIAL_UI_DEFAULT_TOP_PADDING,
+      paddingBottom: MATERIAL_UI_DEFAULT_TOP_PADDING,
       ...paddingSides,
-      '&::placeholder': {
-        color: '#8A93AF',
-      },
     },
     errorLabel: paddingSides,
     formControl: {
