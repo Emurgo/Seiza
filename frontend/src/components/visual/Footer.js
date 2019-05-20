@@ -77,7 +77,10 @@ const SOCIAL_LINKS = {
 const useRoundedInputStyles = makeStyles((theme) => {
   return {
     input: {
-      padding: '8.5px 21px',
+      'padding': '8.5px 21px',
+      '&::placeholder': {
+        color: theme.palette.contentFocus,
+      },
     },
     errorLabel: {
       position: 'absolute',
