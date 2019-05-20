@@ -80,7 +80,7 @@ const TransactionsTab = ({transactions}) => {
           )
         })}
       <div className={classes.paginationWrapper}>
-        <Pagination count={1} rowsPerPage={1} page={0} />
+        <Pagination count={1} rowsPerPage={1} page={1} />
       </div>
     </div>
   )

@@ -7,13 +7,19 @@ import {Card, ContentSpacing} from '@/components/visual'
 import {makeStyles} from '@material-ui/styles'
 import type {Node} from 'react'
 
-const useHeaderStyles = makeStyles(({spacing, palette}) => ({
+const useHeaderStyles = makeStyles(({spacing, palette, breakpoints}) => ({
   wrapper: {
     backgroundColor: palette.unobtrusiveContentHighlight,
     minHeight: '60px',
   },
   leftOffset: {
     paddingLeft: spacing.unit,
+  },
+  compactOnMobile: {
+    [breakpoints.down('xs')]: {
+      paddingLeft: spacing.unit * 3,
+      paddingRight: spacing.unit * 3,
+    },
   },
 }))
 
@@ -28,8 +34,11 @@ const useBodyStyles = makeStyles(({spacing, palette, breakpoints}) => ({
     /* Responsive layout tricks */
     width: '100%',
     textAlign: 'right',
+  },
+  compactOnMobile: {
     [breakpoints.down('xs')]: {
-      textAlign: 'left',
+      marginLeft: spacing.unit * 3,
+      marginRight: spacing.unit * 3,
     },
   },
 }))
@@ -66,7 +75,13 @@ const Header = ({icon, label, value}: HeaderProps) => {
   const classes = useHeaderStyles()
   return (
     <div className={classes.wrapper}>
-      <ContentSpacing left={1.5} right={1.5} top={0.3} bottom={0.3}>
+      <ContentSpacing
+        left={1.5}
+        right={1.5}
+        top={0.3}
+        bottom={0.3}
+        className={classes.compactOnMobile}
+      >
         <Grid container alignItems="center" className={classes.wrapper} direction="row">
           {icon}
           <Typography className={classes.leftOffset} variant="overline" color="textSecondary">
@@ -92,7 +107,14 @@ type BodyProps = {|
 const RowSpacing = ({children, isLast = false}) => {
   const classes = useBodyStyles()
   return (
-    <ContentSpacing type="margin" top={0} bottom={0} left={1.5} right={1.5}>
+    <ContentSpacing
+      type="margin"
+      top={0}
+      bottom={0}
+      left={1.5}
+      right={1.5}
+      className={classes.compactOnMobile}
+    >
       <ContentSpacing
         top={0.5}
         bottom={0.5}
@@ -112,13 +134,13 @@ const Body = ({items}: BodyProps) => {
     <ContentSpacing top={0.5} bottom={0.5} left={0} right={0}>
       {items.map(({label, value}, index, array) => (
         <RowSpacing key={index} isLast={index === array.length - 1}>
-          <Grid container justify="space-between" alignItems="center" direction="row">
-            <Grid item xs={12} sm={4}>
+          <Grid container justify="space-between" alignItems="flex-start" direction="row">
+            <Grid item xs={4}>
               <Typography variant="body1" color="textSecondary">
                 {label}
               </Typography>
             </Grid>
-            <Grid item container xs={12} sm={8}>
+            <Grid item container xs={8}>
               <Typography variant="body1" className={classes.value}>
                 {value}
               </Typography>

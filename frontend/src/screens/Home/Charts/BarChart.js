@@ -7,6 +7,8 @@ import {makeStyles, useTheme} from '@material-ui/styles'
 import {lighten, fade, darken} from '@material-ui/core/styles/colorManipulator'
 import {Grid, Typography} from '@material-ui/core'
 
+import {useCurrentBreakpoint} from '@/components/hooks/useCurrentBreakpoint'
+
 import {Card} from '@/components/visual'
 
 const getBarColors = (theme) => [
@@ -53,6 +55,12 @@ const useStyles = makeStyles((theme) => {
     },
     'tooltip': {
       padding: theme.spacing.unit,
+    },
+    'tooltipContainer': {
+      flexDirection: 'column',
+      [theme.breakpoints.up('sm')]: {
+        flexDirection: 'row',
+      },
     },
   }
 })
@@ -121,13 +129,13 @@ const CustomTooltip = ({
   if (active && payload && payload.length) {
     return (
       <Card classes={{root: classes.tooltip}}>
-        <Grid container>
+        <Grid container className={classes.tooltipContainer}>
           <Typography color="textSecondary">{`${xLabel}:`}&nbsp;</Typography>
-          <Typography>{formatX(label)}</Typography>
+          <Typography>{formatX(label)}&nbsp;</Typography>
           {/* TODO: could we directly pass `isLast` prop? */}
-          {payload[0].payload.x === lastItem.x && <Typography>&nbsp;{lastTooltipText}</Typography>}
+          {payload[0].payload.x === lastItem.x && <Typography>{lastTooltipText}</Typography>}
         </Grid>
-        <Grid container>
+        <Grid container className={classes.tooltipContainer}>
           <Typography color="textSecondary">{`${yLabel}:`}&nbsp;</Typography>
           <Typography>{formatYTooltip(payload[0].value)}</Typography>
         </Grid>
@@ -170,6 +178,9 @@ export default ({
   const [labelColor, activeLabelColor] = getBarColors(theme)
   const textColor = theme.palette.text.primary
 
+  const breakpoint = useCurrentBreakpoint()
+  const hideYLabel = breakpoint === 'xs'
+
   return (
     <BarChart
       onMouseLeave={() => setActiveBar(null)}
@@ -184,14 +195,16 @@ export default ({
         label={{value: xLabel, fill: textColor, position: 'insideBottom'}}
       />
       {/* // use tickFormatter also for yAxis */}
-      <YAxis width={100} dataKey="y" tickFormatter={formatYAxis}>
-        <Label
-          angle={-90}
-          offset={-5}
-          value={yLabel}
-          position="insideLeft"
-          style={{textAnchor: 'middle'}}
-        />
+      <YAxis width={!hideYLabel ? 100 : 70} dataKey="y" tickFormatter={formatYAxis}>
+        {!hideYLabel && (
+          <Label
+            angle={-90}
+            offset={-5}
+            value={yLabel}
+            position="insideLeft"
+            style={{textAnchor: 'middle'}}
+          />
+        )}
       </YAxis>
       <Tooltip
         isAnimationActive

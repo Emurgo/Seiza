@@ -51,6 +51,15 @@ function createShadow(shadowColors = DEFAULT_SHADOW_COLORS, ...px) {
 // TODO: adjust for dark theme
 const SHADOW_COLORS = getShadowColors('#412596')
 
+const commonOverrides = {
+  MuiChip: {
+    root: {
+      height: 24,
+      borderRadius: 5,
+    },
+  },
+}
+
 const commonThemeObj = {
   typography: {
     useNextVariants: true,
@@ -137,6 +146,7 @@ export const THEME_DEFINITIONS = {
   [THEMES.BRIGHT]: createMuiTheme({
     ...commonThemeObj,
     overrides: {
+      ...commonOverrides,
       MuiTouchRipple: {
         root: {
           color: 'rgba(77, 32, 192, 0.4)',
@@ -162,7 +172,7 @@ export const THEME_DEFINITIONS = {
       // <Typography color="textSecondary"> ---> selects palette.text.secondary
       text: {
         primary: '#120546',
-        secondary: '#8791AD',
+        secondary: '#6F7290',
       },
       secondary: {
         main: 'rgba(77, 32, 192, 0.1)', // or #E7E4F8 ?
@@ -200,7 +210,7 @@ export const THEME_DEFINITIONS = {
         paper: '#FFFFFF',
         default: '#F9FAFF',
       },
-      contentFocus: '#8791AD',
+      contentFocus: '#6F7290',
       contentUnfocus: '#BFC5D2',
       unobtrusiveContentHighlight: '#F4F6FC',
       disabled: 'rgba(146, 185, 252, 0.05)',
@@ -214,6 +224,9 @@ export const THEME_DEFINITIONS = {
   }),
   [THEMES.DARK]: createMuiTheme({
     ...commonThemeObj,
+    overrides: {
+      ...commonOverrides,
+    },
     palette: {
       type: 'dark',
       gradient: 'linear-gradient(97deg, #8673EC 0%, #99B0EA 100%)',
@@ -268,7 +281,7 @@ export const THEME_DEFINITIONS = {
         paper: '#3D1769',
         paperContrast: '#220049',
       },
-      contentFocus: '#8791AD',
+      contentFocus: '#6F7290',
       contentUnfocus: '#BFC5D2',
       unobtrusiveContentHighlight: '#6F5B93',
       disabled: 'rgba(146, 185, 252, 0.05)',

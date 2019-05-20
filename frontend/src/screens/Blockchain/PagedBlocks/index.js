@@ -1,8 +1,8 @@
 // @flow
-import React, {useState} from 'react'
+import React, {useState, useRef} from 'react'
 import {defineMessages} from 'react-intl'
 import idx from 'idx'
-import {Switch, Typography, Grid} from '@material-ui/core'
+import {Switch, Typography, Grid, Hidden} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
 import Pagination from '@/components/visual/Pagination'
@@ -15,8 +15,10 @@ import {
 } from '@/components/hooks/useBlocksTablePagedProps'
 import {useQueryNotBugged} from '@/components/hooks/useQueryNotBugged'
 import {useManageQueryValue} from '@/components/hooks/useManageQueryValue'
+import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
 import {toIntOrNull} from '@/helpers/utils'
 import BlocksTable, {ALL_COLUMNS} from './BlocksTable'
+import {useAnalytics} from '@/helpers/googleAnalytics'
 
 const AUTOUPDATE_REFRESH_INTERVAL = 10 * 1000
 
@@ -49,6 +51,19 @@ const AutoUpdateSwitch = ({checked, onChange}) => {
 const useStyles = makeStyles((theme) => ({
   wrapper: {
     padding: '5px 10px',
+    flexDirection: 'column',
+    [theme.breakpoints.up('sm')]: {
+      flexDirection: 'row',
+    },
+  },
+  bottomPagination: {
+    marginTop: theme.spacing.unit * 3,
+  },
+  upperPagination: {
+    marginTop: theme.spacing.unit * 2.5,
+    [theme.breakpoints.up('sm')]: {
+      marginTop: 0,
+    },
   },
 }))
 
@@ -98,30 +113,49 @@ const PagedBlocks = () => {
 
   const pagedBlocks = pagedDataResult.pagedData
 
+  const analytics = useAnalytics()
+  analytics.useTrackPageVisitEvent('blocks')
+
+  const scrollToRef = useRef(null)
+  useScrollFromBottom(scrollToRef, pagedBlocks)
+
+  const pagination = (
+    <Pagination
+      count={totalItemsCount}
+      rowsPerPage={rowsPerPage}
+      page={page}
+      onChangePage={onChangePage}
+      reverseDirection
+    />
+  )
+
   return (
-    <SimpleLayout title={translate(messages.header)}>
-      <Grid
-        className={classes.wrapper}
-        container
-        direction="row"
-        alignItems="center"
-        justify="space-between"
-      >
-        <Grid item>
-          <AutoUpdateSwitch checked={autoUpdate} onChange={onChangeAutoUpdate} />
+    <div ref={scrollToRef}>
+      <SimpleLayout title={translate(messages.header)}>
+        <Grid className={classes.wrapper} container alignItems="center" justify="space-between">
+          <Grid item>
+            <AutoUpdateSwitch checked={autoUpdate} onChange={onChangeAutoUpdate} />
+          </Grid>
+          <Grid item className={classes.upperPagination}>
+            <Pagination
+              count={totalItemsCount}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onChangePage={onChangePage}
+              reverseDirection
+            />
+          </Grid>
         </Grid>
-        <Grid item>
-          <Pagination
-            count={totalItemsCount}
-            rowsPerPage={rowsPerPage}
-            page={page || 0}
-            onChangePage={onChangePage}
-            reverseDirection
-          />
-        </Grid>
-      </Grid>
-      <BlocksTable loading={loading} error={error} blocks={pagedBlocks} columns={ALL_COLUMNS} />
-    </SimpleLayout>
+        <BlocksTable loading={loading} error={error} blocks={pagedBlocks} columns={ALL_COLUMNS} />
+        {pagedBlocks && (
+          <Hidden mdUp>
+            <Grid item className={classes.bottomPagination}>
+              {pagination}
+            </Grid>
+          </Hidden>
+        )}
+      </SimpleLayout>
+    </div>
   )
 }
 

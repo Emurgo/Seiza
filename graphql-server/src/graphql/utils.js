@@ -1,5 +1,5 @@
 // @flow
-import {AssertionError} from 'assert'
+import assert, {AssertionError} from 'assert'
 import {ApolloError} from 'apollo-server'
 import BigNumber from 'bignumber.js'
 
@@ -18,13 +18,15 @@ export const validate = (cond: boolean, message: string, ctx: any) => {
   }
 }
 
-// For now, it runs "synchrously" the check
-// Alternative implementations for production:
-// 1) skip the check at all (if load is big)
-// 2) do the check in runaway promise (if we can affort the load but not the latency) and report
-// errors to sentry
 export const runConsistencyCheck = async (callback: Function) => {
-  return await callback()
+  if (process.env.NODE_ENV === 'development') {
+    return await callback()
+  } else {
+    // In production fire a runaway promise
+    Promise.resolve().then(() => callback())
+    // And return early
+    return Promise.resolve()
+  }
 }
 
 // TODO: type better or use other compose function
@@ -70,4 +72,17 @@ export const annotateNotFoundError = (annotation: any) => (err: any) => {
     throw new ApolloError('Not found', 'NOT_FOUND', annotation)
   }
   throw err
+}
+
+export const slotCount = 21600
+const slotDurationSec = 20
+
+export const getEstimatedSlotTimestamp = (epoch: number, slot: number) => {
+  assert(epoch >= 0)
+  assert(slot >= 0 && slot < slotCount)
+
+  // Note(ppershing): not sure why it started at such weird (not modulo 20) timestamp
+  // Note: there is not `epoch - 1` as epochs starts from 0
+  const startTs = 1506203091 + slot * slotDurationSec + epoch * slotCount * slotDurationSec
+  return startTs
 }

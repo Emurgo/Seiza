@@ -24,11 +24,9 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 type Props = {|
-  goPrev: Function,
   hasPrev: boolean,
   linkPrev: ?string,
   prevMessage: string,
-  goNext: Function,
   hasNext: boolean,
   linkNext: ?string,
   nextMessage: string,
@@ -39,7 +37,6 @@ const NavigationButtons = ({
   hasPrev,
   linkPrev,
   prevMessage,
-  goNext,
   hasNext,
   linkNext,
   nextMessage,
@@ -52,7 +49,6 @@ const NavigationButtons = ({
         <Button
           rounded
           secondary
-          onClick={goPrev}
           className={classes.navigationButton}
           disabled={!hasPrev}
           /* Link requires `to` prop even if disabled */
@@ -68,7 +64,6 @@ const NavigationButtons = ({
           rounded
           secondary
           className={classes.navigationButton}
-          onClick={goNext}
           disabled={!hasNext}
           /* Link requires `to` prop even if disabled */
           to={linkNext || ''}

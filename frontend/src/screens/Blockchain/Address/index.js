@@ -1,16 +1,21 @@
 // @flow
 import React, {useRef} from 'react'
-import {useQuery} from 'react-apollo-hooks'
 import useReactRouter from 'use-react-router'
 import {defineMessages} from 'react-intl'
 import {IconButton} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import idx from 'idx'
 
-import {GET_ADDRESS_BY_ADDRESS58} from '@/api/queries'
+import {GET_ADDRESS_BY_ADDRESS58, GET_TXS_BY_ADDRESS} from '@/api/queries'
 import {useI18n} from '@/i18n/helpers'
-import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
+import {useAnalytics} from '@/helpers/googleAnalytics'
+import {toIntOrNull} from '@/helpers/utils'
+import {ObjectValues} from '@/helpers/flow'
+import {useQueryNotBugged} from '@/components/hooks/useQueryNotBugged'
 
+import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
+import useTabState from '@/components/hooks/useTabState'
+import {useManageQueryValue} from '@/components/hooks/useManageQueryValue'
 import WithModalState from '@/components/headless/modalState'
 import PagedTransactions from './PagedTransactions'
 import QRDialog from './QRDialog'
@@ -24,15 +29,17 @@ import {
   AdaValue,
   Tooltip,
   EntityHeading,
+  Pagination,
 } from '@/components/visual'
 
 import addressIcon from '@/assets/icons/qrcode.svg'
 import {extractError} from '@/helpers/errors'
 
+import {FILTER_TYPES} from './constants'
+
 const summaryMessages = defineMessages({
   NA: 'N/A',
   address: 'Address ID',
-  addressType: 'Address type',
   transactionsCount: 'Total transactions for address',
   balance: 'Address Balance',
   totalAdaReceived: 'Total received ADA',
@@ -58,7 +65,6 @@ const AddressSummaryCard = ({addressSummary, loading}) => {
   addressSummary = loading ? null : addressSummary
 
   const data = {
-    type: idx(addressSummary, (_) => _.type) || NA,
     txCount: formatInt(idx(addressSummary, (_) => _.transactionsCount), {defaultValue: NA}),
     balance: <AdaValue value={idx(addressSummary, (_) => _.balance)} noValue={NA} />,
     totalAdaReceived: (
@@ -69,7 +75,6 @@ const AddressSummaryCard = ({addressSummary, loading}) => {
 
   return (
     <SummaryCard>
-      <Row label={labels.addressType} value={data.type} />
       <Row label={labels.transactionsCount} value={data.txCount} />
       <Row label={labels.balance} value={data.balance} />
       <Row label={labels.totalAdaReceived} value={data.totalAdaReceived} />
@@ -90,6 +95,8 @@ const useStyles = makeStyles((theme) => ({
   headingWrapper: {
     marginBottom: theme.spacing.unit * 6,
     marginTop: theme.spacing.unit * 6,
+    display: 'flex',
+    justifyContent: 'center',
   },
   // 12px is width of hover part of button
   alignIconButton: {
@@ -99,11 +106,83 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const useAddressSummary = (address58) => {
-  const {loading, data, error} = useQuery(GET_ADDRESS_BY_ADDRESS58, {
+  const {loading, data, error} = useQueryNotBugged(GET_ADDRESS_BY_ADDRESS58, {
     variables: {address58},
   })
 
-  return {loading, error: extractError(error, ['address']), addressSummary: data.address}
+  // TODO: how to extract error properly???
+  return {loading, error: extractError(error, ['address']) || error, addressSummary: data.address}
+}
+
+const useTransactions = (address58, filterType, cursor) => {
+  const {loading, data, error} = useQueryNotBugged(GET_TXS_BY_ADDRESS, {
+    variables: {address58, filterType, cursor},
+  })
+
+  // TODO: how to extract error properly???
+  return {
+    loading,
+    error: extractError(error, ['address']) || error,
+    transactions: idx(data, (_) => _.address.transactions),
+  }
+}
+
+const usePaginations = () => {
+  const [tabOnePage, onTabOnePageChange] = useManageQueryValue(FILTER_TYPES.ALL, null, toIntOrNull)
+  const [tabTwoPage, onTabTwoPageChange] = useManageQueryValue(FILTER_TYPES.SENT, null, toIntOrNull)
+  const [tabThreePage, onTabThreePageChange] = useManageQueryValue(
+    FILTER_TYPES.RECEIVED,
+    null,
+    toIntOrNull
+  )
+
+  return {
+    [FILTER_TYPES.ALL]: {page: tabOnePage, onChangePage: onTabOnePageChange},
+    [FILTER_TYPES.SENT]: {page: tabTwoPage, onChangePage: onTabTwoPageChange},
+    [FILTER_TYPES.RECEIVED]: {page: tabThreePage, onChangePage: onTabThreePageChange},
+  }
+}
+const ROWS_PER_PAGE = 10
+
+// Note: Math.max is used because user may change url to invalid number
+const cursorFromPage = (page: number): number => Math.max((page - 1) * ROWS_PER_PAGE, 0)
+
+const useTransactionsData = (address58, paginations) => {
+  // We query all three different types for all/sent/received
+  // so that use don't wait on spinner every time when he clicks between
+  // all/sent/received tabs.
+
+  const useTransactionsHelper = (filterType) =>
+    useTransactions(
+      address58,
+      filterType,
+      paginations[filterType].page != null ? cursorFromPage(paginations[filterType].page) : null
+    )
+
+  const all = useTransactionsHelper(FILTER_TYPES.ALL)
+  const sent = useTransactionsHelper(FILTER_TYPES.SENT)
+  const received = useTransactionsHelper(FILTER_TYPES.RECEIVED)
+
+  return {
+    [FILTER_TYPES.ALL]: all,
+    [FILTER_TYPES.SENT]: sent,
+    [FILTER_TYPES.RECEIVED]: received,
+  }
+}
+
+const useManageTabs = (address58) => {
+  const tabNames = ObjectValues(FILTER_TYPES)
+  const [currentTab, setTab] = useManageQueryValue('tab', tabNames[0])
+  const tabState = useTabState(tabNames, null, currentTab, setTab)
+  const paginations = usePaginations()
+  const transactionsData = useTransactionsData(address58, paginations)
+  return {
+    pagination: paginations[currentTab],
+    transactionsData: transactionsData[currentTab],
+    tabState,
+    currentTab,
+    setTab,
+  }
 }
 
 const AddressScreen = () => {
@@ -112,10 +191,28 @@ const AddressScreen = () => {
       params: {address58},
     },
   } = useReactRouter()
+  const {pagination, transactionsData, tabState, currentTab, setTab} = useManageTabs(address58)
+
   const {loading, error, addressSummary} = useAddressSummary(address58)
+
+  const {page, onChangePage} = pagination
+  const {
+    loading: transactionsLoading,
+    error: transactionsError,
+    transactions: addressTransactions,
+  } = transactionsData
+
+  const transactions = idx(addressTransactions, (_) => _.transactions) || []
+  const transactionCount = idx(addressSummary, (_) => _.transactionsCount)
+
+  const totalCount = idx(addressTransactions, (_) => _.totalCount) || 0
+
   const {translate: tr} = useI18n()
   const classes = useStyles()
   const scrollToRef = useRef(null)
+
+  const analytics = useAnalytics()
+  analytics.useTrackPageVisitEvent('address')
 
   useScrollFromBottom(scrollToRef, addressSummary)
 
@@ -158,18 +255,33 @@ const AddressScreen = () => {
           <LoadingError error={error} />
         ) : (
           <React.Fragment>
-            <AddressSummaryCard loading={loading} addressSummary={addressSummary} />
+            <AddressSummaryCard
+              loading={!addressSummary && loading}
+              addressSummary={addressSummary}
+            />
             <div className={classes.headingWrapper}>
               <EntityHeading>
                 {tr(messages.transactionsHeading, {
-                  count: idx(addressSummary, (_) => _.transactionsCount) || '',
+                  count: transactionCount,
                 })}
               </EntityHeading>
             </div>
             <PagedTransactions
-              loading={loading}
+              error={transactionsError}
+              loading={transactionsLoading}
               targetAddress={address58}
-              transactions={idx(addressSummary, (_) => _.transactions) || []}
+              transactions={transactions}
+              tabState={tabState}
+              filterType={currentTab}
+              changeFilterType={setTab}
+              pagination={
+                <Pagination
+                  count={totalCount}
+                  rowsPerPage={ROWS_PER_PAGE}
+                  page={page}
+                  onChangePage={onChangePage}
+                />
+              }
             />
           </React.Fragment>
         )}

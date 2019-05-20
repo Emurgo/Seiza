@@ -2,7 +2,7 @@
 import React, {useCallback, useState} from 'react'
 import cn from 'classnames'
 import {Link} from 'react-router-dom'
-import {defineMessages} from 'react-intl'
+import {defineMessages, FormattedMessage} from 'react-intl'
 import gql from 'graphql-tag'
 import {useMutation} from 'react-apollo-hooks'
 import IsEmail from 'isemail'
@@ -20,8 +20,16 @@ import {makeStyles} from '@material-ui/styles'
 import {darken} from '@material-ui/core/styles/colorManipulator'
 
 import {useI18n} from '@/i18n/helpers'
-import analytics from '@/helpers/googleAnalytics'
-import {Button, ExternalLink, Tooltip, CloseIconButton, LoadingOverlay} from '@/components/visual'
+import {routeTo} from '@/helpers/routes'
+import {useAnalytics} from '@/helpers/googleAnalytics'
+import {
+  Button,
+  ExternalLink,
+  Tooltip,
+  CloseIconButton,
+  LoadingOverlay,
+  Link as CustomLink,
+} from '@/components/visual'
 import logo from '@/assets/icons/logo-seiza-white.svg'
 import alertIcon from '@/assets/icons/alert.svg'
 import subscribedIcon from '@/assets/icons/subscribed.svg'
@@ -40,6 +48,9 @@ import youtubeIcon from '@/assets/icons/social/youtube.svg'
 const messages = defineMessages({
   copyright: 'All rights reserved',
   subscribeToNewsletter: 'Subscribe to newsletter',
+  subscribeInfo:
+    'By subscribing, you agree to receive news and updates about our new features and products in accordance with our {privacyLink}.',
+  privacyLink: 'Privacy and Cookie policy',
 })
 
 const subscribeMessages = defineMessages({
@@ -127,9 +138,9 @@ const SUBSCRIBE_MUTATION = gql`
 `
 const useSubscribeMutation = (email) => useMutation(SUBSCRIBE_MUTATION, {variables: {email}})
 
-const LARGEST_FOOTER_HEIGHT = 260
+const LARGEST_FOOTER_HEIGHT = 420
 
-const useSubscribeFooterStyles = makeStyles(({palette, spacing, breakpoints}) => ({
+const useSubscribeFooterStyles = makeStyles(({palette, spacing, breakpoints, typography}) => ({
   '@global': {
     '@keyframes footer-leave': {
       '0%': {
@@ -163,19 +174,28 @@ const useSubscribeFooterStyles = makeStyles(({palette, spacing, breakpoints}) =>
     },
   },
   'wrapper': {
+    height: LARGEST_FOOTER_HEIGHT,
     overflow: 'hidden',
     padding: spacing.unit * 2,
     background: palette.gradient,
     position: 'relative',
-    height: 200,
-    [breakpoints.down('xs')]: {
-      height: LARGEST_FOOTER_HEIGHT,
+    [breakpoints.up('sm')]: {
+      height: 250,
+    },
+    [breakpoints.up('md')]: {
+      height: 220,
     },
   },
   'subscribe': {
     marginLeft: spacing.unit * 1.3,
     marginRight: spacing.unit * 1.3,
+    marginTop: spacing.unit,
+    marginBottom: spacing.unit,
     width: '200px',
+    [breakpoints.up('sm')]: {
+      marginTop: 0,
+      marginBottom: 0,
+    },
   },
   'email': {
     width: '280px',
@@ -227,6 +247,9 @@ const useSubscribeFooterStyles = makeStyles(({palette, spacing, breakpoints}) =>
   'enterSubscribeActive': {
     animation: 'footer-enter 2000ms',
   },
+  'subscribeInfo': {
+    fontSize: typography.fontSize * 0.8,
+  },
 }))
 
 type UiState = 'success' | 'error' | 'loading' | 'init'
@@ -275,6 +298,7 @@ const SubscribeFooter = () => {
   const [email, setEmail] = useState('')
   const {hidden, hideSubscribe} = useSubscribeContext()
   const {uiState, setError, setInit, setSuccess, setLoading, errorMessage} = useUIState('init')
+  const analytics = useAnalytics()
 
   const subscribe = useSubscribeMutation(email)
 
@@ -296,6 +320,8 @@ const SubscribeFooter = () => {
 
   const validateAndSubscribe = useCallback(
     (event) => {
+      // Do we want to track only if email was valid?
+      analytics.trackSubscription()
       event.preventDefault()
       if (!IsEmail.validate(email)) {
         setInvalidEmailError()
@@ -319,7 +345,17 @@ const SubscribeFooter = () => {
           })
       }
     },
-    [email, setInvalidEmailError, setLoading, subscribe, setSuccess, onHide, setError, tr]
+    [
+      analytics,
+      email,
+      setInvalidEmailError,
+      setLoading,
+      subscribe,
+      setSuccess,
+      onHide,
+      setError,
+      tr,
+    ]
   )
 
   return (
@@ -395,6 +431,20 @@ const SubscribeFooter = () => {
                 </Grid>
 
                 <Grid item className={classes.row}>
+                  <Typography className={classes.subscribeInfo}>
+                    <FormattedMessage
+                      // $FlowFixMe
+                      id={messages.subscribeInfo.id}
+                      values={{
+                        privacyLink: (
+                          <CustomLink to={routeTo.privacy()}>{tr(messages.privacyLink)}</CustomLink>
+                        ),
+                      }}
+                    />
+                  </Typography>
+                </Grid>
+
+                <Grid item className={classes.row}>
                   <form>
                     <Grid container direction="row" justify="center" spacing={16}>
                       <Grid item>
@@ -439,32 +489,76 @@ const SubscribeFooter = () => {
   )
 }
 
-const useMainFooterStyles = makeStyles(({spacing, palette, typography}) => ({
+const useMainFooterStyles = makeStyles(({spacing, palette, typography, breakpoints}) => ({
   socialIconWrapper: {
-    marginLeft: spacing.unit * 1.7,
+    marginLeft: 0,
+    marginRight: spacing.unit * 1.7,
+    marginTop: spacing.unit,
+
+    [breakpoints.up('md')]: {
+      marginLeft: spacing.unit * 1.7,
+      marginRight: 0,
+      marginTop: 0,
+    },
   },
   copyright: {
     color: palette.footer.contrastText,
     fontSize: typography.fontSize * 0.5,
   },
   nav: {
-    listStyleType: 'none',
-    padding: 0,
-    margin: 0,
-    marginBottom: spacing.unit,
-    display: 'flex',
-    justifyContent: 'space-between',
+    'listStyleType': 'none',
+    'padding': 0,
+    'margin': 0,
+    'marginBottom': spacing.unit,
+    'display': 'flex',
+    'justifyContent': 'space-between',
+    'flexDirection': 'column',
+    [breakpoints.up('sm')]: {
+      flexDirection: 'row',
+    },
+    '& > *': {
+      marginTop: spacing.unit * 0.5,
+      marginRight: spacing.unit * 2,
+    },
+    '& > :last-child': {
+      marginRight: 0,
+    },
+    [breakpoints.up('md')]: {
+      'marginTop': 0,
+      '& > *': {
+        marginRight: spacing.unit * 4,
+      },
+      '& > :last-child': {
+        marginRight: 0,
+      },
+    },
   },
   navigationWrapper: {
-    minWidth: '450px',
+    marginTop: spacing.unit * 2,
+    [breakpoints.up('sm')]: {
+      marginTop: spacing.unit * 2,
+    },
+    [breakpoints.up('md')]: {
+      marginTop: 0,
+    },
   },
   wrapper: {
     backgroundColor: palette.footer.background,
     padding: `${spacing.unit * 2}px ${spacing.unit * 1.5}px`,
   },
   innerWrapper: {
+    justifyContent: 'space-between',
     maxWidth: 900,
     margin: 'auto',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    paddingLeft: spacing.unit * 3,
+
+    [breakpoints.up('md')]: {
+      flexDirection: 'row',
+      alignItems: 'flex-end',
+      paddingLeft: 0,
+    },
   },
   link: {
     'textDecoration': 'none',
@@ -485,15 +579,32 @@ const useMainFooterStyles = makeStyles(({spacing, palette, typography}) => ({
     cursor: 'pointer',
     height: '100%',
     fontSize: typography.fontSize * 0.7,
+    marginTop: spacing.unit * 0.5,
+    marginBottom: spacing.unit * 0.5,
+    [breakpoints.up('sm')]: {
+      marginTop: 0,
+      marginBottom: 0,
+    },
+  },
+  bottomBarContainer: {
+    justifyContent: 'space-between',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+
+    [breakpoints.up('md')]: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
   },
 }))
 
 const SocialIcon = ({to, icon, className, iconName}) => {
   const classes = useMainFooterStyles()
+  const analytics = useAnalytics()
 
   const onClick = useCallback(() => {
     analytics.trackSocialIconLink(iconName)
-  }, [iconName])
+  }, [analytics, iconName])
 
   return (
     <span className={classes.socialIconWrapper}>
@@ -534,13 +645,7 @@ const MainFooter = ({navItems}) => {
 
   return (
     <div className={classes.wrapper}>
-      <Grid
-        container
-        direction="row"
-        justify="space-between"
-        alignItems="flex-end"
-        className={classes.innerWrapper}
-      >
+      <Grid container className={classes.innerWrapper}>
         <Grid item>
           <img alt="" src={logo} />
           <Typography className={classes.copyright}>
@@ -549,7 +654,7 @@ const MainFooter = ({navItems}) => {
         </Grid>
 
         <Grid item className={classes.navigationWrapper}>
-          <Grid container direction="column" justifyContent="center">
+          <Grid container direction="column" justify="center">
             <Grid item>
               <ul className={classes.nav}>
                 {navItems.map(({link, label, disabledText}) => (
@@ -568,7 +673,7 @@ const MainFooter = ({navItems}) => {
               </ul>
             </Grid>
             <Grid item>
-              <Grid container justify="space-between" alignItems="center">
+              <Grid container className={classes.bottomBarContainer}>
                 <Grid item>
                   {hidden && (
                     <Typography

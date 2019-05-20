@@ -26,6 +26,7 @@ import AdaIcon from '@/assets/icons/transaction-id.svg'
 import {ASSURANCE_LEVELS_VALUES} from '@/constants'
 import {useI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
+import {useAnalytics} from '@/helpers/googleAnalytics'
 
 const messages = defineMessages({
   header: 'Transaction',
@@ -176,6 +177,9 @@ const TransactionScreen = () => {
   const {loading, transactionData, error} = useTransactionData(txHash)
   const {translate} = useI18n()
   const scrollToRef = useRef(null)
+
+  const analytics = useAnalytics()
+  analytics.useTrackPageVisitEvent('transaction')
 
   useScrollFromBottom(scrollToRef, transactionData)
 

@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom'
 import _ from 'lodash'
 import idx from 'idx'
 import assert from 'assert'
+import cn from 'classnames'
 import {Tabs as MuiTabs, Tab as MuiTab} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {mergeStylesheets} from '@/helpers/styles'
@@ -25,18 +26,50 @@ const useTabStyles = makeStyles((theme) => ({
 
 const useTabsStyles = makeStyles((theme) => ({
   root: {
-    marginLeft: ({alignLeft}) => (alignLeft ? -getPadding(theme) : 'initial'),
+    // need to have for indicator correctly under labels
+    minHeight: 'auto !important',
+    // minHeight is set by default to 48px in material-ui
+    // 'auto' makes it 24px,
+    // so we apply remaining 24px to bottom
+    marginBottom: ({defaultBottomOffset}) => (defaultBottomOffset ? 24 : 0),
+  },
+  flexContainer: {
+    '& > :first-child': {
+      // Needed for scrolling
+      paddingLeft: 0,
+    },
+  },
+  fixed: {
+    // Note:.
+    // We could set <Tabs variant="scrolling" scrollButtons="on" />, but then there is always
+    // and offset at the left side of tabs,
+    // which we can not simply determine when to hide and when not.
+    // For now not showing scrollBar as it mess up with tabs underline.
+    'overflowX': 'auto',
+    '&::-webkit-scrollbar': {
+      display: 'none',
+    },
+  },
+}))
+
+const useWrapperStyles = makeStyles((theme) => ({
+  wrapper: {
+    position: 'relative',
   },
 }))
 
 const useTabIndicatorStyles = makeStyles((theme) => ({
   root: {
-    width: '100%',
-    height: '1px',
-    bottom: '0',
-    position: 'absolute',
-    transition: 'all 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
-    backgroundColor: theme.palette.tertiary.main,
+    display: 'none',
+    [theme.breakpoints.up('sm')]: {
+      display: 'block',
+      width: '100%',
+      height: '1px',
+      bottom: '0',
+      position: 'absolute',
+      transition: 'all 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
+      backgroundColor: theme.palette.tertiary.main,
+    },
   },
 }))
 
@@ -65,8 +98,9 @@ const TAB_INDICATOR_WIDTH = 0.5
 const getWidthOfCurrentTabIndicator = (tabLabelRef) =>
   (labelRectFromTabRef(tabLabelRef).width || 0) * TAB_INDICATOR_WIDTH
 
-export const LiteTabs = ({children, alignLeft, ...props}) => {
-  const classes = useTabsStyles({alignLeft})
+export const LiteTabs = ({children, defaultBottomOffset, ...props}) => {
+  const classes = useWrapperStyles()
+  const tabsClasses = useTabsStyles({defaultBottomOffset})
   const indicatorClassName = useTabIndicatorStyles().root
   const tabsRef = useRef(null)
 
@@ -97,16 +131,18 @@ export const LiteTabs = ({children, alignLeft, ...props}) => {
   const indicator = <div style={{...indicatorLocation}} className={indicatorClassName} />
 
   return (
-    <MuiTabs
-      ref={tabsRef}
-      TabIndicatorProps={TAB_INDICATOR_PROPS}
-      classes={mergeStylesheets(classes, props.classes)}
-      textColor="primary"
-      {...props}
-    >
-      {children}
+    <div className={cn(props.className, classes.wrapper)}>
+      <MuiTabs
+        ref={tabsRef}
+        TabIndicatorProps={TAB_INDICATOR_PROPS}
+        classes={mergeStylesheets(tabsClasses, props.classes)}
+        textColor="primary"
+        {...props}
+      >
+        {children}
+      </MuiTabs>
       {indicator}
-    </MuiTabs>
+    </div>
   )
 }
 

@@ -1,6 +1,7 @@
 // @flow
 
 import './initMaterialUI'
+import cn from 'classnames'
 import React from 'react'
 import {BrowserRouter as Router, Route, Switch, Redirect} from 'react-router-dom'
 import {withRouter} from 'react-router'
@@ -14,21 +15,27 @@ import config from './config'
 import {routeTo} from './helpers/routes'
 import {provideIntl} from './components/HOC/intl'
 import {provideTheme, withTheme, THEME_DEFINITIONS} from './components/HOC/theme'
-import {Navbar, MobileNavbar, Footer} from './components/visual'
+import {Navbar, MobileNavbar, Footer, Link} from './components/visual'
 import {useI18n, InjectHookIntlContext} from '@/i18n/helpers'
 import {AutoSyncProvider} from './screens/Staking/context/autoSync'
 
-import Terms from './screens/Terms'
+import Terms from './screens/Officials/Terms'
+import Privacy from './screens/Officials/Privacy'
 import Home from './screens/Home'
 import Blockchain from './screens/Blockchain'
+import BlockchainHeader from './screens/Blockchain/BlockchainHeader'
 import Staking from './screens/Staking'
 import More from './screens/More'
 import PageNotFound from './screens/PageNotFound'
 import LanguageSelect from '@/components/common/LanguageSelect'
 import ThemeSelect from '@/components/common/ThemeSelect'
+import CookiesBanner from '@/components/common/CookiesBanner'
 import DefaultErrorBoundary from '@/components/common/DefaultErrorBoundary'
 import {SubscribeProvider} from '@/components/context/SubscribeContext'
+import {CookiesProvider} from '@/components/context/CookiesContext'
+import {AnalyticsProvider} from '@/helpers/googleAnalytics' // TODO move to context?
 import {CurrencyProvider} from '@/components/hooks/useCurrency'
+import Search from './screens/Blockchain/BlockchainHeader/Search'
 
 import './App.css'
 import seizaLogo from './assets/icons/logo-seiza.svg'
@@ -40,6 +47,7 @@ const navigationMessages = defineMessages({
   stakePools: 'Stake pools',
   more: 'More',
   termsOfUse: 'Terms of use',
+  privacy: 'Privacy',
   disabledText: 'Coming soon',
 })
 
@@ -48,6 +56,10 @@ const useAppStyles = makeStyles((theme) => ({
     maxWidth: '1920px',
     margin: 'auto',
     height: '100%',
+    overflow: 'auto', // Needed by mobile "sticky" header
+    [theme.breakpoints.up('md')]: {
+      overflow: 'visible',
+    },
   },
   contentWrapper: {
     flex: 1,
@@ -56,7 +68,26 @@ const useAppStyles = makeStyles((theme) => ({
     position: 'relative',
     background: theme.palette.background.paper,
     boxShadow: `0px 5px 25px ${fade(theme.palette.shadowBase, 0.12)}`,
-    padding: `${theme.spacing.unit}px ${theme.spacing.unit * 5}px`,
+    padding: theme.spacing.unit,
+    [theme.breakpoints.up('sm')]: {
+      padding: `${theme.spacing.unit}px ${theme.spacing.unit * 5}px`,
+    },
+  },
+  mobileSearch: {
+    flex: 1,
+    marginLeft: 0,
+    [theme.breakpoints.up('sm')]: {
+      marginLeft: theme.spacing.unit * 2,
+    },
+  },
+  navHeaderWrapper: {
+    position: 'sticky',
+    top: 0,
+    zIndex: 1,
+    [theme.breakpoints.up('md')]: {
+      position: 'static',
+      zIndex: 0,
+    },
   },
 }))
 
@@ -90,6 +121,7 @@ const getTranslatedFooterNavItems = (translate) => {
   return [
     ...mainNavItems,
     {link: routeTo.termsOfUse(), label: translate(navigationMessages.termsOfUse), __hide: false},
+    {link: routeTo.privacy(), label: translate(navigationMessages.privacy), __hide: false},
   ]
 }
 
@@ -97,79 +129,107 @@ const TopBar = compose(withRouter)(({location: {pathname}}) => {
   const {translate} = useI18n()
   const classes = useAppStyles()
   return (
-    <Grid
-      container
-      direction="row"
-      justify="space-between"
-      alignItems="center"
-      className={classes.topBar}
-    >
-      <Hidden mdUp>
-        <Grid item>
-          <MobileNavbar currentPathname={pathname} items={getTranslatedNavItems(translate)} />
-        </Grid>
-      </Hidden>
+    <React.Fragment>
       <Hidden smDown>
-        <Grid item>
-          <img alt="" src={seizaLogo} />
+        <Grid
+          container
+          direction="row"
+          justify="space-between"
+          alignItems="center"
+          className={classes.topBar}
+        >
+          <Grid item>
+            <Link to={routeTo.home()}>
+              <img alt="" src={seizaLogo} />
+            </Link>
+          </Grid>
+          <Grid item>
+            <Grid container direction="row" alignItems="center">
+              <Navbar currentPathname={pathname} items={getTranslatedNavItems(translate)} />
+              <LanguageSelect />
+              {config.showStakingData && <ThemeSelect />}
+            </Grid>
+          </Grid>
         </Grid>
       </Hidden>
-      <Grid item>
-        <Grid container direction="row" alignItems="center">
-          <Hidden smDown>
-            <Navbar currentPathname={pathname} items={getTranslatedNavItems(translate)} />
-          </Hidden>
+      <Hidden mdUp>
+        <div className={cn(classes.topBar, 'd-flex')}>
+          <MobileNavbar currentPathname={pathname} items={getTranslatedNavItems(translate)} />
+          <div className={classes.mobileSearch}>
+            <Search isMobile />
+          </div>
           {config.showStakingData && <LanguageSelect />}
           {config.showStakingData && <ThemeSelect />}
-        </Grid>
-      </Grid>
-    </Grid>
+        </div>
+      </Hidden>
+    </React.Fragment>
   )
 })
 
-const App = () => {
+const Providers = ({children}) => (
+  <CookiesProvider>
+    {/* Note: must be defined after CookiesProvider */}
+    <AnalyticsProvider>
+      <CurrencyProvider>
+        <SubscribeProvider>
+          <AutoSyncProvider>{children}</AutoSyncProvider>
+        </SubscribeProvider>
+      </CurrencyProvider>
+    </AnalyticsProvider>
+  </CookiesProvider>
+)
+
+const AppLayout = () => {
   const classes = useAppStyles()
   const {translate} = useI18n()
 
   return (
-    <DefaultErrorBoundary>
-      <Router>
-        <CurrencyProvider>
-          <SubscribeProvider>
-            <AutoSyncProvider>
-              <Grid container direction="column" className={classes.mainWrapper} wrap="nowrap">
-                <Grid item>
-                  <CssBaseline />
-                  <TopBar />
-                </Grid>
-                <DefaultErrorBoundary>
-                  <React.Fragment>
-                    <Grid item className={classes.contentWrapper}>
-                      <Switch>
-                        <Redirect exact from="/" to={routeTo.home()} />
-                        <Route exact path={routeTo.home()} component={Home} />
-                        <Route path={routeTo.blockchain()} component={Blockchain} />
-                        {config.showStakingData && (
-                          <Route path={routeTo.staking.home()} component={Staking} />
-                        )}
-                        {config.showStakingData && <Route path={routeTo.more()} component={More} />}
-                        <Route exact path={routeTo.termsOfUse()} component={Terms} />
-                        <Route component={PageNotFound} />
-                      </Switch>
-                    </Grid>
-                    <Grid item>
-                      <Footer navItems={getTranslatedFooterNavItems(translate)} />
-                    </Grid>
-                  </React.Fragment>
-                </DefaultErrorBoundary>
-              </Grid>
-            </AutoSyncProvider>
-          </SubscribeProvider>
-        </CurrencyProvider>
-      </Router>
-    </DefaultErrorBoundary>
+    <Grid container direction="column" className={classes.mainWrapper} wrap="nowrap">
+      <CookiesBanner />
+
+      <Grid item className={classes.navHeaderWrapper}>
+        <CssBaseline />
+        <TopBar />
+      </Grid>
+      <DefaultErrorBoundary>
+        <React.Fragment>
+          <Grid item className={classes.contentWrapper}>
+            <Switch>
+              <Redirect exact from="/" to={routeTo.home()} />
+
+              <Route path={`:path(${routeTo.home()}|${routeTo.blockchain()})`}>
+                <BlockchainHeader />
+                <Route exact path={routeTo.home()} component={Home} />
+                <Route path={routeTo.blockchain()} component={Blockchain} />
+              </Route>
+
+              {config.showStakingData && (
+                <Route path={routeTo.staking.home()} component={Staking} />
+              )}
+              {config.showStakingData && <Route path={routeTo.more()} component={More} />}
+              <Route exact path={routeTo.termsOfUse()} component={Terms} />
+              <Route exact path={routeTo.privacy()} component={Privacy} />
+              <Route component={PageNotFound} />
+            </Switch>
+          </Grid>
+          <Grid item>
+            <Footer navItems={getTranslatedFooterNavItems(translate)} />
+          </Grid>
+        </React.Fragment>
+      </DefaultErrorBoundary>
+    </Grid>
   )
 }
+
+const App = () => (
+  <DefaultErrorBoundary>
+    <Router>
+      <Providers>
+        <AppLayout />
+      </Providers>
+    </Router>
+  </DefaultErrorBoundary>
+)
 
 const ThemeWrapper = ({currentTheme}) => (
   <ThemeProvider theme={THEME_DEFINITIONS[currentTheme]}>

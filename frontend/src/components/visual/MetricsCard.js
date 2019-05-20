@@ -29,6 +29,13 @@ import IconPools from '@/assets/icons/metrics-stakepools.svg'
 
 const styles = (theme) =>
   createStyles({
+    contentWrapper: {
+      padding: theme.spacing.unit,
+      paddingLeft: theme.spacing.unit,
+      [theme.breakpoints.up('md')]: {
+        paddingLeft: theme.spacing.unit * 2,
+      },
+    },
     card: {
       border: '0px solid transparent !important',
       display: 'flex',
@@ -46,9 +53,12 @@ const styles = (theme) =>
       alignItems: 'center',
     },
     icon: {
-      width: 50,
-      marginRight: theme.spacing.unit * 2,
-      marginLeft: theme.spacing.unit * 2,
+      display: 'none',
+      [theme.breakpoints.up('sm')]: {
+        width: 50,
+        marginRight: theme.spacing.unit * 2,
+        display: 'block',
+      },
     },
     optionsIcon: {
       'color': theme.palette.contentUnfocus,
@@ -80,6 +90,13 @@ const styles = (theme) =>
         '@media (hover: none)': {
           backgroundColor: 'transparent',
         },
+      },
+    },
+    value: {
+      paddingBottom: theme.spacing.unit * 0.5,
+      fontSize: theme.typography.h2.fontSize * 0.8,
+      [theme.breakpoints.up('sm')]: {
+        fontSize: theme.typography.h2.fontSize,
       },
     },
   })
@@ -182,19 +199,30 @@ class MetricsCard extends React.Component<MetricsCardProps> {
             >
               <ClickableWrapper {...{onClick, classes}} buttonBaseProps={clickableWrapperProps}>
                 {/* just to center the image */}
-                <Grid container direction="column" justify="space-around" className={classes.icon}>
-                  <img alt="" src={ICONS[icon]} />
-                </Grid>
-                <Grid container direction="column" justify="center">
-                  <Grid item>
-                    <Typography variant="h2" className={classes.value}>
-                      {value}
-                    </Typography>
+                <Grid container wrap="nowrap" className={classes.contentWrapper}>
+                  <Grid
+                    container
+                    direction="column"
+                    justify="space-around"
+                    className={classes.icon}
+                  >
+                    <img alt="" src={ICONS[icon]} />
                   </Grid>
-                  <Grid item>
-                    <Typography variant="caption" color="textSecondary" className={classes.metric}>
-                      {metric}
-                    </Typography>
+                  <Grid container direction="column" justify="center">
+                    <Grid item>
+                      <Typography variant="h2" className={classes.value}>
+                        {value}
+                      </Typography>
+                    </Grid>
+                    <Grid item>
+                      <Typography
+                        variant="caption"
+                        color="textSecondary"
+                        className={classes.metric}
+                      >
+                        {metric}
+                      </Typography>
+                    </Grid>
                   </Grid>
                 </Grid>
               </ClickableWrapper>

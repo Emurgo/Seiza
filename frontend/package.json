@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "react-app-rewired start",
+    "start": "if test $NODE_ENV = production; then yarn start:heroku; else react-app-rewired start; fi",
+    "start:heroku": "node heroku.js",
     "build": "SENTRY_COMMIT_HASH=`sentry-cli releases propose-version` react-app-rewired build",
     "build:heroku": "sentry-cli releases new $SOURCE_VERSION; REACT_APP_SENTRY_RELEASE_VERSION=$SOURCE_VERSION react-app-rewired build",
     "heroku-postbuild": "yarn build:heroku",
@@ -14,7 +15,7 @@
     "flow-stop": "flow stop",
     "flow-coverage": "flow-coverage-report || exit 0",
     "prettier": "prettier-eslint --write \"src/**/*.js\"",
-    "extract-translations": "NODE_ENV=development yarn run extract-react-intl-messages -o src/i18n/locales/ -l en --flat 'src/**/*.js'",
+    "extract-translations": "NODE_ENV=development src/i18n/scripts/cli.js --output src/i18n/locales/ --locales en,ja-JP  'src/**/*.js' --flat",
     "test": "yarn flow && yarn eslint",
     "update-schema-type": "yarn gql-gen"
   },

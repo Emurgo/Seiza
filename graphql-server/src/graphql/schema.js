@@ -2,7 +2,7 @@ import {gql} from 'apollo-server'
 import {mergeTypes} from 'merge-graphql-schemas'
 
 import activecampaignSchema from './activecampaign/schema.gql'
-import transactionSchema from './transaction/types'
+import transactionSchema from './transaction/schema.gql'
 import addressSchema from './address/schema.gql'
 import blockSchema from './block/schema.gql'
 import statusSchema from './status/schema.gql'
@@ -17,6 +17,11 @@ const globalTypes = gql`
   scalar Timestamp
   scalar AdaAmount
   scalar URL
+
+  # Note(ppershing): this should be
+  # multipliers: [String | Int] but gql does not support
+  # scalar union and String seems to work even for Ints
+  directive @cost(complexity: Int, multipliers: [String]) on FIELD | OBJECT | FIELD_DEFINITION
 `
 
 export default mergeTypes(

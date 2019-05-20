@@ -10,7 +10,7 @@ import {logError} from '@/helpers/errorReporting'
 import errorImage from '@/assets/error-screen.svg'
 
 const messages = defineMessages({
-  errorTitle: 'Ooops something went wrong',
+  errorTitle: 'Oops! Something went wrong',
   errorMsg: 'Please refresh the page',
 })
 

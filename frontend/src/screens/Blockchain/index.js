@@ -10,7 +10,6 @@ import Address from './Address'
 import Epoch from './Epoch'
 import Block from './Block'
 import PagedBlocks from './PagedBlocks'
-import BlockchainHeader from './BlockchainHeader'
 import StakePool from './StakePool'
 import StakingKey from './StakingKey'
 import Slot from './Block/Slot'
@@ -18,7 +17,6 @@ import NotFound from './NotFound'
 
 export default (props) => (
   <React.Fragment>
-    <BlockchainHeader />
     <SyncIssuesBar />
     <Switch>
       <Route exact path={routeTo.blockchain()} component={PagedBlocks} />
