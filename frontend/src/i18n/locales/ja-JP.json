@@ -109,7 +109,7 @@
   "screens.Blockchain.BlockchainHeader.OverviewMetrics.priceLabel": "価格",
   "screens.Blockchain.BlockchainHeader.OverviewMetrics.searchPlaceholder": "Cardanoネットワークでアドレス、エポック、スロットを検索する",
   "screens.Blockchain.BlockchainHeader.OverviewMetrics.slotsLabel": "スロット",
-  "screens.Blockchain.BlockchainHeader.Search.helpText": "「ハッシュ」もしくは「エポック:番号、スロット:番号」構文を使用する法人を検索する",
+  "screens.Blockchain.BlockchainHeader.Search.helpText": "エンティティを検索するには「ハッシュ」もしくは「epoch:number slot:number」で検索してください",
   "screens.Blockchain.BlockchainHeader.Search.noData": "現在のクエリーに合致するアイテムがありません",
   "screens.Blockchain.BlockchainHeader.Search.searchPlaceholder": "Cardanoネットワークでアドレス、取引、エポック、スロットを検索する",
   "screens.Blockchain.BlockchainHeader.index.header": "ADAブロックチェーンエクスプローラー",
