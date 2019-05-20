@@ -74,28 +74,29 @@ const SOCIAL_LINKS = {
   LINKEDIN: 'https://www.linkedin.com/company/emurgo_io',
 }
 
+const MATERIAL_UI_DEFAULT_TOP_PADDING = 8.5
+
+const paddingSides = {
+  paddingLeft: MATERIAL_UI_DEFAULT_TOP_PADDING * 2.5,
+  paddingRight: MATERIAL_UI_DEFAULT_TOP_PADDING * 2.5,
+}
+
 const useRoundedInputStyles = makeStyles((theme) => {
   return {
     input: {
-      'padding': '8.5px 21px',
+      'paddingTop': MATERIAL_UI_DEFAULT_TOP_PADDING,
+      'paddingBottom': MATERIAL_UI_DEFAULT_TOP_PADDING,
+      ...paddingSides,
       '&::placeholder': {
         color: theme.palette.contentFocus,
       },
     },
-    errorLabel: {
-      position: 'absolute',
-      top: 0,
-      right: 0,
-      width: '90%',
-    },
+    errorLabel: paddingSides,
     formControl: {
       height: '100%',
     },
     errorIcon: {
       height: '70%',
-    },
-    relative: {
-      position: 'relative',
     },
   }
 })
@@ -130,13 +131,9 @@ const RoundedInput = ({errorMessage, ...props}) => {
         }
         {...props}
       />
-      {errorMessage && (
-        <div className={classes.relative}>
-          <FormHelperText error className={classes.errorLabel}>
-            {errorMessage}
-          </FormHelperText>
-        </div>
-      )}
+      <FormHelperText error className={classes.errorLabel}>
+        {errorMessage}
+      </FormHelperText>
     </FormControl>
   )
 }
@@ -148,7 +145,7 @@ const SUBSCRIBE_MUTATION = gql`
 `
 const useSubscribeMutation = (email) => useMutation(SUBSCRIBE_MUTATION, {variables: {email}})
 
-const LARGEST_FOOTER_HEIGHT = 420
+const LARGEST_FOOTER_HEIGHT = 450
 
 const useSubscribeFooterStyles = makeStyles(({palette, spacing, breakpoints, typography}) => ({
   '@global': {
@@ -187,20 +184,19 @@ const useSubscribeFooterStyles = makeStyles(({palette, spacing, breakpoints, typ
     height: LARGEST_FOOTER_HEIGHT,
     overflow: 'hidden',
     padding: spacing.unit * 2,
+    paddingTop: spacing.unit * 4, // to countermeasure error label
     background: palette.gradient,
     position: 'relative',
     [breakpoints.up('sm')]: {
-      height: 250,
+      height: 280,
     },
     [breakpoints.up('md')]: {
-      height: 220,
+      height: 250,
     },
   },
   'subscribe': {
     marginLeft: spacing.unit * 1.3,
     marginRight: spacing.unit * 1.3,
-    marginTop: spacing.unit,
-    marginBottom: spacing.unit,
     width: '200px',
     [breakpoints.up('sm')]: {
       marginTop: 0,
@@ -208,8 +204,11 @@ const useSubscribeFooterStyles = makeStyles(({palette, spacing, breakpoints, typ
     },
   },
   'email': {
-    width: '280px',
-    height: '100%',
+    width: 280,
+    height: 49, // 49 is height of subscribe button
+  },
+  'textfieldButtonSpacing': {
+    padding: spacing.unit,
   },
   'row': {
     padding: spacing.unit,
@@ -457,8 +456,8 @@ const SubscribeFooter = () => {
 
                 <Grid item className={classes.row}>
                   <form>
-                    <Grid container direction="row" justify="center" spacing={16}>
-                      <Grid item>
+                    <Grid container direction="row" justify="center">
+                      <Grid item className={classes.textfieldButtonSpacing}>
                         <RoundedInput
                           className={classes.email}
                           placeholder={tr(subscribeMessages.emailButton)}
@@ -468,7 +467,7 @@ const SubscribeFooter = () => {
                           aria-describedby="error-text"
                         />
                       </Grid>
-                      <Grid item>
+                      <Grid item className={classes.textfieldButtonSpacing}>
                         <Button
                           rounded
                           gradient
