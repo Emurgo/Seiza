@@ -3,4 +3,6 @@ build
 node_modules
 .env
 flow-coverage
+error.log
+combined.log
 
