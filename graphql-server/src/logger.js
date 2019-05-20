@@ -1,7 +1,7 @@
 // @flow
 import winston from 'winston'
 
-const logFormat = winston.format.printf((value) => `${JSON.stringify(value)}\n`)
+const logFormat = winston.format.printf((value) => JSON.stringify(value))
 
 const TIMESTAMP_FORMAT = 'YYYY-MM-DD HH:mm:ss'
 
