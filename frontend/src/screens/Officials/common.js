@@ -22,10 +22,14 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: '10px',
   },
   panelContent: {
-    padding: theme.spacing.unit * 3,
+    padding: `${theme.spacing.unit}px ${theme.spacing.unit * 4}px`,
   },
   mdParagraph: {
     textAlign: 'justify',
+  },
+  list: {
+    paddingLeft: theme.spacing.unit * 2,
+    listStyleType: 'none',
   },
 }))
 
@@ -47,9 +51,15 @@ const LinkRenderer = (props) => {
   )
 }
 
+const ListRenderer = (props) => {
+  const classes = useStyles()
+  return <ul className={classes.list}>{props.children}</ul>
+}
+
 const renderers = {
   paragraph: MdParagraph,
   link: LinkRenderer,
+  list: ListRenderer,
   /* Customize if required
   strong: ({children}) => <strong>{children}</strong>,
   emphasis: ({children}) => <em>{children}</em>,

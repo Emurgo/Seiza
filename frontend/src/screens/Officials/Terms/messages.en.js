@@ -116,7 +116,10 @@ const messages = defineMessages({
 * **9.8** *Relationship of the Parties*. Nothing in this agreement is intended to, nor shall it create a joint venture, partnership, agency, consultancy or trusteeship. You and the Company are independent contractors for purposes of this agreement.
 <br/>
 <br/>
-* **9.9** *Contact Information*. For purposes other than technical support requests, you may contact us by registered mail or courier at this address: EMURGO PTE. Ltd, 77 High Street #09-11, High Street Plaza, Singapore.`,
+* **9.9** *Contact Information*. For purposes other than technical support requests, you may contact us by registered mail or courier at this address: EMURGO PTE. Ltd, 77 High Street #09-11, High Street Plaza, Singapore.
+<br/>
+<br/>
+* **9.10** *Language*. Any translation of this Agreement is made for purposes of local reference only and in the event of any inconsistency between the English and any non-English versions, the English version of this Agreement shall prevail and govern in all respects.`,
 })
 
 export default messages
