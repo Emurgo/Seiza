@@ -70,7 +70,7 @@ const SOCIAL_LINKS = {
   MEDIUM: 'https://medium.com/@emurgo_io',
   REDDIT: 'https://reddit.com/r/cardano',
   TWITTER_EMURGO: 'https://twitter.com/emurgo_io',
-  TWITTER_SEIZA: 'https://twitter.com/seiza_com',
+  TWITTER_SEIZA: 'https://twitter.com/seiza_explorer',
   LINKEDIN: 'https://www.linkedin.com/company/emurgo_io',
 }
 
