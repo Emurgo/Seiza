@@ -21,18 +21,21 @@ export const fetchAddress = async ({elastic, E}: any, address58: string) => {
       })
       .then(({sum}) => parseAdaValue(sum))
 
-  const totalAdaSent = ioTotalValue(address58, 'output')
-  const totalAdaReceived = ioTotalValue(address58, 'input')
+  // Note: input/output seems reversed but it is correct :-)
+  // Tx output with address A: A.balance += value
+  // Tx input with address A: A.balance -= value
+  const totalAdaSent = ioTotalValue(address58, 'input')
+  const totalAdaReceived = ioTotalValue(address58, 'output')
 
   const balance = parseAdaValue(hit._source.balance)
 
   await runConsistencyCheck(async () => {
     const [s, r] = await Promise.all([totalAdaSent, totalAdaReceived])
 
-    validate(s.minus(r).eq(balance), 'Inconsistency in address balance', {
-      txios_sent: s,
-      txios_received: r,
-      address_balance: balance,
+    validate(r.minus(s).eq(balance), 'Inconsistency in address balance', {
+      sent_viaTxio: s,
+      received_viaTxio: r,
+      balance_viaAddress: balance,
     })
   })
 
