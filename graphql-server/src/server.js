@@ -15,6 +15,8 @@ import resolvers from './graphql/resolvers'
 import {initErrorReporting, reportError} from './utils/errorReporting'
 import {isProduction} from './config'
 
+import {tracingContext} from './namespace'
+
 import {pricingAPI, getElastic} from './api'
 
 isProduction && initErrorReporting()
@@ -71,8 +73,8 @@ const getLogger = (uuid) => {
   }
 }
 
-const createServer = () =>
-  new ApolloServer({
+const createServer = () => {
+  const server = new ApolloServer({
     typeDefs: schema,
     resolvers,
     engine: {
@@ -89,6 +91,11 @@ const createServer = () =>
     formatResponse: (response: any): any => {
       // TODO: do we want to log responses?
       // _logger.info('RESPONSE', response)
+      console.log('response', tracingContext.active, tracingContext.get('reqId'))
+      tracingContext.run(() => {
+        tracingContext.set('tmp', 47)
+        console.log('response', tracingContext.active, tracingContext.get('reqId'))
+      })
       return response
     },
     context: ({req}) => {
@@ -96,14 +103,27 @@ const createServer = () =>
       const logger = getLogger(reqId)
       const elastic = getElastic(logger)
       const activeCampaign = getActiveCampaign(logger)
-      return {
-        activeCampaign,
-        pricingAPI,
-        elastic,
-        E: elastic.E,
-        reqId,
-      }
+
+      let promise
+      tracingContext.run((ccc) => {
+        tracingContext.set('reqId', reqId)
+        console.log('ccc', ccc)
+        promise = Promise.resolve({
+          activeCampaign,
+          pricingAPI,
+          elastic,
+          E: elastic.E,
+        })
+      })
+
+      promise.then(() => {
+        console.log('aaa', tracingContext.active)
+      })
+      return promise
     },
   })
+
+  return server
+}
 
 export default createServer

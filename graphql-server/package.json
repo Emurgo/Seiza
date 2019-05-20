@@ -31,6 +31,8 @@
     "babel-plugin-import-graphql": "^2.6.2",
     "babel-polyfill": "^6.26.0",
     "bignumber.js": "^8.0.2",
+    "cls-hooked": "^4.2.2",
+    "continuation-local-storage": "^3.2.1",
     "cors": "^2.8.5",
     "dotenv": "^7.0.0",
     "elasticsearch": "^15.4.1",

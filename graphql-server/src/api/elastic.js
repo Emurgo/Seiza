@@ -168,14 +168,15 @@ const getElastic = (logger: Function) => {
   }
 
   const logElasticTiming = (query, internalTime, totalTime) => {
-    logger.log(
-      {
-        query,
-        internalTime,
-        totalTime,
-      },
-      {type: 'elastic-timing'}
-    )
+    false &&
+      logger.log(
+        {
+          query,
+          internalTime,
+          totalTime,
+        },
+        {type: 'elastic-timing'}
+      )
   }
 
   const _search = (type: string, body: any) => {
