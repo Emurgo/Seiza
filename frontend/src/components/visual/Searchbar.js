@@ -21,6 +21,11 @@ const styles = (theme) =>
         borderBottomRightRadius: 0,
         borderTopRightRadius: 0,
       },
+      '&:hover': {
+        '&>fieldset': {
+          borderColor: `${theme.palette.primary.main} !important`,
+        },
+      },
     },
     searchButton: {
       borderBottomLeftRadius: 0,
