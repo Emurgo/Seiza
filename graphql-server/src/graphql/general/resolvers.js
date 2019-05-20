@@ -1,12 +1,13 @@
 // @flow
 import _ from 'lodash'
 import {fetchGeneralInfo, fetchSlotInfo, fetchEpochInfo} from './dataProviders'
-import {parseAdaValue} from '../utils'
+import {parseAdaValue, validate, runConsistencyCheck} from '../utils'
 import assert from 'assert'
 
 const fetchSupplyAfterSlot = async ({elastic, E}, {epoch, slot}) => {
   const hit = await elastic
     .q('tx')
+    .filter(E.onlyActiveFork())
     .filter(E.lte('epoch', epoch))
     .filter(E.lte('slot', slot))
     .sortBy('epoch', 'desc')
@@ -94,6 +95,7 @@ const fetchAggregateInfo = ({elastic, E}, groupBy, epochInterval = {}, dateInter
     totalAdaTransferred: () =>
       elastic
         .q('slot')
+        .filter(E.onlyActiveFork())
         .getAggregations({
           data: wrapInGroupBy({
             rawY: E.agg.sumAda('sent'),
@@ -104,6 +106,7 @@ const fetchAggregateInfo = ({elastic, E}, groupBy, epochInterval = {}, dateInter
     txCount: () =>
       elastic
         .q('slot')
+        .filter(E.onlyActiveFork())
         .getAggregations({
           data: wrapInGroupBy({
             rawY: E.agg.sum('tx_num'),
@@ -112,30 +115,45 @@ const fetchAggregateInfo = ({elastic, E}, groupBy, epochInterval = {}, dateInter
         .then(({data}) => prepareSeries(data, (y) => y)),
 
     totalUtxoCreated: async () => {
-      const res1 = await elastic.q('tx').getAggregations({
-        data: wrapInGroupBy({
-          rawY: E.agg.count('outputs.id.keyword'),
-        }),
-      })
-
-      const res2 = await elastic
-        .q('txio')
-        .filter(E.matchPhrase('type', 'output'))
+      const res1 = await elastic
+        .q('tx')
+        .filter(E.onlyActiveFork())
         .getAggregations({
           data: wrapInGroupBy({
-            rawY: E.agg.count('id.keyword'),
+            rawY: E.agg.count('outputs.id.keyword'),
           }),
         })
 
-      const res3 = await elastic.q('slot').getAggregations({
-        data: wrapInGroupBy({
-          rawY: E.agg.count('tx.outputs.id.keyword'),
-        }),
-      })
+      await runConsistencyCheck(async () => {
+        const res2 = await elastic
+          .q('txio')
+          .filter(E.onlyActiveFork())
+          .filter(E.matchPhrase('type', 'output'))
+          .getAggregations({
+            data: wrapInGroupBy({
+              rawY: E.agg.count('id.keyword'),
+            }),
+          })
 
-      // Note: we could use only `res1`, `res2` or `res3`, this is only paranoid check
-      assert(_.isEqual(res1, res2))
-      assert(_.isEqual(res2, res3))
+        const res3 = await elastic
+          .q('slot')
+          .filter(E.onlyActiveFork())
+          .getAggregations({
+            data: wrapInGroupBy({
+              rawY: E.agg.count('tx.outputs.id.keyword'),
+            }),
+          })
+
+        validate(
+          _.isEqual(res1, res2) && _.isEqual(res1, res3),
+          '`Total UTXO created` inconsistency',
+          {
+            viaTx: res1,
+            viaTxio: res2,
+            viaSlot: res3,
+          }
+        )
+      })
 
       return prepareSeries(res1.data, (y) => y)
     },
