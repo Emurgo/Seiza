@@ -104,7 +104,12 @@ const useOutlinedInputStyles = makeStyles(() => ({
   notchedOutline: {
     borderRadius: '35px',
     // TODO: get from theme
-    borderColor: '#9881DC !important',
+    borderColor: '#A38DDF !important',
+  },
+  focused: {
+    '&>fieldset': {
+      borderWidth: '1px !important',
+    },
   },
 }))
 
