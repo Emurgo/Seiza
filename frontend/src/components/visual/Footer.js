@@ -206,7 +206,8 @@ const useSubscribeFooterStyles = makeStyles(({palette, spacing, breakpoints, typ
     padding: spacing.unit,
   },
   'subscribeHeadlineWrapper': {
-    padding: spacing.unit * 1.5,
+    paddingTop: spacing.unit * 1.5,
+    paddingBottom: spacing.unit * 1.5,
   },
   'success': {
     fontWeight: 'bold',
