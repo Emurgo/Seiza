@@ -42,16 +42,16 @@ const useContentStyles = makeStyles((theme) => ({
   },
   copyToClipboard: {
     position: 'absolute',
-    top: -12, // 1/4 of clipboard icon height to center
+    top: -8,
     right: 0,
   },
   label: {
     // Needed so that `value` and `label` are aligned in case of animation
-    marginLeft: ({appearAnimation}) => (appearAnimation ? theme.spacing.unit * (2 / 3) : 0),
+    marginLeft: theme.spacing.unit * (2 / 3),
   },
   value: {
     overflow: 'hidden',
-    padding: ({appearAnimation}) => (appearAnimation ? theme.spacing.unit * (2 / 3) : 0),
+    padding: theme.spacing.unit * (2 / 3),
   },
   correctureWrapper: {
     display: 'flex',
@@ -93,7 +93,7 @@ export const EntityCardContent = ({
   badge,
   ellipsizeValue = true,
 }) => {
-  const classes = useContentStyles({showCopyIcon, appearAnimation})
+  const classes = useContentStyles({showCopyIcon})
 
   return (
     <div className="d-flex">

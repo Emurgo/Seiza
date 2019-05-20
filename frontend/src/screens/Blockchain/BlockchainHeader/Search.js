@@ -14,12 +14,12 @@ import {Typography} from '@material-ui/core'
 import {useI18n} from '@/i18n/helpers'
 import {Searchbar, LoadingError, Alert} from '@/components/visual'
 import {routeTo} from '@/helpers/routes'
-import analytics from '@/helpers/googleAnalytics'
+import {useAnalytics} from '@/helpers/googleAnalytics'
 
 const text = defineMessages({
   searchPlaceholder: 'Search addresses, transactions, epochs & slots on the Cardano network',
   noData: 'No items matching current query',
-  helpText: 'Search for entity using its "hash" or use "epoch:number,slot:number" syntax',
+  helpText: 'Search for entity using its "hash" or use "epoch:number slot:number" syntax',
 })
 
 const useSearchData = (searchQuery, skip) => {
@@ -58,7 +58,7 @@ const useSearchData = (searchQuery, skip) => {
   return {error, loading, searchResult: matchedItems.length ? matchedItems[0] : null}
 }
 
-const getRedirectUrl = (searchResult) => {
+const getRedirectUrl = (analytics, searchResult) => {
   const actionBuilder = {
     Address: {
       redirect: (searchResult) => routeTo.address(searchResult.address58),
@@ -91,10 +91,11 @@ const useStyles = makeStyles((theme) => ({
   wrapper: {
     position: 'relative',
   },
-  gap: {
+  alert: {
     marginTop: theme.spacing.unit * 1.5,
     position: 'absolute',
     width: '100%',
+    zIndex: 1,
   },
   helpText: {
     marginLeft: theme.spacing.unit * 4,
@@ -120,10 +121,34 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const Search = () => {
+type SearchHelpTextProps = {|
+  className?: string,
+|}
+
+export const SearchHelpText = ({className}: SearchHelpTextProps) => {
+  const classes = useStyles()
+  const {translate: tr} = useI18n()
+  return (
+    <Typography
+      variant="caption"
+      color="textSecondary"
+      className={cn(classes.helpText, className)}
+      align="center"
+    >
+      {tr(text.helpText)}
+    </Typography>
+  )
+}
+
+type SearchProps = {|
+  isMobile?: boolean,
+|}
+
+const Search = ({isMobile = false}: SearchProps) => {
   const {translate: tr} = useI18n()
   const {history} = useReactRouter()
   const classes = useStyles()
+  const analytics = useAnalytics()
 
   // "submitted query"
   const [searchQuery, setSearchQuery] = useState('')
@@ -135,7 +160,7 @@ const Search = () => {
   useEffect(() => {
     if (searchResult) {
       setSearchQuery('')
-      history.push(getRedirectUrl(searchResult))
+      history.push(getRedirectUrl(analytics, searchResult))
     }
   })
 
@@ -143,6 +168,15 @@ const Search = () => {
     (value) => {
       setSearchQuery('') // to cancel grapql search
       setSearchText(value)
+    },
+    [setSearchQuery, setSearchText]
+  )
+
+  const onSearch = useCallback(
+    (value) => {
+      const trimmed = value.trim()
+      setSearchQuery(trimmed)
+      setSearchText(trimmed)
     },
     [setSearchQuery, setSearchText]
   )
@@ -157,10 +191,14 @@ const Search = () => {
         placeholder={tr(text.searchPlaceholder)}
         value={searchText}
         onChange={onChange}
-        onSearch={setSearchQuery}
+        onSearch={onSearch}
         loading={loading}
       />
-      {!loading && error && <LoadingError error={error} />}
+      {!loading && error && (
+        <div className={classes.alert}>
+          <LoadingError error={error} />
+        </div>
+      )}
       <ReactCSSTransitionGroup
         transitionName={{
           leave: classes.alertLeave,
@@ -177,21 +215,14 @@ const Search = () => {
         {showAlert && (
           <Alert
             type="noResults"
-            className={classes.gap}
+            className={classes.alert}
             message={tr(text.noData)}
             title=""
             onClose={onAlertClose}
           />
         )}
       </ReactCSSTransitionGroup>
-      <Typography
-        variant="caption"
-        color="textSecondary"
-        className={cn(classes.helpText, showAlert && classes.helpTextHidden)}
-        align="center"
-      >
-        {tr(text.helpText)}
-      </Typography>
+      {!isMobile && <SearchHelpText className={showAlert ? classes.helpTextHidden : ''} />}
     </div>
   )
 }

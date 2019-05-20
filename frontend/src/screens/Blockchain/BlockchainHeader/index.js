@@ -1,11 +1,11 @@
 // @flow
 import React from 'react'
-import {Typography, createStyles, withStyles, Grid} from '@material-ui/core'
+import {Typography, createStyles, withStyles, Grid, Hidden} from '@material-ui/core'
 import {defineMessages} from 'react-intl'
 import {compose} from 'redux'
 
 import OverviewMetrics from './OverviewMetrics'
-import Search from './Search'
+import Search, {SearchHelpText} from './Search'
 import {withI18n} from '@/i18n/helpers'
 
 const messages = defineMessages({
@@ -41,6 +41,11 @@ const BlockchainHeader = ({classes, i18n: {translate}}) => (
       alignItems="center"
       className={classes.wrapper}
     >
+      <Hidden mdUp>
+        <Grid item>
+          <SearchHelpText />
+        </Grid>
+      </Hidden>
       <Grid item className={classes.metricsWrapper}>
         <OverviewMetrics />
       </Grid>
@@ -50,7 +55,9 @@ const BlockchainHeader = ({classes, i18n: {translate}}) => (
           <Typography variant="h1" align="center">
             {translate(messages.header)}
           </Typography>
-          <Search />
+          <Hidden smDown>
+            <Search />
+          </Hidden>
         </Grid>
       </Grid>
     </Grid>

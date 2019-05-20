@@ -1,7 +1,11 @@
 // @flow
 
+import React, {useContext, useEffect} from 'react'
+
 import _ from 'lodash'
 import config from '@/config'
+
+import {useCookiesContext} from '@/components/context/CookiesContext'
 
 // <<<< Google code (https://developers.google.com/analytics/devguides/collection/gtagjs/)
 window.dataLayer = window.dataLayer || []
@@ -26,21 +30,24 @@ const trackEvent = (resourceName: string, actionName: string, label?: string) =>
   gtag('event', `${f(resourceName)} ${f(actionName)}`, label ? {event_label: label} : {})
 }
 
-const trackSearchEvent = (resourceName: string) => {
-  return trackEvent(resourceName, 'searched')
+const useTrackPageVisitEvent = (screenName: string) => {
+  const f = formatter
+  const {cookiesAccepted} = useCookiesContext()
+  useEffect(() => {
+    cookiesAccepted && gtag('event', 'screen_view', {screen_name: f(screenName)})
+    // We want to call this only once
+  }, []) // eslint-disable-line
 }
 
-const trackChartEvent = () => {
-  return trackEvent('chart', 'interacted')
-}
+const trackSearchEvent = (resourceName: string) => trackEvent(resourceName, 'searched')
 
-const trackCurrencyChanged = (to: string) => {
-  return trackEvent('currency', 'changed', to)
-}
+const trackChartEvent = () => trackEvent('chart', 'interacted')
 
-const trackSocialIconLink = (linkName: string) => {
-  return trackEvent(linkName, 'link clicked')
-}
+const trackSubscription = () => trackEvent('subscription', 'requested')
+
+const trackCurrencyChanged = (to: string) => trackEvent('currency', 'changed', to)
+
+const trackSocialIconLink = (linkName: string) => trackEvent(linkName, 'link clicked')
 
 const includeAnalyticsScript = () => {
   const {googleAnalyticsId} = config
@@ -69,10 +76,46 @@ const initGoogleAnalytics = () => {
   initDataLayer()
 }
 
-export default {
-  trackSearchEvent,
-  trackChartEvent,
-  trackCurrencyChanged,
-  initGoogleAnalytics,
-  trackSocialIconLink,
+type ContextType = {
+  useTrackPageVisitEvent: Function,
+  trackSearchEvent: Function,
+  trackChartEvent: Function,
+  trackCurrencyChanged: Function,
+  trackSocialIconLink: Function,
+  trackSubscription: Function,
 }
+
+export const Context = React.createContext<ContextType>({})
+
+type Props = {|
+  children: React$Node,
+|}
+
+export const AnalyticsProvider = ({children}: Props) => {
+  const {cookiesAccepted} = useCookiesContext()
+
+  // used to make all function "do nothing" until the cookies were not allowed
+  const dummyF = () => null
+
+  // Init analytics only when the cookies were accepted
+  useEffect(() => {
+    cookiesAccepted && initGoogleAnalytics()
+  }, [cookiesAccepted])
+
+  const _analytics = _.mapValues(
+    {
+      trackSearchEvent,
+      trackChartEvent,
+      trackCurrencyChanged,
+      trackSocialIconLink,
+      trackSubscription,
+    },
+    (func) => (cookiesAccepted ? func : dummyF)
+  )
+
+  const analytics = {..._analytics, useTrackPageVisitEvent}
+
+  return <Context.Provider value={analytics}>{children}</Context.Provider>
+}
+
+export const useAnalytics = () => useContext(Context)

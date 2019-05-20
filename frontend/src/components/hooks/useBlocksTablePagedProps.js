@@ -1,5 +1,7 @@
 // @flow
 
+// Note!!!: pages are numbered from 1 so that urls is consistent with the rest of UI
+
 import {useState, useCallback, useEffect} from 'react'
 import {getPageCount} from '@/components/visual/Pagination'
 
@@ -20,7 +22,11 @@ export const useTotalItemsCount = (pagedDataResult: any, autoUpdate?: boolean) =
         newTotalItemsCount !== totalItemsCount && setTotalItemsCount(newTotalItemsCount)
       }
     }
-  }, [autoUpdate, cursor, pagedData, totalItemsCount])
+    // Note: we can not depend on `autoUpdate` because when it changes this receives old data first,
+    // without apollo `loading` state being changed to true in that moment.
+    // It does not matter that we do not depend on autoupdate, as when autoupdate changes also
+    // pagedData changes.
+  }, [pagedData]) // eslint-disable-line
 
   return [totalItemsCount, setTotalItemsCount]
 }
@@ -48,7 +54,7 @@ export const useBlocksTablePagedProps = (
 
   // Set `page` after when it is `null` and we have `totalCount`
   useEffect(() => {
-    totalCount && page == null && setPage(getPageCount(totalCount, rowsPerPage) - 1)
+    totalCount && page == null && setPage(getPageCount(totalCount, rowsPerPage))
   }, [page, setPage, rowsPerPage, totalCount])
 
   const onChangeAutoUpdate = useCallback(
@@ -64,9 +70,9 @@ export const useBlocksTablePagedProps = (
   const onChangePage = useCallback(
     (newPage: number) => {
       const cursor =
-        newPage === getPageCount(totalCount, rowsPerPage) - 1
+        newPage === getPageCount(totalCount, rowsPerPage)
           ? totalCount
-          : rowsPerPage * newPage + rowsPerPage
+          : rowsPerPage * (newPage - 1) + rowsPerPage
 
       // We set auto-update off everytime user changes page (even when he goes to latest one)
       autoUpdate && setAutoUpdate(false)

@@ -1,12 +1,12 @@
 // @flow
 
 import React, {useRef} from 'react'
+import {makeStyles} from '@material-ui/styles'
 import {useQuery} from 'react-apollo-hooks'
 import useReactRouter from 'use-react-router'
 import idx from 'idx'
 import gql from 'graphql-tag'
 import {defineMessages} from 'react-intl'
-import {Link} from 'react-router-dom'
 
 import {
   EntityIdCard,
@@ -16,9 +16,11 @@ import {
   LoadingInProgress,
   LoadingError,
   AdaValue,
+  Link,
 } from '@/components/visual'
 
 import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
+import {useAnalytics} from '@/helpers/googleAnalytics'
 
 import TransactionCard from '@/components/common/TransactionCard'
 
@@ -36,6 +38,14 @@ const blockSummaryLabels = defineMessages({
   totalFees: 'Total Fees',
   totalSent: 'Total ADA Sent',
 })
+
+const useStyles = makeStyles((theme) => ({
+  transactionList: {
+    '& > :not(:first-child)': {
+      marginTop: theme.spacing.unit * 1.25,
+    },
+  },
+}))
 
 const BlockSummaryCard = ({blockData, loading}) => {
   const {translate, formatInt, formatTimestamp} = useI18n()
@@ -170,8 +180,9 @@ const transactionMessages = defineMessages({
 const TransactionList = ({transactions, loading}) => {
   const {Row, Label, Value} = SummaryCard
   const {translate: tr, formatInt} = useI18n()
+  const classes = useStyles()
   return (
-    <div>
+    <div className={classes.transactionList}>
       {loading ? (
         <LoadingInProgress />
       ) : (
@@ -208,6 +219,9 @@ const BlockScreen = () => {
   const {loading, blockData, error} = useBlockData({blockHash})
   const {translate} = useI18n()
   const scrollToRef = useRef()
+
+  const analytics = useAnalytics()
+  analytics.useTrackPageVisitEvent('block')
 
   useScrollFromBottom(scrollToRef, blockData)
 

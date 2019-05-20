@@ -2,12 +2,18 @@
 import moment from 'moment'
 import {facadeTransaction} from '../transaction/dataProviders'
 import type {Elastic} from '../../api/elastic'
-import {parseAdaValue} from '../utils'
-import type {E} from '../../api/elasticHelpers'
+import {
+  parseAdaValue,
+  runConsistencyCheck,
+  validate,
+  slotCount,
+  getEstimatedSlotTimestamp,
+} from '../utils'
+import E from '../../api/elasticHelpers'
 
 type Context = {
   elastic: Elastic,
-  E: E,
+  E: typeof E,
 }
 
 type Summary = {
@@ -25,26 +31,17 @@ type Summary = {
 type Epoch = {
   startTime: Object,
   endTime: Object,
-  progress: number,
   summary: Summary,
 }
 
 const mockedEpoch = (epochNumber: number): Epoch => {
-  const slotCount = 21600
-  const slotDuration = 20
-  // Note(ppershing): not sure why it started at such weird (not modulo 20) timestamp
-  const startTs = 1506203091 + slotCount * slotDuration * epochNumber
-  const endTs = startTs + slotCount * slotDuration
-
-  const currentTs = moment().unix()
-  const progress =
-    currentTs <= startTs ? 0 : currentTs >= endTs ? 1 : (currentTs - startTs) / (endTs - startTs)
+  const startTs = getEstimatedSlotTimestamp(epochNumber, 0)
+  const endTs = getEstimatedSlotTimestamp(epochNumber + 1, 0)
 
   return {
     epochNumber,
     startTime: moment(startTs * 1000),
     endTime: moment(endTs * 1000),
-    progress,
     summary: {
       _epochNumber: epochNumber,
       slotCount,
@@ -60,26 +57,45 @@ export const fetchEpoch = (context: any, epochNumber: number): Promise<Epoch> =>
   return Promise.resolve(mockedEpoch(epochNumber))
 }
 
-export const fetchBlockCount = ({elastic, E}: Context, epochNumber: number) => {
-  return elastic
-    .q('slot')
+const epochBlocks = (epochNumber) =>
+  E.q('slot')
     .filter(E.onlyActiveFork())
     .filter(E.notNull('hash'))
     .filter(E.eq('epoch', epochNumber))
-    .getCount()
-}
 
-export const fetchTransactionCount = ({elastic, E}: any, epochNumber: number) => {
-  return elastic
-    .q('tx')
+const epochTxs = (epochNumber) =>
+  E.q('tx')
     .filter(E.onlyActiveFork())
     .filter(E.eq('epoch', epochNumber))
-    .getCount()
+
+export const fetchBlockCount = ({elastic, E}: Context, epochNumber: number) => {
+  return elastic.q(epochBlocks(epochNumber)).getCount()
+}
+
+export const fetchTransactionCount = async ({elastic, E}: any, epochNumber: number) => {
+  const txCount = await elastic.q(epochTxs(epochNumber)).getCount()
+
+  await runConsistencyCheck(async () => {
+    const tmpCnt = await elastic
+      .q(epochBlocks(epochNumber))
+      .getAggregations({
+        cnt: E.agg.sum('tx_num'),
+      })
+      .then(({cnt}) => cnt)
+
+    validate(tmpCnt === txCount, 'TxCount inconsistency on epoch', {
+      fromTxs: txCount,
+      fromBlocks: tmpCnt,
+    })
+  })
+  return txCount
 }
 
 export const fetchTotalAdaSupply = async ({elastic, E}: Context, epochNumber: number) => {
   // fetch last tx before end of this epoch
 
+  // Note(ppershing): in order to support *future* epochs, we use
+  // lte instead of eq!
   const hit = await elastic
     .q('tx')
     .filter(E.onlyActiveFork())
@@ -94,13 +110,22 @@ export const fetchTotalAdaSupply = async ({elastic, E}: Context, epochNumber: nu
 }
 
 export const fetchTotalFees = async ({elastic, E}: Context, epochNumber: number) => {
-  const aggregations = await elastic
-    .q('tx')
-    .filter(E.onlyActiveFork())
-    .filter(E.eq('epoch', epochNumber))
-    .getAggregations({
+  const aggregations = await elastic.q(epochTxs(epochNumber)).getAggregations({
+    fees: E.agg.sumAda('fees'),
+  })
+
+  const fees = parseAdaValue(aggregations.fees)
+
+  await runConsistencyCheck(async () => {
+    const tmp = await elastic.q(epochBlocks(epochNumber)).getAggregations({
       fees: E.agg.sumAda('fees'),
     })
 
-  return parseAdaValue(aggregations.fees)
+    validate(fees.eq(parseAdaValue(tmp.fees)), 'Fees inconsistency on epoch', {
+      fromTxs: aggregations.fees,
+      fromBlocks: tmp,
+    })
+  })
+
+  return fees
 }

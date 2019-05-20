@@ -1,6 +1,8 @@
 // @flow
 import React, {useRef, useState} from 'react'
 import {defineMessages} from 'react-intl'
+import {makeStyles} from '@material-ui/styles'
+import {Typography} from '@material-ui/core'
 
 import {ExpansionPanel, EntityCardContent, Link} from '@/components/visual'
 import {useI18n} from '@/i18n/helpers'
@@ -16,6 +18,18 @@ type ExternalProps = {|
   children: React$Node,
 |}
 
+const useStyles = makeStyles((theme) => ({
+  hash: {
+    maxWidth: '35vw',
+    [theme.breakpoints.up('sm')]: {
+      maxWidth: '60vw',
+    },
+    [theme.breakpoints.up('md')]: {
+      maxWidth: '80vw',
+    },
+  },
+}))
+
 const useExpandHandler = () => {
   const ref = useRef(null)
   const [expanded, setExpanded] = useState(false)
@@ -24,6 +38,7 @@ const useExpandHandler = () => {
 }
 const TransactionCard = ({txHash, children}: ExternalProps) => {
   const [expanded, ref, onClickExpand] = useExpandHandler()
+  const classes = useStyles()
   const {translate: tr} = useI18n()
   return (
     <ExpansionPanel
@@ -33,8 +48,15 @@ const TransactionCard = ({txHash, children}: ExternalProps) => {
         <EntityCardContent
           label={tr(messages.transactionId)}
           innerRef={ref}
-          value={<Link to={routeTo.transaction(txHash)}>{txHash}</Link>}
+          /* Note: using `Typography noWrap` with maxWidth is hack, as for some
+              reason wrapping inside EntityCardId does not work correctly from this component. */
+          value={
+            <Typography noWrap className={classes.hash}>
+              <Link to={routeTo.transaction(txHash)}>{txHash}</Link>
+            </Typography>
+          }
           rawValue={txHash}
+          ellipsizeValue
         />
       }
     >

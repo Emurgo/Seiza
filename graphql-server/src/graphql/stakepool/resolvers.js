@@ -7,7 +7,12 @@ import {
   fetchBootstrapEraPoolSummary,
 } from './dataProviders'
 
-const EMPTY_RESPONSE = {cursor: null, stakePools: [], hasMore: false, totalCount: 0}
+const EMPTY_RESPONSE = {
+  cursor: null,
+  stakePools: [],
+  hasMore: false,
+  totalCount: 0,
+}
 const INVALID_CURSOR = EMPTY_RESPONSE
 const NO_RESULTS = EMPTY_RESPONSE
 

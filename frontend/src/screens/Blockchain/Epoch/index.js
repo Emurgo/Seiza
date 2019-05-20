@@ -1,10 +1,12 @@
 // @flow
-import React, {useRef, useCallback} from 'react'
+import React, {useRef} from 'react'
 import {defineMessages} from 'react-intl'
+import moment from 'moment-timezone'
 import gql from 'graphql-tag'
 import idx from 'idx'
 import useReactRouter from 'use-react-router'
-import {Card, Grid, Typography} from '@material-ui/core'
+import {Card, Grid, Chip, Typography} from '@material-ui/core'
+import {makeStyles} from '@material-ui/styles'
 import {
   SummaryCard,
   SimpleLayout,
@@ -27,6 +29,7 @@ import {routeTo} from '@/helpers/routes'
 import config from '@/config'
 import {useQueryNotBugged} from '@/components/hooks/useQueryNotBugged'
 import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
+import {useAnalytics} from '@/helpers/googleAnalytics'
 
 import NavigationButtons from '../NavigationButtons'
 
@@ -48,7 +51,29 @@ const messages = defineMessages({
   stakingPoolsCount: 'Total Pools Count',
   blocksTab: 'Blocks',
   stakingPoolsTab: 'Staking Pools',
+  future: 'Future',
+  current: 'Current',
 })
+
+const useStyles = makeStyles((theme) => ({
+  timeHeader: {
+    marginTop: theme.spacing.unit * 2,
+    [theme.breakpoints.up('md')]: {
+      marginTop: 0,
+    },
+  },
+  chip: {
+    // TODO: use color from theme someday
+    color: 'white',
+    background: '#BFC5D2',
+    textTransform: 'uppercase',
+    fontSize: theme.typography.fontSize * 0.8125,
+    marginLeft: theme.spacing.unit,
+  },
+  date: {
+    display: 'inline-block',
+  },
+}))
 
 const GET_EPOCH_BY_NUMBER = gql`
   query($epochNumber: Int!) {
@@ -180,21 +205,14 @@ const EpochSummaryCard = ({epoch, loading}) => {
 }
 
 const useEpochNavigation = (epochNumber: number) => {
-  const {history} = useReactRouter()
-
   const linkPrev = routeTo.epoch(epochNumber - 1)
   const linkNext = routeTo.epoch(epochNumber + 1)
-
-  const goPrev = useCallback(() => history.push(linkPrev), [history, linkPrev])
-  const goNext = useCallback(() => history.push(linkNext), [history, linkNext])
 
   return {
     hasPrev: epochNumber > 0,
     linkPrev,
-    goPrev,
     hasNext: epochNumber != null, // For now we always have more epochs
     linkNext,
-    goNext,
   }
 }
 
@@ -236,6 +254,8 @@ const EpochNavigation = ({currentEpochNumber}) => {
   )
 }
 
+const getIsInFuture = (ts) => (ts ? moment(ts).isAfter(moment()) : false)
+
 const EpochEntityCard = ({epochNumber, startTime, endTime}) => {
   const {translate: tr, formatTimestamp} = useI18n()
   const NA = tr(messages.notAvailable)
@@ -247,10 +267,16 @@ const EpochEntityCard = ({epochNumber, startTime, endTime}) => {
     format: formatTimestamp.FMT_MONTH_NUMERAL,
     defaultValue: NA,
   })
+  const isInFuture = getIsInFuture(startTime)
+  const isCurrent = getIsInFuture(endTime) && !getIsInFuture(startTime)
+  const chipLabel =
+    isInFuture || isCurrent ? tr(isInFuture ? messages.future : messages.current) : null
+  const classes = useStyles()
+
   return (
     <EntityCardShell>
-      <Grid container>
-        <Grid item xs={6}>
+      <Grid container alignItems="center">
+        <Grid item xs={12} md={4} lg={6}>
           <EntityCardContent
             showCopyIcon={false}
             label={tr(messages.entityHeader)}
@@ -260,22 +286,21 @@ const EpochEntityCard = ({epochNumber, startTime, endTime}) => {
             rawValue={epochNumber}
           />
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={12} md={8} lg={6} className={classes.timeHeader}>
           <EntityCardContent
-            label={tr(messages.timePeriod)}
+            label={
+              <Grid container alignItems="center">
+                <span>{tr(messages.timePeriod)}</span>
+                {chipLabel && <Chip className={classes.chip} label={chipLabel} />}
+              </Grid>
+            }
             showCopyIcon={false}
             ellipsizeValue={false}
             iconRenderer={<img alt="" src={EpochIcon} width={48} height={48} />}
             value={
-              <React.Fragment>
-                <Typography variant="body1" inline>
-                  {start}
-                </Typography>
-                {' — '}
-                <Typography variant="body1" inline>
-                  {end}
-                </Typography>
-              </React.Fragment>
+              <Typography variant="body1" inline className={classes.date}>
+                {start} {' — '} {end}
+              </Typography>
             }
           />
         </Grid>
@@ -291,6 +316,9 @@ const EpochScreen = () => {
 
   const {translate: tr} = useI18n()
   const blocksInEpoch = idx(epochData, (_) => _.summary.blocksCreated)
+
+  const analytics = useAnalytics()
+  analytics.useTrackPageVisitEvent('epoch')
 
   useScrollFromBottom(scrollToRef, epochData)
 

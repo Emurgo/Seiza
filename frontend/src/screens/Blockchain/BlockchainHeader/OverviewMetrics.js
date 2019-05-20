@@ -16,7 +16,7 @@ import config from '@/config'
 import useCurrency, {CURRENCIES} from '@/components/hooks/useCurrency'
 import {useQuery} from 'react-apollo-hooks'
 import useNavigateTo from '@/components/hooks/useNavigateTo'
-import analytics from '@/helpers/googleAnalytics'
+import {useAnalytics} from '@/helpers/googleAnalytics'
 
 const text = defineMessages({
   not_available: 'N/A',
@@ -32,12 +32,19 @@ const text = defineMessages({
 const styles = (theme) =>
   createStyles({
     card: {
-      minWidth: '200px',
+      minWidth: '85px',
+      [theme.breakpoints.up('md')]: {
+        minWidth: '200px',
+      },
       minHeight: '75px',
     },
     cardDimensions: {
-      marginRight: theme.spacing.unit * 1.5,
-      marginLeft: theme.spacing.unit * 1.5,
+      marginRight: theme.spacing.unit * 0.5,
+      marginLeft: theme.spacing.unit * 0.5,
+      [theme.breakpoints.up('sm')]: {
+        marginRight: theme.spacing.unit * 1.5,
+        marginLeft: theme.spacing.unit * 1.5,
+      },
     },
   })
 
@@ -114,6 +121,8 @@ const OverviewMetrics = ({intl, data, classes}) => {
   const blockLink = routeTo.blockchain()
   const marketDataLink = routeTo.more()
   const stakePoolsLink = routeTo.staking.home()
+
+  const analytics = useAnalytics()
 
   const commonMarketDataProps = {
     className: classes.card,

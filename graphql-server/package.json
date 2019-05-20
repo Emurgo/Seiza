@@ -4,8 +4,10 @@
   "main": "src/index.js",
   "license": "MIT",
   "scripts": {
-    "start": "babel-watch src/index.js -w src/graphql",
-    "build": "rm -rf build && babel src --out-dir build",
+    "start": "if test $NODE_ENV = production; then yarn start:production; else NODE_ENV=development babel-watch src/index.js -w src/graphql; fi",
+    "start:production": "NODE_ENV=production SENTRY_RELEASE_VERSION=`sentry-cli releases propose-version` node build/index.js",
+    "start:heroku": "`sentry-cli releases new $HEROKU_SLUG_COMMIT; SENTRY_RELEASE_VERSION=$HEROKU_SLUG_COMMIT node build/index.js`",
+    "build": "rm -rf build && babel src --out-dir build --source-maps",
     "build:heroku": "yarn build",
     "serve": "node build/index.js",
     "eslint": "eslint src --max-warnings=0",
@@ -19,6 +21,8 @@
   "dependencies": {
     "@elastic/elasticsearch": "^0.1.0-beta.2",
     "@okgrow/graphql-scalars": "^0.4.5",
+    "@sentry/cli": "^1.42.0",
+    "@sentry/node": "^5.1.2",
     "apollo-server": "^2.3.3",
     "aws-sdk": "^2.437.0",
     "axios": "^0.18.0",
@@ -33,10 +37,12 @@
     "flow-coverage-report": "^0.6.1",
     "graphql": "^14.1.1",
     "graphql-bigint": "^1.0.0",
+    "graphql-cost-analysis": "^1.0.3",
     "http-aws-es": "^6.0.0",
     "isemail": "^3.2.0",
     "merge-graphql-schemas": "^1.5.8",
-    "moment": "^2.24.0"
+    "moment": "^2.24.0",
+    "uuid": "^3.3.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.2.3",
