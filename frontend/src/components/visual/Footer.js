@@ -88,7 +88,7 @@ const useRoundedInputStyles = makeStyles((theme) => {
       'paddingBottom': MATERIAL_UI_DEFAULT_TOP_PADDING,
       ...paddingSides,
       '&::placeholder': {
-        color: theme.palette.contentFocus,
+        color: '#8A93AF',
       },
     },
     errorLabel: paddingSides,
