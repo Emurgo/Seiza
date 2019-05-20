@@ -97,7 +97,7 @@ const useRoundedInputStyles = makeStyles((theme) => {
   }
 })
 
-const useOutlinedInputStyles = makeStyles(() => ({
+const useOutlinedInputStyles = makeStyles((theme) => ({
   root: {
     height: '100%',
   },
@@ -109,6 +109,7 @@ const useOutlinedInputStyles = makeStyles(() => ({
   focused: {
     '&>fieldset': {
       borderWidth: '1px !important',
+      borderColor: `${theme.palette.primary.main} !important`,
     },
   },
 }))
