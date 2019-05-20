@@ -45,11 +45,18 @@ const useStyles = makeStyles((theme) => ({
     borderRight: `1px solid ${theme.palette.contentUnfocus}`,
   },
   headerWrapper: {
+    // TODO: change to mobile first
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     [theme.breakpoints.down('sm')]: {
       flexDirection: 'column',
+    },
+  },
+  headerPagination: {
+    marginTop: 0,
+    [theme.breakpoints.down('sm')]: {
+      marginTop: theme.spacing.unit * 2,
     },
   },
 }))
@@ -171,7 +178,9 @@ const TabsHeader = ({pagination, changeFilterType}) => {
           ))}
         </LiteTabs>
       </Grid>
-      <Grid item>{pagination}</Grid>
+      <Grid item className={classes.headerPagination}>
+        {pagination}
+      </Grid>
     </Grid>
   )
 }
@@ -215,7 +224,11 @@ const PagedTransactions = ({
         <Tab name={FILTER_TYPES.SENT}>{tabContent}</Tab>
         <Tab name={FILTER_TYPES.RECEIVED}>{tabContent}</Tab>
       </Tabs>
-      {transactions && transactions.length > 0 && pagination}
+      {transactions && transactions.length > 1 && (
+        <Grid container justify="flex-end">
+          <Grid item>{pagination}</Grid>
+        </Grid>
+      )}
     </React.Fragment>
   )
 }
