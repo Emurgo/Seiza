@@ -6,6 +6,7 @@ import {compose} from 'redux'
 import {withStyles, createStyles, InputAdornment, TextField} from '@material-ui/core'
 import {Search} from '@material-ui/icons'
 import {Button, LoadingInProgress, CloseIconButton} from '@/components/visual'
+import {fade} from '@material-ui/core/styles/colorManipulator'
 
 const styles = (theme) =>
   createStyles({
@@ -28,8 +29,12 @@ const styles = (theme) =>
       boxShadow: 'none',
     },
     container: {
-      display: 'flex',
-      flex: 1,
+      'display': 'flex',
+      'flex': 1,
+      'boxShadow': `0px 10px 20px 0px ${fade(theme.palette.shadowBase, 0.08)}`,
+      '&:hover': {
+        boxShadow: `0px 10px 30px 0px ${fade(theme.palette.shadowBase, 0.12)}`,
+      },
     },
   })
 
