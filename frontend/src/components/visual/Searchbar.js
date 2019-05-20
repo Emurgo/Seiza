@@ -27,6 +27,13 @@ const styles = (theme) =>
         },
       },
     },
+    // eslint-disable-next-line
+    // https://github.com/wheredoesyourmindgo/react-mui-mapbox-geocoder/issues/2#issuecomment-478668535
+    focusedInput: {
+      '&>fieldset': {
+        borderWidth: '1px !important',
+      },
+    },
     searchButton: {
       borderBottomLeftRadius: 0,
       borderTopLeftRadius: 0,
@@ -104,6 +111,10 @@ class Searchbar extends React.Component<Props> {
               </InputAdornment>
             ),
             className: classes.input,
+            classes: {
+              root: classes.input,
+              focused: classes.focusedInput,
+            },
           }}
           {...textFieldProps}
         />
