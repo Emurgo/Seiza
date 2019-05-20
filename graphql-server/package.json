@@ -24,6 +24,7 @@
     "@sentry/cli": "^1.42.0",
     "@sentry/node": "^5.1.2",
     "apollo-server": "^2.3.3",
+    "apollo-server-testing": "^2.5.0",
     "aws-sdk": "^2.437.0",
     "axios": "^0.18.0",
     "axios-cache-adapter": "^2.3.0",
