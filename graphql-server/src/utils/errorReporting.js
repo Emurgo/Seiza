@@ -9,7 +9,10 @@ export const reportError = (error: any, info: any) => {
     return
   }
 
-  info = info == null ? _.pick(error, Object.getOwnPropertyNames(error)) : info
+  info = {
+    ...(info || {}),
+    ..._.pick(error, Object.getOwnPropertyNames(error)),
+  }
 
   Sentry.withScope((scope) => {
     scope.setExtras(info)

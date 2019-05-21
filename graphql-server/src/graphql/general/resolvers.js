@@ -146,8 +146,11 @@ const fetchAggregateInfo = ({elastic, E}, groupBy, epochInterval = {}, dateInter
 
         validate(
           _.isEqual(res1, res2) && _.isEqual(res1, res3),
-          '`Total UTXO created` inconsistency',
+          'AggregateInfo.totalUTXOcreated inconsistency',
           {
+            groupBy,
+            epochInterval,
+            dateInterval,
             viaTx: res1,
             viaTxio: res2,
             viaSlot: res3,

@@ -9,7 +9,7 @@ export const fetchAddress = async ({elastic, E}: any, address58: string) => {
     .q('address')
     .filter(E.matchPhrase('_id', address58))
     .getSingleHit()
-    .catch(annotateNotFoundError({entity: 'Address'}))
+    .catch(annotateNotFoundError({entity: 'Address', address: address58}))
 
   const ioTotalValue = (address58, type) =>
     elastic
@@ -32,7 +32,8 @@ export const fetchAddress = async ({elastic, E}: any, address58: string) => {
   await runConsistencyCheck(async () => {
     const [s, r] = await Promise.all([totalAdaSent, totalAdaReceived])
 
-    validate(r.minus(s).eq(balance), 'Inconsistency in address balance', {
+    validate(r.minus(s).eq(balance), 'Address.balance inconsistency', {
+      address58,
       sent_viaTxio: s,
       received_viaTxio: r,
       balance_viaAddress: balance,
