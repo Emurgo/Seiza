@@ -14,7 +14,7 @@ export type GeneralInfo = {|
   activeAddresses: string,
 |}
 
-const _getGeneralInfo = ({elastic}, {slots, txs, addresses, txios}, logCtx) => {
+const _getGeneralInfo = ({elastic}, {slots, txs, addresses, txios}, ctxToLog) => {
   const slotAggregations = elastic.q(slots).getAggregations({
     sent: E.agg.sumAda('sent'),
     fees: E.agg.sumAda('fees'),
@@ -38,7 +38,7 @@ const _getGeneralInfo = ({elastic}, {slots, txs, addresses, txios}, logCtx) => {
       validate(cnt === tmp, 'GeneralInfo.blocksCount inconsistency', {
         cnt_viaSlotsAgg: cnt,
         cnt_viaSlotsCnt: tmp,
-        ...logCtx,
+        ...ctxToLog,
       })
     })
 
@@ -59,7 +59,7 @@ const _getGeneralInfo = ({elastic}, {slots, txs, addresses, txios}, logCtx) => {
       validate(cnt === tmp, 'GeneralInfo.emptySlotsCount inconsistency', {
         cnt_viaSlotAgg: cnt,
         cnt_viaSlotCnt: tmp,
-        ...logCtx,
+        ...ctxToLog,
       })
     })
 
@@ -75,7 +75,7 @@ const _getGeneralInfo = ({elastic}, {slots, txs, addresses, txios}, logCtx) => {
       validate(cnt === tmp, 'GeneralInfo.txCount inconsistency', {
         cnt_viaSlotAgg: cnt,
         cnt_viaTxCnt: tmp,
-        ...logCtx,
+        ...ctxToLog,
       })
     })
 
@@ -102,7 +102,7 @@ const _getGeneralInfo = ({elastic}, {slots, txs, addresses, txios}, logCtx) => {
         {
           precise_viaAddressesCnt: precise,
           approx_viaTxioAgg: approx,
-          ...logCtx,
+          ...ctxToLog,
         }
       )
     })
