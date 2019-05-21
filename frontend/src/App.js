@@ -55,11 +55,7 @@ const useAppStyles = makeStyles((theme) => ({
   mainWrapper: {
     maxWidth: '1920px',
     margin: 'auto',
-    height: '100%',
-    overflow: 'auto', // Needed by mobile "sticky" header
-    [theme.breakpoints.up('md')]: {
-      overflow: 'visible',
-    },
+    minHeight: '100%',
   },
   contentWrapper: {
     flex: 1,
