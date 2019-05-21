@@ -36,15 +36,15 @@ export const runConsistencyCheck = async (callback: Function) => {
 export const compose = (...fns: any) => (x: any) => fns.reduceRight((y, f) => f(y), x)
 
 export const parseAdaValue = (value: RawAdaValue): BigNumber => {
-  validate(value.integers != null, 'Invalid raw ada value', {value})
-  validate(value.decimals != null, 'Invalid raw ada value', {value})
-  validate(value.full != null, 'Invalid raw ada value', {value})
+  validate(value.integers != null, 'parseAdaValue: Invalid raw ada value', {value})
+  validate(value.decimals != null, 'parseAdaValue: Invalid raw ada value', {value})
+  validate(value.full != null, 'parseAdaValue: Invalid raw ada value', {value})
 
   const res = new BigNumber(value.integers).times(1000000).plus(value.decimals)
   const resApprox = new BigNumber(value.full)
   if (res.abs().lt(9e15)) {
     // below this the values should be same
-    validate(res.eq(resApprox), 'ADA value should be consistent at this magnitude', value)
+    validate(res.eq(resApprox), 'parseAdaValue: ADA value should be exact at this magnitude', value)
   } else {
     // the diff should be relatively small
     validate(
@@ -52,7 +52,7 @@ export const parseAdaValue = (value: RawAdaValue): BigNumber => {
         .minus(res)
         .div(res)
         .lt(1.0e-15), // about ~50 bits of precision
-      'Inexact raw ada value is too imprecise. Perhaps a bug?',
+      'parseAdaValue: Inexact raw ada value is too imprecise. Perhaps a bug?',
       {value}
     )
   }

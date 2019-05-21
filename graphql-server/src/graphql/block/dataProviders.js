@@ -30,7 +30,7 @@ const facadeAndValidate = async (data) => {
   await runConsistencyCheck(() => {
     validate(
       getEstimatedSlotTimestamp(data.epoch, data.slot) === moment(data.time).unix(),
-      'Slot timestamp vs estimated timestamp mismatch',
+      'Slot.timestamp inconsistency (Slot timestamp vs estimated timestamp mismatch)',
       {
         epoch: data.epoch,
         slot: data.slot,
@@ -61,7 +61,8 @@ export const fetchBlockByHash = async ({elastic, E}, blockHash) => {
       .filter(E.matchPhrase('block_hash', blockHash))
       .getCount()
 
-    validate(txCnt === hit._source.tx_num, 'Tx count inconsistency', {
+    validate(txCnt === hit._source.tx_num, 'Slot.txCount inconsistency', {
+      blockHash,
       fromBlocks: hit._source.tx_num,
       fromTransactions: txCnt,
     })
