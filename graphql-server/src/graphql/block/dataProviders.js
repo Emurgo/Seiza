@@ -52,7 +52,7 @@ export const fetchBlockByHash = async ({elastic, E}, blockHash) => {
     .q(currentBlocks)
     .filter(E.matchPhrase('hash', blockHash))
     .getSingleHit()
-    .catch(annotateNotFoundError({entity: 'Block'}))
+    .catch(annotateNotFoundError({entity: 'Block', blockHash}))
 
   await runConsistencyCheck(async () => {
     const txCnt = await elastic
@@ -89,7 +89,7 @@ export const fetchBlockBySlot = async ({elastic, E}, {epoch, slot}) => {
     .filter(E.eq('epoch', epoch))
     .filter(E.eq('slot', slot))
     .getSingleHit()
-    .catch(annotateNotFoundError({entity: 'Slot'}))
+    .catch(annotateNotFoundError({entity: 'Block', epoch, slot}))
 
   return facadeAndValidate(hit._source)
 }

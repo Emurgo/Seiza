@@ -9,7 +9,7 @@ export const fetchAddress = async ({elastic, E}: any, address58: string) => {
     .q('address')
     .filter(E.matchPhrase('_id', address58))
     .getSingleHit()
-    .catch(annotateNotFoundError({entity: 'Address'}))
+    .catch(annotateNotFoundError({entity: 'Address', address: address58}))
 
   const ioTotalValue = (address58, type) =>
     elastic

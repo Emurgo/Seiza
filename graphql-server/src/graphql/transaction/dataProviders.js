@@ -34,7 +34,7 @@ export const fetchTransaction = async ({elastic, E}: any, txHash: string) => {
     // todo: filter on active fork?
     .filter(E.matchPhrase('hash', txHash))
     .getSingleHit()
-    .catch(annotateNotFoundError({elasticType: 'tx', entity: 'Transaction'}))
+    .catch(annotateNotFoundError({elasticType: 'tx', entity: 'Transaction', txHash}))
   return facadeTransaction(hit._source)
 }
 
