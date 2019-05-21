@@ -2,6 +2,7 @@
 import assert, {AssertionError} from 'assert'
 import {ApolloError} from 'apollo-server'
 import BigNumber from 'bignumber.js'
+import {reportError} from '../utils/errorReporting'
 
 type RawAdaValue = {|
   integers: number,
@@ -23,7 +24,9 @@ export const runConsistencyCheck = async (callback: Function) => {
     return await callback()
   } else {
     // In production fire a runaway promise
-    Promise.resolve().then(() => callback())
+    Promise.resolve()
+      .then(() => callback())
+      .catch((err) => reportError(err))
     // And return early
     return Promise.resolve()
   }

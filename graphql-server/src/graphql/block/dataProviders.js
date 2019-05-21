@@ -31,7 +31,12 @@ const facadeAndValidate = async (data) => {
     validate(
       getEstimatedSlotTimestamp(data.epoch, data.slot) === moment(data.time).unix(),
       'Slot timestamp vs estimated timestamp mismatch',
-      {data}
+      {
+        epoch: data.epoch,
+        slot: data.slot,
+        time_viaElasticData: data.time,
+        time_viaMath: getEstimatedSlotTimestamp(data.epoch, data.slot),
+      }
     )
   })
   return facadeElasticBlock(data)

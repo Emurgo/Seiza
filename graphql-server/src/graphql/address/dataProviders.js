@@ -33,6 +33,7 @@ export const fetchAddress = async ({elastic, E}: any, address58: string) => {
     const [s, r] = await Promise.all([totalAdaSent, totalAdaReceived])
 
     validate(r.minus(s).eq(balance), 'Inconsistency in address balance', {
+      address58,
       sent_viaTxio: s,
       received_viaTxio: r,
       balance_viaAddress: balance,
