@@ -15,7 +15,8 @@ export const THEMES = {
 
 // TODO: Which font families to fallback to?
 const fontFamilies = [
-  'Roboto',
+  '"Roboto"',
+  '"Roboto Self"',
   '-apple-system',
   'BlinkMacSystemFont',
   '"Segoe UI"',
@@ -25,7 +26,9 @@ const fontFamilies = [
   'sans-serif',
 ].join(',')
 
-const monospaceFontFamilies = ['"RobotoMono"', 'Monaco', 'monospace'].join(',')
+const monospaceFontFamilies = ['"Roboto Mono"', '"Roboto Mono Self"', 'Monaco', 'monospace'].join(
+  ','
+)
 
 // taken from material-ui's github
 // packages/material-ui/src/styles/shadows.js
