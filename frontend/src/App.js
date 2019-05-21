@@ -77,7 +77,6 @@ const useAppStyles = makeStyles((theme) => ({
     },
   },
   navHeaderWrapper: {
-    position: 'sticky',
     top: 0,
     zIndex: 1,
     [theme.breakpoints.up('md')]: {
@@ -183,7 +182,7 @@ const AppLayout = () => {
     <Grid container direction="column" className={classes.mainWrapper} wrap="nowrap">
       <CookiesBanner />
 
-      <Grid item className={classes.navHeaderWrapper}>
+      <Grid item className={cn(classes.navHeaderWrapper, 'sticky')}>
         <CssBaseline />
         <TopBar />
       </Grid>
