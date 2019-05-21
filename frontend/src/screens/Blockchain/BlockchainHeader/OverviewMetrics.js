@@ -18,6 +18,24 @@ import {useQuery} from 'react-apollo-hooks'
 import useNavigateTo from '@/components/hooks/useNavigateTo'
 import {useAnalytics} from '@/helpers/googleAnalytics'
 
+const PRELOAD_FONT_WEIGHT = 300
+
+const usePreloadStyles = makeStyles((theme) => ({
+  preload: {
+    fontWeight: PRELOAD_FONT_WEIGHT,
+    width: 0,
+    height: 0,
+    opacity: 0,
+  },
+}))
+
+// Note: not using <link preload /> so that we do not forget to load new font if we change it
+// Note: consider adding to common folder if used more than once
+const PreloadFont = () => {
+  const classes = usePreloadStyles()
+  return <span className={classes.preload}>This text is not visible, and just preloads font</span>
+}
+
 const text = defineMessages({
   not_available: 'N/A',
   error: 'Err',
@@ -156,6 +174,7 @@ const OverviewMetrics = ({intl, data, classes}) => {
 
   return (
     <Grid container justify="center" wrap="wrap" direction="row">
+      <PreloadFont />
       <Grid item className={classes.cardDimensions}>
         <MetricWithLink
           className={classes.card}
