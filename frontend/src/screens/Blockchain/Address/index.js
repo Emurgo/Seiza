@@ -203,7 +203,6 @@ const AddressScreen = () => {
   } = transactionsData
 
   const transactions = idx(addressTransactions, (_) => _.transactions) || []
-  const transactionCount = idx(addressSummary, (_) => _.transactionsCount)
 
   const totalCount = idx(addressTransactions, (_) => _.totalCount) || 0
 
@@ -262,7 +261,7 @@ const AddressScreen = () => {
             <div className={classes.headingWrapper}>
               <EntityHeading>
                 {tr(messages.transactionsHeading, {
-                  count: transactionCount,
+                  count: totalCount,
                 })}
               </EntityHeading>
             </div>
