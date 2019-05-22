@@ -174,7 +174,7 @@ const getElastic = (logger: Function) => {
         internalTime,
         totalTime,
       },
-      {type: 'elastic-timing'}
+      {type: 'elastic-timing', level: 'verbose'}
     )
   }
 

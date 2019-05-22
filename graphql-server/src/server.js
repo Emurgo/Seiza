@@ -73,7 +73,7 @@ const getLogger = (reqId, reqBody, reqHeaders) => ({
       reqId,
       value,
     }
-    _logger.log({level: 'info', info})
+    _logger.log({level: options.level || 'info', info})
   },
   logError: (error) => {
     const info = _getErrorInfo(error, reqId, reqBody, reqHeaders)
