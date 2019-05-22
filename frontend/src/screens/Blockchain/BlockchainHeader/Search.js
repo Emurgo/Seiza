@@ -49,6 +49,10 @@ const useSearchData = (searchQuery, skip) => {
     `,
     {
       variables: {searchQuery},
+      // We do not cache search requests
+      // See: https://github.com/trojanowski/react-apollo-hooks/issues/81
+      // fetchPolicy=network-only still returns data from cache
+      fetchPolicy: 'no-cache',
       skip,
     }
   )
