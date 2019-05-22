@@ -2,13 +2,17 @@
 import * as Sentry from '@sentry/node'
 import _ from 'lodash'
 import {isProduction} from '../config'
+import _logger from '../logger'
 
 export const reportError = (error: any, info: any) => {
   if (error == null) {
     return
   }
 
-  info = info == null ? _.pick(error, Object.getOwnPropertyNames(error)) : info
+  info = {
+    ...(info || {}),
+    ..._.pick(error, Object.getOwnPropertyNames(error)),
+  }
 
   Sentry.withScope((scope) => {
     scope.setExtras(info)
@@ -21,8 +25,7 @@ export const initErrorReporting = () => {
   Sentry.configureScope((scope) => scope.setTag('source', 'backend'))
   // unhandledRejection is handled in @sentry/node out of the box
   process.on('uncaughtException', (error) => {
-    // eslint-disable-next-line no-console
-    console.log('uncaughtException', error.message)
+    _logger.log({level: 'error', message: 'uncaughtException', error})
     isProduction && reportError(error)
   })
 }

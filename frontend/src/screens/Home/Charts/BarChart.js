@@ -16,12 +16,12 @@ const getBarColors = (theme) => [
   lighten(theme.palette.primary.main, 0.2),
 ]
 
-const CHART_MARGIN = {
+const getChartMargin = (isExtraSm) => ({
   top: 20,
-  right: 40,
-  left: 40,
+  right: isExtraSm ? 20 : 40,
+  left: isExtraSm ? 0 : 40,
   bottom: 20,
-}
+})
 
 const useStyles = makeStyles((theme) => {
   const [baseColor, activeColor] = getBarColors(theme)
@@ -179,12 +179,14 @@ export default ({
   const textColor = theme.palette.text.primary
 
   const breakpoint = useCurrentBreakpoint()
-  const hideYLabel = breakpoint === 'xs'
+  const isExtraSM = breakpoint === 'xs'
+
+  const chartMargin = getChartMargin(isExtraSM)
 
   return (
     <BarChart
       onMouseLeave={() => setActiveBar(null)}
-      margin={CHART_MARGIN}
+      margin={chartMargin}
       {...{width, height, data}}
     >
       <CartesianGrid strokeDasharray="3 3" />
@@ -195,8 +197,8 @@ export default ({
         label={{value: xLabel, fill: textColor, position: 'insideBottom'}}
       />
       {/* // use tickFormatter also for yAxis */}
-      <YAxis width={!hideYLabel ? 100 : 70} dataKey="y" tickFormatter={formatYAxis}>
-        {!hideYLabel && (
+      <YAxis width={!isExtraSM ? 100 : 70} dataKey="y" tickFormatter={formatYAxis}>
+        {!isExtraSM && (
           <Label
             angle={-90}
             offset={-5}

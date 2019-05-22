@@ -58,6 +58,13 @@ const commonOverrides = {
       borderRadius: 5,
     },
   },
+  MuiOutlinedInput: {
+    root: {
+      '& input::placeholder': {
+        color: '#8A93AF',
+      },
+    },
+  },
 }
 
 const commonThemeObj = {

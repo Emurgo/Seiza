@@ -69,41 +69,49 @@ const SOCIAL_LINKS = {
   YOUTUBE: 'https://www.youtube.com/channel/UCgFQ0hHuPO1QDcyP6t9KZTQ',
   MEDIUM: 'https://medium.com/@emurgo_io',
   REDDIT: 'https://reddit.com/r/cardano',
-  TWITTER: 'https://twitter.com/emurgo_io',
+  TWITTER_EMURGO: 'https://twitter.com/emurgo_io',
+  TWITTER_SEIZA: 'https://twitter.com/seiza_explorer',
   LINKEDIN: 'https://www.linkedin.com/company/emurgo_io',
+}
+
+const MATERIAL_UI_DEFAULT_TOP_PADDING = 8.5
+
+const paddingSides = {
+  paddingLeft: MATERIAL_UI_DEFAULT_TOP_PADDING * 2.5,
+  paddingRight: MATERIAL_UI_DEFAULT_TOP_PADDING * 2.5,
 }
 
 const useRoundedInputStyles = makeStyles((theme) => {
   return {
     input: {
-      padding: '8.5px 15px',
+      paddingTop: MATERIAL_UI_DEFAULT_TOP_PADDING,
+      paddingBottom: MATERIAL_UI_DEFAULT_TOP_PADDING,
+      ...paddingSides,
     },
-    errorLabel: {
-      position: 'absolute',
-      top: 0,
-      right: 0,
-      width: '90%',
-    },
+    errorLabel: paddingSides,
     formControl: {
       height: '100%',
     },
     errorIcon: {
       height: '70%',
     },
-    relative: {
-      position: 'relative',
-    },
   }
 })
 
-const useOutlinedInputStyles = makeStyles(() => ({
+const useOutlinedInputStyles = makeStyles((theme) => ({
   root: {
     height: '100%',
   },
   notchedOutline: {
     borderRadius: '35px',
     // TODO: get from theme
-    borderColor: '#9881DC !important',
+    borderColor: '#A38DDF !important',
+  },
+  focused: {
+    '&>fieldset': {
+      borderWidth: '1px !important',
+      borderColor: `${theme.palette.primary.main} !important`,
+    },
   },
 }))
 
@@ -120,13 +128,9 @@ const RoundedInput = ({errorMessage, ...props}) => {
         }
         {...props}
       />
-      {errorMessage && (
-        <div className={classes.relative}>
-          <FormHelperText error className={classes.errorLabel}>
-            {errorMessage}
-          </FormHelperText>
-        </div>
-      )}
+      <FormHelperText error className={classes.errorLabel}>
+        {errorMessage}
+      </FormHelperText>
     </FormControl>
   )
 }
@@ -138,7 +142,7 @@ const SUBSCRIBE_MUTATION = gql`
 `
 const useSubscribeMutation = (email) => useMutation(SUBSCRIBE_MUTATION, {variables: {email}})
 
-const LARGEST_FOOTER_HEIGHT = 420
+const LARGEST_FOOTER_HEIGHT = 450
 
 const useSubscribeFooterStyles = makeStyles(({palette, spacing, breakpoints, typography}) => ({
   '@global': {
@@ -177,20 +181,19 @@ const useSubscribeFooterStyles = makeStyles(({palette, spacing, breakpoints, typ
     height: LARGEST_FOOTER_HEIGHT,
     overflow: 'hidden',
     padding: spacing.unit * 2,
+    paddingTop: spacing.unit * 4, // to countermeasure error label
     background: palette.gradient,
     position: 'relative',
     [breakpoints.up('sm')]: {
-      height: 250,
+      height: 280,
     },
     [breakpoints.up('md')]: {
-      height: 220,
+      height: 250,
     },
   },
   'subscribe': {
     marginLeft: spacing.unit * 1.3,
     marginRight: spacing.unit * 1.3,
-    marginTop: spacing.unit,
-    marginBottom: spacing.unit,
     width: '200px',
     [breakpoints.up('sm')]: {
       marginTop: 0,
@@ -198,14 +201,18 @@ const useSubscribeFooterStyles = makeStyles(({palette, spacing, breakpoints, typ
     },
   },
   'email': {
-    width: '280px',
-    height: '100%',
+    width: 280,
+    height: 49, // 49 is height of subscribe button
+  },
+  'textfieldButtonSpacing': {
+    padding: spacing.unit,
   },
   'row': {
     padding: spacing.unit,
   },
   'subscribeHeadlineWrapper': {
-    padding: spacing.unit * 1.5,
+    paddingTop: spacing.unit * 1.5,
+    paddingBottom: spacing.unit * 1.5,
   },
   'success': {
     fontWeight: 'bold',
@@ -446,8 +453,8 @@ const SubscribeFooter = () => {
 
                 <Grid item className={classes.row}>
                   <form>
-                    <Grid container direction="row" justify="center" spacing={16}>
-                      <Grid item>
+                    <Grid container direction="row" justify="center">
+                      <Grid item className={classes.textfieldButtonSpacing}>
                         <RoundedInput
                           className={classes.email}
                           placeholder={tr(subscribeMessages.emailButton)}
@@ -457,7 +464,7 @@ const SubscribeFooter = () => {
                           aria-describedby="error-text"
                         />
                       </Grid>
-                      <Grid item>
+                      <Grid item className={classes.textfieldButtonSpacing}>
                         <Button
                           rounded
                           gradient
@@ -492,7 +499,7 @@ const SubscribeFooter = () => {
 const useMainFooterStyles = makeStyles(({spacing, palette, typography, breakpoints}) => ({
   socialIconWrapper: {
     marginLeft: 0,
-    marginRight: spacing.unit * 1.7,
+    marginRight: spacing.unit * 2.5,
     marginTop: spacing.unit,
 
     [breakpoints.up('md')]: {
@@ -517,7 +524,7 @@ const useMainFooterStyles = makeStyles(({spacing, palette, typography, breakpoin
       flexDirection: 'row',
     },
     '& > *': {
-      marginTop: spacing.unit * 0.5,
+      marginTop: spacing.unit * 1.2,
       marginRight: spacing.unit * 2,
     },
     '& > :last-child': {
@@ -690,12 +697,12 @@ const MainFooter = ({navItems}) => {
                   <Grid container alignItems="center">
                     <SocialIcon to={SOCIAL_LINKS.FACEBOOK} icon={fbIcon} iconName="facebook" />
                     <SocialIcon
-                      to={SOCIAL_LINKS.TWITTER}
+                      to={SOCIAL_LINKS.TWITTER_EMURGO}
                       icon={twitterEmurgoIcon}
                       iconName="emurgo twitter"
                     />
                     <SocialIcon
-                      to={SOCIAL_LINKS.TWITTER}
+                      to={SOCIAL_LINKS.TWITTER_SEIZA}
                       icon={twitterSeizaIcon}
                       iconName="seiza twitter"
                     />

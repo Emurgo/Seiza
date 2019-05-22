@@ -13,3 +13,9 @@
 .w-100 {
   width: 100%;
 }
+
+/* https://github.com/cssinjs/jss/issues/1059 */
+.sticky {
+  position: sticky;
+  position: -webkit-sticky;
+}

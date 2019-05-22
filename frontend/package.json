@@ -4,9 +4,9 @@
   "private": true,
   "scripts": {
     "start": "if test $NODE_ENV = production; then yarn start:heroku; else react-app-rewired start; fi",
-    "start:heroku": "node heroku.js",
+    "start:heroku": "SENTRY_COMMIT_HASH=$HEROKU_SLUG_COMMIT node heroku.js",
     "build": "SENTRY_COMMIT_HASH=`sentry-cli releases propose-version` react-app-rewired build",
-    "build:heroku": "sentry-cli releases new $SOURCE_VERSION; REACT_APP_SENTRY_RELEASE_VERSION=$SOURCE_VERSION react-app-rewired build",
+    "build:heroku": "sentry-cli releases new $SOURCE_VERSION; REACT_APP_SENTRY_RELEASE_VERSION=$SOURCE_VERSION react-app-rewired build --source-maps; sentry-cli releases files $SOURCE_VERSION upload-sourcemaps --ext map ./build",
     "heroku-postbuild": "yarn build:heroku",
     "eject": "react-app-rewired eject",
     "eslint": "eslint src --max-warnings=0",

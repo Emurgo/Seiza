@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import classnames from 'classnames'
+import cn from 'classnames'
 import {Typography, Grid} from '@material-ui/core'
 import {Search, LocationOn, BarChart, History, Compare, People} from '@material-ui/icons'
 import {makeStyles} from '@material-ui/styles'
@@ -48,13 +48,13 @@ const MenuItem = ({active, label, icon}) => {
       container
       direction="row"
       alignItems="center"
-      className={classnames(classes.link, active && classes.active)}
+      className={cn(classes.link, active && classes.active)}
     >
       <Grid item className={classes.icon}>
         {icon}
       </Grid>
       <Grid item>
-        <Typography className={classnames(active && classes.activeText)}>{label}</Typography>
+        <Typography className={cn(active && classes.activeText)}>{label}</Typography>
       </Grid>
     </Grid>
   )
@@ -66,7 +66,6 @@ const useNavigationBarStyles = makeStyles((theme) => ({
   },
   // Note: parent can't have `overflow: hidden` and must span full height
   navBar: {
-    position: 'sticky',
     top: 0,
   },
 }))
@@ -109,7 +108,7 @@ const NavigationBar = () => {
   const {translate: tr} = useI18n()
 
   return (
-    <div className={classes.navBar}>
+    <div className={cn(classes.navBar, 'sticky')}>
       {navItems.map(({link, i18nLabel, icon}) => (
         <NavLink key={link} to={link} className={classes.href}>
           {(isActive) => <MenuItem active={isActive} label={tr(i18nLabel)} icon={icon} />}
