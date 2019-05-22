@@ -66,7 +66,7 @@ const _getErrorInfo = (error, reqId, reqBody, reqHeaders) => ({
   ...getInfoFromError(error),
 })
 
-const getLogger = (reqId, reqBody, reqHeaders) => ({
+const getLogger = ({reqId, reqBody, reqHeaders}) => ({
   log: (value, options = {}) => {
     const info = {
       logType: options.type || 'default',
@@ -75,22 +75,22 @@ const getLogger = (reqId, reqBody, reqHeaders) => ({
     }
     _logger.log({level: options.level || 'info', info})
   },
-  logError: (error) => {
+  error: (error) => {
     const info = _getErrorInfo(error, reqId, reqBody, reqHeaders)
     _logger.log({level: 'error', info})
   },
 })
 
-const getReporter = (reqId, reqBody, reqHeaders) => ({
-  reportError: (error) => {
+const getReporter = ({reqId, reqBody, reqHeaders}) => ({
+  error: (error) => {
     const info = _.omit(_getErrorInfo(error, reqId, reqBody, reqHeaders), 'logType')
     reportError(error, info)
   },
 })
 
 const handleError = (error, {logger, reporter}) => {
-  logger.logError(error)
-  reporter.reportError(error)
+  logger.error(error)
+  reporter.error(error)
 }
 
 const createServer = () =>
@@ -112,8 +112,12 @@ const createServer = () =>
 
       // Note: `req.body` could be batched, but even batched
       // query should be good enough to debug in case of error
-      const logger = getLogger(reqId, req && req.body, req && req.headers)
-      const reporter = getReporter(reqId, req && req.body, req && req.headers)
+      const logger = getLogger({reqId, reqBody: req && req.body, reqHeaders: req && req.headers})
+      const reporter = getReporter({
+        reqId,
+        reqBody: req && req.body,
+        reqHeaders: req && req.headers,
+      })
 
       // So that we have `reqId` available also in failed run away promises
       const runConsistencyCheck = getRunConsistencyCheck((error) =>
