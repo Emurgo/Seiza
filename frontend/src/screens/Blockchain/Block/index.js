@@ -30,6 +30,8 @@ import {routeTo} from '@/helpers/routes'
 import {extractError} from '@/helpers/errors'
 import SlotNavigation from './SlotNavigation'
 
+import {APOLLO_CACHE_OPTIONS} from '@/constants'
+
 const blockSummaryLabels = defineMessages({
   epoch: 'Epoch',
   slot: 'Slot',
@@ -165,6 +167,7 @@ const useBlockData = ({blockHash}) => {
     `,
     {
       variables: {blockHash},
+      fetchPolicy: APOLLO_CACHE_OPTIONS.CACHE_AND_NETWORK,
     }
   )
   const {loading, error, data} = result

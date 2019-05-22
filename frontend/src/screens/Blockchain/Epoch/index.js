@@ -32,6 +32,7 @@ import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
 import {useAnalytics} from '@/helpers/googleAnalytics'
 
 import NavigationButtons from '../NavigationButtons'
+import {APOLLO_CACHE_OPTIONS} from '@/constants'
 
 const messages = defineMessages({
   notAvailable: 'N/A',
@@ -219,10 +220,7 @@ const useEpochNavigation = (epochNumber: number) => {
 const useEpochData = (epochNumber) => {
   const {loading, error, data} = useQueryNotBugged(GET_EPOCH_BY_NUMBER, {
     variables: {epochNumber},
-    query: {
-      fetchPolicy: 'network-only',
-      errorPolicy: 'all',
-    },
+    fetchPolicy: APOLLO_CACHE_OPTIONS.CACHE_AND_NETWORK,
   })
   return {
     loading,

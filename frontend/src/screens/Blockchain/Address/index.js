@@ -36,6 +36,7 @@ import addressIcon from '@/assets/icons/qrcode.svg'
 import {extractError} from '@/helpers/errors'
 
 import {FILTER_TYPES} from './constants'
+import {APOLLO_CACHE_OPTIONS} from '@/constants'
 
 const summaryMessages = defineMessages({
   NA: 'N/A',
@@ -108,6 +109,7 @@ const useStyles = makeStyles((theme) => ({
 const useAddressSummary = (address58) => {
   const {loading, data, error} = useQueryNotBugged(GET_ADDRESS_BY_ADDRESS58, {
     variables: {address58},
+    fetchPolicy: APOLLO_CACHE_OPTIONS.CACHE_AND_NETWORK,
   })
 
   // TODO: how to extract error properly???
@@ -117,6 +119,7 @@ const useAddressSummary = (address58) => {
 const useTransactions = (address58, filterType, cursor) => {
   const {loading, data, error} = useQueryNotBugged(GET_TXS_BY_ADDRESS, {
     variables: {address58, filterType, cursor},
+    fetchPolicy: APOLLO_CACHE_OPTIONS.CACHE_AND_NETWORK,
   })
 
   // TODO: how to extract error properly???

@@ -15,6 +15,7 @@ import {useI18n} from '@/i18n/helpers'
 import {Searchbar, LoadingError, Alert} from '@/components/visual'
 import {routeTo} from '@/helpers/routes'
 import {useAnalytics} from '@/helpers/googleAnalytics'
+import {APOLLO_CACHE_OPTIONS} from '@/constants'
 
 const text = defineMessages({
   searchPlaceholder: 'Search addresses, transactions, epochs & slots on the Cardano network',
@@ -49,6 +50,7 @@ const useSearchData = (searchQuery, skip) => {
     `,
     {
       variables: {searchQuery},
+      fetchPolicy: APOLLO_CACHE_OPTIONS.NO_CACHE,
       skip,
     }
   )
