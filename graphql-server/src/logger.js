@@ -1,7 +1,13 @@
 // @flow
-import winston from 'winston'
 
-const logFormat = winston.format.printf((value) => JSON.stringify(value))
+// TODO: move to utils folder
+
+import winston from 'winston'
+import {isProduction} from './config'
+
+const logFormat = isProduction
+  ? winston.format.printf((value) => JSON.stringify(value))
+  : winston.format.printf((value) => `${JSON.stringify(value, null, 4)}\n`)
 
 const TIMESTAMP_FORMAT = 'YYYY-MM-DD HH:mm:ss'
 

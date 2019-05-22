@@ -1,13 +1,7 @@
 import moment from 'moment'
 import assert from 'assert'
 
-import {
-  parseAdaValue,
-  annotateNotFoundError,
-  runConsistencyCheck,
-  getEstimatedSlotTimestamp,
-  validate,
-} from '../utils'
+import {parseAdaValue, annotateNotFoundError, getEstimatedSlotTimestamp, validate} from '../utils'
 import E from '../../api/elasticHelpers'
 
 export const facadeElasticBlock = (data) => ({
@@ -26,7 +20,7 @@ export const facadeElasticBlock = (data) => ({
   blockHeight: data.height,
 })
 
-const facadeAndValidate = async (data) => {
+const facadeAndValidate = async (data, runConsistencyCheck) => {
   await runConsistencyCheck(() => {
     validate(
       getEstimatedSlotTimestamp(data.epoch, data.slot) === moment(data.time).unix(),
@@ -46,7 +40,7 @@ const currentBlocks = E.q('slot')
   .filter(E.onlyActiveFork())
   .filter(E.notNull('hash'))
 
-export const fetchBlockByHash = async ({elastic, E}, blockHash) => {
+export const fetchBlockByHash = async ({elastic, E, runConsistencyCheck}, blockHash) => {
   assert(blockHash)
   const hit = await elastic
     .q(currentBlocks)
@@ -68,19 +62,19 @@ export const fetchBlockByHash = async ({elastic, E}, blockHash) => {
     })
   })
 
-  return facadeAndValidate(hit._source)
+  return facadeAndValidate(hit._source, runConsistencyCheck)
 }
 
-export const fetchLatestBlock = async ({elastic, E}) => {
+export const fetchLatestBlock = async ({elastic, E, runConsistencyCheck}) => {
   const hit = await elastic
     .q(currentBlocks)
     .sortBy('height', 'desc')
     .getFirstHit()
 
-  return facadeAndValidate(hit._source)
+  return facadeAndValidate(hit._source, runConsistencyCheck)
 }
 
-export const fetchBlockBySlot = async ({elastic, E}, {epoch, slot}) => {
+export const fetchBlockBySlot = async ({elastic, E, runConsistencyCheck}, {epoch, slot}) => {
   assert(epoch != null)
   assert(slot != null)
 
@@ -91,7 +85,7 @@ export const fetchBlockBySlot = async ({elastic, E}, {epoch, slot}) => {
     .getSingleHit()
     .catch(annotateNotFoundError({entity: 'Block', epoch, slot}))
 
-  return facadeAndValidate(hit._source)
+  return facadeAndValidate(hit._source, runConsistencyCheck)
 }
 
 const tupleLt = (key1, key2) => (value1, value2) =>
@@ -111,7 +105,7 @@ const tupleGt = (key1, key2) => (value1, value2) =>
   ])
 
 // TODO: extract repetitive code
-export const fetchPreviousBlock = async ({elastic, E}, {epoch, slot}) => {
+export const fetchPreviousBlock = async ({elastic, E, runConsistencyCheck}, {epoch, slot}) => {
   assert(epoch != null)
   assert(slot != null)
 
@@ -125,12 +119,12 @@ export const fetchPreviousBlock = async ({elastic, E}, {epoch, slot}) => {
   if (hits.total === 0) {
     return null
   } else {
-    return facadeAndValidate(hits.hits[0]._source)
+    return facadeAndValidate(hits.hits[0]._source, runConsistencyCheck)
   }
 }
 
 // TODO: extract repetitive code
-export const fetchNextBlock = async ({elastic, E}, {epoch, slot}) => {
+export const fetchNextBlock = async ({elastic, E, runConsistencyCheck}, {epoch, slot}) => {
   assert(epoch != null)
   assert(slot != null)
 
@@ -144,6 +138,6 @@ export const fetchNextBlock = async ({elastic, E}, {epoch, slot}) => {
   if (hits.total === 0) {
     return null
   } else {
-    return facadeAndValidate(hits.hits[0]._source)
+    return facadeAndValidate(hits.hits[0]._source, runConsistencyCheck)
   }
 }

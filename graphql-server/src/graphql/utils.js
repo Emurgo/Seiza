@@ -2,7 +2,6 @@
 import assert, {AssertionError} from 'assert'
 import {ApolloError} from 'apollo-server'
 import BigNumber from 'bignumber.js'
-import {reportError} from '../utils/errorReporting'
 
 type RawAdaValue = {|
   integers: number,
@@ -19,7 +18,7 @@ export const validate = (cond: boolean, message: string, ctx: any) => {
   }
 }
 
-export const runConsistencyCheck = async (callback: Function) => {
+export const getRunConsistencyCheck = (reportError: Function) => async (callback: Function) => {
   if (process.env.NODE_ENV === 'development') {
     return await callback()
   } else {

@@ -3539,12 +3539,17 @@ graphql-extensions@0.4.3:
   dependencies:
     "@apollographql/apollo-tools" "^0.3.0"
 
-graphql-extensions@0.6.0:
+graphql-extensions@0.6.0, graphql-extensions@^0.6.0:
   version "0.6.0"
   resolved "https://registry.yarnpkg.com/graphql-extensions/-/graphql-extensions-0.6.0.tgz#3ee3aa57fe213f90aec5cd31275f6d04767c6a23"
   integrity sha512-SshzmbD68fHXRv2q3St29olMOxHDLQ5e9TOh+Tz2BYxinrfhjFaPNcEefiK/vF295wW827Y58bdO11Xmhf8J+Q==
   dependencies:
     "@apollographql/apollo-tools" "^0.3.6-alpha.1"
+
+graphql-format-error-context-extension@^0.2.9:
+  version "0.2.9"
+  resolved "https://registry.yarnpkg.com/graphql-format-error-context-extension/-/graphql-format-error-context-extension-0.2.9.tgz#3c1cf6ea05a54a099fb1bffcbb4de4c070504a78"
+  integrity sha512-uAsygrJUrRO+8OWS+YPXbWRONHoXpzXxvClfTRWbXZCkMyla28oz2A2wuAAO8nFpnOmCbGBgDWA6oY/gPOKJhQ==
 
 graphql-subscriptions@^1.0.0:
   version "1.0.0"
