@@ -5,10 +5,9 @@
   "license": "MIT",
   "scripts": {
     "start": "if test $NODE_ENV = production; then yarn start:production; else NODE_ENV=development babel-watch src/index.js -w src/graphql; fi",
-    "start:production": "NODE_ENV=production SENTRY_RELEASE_VERSION=`sentry-cli releases propose-version` node build/index.js",
-    "start:heroku": "`sentry-cli releases new $HEROKU_SLUG_COMMIT; SENTRY_RELEASE_VERSION=$HEROKU_SLUG_COMMIT node build/index.js`",
+    "start:production": "if test ! -z $HEROKU_SLUG_COMMIT; then yarn start:heroku; else NODE_ENV=production SENTRY_RELEASE_VERSION=`sentry-cli releases propose-version` node build/index.js; fi",
+    "start:heroku": "sentry-cli releases new $HEROKU_SLUG_COMMIT; sentry-cli releases files $HEROKU_SLUG_COMMIT upload-sourcemaps --ext map ./build; SENTRY_RELEASE_VERSION=$HEROKU_SLUG_COMMIT node build/index.js",
     "build": "rm -rf build && babel src --out-dir build --source-maps",
-    "build:heroku": "yarn build",
     "serve": "node build/index.js",
     "eslint": "eslint src --max-warnings=0",
     "flow-stop": "flow stop",
@@ -24,6 +23,7 @@
     "@sentry/cli": "^1.42.0",
     "@sentry/node": "^5.1.2",
     "apollo-server": "^2.3.3",
+    "apollo-server-testing": "^2.5.0",
     "aws-sdk": "^2.437.0",
     "axios": "^0.18.0",
     "axios-cache-adapter": "^2.3.0",
@@ -42,7 +42,8 @@
     "isemail": "^3.2.0",
     "merge-graphql-schemas": "^1.5.8",
     "moment": "^2.24.0",
-    "uuid": "^3.3.2"
+    "uuid": "^3.3.2",
+    "winston": "^3.2.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.2.3",

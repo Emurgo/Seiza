@@ -1,66 +1,125 @@
 import {defineMessages} from 'react-intl'
 
 const messages = defineMessages({
-  heading: 'Terms of Service Agreement',
+  heading: 'General Terms & Conditions',
   preamble: `
-THIS *TERMS OF SERVICE AGREEMENT* ("Agreement") is made between **EMURGO Co., Ltd.** ("Company") and any person or entity ("User") who completes the process to download, utilize, or operate the software known as the Yoroi cryptocurrency Wallet application, and data processing service, application, communication service or other content or offered or provided with the software by the Company ("Software"). The Company and User are collectively referred to as the "Parties." BY CLICKING THE ACCEPTANCE BUTTON OR ACCESSING, USING OR INSTALLING ANY PART OF THE SOFTWARE, USER EXPRESSLY AGREES TO AND CONSENTS TO BE LEGALLY BOUND BY ALL OF THE TERMS OF THIS AGREEMENT. IF USER DOES NOT AGREE TO ALL OF THE TERMS OF THIS AGREEMENT, THE USER SHALL NOT BE AUTHORIZED TO ACCESS, USE OR INSTALL ANY PART OF THE SOFTWARE.`,
+  **Welcome to Seiza! By accessing this website and/or using our services, you expressly agree to be bound by these General Terms and Conditions (hereinafter the “GTC”), all terms incorporated in reference and all applicable laws and regulations. Please read the GTC carefully!**
+  <br/>
+  <br/>
+  (A) These GTC apply to your access to and use of all services provided by EMURGO PTE. Ltd (hereinafter the **„Company“**, **“we”**, **“us”** or **“our”**).
+  <br/>
+  <br/>
+  (B) By entering into this agreement you warrant and affirm that you: a) are an individual of legal age to form a binding contract b) have not been previously suspended or banned from using our services c) have the capacity to enter into this agreement and agree to be bound by it, including the Privacy and Cookies Policy as incorporated therein.
+  <br/>
+  <br/>
+  (C) Services mean any and all of the software platform features provided and/or operated by the Company at this website, including but not limited to: Ada blockchain explorer allowing you to search and examine addresses, transactions, epochs, slots & all other elements on the Cardano public blockchain (hereinafter the **“Services”**).
+  <br/>
+  <br/>
+  (D) These GTC were last modified on 15 May 2019 and may be occasionally updated to reflect changes in the scope of the Services and the applicable legislation, so please review them now and then. You can always find the most recent version on our website https://www.seiza.com. If we make substantial changes, we will take steps to notify you.
+  `,
 
-  h1: 'Rights and Obligations',
+  h1: 'Availability of Services',
   p1: `
- **a. Description.** The Software functions as a free, open source, digital cryptocurrency wallet. The Software does not constitute an account by which the Company or any other third parties serve as financial intermediaries or custodians of User's ADA or any other cryptocurrency. While the Software has undergone beta testing and continues to be improved by feedback from the developers community, open-source contributors and beta-testers, the Company cannot guarantee that there will be no bugs in the Software. User acknowledges that User's use of the Software is at User's risk, discretion and in compliance with all applicable laws. User is responsible for safekeeping User's passwords, PINs, private keys, redemption keys, shielded vending keys, backup recovery mnemonic passphrases, ADA passcodes and any other codes User uses to access the Software or any information, ADA, voucher, or other cryptocurrency unit. IF USER LOSES ACCESS TO USER'S CRYPTOCURRENCY WALLET OR PRIVATE KEYS AND HAS NOT SEPARATELY STORED A BACKUP OF USER'S CRYPTOCURRENCY WALLET OR BACKUP RECOVERY MNEMONIC PHRASE(S) AND CORRESPONDING PASSWORD(S), USER ACKNOWLEDGES AND AGREES THAT ANY ADA OR ANY OTHER CRYPTOCURRENCIES USER HAS ASSOCIATED WITH THAT CRYPTOCURRENCY WALLET WILL BECOME INACCESSIBLE. All transaction requests are irreversible. The Company and its shareholders, directors, officers, employees, affiliates and agents cannot guarantee transaction confirmation or retrieve User's private keys or passwords if User loses or forgets them.
-
-**b. Accessibility.** User agrees that from time to time the Software may be inaccessible or inoperable for any reason, including, without limitation: (i) equipment malfunctions; (ii) periodic maintenance procedures or repairs which the Company may undertake from time to time; or (iii) causes beyond the control of the Company or which are not reasonably foreseeable by the Company.
-
-**c. Equipment.** User shall be solely responsible for providing, maintaining and ensuring compatibility with the Software, all hardware, software, electrical and other physical requirements for User's use of the Software, including, without limitation, telecommunications and internet access connections and links, web browsers or other equipment, programs and services required to access and use the Software.
-
-**d. Security.** User shall be solely responsible for the security, confidentiality and integrity of all information and content that User receives, transmits through or stores on the Software. User shall be solely responsible for any authorized or unauthorized access to any account of User by any person. User agrees to bear all responsibility for the confidentiality of User's security devices, information, keys, and passwords.
-
-**e. Privacy.** When reasonably practicable, the Company will attempt to respect User's privacy. The Company will not monitor, edit, or disclose any personal information about User or User's account, including its contents or User's use of the Software, without User's prior consent unless the Company believes in good faith that such action is necessary to: (i) comply with legal process or other legal requirements of any governmental authority; (ii) protect and defend the rights or property of the Company; (iii) enforce this Agreement; (iv) protect the interests of users of the Software other than User or any other person; or (v) operate or conduct maintenance and repair of the Company's services or equipment, including the Software as authorized by law. User has no expectation of privacy with respect to the Internet generally. User's IP address is transmitted and recorded with each message or other information User sends from the Software.`,
-
-  h2: 'Taxes and Fees',
+* **1.1** Subject to the GTC, the Company shall use reasonable efforts to make available, operate, and maintain the Services during the term of the GTC and to permit you to access and use the Services in accordance with the GTC.
+<br/>
+<br/>
+* **1.2** You fully understand and agree that occasionally the Services may be inaccessible or unavailable for any reason, including, without limitation: (a) equipment malfunctions; (b) periodic maintenance procedures or repairs; or (c) causes beyond the control of the Company or which are not reasonably foreseeable by the Company.
+<br/>
+<br/>
+* **1.3** Our Services may evolve or discontinue over time. The Company may, at its sole discretion, apply changes, replace, or discontinue (temporarily or permanently) the Services at any time with or without notice.`,
+  h2: 'Accuracy of Information',
   p2: `
-
-All currency conversion charges, third party fees, sales, use, value-added, personal property or other tax, duty or levy of any kind, including interest and penalties thereon, whether imposed now or hereinafter by any governmental entity, and fees incurred by User by reason of User's access, use or installation of the Software shall be the sole responsibility of User.`,
-
-  h3: 'User Representations',
+* **2.1** Although we try to provide you accurate information, the Company does not conduct any independent diligence or substantive review and is not responsible for the accuracy, reliability and/or validity of the information accessible on this website. You acknowledge and agree that the Company makes no representation or warranty of any kind, express or implied, statutory or otherwise, regarding the contents of the Services, information made accessible through the Services, any hyperlinks to third party websites or any website linked to the Services.`,
+  h3: 'Acceptable Use',
   p3: `
-User represents and warrants to the Company that: (a) if User is a natural person, User is over the age of eighteen (18); (b) User has the power and authority to enter into and perform User's obligations under this Agreement; (c) all information provided by User to the Company is truthful, accurate and complete; (d) User will comply with all laws and regulations of any applicable jurisdiction with regard to User's access, use or installation of the Software; (e) User shall comply with all terms and conditions of this Agreement, including, without limitation, the provisions set forth at Section 4; and (f) User has provided and will provide accurate and complete information as required for access, use or installation of the Software.`,
-
-  h4: 'Prohibited Uses',
+* **3.1** While using our Services, you warrant that you will not violate any applicable law, contract, intellectual property or other third-party right or commit a tort, and that you are solely responsible for your conduct while using our Services. Without limiting the generality of this clause, you also agree that you will not:
+<br/>
+<br/>
+  * **3.1.1** Use our Services in any manner that could negatively affect other users from fully enjoying our Services, or that could interrupt or in any other way negatively impair functioning of our Services;
+<br/>
+<br/>
+  * **3.1.2** Introduce to the Services any harmful material (e.g. virus);
+<br/>
+<br/>
+  * **3.1.3** Use any automated means or interface not provided by us to access our Services or to extract data without our prior written consent;
+<br/>
+<br/>
+  * **3.1.4** Engage in automated data collection (scraping) unless such automated data collection is confined solely to search indexing for display on the Internet without our prior written consent;
+<br/>
+<br/>
+  * **3.1.5** Develop any third-party applications that interact with our Services without our prior written consent.`,
+  h4: 'Intellectual Property Rights',
   p4: `
-User is solely responsible for any and all acts and omissions that occur under User's account, security information, keys or password, and User agrees not to engage in unacceptable use of the Software, which includes, without limitation, use of the Software to: (a) disseminate, store or transmit unsolicited messages, chain letters or unsolicited commercial email; (b) disseminate or transmit material that, to a reasonable person may be abusive, obscene, pornographic, defamatory, harassing, grossly offensive, vulgar, threatening or malicious; (c) disseminate, store or transmit files, graphics, software or other material that actually or potentially infringes the copyright, trademark, patent, trade secret or other intellectual property right of any person; (d) create a false identity or to otherwise attempt to mislead any person as to the identity or origin of any communication; (e) export, re-export or permit downloading of any message or content in violation of any export or import law, regulation or restriction of any applicable jurisdiction, or without all required approvals, licenses or exemptions; (f) interfere, disrupt or attempt to gain unauthorized access to other accounts on the Software or any other computer network; or (g) disseminate, store or transmit viruses, Trojan horses or any other malicious code or program.`,
-  h5: 'Termination',
+* **4.1** All intellectual property rights in all content and any other materials contained on our website or provided in connection with the Services, including without limitation the Company’s brands, logos, trademarks and all designs, texts, graphic elements, pictures, information, data, other files and the selection and arrangement thereof, are the property of the Company and/or our licensors or suppliers and are protected by applicable copyright and other intellectual property laws. For avoidance of any doubt, we do not give any implied license for their use.
+<br/>
+<br/>
+* **4.2** You accept and fully acknowledge that designated content, information and any other materials contained at our website or provided in connection with the Services are made available to you to access and use for your personal, lawful, non-commercial or internal commercial use only.
+<br/>
+<br/>
+* **4.3** You are expressly forbidden from selling or modifying materials accessed or created from using our Services or publicly displaying, performing, reproducing, distributing or in any other manner using the materials for any public or commercial purpose.
+<br/>
+<br/>
+* **4.4** For avoidance of any doubt, nothing in this agreement shall be deemed to vest in you any legal or beneficial right in or to any copyright, trademarks or other intellectual property rights owned or used under license by the Company, nor do the GTC grant to you any rights or license to any other intellectual property rights, all of which shall at all times remain the exclusive property of the Company.`,
+  h5: 'No Service Warranties',
   p5: `
-This Agreement is effective upon User's acceptance as set forth herein and shall continue in full force so long as User engages in any access, use or installation of the Software. The Company reserves the right, in its sole discretion and without notice, at any time and for any reason, to: (a) remove or disable access to all or any portion of the Software; (b) suspend User's access to or use of all or any portion of the Software; and (c) terminate this Agreement.`,
-  h6: 'Disclaimer of Warranties',
+* **5.1** Our Services including all information, content, software and other materials available on or accessible from this website are provided on “as is” and “as available” basis, to the maximum extent permitted under applicable legal framework. 
+<br/>
+<br/>
+* **5.2** We expressly disclaim, and you waive, all warranties of any kind, either express or implied, including but not limited to warranties of title, non-infringement or implied warranties of merchantability or fitness for a particular purpose, title and non-infringement as to our Services, including the information, content and materials contained therein. The Company does not warrant that the Services will be uninterrupted or error free or that any information, software or other material available or accessible from this website are free of harmful components.`,
+  h6: 'Limitation of Liability',
   p6: `
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED. USE OF THE SOFTWARE IS AT USER'S SOLE RISK. THE COMPANY DOES NOT WARRANT THAT THE SOFTWARE WILL BE UNINTERRUPTED OR ERROR FREE, NOR DOES THE COMPANY MAKE ANY WARRANTY AS TO ANY RESULTS THAT MAY BE OBTAINED BY USE OF THE SOFTWARE. THE COMPANY MAKES NO OTHER WARRANTIES, EXPRESS OR IMPLIED. THE COMPANY EXPRESSLY DISCLAIMS ANY WARRANTY OF MERCHANTABILITY, WARRANTY OF SUITABILITY FOR A PARTICULAR PURPOSE, WARRANTY OF TITLE OR INTEREST, OR WARRANTY OF NONINFRINGEMENT.`,
-  h7: 'Limitation of Liability',
+* **6.1** In no event shall the Company, its affiliates and service providers, or any of their directors, officers, agents, employees or representatives be liable for any type of special, indirect or consequential damages, including but not limited to loss of use, loss of profits or loss of data, whether in an action in contract, tort or otherwise, arising out of or in any way connected with the use of or inability to use the Services, including without limitation any damages caused by or resulting from reliance on any information obtained from the Company, or that results from mistakes, omissions, interruptions, errors, defects, viruses or any other failure of performance, whether or not resulting from a force majeure event, communications failure, theft, destruction or unauthorized access to Company’s Services, to the maximum extent available under applicable law.`,
+  h7: 'Indemnity',
   p7: `
-IN NO EVENT SHALL THE COMPANY OR ITS SHAREHOLDERS, DIRECTORS, OFFICERS, EMPLOYEES, AFFILIATES OR AGENTS, OR ANY OF ITS OR THEIR RESPECTIVE SERVICE PROVIDERS, BE LIABLE TO USER OR ANY THIRD PARTY FOR ANY USE, INTERRUPTION, DELAY OR INABILITY TO USE THE SOFTWARE, LOST REVENUES OR PROFITS, DELAYS, INTERRUPTION OR LOSS OF SERVICES, BUSINESS OR GOODWILL, LOSS OR CORRUPTION OF DATA, LOSS RESULTING FROM SYSTEM OR SYSTEM SERVICE FAILURE, MALFUNCTION OR SHUTDOWN, FAILURE TO ACCURATELY TRANSFER, READ OR TRANSMIT INFORMATION, FAILURE TO UPDATE OR PROVIDE CORRECT INFORMATION, SYSTEM INCOMPATIBILITY OR PROVISION OF INCORRECT COMPATIBILITY INFORMATION OR BREACHES IN SYSTEM SECURITY, OR FOR ANY CONSEQUENTIAL, INCIDENTAL, INDIRECT, EXEMPLARY, SPECIAL OR PUNITIVE DAMAGES, WHETHER ARISING OUT OF OR IN CONNECTION WITH THIS AGREEMENT, BREACH OF CONTRACT, TORT (INCLUDING NEGLIGENCE) OR OTHERWISE, REGARDLESS OF WHETHER SUCH DAMAGES WERE FORESEEABLE AND WHETHER OR NOT WE WERE ADVISED OF THE POSSIBILITY OF SUCH DAMAGES. IN NO EVENT SHALL THE COMPANY OR ITS SHAREHOLDERS, DIRECTORS, OFFICERS, EMPLOYEES, AFFILIATES OR AGENTS, OR ANY OF ITS OR THEIR RESPECTIVE SERVICE PROVIDERS, BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM OR IN ANY WAY RELATED TO USER'S ACCESS, USE OR INSTALLATION OF THE SOFTWARE. SOME JURISDICTIONS PROHIBIT THE EXCLUSION OR LIMITATION OF INCIDENTAL OR CONSEQUENTIAL DAMAGES, THUS THIS LIMITATION OF LIABILITY MAY NOT APPLY TO USER. IF USER IS DISSATISFIED WITH THE SOFTWARE, USER'S SOLE AND EXCLUSIVE REMEDY SHALL BE FOR USER TO DISCONTINUE USE OF THE SOFTWARE.`,
-  h8: 'Indemnification',
+* **7.1** You agree to defend, indemnify and hold the Company (its affiliates and service providers, or any of their directors, officers, agents, employees or representatives) harmless from any and all liabilities, claims, demands, actions, damages, losses, costs or expenses, including reasonable attorneys’ fees, relating to or arising out of:
+<br/>
+<br/>
+  * **7.1.1** your violation of the GTC;
+  <br/>
+  <br/>
+  * **7.1.2** your use of, or conduct in connection with, our Services;
+  <br/>
+  <br/>
+  * **7.1.3** your violation of any rights of any other person or entity; or
+  <br/>
+  <br/>
+  * **7.1.4** feedback and submissions you provide.
+  <br/>
+  <br/>
+* **7.2** This indemnity shall apply to your successors and assigns and will survive any termination or cancellation of this agreement.`,
+  h8: 'Privacy and Cookies Policy',
   p8: `
-User agrees to indemnify, hold harmless and defend the Company, its shareholders, directors, officers, employees, affiliates and agents ("Indemnified Parties") from and against any action, cause, claim, damage, debt, demand or liability, including reasonable costs and attorney's fees, asserted by any person, arising out of or relating to: (a) this Agreement; (b) User's access, use or installation of the Software, including any data or work transmitted or received by User; and (c) any unacceptable use of the Software by any person, including, without limitation, any statement, data or content made, transmitted or republished by User or any person which is prohibited as unacceptable under Section 4. THIS INDEMNIFICATION INCLUDES THE EXPRESS INDEMNIFICATION OF THE COMPANY AND ALL INDEMNIFIED PARTIES FOR ANY ALLEGED NEGLIGENCE (INCLUDING ANY ALLEGED GROSS NEGLIGENCE). OR OTHER ALLEGED MISCONDUCT OF THE COMPANY OR ANY INDEMNIFIED PARTIES.`,
-  h9: 'Intellectual Property',
+* **8.1** Please read our detailed Privacy and Cookies Policy located at [here]({privacyUrl}).`,
+  h9: 'Miscellaneous',
   p9: `
-The Company retains all right, title, and interest in and to all of the Company's brands, logos, and trademarks, including, but not limited to, EMURGO Co., Ltd., EMURGO, Yoroi, Yoroi Cryptocurrency Wallet, Yoroi Wallet, Yoroi App, and variations of the wording of the aforementioned brands, logos, and trademarks.`,
-  h10: 'Warnings',
-  p10: `
-User acknowledges that the Company shall not be responsible for transferring, safeguarding, or maintaining private keys and/or User's ADA or any other cryptocurrency. If User and/or any co-signing authorities lose, mishandle, or have stolen associated private keys, or if User's cosigners refuse to provide requisite authority, User acknowledges that User may not be able to recover User's ADA or any other cryptocurrency, and that the Company shall not be responsible for such loss.
-User acknowledges and agrees that ADA or any other cryptocurrency transactions facilitated by the Software and/or the Company may be delayed, and that the Company shall not be responsible for any associated loss. User acknowledges and agrees that the Company shall not be responsible for any aspect of the information, content, or services contained in any third-party materials or on any third party sites accessible or linked to the Software and/or the Company.
-User agrees that User should never share User's certificate with any natural or legal person, including the Company, Cardano Foundation, Input Output HK Limited, or any other entity. Further, User acknowledges that sharing User's certificate may result in loss of User's ADA or any other cryptocurrency, and User agrees that the Company shall not be responsible for such loss. User acknowledges and agrees that by redeeming ADA in the testnet, User redeems test-ADA only, and that in order to redeem actual ADA, User must repeat the procedure in the mainnet, once released.
-By using the Software, User acknowledges and agrees: (i) that the Company is not responsible for the operation of the underlying protocols and that the Company makes no guarantee of their functionality, security, or availability; and (ii) that the underlying protocols are subject to sudden main-chain changes in operating rules ("forks"), and that such forks may materially affect the value, and/or function of the ADA or any other cryptocurrency that User stores on the Software. In the event of a fork, User agrees that the Company may temporarily suspend the Software operations (with or without notice to User) and that the Company may, in its sole discretion, (a) configure or reconfigure its systems or (b) decide not to support (or cease supporting) the forked protocol entirely, provided, however, that User will have an opportunity to withdraw funds from the Software. User acknowledges and agrees that the Company assumes absolutely no responsibility whatsoever in respect of an unsupported branch of a forked protocol.`,
-  h11: 'Miscellaneous',
-  p11: `
-  **a. Amendment.** The Company shall have the right, at any time and without notice, to add to or modify the terms of this Agreement, simply by delivering such amended terms to User by electronic message through any medium to any address provided to the Company by User. User's access to or use of the Software after the date such amended terms are delivered to User shall be deemed to constitute acceptance of such amended terms.
-
-  **b. Severance.** If any provision or part-provision of this Agreement is, or becomes invalid, illegal or unenforceable, it shall be deemed modified to the minimum extent necessary to make it valid, legal and enforceable. If such modification is not possible, the relevant provision or part-provision shall be deemed deleted. Any modification to or deletion of a provision or part-provision under this Article shall not affect the validity and enforceability of the rest of this Agreement.
-
-  **c. Entire Agreement – Disclaimer of Reliance.** This Agreement constitutes the entire agreement between the Parties with respect to the subject matter hereof and supersedes all prior agreements or understandings between the Parties. User expressly represents and warrants that it is not relying upon any statements, understandings, representations, expectations or agreements other than those expressly set forth in this Agreement.
-
-  **d. THIS AGREEMENT IS SUBJECT TO BINDING ARBITRATION.** User agrees that any and all disputes or claims against any person arising out of or in any way related to this Agreement or the access, use or installation of the Software by User or any other person shall be subject to binding arbitration under the Rules of Arbitration of the International Chamber of Commerce by one or more arbitrators appointed in accordance with the said Rules. The location of the arbitration shall be Japan. The language of the arbitration shall be English.
-
-  **e. LANGUAGE.** Any translation of this Agreement is made for purposes of local reference only and in the event of any inconsistency between the English and any non-English versions, the English version of this Agreement shall prevail and govern in all respects.`,
+* **9.1** *Governing Law*. The GTC shall be governed by and interpreted in accordance with the laws of the State of New York, without giving effect to the principles of conflicts of laws thereof. Courts (state or federal) of the State of New York shall have the exclusive jurisdiction over disputes arising out of or in connection to the GTC.
+<br/>
+<br/>
+* **9.2** *Amendment*. The Company may at any time and at its sole discretion make changes and modifications to the GTC. Amended GTC become effective immediately after publication on this website. Your continued use of the Services constitutes acceptance of the new version of the GTC. If you do not agree with any part of the amendment, you must immediately discontinue to use the Services.
+<br/>
+<br/>
+* **9.3** *Force Majeure*. The Company shall not be liable for any loss or damage from events beyond Company’s reasonable control, including, but not limited to: extraordinary weather conditions, flood, earthquake or other acts of God, fire, war, riot, labour dispute, unforeseeable government or regulatory action, power failure, software of equipment malfunction.
+<br/>
+<br/>
+* **9.4** *Severability*. If at any time any provision of the GTC is or becomes illegal, invalid or unenforceable in any respect under the law of any jurisdiction that shall not affect or impair the legality, validity or enforceability in that jurisdiction of any other provision of the GTC. If any invalid, unenforceable or illegal provision would be valid, enforceable or legal if some part of it were deleted, the provision shall apply with the minimum modification necessary to make it legal, valid and enforceable.
+<br/>
+<br/>
+* **9.5** *Headings*. Headings and subheadings in the GTC are for convenience only and will have no legal meaning or effect.
+<br/>
+<br/>
+* **9.6** *Waiver*. Our failure of delay in exercising any right, power or privilege under the GTC shall not operate as a waiver thereof.
+<br/>
+<br/>
+* **9.7** *Entire Agreement*. The GTC (including any terms incorporated by reference in the GTC), constitute the entire agreement between you and us with respect to your access to the Services and supersede all prior agreements, negotiations and discussions between you and us relating to the same.
+<br/>
+<br/>
+* **9.8** *Relationship of the Parties*. Nothing in this agreement is intended to, nor shall it create a joint venture, partnership, agency, consultancy or trusteeship. You and the Company are independent contractors for purposes of this agreement.
+<br/>
+<br/>
+* **9.9** *Contact Information*. For purposes other than technical support requests, you may contact us by registered mail or courier at this address: EMURGO PTE. Ltd, 77 High Street #09-11, High Street Plaza, Singapore.
+<br/>
+<br/>
+* **9.10** *Language*. Any translation of this Agreement is made for purposes of local reference only and in the event of any inconsistency between the English and any non-English versions, the English version of this Agreement shall prevail and govern in all respects.`,
 })
 
 export default messages

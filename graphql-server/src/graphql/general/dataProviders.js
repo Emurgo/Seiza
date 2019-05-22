@@ -1,8 +1,7 @@
 // @flow
 import {fetchBlockBySlot} from '../block/dataProviders'
 import moment from 'moment'
-import assert from 'assert'
-import {parseAdaValue, runConsistencyCheck} from '../utils'
+import {parseAdaValue, runConsistencyCheck, validate} from '../utils'
 import E from '../../api/elasticHelpers'
 
 // TODO: unify properties naming with the rest endpoints once the final fields are determined
@@ -15,7 +14,7 @@ export type GeneralInfo = {|
   activeAddresses: string,
 |}
 
-const _getGeneralInfo = ({elastic}, {slots, txs, addresses, txios}) => {
+const _getGeneralInfo = ({elastic}, {slots, txs, addresses, txios}, ctxToLog) => {
   const slotAggregations = elastic.q(slots).getAggregations({
     sent: E.agg.sumAda('sent'),
     fees: E.agg.sumAda('fees'),
@@ -30,13 +29,17 @@ const _getGeneralInfo = ({elastic}, {slots, txs, addresses, txios}) => {
 
     // (expensive) sanity check
     await runConsistencyCheck(async () => {
-      assert.equal(
-        cnt,
-        await elastic
-          .q(slots)
-          .filter(E.notNull('hash'))
-          .getCount()
-      )
+      const tmp = await elastic
+        .q(slots)
+        .filter(E.onlyActiveFork())
+        .filter(E.notNull('hash'))
+        .getCount()
+
+      validate(cnt === tmp, 'GeneralInfo.blocksCount inconsistency', {
+        cnt_viaSlotsAgg: cnt,
+        cnt_viaSlotsCnt: tmp,
+        ...ctxToLog,
+      })
     })
 
     return cnt
@@ -47,13 +50,17 @@ const _getGeneralInfo = ({elastic}, {slots, txs, addresses, txios}) => {
 
     // (expensive) sanity check
     await runConsistencyCheck(async () => {
-      assert.equal(
-        cnt,
-        await elastic
-          .q(slots)
-          .filter(E.isNull('hash'))
-          .getCount()
-      )
+      const tmp = await elastic
+        .q(slots)
+        .filter(E.onlyActiveFork())
+        .filter(E.isNull('hash'))
+        .getCount()
+
+      validate(cnt === tmp, 'GeneralInfo.emptySlotsCount inconsistency', {
+        cnt_viaSlotAgg: cnt,
+        cnt_viaSlotCnt: tmp,
+        ...ctxToLog,
+      })
     })
 
     return cnt
@@ -64,7 +71,12 @@ const _getGeneralInfo = ({elastic}, {slots, txs, addresses, txios}) => {
 
     // (expensive) sanity check
     await runConsistencyCheck(async () => {
-      assert.equal(cnt, await elastic.q(txs).getCount())
+      const tmp = await elastic.q(txs).getCount()
+      validate(cnt === tmp, 'GeneralInfo.txCount inconsistency', {
+        cnt_viaSlotAgg: cnt,
+        cnt_viaTxCnt: tmp,
+        ...ctxToLog,
+      })
     })
 
     return cnt
@@ -84,7 +96,15 @@ const _getGeneralInfo = ({elastic}, {slots, txs, addresses, txios}) => {
         })
         .then(({addresses}) => addresses)
 
-      assert(Math.abs((approx - precise) / (precise + 1e-6)) <= threshold)
+      validate(
+        Math.abs((approx - precise) / (precise + 1e-6)) <= threshold,
+        'GeneralInfo.activeAddresses inconsistency',
+        {
+          precise_viaAddressesCnt: precise,
+          approx_viaTxioAgg: approx,
+          ...ctxToLog,
+        }
+      )
     })
 
     return precise
@@ -123,7 +143,7 @@ export const fetchGeneralInfo = (context: any, period: string) => {
         .toISOString()
       : null
 
-  return _getGeneralInfo(context, generalInfoQ(since))
+  return _getGeneralInfo(context, generalInfoQ(since), {period})
 }
 
 const epochInfoQ = (epoch) => ({
@@ -140,7 +160,7 @@ const epochInfoQ = (epoch) => ({
 })
 
 export const fetchEpochInfo = (context: any, epoch: number) => {
-  return _getGeneralInfo(context, epochInfoQ(epoch))
+  return _getGeneralInfo(context, epochInfoQ(epoch), {epoch})
 }
 
 // TODO: (refactor) directly use `fetchBlockBySlot`?

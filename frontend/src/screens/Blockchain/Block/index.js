@@ -19,6 +19,7 @@ import {
   Link,
 } from '@/components/visual'
 
+import blockIcon from '@/assets/icons/metrics-blocks.svg'
 import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
 import {useAnalytics} from '@/helpers/googleAnalytics'
 
@@ -229,7 +230,11 @@ const BlockScreen = () => {
     <div ref={scrollToRef}>
       <SimpleLayout title={translate(blockMessages.title)}>
         <SlotNavigation slot={blockData} />
-        <EntityIdCard label={translate(blockMessages.blockHash)} value={blockHash} />
+        <EntityIdCard
+          label={translate(blockMessages.blockHash)}
+          value={blockHash}
+          iconRenderer={<img alt="" src={blockIcon} width={40} height={40} />}
+        />
         {error ? (
           <LoadingError error={error} />
         ) : (

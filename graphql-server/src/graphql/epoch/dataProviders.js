@@ -83,9 +83,10 @@ export const fetchTransactionCount = async ({elastic, E}: any, epochNumber: numb
       })
       .then(({cnt}) => cnt)
 
-    validate(tmpCnt === txCount, 'TxCount inconsistency on epoch', {
-      fromTxs: txCount,
-      fromBlocks: tmpCnt,
+    validate(tmpCnt === txCount, 'Epoch.txCount inconsistency', {
+      epochNumber,
+      count_viaTxs: txCount,
+      count_viaBlocks: tmpCnt,
     })
   })
   return txCount
@@ -121,9 +122,10 @@ export const fetchTotalFees = async ({elastic, E}: Context, epochNumber: number)
       fees: E.agg.sumAda('fees'),
     })
 
-    validate(fees.eq(parseAdaValue(tmp.fees)), 'Fees inconsistency on epoch', {
-      fromTxs: aggregations.fees,
-      fromBlocks: tmp,
+    validate(fees.eq(parseAdaValue(tmp.fees)), 'Epoch.fees inconsistency', {
+      epochNumber,
+      fees_viaTxs: aggregations.fees,
+      fees_viaBlocks: tmp,
     })
   })
 

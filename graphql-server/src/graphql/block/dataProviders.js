@@ -30,8 +30,13 @@ const facadeAndValidate = async (data) => {
   await runConsistencyCheck(() => {
     validate(
       getEstimatedSlotTimestamp(data.epoch, data.slot) === moment(data.time).unix(),
-      'Slot timestamp vs estimated timestamp mismatch',
-      {data}
+      'Slot.timestamp inconsistency (Slot timestamp vs estimated timestamp mismatch)',
+      {
+        epoch: data.epoch,
+        slot: data.slot,
+        time_viaElasticData: data.time,
+        time_viaMath: getEstimatedSlotTimestamp(data.epoch, data.slot),
+      }
     )
   })
   return facadeElasticBlock(data)
@@ -47,7 +52,7 @@ export const fetchBlockByHash = async ({elastic, E}, blockHash) => {
     .q(currentBlocks)
     .filter(E.matchPhrase('hash', blockHash))
     .getSingleHit()
-    .catch(annotateNotFoundError({entity: 'Block'}))
+    .catch(annotateNotFoundError({entity: 'Block', blockHash}))
 
   await runConsistencyCheck(async () => {
     const txCnt = await elastic
@@ -56,7 +61,8 @@ export const fetchBlockByHash = async ({elastic, E}, blockHash) => {
       .filter(E.matchPhrase('block_hash', blockHash))
       .getCount()
 
-    validate(txCnt === hit._source.tx_num, 'Tx count inconsistency', {
+    validate(txCnt === hit._source.tx_num, 'Slot.txCount inconsistency', {
+      blockHash,
       fromBlocks: hit._source.tx_num,
       fromTransactions: txCnt,
     })
@@ -83,7 +89,7 @@ export const fetchBlockBySlot = async ({elastic, E}, {epoch, slot}) => {
     .filter(E.eq('epoch', epoch))
     .filter(E.eq('slot', slot))
     .getSingleHit()
-    .catch(annotateNotFoundError({entity: 'Slot'}))
+    .catch(annotateNotFoundError({entity: 'Block', epoch, slot}))
 
   return facadeAndValidate(hit._source)
 }
