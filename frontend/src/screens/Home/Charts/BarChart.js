@@ -209,6 +209,7 @@ export default ({
         )}
       </YAxis>
       <Tooltip
+        enterTouchDelay={100}
         isAnimationActive
         // $FlowFixMe recharts pass other props using some `magic`
         cursor={<CustomCursor setActiveBar={setActiveBar} />}
