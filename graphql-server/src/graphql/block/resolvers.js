@@ -1,6 +1,7 @@
 import {facadeElasticBlock} from './dataProviders'
 import assert from 'assert'
 import E from '../../api/elasticHelpers'
+import {validate} from '../utils'
 
 const PAGE_SIZE = 10
 
@@ -23,8 +24,15 @@ export const pagedBlocksResolver = async (parent, args, context) => {
   assert(hits.length > 0)
 
   const startHeight = blockData[0].height
+
   // self-check
-  assert(total === startHeight)
+  await context.runConsistencyCheck(() => {
+    validate(total === startHeight, 'Blocks height inconsistency', {
+      startHeight,
+      total,
+      cursor,
+    })
+  })
 
   const nextCursor = startHeight - PAGE_SIZE
 
