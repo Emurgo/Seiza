@@ -1,5 +1,5 @@
 // @flow
-import React, {useState, useRef} from 'react'
+import React, {useState, useRef, useEffect} from 'react'
 import {defineMessages} from 'react-intl'
 import idx from 'idx'
 import {Switch, Typography, Grid, Hidden} from '@material-ui/core'
@@ -11,9 +11,10 @@ import {GET_PAGED_BLOCKS} from '@/api/queries'
 import {useI18n} from '@/i18n/helpers'
 import {
   useBlocksTablePagedProps,
-  useTotalItemsCount,
+  rowsPerPage,
+  getTotalItemsCount,
 } from '@/components/hooks/useBlocksTablePagedProps'
-import {useQueryNotBugged} from '@/components/hooks/useQueryNotBugged'
+import {useQueryNotBuggedForBlocks} from '@/components/hooks/useQueryNotBugged'
 import {useManageQueryValue} from '@/components/hooks/useManageQueryValue'
 import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
 import {toIntOrNull} from '@/helpers/utils'
@@ -70,11 +71,13 @@ const useStyles = makeStyles((theme) => ({
 const useLoadData = (cursor, autoUpdate) => {
   const dataKey = 'pagedBlocks'
 
-  const {error, loading, data, startPolling, stopPolling} = useQueryNotBugged(GET_PAGED_BLOCKS, {
-    variables: {cursor},
-    notifyOnNetworkStatusChange: true,
-    shouldInvalidatePreviousData: autoUpdate,
-  })
+  const {error, loading, data, startPolling, stopPolling} = useQueryNotBuggedForBlocks(
+    GET_PAGED_BLOCKS,
+    {
+      variables: {cursor},
+      notifyOnNetworkStatusChange: true,
+    }
+  )
 
   autoUpdate ? startPolling(AUTOUPDATE_REFRESH_INTERVAL) : stopPolling()
 
@@ -99,9 +102,9 @@ const PagedBlocks = () => {
   const [autoUpdate, setAutoupdate] = useState(true)
 
   const {pagedDataResult, loading, error} = useLoadData(cursor, autoUpdate)
-  const [totalItemsCount, setTotalItemsCount] = useTotalItemsCount(pagedDataResult, autoUpdate)
+  const [totalItemsCount, setTotalItemsCount] = useState(0)
 
-  const {onChangePage, rowsPerPage, onChangeAutoUpdate} = useBlocksTablePagedProps(
+  const {onChangePage, onChangeAutoUpdate} = useBlocksTablePagedProps(
     page,
     setPage,
     setCursor,
@@ -110,6 +113,24 @@ const PagedBlocks = () => {
     autoUpdate,
     setAutoupdate
   )
+
+  // TODO: consider nicer solution, hot fix for now
+  useEffect(() => {
+    if (!loading && pagedDataResult.pagedData) {
+      if (cursor == null) {
+        const _totalItemsCount = getTotalItemsCount(pagedDataResult)
+        const _pageCursor = page * rowsPerPage
+        setCursor(page ? Math.min(_totalItemsCount, _pageCursor) : _totalItemsCount)
+
+        if (_pageCursor !== 0 && _pageCursor < _totalItemsCount) {
+          setAutoupdate(false)
+        }
+      }
+      if (totalItemsCount === 0 || autoUpdate) {
+        setTotalItemsCount(getTotalItemsCount(pagedDataResult))
+      }
+    }
+  })
 
   const pagedBlocks = pagedDataResult.pagedData
 

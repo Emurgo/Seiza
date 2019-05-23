@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import idx from 'idx'
 import {defineMessages} from 'react-intl'
 import {Grid, Hidden} from '@material-ui/core'
@@ -9,9 +9,10 @@ import {GET_PAGED_BLOCKS_IN_EPOCH} from '@/api/queries'
 import {useI18n} from '@/i18n/helpers'
 import {
   useBlocksTablePagedProps,
-  useTotalItemsCount,
+  rowsPerPage,
+  getTotalItemsCount,
 } from '@/components/hooks/useBlocksTablePagedProps'
-import {useQueryNotBugged} from '@/components/hooks/useQueryNotBugged'
+import {useQueryNotBuggedForBlocks} from '@/components/hooks/useQueryNotBugged'
 import {EntityHeading} from '@/components/visual'
 import {useManageQueryValue} from '@/components/hooks/useManageQueryValue'
 import {toIntOrNull} from '@/helpers/utils'
@@ -45,7 +46,7 @@ const messages = defineMessages({
 })
 
 const useLoadData = (cursor, epochNumber) => {
-  const {error, loading, data} = useQueryNotBugged(GET_PAGED_BLOCKS_IN_EPOCH, {
+  const {error, loading, data} = useQueryNotBuggedForBlocks(GET_PAGED_BLOCKS_IN_EPOCH, {
     variables: {cursor, epochNumber},
     notifyOnNetworkStatusChange: true,
   })
@@ -53,8 +54,8 @@ const useLoadData = (cursor, epochNumber) => {
   const pagedData = idx(data.pagedBlocksInEpoch, (_) => _.blocks)
 
   return {
-    error,
     loading,
+    error,
     pagedDataResult: {
       ...data.pagedBlocksInEpoch,
       pagedData,
@@ -71,17 +72,44 @@ const Blocks = ({blocksCount, epochNumber}) => {
 
   const [page, setPage] = useManageQueryValue('page', null, toIntOrNull)
   const [cursor, setCursor] = useState(null)
-
   const {pagedDataResult, loading, error} = useLoadData(cursor, epochNumber)
-  const [totalItemsCount, setTotalItemsCount] = useTotalItemsCount(pagedDataResult)
+  const [totalItemsCount, setTotalItemsCount] = useState(0)
 
-  const {onChangePage, rowsPerPage} = useBlocksTablePagedProps(
+  const [prevEpoch, setPrevEpoch] = useState(epochNumber)
+
+  const {onChangePage} = useBlocksTablePagedProps(
     page,
     setPage,
     setCursor,
     totalItemsCount,
     setTotalItemsCount
   )
+
+  // Reset values after epoch was changed
+  // TODO: this is hot-fix, lets refactor this part soon as it is fragile
+  useEffect(() => {
+    if (epochNumber !== prevEpoch) {
+      setPrevEpoch(epochNumber)
+      setCursor(null)
+      setPage(null)
+      setTotalItemsCount(0)
+    }
+
+    // TODO: consider nicer solution, hot fix for now
+    if (!loading && pagedDataResult.pagedData) {
+      if (cursor == null) {
+        setCursor(
+          page
+            ? Math.min(getTotalItemsCount(pagedDataResult), page * rowsPerPage)
+            : getTotalItemsCount(pagedDataResult)
+        )
+      }
+      if (totalItemsCount === 0) {
+        setTotalItemsCount(getTotalItemsCount(pagedDataResult))
+      }
+    }
+  })
+
   const {blocks} = pagedDataResult
 
   const pagination = (
