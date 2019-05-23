@@ -12,6 +12,7 @@ import {ApolloError} from 'apollo-server'
 import assert from 'assert'
 
 import {validate, EntityNotFoundError} from '../graphql/utils'
+import _logger from '../logger'
 import E, {Query} from './elasticHelpers'
 
 import https from 'https'
@@ -23,56 +24,56 @@ validate(!!ELASTIC_INDEX, 'Elastic index must be set', {
 })
 validate(!!ELASTIC_URL, 'Elastic url must be set', {value: ELASTIC_URL})
 
-const getElastic = (logger: Function) => {
-  // if AWS credentials were provided via env, we use 'aws-elasticsearch-client'
-  const getClient = () => {
-    if (
-      process.env.AWS_ACCESS_KEY_ID &&
-      process.env.AWS_SECRET_ACCESS_KEY &&
-      process.env.AWS_REGION
-    ) {
-      logger.log('Using AWS auth')
-      const options = {
-        host: ELASTIC_URL,
-        credentials: new AWS.Credentials({
-          accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-          secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-        }),
-      }
-
-      const config = Object.assign({}, options, {
-        connectionClass: httpAWSES,
-        awsConfig: new AWS.Config({
-          httpOptions: {
-            // Note(ppershing): Copied from
-            // eslint-disable-next-line max-len
-            // https://github.com/elastic/elasticsearch-js-legacy/blob/16.x/src/lib/connectors/http.js#L42
-            // however official node docs do not seem to have all the keepalive options
-            // https://nodejs.org/api/http.html#http_new_agent_options
-            agent: new https.Agent({
-              maxSockets: Infinity,
-              keepAlive: true,
-              keepAliveInterval: 1000,
-              keepAliveMaxFreeSockets: 256,
-              keepAliveFreeSocketTimeout: 60000,
-            }),
-          },
-          region: process.env.AWS_REGION,
-          credentials: options.credentials,
-        }),
-      })
-
-      const awsClient = new LegacyClient(config)
-      return awsClient
-    } else {
-      logger.log('Using normal http')
-      const plainClient = new LegacyClient({host: ELASTIC_URL})
-      return plainClient
+// if AWS credentials were provided via env, we use 'aws-elasticsearch-client'
+const getClient = () => {
+  if (
+    process.env.AWS_ACCESS_KEY_ID &&
+    process.env.AWS_SECRET_ACCESS_KEY &&
+    process.env.AWS_REGION
+  ) {
+    _logger.log({level: 'info', info: 'Using AWS auth'})
+    const options = {
+      host: ELASTIC_URL,
+      credentials: new AWS.Credentials({
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+      }),
     }
+
+    const config = Object.assign({}, options, {
+      connectionClass: httpAWSES,
+      awsConfig: new AWS.Config({
+        httpOptions: {
+          // Note(ppershing): Copied from
+          // eslint-disable-next-line max-len
+          // https://github.com/elastic/elasticsearch-js-legacy/blob/16.x/src/lib/connectors/http.js#L42
+          // however official node docs do not seem to have all the keepalive options
+          // https://nodejs.org/api/http.html#http_new_agent_options
+          agent: new https.Agent({
+            maxSockets: Infinity,
+            keepAlive: true,
+            keepAliveInterval: 1000,
+            keepAliveMaxFreeSockets: 256,
+            keepAliveFreeSocketTimeout: 60000,
+          }),
+        },
+        region: process.env.AWS_REGION,
+        credentials: options.credentials,
+      }),
+    })
+
+    const awsClient = new LegacyClient(config)
+    return awsClient
+  } else {
+    _logger.log({level: 'info', info: 'Using normal http'})
+    const plainClient = new LegacyClient({host: ELASTIC_URL})
+    return plainClient
   }
+}
 
-  const client = getClient()
+const client = getClient()
 
+const getElastic = (logger: Function) => {
   /* Note: non-legacy code commented out for now
 
   // This checks elastic response for validaty.
@@ -174,7 +175,7 @@ const getElastic = (logger: Function) => {
         internalTime,
         totalTime,
       },
-      {type: 'elastic-timing'}
+      {type: 'elastic-timing', level: 'verbose'}
     )
   }
 

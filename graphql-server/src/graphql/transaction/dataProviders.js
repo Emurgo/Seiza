@@ -1,6 +1,6 @@
 // @flow
 import assert from 'assert'
-import {parseAdaValue, annotateNotFoundError, runConsistencyCheck, validate} from '../utils'
+import {parseAdaValue, annotateNotFoundError, validate} from '../utils'
 import E from '../../api/elasticHelpers'
 
 export const facadeTransaction = (source: any) => {
@@ -74,7 +74,12 @@ const makeAddressFilter = ({
   })
 }
 
-const checkTxsCountConsistency = ({elastic}, address58, typeField, totalTxsInTxIndex) =>
+const checkTxsCountConsistency = (
+  {elastic, runConsistencyCheck},
+  address58,
+  typeField,
+  totalTxsInTxIndex
+) =>
   runConsistencyCheck(async () => {
     const [{cnt: totalTxsInAddressIndex}, {cnt: totalTxsInTxioIndex}] = await Promise.all([
       elastic
@@ -99,7 +104,7 @@ const checkTxsCountConsistency = ({elastic}, address58, typeField, totalTxsInTxI
   })
 
 export const fetchTransactionsOnAddress = async (
-  {elastic, E}: any,
+  {elastic, E, runConsistencyCheck}: any,
   address58: string,
   type: string,
   cursor: number
@@ -121,7 +126,7 @@ export const fetchTransactionsOnAddress = async (
     .getCount()
 
   const [typeField] = GET_PAGINATION_FIELD[type].split('.').slice(-1)
-  await checkTxsCountConsistency({elastic}, address58, typeField, totalCount)
+  await checkTxsCountConsistency({elastic, runConsistencyCheck}, address58, typeField, totalCount)
 
   assert(totalCount != null)
 

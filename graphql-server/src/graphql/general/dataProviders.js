@@ -1,7 +1,7 @@
 // @flow
 import {fetchBlockBySlot} from '../block/dataProviders'
 import moment from 'moment'
-import {parseAdaValue, runConsistencyCheck, validate} from '../utils'
+import {parseAdaValue, validate} from '../utils'
 import E from '../../api/elasticHelpers'
 
 // TODO: unify properties naming with the rest endpoints once the final fields are determined
@@ -14,7 +14,11 @@ export type GeneralInfo = {|
   activeAddresses: string,
 |}
 
-const _getGeneralInfo = ({elastic}, {slots, txs, addresses, txios}, ctxToLog) => {
+const _getGeneralInfo = (
+  {elastic, runConsistencyCheck},
+  {slots, txs, addresses, txios},
+  ctxToLog
+) => {
   const slotAggregations = elastic.q(slots).getAggregations({
     sent: E.agg.sumAda('sent'),
     fees: E.agg.sumAda('fees'),
