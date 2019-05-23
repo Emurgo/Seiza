@@ -109,7 +109,7 @@
   "screens.Blockchain.BlockchainHeader.OverviewMetrics.priceLabel": "Цена",
   "screens.Blockchain.BlockchainHeader.OverviewMetrics.searchPlaceholder": "Поиск адресов, эпох & слотов в сети Cardano",
   "screens.Blockchain.BlockchainHeader.OverviewMetrics.slotsLabel": "Слот",
-  "screens.Blockchain.BlockchainHeader.Search.helpText": "Поиск организации, используя ее \"хэш\" или, используя синтаксис \"epoch: номер slot: номер\"",
+  "screens.Blockchain.BlockchainHeader.Search.helpText": "Поиск организации, используя ее \"хэш\" или, используя синтаксис \"epoch:номер slot:номер\"",
   "screens.Blockchain.BlockchainHeader.Search.noData": "Не найдены элементы, соответствующие текущему запросу",
   "screens.Blockchain.BlockchainHeader.Search.searchPlaceholder": "Поиск адресов, транзакций, эпох & слотов в сети Cardano",
   "screens.Blockchain.BlockchainHeader.index.header": "Ada Blockchain Explorer",
