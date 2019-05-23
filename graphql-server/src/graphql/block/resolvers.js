@@ -31,6 +31,7 @@ export const pagedBlocksResolver = async (parent, args, context) => {
       startHeight,
       total,
       cursor,
+      blockData,
     })
   })
 
