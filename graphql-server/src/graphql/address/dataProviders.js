@@ -1,6 +1,8 @@
 // @flow
 import assert from 'assert'
-import {parseAdaValue, annotateNotFoundError, validate} from '../utils'
+import {parseAdaValue} from '../utils'
+import {validate} from '../../utils/validation'
+import {annotateNotFoundError} from '../../utils/errors'
 
 export const fetchAddress = async ({elastic, E, runConsistencyCheck}: any, address58: string) => {
   assert(address58)

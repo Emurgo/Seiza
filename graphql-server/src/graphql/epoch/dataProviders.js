@@ -2,7 +2,8 @@
 import moment from 'moment'
 import {facadeTransaction} from '../transaction/dataProviders'
 import type {Elastic} from '../../api/elastic'
-import {parseAdaValue, validate, slotCount, getEstimatedSlotTimestamp} from '../utils'
+import {parseAdaValue, slotCount, getEstimatedSlotTimestamp} from '../utils'
+import {validate} from '../../utils/validation'
 import E from '../../api/elasticHelpers'
 
 // TODO: import Context type

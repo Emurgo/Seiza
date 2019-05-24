@@ -1,7 +1,9 @@
 import moment from 'moment'
 import assert from 'assert'
 
-import {parseAdaValue, annotateNotFoundError, getEstimatedSlotTimestamp, validate} from '../utils'
+import {parseAdaValue, getEstimatedSlotTimestamp} from '../utils'
+import {validate} from '../../utils/validation'
+import {annotateNotFoundError} from '../../utils/errors'
 import E from '../../api/elasticHelpers'
 
 export const facadeElasticBlock = (data) => ({

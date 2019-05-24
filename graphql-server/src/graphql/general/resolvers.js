@@ -1,7 +1,8 @@
 // @flow
 import _ from 'lodash'
 import {fetchGeneralInfo, fetchSlotInfo, fetchEpochInfo} from './dataProviders'
-import {parseAdaValue, validate} from '../utils'
+import {parseAdaValue} from '../utils'
+import {validate} from '../../utils/validation'
 import assert from 'assert'
 
 const fetchSupplyAfterSlot = async ({elastic, E}, {epoch, slot}) => {

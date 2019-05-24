@@ -1,35 +1,14 @@
 // @flow
-import assert, {AssertionError} from 'assert'
-import {ApolloError} from 'apollo-server'
+import assert from 'assert'
 import BigNumber from 'bignumber.js'
+
+import {validate} from '../utils/validation'
 
 type RawAdaValue = {|
   integers: number,
   decimals: number,
   full: number,
 |}
-
-export const validate = (cond: boolean, message: string, ctx: any) => {
-  if (!cond) {
-    const err = new AssertionError({message})
-    // $FlowFixMe we are creating new property. That is fine ...
-    err.ctx = ctx
-    throw err
-  }
-}
-
-export const getRunConsistencyCheck = (reportError: Function) => async (callback: Function) => {
-  if (process.env.NODE_ENV === 'development') {
-    return await callback()
-  } else {
-    // In production fire a runaway promise
-    Promise.resolve()
-      .then(() => callback())
-      .catch((err) => reportError(err))
-    // And return early
-    return Promise.resolve()
-  }
-}
 
 // TODO: type better or use other compose function
 export const compose = (...fns: any) => (x: any) => fns.reduceRight((y, f) => f(y), x)
@@ -56,24 +35,6 @@ export const parseAdaValue = (value: RawAdaValue): BigNumber => {
     )
   }
   return res
-}
-
-class GenericErrorWithContext extends Error {
-  constructor(message: string, ctx: any) {
-    super(message)
-    this.message = message
-    // $FlowFixMe we are creating new property. That is fine ...
-    this.ctx = ctx
-  }
-}
-
-export class EntityNotFoundError extends GenericErrorWithContext {}
-
-export const annotateNotFoundError = (annotation: any) => (err: any) => {
-  if (err instanceof EntityNotFoundError) {
-    throw new ApolloError('Not found', 'NOT_FOUND', annotation)
-  }
-  throw err
 }
 
 export const slotCount = 21600
