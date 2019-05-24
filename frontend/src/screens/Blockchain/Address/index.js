@@ -228,7 +228,7 @@ const AddressScreen = () => {
             <WithModalState>
               {({isOpen, openModal, closeModal}) => (
                 <React.Fragment>
-                  <Tooltip title={tr(messages.showQRCode)}>
+                  <Tooltip title={tr(messages.showQRCode)} enterTouchDelay={100}>
                     <IconButton
                       className={classes.alignIconButton}
                       onClick={openModal}
