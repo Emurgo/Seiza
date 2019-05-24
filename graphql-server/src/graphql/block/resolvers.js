@@ -4,6 +4,7 @@ import E from '../../api/elasticHelpers'
 import {validate} from '../utils'
 
 const PAGE_SIZE = 10
+const EMPTY_RESULT = {cursor: null, data: []}
 
 const currentBlocks = E.q('slot')
   .filter(E.onlyActiveFork())
@@ -71,6 +72,9 @@ export const pagedBlocksInEpochResolver = async (parent, args, context) => {
   }
 
   const blockData = hits.hits.map((h) => facadeElasticBlock(h._source))
+
+  // When we query epoch that did not start yet
+  if (!blockData.length) return EMPTY_RESULT
 
   const startHeight = blockData[0].height
   const nextCursor = startHeight - PAGE_SIZE - previousEpochs
