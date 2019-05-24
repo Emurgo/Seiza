@@ -42,6 +42,7 @@ import redditIcon from '@/assets/icons/social/reddit.svg'
 import twitterEmurgoIcon from '@/assets/icons/social/twitter-emurgo.svg'
 import twitterSeizaIcon from '@/assets/icons/social/twitter-seiza.svg'
 import youtubeIcon from '@/assets/icons/social/youtube.svg'
+import {ReactComponent as Rocket} from '@/assets/icons/emoji/rocket.svg'
 
 // TODO: divide footer to multiple files
 
@@ -56,7 +57,7 @@ const messages = defineMessages({
 const subscribeMessages = defineMessages({
   subscribeHeader: "Let's stay in touch!",
   subscribeText:
-    'Subscribe to Seiza to receive news and updates about staking, rewards and new features 🚀!',
+    'Subscribe to Seiza to receive news and updates about staking, rewards and new features!',
   emailButton: 'Email',
   subscribeButton: 'Subscribe',
   genericError: 'Sorry. An error occurred. Please try again later.',
@@ -258,6 +259,9 @@ const useSubscribeFooterStyles = makeStyles(({palette, spacing, breakpoints, typ
   'subscribeInfo': {
     fontSize: typography.fontSize * 0.8,
   },
+  'rocket': {
+    marginBottom: -4,
+  },
 }))
 
 type UiState = 'success' | 'error' | 'loading' | 'init'
@@ -439,7 +443,10 @@ const SubscribeFooter = () => {
                     <div className={classes.subscribeHeadlineWrapper}>
                       <Typography variant="h1">{tr(subscribeMessages.subscribeHeader)}</Typography>
                     </div>
-                    <Typography variant="body1">{tr(subscribeMessages.subscribeText)}</Typography>
+                    <Typography variant="body1">
+                      {tr(subscribeMessages.subscribeText)}
+                      <Rocket className={classes.rocket} />
+                    </Typography>
                   </Grid>
                 </Grid>
 
