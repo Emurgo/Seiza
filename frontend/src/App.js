@@ -35,6 +35,7 @@ import {SubscribeProvider} from '@/components/context/SubscribeContext'
 import {CookiesProvider} from '@/components/context/CookiesContext'
 import {AnalyticsProvider} from '@/helpers/googleAnalytics' // TODO move to context?
 import {CurrencyProvider} from '@/components/hooks/useCurrency'
+import {SearchbarRefProvider} from '@/components/context/SearchbarRef'
 import Search from './screens/Blockchain/BlockchainHeader/Search'
 
 import './App.css'
@@ -167,7 +168,9 @@ const Providers = ({children}) => (
     <AnalyticsProvider>
       <CurrencyProvider>
         <SubscribeProvider>
-          <AutoSyncProvider>{children}</AutoSyncProvider>
+          <AutoSyncProvider>
+            <SearchbarRefProvider>{children}</SearchbarRefProvider>
+          </AutoSyncProvider>
         </SubscribeProvider>
       </CurrencyProvider>
     </AnalyticsProvider>
