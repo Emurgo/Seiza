@@ -75,9 +75,9 @@ const TH = ({Icon, label}) => {
 
   return (
     <React.Fragment>
-      <div className={classes.icon}>
+      <span className={classes.icon}>
         <Icon alt="" />
-      </div>
+      </span>
       <Typography className={classes.label} color="textSecondary" variant="overline">
         {label}
       </Typography>
