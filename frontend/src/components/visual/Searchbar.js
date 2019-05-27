@@ -6,6 +6,7 @@ import {compose} from 'redux'
 import {withStyles, createStyles, InputAdornment, TextField} from '@material-ui/core'
 import {Search} from '@material-ui/icons'
 import {Button, LoadingInProgress, CloseIconButton} from '@/components/visual'
+import {fade} from '@material-ui/core/styles/colorManipulator'
 
 const styles = (theme) =>
   createStyles({
@@ -20,6 +21,18 @@ const styles = (theme) =>
         borderBottomRightRadius: 0,
         borderTopRightRadius: 0,
       },
+      '&:hover': {
+        '&>fieldset': {
+          borderColor: `${theme.palette.primary.main} !important`,
+        },
+      },
+    },
+    // eslint-disable-next-line
+    // https://github.com/wheredoesyourmindgo/react-mui-mapbox-geocoder/issues/2#issuecomment-478668535
+    focusedInput: {
+      '&>fieldset': {
+        borderWidth: '1px !important',
+      },
     },
     searchButton: {
       borderBottomLeftRadius: 0,
@@ -28,8 +41,12 @@ const styles = (theme) =>
       boxShadow: 'none',
     },
     container: {
-      display: 'flex',
-      flex: 1,
+      'display': 'flex',
+      'flex': 1,
+      'boxShadow': `0px 10px 20px 0px ${fade(theme.palette.shadowBase, 0.08)}`,
+      '&:hover': {
+        boxShadow: `0px 10px 30px 0px ${fade(theme.palette.shadowBase, 0.12)}`,
+      },
     },
   })
 
@@ -94,6 +111,10 @@ class Searchbar extends React.Component<Props> {
               </InputAdornment>
             ),
             className: classes.input,
+            classes: {
+              root: classes.input,
+              focused: classes.focusedInput,
+            },
           }}
           {...textFieldProps}
         />
