@@ -15,7 +15,7 @@ import {getActiveCampaign} from './api/activeCampaign'
 import schema from './graphql/schema'
 import resolvers from './graphql/resolvers'
 import {initErrorReporting, reportError, getInfoFromError} from './utils/errorReporting'
-import {getRunConsistencyCheck} from './graphql/utils'
+import {getRunConsistencyCheck} from './utils/validation'
 
 import {pricingAPI, getElastic} from './api'
 

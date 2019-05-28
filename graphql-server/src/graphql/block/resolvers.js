@@ -1,7 +1,7 @@
 import {facadeElasticBlock} from './dataProviders'
 import assert from 'assert'
 import E from '../../api/elasticHelpers'
-import {validate} from '../utils'
+import {validate} from '../../utils/validation'
 
 const PAGE_SIZE = 10
 const EMPTY_RESULT = {cursor: null, data: []}

@@ -11,7 +11,8 @@ import AWS from 'aws-sdk'
 import {ApolloError} from 'apollo-server'
 import assert from 'assert'
 
-import {validate, EntityNotFoundError} from '../graphql/utils'
+import {EntityNotFoundError} from '../utils/errors'
+import {validate} from '../utils/validation'
 import _logger from '../logger'
 import E, {Query} from './elasticHelpers'
 

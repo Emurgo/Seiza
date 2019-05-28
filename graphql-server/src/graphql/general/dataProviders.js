@@ -1,7 +1,8 @@
 // @flow
 import {fetchBlockBySlot} from '../block/dataProviders'
 import moment from 'moment'
-import {parseAdaValue, validate} from '../utils'
+import {parseAdaValue} from '../utils'
+import {validate} from '../../utils/validation'
 import E from '../../api/elasticHelpers'
 
 // TODO: unify properties naming with the rest endpoints once the final fields are determined
