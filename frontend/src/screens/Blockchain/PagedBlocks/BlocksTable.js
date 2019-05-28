@@ -4,7 +4,7 @@ import {defineMessages} from 'react-intl'
 import {Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
-import Table from '@/components/visual/Table'
+import Table, {ROW_TYPE} from '@/components/visual/Table'
 import {AdaValue, Link, Tooltip} from '@/components/visual'
 import {useI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
@@ -30,6 +30,7 @@ const tableMessages = defineMessages({
   totalSent: 'Total sent (ADA)',
   fees: 'Fees (ADA)',
   size: 'Size (B)',
+  pageSeparator: 'Page {page}',
 })
 
 export const COLUMNS_MAP = {
@@ -74,9 +75,9 @@ const TH = ({Icon, label}) => {
 
   return (
     <React.Fragment>
-      <div className={classes.icon}>
+      <span className={classes.icon}>
         <Icon alt="" />
-      </div>
+      </span>
       <Typography className={classes.label} color="textSecondary" variant="overline">
         {label}
       </Typography>
@@ -89,9 +90,11 @@ type Props = {
   columns: any,
   loading: boolean,
   error: any,
+  nextPageNumber: number | null,
+  pageBoundary: number | null,
 }
 
-const BlocksTable = ({blocks, columns, loading, error}: Props) => {
+const BlocksTable = ({blocks, columns, loading, error, nextPageNumber, pageBoundary}: Props) => {
   const {formatInt, formatTimestamp, translate: tr} = useI18n()
 
   const {EPOCH, SLOT, TIME, SLOT_LEADER, TRANSACTIONS, TOTAL_SENT, FEES, SIZE} = COLUMNS_MAP
@@ -179,6 +182,11 @@ const BlocksTable = ({blocks, columns, loading, error}: Props) => {
     },
   }
 
+  const pageSeparator = {
+    type: ROW_TYPE.SEPARATOR,
+    text: tr(tableMessages.pageSeparator, {page: nextPageNumber}),
+  }
+
   const fields = columns.map((column) => columnsRenderer[column])
 
   const headerData = fields.map(({header}, i) => (
@@ -190,9 +198,17 @@ const BlocksTable = ({blocks, columns, loading, error}: Props) => {
     thAlign: thAlign || align || 'left',
   }))
 
-  const bodyData = blocks ? blocks.map((block, index) => fields.map(({cell}) => cell(block))) : []
+  const rows = (blocks || []).map((block) => ({
+    type: ROW_TYPE.DATA,
+    data: columns.map((column) => columnsRenderer[column].cell(block)),
+  }))
 
-  return <Table hoverable {...{loading, error, headerData, bodyData, fieldsConfig}} />
+  // Note: mutates rows
+  if (pageBoundary != null) {
+    rows.splice(pageBoundary, 0, pageSeparator)
+  }
+
+  return <Table hoverable {...{loading, error, headerData, bodyData: rows, fieldsConfig}} />
 }
 
 export default BlocksTable

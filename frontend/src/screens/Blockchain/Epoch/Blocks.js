@@ -17,6 +17,7 @@ import {EntityHeading} from '@/components/visual'
 import {useManageQueryValue} from '@/components/hooks/useManageQueryValue'
 import {toIntOrNull} from '@/helpers/utils'
 import BlocksTable, {COLUMNS_MAP} from '../PagedBlocks/BlocksTable'
+import {getPageAndBoundaryFromCursor} from '../PagedBlocks/util'
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {
@@ -122,6 +123,11 @@ const Blocks = ({blocksCount, epochNumber}) => {
     />
   )
 
+  const {nextPageNumber, pageBoundary} = getPageAndBoundaryFromCursor(
+    blocks && pagedDataResult.cursor,
+    rowsPerPage
+  )
+
   return (
     <Grid container direction="column">
       <Grid item className={classes.heading}>
@@ -134,7 +140,7 @@ const Blocks = ({blocksCount, epochNumber}) => {
           <Grid item>{pagination}</Grid>
         </Grid>
       </Grid>
-      <BlocksTable {...{blocks, columns, loading, error}} />
+      <BlocksTable {...{blocks, columns, loading, error, nextPageNumber, pageBoundary}} />
       {blocks && (
         <Hidden mdUp>
           <Grid item className={classes.bottomPagination}>

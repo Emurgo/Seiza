@@ -20,8 +20,9 @@ import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
 import {toIntOrNull} from '@/helpers/utils'
 import BlocksTable, {ALL_COLUMNS} from './BlocksTable'
 import {useAnalytics} from '@/helpers/googleAnalytics'
+import {getPageAndBoundaryFromCursor} from './util'
 
-const AUTOUPDATE_REFRESH_INTERVAL = 10 * 1000
+const AUTOUPDATE_REFRESH_INTERVAL = 20 * 1000
 
 const messages = defineMessages({
   refreshState: 'Refresh state:',
@@ -166,6 +167,11 @@ const PagedBlocks = () => {
     />
   )
 
+  const {nextPageNumber, pageBoundary} = getPageAndBoundaryFromCursor(
+    pagedDataResult && pagedDataResult.cursor,
+    rowsPerPage
+  )
+
   return (
     <div ref={scrollToRef}>
       <SimpleLayout title={translate(messages.header)}>
@@ -183,7 +189,16 @@ const PagedBlocks = () => {
             />
           </Grid>
         </Grid>
-        <BlocksTable loading={loading} error={error} blocks={pagedBlocks} columns={ALL_COLUMNS} />
+        <BlocksTable
+          {...{
+            loading,
+            error,
+            nextPageNumber,
+            pageBoundary,
+          }}
+          blocks={pagedBlocks}
+          columns={ALL_COLUMNS}
+        />
         {pagedBlocks && (
           <Hidden mdUp>
             <Grid item className={classes.bottomPagination}>

@@ -1,6 +1,5 @@
 // @flow
 
-// $FlowFixMe flow does not know about this export
 import {useTheme} from '@material-ui/styles'
 import {unstable_useMediaQuery as useMediaQuery} from '@material-ui/core/useMediaQuery'
 
