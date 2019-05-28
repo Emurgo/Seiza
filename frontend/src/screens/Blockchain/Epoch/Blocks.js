@@ -45,10 +45,11 @@ const messages = defineMessages({
   blocks: ' {count} {count, plural, =0 {Blocks} one {Block} other {Blocks}}',
 })
 
-const useLoadData = (cursor, epochNumber) => {
+const useLoadData = (cursor, epochNumber, pollInterval) => {
   const {error, loading, data} = useQueryNotBuggedForBlocks(GET_PAGED_BLOCKS_IN_EPOCH, {
     variables: {cursor, epochNumber},
     notifyOnNetworkStatusChange: true,
+    pollInterval,
   })
 
   const pagedData = idx(data.pagedBlocksInEpoch, (_) => _.blocks)
@@ -66,13 +67,13 @@ const useLoadData = (cursor, epochNumber) => {
 const {SLOT, TIME, SLOT_LEADER, TRANSACTIONS, TOTAL_SENT, FEES, SIZE} = COLUMNS_MAP
 const columns = [SLOT, TIME, SLOT_LEADER, TRANSACTIONS, TOTAL_SENT, FEES, SIZE]
 
-const Blocks = ({blocksCount, epochNumber}) => {
+const Blocks = ({blocksCount, epochNumber, pollInterval}) => {
   const classes = useStyles()
   const {translate: tr, formatInt} = useI18n()
 
   const [page, setPage] = useManageQueryValue('page', null, toIntOrNull)
   const [cursor, setCursor] = useState(null)
-  const {pagedDataResult, loading, error} = useLoadData(cursor, epochNumber)
+  const {pagedDataResult, loading, error} = useLoadData(cursor, epochNumber, pollInterval)
   const [totalItemsCount, setTotalItemsCount] = useState(0)
 
   const [prevEpoch, setPrevEpoch] = useState(epochNumber)

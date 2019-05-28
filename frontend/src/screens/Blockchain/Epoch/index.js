@@ -1,5 +1,5 @@
 // @flow
-import React, {useRef} from 'react'
+import React, {useRef, useState, useEffect} from 'react'
 import {defineMessages} from 'react-intl'
 import moment from 'moment-timezone'
 import gql from 'graphql-tag'
@@ -217,10 +217,11 @@ const useEpochNavigation = (epochNumber: number) => {
   }
 }
 
-const useEpochData = (epochNumber) => {
+const useEpochData = (epochNumber, {pollInterval}) => {
   const {loading, error, data} = useQueryNotBugged(GET_EPOCH_BY_NUMBER, {
     variables: {epochNumber},
     fetchPolicy: APOLLO_CACHE_OPTIONS.CACHE_AND_NETWORK,
+    pollInterval,
   })
   return {
     loading,
@@ -307,10 +308,36 @@ const EpochEntityCard = ({epochNumber, startTime, endTime}) => {
   )
 }
 
+const pollIntervalFromEpochData = (epochData) => {
+  if (!epochData || !epochData.endTime || !epochData.startTime) return null
+  const endTs = moment(epochData.endTime)
+  const startTs = moment(epochData.startTime)
+
+  const SECOND = 1000
+  const MINUTE = 60 * SECOND
+  const HOUR = 60 * MINUTE
+  // Poll old epoch only sporadically
+  // Near-old epochs keep poll in case something rolls back
+  if (endTs.isBefore(moment().subtract(10, 'minute'))) return 24 * HOUR
+  // Ramp up poll interval as epoch comes to starting date
+  if (startTs.isAfter(moment().add(1, 'day'))) return 24 * HOUR
+  if (startTs.isAfter(moment().add(1, 'hour'))) return 1 * HOUR
+  if (startTs.isAfter(moment().add(5, 'minute'))) return 5 * MINUTE
+  return 20 * SECOND // current or near-current epoch
+}
+
 const EpochScreen = () => {
   const {epochNumber} = useScreenParams()
-  const {epochData, error, loading} = useEpochData(epochNumber)
+  const [pollInterval, setPollInterval] = useState()
+  const {epochData, error, loading} = useEpochData(epochNumber, {pollInterval})
   const scrollToRef = useRef()
+  useEffect(() => {
+    const newInterval = pollIntervalFromEpochData(epochData)
+    if (newInterval !== pollInterval) {
+      setPollInterval(newInterval)
+      console.log('set poll interval', newInterval)
+    }
+  })
 
   const {translate: tr} = useI18n()
   const blocksInEpoch = idx(epochData, (_) => _.summary.blocksCreated)
@@ -344,7 +371,7 @@ const EpochScreen = () => {
                         <Tab label={tr(messages.blocksTab)} />
                         <Tab label={tr(messages.stakingPoolsTab)} />
                       </Tabs>
-                      <TabContent epochNumber={epochNumber} />
+                      <TabContent epochNumber={epochNumber} pollInterval={pollInterval} />
                     </Card>
                   )
                 }}
