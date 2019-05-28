@@ -85,6 +85,7 @@ const Blocks = ({blocksCount, epochNumber, pollInterval}) => {
     totalItemsCount,
     setTotalItemsCount
   )
+  console.log('cursor', cursor)
 
   // Reset values after epoch was changed
   // TODO: this is hot-fix, lets refactor this part soon as it is fragile
@@ -94,20 +95,17 @@ const Blocks = ({blocksCount, epochNumber, pollInterval}) => {
       setCursor(null)
       setPage(null)
       setTotalItemsCount(0)
+      return
     }
 
     // TODO: consider nicer solution, hot fix for now
     if (!loading && pagedDataResult.pagedData) {
-      if (cursor == null) {
-        setCursor(
-          page
-            ? Math.min(getTotalItemsCount(pagedDataResult), page * rowsPerPage)
-            : getTotalItemsCount(pagedDataResult)
-        )
-      }
-      if (totalItemsCount === 0) {
-        setTotalItemsCount(getTotalItemsCount(pagedDataResult))
-      }
+      setCursor(
+        page
+          ? Math.min(getTotalItemsCount(pagedDataResult), page * rowsPerPage)
+          : getTotalItemsCount(pagedDataResult)
+      )
+      setTotalItemsCount(getTotalItemsCount(pagedDataResult))
     }
   })
 
