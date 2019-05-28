@@ -5,7 +5,7 @@ import idx from 'idx'
 import {Switch, Typography, Grid, Hidden} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
-import Pagination from '@/components/visual/Pagination'
+import Pagination, {getPageCount} from '@/components/visual/Pagination'
 import {SimpleLayout} from '@/components/visual'
 import {GET_PAGED_BLOCKS} from '@/api/queries'
 import {useI18n} from '@/i18n/helpers'
@@ -99,10 +99,12 @@ const PagedBlocks = () => {
   const [page, setPage] = useManageQueryValue('page', null, toIntOrNull)
 
   const [cursor, setCursor] = useState(null)
-  const [autoUpdate, setAutoupdate] = useState(true)
+  const [autoUpdate, setAutoupdate] = useState(false)
 
   const {pagedDataResult, loading, error} = useLoadData(cursor, autoUpdate)
   const [totalItemsCount, setTotalItemsCount] = useState(0)
+
+  const [didFirstLoadSetup, setDidFirstLoadSetup] = useState(false)
 
   const {onChangePage, onChangeAutoUpdate} = useBlocksTablePagedProps(
     page,
@@ -117,20 +119,34 @@ const PagedBlocks = () => {
   // TODO: consider nicer solution, hot fix for now
   useEffect(() => {
     if (!loading && pagedDataResult.pagedData) {
-      if (cursor == null) {
-        const _totalItemsCount = getTotalItemsCount(pagedDataResult)
-        const _pageCursor = page * rowsPerPage
-        setCursor(page ? Math.min(_totalItemsCount, _pageCursor) : _totalItemsCount)
+      const _totalItemsCount = getTotalItemsCount(pagedDataResult)
 
-        if (_pageCursor !== 0 && _pageCursor < _totalItemsCount) {
-          setAutoupdate(false)
+      // When user reloads page we may need to set autoupdate to True or
+      // set cursor based on url
+      // Note: we want to do this only once and because of the above condition, this is not
+      // moved to run-only-once useEffect hook
+      if (!didFirstLoadSetup) {
+        const _pageCursor = page * rowsPerPage
+        if (_pageCursor >= _totalItemsCount) {
+          setAutoupdate(true)
+        } else {
+          setCursor(page ? Math.min(_totalItemsCount, _pageCursor) : _totalItemsCount)
         }
+        setDidFirstLoadSetup(true)
       }
+
+      let _currentPage = page
+
       if (totalItemsCount === 0 || autoUpdate) {
-        setTotalItemsCount(getTotalItemsCount(pagedDataResult))
+        // Because pageCount could rise with autoupdate, and we can have old value
+        if (autoUpdate) {
+          _currentPage = getPageCount(_totalItemsCount, rowsPerPage)
+        }
+        setTotalItemsCount(_totalItemsCount)
+        setPage(_currentPage)
       }
     }
-  })
+  }, [pagedDataResult.pagedData]) // eslint-disable-line
 
   const pagedBlocks = pagedDataResult.pagedData
 
