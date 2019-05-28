@@ -47,6 +47,7 @@ const QRDialog = withMobileDialog()(
           <Grid
             container
             justify="center"
+            alignItems="center"
             direction="column"
             spacing={24}
             className={classes.dialogContent}
