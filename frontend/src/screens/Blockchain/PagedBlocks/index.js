@@ -117,6 +117,8 @@ const PagedBlocks = () => {
     setAutoupdate
   )
 
+  // Nothing
+
   // TODO: consider nicer solution, hot fix for now
   useEffect(() => {
     if (!loading && pagedDataResult.pagedData) {
