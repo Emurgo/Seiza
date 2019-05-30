@@ -7,6 +7,7 @@ import {compose} from 'redux'
 import OverviewMetrics from './OverviewMetrics'
 import Search, {SearchHelpText} from './Search'
 import {withI18n} from '@/i18n/helpers'
+import {isCrawler} from '@/helpers/userAgent'
 
 const messages = defineMessages({
   header: 'Ada Blockchain Explorer',
@@ -41,23 +42,25 @@ const BlockchainHeader = ({classes, i18n: {translate}}) => (
       alignItems="center"
       className={classes.wrapper}
     >
-      <Hidden mdUp>
-        <Grid item>
-          <SearchHelpText />
-        </Grid>
-      </Hidden>
-      <Grid item className={classes.metricsWrapper}>
-        <OverviewMetrics />
-      </Grid>
+      {!isCrawler && (
+        <React.Fragment>
+          <Hidden mdUp>
+            <Grid item>
+              <SearchHelpText />
+            </Grid>
+          </Hidden>
+          <Grid item className={classes.metricsWrapper}>
+            <OverviewMetrics />
+          </Grid>
+        </React.Fragment>
+      )}
 
       <Grid item xs={10} md={8} lg={6} className="w-100">
         <Grid container direction="column" alignItems="stretch" className={classes.searchWrapper}>
           <Typography variant="h1" align="center">
             {translate(messages.header)}
           </Typography>
-          <Hidden smDown>
-            <Search />
-          </Hidden>
+          <Hidden smDown>{!isCrawler && <Search />}</Hidden>
         </Grid>
       </Grid>
     </Grid>
