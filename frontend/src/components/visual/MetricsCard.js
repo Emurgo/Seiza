@@ -133,8 +133,9 @@ const DropdownList = withProps(({close}) => ({
         <Card classes={{root: className}}>
           <ClickAwayListener onClickAway={close}>
             <MenuList>
-              {options.map(({label, onClick}) => (
-                <MenuItem key={label} onClick={buildOnClickHandler(onClick)}>
+              {options.map(({label, onClick}, id) => (
+                /* Note: `label` can be element */
+                <MenuItem key={id} onClick={buildOnClickHandler(onClick)}>
                   {label}
                 </MenuItem>
               ))}
