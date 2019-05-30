@@ -121,6 +121,7 @@ const RoundedInput = ({errorMessage, ...props}) => {
   return (
     <FormControl className={classes.formControl}>
       <OutlinedInput
+        labelWidth={0}
         inputProps={{className: classes.input}}
         classes={outlinedInputClasses}
         endAdornment={
@@ -374,7 +375,9 @@ const SubscribeFooter = () => {
         leaveActive: classes.leaveSubscribeActive,
       }}
       transitionLeave
+      transitionLeaveTimeout={1500}
       transitionEnter
+      transitionEnterTimeout={2000}
       transitionAppear={false}
       component="div"
     >
@@ -395,7 +398,9 @@ const SubscribeFooter = () => {
             }}
             transitionLeave={false}
             transitionEnter
+            transitionEnterTimeout={500}
             transitionAppear
+            transitionAppearTimeout={500}
             component={React.Fragment}
           >
             {uiState === 'success' && (
@@ -423,6 +428,7 @@ const SubscribeFooter = () => {
               leaveActive: classes.initUILeaveActive,
             }}
             transitionLeave
+            transitionLeaveTimeout={1000}
             transitionEnter={false}
             transitionAppear={false}
           >
