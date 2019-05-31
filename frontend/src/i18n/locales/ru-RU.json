@@ -140,6 +140,7 @@
   "screens.Blockchain.Epoch.index.txCount": "Транзакции",
   "screens.Blockchain.PagedBlocks.BlocksTable.epoch": "Эпоха",
   "screens.Blockchain.PagedBlocks.BlocksTable.fees": "Комиссия (ADA)",
+  "screens.Blockchain.PagedBlocks.BlocksTable.pageSeparator": "",
   "screens.Blockchain.PagedBlocks.BlocksTable.size": "Размер (B)",
   "screens.Blockchain.PagedBlocks.BlocksTable.slot": "Слот",
   "screens.Blockchain.PagedBlocks.BlocksTable.slotLeader": "Слот-лидер",

@@ -140,6 +140,7 @@
   "screens.Blockchain.Epoch.index.txCount": "取引",
   "screens.Blockchain.PagedBlocks.BlocksTable.epoch": "エポック",
   "screens.Blockchain.PagedBlocks.BlocksTable.fees": "手数料(ADA)",
+  "screens.Blockchain.PagedBlocks.BlocksTable.pageSeparator": "",
   "screens.Blockchain.PagedBlocks.BlocksTable.size": "サイズ(B)",
   "screens.Blockchain.PagedBlocks.BlocksTable.slot": "スロット",
   "screens.Blockchain.PagedBlocks.BlocksTable.slotLeader": "スロットリーダー",
