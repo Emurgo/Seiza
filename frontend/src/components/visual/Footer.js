@@ -59,8 +59,8 @@ const subscribeMessages = defineMessages({
     'Subscribe to Seiza to receive news and updates about staking, rewards and new features 🚀!',
   emailButton: 'Email',
   subscribeButton: 'Subscribe',
-  genericError: 'Sorry. An error occurred. Please try again.',
-  invalidEmail: 'Incorrect format of Email',
+  genericError: 'Sorry. An error occurred. Please try again later.',
+  invalidEmail: 'Incorrect format of email',
   subscribeSuccess: 'You are successfully subscribed!',
 })
 
