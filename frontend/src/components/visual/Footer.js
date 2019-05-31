@@ -298,7 +298,7 @@ const useUIState = (initialUIState: UiState) => {
 }
 
 const checkInvalidEmailError = (error) =>
-  idx(error, (_) => _.graphQLErrors[0].extensions.code === 'INVALID_EMAIL')
+  idx(error, (_) => _.graphQLErrors[0].extensions.code === 'BAD_USER_INPUT')
 
 const SubscribeFooter = () => {
   const classes = useSubscribeFooterStyles()
