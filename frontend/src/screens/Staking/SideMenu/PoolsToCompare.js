@@ -47,7 +47,7 @@ const CustomChip = withStyles(({palette, spacing}) => ({
     display: 'inline-block',
   },
   deleteIcon: {
-    marginRight: spacing.unit,
+    marginRight: spacing(1),
     width: '0.7em',
   },
 }))(Chip)

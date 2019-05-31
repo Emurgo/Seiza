@@ -254,7 +254,6 @@ const AdaValue = ({
       <span>
         <Typography
           variant="body1"
-          inline
           component="span"
           className={cn(classes.integral, fontClasses.thick)}
         >
@@ -263,7 +262,6 @@ const AdaValue = ({
         <Typography
           variant="caption"
           color="textSecondary"
-          inline
           component="span"
           className={cn(classes.fractional, fontClasses.thin)}
         >
@@ -272,7 +270,6 @@ const AdaValue = ({
         {showCurrency && (
           <Typography
             variant="body1"
-            inline
             component="span"
             className={cn(classes.adaSymbol, fontClasses.thick)}
           >

@@ -30,10 +30,10 @@ import IconPools from '@/assets/icons/metrics-stakepools.svg'
 const styles = (theme) =>
   createStyles({
     contentWrapper: {
-      padding: theme.spacing.unit,
-      paddingLeft: theme.spacing.unit,
+      padding: theme.spacing(1),
+      paddingLeft: theme.spacing(1),
       [theme.breakpoints.up('md')]: {
-        paddingLeft: theme.spacing.unit * 2,
+        paddingLeft: theme.spacing(2),
       },
     },
     card: {
@@ -56,7 +56,7 @@ const styles = (theme) =>
       display: 'none',
       [theme.breakpoints.up('sm')]: {
         width: 50,
-        marginRight: theme.spacing.unit * 2,
+        marginRight: theme.spacing(2),
         display: 'block',
       },
     },
@@ -93,7 +93,7 @@ const styles = (theme) =>
       },
     },
     value: {
-      paddingBottom: theme.spacing.unit * 0.5,
+      paddingBottom: theme.spacing(0.5),
       fontSize: theme.typography.h2.fontSize * 0.8,
       [theme.breakpoints.up('sm')]: {
         fontSize: theme.typography.h2.fontSize,

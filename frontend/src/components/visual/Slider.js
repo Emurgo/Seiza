@@ -20,7 +20,7 @@ const styles = (theme) =>
       textTransform: 'uppercase',
     },
     formControl: {
-      margin: theme.spacing.unit,
+      margin: theme.spacing(1),
       width: '100%',
     },
     handle: {
@@ -80,7 +80,7 @@ const getHandle = (className, tipFormatter) => (props) => {
 
 export default compose(
   withStyles(styles),
-  withTheme(),
+  withTheme,
   withStateHandlers(
     {
       focused: false,

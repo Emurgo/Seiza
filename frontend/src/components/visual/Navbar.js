@@ -16,14 +16,14 @@ const useStyles = makeStyles(({palette, spacing}) => ({
   item: {
     display: 'inline',
     margin: '5px',
-    marginRight: spacing.unit * 5,
+    marginRight: spacing(5),
   },
   link: {
     textDecoration: 'none',
   },
   mobileLink: {
     width: '100%',
-    padding: `${spacing.unit}px ${spacing.unit * 2}px`,
+    padding: `${spacing(1)}px ${spacing(2)}px`,
   },
   menuItem: {
     padding: 0,

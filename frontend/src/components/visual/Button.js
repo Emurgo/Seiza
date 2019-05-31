@@ -14,8 +14,8 @@ const useStyles = makeStyles((theme) => ({
   root: {
     fontSize: theme.typography.fontSize * 0.9,
     fontWeight: 700,
-    paddingTop: theme.spacing.unit * 1.5,
-    paddingBottom: theme.spacing.unit * 1.5,
+    paddingTop: theme.spacing(1.5),
+    paddingBottom: theme.spacing(1.5),
   },
   rounded: {
     // Note: to have complete radius for all heights

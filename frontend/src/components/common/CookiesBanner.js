@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
   header: {
     textAlign: 'center',
     fontWeight: 600,
-    marginBottom: theme.spacing.unit,
+    marginBottom: theme.spacing(1),
     [theme.breakpoints.up('md')]: {
       textAlign: 'left',
     },
@@ -84,7 +84,7 @@ const CookiesBanner = () => {
       {!cookiesAccepted && !isCrawler && (
         <Card className={classes.card}>
           <ContentSpacing top={0.6} bottom={0.6} left={0.6} right={0.6}>
-            <Grid container alignItems="center" spacing={16}>
+            <Grid container alignItems="center" spacing={4}>
               <Grid item xs={12} md={2}>
                 <Grid container justify="center">
                   <img src={cookiesIcon} alt="" />

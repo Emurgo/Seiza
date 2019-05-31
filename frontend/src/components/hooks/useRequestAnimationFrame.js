@@ -15,6 +15,7 @@ export const useRequestAnimationFrame = (callback, isDisplaying = true) => {
   useEffect(() => {
     window.requestAnimationFrame(loop)
     return () => {
+      // eslint-disable-next-line
       isCancelled = true
     }
   })

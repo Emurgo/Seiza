@@ -1,7 +1,7 @@
 // @flow
 
 import {useTheme} from '@material-ui/styles'
-import {unstable_useMediaQuery as useMediaQuery} from '@material-ui/core/useMediaQuery'
+import useMediaQuery from '@material-ui/core/useMediaQuery'
 
 type Breakpoint = 'xs' | 'sm' | 'md' | 'lg' | 'xl'
 

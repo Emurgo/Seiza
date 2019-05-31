@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
     height: '100%',
     display: 'flex',
     flexDirection: 'column',
-    padding: theme.spacing.unit * 4,
+    padding: theme.spacing(4),
   },
   mapContainer: {
     'flexGrow': 1,

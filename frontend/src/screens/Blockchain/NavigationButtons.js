@@ -44,7 +44,7 @@ const NavigationButtons = ({
   const classes = useStyles()
 
   return (
-    <Grid container direction="row" justify="center" spacing={16}>
+    <Grid container direction="row" justify="center" spacing={4}>
       <Grid item>
         <Button
           rounded

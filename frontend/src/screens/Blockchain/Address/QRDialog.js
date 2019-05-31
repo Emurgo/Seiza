@@ -16,10 +16,10 @@ type QRDialogProps = {
 const QR_CODE_SIZE = 256
 const useStyles = makeStyles((theme) => ({
   dialogContent: {
-    padding: theme.spacing.unit * 3,
+    padding: theme.spacing(3),
   },
   entity: {
-    maxWidth: QR_CODE_SIZE + theme.spacing.unit * 3,
+    maxWidth: QR_CODE_SIZE,
   },
   closeWrapper: {
     height: 24, // Must be same as spacing in Grid in DialogContent
@@ -49,7 +49,6 @@ const QRDialog = withMobileDialog()(
             justify="center"
             alignItems="center"
             direction="column"
-            spacing={24}
             className={classes.dialogContent}
           >
             <Grid item>

@@ -18,7 +18,7 @@ const text = defineMessages({
 const useStyles = makeStyles((theme) => ({
   wrapper: {
     backgroundImage: theme.palette.buttons.primaryGradient.background,
-    padding: theme.spacing.unit * 1.5,
+    padding: theme.spacing(1.5),
   },
   text: {
     color: theme.palette.background.paper,
@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: theme.typography.fontSize * 0.875,
   },
   paddedRight: {
-    paddingRight: theme.spacing.unit,
+    paddingRight: theme.spacing(1),
   },
 }))
 

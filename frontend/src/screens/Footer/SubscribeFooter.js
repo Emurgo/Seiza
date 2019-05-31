@@ -158,8 +158,8 @@ const useSubscribeFooterStyles = makeStyles(({palette, spacing, breakpoints, typ
   'wrapper': {
     height: LARGEST_FOOTER_HEIGHT,
     overflow: 'hidden',
-    padding: spacing.unit * 2,
-    paddingTop: spacing.unit * 4, // to countermeasure error label
+    padding: spacing(2),
+    paddingTop: spacing(4), // to countermeasure error label
     background: palette.gradient,
     position: 'relative',
     [breakpoints.up('sm')]: {
@@ -170,8 +170,8 @@ const useSubscribeFooterStyles = makeStyles(({palette, spacing, breakpoints, typ
     },
   },
   'subscribe': {
-    marginLeft: spacing.unit * 1.3,
-    marginRight: spacing.unit * 1.3,
+    marginLeft: spacing(1.3),
+    marginRight: spacing(1.3),
     width: '200px',
     [breakpoints.up('sm')]: {
       marginTop: 0,
@@ -183,14 +183,14 @@ const useSubscribeFooterStyles = makeStyles(({palette, spacing, breakpoints, typ
     height: 49, // 49 is height of subscribe button
   },
   'textfieldButtonSpacing': {
-    padding: spacing.unit,
+    padding: spacing(1),
   },
   'row': {
-    padding: spacing.unit,
+    padding: spacing(1),
   },
   'subscribeHeadlineWrapper': {
-    paddingTop: spacing.unit * 1.5,
-    paddingBottom: spacing.unit * 1.5,
+    paddingTop: spacing(1.5),
+    paddingBottom: spacing(1.5),
   },
   'success': {
     fontWeight: 'bold',
@@ -472,11 +472,9 @@ const SubscribeFooter = () => {
           </ReactCSSTransitionGroup>
 
           {uiState !== 'loading' && (
-            <CloseIconButton
-              aria-label="Hide-subscribe-footer"
-              className={classes.hide}
-              onClick={onHide}
-            />
+            <div className={classes.hide}>
+              <CloseIconButton aria-label="Hide-subscribe-footer" onClick={onHide} />
+            </div>
           )}
           <LoadingOverlay loading={uiState === 'loading'} />
         </Grid>

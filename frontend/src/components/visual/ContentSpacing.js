@@ -7,9 +7,9 @@ import cn from 'classnames'
 // Note: this component/file bears the config for
 // all of the spacings inside Cards and other components
 // in order for them to be aligned properly on webpage.
-// For all other spacings, we can still use theme.spacing.unit in css.
-// In other words, don't use this file as a new theme.spacing.unit.
-export const getDefaultSpacing = (theme: Theme) => theme.spacing.unit * 4
+// For all other spacings, we can still use theme.spacing in css.
+// In other words, don't use this file as a new theme.spacing.
+export const getDefaultSpacing = (theme: Theme) => theme.spacing(4)
 
 const useStyles = makeStyles((theme) => ({
   root: {

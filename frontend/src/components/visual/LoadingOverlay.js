@@ -37,7 +37,7 @@ const useDelayedLoading = (loading, delay) => {
         timeout.current = null
       }, delay)
     }
-  })
+  }, [loading, delayedLoading, delay])
 
   return delayedLoading
 }
@@ -57,7 +57,7 @@ const LoadingOverlay = ({loading, showSpinner = true, background}: Props) => {
       setActive(true)
       setEntering(true)
     }
-  })
+  }, [loading, active])
 
   const onEntered = () => setEntering(false)
   const onExited = () => setActive(false)

@@ -26,10 +26,10 @@ const styles = ({palette, spacing}) =>
       width: '270px',
       marginLeft: '30px',
       marginRight: '30px',
-      padding: spacing.unit,
+      padding: spacing(1),
     },
     cardIcon: {
-      paddingRight: spacing.unit,
+      paddingRight: spacing(1),
     },
   })
 

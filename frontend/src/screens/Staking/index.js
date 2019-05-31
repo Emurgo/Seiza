@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme) => {
     },
     sidebarWrapper: {
       width: sidebarWidth,
-      paddingRight: theme.spacing.unit * 3,
+      paddingRight: theme.spacing(3),
     },
     fullWidthWrapper: {
       width: `calc(100% - ${sidebarWidth}px)`,

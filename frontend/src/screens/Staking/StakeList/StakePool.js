@@ -31,13 +31,13 @@ const headerStyles = ({palette, spacing}) =>
   createStyles({
     wrapper: {
       background: palette.background.paperContrast,
-      padding: spacing.unit * 3,
+      padding: spacing(3),
     },
     dot: {
       marginTop: '7px',
     },
     info: {
-      paddingLeft: spacing.unit,
+      paddingLeft: spacing(1),
     },
     button: {
       width: '120px',
@@ -47,21 +47,21 @@ const headerStyles = ({palette, spacing}) =>
 const contentStyles = ({palette, spacing}) =>
   createStyles({
     verticalBlock: {
-      paddingRight: spacing.unit * 3,
+      paddingRight: spacing(3),
     },
     label: {
       color: palette.grey[500], // TODO: make fit any theme
       textTransform: 'uppercase',
     },
     rowItem: {
-      paddingTop: spacing.unit,
-      paddingBottom: spacing.unit,
+      paddingTop: spacing(1),
+      paddingBottom: spacing(1),
     },
     innerWrapper: {
-      padding: spacing.unit * 3,
+      padding: spacing(3),
     },
     extraContent: {
-      padding: spacing.unit * 3,
+      padding: spacing(3),
     },
   })
 

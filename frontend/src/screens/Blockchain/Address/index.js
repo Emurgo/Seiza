@@ -94,8 +94,8 @@ const messages = defineMessages({
 
 const useStyles = makeStyles((theme) => ({
   headingWrapper: {
-    marginBottom: theme.spacing.unit * 6,
-    marginTop: theme.spacing.unit * 6,
+    marginBottom: theme.spacing(6),
+    marginTop: theme.spacing(6),
     display: 'flex',
     justifyContent: 'center',
   },

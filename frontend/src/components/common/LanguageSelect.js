@@ -18,8 +18,8 @@ const styles = (theme) => ({
     cursor: 'pointer',
   },
   mobileWrapper: {
-    paddingTop: theme.spacing.unit * 0.625,
-    paddingBottom: theme.spacing.unit * 0.625,
+    paddingTop: theme.spacing(0.625),
+    paddingBottom: theme.spacing(0.625),
   },
 })
 

@@ -20,16 +20,16 @@ const styles = ({palette, spacing}) =>
       background: palette.gradient,
     },
     metricsWrapper: {
-      marginTop: spacing.unit * 5,
-      marginBottom: spacing.unit * 5,
+      marginTop: spacing(5),
+      marginBottom: spacing(5),
     },
     searchWrapper: {
       'marginLeft': 'auto',
       'marginRight': 'auto',
-      'marginBottom': spacing.unit * 6.5,
+      'marginBottom': spacing(6.5),
       '& > *': {
-        marginTop: spacing.unit * 1.25,
-        marginBottom: spacing.unit * 1.25,
+        marginTop: spacing(1.25),
+        marginBottom: spacing(1.25),
       },
     },
   })

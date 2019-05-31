@@ -47,11 +47,11 @@ const useContentStyles = makeStyles((theme) => ({
   },
   label: {
     // Needed so that `value` and `label` are aligned in case of animation
-    marginLeft: theme.spacing.unit * (2 / 3),
+    marginLeft: theme.spacing(2 / 3),
   },
   value: {
     overflow: 'hidden',
-    padding: theme.spacing.unit * (2 / 3),
+    padding: theme.spacing(2 / 3),
   },
   correctureWrapper: {
     display: 'flex',
@@ -69,14 +69,14 @@ const useContentStyles = makeStyles((theme) => ({
   cardContent: {
     display: 'flex',
     alignItems: 'center',
-    paddingRight: theme.spacing.unit * 2,
+    paddingRight: theme.spacing(2),
     overflow: 'hidden',
   },
   autoWidth: {
     width: 'auto',
   },
   iconAlign: {
-    paddingRight: theme.spacing.unit * 2,
+    paddingRight: theme.spacing(2),
   },
 }))
 

@@ -131,14 +131,14 @@ const categoryThreeConfig = [
 
 const useStyles = makeStyles((theme) => ({
   noPools: {
-    padding: theme.spacing.unit * 2,
+    padding: theme.spacing(2),
   },
   loading: {
     marginTop: '100px',
   },
   error: {
-    marginTop: theme.spacing.unit * 2,
-    marginLeft: theme.spacing.unit * 2,
+    marginTop: theme.spacing(2),
+    marginLeft: theme.spacing(2),
   },
 }))
 

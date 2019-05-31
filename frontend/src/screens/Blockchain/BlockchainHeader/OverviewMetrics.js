@@ -57,11 +57,11 @@ const styles = (theme) =>
       minHeight: '75px',
     },
     cardDimensions: {
-      marginRight: theme.spacing.unit * 0.5,
-      marginLeft: theme.spacing.unit * 0.5,
+      marginRight: theme.spacing(0.5),
+      marginLeft: theme.spacing(0.5),
       [theme.breakpoints.up('sm')]: {
-        marginRight: theme.spacing.unit * 1.5,
-        marginLeft: theme.spacing.unit * 1.5,
+        marginRight: theme.spacing(1.5),
+        marginLeft: theme.spacing(1.5),
       },
     },
   })

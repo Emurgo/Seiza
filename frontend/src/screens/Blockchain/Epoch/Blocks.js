@@ -18,21 +18,21 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignItems: 'center',
-    marginTop: theme.spacing.unit,
-    marginBottom: theme.spacing.unit * 3,
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(3),
     [theme.breakpoints.down('sm')]: {
       flexDirection: 'column',
       justifyContent: 'center',
     },
   },
   heading: {
-    marginTop: theme.spacing.unit * 3,
+    marginTop: theme.spacing(3),
     [theme.breakpoints.down('sm')]: {
-      marginBottom: theme.spacing.unit * 3,
+      marginBottom: theme.spacing(3),
     },
   },
   bottomPagination: {
-    marginTop: theme.spacing.unit * 3,
+    marginTop: theme.spacing(3),
   },
 }))
 
@@ -74,7 +74,7 @@ const useEpochBlockData = (epochNumber) => {
 
   useEffect(() => {
     if (dataTotalCount > totalCount) setTotalCount(dataTotalCount)
-  })
+  }, [totalCount, dataTotalCount])
 
   // Reset values after epoch was changed
   // TODO: this is hot-fix, lets refactor this part soon as it is fragile
@@ -84,7 +84,7 @@ const useEpochBlockData = (epochNumber) => {
       setTotalCount(0)
       setPage(null)
     }
-  })
+  }, [epochNumber, prevEpoch, loading, pagedDataResult, page, setPage])
 
   return {
     page,

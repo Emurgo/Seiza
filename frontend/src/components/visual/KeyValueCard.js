@@ -13,12 +13,12 @@ const useHeaderStyles = makeStyles(({spacing, palette, breakpoints}) => ({
     minHeight: '60px',
   },
   leftOffset: {
-    paddingLeft: spacing.unit,
+    paddingLeft: spacing(1),
   },
   compactOnMobile: {
     [breakpoints.down('xs')]: {
-      paddingLeft: spacing.unit * 3,
-      paddingRight: spacing.unit * 3,
+      paddingLeft: spacing(3),
+      paddingRight: spacing(3),
     },
   },
 }))
@@ -37,8 +37,8 @@ const useBodyStyles = makeStyles(({spacing, palette, breakpoints}) => ({
   },
   compactOnMobile: {
     [breakpoints.down('xs')]: {
-      marginLeft: spacing.unit * 3,
-      marginRight: spacing.unit * 3,
+      marginLeft: spacing(3),
+      marginRight: spacing(3),
     },
   },
 }))
