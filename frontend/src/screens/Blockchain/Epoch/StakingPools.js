@@ -5,8 +5,7 @@ import gql from 'graphql-tag'
 import {compose} from 'redux'
 import idx from 'idx'
 import {withI18n} from '@/i18n/helpers'
-import {routeTo} from '@/helpers/routes'
-import {LoadingInProgress, DebugApolloError, AdaValue, Link} from '@/components/visual'
+import {LoadingInProgress, DebugApolloError, AdaValue, LinkTo} from '@/components/visual'
 import Table, {ROW_TYPE} from '@/components/visual/Table'
 
 const GET_STAKE_POOLS_IN_EPOCH = gql`
@@ -48,9 +47,9 @@ const StakingPools = ({i18n, stakePoolsData}) => {
     poolList.map((pool, index) => ({
       type: ROW_TYPE.DATA,
       data: [
-        <Link key={1} to={routeTo.stakepool(idx(pool, (_) => _.poolHash))}>
+        <LinkTo.stakepool key={1} poolHash={idx(pool, (_) => _.poolHash)}>
           {idx(pool, (_) => _.name)}
-        </Link>,
+        </LinkTo.stakepool>,
         formatPercent(idx(pool, (_) => _.summary.performance)),
         <AdaValue key={index} value={idx(pool, (_) => _.summary.adaStaked)} />,
         <AdaValue key={index} value={idx(pool, (_) => _.summary.rewards)} />,

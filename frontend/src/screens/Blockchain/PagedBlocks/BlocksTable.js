@@ -5,9 +5,8 @@ import {Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
 import Table, {ROW_TYPE} from '@/components/visual/Table'
-import {AdaValue, Link, Tooltip} from '@/components/visual'
+import {AdaValue, LinkTo, Tooltip} from '@/components/visual'
 import {useI18n} from '@/i18n/helpers'
-import {routeTo} from '@/helpers/routes'
 
 import {ReactComponent as EpochIcon} from '@/assets/icons/epoch.svg'
 import {ReactComponent as SlotIcon} from '@/assets/icons/slot.svg'
@@ -106,9 +105,9 @@ const BlocksTable = ({blocks, columns, loading, error, nextPageNumber, pageBound
         label: tr(tableMessages.epoch),
       },
       cell: (block) => (
-        <Link key={0} to={routeTo.epoch(block.epoch)}>
+        <LinkTo.epoch key={0} epochNumber={block.epoch}>
           {formatInt(block.epoch)}
-        </Link>
+        </LinkTo.epoch>
       ),
       align: 'left',
     },
@@ -118,9 +117,9 @@ const BlocksTable = ({blocks, columns, loading, error, nextPageNumber, pageBound
         label: tr(tableMessages.slot),
       },
       cell: (block) => (
-        <Link key={1} to={routeTo.block(block.blockHash)}>
+        <LinkTo.block key={1} blockHash={block.blockHash}>
           {formatInt(block.slot)}
-        </Link>
+        </LinkTo.block>
       ),
       align: 'left',
     },
@@ -138,9 +137,9 @@ const BlocksTable = ({blocks, columns, loading, error, nextPageNumber, pageBound
         label: tr(tableMessages.slotLeader),
       },
       cell: (block) => (
-        <Link key={3} to={routeTo.stakepool(block.blockLeader.poolHash)}>
+        <LinkTo.stakepool key={3} poolHash={block.blockLeader.poolHash}>
           {block.blockLeader.name}
-        </Link>
+        </LinkTo.stakepool>
       ),
       align: 'left',
     },

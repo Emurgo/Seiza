@@ -12,14 +12,13 @@ import {
   EntityCardContent,
   SummaryCard,
   AdaValue,
-  Link,
+  LinkTo,
   LiteTabs,
   LiteTab,
   Card,
 } from '@/components/visual'
 import {getDefaultSpacing} from '@/components/visual/ContentSpacing'
 import {useI18n} from '@/i18n/helpers'
-import {routeTo} from '@/helpers/routes'
 import {TabsProvider as Tabs, TabItem as Tab, useTabContext} from '@/components/context/TabContext'
 import {AddressesBreakdownContent} from '@/components/common/AddressesBreakdown'
 import {FILTER_TYPES} from './constants'
@@ -82,14 +81,14 @@ const TransactionCard = ({transaction: tx, targetAddress}) => {
     epoch:
       data.epoch != null ? (
         // $FlowFixMe flow does not understand idx precondition
-        <Link to={routeTo.epoch(data.epoch)}>{formatInt(data.epoch)}</Link>
+        <LinkTo.epoch epochNumber={data.epoch}>{formatInt(data.epoch)}</LinkTo.epoch>
       ) : (
         NA
       ),
     slot:
       data.slot != null ? (
         // $FlowFixMe flow does not understand idx precondition
-        <Link to={routeTo.block(data.blockHash)}>{formatInt(data.slot)}</Link>
+        <LinkTo.block blockHash={data.blockHash}>{formatInt(data.slot)}</LinkTo.block>
       ) : (
         NA
       ),
@@ -101,7 +100,7 @@ const TransactionCard = ({transaction: tx, targetAddress}) => {
       <div className={classes.txCard}>
         <EntityCardContent
           label={tr(messages.transactionEntity)}
-          value={<Link to={routeTo.transaction(tx.txHash)}>{tx.txHash}</Link>}
+          value={<LinkTo.transaction txHash={tx.txHash}>{tx.txHash}</LinkTo.transaction>}
           rawValue={tx.txHash}
         />
       </div>

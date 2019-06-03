@@ -15,7 +15,7 @@ import {
   LoadingError,
   EntityIdCard,
   AdaValue,
-  Link,
+  LinkTo,
   Overlay,
   LoadingOverlay,
 } from '@/components/visual'
@@ -25,7 +25,6 @@ import AdaIcon from '@/assets/icons/transaction-id.svg'
 
 import {ASSURANCE_LEVELS_VALUES, APOLLO_CACHE_OPTIONS} from '@/constants'
 import {useI18n} from '@/i18n/helpers'
-import {routeTo} from '@/helpers/routes'
 import {useAnalytics} from '@/helpers/googleAnalytics'
 
 const messages = defineMessages({
@@ -89,14 +88,14 @@ const TransactionSummary = ({loading, transaction}) => {
     epoch:
       __.epochNumber != null ? (
         // $FlowFixMe flow does not understand idx precondition
-        <Link to={routeTo.epoch(__.epochNumber)}>{formatInt(__.epochNumber)}</Link>
+        <LinkTo.epoch epochNumber={__.epochNumber}>{formatInt(__.epochNumber)}</LinkTo.epoch>
       ) : (
         NA
       ),
     slot:
       __.blockHash != null ? (
         // $FlowFixMe flow does not understand idx precondition
-        <Link to={routeTo.block(__.blockHash)}>{formatInt(__.slot)}</Link>
+        <LinkTo.block blockHash={__.blockHash}>{formatInt(__.slot)}</LinkTo.block>
       ) : (
         NA
       ),

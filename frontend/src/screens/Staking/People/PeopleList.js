@@ -5,8 +5,7 @@ import {Grid, Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
 
-import {AdaValue, VisualHash, Link} from '@/components/visual'
-import {routeTo} from '@/helpers/routes'
+import {AdaValue, VisualHash, LinkTo} from '@/components/visual'
 import {useI18n} from '@/i18n/helpers'
 
 const messages = defineMessages({
@@ -49,7 +48,6 @@ const useStyles = makeStyles((theme) => ({
     paddingRight: theme.spacing.unit,
   },
   stakeKeyLink: {
-    color: theme.palette.primary.main,
     fontWeight: '600',
   },
 }))
@@ -64,9 +62,9 @@ const RowHeader = ({poolHash, poolName}) => {
       <Grid item>
         <Grid container direction="column">
           <Typography variant="overline">{poolName}</Typography>
-          <Link to={routeTo.stakepool(poolHash)}>
+          <LinkTo.stakepool poolHash={poolHash}>
             <Typography variant="caption">{poolHash}</Typography>
-          </Link>
+          </LinkTo.stakepool>
         </Grid>
       </Grid>
     </Grid>
@@ -77,11 +75,11 @@ const Owner = ({stakingKey, pledge}) => {
   const classes = useStyles()
   return (
     <Grid key={stakingKey} container justify="space-between">
-      <Link to={routeTo.stakingKey.user(stakingKey)}>
-        <Typography variant="body1" className={classes.stakeKeyLink}>
+      <LinkTo.stakingKey stakingKey={stakingKey}>
+        <Typography color="inherit" variant="body1" className={classes.stakeKeyLink}>
           {stakingKey}
         </Typography>
-      </Link>
+      </LinkTo.stakingKey>
       <div>
         <AdaValue value={pledge} showCurrency />
       </div>

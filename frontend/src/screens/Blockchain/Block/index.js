@@ -16,7 +16,7 @@ import {
   LoadingInProgress,
   LoadingError,
   AdaValue,
-  Link,
+  LinkTo,
 } from '@/components/visual'
 
 import blockIcon from '@/assets/icons/metrics-blocks.svg'
@@ -26,7 +26,6 @@ import {useAnalytics} from '@/helpers/googleAnalytics'
 import TransactionCard from '@/components/common/TransactionCard'
 
 import {useI18n} from '@/i18n/helpers'
-import {routeTo} from '@/helpers/routes'
 import {extractError} from '@/helpers/errors'
 import SlotNavigation from './SlotNavigation'
 
@@ -79,7 +78,7 @@ const BlockSummaryCard = ({blockData, loading}) => {
     epoch:
       __.epochNumber != null ? (
         // $FlowFixMe flow does not understand idx precondition
-        <Link to={routeTo.epoch(__.epochNumber)}>{formatInt(__.epochNumber)}</Link>
+        <LinkTo.epoch epochNumber={__.epochNumber}>{formatInt(__.epochNumber)}</LinkTo.epoch>
       ) : (
         NA
       ),
