@@ -15,7 +15,7 @@
     "flow-stop": "flow stop",
     "flow-coverage": "flow-coverage-report || exit 0",
     "prettier": "prettier-eslint --write \"src/**/*.js\"",
-    "extract-translations": "NODE_ENV=development src/i18n/scripts/cli.js --output src/i18n/locales/ --locales en,ja-JP  'src/**/*.js' --flat",
+    "extract-translations": "NODE_ENV=development src/i18n/scripts/cli.js --output src/i18n/locales/ --locales en,ja-JP,es-ES,ru-RU  'src/**/*.js' --flat",
     "test": "yarn flow && yarn eslint",
     "update-schema-type": "yarn gql-gen"
   },

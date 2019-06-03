@@ -140,6 +140,7 @@
   "screens.Blockchain.Epoch.index.txCount": "Transactions",
   "screens.Blockchain.PagedBlocks.BlocksTable.epoch": "Epoch",
   "screens.Blockchain.PagedBlocks.BlocksTable.fees": "Fees (ADA)",
+  "screens.Blockchain.PagedBlocks.BlocksTable.pageSeparator": "Page {page}",
   "screens.Blockchain.PagedBlocks.BlocksTable.size": "Size (B)",
   "screens.Blockchain.PagedBlocks.BlocksTable.slot": "Slot",
   "screens.Blockchain.PagedBlocks.BlocksTable.slotLeader": "Slot leader",
