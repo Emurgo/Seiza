@@ -93,34 +93,33 @@ const useAppStyles = makeStyles((theme) => ({
 // and due it is mostly temporary feature
 const getTranslatedNavItems = (translate) =>
   [
-    {link: routeTo.home(), label: translate(navigationMessages.home), __hide: false},
-    {link: routeTo.blockchain(), label: translate(navigationMessages.blockchain), __hide: false},
+    {link: routeTo.home(), label: translate(navigationMessages.home)},
+    {link: routeTo.blockchain(), label: translate(navigationMessages.blockchain)},
     {
       link: routeTo.staking.home(),
       label: translate(navigationMessages.staking),
-      disabledText: !config.showStakingData ? translate(navigationMessages.disabledText) : null,
-      __hide: false,
+      disabledText: translate(navigationMessages.disabledText),
     },
     {
       link: routeTo.staking.home(), // Note: not yet implemented screen
       label: translate(navigationMessages.stakePools),
-      disabledText: !config.showStakingData ? translate(navigationMessages.disabledText) : null,
-      __hide: false,
+      disabledText: translate(navigationMessages.disabledText),
     },
     {
       link: routeTo.more(),
       label: translate(navigationMessages.more),
-      __hide: !config.showStakingData,
     },
-  ].filter((item) => !item.__hide)
+    // $FlowFixMe
+  ].filter((item) => item.link || item.disabledText)
 
 const getTranslatedFooterNavItems = (translate) => {
   const mainNavItems = getTranslatedNavItems(translate)
   return [
     ...mainNavItems,
-    {link: routeTo.termsOfUse(), label: translate(navigationMessages.termsOfUse), __hide: false},
-    {link: routeTo.privacy(), label: translate(navigationMessages.privacy), __hide: false},
-  ]
+    {link: routeTo.termsOfUse(), label: translate(navigationMessages.termsOfUse)},
+    {link: routeTo.privacy(), label: translate(navigationMessages.privacy)},
+    // $FlowFixMe
+  ].filter((item) => item.link || item.disabledText)
 }
 
 const TopBar = compose(withRouter)(({location: {pathname}}) => {
@@ -177,9 +176,13 @@ const Providers = ({children}) => (
   </CookiesProvider>
 )
 
+const renderRouteDef = ({path, ...rest}) => (path ? <Route path={path} {...rest} /> : null)
+
 const AppLayout = () => {
   const classes = useAppStyles()
   const {translate} = useI18n()
+
+  const combinedBlockchainPath = routeTo._anyOf([routeTo.blockchain(), routeTo.home()])
 
   return (
     <Grid container direction="column" className={classes.mainWrapper} wrap="nowrap">
@@ -195,20 +198,20 @@ const AppLayout = () => {
             <Switch>
               <Redirect exact from="/" to={routeTo.home()} />
 
-              <Route path={`:path(${routeTo.home()}|${routeTo.blockchain()})`}>
-                <BlockchainHeader />
-                <Route exact path={routeTo.home()} component={Home} />
-                <Route path={routeTo.blockchain()} component={Blockchain} />
-              </Route>
-
-              {config.showStakingData && (
-                <Route path={routeTo.staking.home()} component={Staking} />
+              {combinedBlockchainPath && (
+                <Route path={combinedBlockchainPath}>
+                  <BlockchainHeader />
+                  {routeTo.home() && <Route exact path={routeTo.home()} component={Home} />}
+                  {routeTo.blockchain() && (
+                    <Route path={routeTo.blockchain()} component={Blockchain} />
+                  )}
+                </Route>
               )}
-              {config.showStakingData && <Route path={routeTo.more()} component={More} />}
-              <Route exact path={routeTo.termsOfUse()} component={Terms} />
-              <Route exact path={routeTo.privacy()} component={Privacy} />
-
-              {!config.isProduction && <Route exact path="/__env__" component={EnvOverrides} />}
+              {renderRouteDef({path: routeTo.staking.home(), component: Staking})}
+              {renderRouteDef({exact: true, path: routeTo.more(), component: More})}
+              {renderRouteDef({exact: true, path: routeTo.termsOfUse(), component: Terms})}
+              {renderRouteDef({exact: true, path: routeTo.privacy(), component: Privacy})}
+              {renderRouteDef({exact: true, path: routeTo.envOverrides(), component: EnvOverrides})}
               <Route component={PageNotFound} />
             </Switch>
           </Grid>
