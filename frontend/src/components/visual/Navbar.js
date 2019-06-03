@@ -88,7 +88,7 @@ const DisabledLink = ({label, disabledText, className}) => {
 
 const NavMenuItem = ({disabledText, label, link, isMobile}) => {
   const classes = useStyles()
-  return disabledText ? (
+  return !link ? (
     <DisabledLink {...{label, disabledText}} className={cn(isMobile && classes.mobileLink)} />
   ) : (
     <NavLink className={cn(classes.link, isMobile && classes.mobileLink)} to={link}>
