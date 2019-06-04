@@ -20,6 +20,9 @@ const useStyles = makeStyles((theme) => ({
   message: {
     marginBottom: theme.spacing.unit * 3,
   },
+  image: {
+    maxWidth: '100%',
+  },
 }))
 
 const PageNotFound = () => {
@@ -43,7 +46,7 @@ const PageNotFound = () => {
       <Typography className={classes.message} variant="h4">
         {tr(messages.notFound)}
       </Typography>
-      <img src={errorImage} alt="" />
+      <img src={errorImage} alt="" className={classes.image} />
     </Grid>
   )
 }
