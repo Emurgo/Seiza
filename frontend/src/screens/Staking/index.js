@@ -124,6 +124,12 @@ const LayoutedPeople = () => (
   </CenteredLayout>
 )
 
+const StakingPageNotFound = () => (
+  <CenteredLayout>
+    <PageNotFound />
+  </CenteredLayout>
+)
+
 const PoolListQuerySynchronizer = synchronizedScreenFactory(
   LayoutedStakePoolList,
   useSetListScreenStorageFromQuery
@@ -205,7 +211,7 @@ export default () => {
           <Route exact path={routeTo.staking.charts()} component={ChartsQuerySynchronizer} />
           <Route exact path={routeTo.staking.location()} component={LocationQuerySynchronizer} />
           <Route exact path={routeTo.staking.people()} component={PeopleQuerySynchronizer} />
-          <Route component={PageNotFound} />
+          <Route component={StakingPageNotFound} />
         </Switch>
       </Grid>
     </StakingContextProvider>
