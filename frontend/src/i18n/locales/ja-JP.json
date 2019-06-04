@@ -47,7 +47,7 @@
   "components.visual.Footer.subscribeHeader": "メールマガジンの登録",
   "components.visual.Footer.subscribeInfo": "購読することで、当社の{privacyLink}に従って新しいフィーチャーや製品に関するニュースや最新情報を受け取ることに同意します。",
   "components.visual.Footer.subscribeSuccess": "登録が完了しました",
-  "components.visual.Footer.subscribeText": "Seizaに登録して、ステーキングや報酬、新機能に関する最新情報を受け取りましょう。",
+  "components.visual.Footer.subscribeText": "Subscribe to Seiza to receive news and updates about staking, rewards and new features!",
   "components.visual.Footer.subscribeToNewsletter": "メールマガジンの登録をする",
   "components.visual.LoadingError.GENERIC": "データの読み込み時にエラーが発生しました",
   "components.visual.LoadingError.NETWORK_ERROR": "バックエンドとの通信中に問題が発生しました",
