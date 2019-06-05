@@ -24,7 +24,7 @@ const text = defineMessages({
 })
 
 const useSearchData = (searchQuery, skip) => {
-  const {error, loading, data} = useQuery(
+  const {error, loading, data, refetch} = useQuery(
     gql`
       query($searchQuery: String!) {
         blockChainSearch(query: $searchQuery) {
@@ -52,12 +52,14 @@ const useSearchData = (searchQuery, skip) => {
       variables: {searchQuery},
       fetchPolicy: APOLLO_CACHE_OPTIONS.NO_CACHE,
       skip,
+      // So that we get `loading` after `refetch` is called
+      notifyOnNetworkStatusChange: true,
     }
   )
 
   const matchedItems = idx(data, (_) => _.blockChainSearch.items) || []
   assert(matchedItems.length <= 1)
-  return {error, loading, searchResult: matchedItems.length ? matchedItems[0] : null}
+  return {error, loading, refetch, searchResult: matchedItems.length ? matchedItems[0] : null}
 }
 
 const getRedirectUrl = (analytics, searchResult) => {
@@ -157,7 +159,7 @@ const Search = ({isMobile = false}: SearchProps) => {
   const [searchText, setSearchText] = useState('')
 
   const skip = !searchQuery
-  const {error, loading, searchResult} = useSearchData(searchQuery, skip)
+  const {error, loading, refetch, searchResult} = useSearchData(searchQuery, skip)
 
   useEffect(() => {
     if (searchResult) {
@@ -179,8 +181,13 @@ const Search = ({isMobile = false}: SearchProps) => {
       const trimmed = value.trim()
       setSearchQuery(trimmed)
       setSearchText(trimmed)
+
+      // We want to re-run search even for same query when user submits again
+      // useQuery ignores that case even with fetchPolicy: no-cache,
+      // probably because of possible infinite-rerender loop
+      trimmed === searchQuery && refetch()
     },
-    [setSearchQuery, setSearchText]
+    [setSearchQuery, setSearchText, searchQuery, refetch]
   )
 
   const onAlertClose = useCallback(() => setSearchQuery(''), [setSearchQuery])
