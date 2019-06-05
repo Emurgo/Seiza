@@ -224,7 +224,6 @@
   "screens.Blockchain.Transaction.index.fees": "Transaction Fees:",
   "screens.Blockchain.Transaction.index.header": "Transaction",
   "screens.Blockchain.Transaction.index.notAvailable": "N/A",
-  "screens.Blockchain.Transaction.index.size": "Size:",
   "screens.Blockchain.Transaction.index.slot": "Slot:",
   "screens.Blockchain.Transaction.index.transactionId": "Transaction Id",
   "screens.Footer.MainFooter.copyright": "All rights reserved",
