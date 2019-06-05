@@ -13,6 +13,7 @@ import type {ShowSign} from '@/i18n/helpers'
 import {useI18n} from '@/i18n/helpers'
 import useCurrency from '@/components/hooks/useCurrency'
 import LoadingDots from './LoadingDots'
+import moment from 'moment-timezone'
 
 const useCurrentPrice = (currency) => {
   const {loading, error, data} = useQuery(
@@ -39,9 +40,35 @@ const useCurrentPrice = (currency) => {
   }
 }
 
+const useHistoricalPrice = (currency, timestamp, shouldFetch) => {
+  const {loading, error, data} = useQuery(
+    gql`
+      query($currency: CurrencyEnum!, $timestamp: Timestamp!) {
+        averageDailyPrice(currency: $currency, timestamp: $timestamp)
+      }
+    `,
+    {
+      variables: {
+        currency,
+        timestamp: moment(timestamp),
+      },
+      skip: !shouldFetch,
+    }
+  )
+
+  const price = idx(data, (_) => _.averageDailyPrice)
+
+  return {
+    loading,
+    error,
+    price,
+  }
+}
+
 const tooltipMessages = defineMessages({
   priceError: 'Could not load price',
   currentPrice: '~{value}',
+  historyPrice: '(~{value} at time)',
 })
 
 const convertAdaToFiat = (amount: string, rate: number): number => {
@@ -49,24 +76,54 @@ const convertAdaToFiat = (amount: string, rate: number): number => {
   return (parseInt(amount, 10) * rate) / 1000000
 }
 
-const AdaFiatTooltip = ({value}) => {
+const AdaFiatTooltip = ({value, timestamp}) => {
+  const {formatFiat, translate: tr} = useI18n()
   const [currency] = useCurrency()
   const {loading, error, price} = useCurrentPrice(currency)
-  const {formatFiat, translate: tr} = useI18n()
+
+  const isHistoricalTimestamp = moment(timestamp)
+    .utc()
+    .startOf('day')
+    .isBefore(
+      moment()
+        .utc()
+        .startOf('day')
+    )
+
+  const {loading: historyLoading, error: historyError, price: historyPrice} = useHistoricalPrice(
+    currency,
+    timestamp,
+    isHistoricalTimestamp
+  )
+
+  const _format = (value, rate) =>
+    formatFiat(convertAdaToFiat(value, rate || 0), {
+      currency,
+      currencyDisplay: 'code',
+      digits: 2,
+    })
+
   return (
-    <div>
-      {loading ? (
+    <div style={{minWidth: 100}}>
+      {loading || (isHistoricalTimestamp && historyLoading) ? (
         <LoadingDots />
-      ) : error || !price ? (
+      ) : error || (isHistoricalTimestamp && historyError) || !price ? (
         tr(tooltipMessages.priceError)
       ) : (
-        tr(tooltipMessages.currentPrice, {
-          value: formatFiat(convertAdaToFiat(value, price), {
-            currency,
-            currencyDisplay: 'code',
-            digits: 2,
-          }),
-        })
+        <React.Fragment>
+          <div style={{textAlign: 'right'}}>
+            {tr(tooltipMessages.currentPrice, {
+              value: _format(value, price),
+            })}
+          </div>
+          <div>
+            {historyPrice != null &&
+              isHistoricalTimestamp &&
+              tr(tooltipMessages.historyPrice, {
+                value: _format(value, historyPrice),
+              })}
+          </div>
+        </React.Fragment>
       )}
     </div>
   )
@@ -78,6 +135,7 @@ type Props = {|
   +showCurrency?: boolean,
   +showSign?: ShowSign,
   +colorful?: boolean,
+  +timestamp?: any,
 |}
 
 const usePlusStyles = makeStyles(({palette}) => ({
@@ -149,7 +207,14 @@ const useAdaValueStyles = ({value, colorful}) => {
 }
 
 // TODO: once needed, add variant prop
-const AdaValue = ({value, noValue, showCurrency, showSign = 'auto', colorful = false}: Props) => {
+const AdaValue = ({
+  value,
+  noValue,
+  showCurrency,
+  showSign = 'auto',
+  colorful = false,
+  timestamp,
+}: Props) => {
   const {formatAdaSplit} = useI18n()
 
   const fontClasses = useFontStyles()
@@ -166,7 +231,11 @@ const AdaValue = ({value, noValue, showCurrency, showSign = 'auto', colorful = f
   const {integral, fractional} = formatAdaSplit(value, {showSign})
 
   return (
-    <Tooltip enterDelay={250} title={<AdaFiatTooltip value={value} />} placement="top">
+    <Tooltip
+      enterDelay={250}
+      title={<AdaFiatTooltip value={value} timestamp={timestamp} />}
+      placement="top"
+    >
       <span>
         <Typography
           variant="body1"

@@ -28,9 +28,43 @@ const fetchMarketHistory = async ({pricingAPI}, currency) => {
   }
 }
 
+
+const dailyAvgCache = {}
+
+const fetchAverageDailyPrice = async ({pricingAPI}, currency, timestamp) => {
+
+  const startOfDay = Math.floor(moment(timestamp).unix() / 86400) * 86400
+
+  const notOlderThanDay = startOfDay > moment().unix() - 86400
+
+  if (notOlderThanDay) {
+    // return current price
+    return await pricingAPI.get('price', {
+      fsym: 'ADA',
+      tsyms: currency,
+    }).then((res) => res[currency])
+  }
+
+  // return cached value
+  if (dailyAvgCache[startOfDay]) {
+    return dailyAvgCache[startOfDay]
+  }
+
+  // run history request
+  dailyAvgCache[startOfDay] = await pricingAPI.get('dayAvg', {
+    fsym: 'ADA',
+    tsym: currency,
+    toTs: startOfDay,
+  }).then((res) => res[currency])
+
+  return dailyAvgCache[startOfDay]
+}
+
 export default {
   Query: {
     marketHistory: (root: any, args: any, context: any) =>
       fetchMarketHistory(context, args.currency),
+    averageDailyPrice: (root: any, args: any, context: any) =>
+      fetchAverageDailyPrice(context, args.currency, args.timestamp),
   },
 }
