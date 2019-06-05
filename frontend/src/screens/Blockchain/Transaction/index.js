@@ -102,7 +102,7 @@ const TransactionSummary = ({loading, transaction}) => {
       defaultValue: NA,
       format: formatTimestamp.FMT_MONTH_NUMERAL,
     }),
-    fees: <AdaValue value={__.fees} noValue={NA} showCurrency />,
+    fees: <AdaValue value={__.fees} noValue={NA} showCurrency timestamp={__.timeIssued} />,
   }
 
   return (

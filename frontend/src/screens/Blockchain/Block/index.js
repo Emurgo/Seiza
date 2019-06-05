@@ -87,8 +87,8 @@ const BlockSummaryCard = ({blockData, loading}) => {
     issuedAt: formatTimestamp(__.issuedAt, {defaultValue: NA}),
     txCount: formatInt(__.txCount, {defaultValue: NA}),
     blockHeight: formatInt(__.blockHeight, {defaultValue: NA}),
-    totalSent: <AdaValue value={__.totalSent} noValue={NA} showCurrency />,
-    totalFees: <AdaValue value={__.totalFees} noValue={NA} showCurrency />,
+    totalSent: <AdaValue value={__.totalSent} noValue={NA} showCurrency timestamp={__.issuedAt} />,
+    totalFees: <AdaValue value={__.totalFees} noValue={NA} showCurrency timestamp={__.issuedAt} />,
   }
 
   return (
@@ -181,7 +181,7 @@ const transactionMessages = defineMessages({
   outputsCount: 'Number of Outputs:',
 })
 
-const TransactionList = ({transactions, loading}) => {
+const TransactionList = ({transactions, loading, timestamp}) => {
   const {Row, Label, Value} = SummaryCard
   const {translate: tr, formatInt} = useI18n()
   const classes = useStyles()
@@ -196,7 +196,7 @@ const TransactionList = ({transactions, loading}) => {
             <Row>
               <Label>{tr(transactionMessages.value)}</Label>
               <Value>
-                <AdaValue value={tx.totalInput} showCurrency />
+                <AdaValue value={tx.totalInput} showCurrency timestamp={timestamp} />
               </Value>
             </Row>
             <Row>
@@ -246,6 +246,7 @@ const BlockScreen = () => {
             <TransactionList
               loading={loading}
               transactions={idx(blockData, (_) => _.transactions)}
+              timestamp={idx(blockData, (_) => _.timeIssued)}
             />
           </React.Fragment>
         )}

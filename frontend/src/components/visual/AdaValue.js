@@ -72,15 +72,30 @@ const tooltipMessages = defineMessages({
 })
 
 const convertAdaToFiat = (amount: string, rate: number): number => {
-  // TODO: use bignumber?
+  // Note: bignumber not needed as the rate is anyway only approximate
   return (parseInt(amount, 10) * rate) / 1000000
 }
+
+const useTooltipStyles = makeStyles({
+  wrapper: {
+    // Needed because when tooltip opens with
+    // loading state, it gets too narrow and expanding
+    // it later leaves it too much to the right
+    minWidth: 70,
+  },
+  value: {
+    textAlign: 'right',
+  },
+})
 
 const AdaFiatTooltip = ({value, timestamp}) => {
   const {formatFiat, translate: tr} = useI18n()
   const [currency] = useCurrency()
   const {loading, error, price} = useCurrentPrice(currency)
+  const classes = useTooltipStyles()
 
+  // Note: we need to compare UTC start of days as server gives us
+  // UTC-day averages
   const isHistoricalTimestamp = moment(timestamp)
     .utc()
     .startOf('day')
@@ -104,19 +119,19 @@ const AdaFiatTooltip = ({value, timestamp}) => {
     })
 
   return (
-    <div style={{minWidth: 100}}>
+    <div className={classes.wrapper}>
       {loading || (isHistoricalTimestamp && historyLoading) ? (
         <LoadingDots />
       ) : error || (isHistoricalTimestamp && historyError) || !price ? (
         tr(tooltipMessages.priceError)
       ) : (
         <React.Fragment>
-          <div style={{textAlign: 'right'}}>
+          <div className={classes.value}>
             {tr(tooltipMessages.currentPrice, {
               value: _format(value, price),
             })}
           </div>
-          <div>
+          <div className={classes.value}>
             {historyPrice != null &&
               isHistoricalTimestamp &&
               tr(tooltipMessages.historyPrice, {
