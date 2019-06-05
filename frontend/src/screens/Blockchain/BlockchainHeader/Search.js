@@ -9,10 +9,12 @@ import useReactRouter from 'use-react-router'
 import {useQuery} from 'react-apollo-hooks'
 import {defineMessages} from 'react-intl'
 import {makeStyles} from '@material-ui/styles'
-import {Typography} from '@material-ui/core'
+import {Typography, Portal} from '@material-ui/core'
 
 import {useI18n} from '@/i18n/helpers'
 import {Searchbar, LoadingError, Alert} from '@/components/visual'
+import {useSearchbarRefContext} from '@/components/context/SearchbarRef'
+
 import {routeTo} from '@/helpers/routes'
 import {useAnalytics} from '@/helpers/googleAnalytics'
 import {APOLLO_CACHE_OPTIONS} from '@/constants'
@@ -148,6 +150,13 @@ type SearchProps = {|
   isMobile?: boolean,
 |}
 
+const useTextfieldFocus = (defaultValue: boolean) => {
+  const [isFocused, setIsFocused] = useState(defaultValue)
+  const onFocus = useCallback(() => setIsFocused(true), [setIsFocused])
+  const onBlur = useCallback(() => setIsFocused(false), [setIsFocused])
+  return {isFocused, onFocus, onBlur}
+}
+
 const Search = ({isMobile = false}: SearchProps) => {
   const {translate: tr} = useI18n()
   const {history} = useReactRouter()
@@ -194,9 +203,14 @@ const Search = ({isMobile = false}: SearchProps) => {
 
   const showAlert = searchQuery && !error && !loading && !searchResult
 
+  const searchbarRef = useSearchbarRefContext()
+
+  const {isFocused: isSearchbarFocused, onFocus, onBlur} = useTextfieldFocus(false)
+
   return (
     <div className={classes.wrapper}>
       <Searchbar
+        inputProps={{onFocus, onBlur}}
         placeholder={tr(text.searchPlaceholder)}
         value={searchText}
         onChange={onChange}
@@ -231,7 +245,15 @@ const Search = ({isMobile = false}: SearchProps) => {
           />
         )}
       </ReactCSSTransitionGroup>
-      {!isMobile && <SearchHelpText className={showAlert ? classes.helpTextHidden : ''} />}
+      {isMobile ? (
+        <Portal container={searchbarRef.current}>
+          <SearchHelpText
+            className={!isSearchbarFocused || showAlert ? classes.helpTextHidden : ''}
+          />
+        </Portal>
+      ) : (
+        <SearchHelpText className={showAlert ? classes.helpTextHidden : ''} />
+      )}
     </div>
   )
 }
