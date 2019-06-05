@@ -9,10 +9,10 @@ import cn from 'classnames'
 import {routeTo} from './helpers/routes'
 
 import Search from './screens/Blockchain/BlockchainHeader/Search'
-import seizaLogoDesktop from './assets/icons/logo-seiza.svg'
-import seizaLogoMobile from './assets/icons/seiza-symbol.svg'
-import {NavLinks, MobileNavLinks} from '@/components/common/Navbar'
 import {Link} from '@/components/visual'
+import seizaLogoDesktop from '@/static/assets/icons/logo-seiza.svg'
+import seizaLogoMobile from '@/static/assets/icons/seiza-symbol.svg'
+import {NavLinks, MobileNavLinks} from '@/components/common/Navbar'
 
 import {useIsMobile} from '@/components/hooks/useBreakpoints'
 

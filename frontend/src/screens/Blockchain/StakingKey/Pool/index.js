@@ -17,10 +17,10 @@ import {
   CircularProgressBar,
 } from '@/components/visual'
 import {withI18n} from '@/i18n/helpers'
-import AdaIcon from '@/assets/icons/transaction-id.svg'
 import {getStakePoolStakingKey} from '../mockedData'
-import RewardAddressIcon from '@/assets/icons/reward-address.svg'
-import CertificateIcon from '@/assets/icons/certificate.svg'
+import AdaIcon from '@/static/assets/icons/transaction-id.svg'
+import RewardAddressIcon from '@/static/assets/icons/reward-address.svg'
+import CertificateIcon from '@/static/assets/icons/certificate.svg'
 import Tabs from './Tabs'
 
 const useStyles = makeStyles((theme) => ({

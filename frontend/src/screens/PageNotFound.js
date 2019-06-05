@@ -5,7 +5,7 @@ import {defineMessages} from 'react-intl'
 
 import {useI18n} from '@/i18n/helpers'
 import {useAnalytics} from '@/helpers/googleAnalytics'
-import errorImage from '@/assets/error-screen.svg'
+import errorImage from '@/static/assets/error-screen.svg'
 
 const messages = defineMessages({
   notFoundHeader: 'We are sorry!',

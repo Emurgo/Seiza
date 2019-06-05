@@ -8,7 +8,7 @@ import {defineMessages} from 'react-intl'
 
 import {useI18n} from '@/i18n/helpers'
 import {useBackendSyncingStatus} from '@/components/hooks/useBackendSyncingStatus'
-import SyncingAlertIcon from '@/assets/icons/syncing-alert.svg'
+import SyncingAlertIcon from '@/static/assets/icons/syncing-alert.svg'
 
 const text = defineMessages({
   title: 'We are facing syncing issues on the server:',
@@ -52,6 +52,7 @@ export default () => {
       alignItems="center"
     >
       <img alt="" src={SyncingAlertIcon} className={classes.paddedRight} />
+
       <Typography
         variant="overline"
         className={cn(classes.text, classes.mainText, classes.paddedRight)}

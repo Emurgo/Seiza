@@ -7,7 +7,7 @@ import {defineMessages} from 'react-intl'
 import ReactMarkdown from 'react-markdown'
 
 import {Card} from '@/components/visual'
-import iconEpoch from '@/assets/icons/metrics-epoch.svg'
+import iconEpoch from '@/static/assets/icons/metrics-epoch.svg'
 import {withI18n} from '@/i18n/helpers'
 
 const messages = defineMessages({

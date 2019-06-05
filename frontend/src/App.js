@@ -3,16 +3,13 @@
 import cn from 'classnames'
 import React from 'react'
 import {BrowserRouter as Router, Route, Switch, Redirect} from 'react-router-dom'
-import {compose} from 'redux'
 import {CssBaseline, Grid} from '@material-ui/core'
-import {makeStyles, ThemeProvider} from '@material-ui/styles'
+import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
 
 import {routeTo} from './helpers/routes'
-import {provideIntl} from './components/HOC/intl'
-import {provideTheme, withTheme, THEME_DEFINITIONS} from './components/HOC/theme'
 import Footer from './screens/Footer'
-import {useI18n, InjectHookIntlContext} from '@/i18n/helpers'
+import {useI18n} from '@/i18n/helpers'
 import {AutoSyncProvider} from './screens/Staking/context/autoSync'
 
 import Terms from './screens/Legal/Terms'
@@ -33,7 +30,6 @@ import {CurrencyProvider} from '@/components/hooks/useCurrency'
 import {SearchbarRefProvider} from '@/components/context/SearchbarRef'
 import EnvOverrides from './screens/EnvOverrides'
 import TopBar from './TopBar'
-import './App.css'
 
 const navigationMessages = defineMessages({
   home: 'Home',
@@ -172,16 +168,4 @@ const App = () => (
   </DefaultErrorBoundary>
 )
 
-const ThemeWrapper = ({currentTheme}) => (
-  <ThemeProvider theme={THEME_DEFINITIONS[currentTheme]}>
-    <InjectHookIntlContext>
-      <App />
-    </InjectHookIntlContext>
-  </ThemeProvider>
-)
-
-export default compose(
-  provideIntl,
-  provideTheme,
-  withTheme
-)(ThemeWrapper)
+export default App

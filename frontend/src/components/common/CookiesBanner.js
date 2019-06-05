@@ -10,8 +10,8 @@ import {Card, Link, ContentSpacing, Button} from '@/components/visual'
 import {routeTo} from '@/helpers/routes'
 import {useI18n} from '@/i18n/helpers'
 import {useCookiesContext} from '@/components/context/CookiesContext'
-import cookiesIcon from '@/assets/icons/cookies.svg'
 import {isCrawler} from '@/helpers/userAgent'
+import cookiesIcon from '@/static/assets/icons/cookies.svg'
 
 const messages = defineMessages({
   header: 'We use cookies!',

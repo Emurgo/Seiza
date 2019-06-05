@@ -1,55 +1,37 @@
-import React from 'react'
-import {compose} from 'redux'
-import {withState, withHandlers} from 'recompose'
-import {IntlProvider, addLocaleData} from 'react-intl'
-import localStorage from '@/helpers/localStorage'
-
-// Note: see https://medium.com/@shalkam/create-react-app-i18n-the-easy-way-b05536c594cb
-// for more info
-
-import jaLocaleData from 'react-intl/locale-data/ja'
-import ruLocaleData from 'react-intl/locale-data/ru'
-import esLocaleData from 'react-intl/locale-data/es'
-
-import translations from '@/i18n/locales'
-import config from '@/config'
-
-// Note: This needs to be added otherwise react-intl doesn't know about locale even if you provide
-// translations
-addLocaleData(jaLocaleData)
-
-config.featureEnableRussian && addLocaleData(ruLocaleData)
-config.featureEnableSpanish && addLocaleData(esLocaleData)
+import React, {useContext, useState} from 'react'
+import {parseCookies, setCookie} from 'nookies'
 
 const Context = React.createContext({
   setLanguage: null,
   locale: null,
 })
 
-export const provideIntl = (WrappedComponent) =>
-  compose(
-    withState('locale', 'setLocale', localStorage.getItem('locale') || 'en'),
-    withHandlers({
-      setLocale: ({setLocale}) => (newLocale) => {
-        setLocale(newLocale)
-        localStorage.setItem('locale', newLocale)
-      },
-    })
-  )(({locale, setLocale, ...props}) => (
-    <IntlProvider locale={locale} key={locale} messages={translations[locale]}>
-      <Context.Provider
-        value={{
-          setLocale,
-          locale,
-        }}
-      >
-        <WrappedComponent {...props} />
-      </Context.Provider>
-    </IntlProvider>
-  ))
-
 export const withSetLocale = (WrappedComponent) => (props) => (
   <Context.Consumer>
     {({setLocale, locale}) => <WrappedComponent {...props} setLocale={setLocale} locale={locale} />}
   </Context.Consumer>
 )
+
+// TODO: move this out of this file
+export const IntlContextProvider = ({children}) => {
+  const [locale, setLocale] = useState(parseCookies().locale || 'en')
+  const setLocaleHandler = (newLocale) => {
+    setLocale(newLocale)
+    setCookie({}, 'locale', newLocale)
+  }
+  return (
+    <Context.Provider
+      value={{
+        setLocale: setLocaleHandler,
+        locale,
+      }}
+    >
+      {children}
+    </Context.Provider>
+  )
+}
+
+// TODO: move this out of this file
+export const useLocale = () => {
+  return useContext(Context)
+}

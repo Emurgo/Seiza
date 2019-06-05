@@ -5,8 +5,8 @@ import {Link} from 'react-router-dom'
 import {Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {Button} from '@/components/visual'
-import {ReactComponent as NextIcon} from '@/assets/icons/next-epoch.svg'
-import {ReactComponent as PreviousIcon} from '@/assets/icons/previous-epoch.svg'
+import {ReactComponent as NextIcon} from '@/static/assets/icons/next-epoch.svg'
+import {ReactComponent as PreviousIcon} from '@/static/assets/icons/previous-epoch.svg'
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {

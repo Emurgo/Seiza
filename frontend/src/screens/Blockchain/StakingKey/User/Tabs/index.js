@@ -10,9 +10,9 @@ import TransactionsTab from '../../shared/Tabs/TransactionsTab'
 
 // Note: We have "currentColor" inside of these svg files
 // which magically uses current inherited CSS color
-import {ReactComponent as DelegatedPoolIcon} from '@/assets/icons/delegated-stakepool-info.svg'
-import {ReactComponent as HistoryIcon} from '@/assets/icons/stakepool-history.svg'
-import {ReactComponent as TransactionsIcon} from '@/assets/icons/transactions.svg'
+import {ReactComponent as DelegatedPoolIcon} from '@/static/assets/icons/delegated-stakepool-info.svg'
+import {ReactComponent as HistoryIcon} from '@/static/assets/icons/stakepool-history.svg'
+import {ReactComponent as TransactionsIcon} from '@/static/assets/icons/transactions.svg'
 
 const messages = defineMessages({
   delegatedPoolInfoTabName: 'Delegated Pool Info',

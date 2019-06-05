@@ -4,6 +4,7 @@ import {OVERRIDABLE_ENV} from '../config'
 import {SimpleLayout} from '@/components/visual'
 import {Card} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
+import localStorage from '@/helpers/localStorage'
 
 const useStyles = makeStyles({
   card: {

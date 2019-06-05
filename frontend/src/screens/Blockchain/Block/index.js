@@ -19,7 +19,7 @@ import {
   Link,
 } from '@/components/visual'
 
-import blockIcon from '@/assets/icons/metrics-blocks.svg'
+import blockIcon from '@/static/assets/icons/metrics-blocks.svg'
 import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
 import {useAnalytics} from '@/helpers/googleAnalytics'
 

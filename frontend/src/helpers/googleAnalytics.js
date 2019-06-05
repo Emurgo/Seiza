@@ -1,5 +1,6 @@
 // @flow
-
+// TODO: check if google analytics tracks events correctly
+// Jira issue: EM-270
 import React, {useContext, useEffect} from 'react'
 
 import _ from 'lodash'
@@ -8,8 +9,8 @@ import config from '@/config'
 import {useCookiesContext} from '@/components/context/CookiesContext'
 
 // <<<< Google code (https://developers.google.com/analytics/devguides/collection/gtagjs/)
-window.dataLayer = window.dataLayer || []
 export function gtag(...args: any) {
+  window.dataLayer = window.dataLayer || []
   // Note: `...args` are not used instead `arguments` are.
   // As those dont appear to be the same object and google analytics uses `arguments`,
   // we use `...args` only to disable flow errors.
