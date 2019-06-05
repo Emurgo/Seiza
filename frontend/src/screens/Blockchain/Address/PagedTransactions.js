@@ -42,7 +42,9 @@ const useStyles = makeStyles((theme) => ({
     borderBottom: `1px solid ${theme.palette.unobtrusiveContentHighlight}`,
   },
   leftSide: {
-    borderRight: `1px solid ${theme.palette.contentUnfocus}`,
+    [theme.breakpoints.up('md')]: {
+      borderRight: `1px solid ${theme.palette.contentUnfocus}`,
+    },
   },
   headerWrapper: {
     // TODO: change to mobile first
