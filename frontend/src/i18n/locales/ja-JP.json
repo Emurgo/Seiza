@@ -224,7 +224,6 @@
   "screens.Blockchain.Transaction.index.fees": "トランザクション手数料:",
   "screens.Blockchain.Transaction.index.header": "取引",
   "screens.Blockchain.Transaction.index.notAvailable": "N/A",
-  "screens.Blockchain.Transaction.index.size": "サイズ:",
   "screens.Blockchain.Transaction.index.slot": "スロット:",
   "screens.Blockchain.Transaction.index.transactionId": "取引ID",
   "screens.Footer.MainFooter.copyright": "転載禁止",

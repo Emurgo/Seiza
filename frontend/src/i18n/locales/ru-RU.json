@@ -224,7 +224,6 @@
   "screens.Blockchain.Transaction.index.fees": "Комиссия:",
   "screens.Blockchain.Transaction.index.header": "Транзакция",
   "screens.Blockchain.Transaction.index.notAvailable": "Н/П",
-  "screens.Blockchain.Transaction.index.size": "Размер:",
   "screens.Blockchain.Transaction.index.slot": "Слот:",
   "screens.Blockchain.Transaction.index.transactionId": "Id транзакции",
   "screens.Footer.MainFooter.copyright": "Все права защищены",
