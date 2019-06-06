@@ -50,7 +50,7 @@ const useHistoricalPrice = (currency, timestamp, shouldFetch) => {
     {
       variables: {
         currency,
-        timestamp: moment(timestamp),
+        timestamp: moment(timestamp).utc().startOf('day').toISOString(),
       },
       skip: !shouldFetch,
     }
