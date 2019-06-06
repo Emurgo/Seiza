@@ -38,6 +38,7 @@ import {AnalyticsProvider} from '@/helpers/googleAnalytics' // TODO move to cont
 import {CurrencyProvider} from '@/components/hooks/useCurrency'
 import {SearchbarRefProvider} from '@/components/context/SearchbarRef'
 import Search from './screens/Blockchain/BlockchainHeader/Search'
+import EnvOverrides from './screens/EnvOverrides'
 
 import './App.css'
 import seizaLogo from './assets/icons/logo-seiza.svg'
@@ -208,6 +209,8 @@ const AppLayout = () => {
               {config.showStakingData && <Route path={routeTo.more()} component={More} />}
               <Route exact path={routeTo.termsOfUse()} component={Terms} />
               <Route exact path={routeTo.privacy()} component={Privacy} />
+
+              {!config.isProduction && <Route exact path="/__env__" component={EnvOverrides} />}
               <Route component={PageNotFound} />
             </Switch>
           </Grid>

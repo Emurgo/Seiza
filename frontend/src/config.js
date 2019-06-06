@@ -4,21 +4,47 @@ import assert from 'assert'
 
 const isProduction = process.env.NODE_ENV === 'production'
 
-const graphQLServerUrl = process.env.REACT_APP_GRAPHQL_SERVER_URL
+// clone
+const env = {
+  ...process.env,
+}
+
+export const OVERRIDABLE_ENV = [
+  'REACT_APP_GRAPHQL_SERVER_URL',
+  'REACT_APP_GOOGLE_ANALYTICS_ID',
+  'REACT_APP_SENTRY_DSN',
+  'REACT_APP_SENTRY_RELEASE_VERSION',
+  'REACT_APP_GOOGLE_MAPS_API_KEY',
+  'REACT_APP_SHOW_STAKING_DATA',
+]
+
+if (!isProduction) {
+  OVERRIDABLE_ENV.forEach((_key) => {
+    const key = `env.${_key}`
+    const value = localStorage.getItem(key)
+    if (value != null) {
+      // eslint-disable-next-line no-console
+      console.warn(`Overriding process.env.${_key} from "${env[_key]}" to "${value}"`)
+      env[_key] = value
+    }
+  })
+}
+
+const graphQLServerUrl = env.REACT_APP_GRAPHQL_SERVER_URL
 assert(graphQLServerUrl)
 
-const googleAnalyticsId = process.env.REACT_APP_GOOGLE_ANALYTICS_ID
+const googleAnalyticsId = env.REACT_APP_GOOGLE_ANALYTICS_ID
 isProduction && assert(googleAnalyticsId)
 
-const sentryDSN = process.env.REACT_APP_SENTRY_DSN
+const sentryDSN = env.REACT_APP_SENTRY_DSN
 isProduction && assert(sentryDSN)
 
-const sentryRelease = process.env.REACT_APP_SENTRY_RELEASE_VERSION
+const sentryRelease = env.REACT_APP_SENTRY_RELEASE_VERSION
 isProduction && assert(sentryRelease)
 
 export default {
-  googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
-  showStakingData: process.env.REACT_APP_SHOW_STAKING_DATA === 'true',
+  googleMapsApiKey: env.REACT_APP_GOOGLE_MAPS_API_KEY,
+  showStakingData: env.REACT_APP_SHOW_STAKING_DATA === 'true',
   graphQLServerUrl: graphQLServerUrl || '', // flow does not know about above assert
   googleAnalyticsId: googleAnalyticsId || '', // flow does not know about above assert
   sentry: {
