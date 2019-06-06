@@ -125,52 +125,40 @@ const useFontStyles = makeStyles((theme) => ({
   },
 }))
 
-type AdaValueStyleType = 'NEUTRAL' | 'POSITIVE' | 'NEGATIVE'
+type ColorType = 'neutral' | 'plus' | 'minus'
 
-const getAdaValueStyleType = ({value, colorful}): AdaValueStyleType => {
-  if (!colorful) {
-    return 'NEUTRAL'
-    // TODO: Math.sign works correctly with strings
-    // We could use parseFloat, but it has its flaws
-    // (parseFloat("40 years") parsed as 40)
-    // where Math.sign("40 years") returns NaN
-    // $FlowFixMe
-  } else if (Math.sign(value) >= 0) {
-    return 'POSITIVE'
-  } else {
-    return 'NEGATIVE'
-  }
+const getColorType = ({value, colorful}): ColorType => {
+  if (!colorful) return 'neutral'
+
+  // Note: Math.sign works correctly with strings
+  // We could use parseFloat, but it has its flaws
+  // (parseFloat("40 years") parsed as 40)
+  // where Math.sign("40 years") returns NaN
+  // $FlowFixMe
+  return (Math.sign(value) >= 0) ? 'plus' : 'minus'
 }
 
 const useAdaValueStyles = ({value, colorful}) => {
-  const useStyles = () => ({
+  const classes = ({
     plus: usePlusStyles(),
     minus: useMinusStyles(),
     neutral: useNeutralStyles(),
   })
-  const classes = useStyles()
 
-  const adaValueStyleType = getAdaValueStyleType({value, colorful})
-
-  if (adaValueStyleType === 'POSITIVE') {
-    return classes.plus
-  } else if (adaValueStyleType === 'NEGATIVE') {
-    return classes.minus
-  } else {
-    return classes.neutral
-  }
+  return classes[getColorType({value, colorful})]
 }
 
 // TODO: once needed, add variant prop
 const AdaValue = ({value, noValue, showCurrency, showSign = 'auto', colorful = false}: Props) => {
   const {formatAdaSplit} = useI18n()
 
+  const fontClasses = useFontStyles()
   const classes = useAdaValueStyles({
     // Note: we want negative styles if we have value='1234' and showSign="-"
     value: value != null && ['+', '-'].includes(showSign) ? `${showSign}${value}` : value,
     colorful,
   })
-  const fontClasses = useFontStyles()
+
   if (value == null) {
     return noValue || null
   }
