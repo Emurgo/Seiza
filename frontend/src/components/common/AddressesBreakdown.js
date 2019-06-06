@@ -13,7 +13,7 @@ import {
   Card,
 } from '@/components/visual'
 import {makeStyles} from '@material-ui/styles'
-import {Typography, Grid} from '@material-ui/core'
+import {Typography, Grid, Hidden} from '@material-ui/core'
 
 import {useI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
@@ -25,13 +25,17 @@ const messages = defineMessages({
   addressCount: '{count, plural, =0 {# addresses} one {# address} other {# addresses}}',
   from: 'From:',
   to: 'To:',
+  fromSeparator: 'From',
+  toSeparator: 'To',
   seeAll: 'See all addresses',
   hideAll: 'Hide all addresses',
 })
 
 const useCommonStyles = makeStyles((theme) => ({
   leftSide: {
-    borderRight: `1px solid ${theme.palette.contentUnfocus}`,
+    [theme.breakpoints.up('md')]: {
+      borderRight: `1px solid ${theme.palette.contentUnfocus}`,
+    },
   },
   headerContent: {
     justifyContent: 'space-between',
@@ -97,7 +101,35 @@ const Header = ({transaction}) => {
   )
 }
 
+// Note: not sure whether reuse separator styles from Table, for now copying them
+// as they might be styled differently soon
+const useSeparatorStyles = makeStyles((theme) => ({
+  container: {
+    width: '100%',
+    display: 'flex',
+  },
+  separatorLine: {
+    borderBottom: '1px solid #aaa',
+    flexGrow: 1,
+    margin: '10px 10px 10px 10px',
+  },
+}))
+
+const AddressSeparator = ({text}) => {
+  const classes = useSeparatorStyles()
+  return (
+    <div className={classes.container}>
+      <div className={classes.separatorLine} />
+      <Typography variant="body1" inline color="textSecondary">
+        {text}
+      </Typography>
+      <div className={classes.separatorLine} />
+    </div>
+  )
+}
+
 const BreakdownList = ({transaction, targetAddress}) => {
+  const {translate: tr} = useI18n()
   const commonClasses = useCommonStyles()
   const hasTargetAddress = useCallback(
     (inputOrOutput) => targetAddress && inputOrOutput.address58 === targetAddress,
@@ -105,6 +137,9 @@ const BreakdownList = ({transaction, targetAddress}) => {
   )
   return (
     <Grid container direction="row">
+      <Hidden mdUp implementation="css" className="w-100">
+        <AddressSeparator text={tr(messages.fromSeparator)} />
+      </Hidden>
       <Grid item xs={12} md={6} className={commonClasses.leftSide}>
         {transaction.inputs.map((input, index, items) => (
           <BreakdownItem
@@ -116,6 +151,9 @@ const BreakdownList = ({transaction, targetAddress}) => {
           />
         ))}
       </Grid>
+      <Hidden mdUp implementation="css" className="w-100">
+        <AddressSeparator text={tr(messages.toSeparator)} />
+      </Hidden>
       <Grid item xs={12} md={6}>
         {transaction.outputs.map((output, index, items) => (
           <BreakdownItem
