@@ -16,6 +16,10 @@ export const OVERRIDABLE_ENV = [
   'REACT_APP_SENTRY_RELEASE_VERSION',
   'REACT_APP_GOOGLE_MAPS_API_KEY',
   'REACT_APP_SHOW_STAKING_DATA',
+
+  // temporary
+  'REACT_APP_FEATURE_ENABLE_RUSSIAN',
+  'REACT_APP_FEATURE_ENABLE_SPANISH',
 ]
 
 if (!isProduction) {
@@ -43,13 +47,18 @@ const sentryRelease = env.REACT_APP_SENTRY_RELEASE_VERSION
 isProduction && assert(sentryRelease)
 
 export default {
+  isProduction,
+
   googleMapsApiKey: env.REACT_APP_GOOGLE_MAPS_API_KEY,
-  showStakingData: env.REACT_APP_SHOW_STAKING_DATA === 'true',
   graphQLServerUrl: graphQLServerUrl || '', // flow does not know about above assert
   googleAnalyticsId: googleAnalyticsId || '', // flow does not know about above assert
   sentry: {
     dsn: sentryDSN || '', // flow does not know about above assert
     releaseVersion: sentryRelease || '', // flow does not know about above assert
   },
-  isProduction,
+
+  showStakingData: env.REACT_APP_SHOW_STAKING_DATA === 'true',
+
+  featureEnableRussian: env.REACT_APP_FEATURE_ENABLE_RUSSIAN === 'true',
+  featureEnableSpanish: env.REACT_APP_FEATURE_ENABLE_SPANISH === 'true',
 }
