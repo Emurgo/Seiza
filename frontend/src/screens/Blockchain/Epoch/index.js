@@ -114,6 +114,10 @@ const EpochSummaryCard = ({epoch, loading}) => {
   const {translate, formatInt} = useI18n()
   const NA = translate(messages.notAvailable)
 
+  // Note: we use end time as a proxy for ADA pricing valuation
+  // to that epoch. This seems to be most reasonable solution
+  const endTime = idx(epoch, (_) => _.endTime)
+
   const data1 = {
     blocksCount: translate(messages.blocksOutOfSlots, {
       blocks: formatInt(idx(epoch, (_) => _.summary.blocksCreated), {defaultValue: NA}),
@@ -121,10 +125,20 @@ const EpochSummaryCard = ({epoch, loading}) => {
     }),
     txCount: formatInt(idx(epoch, (_) => _.summary.transactionCount), {defaultValue: NA}),
     totalAdaSupply: (
-      <AdaValue value={idx(epoch, (_) => _.summary.totalAdaSupply)} noValue={NA} showCurrency />
+      <AdaValue
+        value={idx(epoch, (_) => _.summary.totalAdaSupply)}
+        noValue={NA}
+        showCurrency
+        timestamp={endTime}
+      />
     ),
     epochFees: (
-      <AdaValue value={idx(epoch, (_) => _.summary.epochFees)} noValue={NA} showCurrency />
+      <AdaValue
+        value={idx(epoch, (_) => _.summary.epochFees)}
+        noValue={NA}
+        showCurrency
+        timestamp={endTime}
+      />
     ),
   }
 
@@ -151,13 +165,19 @@ const EpochSummaryCard = ({epoch, loading}) => {
 
   const data2 = {
     totalAdaStaked: (
-      <AdaValue value={idx(epoch, (_) => _.summary.totalAdaStaked)} noValue={NA} showCurrency />
+      <AdaValue
+        value={idx(epoch, (_) => _.summary.totalAdaStaked)}
+        noValue={NA}
+        showCurrency
+        timestamp={endTime}
+      />
     ),
     totalStakingRewards: (
       <AdaValue
         value={idx(epoch, (_) => _.summary.totalStakingRewards)}
         noValue={NA}
         showCurrency
+        timestamp={endTime}
       />
     ),
     stakingKeysDelegating: formatInt(idx(epoch, (_) => _.summary.delegatingStakingKeysCount), {

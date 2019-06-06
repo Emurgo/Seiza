@@ -161,7 +161,7 @@ const BlocksTable = ({blocks, columns, loading, error, nextPageNumber, pageBound
         icon: TotalSentIcon,
         label: tr(tableMessages.totalSent),
       },
-      cell: (block) => <AdaValue key={5} value={block.totalSent} />,
+      cell: (block) => <AdaValue key={5} value={block.totalSent} timestamp={block.timeIssued} />,
       align: 'right',
     },
     [FEES]: {
@@ -169,7 +169,7 @@ const BlocksTable = ({blocks, columns, loading, error, nextPageNumber, pageBound
         icon: FeeIcon,
         label: tr(tableMessages.fees),
       },
-      cell: (block) => <AdaValue key={6} value={block.totalFees} />,
+      cell: (block) => <AdaValue key={6} value={block.totalFees} timestamp={block.timeIssued} />,
       align: 'right',
     },
     [SIZE]: {

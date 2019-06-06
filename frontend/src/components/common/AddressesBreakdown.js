@@ -2,6 +2,8 @@
 import React, {useCallback} from 'react'
 import cn from 'classnames'
 import {defineMessages} from 'react-intl'
+import idx from 'idx'
+
 import WithModalState from '@/components/headless/modalState'
 import {
   ExpandableCardContent,
@@ -61,6 +63,9 @@ const HeaderContent = ({caption, value}) => {
 const Header = ({transaction}) => {
   const {translate: tr} = useI18n()
   const commonClasses = useCommonStyles()
+
+  const timestamp = idx(transaction, (_) => _.block.timeIssued)
+
   return (
     <Grid container direction="row">
       <Grid item xs={12} md={6} className={commonClasses.leftSide}>
@@ -76,7 +81,14 @@ const Header = ({transaction}) => {
                 </Typography>
               </React.Fragment>
             }
-            value={<AdaValue value={transaction.totalInput} showCurrency showSign="-" />}
+            value={
+              <AdaValue
+                value={transaction.totalInput}
+                showCurrency
+                showSign="-"
+                timestamp={timestamp}
+              />
+            }
           />
         </ContentSpacing>
       </Grid>
@@ -93,7 +105,14 @@ const Header = ({transaction}) => {
                 </Typography>
               </React.Fragment>
             }
-            value={<AdaValue value={transaction.totalOutput} showCurrency showSign="+" />}
+            value={
+              <AdaValue
+                value={transaction.totalOutput}
+                showCurrency
+                showSign="+"
+                timestamp={timestamp}
+              />
+            }
           />
         </ContentSpacing>
       </Grid>
@@ -135,6 +154,7 @@ const BreakdownList = ({transaction, targetAddress}) => {
     (inputOrOutput) => targetAddress && inputOrOutput.address58 === targetAddress,
     [targetAddress]
   )
+  const timestamp = idx(transaction, (_) => _.block.timeIssued)
   return (
     <Grid container direction="row">
       <Hidden mdUp implementation="css" className="w-100">
@@ -148,6 +168,7 @@ const BreakdownList = ({transaction, targetAddress}) => {
             key={index}
             target={input}
             valuePrefix={'-'}
+            timestamp={timestamp}
           />
         ))}
       </Grid>
@@ -162,6 +183,7 @@ const BreakdownList = ({transaction, targetAddress}) => {
             key={index}
             target={output}
             valuePrefix={'+'}
+            timestamp={timestamp}
           />
         ))}
       </Grid>
@@ -231,7 +253,7 @@ const useBreakdownItemStyles = makeStyles((theme) => ({
 const IMG_DIMENSIONS = {width: 20, height: 20}
 
 const BreakdownItem = (props) => {
-  const {valuePrefix, target, hasHighlight, isLink} = props
+  const {valuePrefix, target, hasHighlight, isLink, timestamp} = props
   const {address58, amount} = target
   const breakdownClasses = useBreakdownItemStyles()
   return (
@@ -255,7 +277,7 @@ const BreakdownItem = (props) => {
         </Grid>
         <Grid item xs={12} sm={6}>
           <Grid container justify="flex-end" direction="row">
-            <AdaValue value={amount} showSign={valuePrefix} showCurrency />
+            <AdaValue value={amount} showSign={valuePrefix} showCurrency timestamp={timestamp} />
           </Grid>
         </Grid>
       </Grid>
