@@ -183,8 +183,11 @@ export default ({
 
   const chartMargin = getChartMargin(isExtraSM)
 
+  // https://github.com/recharts/recharts/issues/444
+  // onClick={null} fixes iOS touch events
   return (
     <BarChart
+      onClick={null}
       onMouseLeave={() => setActiveBar(null)}
       margin={chartMargin}
       {...{width, height, data}}

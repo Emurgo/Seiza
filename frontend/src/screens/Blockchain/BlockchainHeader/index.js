@@ -5,8 +5,10 @@ import {defineMessages} from 'react-intl'
 import {compose} from 'redux'
 
 import OverviewMetrics from './OverviewMetrics'
-import Search, {SearchHelpText} from './Search'
+import Search from './Search'
 import {withI18n} from '@/i18n/helpers'
+import {isCrawler} from '@/helpers/userAgent'
+import {useSearchbarRefContext} from '@/components/context/SearchbarRef'
 
 const messages = defineMessages({
   header: 'Ada Blockchain Explorer',
@@ -32,37 +34,43 @@ const styles = ({palette, spacing}) =>
     },
   })
 
-const BlockchainHeader = ({classes, i18n: {translate}}) => (
-  <div className={classes.wrapper}>
-    <Grid
-      container
-      direction="column"
-      justify="space-around"
-      alignItems="center"
-      className={classes.wrapper}
-    >
-      <Hidden mdUp>
-        <Grid item>
-          <SearchHelpText />
-        </Grid>
-      </Hidden>
-      <Grid item className={classes.metricsWrapper}>
-        <OverviewMetrics />
-      </Grid>
+const BlockchainHeader = ({classes, i18n: {translate}}) => {
+  const searchbarRef = useSearchbarRefContext()
+  return (
+    <div className={classes.wrapper}>
+      <Grid
+        container
+        direction="column"
+        justify="space-around"
+        alignItems="center"
+        className={classes.wrapper}
+      >
+        {!isCrawler && (
+          <React.Fragment>
+            <Hidden mdUp>
+              <Grid item>
+                <div ref={searchbarRef} />
+              </Grid>
+            </Hidden>
 
-      <Grid item xs={10} md={8} lg={6} className="w-100">
-        <Grid container direction="column" alignItems="stretch" className={classes.searchWrapper}>
-          <Typography variant="h1" align="center">
-            {translate(messages.header)}
-          </Typography>
-          <Hidden smDown>
-            <Search />
-          </Hidden>
+            <Grid item className={classes.metricsWrapper}>
+              <OverviewMetrics />
+            </Grid>
+          </React.Fragment>
+        )}
+
+        <Grid item xs={10} md={8} lg={6} className="w-100">
+          <Grid container direction="column" alignItems="stretch" className={classes.searchWrapper}>
+            <Typography variant="h1" align="center">
+              {translate(messages.header)}
+            </Typography>
+            <Hidden smDown>{!isCrawler && <Search />}</Hidden>
+          </Grid>
         </Grid>
       </Grid>
-    </Grid>
-  </div>
-)
+    </div>
+  )
+}
 
 export default compose(
   withI18n,

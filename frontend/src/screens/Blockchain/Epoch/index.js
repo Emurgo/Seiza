@@ -5,7 +5,7 @@ import moment from 'moment-timezone'
 import gql from 'graphql-tag'
 import idx from 'idx'
 import useReactRouter from 'use-react-router'
-import {Card, Grid, Chip, Typography} from '@material-ui/core'
+import {Card, Grid, Chip} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {
   SummaryCard,
@@ -296,10 +296,11 @@ const EpochEntityCard = ({epochNumber, startTime, endTime}) => {
             ellipsizeValue={false}
             iconRenderer={<img alt="" src={EpochIcon} width={48} height={48} />}
             value={
-              <Typography variant="body1" inline className={classes.date}>
+              <span className={classes.date}>
                 {start} {' — '} {end}
-              </Typography>
+              </span>
             }
+            monospaceValue={false}
           />
         </Grid>
       </Grid>

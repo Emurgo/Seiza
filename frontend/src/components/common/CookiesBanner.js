@@ -11,6 +11,7 @@ import {routeTo} from '@/helpers/routes'
 import {useI18n} from '@/i18n/helpers'
 import {useCookiesContext} from '@/components/context/CookiesContext'
 import cookiesIcon from '@/assets/icons/cookies.svg'
+import {isCrawler} from '@/helpers/userAgent'
 
 const messages = defineMessages({
   header: 'We use cookies!',
@@ -80,7 +81,7 @@ const CookiesBanner = () => {
       transitionAppear={false}
       transitionEnter={false}
     >
-      {!cookiesAccepted && (
+      {!cookiesAccepted && !isCrawler && (
         <Card className={classes.card}>
           <ContentSpacing top={0.6} bottom={0.6} left={0.6} right={0.6}>
             <Grid container alignItems="center" spacing={16}>

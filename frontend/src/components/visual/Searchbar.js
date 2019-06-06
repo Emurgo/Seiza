@@ -54,9 +54,9 @@ type ExternalProps = {
   placeholder: string,
   value: string,
   onSearch: (str: string) => any,
-  textFieldProps?: Object,
   onChange: (event: any) => any,
   loading?: boolean,
+  inputProps?: Object,
 }
 
 type Props = {
@@ -86,8 +86,8 @@ class Searchbar extends React.Component<Props> {
       handleOnChangeEvent,
       onSubmit,
       classes,
-      textFieldProps,
       loading,
+      inputProps,
     } = this.props
 
     return (
@@ -100,6 +100,8 @@ class Searchbar extends React.Component<Props> {
           placeholder={placeholder}
           onChange={handleOnChangeEvent}
           inputRef={this.inputRef}
+          inputProps={inputProps}
+          // eslint-disable-next-line react/jsx-no-duplicate-props
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
@@ -116,7 +118,6 @@ class Searchbar extends React.Component<Props> {
               focused: classes.focusedInput,
             },
           }}
-          {...textFieldProps}
         />
         <Button primary type="submit" variant="contained" className={classes.searchButton}>
           <Search fontSize="large" />

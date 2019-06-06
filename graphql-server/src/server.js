@@ -91,6 +91,7 @@ const getReporter = ({reqId, reqBody, reqHeaders}) => ({
 const handleError = (error, {logger, reporter}) => {
   logger.error(error)
   reporter.error(error)
+  return error
 }
 
 const createServer = () =>

@@ -179,36 +179,39 @@ export const MobileNavbar = ({items = [], currentPathname}) => {
     <ClickAwayListener onClickAway={onClose}>
       {/* Note: not using IconButton as its hover does not look good when it wraps both icons,
           and also on mobile that hover will not be visible anyway. */}
-      <div className={classes.mobileWrapper} onClick={onClick}>
-        <img src={seizaLogo} alt="logo" />
-        <ArrowDownIcon className={classes.dropdownIcon} />
-      </div>
-      {isOpen && (
-        <Popper open={isOpen} anchorEl={anchorEl} transition placement="bottom-end">
-          {({TransitionProps}) => (
-            <Grow {...TransitionProps}>
-              <Card classes={{root: classes.mobileMenuWrapper}}>
-                <MenuList>
-                  {items.map(({link, label, disabledText}) => (
-                    <MenuItem
-                      key={label}
-                      disabled={disabledText}
-                      onClick={onClose}
-                      className={classes.menuItem}
-                    >
-                      <NavMenuItem {...{disabledText, link, label}} isMobile />
-                    </MenuItem>
-                  ))}
-                </MenuList>
-                <Divider />
-                <div className={classes.languageWrapper}>
-                  <MobileLanguage />
-                </div>
-              </Card>
-            </Grow>
-          )}
-        </Popper>
-      )}
+      {/* Note: we get warning without using Fragment */}
+      <React.Fragment>
+        <div className={classes.mobileWrapper} onClick={onClick}>
+          <img src={seizaLogo} alt="logo" />
+          <ArrowDownIcon className={classes.dropdownIcon} />
+        </div>
+        {isOpen && (
+          <Popper open={isOpen} anchorEl={anchorEl} transition placement="bottom-end">
+            {({TransitionProps}) => (
+              <Grow {...TransitionProps}>
+                <Card classes={{root: classes.mobileMenuWrapper}}>
+                  <MenuList>
+                    {items.map(({link, label, disabledText}) => (
+                      <MenuItem
+                        key={label}
+                        disabled={!!disabledText}
+                        onClick={onClose}
+                        className={classes.menuItem}
+                      >
+                        <NavMenuItem {...{disabledText, link, label}} isMobile />
+                      </MenuItem>
+                    ))}
+                  </MenuList>
+                  <Divider />
+                  <div className={classes.languageWrapper}>
+                    <MobileLanguage />
+                  </div>
+                </Card>
+              </Grow>
+            )}
+          </Popper>
+        )}
+      </React.Fragment>
     </ClickAwayListener>
   )
 }

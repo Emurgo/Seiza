@@ -15,12 +15,13 @@ import config from './config'
 import {routeTo} from './helpers/routes'
 import {provideIntl} from './components/HOC/intl'
 import {provideTheme, withTheme, THEME_DEFINITIONS} from './components/HOC/theme'
-import {Navbar, MobileNavbar, Footer, Link} from './components/visual'
+import {Navbar, MobileNavbar, Link} from './components/visual'
+import Footer from './screens/Footer'
 import {useI18n, InjectHookIntlContext} from '@/i18n/helpers'
 import {AutoSyncProvider} from './screens/Staking/context/autoSync'
 
-import Terms from './screens/Officials/Terms'
-import Privacy from './screens/Officials/Privacy'
+import Terms from './screens/Legal/Terms'
+import Privacy from './screens/Legal/Privacy'
 import Home from './screens/Home'
 import Blockchain from './screens/Blockchain'
 import BlockchainHeader from './screens/Blockchain/BlockchainHeader'
@@ -35,6 +36,7 @@ import {SubscribeProvider} from '@/components/context/SubscribeContext'
 import {CookiesProvider} from '@/components/context/CookiesContext'
 import {AnalyticsProvider} from '@/helpers/googleAnalytics' // TODO move to context?
 import {CurrencyProvider} from '@/components/hooks/useCurrency'
+import {SearchbarRefProvider} from '@/components/context/SearchbarRef'
 import Search from './screens/Blockchain/BlockchainHeader/Search'
 
 import './App.css'
@@ -167,7 +169,9 @@ const Providers = ({children}) => (
     <AnalyticsProvider>
       <CurrencyProvider>
         <SubscribeProvider>
-          <AutoSyncProvider>{children}</AutoSyncProvider>
+          <AutoSyncProvider>
+            <SearchbarRefProvider>{children}</SearchbarRefProvider>
+          </AutoSyncProvider>
         </SubscribeProvider>
       </CurrencyProvider>
     </AnalyticsProvider>

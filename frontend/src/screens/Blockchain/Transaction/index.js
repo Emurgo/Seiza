@@ -37,7 +37,6 @@ const messages = defineMessages({
   epoch: 'Epoch:',
   slot: 'Slot:',
   date: 'Date:',
-  size: 'Size:',
   fees: 'Transaction Fees:',
   notAvailable: 'N/A',
 })
@@ -71,7 +70,6 @@ const TransactionSummary = ({loading, transaction}) => {
     blockHash: idx(transaction, (_) => _.block.blockHash),
     confirmations: idx(transaction, (_) => _.confirmationsCount),
     timeIssued: idx(transaction, (_) => _.block.timeIssued),
-    size: idx(transaction, (_) => _.size),
     fees: idx(transaction, (_) => _.fees),
   }
 
@@ -104,7 +102,6 @@ const TransactionSummary = ({loading, transaction}) => {
       defaultValue: NA,
       format: formatTimestamp.FMT_MONTH_NUMERAL,
     }),
-    size: formatInt(__.size, {defaultValue: NA}),
     fees: <AdaValue value={__.fees} noValue={NA} showCurrency />,
   }
 
@@ -119,7 +116,6 @@ const TransactionSummary = ({loading, transaction}) => {
         <Item label={messages.epoch}>{data.epoch}</Item>
         <Item label={messages.slot}>{data.slot}</Item>
         <Item label={messages.date}>{data.date}</Item>
-        <Item label={messages.size}>{data.size}</Item>
         <Item label={messages.fees}>{data.fees}</Item>
       </SummaryCard>
       <LoadingOverlay loading={loading} />
@@ -152,7 +148,6 @@ const useTransactionData = (txHash) => {
             amount
           }
           confirmationsCount
-          size
         }
       }
     `,

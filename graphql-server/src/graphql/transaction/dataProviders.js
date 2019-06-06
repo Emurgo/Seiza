@@ -33,7 +33,7 @@ export const facadeTransaction = (source: any) => {
 export const fetchTransaction = async ({elastic, E}: any, txHash: string) => {
   const hit = await elastic
     .q('tx')
-    // todo: filter on active fork?
+    .filter(E.onlyActiveFork())
     .filter(E.matchPhrase('hash', txHash))
     .getSingleHit()
     .catch(annotateNotFoundError({elasticType: 'tx', entity: 'Transaction', txHash}))
@@ -92,6 +92,7 @@ const checkTxsCountConsistency = (
         }),
       elastic
         .q('txio')
+        .filter(E.onlyActiveFork())
         .filter(E.matchPhrase('address', address58))
         .getAggregations({
           cnt: E.agg.max(typeField),
@@ -117,12 +118,12 @@ export const fetchTransactionsOnAddress = async (
   const filterReceived = type === 'RECEIVED' && E.match('outputs.address', address58)
 
   // Need to get totalCount (without from & to pagination filters)
-  const filterAddressWithoutPagination = makeAddressFilter({
-    targetAddress: address58,
-  })
   const totalCount = await elastic
     .q('tx')
-    .filter(filterAddressWithoutPagination)
+    .filter(E.onlyActiveFork())
+    .filter(makeAddressFilter({
+      targetAddress: address58,
+    }))
     .filter(filterSent)
     .filter(filterReceived)
     .getCount()
@@ -154,6 +155,7 @@ export const fetchTransactionsOnAddress = async (
 
   const {hits} = await elastic
     .q('tx')
+    .filter(E.onlyActiveFork())
     .filter(filterAddressWithPagination)
     .filter(filterSent)
     .filter(filterReceived)
