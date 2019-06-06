@@ -2,18 +2,24 @@ import React from 'react'
 import {compose} from 'redux'
 import {withState, withHandlers} from 'recompose'
 import {IntlProvider, addLocaleData} from 'react-intl'
-import localStorage from '../../helpers/localStorage'
+import localStorage from '@/helpers/localStorage'
 
 // Note: see https://medium.com/@shalkam/create-react-app-i18n-the-easy-way-b05536c594cb
 // for more info
 
 import jaLocaleData from 'react-intl/locale-data/ja'
+import ruLocaleData from 'react-intl/locale-data/ru'
+import esLocaleData from 'react-intl/locale-data/es'
 
-import translations from '../../i18n/locales'
+import translations from '@/i18n/locales'
+import config from '@/config'
 
 // Note: This needs to be added otherwise react-intl doesn't know about locale even if you provide
 // translations
 addLocaleData(jaLocaleData)
+
+config.featureEnableRussian && addLocaleData(ruLocaleData)
+config.featureEnableSpanish && addLocaleData(esLocaleData)
 
 const Context = React.createContext({
   setLanguage: null,
