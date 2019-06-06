@@ -16,6 +16,7 @@ export const fetchAddress = async ({elastic, E, runConsistencyCheck}: any, addre
   const ioTotalValue = (address58, type) =>
     elastic
       .q('txio')
+      .filter(E.onlyActiveFork())
       .filter(E.matchPhrase('address', address58))
       .filter(E.matchPhrase('type', type))
       .getAggregations({
