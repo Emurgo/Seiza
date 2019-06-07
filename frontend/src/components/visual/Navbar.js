@@ -1,5 +1,8 @@
 import React, {useState, useCallback} from 'react'
 import cn from 'classnames'
+
+import config from '@/config'
+
 import {
   Typography,
   Grow,
@@ -16,6 +19,7 @@ import ArrowDownIcon from '@material-ui/icons/ArrowDropDown'
 import seizaLogo from '@/assets/icons/seiza-symbol.svg'
 
 import {MobileLanguage} from '@/components/common/LanguageSelect'
+import ThemeSelect from '@/components/common/ThemeSelect'
 import NavLink from '@/components/common/NavLink'
 import {Tooltip} from '@/components/visual'
 
@@ -84,7 +88,7 @@ const DisabledLink = ({label, disabledText, className}) => {
 
 const NavMenuItem = ({disabledText, label, link, isMobile}) => {
   const classes = useStyles()
-  return disabledText ? (
+  return !link ? (
     <DisabledLink {...{label, disabledText}} className={cn(isMobile && classes.mobileLink)} />
   ) : (
     <NavLink className={cn(classes.link, isMobile && classes.mobileLink)} to={link}>
@@ -206,6 +210,7 @@ export const MobileNavbar = ({items = [], currentPathname}) => {
                   <div className={classes.languageWrapper}>
                     <MobileLanguage />
                   </div>
+                  {config.featureEnableThemes && <ThemeSelect />}
                 </Card>
               </Grow>
             )}

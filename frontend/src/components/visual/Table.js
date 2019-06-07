@@ -17,7 +17,7 @@ import {fade} from '@material-ui/core/styles/colorManipulator'
 
 import {Card, KeyValueCard} from '@/components/visual'
 import {useI18n} from '@/i18n/helpers'
-import {useIsBreakpointDown} from '@/components/hooks/useIsBreakpointDown'
+import {useIsMobile} from '@/components/hooks/useBreakpoints'
 
 import Overlay from './Overlay'
 import LoadingOverlay from './LoadingOverlay'
@@ -279,7 +279,7 @@ const TableWrapper = ({loading, error, children}: any) => {
 const Table = (props: TableProps) => {
   const {translate: tr} = useI18n()
   const _noDataText = tr(messages.noData)
-  const isMobile = useIsBreakpointDown('sm')
+  const isMobile = useIsMobile()
 
   const noDataRenderer = () =>
     !props.loading && (

@@ -79,8 +79,10 @@ const TransactionCard = ({transaction: tx, targetAddress}) => {
   }
 
   const __ = {
-    amount: <AdaValue showCurrency value={data.amount} noValue={NA} />,
-    fees: <AdaValue showCurrency value={data.fees} noValue={NA} />,
+    amount: (
+      <AdaValue showCurrency value={data.amount} noValue={NA} timestamp={data.creationDate} />
+    ),
+    fees: <AdaValue showCurrency value={data.fees} noValue={NA} timestamp={data.creationDate} />,
     epoch:
       data.epoch != null ? (
         // $FlowFixMe flow does not understand idx precondition

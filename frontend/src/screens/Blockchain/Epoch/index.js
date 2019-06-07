@@ -5,7 +5,7 @@ import moment from 'moment-timezone'
 import gql from 'graphql-tag'
 import idx from 'idx'
 import useReactRouter from 'use-react-router'
-import {Card, Grid, Chip} from '@material-ui/core'
+import {Card, Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {
   SummaryCard,
@@ -18,6 +18,7 @@ import {
   Tabs,
   Overlay,
   LoadingOverlay,
+  Chip,
 } from '@/components/visual'
 import {useI18n} from '@/i18n/helpers'
 import EpochNumberIcon from '@/assets/icons/epoch-number.svg'
@@ -114,6 +115,10 @@ const EpochSummaryCard = ({epoch, loading}) => {
   const {translate, formatInt} = useI18n()
   const NA = translate(messages.notAvailable)
 
+  // Note: we use end time as a proxy for ADA pricing valuation
+  // to that epoch. This seems to be most reasonable solution
+  const endTime = idx(epoch, (_) => _.endTime)
+
   const data1 = {
     blocksCount: translate(messages.blocksOutOfSlots, {
       blocks: formatInt(idx(epoch, (_) => _.summary.blocksCreated), {defaultValue: NA}),
@@ -121,10 +126,20 @@ const EpochSummaryCard = ({epoch, loading}) => {
     }),
     txCount: formatInt(idx(epoch, (_) => _.summary.transactionCount), {defaultValue: NA}),
     totalAdaSupply: (
-      <AdaValue value={idx(epoch, (_) => _.summary.totalAdaSupply)} noValue={NA} showCurrency />
+      <AdaValue
+        value={idx(epoch, (_) => _.summary.totalAdaSupply)}
+        noValue={NA}
+        showCurrency
+        timestamp={endTime}
+      />
     ),
     epochFees: (
-      <AdaValue value={idx(epoch, (_) => _.summary.epochFees)} noValue={NA} showCurrency />
+      <AdaValue
+        value={idx(epoch, (_) => _.summary.epochFees)}
+        noValue={NA}
+        showCurrency
+        timestamp={endTime}
+      />
     ),
   }
 
@@ -151,13 +166,19 @@ const EpochSummaryCard = ({epoch, loading}) => {
 
   const data2 = {
     totalAdaStaked: (
-      <AdaValue value={idx(epoch, (_) => _.summary.totalAdaStaked)} noValue={NA} showCurrency />
+      <AdaValue
+        value={idx(epoch, (_) => _.summary.totalAdaStaked)}
+        noValue={NA}
+        showCurrency
+        timestamp={endTime}
+      />
     ),
     totalStakingRewards: (
       <AdaValue
         value={idx(epoch, (_) => _.summary.totalStakingRewards)}
         noValue={NA}
         showCurrency
+        timestamp={endTime}
       />
     ),
     stakingKeysDelegating: formatInt(idx(epoch, (_) => _.summary.delegatingStakingKeysCount), {
@@ -289,7 +310,7 @@ const EpochEntityCard = ({epochNumber, startTime, endTime}) => {
             label={
               <Grid container alignItems="center">
                 <span>{tr(messages.timePeriod)}</span>
-                {chipLabel && <Chip className={classes.chip} label={chipLabel} />}
+                {chipLabel && <Chip rounded className={classes.chip} label={chipLabel} />}
               </Grid>
             }
             showCopyIcon={false}

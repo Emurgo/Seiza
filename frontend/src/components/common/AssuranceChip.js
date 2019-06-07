@@ -1,13 +1,12 @@
 // @flow
 
 import React from 'react'
-import {Chip as MuiChip} from '@material-ui/core'
+import cn from 'classnames'
 import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
 
+import {Chip} from '@/components/visual'
 import {useI18n} from '@/i18n/helpers'
-
-import classNames from 'classnames'
 
 export type ChipType = 'LOW' | 'MEDIUM' | 'HIGH'
 
@@ -54,7 +53,7 @@ const AssuranceChip = ({level}: Props) => {
 
   const text = tr(messages[level])
   const className = classes[level]
-  return <MuiChip label={text} className={classNames(className, classes.uppercase)} />
+  return <Chip rounded label={text} className={cn(className, classes.uppercase)} />
 }
 
 export default AssuranceChip

@@ -191,26 +191,34 @@ const FullWidthLayout = ({children}) => {
   )
 }
 
+// Note: This cannot be a component because Switch doesn't like non-route components as children
+// and behaves unexpectedly in such cases
+const renderRouteDef = (path, component) =>
+  path ? <Route exact path={path} component={component} /> : null
+
 export default () => {
   const {autoSync} = useAutoSyncContext()
-
+  const stakingRoutes = routeTo.staking
   return (
     <StakingContextProvider autoSync={autoSync}>
       <Grid container direction="column">
         <StakePoolHeader />
 
         <Switch>
-          <Redirect exact from={routeTo.staking.home()} to={routeTo.staking.poolList()} />
-          <Route exact path={routeTo.staking.poolList()} component={PoolListQuerySynchronizer} />
-          <Route
-            exact
-            path={routeTo.staking.poolComparison()}
-            component={PoolComparisonQuerySynchronizer}
-          />
-          <Route exact path={routeTo.staking.history()} component={HistoryQuerySynchronizer} />
-          <Route exact path={routeTo.staking.charts()} component={ChartsQuerySynchronizer} />
-          <Route exact path={routeTo.staking.location()} component={LocationQuerySynchronizer} />
-          <Route exact path={routeTo.staking.people()} component={PeopleQuerySynchronizer} />
+          {/* Default redirect */}
+          {stakingRoutes.poolList() && (
+            <Redirect exact from={stakingRoutes.home()} to={stakingRoutes.poolList()} />
+          )}
+
+          {/* Routes */}
+          {renderRouteDef(stakingRoutes.poolList(), PoolListQuerySynchronizer)}
+          {renderRouteDef(stakingRoutes.poolComparison(), PoolComparisonQuerySynchronizer)}
+          {renderRouteDef(stakingRoutes.history(), HistoryQuerySynchronizer)}
+          {renderRouteDef(stakingRoutes.charts(), ChartsQuerySynchronizer)}
+          {renderRouteDef(stakingRoutes.location(), LocationQuerySynchronizer)}
+          {renderRouteDef(stakingRoutes.people(), PeopleQuerySynchronizer)}
+
+          {/* Fallback */}
           <Route component={StakingPageNotFound} />
         </Switch>
       </Grid>
