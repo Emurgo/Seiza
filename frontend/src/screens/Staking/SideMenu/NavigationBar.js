@@ -109,11 +109,14 @@ const NavigationBar = () => {
 
   return (
     <div className={cn(classes.navBar, 'sticky')}>
-      {navItems.map(({link, i18nLabel, icon}) => (
-        <NavLink key={link} to={link} className={classes.href}>
-          {(isActive) => <MenuItem active={isActive} label={tr(i18nLabel)} icon={icon} />}
-        </NavLink>
-      ))}
+      {navItems.map(
+        ({link, i18nLabel, icon}) =>
+          link && (
+            <NavLink key={link} to={link} className={classes.href}>
+              {(isActive) => <MenuItem active={isActive} label={tr(i18nLabel)} icon={icon} />}
+            </NavLink>
+          )
+      )}
     </div>
   )
 }
