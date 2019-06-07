@@ -18,12 +18,7 @@ const FF = {
     'Arial',
     'sans-serif',
   ],
-  monospace: [
-    'Roboto Mono',
-    'Roboto Mono Self',
-    'Monaco',
-    'monospace',
-  ],
+  monospace: ['Roboto Mono', 'Roboto Mono Self', 'Monaco', 'monospace'],
 }
 
 const common = {
@@ -77,20 +72,8 @@ const common = {
         duration: 500,
       }),
   },
-  shadows: [
-    'none',
-    ...defaultShadowsDefs.map((px) =>
-      createShadow('#412596', px)
-    ),
-
-  ],
+  shadows: ['none', ...defaultShadowsDefs.map((px) => createShadow('#412596', px))],
   overrides: {
-    MuiChip: {
-      root: {
-        height: 24,
-        borderRadius: 5,
-      },
-    },
     MuiOutlinedInput: {
       root: {
         '& input::placeholder': {
