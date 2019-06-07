@@ -8,10 +8,10 @@ import {compose} from 'redux'
 import {defineMessages} from 'react-intl'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 
-import {IconButton, Grid, Chip, Typography, Avatar, withStyles} from '@material-ui/core'
+import {IconButton, Grid, Typography, Avatar, withStyles} from '@material-ui/core'
 import {Share, CallMade, CallReceived} from '@material-ui/icons'
 
-import {LoadingDots, DebugApolloError, VisualHash} from '@/components/visual'
+import {LoadingDots, DebugApolloError, VisualHash, Chip} from '@/components/visual'
 import CopyToClipboard from '@/components/common/CopyToClipboard'
 import assert from 'assert'
 import {withI18n} from '@/i18n/helpers'

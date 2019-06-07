@@ -5,7 +5,7 @@ import moment from 'moment-timezone'
 import gql from 'graphql-tag'
 import idx from 'idx'
 import useReactRouter from 'use-react-router'
-import {Card, Grid, Chip} from '@material-ui/core'
+import {Card, Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {
   SummaryCard,
@@ -18,6 +18,7 @@ import {
   Tabs,
   Overlay,
   LoadingOverlay,
+  Chip,
 } from '@/components/visual'
 import {useI18n} from '@/i18n/helpers'
 import EpochNumberIcon from '@/assets/icons/epoch-number.svg'
@@ -309,7 +310,7 @@ const EpochEntityCard = ({epochNumber, startTime, endTime}) => {
             label={
               <Grid container alignItems="center">
                 <span>{tr(messages.timePeriod)}</span>
-                {chipLabel && <Chip className={classes.chip} label={chipLabel} />}
+                {chipLabel && <Chip rounded className={classes.chip} label={chipLabel} />}
               </Grid>
             }
             showCopyIcon={false}
