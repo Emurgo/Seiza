@@ -18,12 +18,12 @@ const useStyles = makeStyles(({palette, typography, spacing}) => ({
   },
 }))
 
-const Tooltip = ({classes: customClasses, ...props}) => {
+const Tooltip = ({classes: customClasses, enterTouchDelay = 0, ...props}) => {
   const classes = useStyles()
 
   return (
     <MuiTooltip
-      enterTouchDelay={100}
+      enterTouchDelay={enterTouchDelay}
       classes={mergeStylesheets(classes, customClasses)}
       {...props}
     />

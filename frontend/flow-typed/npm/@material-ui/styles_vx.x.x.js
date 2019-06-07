@@ -18,4 +18,6 @@ declare module '@material-ui/styles' {
   declare function makeStyles<T, TF: (theme: Object) => T>(styles: TF): _HookType<T>
 
   declare var ThemeProvider: any
+
+  declare function useTheme(): any
 }

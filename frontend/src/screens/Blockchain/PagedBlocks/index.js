@@ -1,26 +1,28 @@
 // @flow
-import React, {useState, useRef} from 'react'
+import React, {useState, useRef, useEffect} from 'react'
 import {defineMessages} from 'react-intl'
 import idx from 'idx'
 import {Switch, Typography, Grid, Hidden} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
-import Pagination from '@/components/visual/Pagination'
+import Pagination, {getPageCount} from '@/components/visual/Pagination'
 import {SimpleLayout} from '@/components/visual'
 import {GET_PAGED_BLOCKS} from '@/api/queries'
 import {useI18n} from '@/i18n/helpers'
 import {
   useBlocksTablePagedProps,
-  useTotalItemsCount,
+  rowsPerPage,
+  getTotalItemsCount,
 } from '@/components/hooks/useBlocksTablePagedProps'
-import {useQueryNotBugged} from '@/components/hooks/useQueryNotBugged'
+import {useQueryNotBuggedForBlocks} from '@/components/hooks/useQueryNotBugged'
 import {useManageQueryValue} from '@/components/hooks/useManageQueryValue'
 import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
 import {toIntOrNull} from '@/helpers/utils'
 import BlocksTable, {ALL_COLUMNS} from './BlocksTable'
 import {useAnalytics} from '@/helpers/googleAnalytics'
+import {getPageAndBoundaryFromCursor} from './util'
 
-const AUTOUPDATE_REFRESH_INTERVAL = 10 * 1000
+const AUTOUPDATE_REFRESH_INTERVAL = 20 * 1000
 
 const messages = defineMessages({
   refreshState: 'Refresh state:',
@@ -70,11 +72,13 @@ const useStyles = makeStyles((theme) => ({
 const useLoadData = (cursor, autoUpdate) => {
   const dataKey = 'pagedBlocks'
 
-  const {error, loading, data, startPolling, stopPolling} = useQueryNotBugged(GET_PAGED_BLOCKS, {
-    variables: {cursor},
-    notifyOnNetworkStatusChange: true,
-    shouldInvalidatePreviousData: autoUpdate,
-  })
+  const {error, loading, data, startPolling, stopPolling} = useQueryNotBuggedForBlocks(
+    GET_PAGED_BLOCKS,
+    {
+      variables: {cursor},
+      notifyOnNetworkStatusChange: true,
+    }
+  )
 
   autoUpdate ? startPolling(AUTOUPDATE_REFRESH_INTERVAL) : stopPolling()
 
@@ -96,12 +100,14 @@ const PagedBlocks = () => {
   const [page, setPage] = useManageQueryValue('page', null, toIntOrNull)
 
   const [cursor, setCursor] = useState(null)
-  const [autoUpdate, setAutoupdate] = useState(true)
+  const [autoUpdate, setAutoupdate] = useState(false)
 
   const {pagedDataResult, loading, error} = useLoadData(cursor, autoUpdate)
-  const [totalItemsCount, setTotalItemsCount] = useTotalItemsCount(pagedDataResult, autoUpdate)
+  const [totalItemsCount, setTotalItemsCount] = useState(0)
 
-  const {onChangePage, rowsPerPage, onChangeAutoUpdate} = useBlocksTablePagedProps(
+  const [didFirstLoadSetup, setDidFirstLoadSetup] = useState(false)
+
+  const {onChangePage, onChangeAutoUpdate} = useBlocksTablePagedProps(
     page,
     setPage,
     setCursor,
@@ -110,6 +116,38 @@ const PagedBlocks = () => {
     autoUpdate,
     setAutoupdate
   )
+
+  // TODO: consider nicer solution, hot fix for now
+  useEffect(() => {
+    if (!loading && pagedDataResult.pagedData) {
+      const _totalItemsCount = getTotalItemsCount(pagedDataResult)
+
+      // When user reloads page we may need to set autoupdate to True or
+      // set cursor based on url
+      // Note: we want to do this only once and because of the above condition, this is not
+      // moved to run-only-once useEffect hook
+      if (!didFirstLoadSetup) {
+        const _pageCursor = page * rowsPerPage
+        if (_pageCursor >= _totalItemsCount) {
+          setAutoupdate(true)
+        } else {
+          setCursor(page ? Math.min(_totalItemsCount, _pageCursor) : _totalItemsCount)
+        }
+        setDidFirstLoadSetup(true)
+      }
+
+      let _currentPage = page
+
+      if (totalItemsCount === 0 || autoUpdate) {
+        // Because pageCount could rise with autoupdate, and we can have old value
+        if (autoUpdate) {
+          _currentPage = getPageCount(_totalItemsCount, rowsPerPage)
+        }
+        setTotalItemsCount(_totalItemsCount)
+        setPage(_currentPage)
+      }
+    }
+  }, [pagedDataResult.pagedData]) // eslint-disable-line
 
   const pagedBlocks = pagedDataResult.pagedData
 
@@ -129,6 +167,11 @@ const PagedBlocks = () => {
     />
   )
 
+  const {nextPageNumber, pageBoundary} = getPageAndBoundaryFromCursor(
+    pagedDataResult && pagedDataResult.cursor,
+    rowsPerPage
+  )
+
   return (
     <div ref={scrollToRef}>
       <SimpleLayout title={translate(messages.header)}>
@@ -146,7 +189,16 @@ const PagedBlocks = () => {
             />
           </Grid>
         </Grid>
-        <BlocksTable loading={loading} error={error} blocks={pagedBlocks} columns={ALL_COLUMNS} />
+        <BlocksTable
+          {...{
+            loading,
+            error,
+            nextPageNumber,
+            pageBoundary,
+          }}
+          blocks={pagedBlocks}
+          columns={ALL_COLUMNS}
+        />
         {pagedBlocks && (
           <Hidden mdUp>
             <Grid item className={classes.bottomPagination}>

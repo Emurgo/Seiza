@@ -42,7 +42,9 @@ const useStyles = makeStyles((theme) => ({
     borderBottom: `1px solid ${theme.palette.unobtrusiveContentHighlight}`,
   },
   leftSide: {
-    borderRight: `1px solid ${theme.palette.contentUnfocus}`,
+    [theme.breakpoints.up('md')]: {
+      borderRight: `1px solid ${theme.palette.contentUnfocus}`,
+    },
   },
   headerWrapper: {
     // TODO: change to mobile first
@@ -77,8 +79,10 @@ const TransactionCard = ({transaction: tx, targetAddress}) => {
   }
 
   const __ = {
-    amount: <AdaValue showCurrency value={data.amount} noValue={NA} />,
-    fees: <AdaValue showCurrency value={data.fees} noValue={NA} />,
+    amount: (
+      <AdaValue showCurrency value={data.amount} noValue={NA} timestamp={data.creationDate} />
+    ),
+    fees: <AdaValue showCurrency value={data.fees} noValue={NA} timestamp={data.creationDate} />,
     epoch:
       data.epoch != null ? (
         // $FlowFixMe flow does not understand idx precondition

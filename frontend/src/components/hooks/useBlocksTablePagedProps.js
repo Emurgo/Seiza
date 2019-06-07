@@ -2,33 +2,18 @@
 
 // Note!!!: pages are numbered from 1 so that urls is consistent with the rest of UI
 
-import {useState, useCallback, useEffect} from 'react'
+import {useCallback, useEffect} from 'react'
 import {getPageCount} from '@/components/visual/Pagination'
 
 // TODO: for now `PAGE_SIZE` is hardcoded both in client and server
 const PAGE_SIZE = 10
 
-export const useTotalItemsCount = (pagedDataResult: any, autoUpdate?: boolean) => {
-  // $FlowFixMe
-  const [totalItemsCount, setTotalItemsCount] = useState(0)
+export const rowsPerPage = PAGE_SIZE
+
+export const getTotalItemsCount = (pagedDataResult: {cursor: number, pagedData: Array<{}>}) => {
   const {cursor, pagedData} = pagedDataResult
-
-  useEffect(() => {
-    if (autoUpdate || totalItemsCount === 0) {
-      const dataCount = pagedData && pagedData.length
-
-      if (dataCount) {
-        const newTotalItemsCount = dataCount + cursor
-        newTotalItemsCount !== totalItemsCount && setTotalItemsCount(newTotalItemsCount)
-      }
-    }
-    // Note: we can not depend on `autoUpdate` because when it changes this receives old data first,
-    // without apollo `loading` state being changed to true in that moment.
-    // It does not matter that we do not depend on autoupdate, as when autoupdate changes also
-    // pagedData changes.
-  }, [pagedData]) // eslint-disable-line
-
-  return [totalItemsCount, setTotalItemsCount]
+  const dataCount = pagedData.length
+  return dataCount + cursor
 }
 
 // TODO: any better name for this?

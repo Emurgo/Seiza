@@ -1,6 +1,8 @@
 // @flow
 import assert from 'assert'
-import {parseAdaValue, annotateNotFoundError, runConsistencyCheck, validate} from '../utils'
+import {parseAdaValue} from '../utils'
+import {annotateNotFoundError} from '../../utils/errors'
+import {validate} from '../../utils/validation'
 import E from '../../api/elasticHelpers'
 
 export const facadeTransaction = (source: any) => {
@@ -31,7 +33,7 @@ export const facadeTransaction = (source: any) => {
 export const fetchTransaction = async ({elastic, E}: any, txHash: string) => {
   const hit = await elastic
     .q('tx')
-    // todo: filter on active fork?
+    .filter(E.onlyActiveFork())
     .filter(E.matchPhrase('hash', txHash))
     .getSingleHit()
     .catch(annotateNotFoundError({elasticType: 'tx', entity: 'Transaction', txHash}))
@@ -74,7 +76,12 @@ const makeAddressFilter = ({
   })
 }
 
-const checkTxsCountConsistency = ({elastic}, address58, typeField, totalTxsInTxIndex) =>
+const checkTxsCountConsistency = (
+  {elastic, runConsistencyCheck},
+  address58,
+  typeField,
+  totalTxsInTxIndex
+) =>
   runConsistencyCheck(async () => {
     const [{cnt: totalTxsInAddressIndex}, {cnt: totalTxsInTxioIndex}] = await Promise.all([
       elastic
@@ -85,6 +92,7 @@ const checkTxsCountConsistency = ({elastic}, address58, typeField, totalTxsInTxI
         }),
       elastic
         .q('txio')
+        .filter(E.onlyActiveFork())
         .filter(E.matchPhrase('address', address58))
         .getAggregations({
           cnt: E.agg.max(typeField),
@@ -99,7 +107,7 @@ const checkTxsCountConsistency = ({elastic}, address58, typeField, totalTxsInTxI
   })
 
 export const fetchTransactionsOnAddress = async (
-  {elastic, E}: any,
+  {elastic, E, runConsistencyCheck}: any,
   address58: string,
   type: string,
   cursor: number
@@ -110,18 +118,18 @@ export const fetchTransactionsOnAddress = async (
   const filterReceived = type === 'RECEIVED' && E.match('outputs.address', address58)
 
   // Need to get totalCount (without from & to pagination filters)
-  const filterAddressWithoutPagination = makeAddressFilter({
-    targetAddress: address58,
-  })
   const totalCount = await elastic
     .q('tx')
-    .filter(filterAddressWithoutPagination)
+    .filter(E.onlyActiveFork())
+    .filter(makeAddressFilter({
+      targetAddress: address58,
+    }))
     .filter(filterSent)
     .filter(filterReceived)
     .getCount()
 
   const [typeField] = GET_PAGINATION_FIELD[type].split('.').slice(-1)
-  await checkTxsCountConsistency({elastic}, address58, typeField, totalCount)
+  await checkTxsCountConsistency({elastic, runConsistencyCheck}, address58, typeField, totalCount)
 
   assert(totalCount != null)
 
@@ -147,6 +155,7 @@ export const fetchTransactionsOnAddress = async (
 
   const {hits} = await elastic
     .q('tx')
+    .filter(E.onlyActiveFork())
     .filter(filterAddressWithPagination)
     .filter(filterSent)
     .filter(filterReceived)

@@ -15,12 +15,14 @@ import {
 } from './context'
 import {useAutoSyncContext} from './context/autoSync'
 import SideMenu from './SideMenu'
-import StakePoolList from './StakeList'
-import ComparisonMatrix from './ComparisonMatrix'
-import People from './People'
+import StakePoolListScreen from './StakeList'
+import ComparisonMatrixScreen from './ComparisonMatrix'
+import PeopleScreen from './People'
 import StakePoolHeader from './Header'
 import PageNotFound from '../PageNotFound'
-import LocationMap from './LocationMap'
+import LocationMapScreen from './LocationMap'
+import HistoryScreen from './History'
+import ChartsScreen from './Charts'
 
 const DEFAULT_MAX_WIDTH = '1000px'
 
@@ -93,32 +95,38 @@ const synchronizedScreenFactory = (Screen, useSetScreenStorageFromQuery) => () =
 
 const LayoutedStakePoolList = () => (
   <CenteredLayout>
-    <StakePoolList />
+    <StakePoolListScreen />
   </CenteredLayout>
 )
 const LayoutedComparisonMatrix = () => (
   <FullWidthLayout center={false}>
-    <ComparisonMatrix />
+    <ComparisonMatrixScreen />
   </FullWidthLayout>
 )
 const LayoutedHistory = () => (
   <CenteredLayout>
-    <PageNotFound />
+    <HistoryScreen />
   </CenteredLayout>
 )
 const LayoutedCharts = () => (
   <CenteredLayout>
-    <PageNotFound />
+    <ChartsScreen />
   </CenteredLayout>
 )
 const LayoutedLocation = () => (
   <CenteredLayout>
-    <LocationMap />
+    <LocationMapScreen />
   </CenteredLayout>
 )
 const LayoutedPeople = () => (
   <CenteredLayout>
-    <People />
+    <PeopleScreen />
+  </CenteredLayout>
+)
+
+const StakingPageNotFound = () => (
+  <CenteredLayout>
+    <PageNotFound />
   </CenteredLayout>
 )
 
@@ -203,7 +211,7 @@ export default () => {
           <Route exact path={routeTo.staking.charts()} component={ChartsQuerySynchronizer} />
           <Route exact path={routeTo.staking.location()} component={LocationQuerySynchronizer} />
           <Route exact path={routeTo.staking.people()} component={PeopleQuerySynchronizer} />
-          <Route component={PageNotFound} />
+          <Route component={StakingPageNotFound} />
         </Switch>
       </Grid>
     </StakingContextProvider>

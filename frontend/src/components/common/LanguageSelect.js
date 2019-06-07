@@ -8,9 +8,10 @@ import {NavTypography} from '@/components/visual/Navbar'
 
 import EnglishFlag from '@/assets/icons/flags/english.svg'
 import JapaneseFlag from '@/assets/icons/flags/japanese.svg'
-// import RussianFlag from '@/assets/icons/flags/russian.svg'
+import RussianFlag from '@/assets/icons/flags/russian.svg'
 // import ChineseFlag from '@/assets/icons/flags/chinese.svg'
 // import KoreanFlag from '@/assets/icons/flags/korean.svg'
+import config from '@/config'
 
 const styles = (theme) => ({
   wrapper: {
@@ -39,6 +40,9 @@ const Label = withStyles(styles)(({langCode, flagSrc, mobile, classes}) => {
   )
 })
 
+// Helper to conditional inclusion
+const insertIf = (cond, value) => cond ? [value] : []
+
 const LANGUAGES = [
   {
     locale: 'en',
@@ -50,10 +54,19 @@ const LANGUAGES = [
     label: <Label langCode="JA" flagSrc={JapaneseFlag} />,
     mobileLabel: <Label langCode="JA" flagSrc={JapaneseFlag} mobile />,
   },
-  /*{
-    locale: 'ru',
-    label: <Label langCode="RU" flagSrc={RussianFlag} />,
-  },
+  ...insertIf(config.featureEnableRussian,
+    {
+      locale: 'ru',
+      label: <Label langCode="RU" flagSrc={RussianFlag} />,
+      mobileLabel: <Label langCode="RU" flagSrc={RussianFlag} mobile />,
+    }),
+  ...insertIf(config.featureEnableSpanish,
+    {
+      locale: 'es',
+      label: <Label langCode="ES" flagSrc={RussianFlag} />,
+      mobileLabel: <Label langCode="ES" flagSrc={RussianFlag} mobile />,
+    }),
+  /*
   {
     locale: 'cn',
     label: <Label langCode="CN" flagSrc={ChineseFlag} />,
