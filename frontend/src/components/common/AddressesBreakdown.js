@@ -3,8 +3,9 @@ import React, {useCallback} from 'react'
 import cn from 'classnames'
 import {defineMessages} from 'react-intl'
 import idx from 'idx'
+import {makeStyles} from '@material-ui/styles'
+import {Typography, Grid, Hidden} from '@material-ui/core'
 
-import WithModalState from '@/components/headless/modalState'
 import {
   ExpandableCardContent,
   Divider,
@@ -14,9 +15,8 @@ import {
   Link,
   Card,
 } from '@/components/visual'
-import {makeStyles} from '@material-ui/styles'
-import {Typography, Grid, Hidden} from '@material-ui/core'
-
+import WithModalState from '@/components/headless/modalState'
+import {useIsMobile} from '@/components/hooks/useBreakpoints'
 import {useI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
 import CopyToClipboard from '@/components/common/CopyToClipboard'
@@ -27,8 +27,8 @@ const messages = defineMessages({
   addressCount: '{count, plural, =0 {# addresses} one {# address} other {# addresses}}',
   from: 'From:',
   to: 'To:',
-  fromSeparator: 'From',
-  toSeparator: 'To',
+  fromSeparator: 'From:',
+  toSeparator: 'To:',
   seeAll: 'See all addresses',
   hideAll: 'Hide all addresses',
 })
@@ -128,7 +128,7 @@ const useSeparatorStyles = makeStyles((theme) => ({
     display: 'flex',
   },
   separatorLine: {
-    borderBottom: '1px solid #aaa',
+    borderBottom: `1px solid ${theme.palette.contentUnfocus}`,
     flexGrow: 1,
     margin: '10px 10px 10px 10px',
   },
@@ -149,12 +149,16 @@ const AddressSeparator = ({text}) => {
 
 const BreakdownList = ({transaction, targetAddress}) => {
   const {translate: tr} = useI18n()
+  const isMobile = useIsMobile()
   const commonClasses = useCommonStyles()
+
   const hasTargetAddress = useCallback(
     (inputOrOutput) => targetAddress && inputOrOutput.address58 === targetAddress,
     [targetAddress]
   )
   const timestamp = idx(transaction, (_) => _.block.timeIssued)
+  const getShowDivider = useCallback((index) => !isMobile || index !== 0, [isMobile])
+
   return (
     <Grid container direction="row">
       <Hidden mdUp implementation="css" className="w-100">
@@ -163,6 +167,7 @@ const BreakdownList = ({transaction, targetAddress}) => {
       <Grid item xs={12} md={6} className={commonClasses.leftSide}>
         {transaction.inputs.map((input, index, items) => (
           <BreakdownItem
+            showDivider={getShowDivider(index)}
             hasHighlight={hasTargetAddress(input)}
             isLink={!hasTargetAddress(input)}
             key={index}
@@ -178,6 +183,7 @@ const BreakdownList = ({transaction, targetAddress}) => {
       <Grid item xs={12} md={6}>
         {transaction.outputs.map((output, index, items) => (
           <BreakdownItem
+            showDivider={getShowDivider(index)}
             hasHighlight={hasTargetAddress(output)}
             isLink={!hasTargetAddress(output)}
             key={index}
@@ -253,12 +259,13 @@ const useBreakdownItemStyles = makeStyles((theme) => ({
 const IMG_DIMENSIONS = {width: 20, height: 20}
 
 const BreakdownItem = (props) => {
-  const {valuePrefix, target, hasHighlight, isLink, timestamp} = props
+  const {valuePrefix, target, hasHighlight, isLink, timestamp, showDivider} = props
   const {address58, amount} = target
   const breakdownClasses = useBreakdownItemStyles()
+
   return (
     <ContentSpacing top={0} bottom={0}>
-      <Divider light />
+      {showDivider && <Divider light />}
       <Grid
         container
         justify="space-between"
