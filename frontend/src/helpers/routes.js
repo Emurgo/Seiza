@@ -17,8 +17,8 @@ const STAKING_KEY_ROUTE = `${BLOCKCHAIN_ROUTE}/staking-key`
 // or `featureOn && 'some string' || ''`
 //
 
-const HAVE_BLOCKCHAIN = false
-const HAVE_STAKING = true
+const HAVE_BLOCKCHAIN = true
+const HAVE_STAKING = config.showStakingData
 const HAVE_LEGAL = true
 const HAVE_MORE = true
 
