@@ -198,7 +198,7 @@ export const MobileNavbar = ({items = [], currentPathname}) => {
                     {items.map(({link, label, disabledText}) => (
                       <MenuItem
                         key={label}
-                        disabled={!!disabledText}
+                        disabled={!link}
                         onClick={onClose}
                         className={classes.menuItem}
                       >
