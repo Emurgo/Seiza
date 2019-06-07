@@ -156,8 +156,6 @@ const TopBar = compose(withRouter)(({location: {pathname}}) => {
           <div className={classes.mobileSearch}>
             <Search isMobile />
           </div>
-          {config.showStakingData && <LanguageSelect />}
-          {config.showStakingData && <ThemeSelect />}
         </div>
       </Hidden>
     </React.Fragment>
