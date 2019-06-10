@@ -72,32 +72,32 @@ const useNavigationBarStyles = makeStyles((theme) => ({
 
 const navItems = [
   {
-    link: routeTo.staking.poolList(),
+    link: routeTo.stakingCenter.poolList(),
     i18nLabel: navigationMessages.list,
     icon: <Search color="primary" />,
   },
   {
-    link: routeTo.staking.poolComparison(),
+    link: routeTo.stakingCenter.poolComparison(),
     i18nLabel: navigationMessages.comparison,
     icon: <Compare color="primary" />,
   },
   {
-    link: routeTo.staking.history(),
+    link: routeTo.stakingCenter.history(),
     i18nLabel: navigationMessages.history,
     icon: <History color="primary" />,
   },
   {
-    link: routeTo.staking.charts(),
+    link: routeTo.stakingCenter.charts(),
     i18nLabel: navigationMessages.charts,
     icon: <BarChart color="primary" />,
   },
   {
-    link: routeTo.staking.location(),
+    link: routeTo.stakingCenter.location(),
     i18nLabel: navigationMessages.location,
     icon: <LocationOn color="primary" />,
   },
   {
-    link: routeTo.staking.people(),
+    link: routeTo.stakingCenter.people(),
     i18nLabel: navigationMessages.people,
     icon: <People color="primary" />,
   },

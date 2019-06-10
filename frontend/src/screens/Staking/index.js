@@ -198,7 +198,7 @@ const renderRouteDef = (path, component) =>
 
 export default () => {
   const {autoSync} = useAutoSyncContext()
-  const stakingRoutes = routeTo.staking
+  const stakingRoutes = routeTo.stakingCenter
   return (
     <StakingContextProvider autoSync={autoSync}>
       <Grid container direction="column">
