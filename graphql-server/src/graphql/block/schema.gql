@@ -32,6 +32,7 @@ type PagedBlocksResult{
   hasMore: Boolean!
   # TODO: use pageSize for cost
   blocks: [Block]! @cost(multipliers: [10])
+  totalCount: Int!
 }
 
 type Query {
