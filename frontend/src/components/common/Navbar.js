@@ -163,12 +163,7 @@ export const MobileNavLinks = ({
   return (
     <MenuList>
       {items.map(({link, label, disabledText}) => (
-        <MenuItem
-          key={label}
-          disabled={!link}
-          onClick={onClose}
-          className={classes.menuItem}
-        >
+        <MenuItem key={label} disabled={!link} onClick={onClose} className={classes.menuItem}>
           <NavMenuItem {...{disabledText, link, label}} isMobile />
         </MenuItem>
       ))}
