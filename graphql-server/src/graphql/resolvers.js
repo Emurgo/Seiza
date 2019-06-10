@@ -33,22 +33,8 @@ const _resolvers = {
     address: (root, args, context) => fetchAddress(context, args.address58),
 
     currentStatus: currentStatusResolver,
-    pagedBlocks: async (_, args, context) => {
-      const result = await pagedBlocksResolver(_, args, context)
-      return {
-        blocks: result.data,
-        cursor: result.cursor,
-        hasMore: result.cursor > 0,
-      }
-    },
-    pagedBlocksInEpoch: async (_, args, context) => {
-      const result = await pagedBlocksInEpochResolver(_, args, context)
-      return {
-        blocks: result.data,
-        cursor: result.cursor,
-        hasMore: result.cursor > 0,
-      }
-    },
+    pagedBlocks: pagedBlocksResolver,
+    pagedBlocksInEpoch: pagedBlocksInEpochResolver,
     // TODO: move to Block folder
     block: (root, args, context) => fetchBlockByHash(context, args.blockHash),
     slot: (root, args, context) => fetchBlockBySlot(context, {epoch: args.epoch, slot: args.slot}),

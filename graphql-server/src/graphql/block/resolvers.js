@@ -38,9 +38,13 @@ export const pagedBlocksResolver = async (parent, args, context) => {
 
   const nextCursor = startHeight - PAGE_SIZE
 
+  const totalCount = await elastic.q(currentBlocks).getCount()
+
   return {
     cursor: nextCursor > 0 ? nextCursor : null,
-    data: blockData,
+    hasMore: nextCursor > 0,
+    blocks: blockData,
+    totalCount,
   }
 }
 
@@ -59,6 +63,11 @@ export const pagedBlocksInEpochResolver = async (parent, args, context) => {
     assert(previousEnd.length > 0)
     assert(previousEnd[0]._source.height === previousEpochs)
   }
+
+  const totalCount = await elastic
+    .q(currentBlocks)
+    .filter(E.eq('epoch', epoch))
+    .getCount()
 
   const hits = await elastic
     .q(currentBlocks)
@@ -81,6 +90,8 @@ export const pagedBlocksInEpochResolver = async (parent, args, context) => {
 
   return {
     cursor: nextCursor > 0 ? nextCursor : null,
-    data: blockData,
+    hasMore: nextCursor > 0,
+    blocks: blockData,
+    totalCount,
   }
 }
