@@ -138,7 +138,7 @@ const OverviewMetrics = ({intl, data, classes}) => {
   const epochLink = status && routeTo.epoch(status.latestBlock.epoch)
   const blockLink = routeTo.blockchain()
   const marketDataLink = routeTo.more()
-  const stakePoolsLink = routeTo.staking.home()
+  const stakePoolsLink = routeTo.stakingCenter.home()
 
   const analytics = useAnalytics()
 

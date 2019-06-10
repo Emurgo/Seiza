@@ -7,6 +7,8 @@ import {
   fetchBootstrapEraPoolSummary,
 } from './dataProviders'
 
+import {mockedStakePools} from './mockedPools'
+
 const EMPTY_RESPONSE = {
   cursor: null,
   stakePools: [],
@@ -105,5 +107,6 @@ export default {
     stakePoolList: (root, args, context) => fetchBootstrapEraPoolList(null, args.epochNumber),
     pagedStakePoolList: (_, args, context) =>
       pagedStakePoolListResolver(null, args.cursor, args.pageSize, args.searchOptions),
+    mockedStakePools: (root, args, context) => mockedStakePools,
   },
 }

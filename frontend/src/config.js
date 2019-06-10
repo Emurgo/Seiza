@@ -62,6 +62,7 @@ export default {
 
   // TODO: rename me once #633 is merged in
   showStakingData: env.REACT_APP_SHOW_STAKING_DATA === 'true',
+  showStakePoolsListData: env.REACT_SHOW_STAKE_POOLS_LIST_DATA = 'true',
 
   featureEnableThemes: env.REACT_APP_FEATURE_ENABLE_THEMES === 'true',
   featureEnableRussian: env.REACT_APP_FEATURE_ENABLE_RUSSIAN === 'true',
