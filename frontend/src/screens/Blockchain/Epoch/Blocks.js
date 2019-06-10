@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from 'react'
-import idx from 'idx'
 import {defineMessages} from 'react-intl'
 import {Grid, Hidden} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
@@ -7,11 +6,6 @@ import {makeStyles} from '@material-ui/styles'
 import Pagination from '@/components/visual/Pagination'
 import {GET_PAGED_BLOCKS_IN_EPOCH} from '@/api/queries'
 import {useI18n} from '@/i18n/helpers'
-import {
-  useBlocksTablePagedProps,
-  rowsPerPage,
-  getTotalItemsCount,
-} from '@/components/hooks/useBlocksTablePagedProps'
 import {useQueryNotBuggedForBlocks} from '@/components/hooks/useQueryNotBugged'
 import {EntityHeading} from '@/components/visual'
 import {useManageQueryValue} from '@/components/hooks/useManageQueryValue'
@@ -52,81 +46,83 @@ const useLoadData = (cursor, epochNumber) => {
     notifyOnNetworkStatusChange: true,
   })
 
-  const pagedData = idx(data.pagedBlocksInEpoch, (_) => _.blocks)
-
   return {
     loading,
     error,
-    pagedDataResult: {
-      ...data.pagedBlocksInEpoch,
-      pagedData,
-    },
+    data: data.pagedBlocksInEpoch,
   }
 }
 
 const {SLOT, TIME, SLOT_LEADER, TRANSACTIONS, TOTAL_SENT, FEES, SIZE} = COLUMNS_MAP
 const columns = [SLOT, TIME, SLOT_LEADER, TRANSACTIONS, TOTAL_SENT, FEES, SIZE]
 
-const Blocks = ({blocksCount, epochNumber}) => {
-  const classes = useStyles()
-  const {translate: tr, formatInt} = useI18n()
+const PAGE_SIZE = 10
+const rowsPerPage = PAGE_SIZE
+
+const useEpochBlockData = (epochNumber) => {
+  const [prevEpoch, setPrevEpoch] = useState(epochNumber)
+  const [totalCount, setTotalCount] = useState(0)
 
   const [page, setPage] = useManageQueryValue('page', null, toIntOrNull)
-  const [cursor, setCursor] = useState(null)
-  const {pagedDataResult, loading, error} = useLoadData(cursor, epochNumber)
-  const [totalItemsCount, setTotalItemsCount] = useState(0)
-
-  const [prevEpoch, setPrevEpoch] = useState(epochNumber)
-
-  const {onChangePage} = useBlocksTablePagedProps(
-    page,
-    setPage,
-    setCursor,
-    totalItemsCount,
-    setTotalItemsCount
+  const {data: pagedDataResult, loading, error} = useLoadData(
+    page == null ? null : page * rowsPerPage,
+    epochNumber
   )
+
+  const {totalCount: dataTotalCount, blocks} = pagedDataResult || {}
+  const effectivePage = page == null ? Math.ceil(totalCount / rowsPerPage) : page
+
+  useEffect(() => {
+    if (dataTotalCount > totalCount) setTotalCount(dataTotalCount)
+  })
 
   // Reset values after epoch was changed
   // TODO: this is hot-fix, lets refactor this part soon as it is fragile
   useEffect(() => {
     if (epochNumber !== prevEpoch) {
       setPrevEpoch(epochNumber)
-      setCursor(null)
+      setTotalCount(0)
       setPage(null)
-      setTotalItemsCount(0)
-    }
-
-    // TODO: consider nicer solution, hot fix for now
-    if (!loading && pagedDataResult.pagedData) {
-      if (cursor == null) {
-        setCursor(
-          page
-            ? Math.min(getTotalItemsCount(pagedDataResult), page * rowsPerPage)
-            : getTotalItemsCount(pagedDataResult)
-        )
-      }
-      if (totalItemsCount === 0) {
-        setTotalItemsCount(getTotalItemsCount(pagedDataResult))
-      }
     }
   })
 
-  const {blocks} = pagedDataResult
+  return {
+    page,
+    effectivePage,
+    setPage,
+    loading,
+    error,
+    blocks,
+    totalCount: totalCount || 0,
+    nextPageCursor: pagedDataResult && pagedDataResult.cursor,
+  }
+}
+
+const Blocks = ({blocksCount, epochNumber}) => {
+  const classes = useStyles()
+  const {translate: tr, formatInt} = useI18n()
+
+  const {
+    totalCount,
+    effectivePage,
+    setPage,
+    nextPageCursor,
+    loading,
+    error,
+    blocks,
+  } = useEpochBlockData(epochNumber)
 
   const pagination = (
     <Pagination
-      count={totalItemsCount}
+      count={totalCount}
       rowsPerPage={rowsPerPage}
-      page={page}
-      onChangePage={onChangePage}
+      page={effectivePage}
+      onChangePage={setPage}
       reverseDirection
     />
   )
 
-  const {nextPageNumber, pageBoundary} = getPageAndBoundaryFromCursor(
-    blocks && pagedDataResult.cursor,
-    rowsPerPage
-  )
+  const {nextPageNumber, pageBoundary} = getPageAndBoundaryFromCursor(nextPageCursor, rowsPerPage)
 
   return (
     <Grid container direction="column">
