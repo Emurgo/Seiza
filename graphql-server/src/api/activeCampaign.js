@@ -1,6 +1,8 @@
 import axios from 'axios'
 import assert from 'assert'
 assert(process.env.ACTIVE_CAMPAIGN_URL)
+// we don't want to create server.com//url later on
+assert(!process.env.ACTIVE_CAMPAIGN_URL.endsWith('/'))
 assert(process.env.ACTIVE_CAMPAIGN_KEY)
 assert(process.env.ACTIVE_CAMPAIGN_LIST_ID)
 assert(/^\d+$/g.test(process.env.ACTIVE_CAMPAIGN_LIST_ID), 'Incorrect ActiveCampaign list Id')
