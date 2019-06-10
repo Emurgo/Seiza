@@ -3,10 +3,21 @@
 import * as React from 'react'
 import classnames from 'classnames'
 import {makeStyles} from '@material-ui/styles'
+import {
+  Grid,
+  Typography,
+  Tooltip,
+  Modal,
+  IconButton,
+  ClickAwayListener,
+  createStyles,
+} from '@material-ui/core'
 import {darken, fade} from '@material-ui/core/styles/colorManipulator'
+import {ZoomOutMap} from '@material-ui/icons'
 import {defineMessages} from 'react-intl'
 
-import {Grid, Typography, createStyles, Tooltip} from '@material-ui/core'
+import {useRequestAnimationFrame} from '@/components/hooks/useRequestAnimationFrame'
+import WithModalState from '@/components/headless/modalState'
 import {useI18n} from '@/i18n/helpers'
 import {VisualHash, ExternalLink} from '@/components/visual'
 import CopyToClipboard from '@/components/common/CopyToClipboard'
@@ -16,6 +27,7 @@ import CopyToClipboard from '@/components/common/CopyToClipboard'
 
 const messages = defineMessages({
   copyText: 'Copy',
+  fullScreen: 'Full screen mode',
 })
 
 const ellipsizeStyles = {
@@ -35,9 +47,12 @@ const useStyles = makeStyles((theme) => {
     ellipsis: ellipsizeStyles,
     wrapper: {
       margin: theme.spacing.unit * 6,
+      marginTop: theme.spacing.unit,
       display: 'flex',
+      overflow: 'hidden',
     },
     categoriesWrapper: {
+      'borderRadius': '5px 0 0 0',
       'background': theme.palette.background.paper,
       '& > *': {
         borderRight: darkBorder,
@@ -72,7 +87,7 @@ const useStyles = makeStyles((theme) => {
       'borderRadius': '0 5px 0 0',
 
       '&::-webkit-scrollbar': {
-        height: '6px',
+        height: '8px',
         background: 'red',
         position: 'absolute',
         top: '-30px',
@@ -84,7 +99,7 @@ const useStyles = makeStyles((theme) => {
       '&::-webkit-scrollbar-thumb': {
         backgroundColor: fade(
           theme.palette.getContrastText(theme.palette.background.paperContrast),
-          0.5
+          0.6
         ),
         outline: '1px solid slategrey',
         borderRadius: '5px',
@@ -386,9 +401,16 @@ type ComparisonMatrixProps = {|
     categoryLabel?: string,
   }>,
   getIdentifier: (Object) => string,
+  scrollRef?: any,
 |}
 
-const ComparisonMatrix = ({data, categoryConfigs, title, getIdentifier}: ComparisonMatrixProps) => {
+const ComparisonMatrixLayout = ({
+  data,
+  categoryConfigs,
+  title,
+  getIdentifier,
+  scrollRef,
+}: ComparisonMatrixProps) => {
   const classes = useStyles()
 
   // Note: the 'divs' below are intentional as Grid had some issues with overflows
@@ -401,7 +423,7 @@ const ComparisonMatrix = ({data, categoryConfigs, title, getIdentifier}: Compari
           <CategoryKeys key={index} categoryConfig={config} categoryLabel={categoryLabel} />
         ))}
       </div>
-      <div className={classes.scrollWrapper}>
+      <div className={classes.scrollWrapper} ref={scrollRef}>
         <Grid container direction="column" className={classes.rowsWrapper}>
           {categoryConfigs.map(({config, categoryLabel}, index) => (
             <Grid item key={index}>
@@ -417,6 +439,117 @@ const ComparisonMatrix = ({data, categoryConfigs, title, getIdentifier}: Compari
         </Grid>
       </div>
     </div>
+  )
+}
+
+const useFullWidthStyles = makeStyles((theme) => ({
+  fullScreenWrapper: {
+    display: 'flex',
+    margin: 'auto',
+    overflow: 'auto',
+    justifyContent: 'center',
+    paddingTop: theme.spacing.unit * 5,
+    outline: 'none',
+    maxWidth: '1920px',
+  },
+  openFullScreenWrapper: {
+    paddingTop: theme.spacing.unit,
+    paddingLeft: theme.spacing.unit * 5,
+  },
+  openFullScreen: {
+    width: 'initial',
+    cursor: 'pointer',
+  },
+  modal: {
+    overflow: 'auto',
+  },
+}))
+
+const FullScreenModeOpener = ({onClick}) => {
+  const {translate: tr} = useI18n()
+  const classes = useFullWidthStyles()
+  return (
+    <Grid container className={classes.openFullScreenWrapper}>
+      <Grid item>
+        <Grid container alignItems="center" onClick={onClick} className={classes.openFullScreen}>
+          <IconButton>
+            <ZoomOutMap color="primary" />
+          </IconButton>
+          <Typography variant="overline">{tr(messages.fullScreen)}</Typography>
+        </Grid>
+      </Grid>
+    </Grid>
+  )
+}
+
+const useKeyboardScrolling = (el, speed) => {
+  const [scrollStep, setScrollStep] = React.useState(0)
+
+  const scroll = () => {
+    if (el == null || scrollStep === 0) return
+
+    // Note: no need to clamp, if value is "out of range", browser will just deal with it
+    el.scrollLeft = el.scrollLeft + scrollStep
+  }
+
+  const onKeyDown = React.useCallback(
+    (e) => {
+      const isLeftArrow = e.keyCode === 37
+      const isRightArrow = e.keyCode === 39
+
+      if (!isLeftArrow && !isRightArrow) return
+
+      setScrollStep(speed * (isLeftArrow ? -1 : 1))
+    },
+    [speed]
+  )
+
+  const onKeyUp = React.useCallback((e) => setScrollStep(0), [])
+
+  React.useEffect(() => {
+    window.addEventListener('keydown', onKeyDown)
+    window.addEventListener('keyup', onKeyUp)
+    return () => {
+      window.removeEventListener('keydown', onKeyDown)
+      window.removeEventListener('keyup', onKeyUp)
+    }
+  }, [onKeyDown, onKeyUp])
+
+  useRequestAnimationFrame(scroll, scrollStep !== 0)
+}
+
+const FullWidthComparisonMatrix = (props) => {
+  const scrollRef = React.useRef(null)
+
+  useKeyboardScrolling(scrollRef.current, 14)
+
+  return <ComparisonMatrixLayout {...props} scrollRef={scrollRef} />
+}
+
+const ComparisonMatrix = (props: ComparisonMatrixProps) => {
+  const classes = useFullWidthStyles()
+
+  return (
+    <WithModalState>
+      {({isOpen, closeModal, openModal}) => (
+        <React.Fragment>
+          {!isOpen && (
+            <React.Fragment>
+              <FullScreenModeOpener onClick={openModal} />
+              <ComparisonMatrixLayout {...props} />
+            </React.Fragment>
+          )}
+
+          <Modal onClose={closeModal} open={isOpen} className={classes.modal}>
+            <div className={classes.fullScreenWrapper}>
+              <ClickAwayListener onClickAway={closeModal} style={{position: 'relative'}}>
+                <FullWidthComparisonMatrix {...props} />
+              </ClickAwayListener>
+            </div>
+          </Modal>
+        </React.Fragment>
+      )}
+    </WithModalState>
   )
 }
 
