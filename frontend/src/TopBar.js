@@ -2,7 +2,7 @@
 import React from 'react'
 import {withRouter} from 'react-router'
 import {compose} from 'redux'
-import {Grid, Hidden} from '@material-ui/core'
+import {Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {fade} from '@material-ui/core/styles/colorManipulator'
 import cn from 'classnames'
@@ -15,6 +15,7 @@ import {Navbar, MobileNavbar, Link} from './components/visual'
 import LanguageSelect from '@/components/common/LanguageSelect'
 import ThemeSelect from '@/components/common/ThemeSelect'
 
+import {useIsMobile} from '@/components/hooks/useBreakpoints'
 import config from './config'
 
 const useAppStyles = makeStyles((theme) => ({
@@ -38,39 +39,35 @@ const useAppStyles = makeStyles((theme) => ({
 
 const TopBar = compose(withRouter)(({location: {pathname}, navItems}) => {
   const classes = useAppStyles()
-  return (
-    <React.Fragment>
-      <Hidden smDown>
-        <Grid
-          container
-          direction="row"
-          justify="space-between"
-          alignItems="center"
-          className={classes.topBar}
-        >
-          <Grid item>
-            <Link to={routeTo.home()}>
-              <img alt="" src={seizaLogo} />
-            </Link>
-          </Grid>
-          <Grid item>
-            <Grid container direction="row" alignItems="center">
-              <Navbar currentPathname={pathname} items={navItems} />
-              <LanguageSelect />
-              {config.featureEnableThemes && <ThemeSelect />}
-            </Grid>
-          </Grid>
+  const isMobile = useIsMobile()
+  return !isMobile ? (
+    <Grid
+      container
+      direction="row"
+      justify="space-between"
+      alignItems="center"
+      className={classes.topBar}
+    >
+      <Grid item>
+        <Link to={routeTo.home()}>
+          <img alt="" src={seizaLogo} />
+        </Link>
+      </Grid>
+      <Grid item>
+        <Grid container direction="row" alignItems="center">
+          <Navbar currentPathname={pathname} items={navItems} />
+          <LanguageSelect />
+          {config.featureEnableThemes && <ThemeSelect />}
         </Grid>
-      </Hidden>
-      <Hidden mdUp>
-        <div className={cn(classes.topBar, 'd-flex')}>
-          <MobileNavbar currentPathname={pathname} items={navItems} />
-          <div className={classes.mobileSearch}>
-            <Search isMobile />
-          </div>
-        </div>
-      </Hidden>
-    </React.Fragment>
+      </Grid>
+    </Grid>
+  ) : (
+    <div className={cn(classes.topBar, 'd-flex')}>
+      <MobileNavbar currentPathname={pathname} items={navItems} />
+      <div className={classes.mobileSearch}>
+        <Search isMobile />
+      </div>
+    </div>
   )
 })
 
