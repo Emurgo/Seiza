@@ -13,10 +13,9 @@ export const stringify = (queryObj: {}): string =>
 export const objToQueryString = (obj: {}) => stringify(obj)
 
 export const replaceQueryParam = (query: string, key: string, value: string) => {
-  return stringify({
-    ...parse(query),
-    [key]: value,
-  })
+  // eslint-disable-next-line no-unused-vars
+  const {[key]: old, ...rest} = parse(query)
+  return stringify(value == null ? rest : {...rest, [key]: value})
 }
 
 export const areQueryStringsSame = (query1: string, query2: string): boolean => {
