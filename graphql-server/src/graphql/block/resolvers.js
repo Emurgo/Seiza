@@ -77,7 +77,7 @@ export const pagedBlocksInEpochResolver = async (parent, args, context) => {
     .getHits(PAGE_SIZE)
 
   if (cursor) {
-    assert(hits.total === cursor)
+    assert(hits.total === Math.min(cursor, totalCount))
   }
 
   const blockData = hits.hits.map((h) => facadeElasticBlock(h._source))

@@ -1,19 +1,13 @@
 // @flow
-import React, {useState, useRef, useEffect} from 'react'
+import React, {useRef, useCallback, useState, useEffect} from 'react'
 import {defineMessages} from 'react-intl'
-import idx from 'idx'
 import {Switch, Typography, Grid, Hidden} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
-import Pagination, {getPageCount} from '@/components/visual/Pagination'
+import Pagination from '@/components/visual/Pagination'
 import {SimpleLayout} from '@/components/visual'
 import {GET_PAGED_BLOCKS} from '@/api/queries'
 import {useI18n} from '@/i18n/helpers'
-import {
-  useBlocksTablePagedProps,
-  rowsPerPage,
-  getTotalItemsCount,
-} from '@/components/hooks/useBlocksTablePagedProps'
 import {useQueryNotBuggedForBlocks} from '@/components/hooks/useQueryNotBugged'
 import {useManageQueryValue} from '@/components/hooks/useManageQueryValue'
 import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
@@ -70,8 +64,6 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const useLoadData = (cursor, autoUpdate) => {
-  const dataKey = 'pagedBlocks'
-
   const {error, loading, data, startPolling, stopPolling} = useQueryNotBuggedForBlocks(
     GET_PAGED_BLOCKS,
     {
@@ -82,95 +74,92 @@ const useLoadData = (cursor, autoUpdate) => {
 
   autoUpdate ? startPolling(AUTOUPDATE_REFRESH_INTERVAL) : stopPolling()
 
-  const pagedData = idx(data[dataKey], (_) => _.blocks)
-
   return {
     error,
     loading,
-    pagedDataResult: {
-      ...data[dataKey],
-      pagedData,
+    data: data.pagedBlocks,
+  }
+}
+
+// TODO: for now `PAGE_SIZE` is hardcoded both in client and server
+const PAGE_SIZE = 10
+const rowsPerPage = PAGE_SIZE
+
+const usePagedBlocks = () => {
+  const [page, setPage] = useManageQueryValue('page', null, toIntOrNull)
+  const [totalCount, setTotalCount] = useState(0)
+  const autoUpdate = page == null
+
+  const {data: pagedDataResult, loading, error} = useLoadData(
+    page == null ? null : page * rowsPerPage,
+    autoUpdate
+  )
+
+  const {totalCount: dataTotalCount, blocks: pagedBlocks} = pagedDataResult || {}
+
+  useEffect(() => {
+    if (dataTotalCount > totalCount) setTotalCount(dataTotalCount)
+  })
+
+  const effectivePage = page == null ? Math.ceil(totalCount / rowsPerPage) : page
+
+  const onChangeAutoUpdate = useCallback(
+    (evt) => {
+      const checked = evt.target.checked
+      if (checked) {
+        setPage(null)
+      } else {
+        setPage(effectivePage)
+      }
     },
+    [effectivePage, setPage]
+  )
+
+  return {
+    page,
+    effectivePage,
+    setPage,
+    totalCount: totalCount || 0,
+    pagedBlocks,
+    autoUpdate,
+    onChangeAutoUpdate,
+    loading,
+    error,
+    nextPageCursor: pagedDataResult && pagedDataResult.cursor,
   }
 }
 
 const PagedBlocks = () => {
   const classes = useStyles()
   const {translate} = useI18n()
-  const [page, setPage] = useManageQueryValue('page', null, toIntOrNull)
-
-  const [cursor, setCursor] = useState(null)
-  const [autoUpdate, setAutoupdate] = useState(false)
-
-  const {pagedDataResult, loading, error} = useLoadData(cursor, autoUpdate)
-  const [totalItemsCount, setTotalItemsCount] = useState(0)
-
-  const [didFirstLoadSetup, setDidFirstLoadSetup] = useState(false)
-
-  const {onChangePage, onChangeAutoUpdate} = useBlocksTablePagedProps(
-    page,
-    setPage,
-    setCursor,
-    totalItemsCount,
-    setTotalItemsCount,
-    autoUpdate,
-    setAutoupdate
-  )
-
-  // TODO: consider nicer solution, hot fix for now
-  useEffect(() => {
-    if (!loading && pagedDataResult.pagedData) {
-      const _totalItemsCount = getTotalItemsCount(pagedDataResult)
-
-      // When user reloads page we may need to set autoupdate to True or
-      // set cursor based on url
-      // Note: we want to do this only once and because of the above condition, this is not
-      // moved to run-only-once useEffect hook
-      if (!didFirstLoadSetup) {
-        const _pageCursor = page * rowsPerPage
-        if (_pageCursor >= _totalItemsCount) {
-          setAutoupdate(true)
-        } else {
-          setCursor(page ? Math.min(_totalItemsCount, _pageCursor) : _totalItemsCount)
-        }
-        setDidFirstLoadSetup(true)
-      }
-
-      let _currentPage = page
-
-      if (totalItemsCount === 0 || autoUpdate) {
-        // Because pageCount could rise with autoupdate, and we can have old value
-        if (autoUpdate) {
-          _currentPage = getPageCount(_totalItemsCount, rowsPerPage)
-        }
-        setTotalItemsCount(_totalItemsCount)
-        setPage(_currentPage)
-      }
-    }
-  }, [pagedDataResult.pagedData]) // eslint-disable-line
-
-  const pagedBlocks = pagedDataResult.pagedData
-
   const analytics = useAnalytics()
   analytics.useTrackPageVisitEvent('blocks')
 
+  const {
+    pagedBlocks,
+    setPage,
+    effectivePage,
+    totalCount,
+    autoUpdate,
+    onChangeAutoUpdate,
+    nextPageCursor,
+    loading,
+    error,
+  } = usePagedBlocks()
   const scrollToRef = useRef(null)
   useScrollFromBottom(scrollToRef, pagedBlocks)
 
   const pagination = (
     <Pagination
-      count={totalItemsCount}
+      count={totalCount}
       rowsPerPage={rowsPerPage}
-      page={page}
-      onChangePage={onChangePage}
+      page={effectivePage}
+      onChangePage={setPage}
       reverseDirection
     />
   )
 
-  const {nextPageNumber, pageBoundary} = getPageAndBoundaryFromCursor(
-    pagedDataResult && pagedDataResult.cursor,
-    rowsPerPage
-  )
+  const {nextPageNumber, pageBoundary} = getPageAndBoundaryFromCursor(nextPageCursor, rowsPerPage)
 
   return (
     <div ref={scrollToRef}>
@@ -180,13 +169,7 @@ const PagedBlocks = () => {
             <AutoUpdateSwitch checked={autoUpdate} onChange={onChangeAutoUpdate} />
           </Grid>
           <Grid item className={classes.upperPagination}>
-            <Pagination
-              count={totalItemsCount}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onChangePage={onChangePage}
-              reverseDirection
-            />
+            {pagination}
           </Grid>
         </Grid>
         <BlocksTable
