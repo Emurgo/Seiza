@@ -167,6 +167,46 @@ const useStyles = makeStyles((theme) => {
         fontWeight: 600,
       },
     },
+    jozo: {
+      position: 'absolute',
+      height: '100%',
+      width: 25,
+      zIndex: 9999999999,
+    },
+    jozoUp: {
+      height: 60,
+      background: `linear-gradient(to right, ${darken(
+        theme.palette.background.default,
+        0.04
+      )} 0%, ${fade(darken(theme.palette.background.default, 0.04), 0.15)} 100%)`,
+    },
+    jozoUp2: {
+      height: 60,
+      background: `linear-gradient(to left, ${darken(
+        theme.palette.background.default,
+        0.04
+      )} 0%, ${fade(darken(theme.palette.background.default, 0.04), 0.15)} 100%)`,
+    },
+    jozoDown: {
+      flex: 1,
+      background: `linear-gradient(to right, ${theme.palette.background.paper} 0%, ${fade(
+        theme.palette.background.paper,
+        0.15
+      )} 80%)`,
+    },
+    jozoDown2: {
+      flex: 1,
+      background: `linear-gradient(to left, ${theme.palette.background.paper} 0%, ${fade(
+        theme.palette.background.paper,
+        0.15
+      )} 80%)`,
+    },
+    jozo2: {
+      position: 'absolute',
+      height: '100%',
+      width: 25,
+      zIndex: 9999999999,
+    },
   })
 })
 
@@ -423,20 +463,37 @@ const ComparisonMatrixLayout = ({
           <CategoryKeys key={index} categoryConfig={config} categoryLabel={categoryLabel} />
         ))}
       </div>
-      <div className={classes.scrollWrapper} ref={scrollRef}>
-        <Grid container direction="column" className={classes.rowsWrapper}>
-          {categoryConfigs.map(({config, categoryLabel}, index) => (
-            <Grid item key={index}>
-              <CategoryDataRow
-                getIdentifier={getIdentifier}
-                data={data}
-                showGap={categoryLabel != null}
-                categoryConfig={config}
-                showHeader={index === 0}
-              />
-            </Grid>
-          ))}
-        </Grid>
+      <div style={{overflow: 'hidden', position: 'relative'}}>
+        <div className={classes.jozo} style={{left: 0, display: 'flex', flexDirection: 'column'}}>
+          <div className={classes.jozoUp} />
+          <div className={classes.jozoDown} />
+        </div>
+
+        <div className={classes.jozo2} style={{right: 0, display: 'flex', flexDirection: 'column'}}>
+          <div className={classes.jozoUp2} />
+          <div className={classes.jozoDown2} />
+        </div>
+
+        <div className={classes.scrollWrapper} ref={scrollRef}>
+          <Grid
+            container
+            direction="column"
+            className={classes.rowsWrapper}
+            style={{position: 'relative'}}
+          >
+            {categoryConfigs.map(({config, categoryLabel}, index) => (
+              <Grid item key={index}>
+                <CategoryDataRow
+                  getIdentifier={getIdentifier}
+                  data={data}
+                  showGap={categoryLabel != null}
+                  categoryConfig={config}
+                  showHeader={index === 0}
+                />
+              </Grid>
+            ))}
+          </Grid>
+        </div>
       </div>
     </div>
   )
