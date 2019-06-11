@@ -63,13 +63,13 @@ const common = {
     },
   },
   hover: {
-    transitionIn: (cssProps) =>
+    transitionIn: (cssProps, duration = 100) =>
       muiTransitions.create(cssProps, {
-        duration: 100,
+        duration,
       }),
-    transitionOut: (cssProps) =>
+    transitionOut: (cssProps, duration = 500) =>
       muiTransitions.create(cssProps, {
-        duration: 500,
+        duration,
       }),
   },
   shadows: ['none', ...defaultShadowsDefs.map((px) => createShadow('#412596', px))],

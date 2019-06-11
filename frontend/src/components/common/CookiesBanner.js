@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     maxWidth: 300,
     position: 'fixed',
-    zIndex: 1,
+    zIndex: 2,
     bottom: 0,
     right: 0,
     [theme.breakpoints.up('sm')]: {
