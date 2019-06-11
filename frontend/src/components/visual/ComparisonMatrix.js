@@ -13,8 +13,11 @@ import {
   createStyles,
 } from '@material-ui/core'
 import {darken, fade} from '@material-ui/core/styles/colorManipulator'
-import {ZoomOutMap} from '@material-ui/icons'
+import {ZoomOutMap, ChevronLeft, ChevronRight} from '@material-ui/icons'
 import {defineMessages} from 'react-intl'
+
+import {ReactComponent as ArrowLeft} from '@/assets/icons/arrow-left.svg'
+import {ReactComponent as ArrowRight} from '@/assets/icons/arrow-right.svg'
 
 import {useRequestAnimationFrame} from '@/components/hooks/useRequestAnimationFrame'
 import WithModalState from '@/components/headless/modalState'
@@ -39,6 +42,8 @@ const ellipsizeStyles = {
 const VALUES_PANEL_WIDTH = 300
 const PADDING = 16
 
+// document.querySelector('.Hook-openFullScreenWrapper-69sk1b').getBoundingClientRect().y
+
 const useStyles = makeStyles((theme) => {
   const darkBorder = `1px solid ${darken(theme.palette.unobtrusiveContentHighlight, 0.2)}`
   const lightBorder = `1px solid ${darken(theme.palette.unobtrusiveContentHighlight, 0.05)}`
@@ -46,10 +51,67 @@ const useStyles = makeStyles((theme) => {
   return createStyles({
     ellipsis: ellipsizeStyles,
     wrapper: {
-      margin: theme.spacing.unit * 6,
+      position: 'relative',
+      margin: theme.spacing.unit * 3,
+      marginRight: 0,
       marginTop: theme.spacing.unit,
+      marginLeft: -theme.spacing.unit * 3,
+      paddingLeft: theme.spacing.unit * 14,
+      paddingRight: theme.spacing.unit * 12,
       display: 'flex',
       overflow: 'hidden',
+    },
+    arrowLeft: {
+      position: 'absolute',
+      left: 40,
+      top: '50%',
+      background: theme.palette.secondary.main,
+      display: 'flex',
+      padding: theme.spacing.unit * 1.5,
+      borderRadius: 30,
+    },
+    arrowLeftWrapper: {
+      'transition': theme.hover.transitionOut(['opacity'], 300),
+      'position': 'absolute',
+      'top': 0,
+      'left': 0,
+      'height': '100%',
+      'width': '110px',
+      'borderRadius': 10,
+      'opacity': 0,
+      'cursor': 'pointer',
+
+      '&:hover': {
+        // background: '#EFF0F4',
+        transition: theme.hover.transitionIn(['opacity'], 300),
+        opacity: 1,
+      },
+    },
+    arrowRight: {
+      position: 'absolute',
+      right: 25,
+      top: '50%',
+      background: theme.palette.secondary.main,
+      display: 'flex',
+      padding: theme.spacing.unit * 1.5,
+      borderRadius: 30,
+    },
+    arrowRightWrapper: {
+      'transition': theme.hover.transitionOut(['opacity'], 300),
+      'position': 'absolute',
+      'top': 0,
+      'right': 0,
+      'height': '100%',
+      'width': '80px',
+      'borderRadius': 10,
+      'opacity': 0,
+      'cursor': 'pointer',
+      // 'background': '#EFF0F4',
+
+      '&:hover': {
+        transition: theme.hover.transitionIn(['opacity'], 300),
+        opacity: 1,
+      },
     },
     categoriesWrapper: {
       'borderRadius': '5px 0 0 0',
@@ -457,6 +519,18 @@ const ComparisonMatrixLayout = ({
 
   return (
     <div className={classes.wrapper}>
+      <div className={classes.arrowLeftWrapper}>
+        <div className={classes.arrowLeft}>
+          <ChevronLeft color="primary" />
+        </div>
+      </div>
+
+      <div className={classes.arrowRightWrapper}>
+        <div className={classes.arrowRight}>
+          <ChevronRight color="primary" />
+        </div>
+      </div>
+
       <div className={classes.categoriesWrapper}>
         <CategoryHeader title={title} />
         {categoryConfigs.map(({config, categoryLabel}, index) => (
@@ -511,7 +585,7 @@ const useFullWidthStyles = makeStyles((theme) => ({
   },
   openFullScreenWrapper: {
     paddingTop: theme.spacing.unit,
-    paddingLeft: theme.spacing.unit * 5,
+    paddingLeft: theme.spacing.unit * 10,
   },
   openFullScreen: {
     width: 'initial',
@@ -520,13 +594,18 @@ const useFullWidthStyles = makeStyles((theme) => ({
   modal: {
     overflow: 'auto',
   },
+  arrowLeft: {},
+  arrowRight: {},
+  arrowsWrapper: {
+    marginRight: 90,
+  },
 }))
 
 const FullScreenModeOpener = ({onClick}) => {
   const {translate: tr} = useI18n()
   const classes = useFullWidthStyles()
   return (
-    <Grid container className={classes.openFullScreenWrapper}>
+    <Grid container justify="space-between" className={classes.openFullScreenWrapper}>
       <Grid item>
         <Grid container alignItems="center" onClick={onClick} className={classes.openFullScreen}>
           <IconButton>
@@ -534,6 +613,15 @@ const FullScreenModeOpener = ({onClick}) => {
           </IconButton>
           <Typography variant="overline">{tr(messages.fullScreen)}</Typography>
         </Grid>
+      </Grid>
+      <Grid item className={classes.arrowsWrapper}>
+        <IconButton color="primary" className={classes.arrowLeft}>
+          <ArrowLeft />
+        </IconButton>
+
+        <IconButton className={classes.arrowRight} color="primary">
+          <ArrowRight />
+        </IconButton>
       </Grid>
     </Grid>
   )
