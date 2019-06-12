@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 52.6 (67491) - http://www.bohemiancoding.com/sketch -->
-    <desc>Created with Sketch.</desc>
     <g id="icon/arrow-right" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
         <rect id="Rectangle" fill="#FFFFFF" opacity="0" x="0" y="0" width="24" height="24"></rect>
         <path d="M18.8669869,9.1352657 C18.6878122,8.95491143 18.3966532,8.95491143 18.2174784,9.1352657 L12.5062832,14.8953301 L6.78388954,9.1352657 C6.60471479,8.95491143 6.31355582,8.95491143 6.13438106,9.1352657 C5.95520631,9.31561997 5.95520631,9.60869565 6.13438106,9.78904992 L12.1703305,15.8647343 C12.2599179,15.9549114 12.3719021,16 12.4950848,16 C12.607069,16 12.7302516,15.9549114 12.819839,15.8647343 L18.8557885,9.78904992 C19.0461617,9.60869565 19.0461617,9.31561997 18.8669869,9.1352657 Z" id="Path-Copy-11" stroke="currentColor" stroke-width="0.5" fill="currentColor" transform="translate(12.500000, 12.500000) scale(-1, 1) rotate(90.000000) translate(-12.500000, -12.500000) "></path>
