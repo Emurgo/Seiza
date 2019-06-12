@@ -16,6 +16,7 @@ import {Searchbar, LoadingError, Alert} from '@/components/visual'
 import {useSearchbarRefContext} from '@/components/context/SearchbarRef'
 
 import {routeTo} from '@/helpers/routes'
+import * as urlHelpers from '@/helpers/url'
 import {useAnalytics} from '@/helpers/googleAnalytics'
 import {APOLLO_CACHE_OPTIONS} from '@/constants'
 
@@ -159,7 +160,7 @@ const useTextfieldFocus = (defaultValue: boolean) => {
 
 const Search = ({isMobile = false}: SearchProps) => {
   const {translate: tr} = useI18n()
-  const {history} = useReactRouter()
+  const {location, history} = useReactRouter()
   const classes = useStyles()
   const analytics = useAnalytics()
 
@@ -173,7 +174,12 @@ const Search = ({isMobile = false}: SearchProps) => {
   useEffect(() => {
     if (searchResult) {
       setSearchQuery('')
-      history.push(getRedirectUrl(analytics, searchResult))
+      const redirectTo = getRedirectUrl(analytics, searchResult)
+      const action = redirectTo !== location.pathname ? history.push : history.replace
+      action({
+        pathname: routeTo.searchResults(),
+        search: urlHelpers.stringify({redirectTo}),
+      })
     }
   })
 
