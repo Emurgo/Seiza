@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
 
 type ExternalProps = {
   onClick: Function,
-  className?: string,
+  className?: string | false | null,
 }
 
 const CloseIconButton = ({onClick, className, ...props}: ExternalProps) => {
