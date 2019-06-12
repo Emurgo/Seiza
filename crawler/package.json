@@ -1,0 +1,28 @@
+{
+  "name": "crawler",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "prettier": "prettier-eslint --write \"src/**/*.js\"",
+    "eslint": "eslint src --max-warnings=0"
+  },
+  "dependencies": {
+    "graphql-request": "^1.8.2",
+    "lodash": "^4.17.11",
+    "minimist": "^1.2.0",
+    "ora": "^3.4.0",
+    "p-queue": "^6.0.2"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.16.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-config-vacuumlabs": "^1.8.2",
+    "eslint-plugin-import": "^2.17.3",
+    "eslint-plugin-promise": "^4.1.1",
+    "eslint-plugin-react": "^7.13.0",
+    "eslint-plugin-standard": "^4.0.0",
+    "prettier-eslint-cli": "^4.7.1"
+  }
+}
