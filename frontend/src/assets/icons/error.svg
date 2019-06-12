@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 52.6 (67491) - http://www.bohemiancoding.com/sketch -->
-    <desc>Created with Sketch.</desc>
     <g id="icon/error" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
         <rect id="Rectangle" fill="#FFFFFF" opacity="0" x="0" y="0" width="24" height="24"></rect>
         <path d="M13.3682388,5.34316408 L20.8705027,18.768268 C21.2746271,19.491438 21.0159896,20.4052908 20.2928195,20.8094152 C20.0691857,20.9343871 19.8172711,21 19.5610875,21 L4.5565596,21 C3.72813247,21 3.0565596,20.3284271 3.0565596,19.5 C3.0565596,19.2438164 3.12217254,18.9919018 3.24714437,18.768268 L10.7494083,5.34316408 C11.1535328,4.61999402 12.0673855,4.36135645 12.7905556,4.7654809 C13.0328564,4.90088433 13.2328353,5.10086321 13.3682388,5.34316408 Z" id="Triangle" fill="#FFFFFF"></path>
