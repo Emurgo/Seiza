@@ -51,6 +51,7 @@ export const routeTo = {
     stakepool: (poolHash: string) => `${BLOCKCHAIN_ROUTE}/stakepool/${poolHash}`,
     epoch: (epochNumber: number) =>
       enableIf(epochNumber != null, `${BLOCKCHAIN_ROUTE}/epoch/${epochNumber}`),
+    searchResults: () => `${BLOCKCHAIN_ROUTE}/search-result`,
   }),
   more: () => enableIf(HAVE_MORE, '/more'),
   stakingKey: enableSectionIf(HAVE_STAKING_CENTER, {
