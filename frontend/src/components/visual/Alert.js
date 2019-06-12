@@ -34,7 +34,7 @@ const messages = defineMessages({
 
 const getBorderColorStyle = (backgroundColor) => darken(backgroundColor, 0.05)
 
-const useAppStyles = makeStyles(({type, spacing, palette}) =>
+const useAppStyles = makeStyles(({type, spacing, palette, breakpoints}) =>
   createStyles({
     wrapper: {
       padding: spacing.unit * 1.5,
@@ -56,8 +56,19 @@ const useAppStyles = makeStyles(({type, spacing, palette}) =>
     [TYPES.NO_RESULTS]: {
       backgroundColor: palette.noResults.background,
       border: `1px solid ${getBorderColorStyle(palette.noResults.background)}`,
+      // Note: not mobile-first approach because
+      // we have important overrides
+      [breakpoints.down('sm')]: {
+        width: 'unset !important',
+        position: 'fixed !important',
+        left: spacing.unit * 2,
+        right: spacing.unit * 2,
+      },
     },
     [TYPES.NEUTRAL]: {},
+    darkIconButton: {
+      color: palette.primary.main,
+    },
   })
 )
 
@@ -105,7 +116,12 @@ const Alert = ({title, type, message, className, onClose}: PropTypes) => {
             </Grid>
           </Grid>
         </Grid>
-        {onClose && <CloseIconButton onClick={onClose} />}
+        {onClose && (
+          <CloseIconButton
+            onClick={onClose}
+            className={type === TYPES.NO_RESULTS && classes.darkIconButton}
+          />
+        )}
       </Grid>
     </Paper>
   )
