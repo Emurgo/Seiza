@@ -7,4 +7,4 @@ transactions and addresses on the way.
 ## Running
 
 - Ensure your backend is running in dev mode
-- run `node src/index [--backend=http://localhost:4000] [--workers=10] [--start-block=27000000]
+- run `node src/index [--backend=http://localhost:4000] [--workers=10] [--start-block=27000000]`
