@@ -9,7 +9,8 @@ import cn from 'classnames'
 import {routeTo} from './helpers/routes'
 
 import Search from './screens/Blockchain/BlockchainHeader/Search'
-import seizaLogo from './assets/icons/logo-seiza.svg'
+import seizaLogoDesktop from './assets/icons/logo-seiza.svg'
+import seizaLogoMobile from './assets/icons/seiza-symbol.svg'
 import {NavLinks, MobileNavLinks, Link} from './components/visual'
 
 import {useIsMobile} from '@/components/hooks/useBreakpoints'
@@ -85,7 +86,7 @@ const MobileMenu = ({items = [], currentPathname}: any) => {
       {/* Note: we get warning without using Fragment */}
       <React.Fragment>
         <div className={classes.mobileWrapper} onClick={onClick}>
-          <img src={seizaLogo} alt="logo" />
+          <img src={seizaLogoMobile} alt="logo" />
           <ArrowDownIcon className={classes.dropdownIcon} />
         </div>
         {isOpen && (
@@ -126,7 +127,7 @@ const TopBar = compose(withRouter)(({location: {pathname}, navItems}) => {
     >
       <Grid item>
         <Link to={routeTo.home()}>
-          <img alt="" src={seizaLogo} />
+          <img alt="" src={seizaLogoDesktop} />
         </Link>
       </Grid>
       <Grid item>
