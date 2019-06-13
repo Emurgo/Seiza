@@ -16,6 +16,7 @@ import {NavTypography} from '@/components/visual/Navbar'
 export const themeMessages = defineMessages({
   bright: 'Light ',
   dark: 'Dark',
+  yoroi: 'Yoroi',
 })
 
 const styles = (theme) => ({
@@ -67,6 +68,13 @@ export const themeLabels = {
       color1={THEME_DEFINITIONS[THEMES.DARK].palette.primary.main}
       color2={THEME_DEFINITIONS[THEMES.DARK].palette.background.default}
       intlMessage={themeMessages[THEMES.DARK]}
+    />
+  ),
+  [THEMES.YOROI]: (
+    <ThemeLabel
+      color1="#DBEFF8"
+      color2={THEME_DEFINITIONS[THEMES.YOROI].palette.primary.main}
+      intlMessage={themeMessages[THEMES.YOROI]}
     />
   ),
 }
