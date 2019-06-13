@@ -9,7 +9,7 @@ import {defineMessages} from 'react-intl'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 
 import {IconButton, Grid, Typography, Avatar, withStyles} from '@material-ui/core'
-import {Share, CallMade, CallReceived} from '@material-ui/icons'
+import {Share, CallMade, CallReceived, Clear} from '@material-ui/icons'
 
 import {LoadingDots, DebugApolloError, VisualHash, Chip} from '@/components/visual'
 import CopyToClipboard from '@/components/common/CopyToClipboard'
@@ -32,7 +32,12 @@ const CustomAvatar = withStyles({
   },
 })(Avatar)
 
-const CustomChip = withStyles({
+const CustomChip = withStyles(({palette, spacing}) => ({
+  root: {
+    background: palette.secondary.main,
+    border: 'none',
+    color: palette.text.primary,
+  },
   label: {
     maxWidth: '300px',
     overflow: 'hidden',
@@ -40,7 +45,11 @@ const CustomChip = withStyles({
     whiteSpace: 'nowrap',
     display: 'inline-block',
   },
-})(Chip)
+  deleteIcon: {
+    marginRight: spacing.unit,
+    width: '0.7em',
+  },
+}))(Chip)
 
 const poolsStyles = ({palette}) => {
   const poolMargin = 4
@@ -134,6 +143,7 @@ const _StakePoolItem = ({classes, label, onDelete, hash}) => (
       label={label}
       onClick={() => null}
       onDelete={onDelete}
+      deleteIcon={<Clear />}
       variant="outlined"
       color="primary"
     />
