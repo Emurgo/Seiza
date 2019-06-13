@@ -83,7 +83,7 @@ export default () => {
           <ToggleButton
             open={!showFilters}
             onClick={onToggleShowFilters}
-            primary
+            secondary
             className={classes.button}
           >
             {tr(messages.filters)}

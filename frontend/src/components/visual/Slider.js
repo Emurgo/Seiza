@@ -25,7 +25,7 @@ const styles = (theme) =>
     },
     handle: {
       border: `1px solid ${darken(theme.palette.background.default, 0.05)}`,
-      color: theme.palette.text.primary,
+      color: theme.palette.secondary.main,
     },
     rangeWrapper: {
       paddingTop: '25px',
@@ -33,17 +33,17 @@ const styles = (theme) =>
   })
 
 const getRailStyle = (theme) => ({
-  backgroundColor: lighten(theme.palette.primary.light, 0.9),
+  backgroundColor: lighten(theme.palette.secondary.light, 0.9),
 })
 
 const getTrackStyle = (theme) => ({
-  backgroundColor: theme.palette.primary.dark,
+  backgroundColor: theme.palette.secondary.main,
   outline: 'none',
   borderShadow: 'none',
 })
 
 const getHandleStyle = (theme) => ({
-  backgroundColor: theme.palette.primary.dark,
+  backgroundColor: theme.palette.secondary.main,
   border: 'none',
 })
 

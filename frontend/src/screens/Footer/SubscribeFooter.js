@@ -16,6 +16,7 @@ import {
   OutlinedInput,
 } from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
+import {fade} from '@material-ui/core/styles/colorManipulator'
 
 import {useI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
@@ -71,12 +72,17 @@ const useRoundedInputStyles = makeStyles((theme) => {
 
 const useOutlinedInputStyles = makeStyles((theme) => ({
   root: {
-    height: '100%',
+    'height': '100%',
+    // See https://github.com/mui-org/material-ui/issues/13347#issuecomment-435790274
+    // for the source of this abomination
+    '&:hover:not($disabled):not($focused):not($error) $notchedOutline': {
+      borderColor: `${theme.palette.primary.main} !important`,
+    },
   },
   notchedOutline: {
     borderRadius: '35px',
     // TODO: get from theme
-    borderColor: '#A38DDF !important',
+    borderColor: `${fade(theme.palette.primary.main, 0.4)} !important`,
   },
   focused: {
     '&>fieldset': {
@@ -450,7 +456,7 @@ const SubscribeFooter = () => {
                       <Grid item className={classes.textfieldButtonSpacing}>
                         <Button
                           rounded
-                          gradient
+                          primaryGradient
                           className={cn(classes.subscribe)}
                           type="submit"
                           onClick={validateAndSubscribe}

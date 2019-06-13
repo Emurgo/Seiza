@@ -104,11 +104,11 @@ const Header = compose(
       </Grid>
       <Grid item>
         {selected ? (
-          <Button rounded secondary onClick={onRemovePool} className={classes.button}>
+          <Button rounded secondaryGradient onClick={onRemovePool} className={classes.button}>
             {translate(messages.removePool)}
           </Button>
         ) : (
-          <Button rounded gradient onClick={onAddPool} className={classes.button}>
+          <Button rounded primaryGradient onClick={onAddPool} className={classes.button}>
             {translate(messages.addPool)}
           </Button>
         )}

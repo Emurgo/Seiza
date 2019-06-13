@@ -7,6 +7,7 @@ import {useApolloClient, useQuery} from 'react-apollo-hooks'
 import {compose} from 'redux'
 import {defineMessages} from 'react-intl'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
+import {fade} from '@material-ui/core/styles/colorManipulator'
 
 import {IconButton, Grid, Typography, Avatar, withStyles} from '@material-ui/core'
 import {Share, CallMade, CallReceived, Clear} from '@material-ui/icons'
@@ -34,7 +35,7 @@ const CustomAvatar = withStyles({
 
 const CustomChip = withStyles(({palette, spacing}) => ({
   root: {
-    background: palette.secondary.main,
+    background: fade(palette.secondary.main, 0.2),
     border: 'none',
     color: palette.text.primary,
   },

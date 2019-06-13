@@ -6,6 +6,7 @@ import {makeStyles} from '@material-ui/styles'
 const useTabsStyles = makeStyles(({palette}) => ({
   indicator: {
     height: '100%',
+    opacity: 0.1,
   },
 }))
 const useTabStyles = makeStyles(({palette, spacing}) => ({
@@ -29,7 +30,7 @@ export const Tabs = ({children, ...props}) => {
       classes={classes}
       variant="fullWidth"
       textColor="primary"
-      indicatorColor="secondary"
+      indicatorColor="primary"
       {...props}
     >
       {children}

@@ -17,30 +17,49 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: theme.spacing.unit * 1.5,
     paddingBottom: theme.spacing.unit * 1.5,
   },
-  gradient: {
-    'background': theme.palette.buttonsGradient.normal,
-    'color': theme.palette.getContrastText('#715BD3'),
-    'boxShadow': `0px 8px 20px ${fade(theme.palette.text.primary, 0.08)}`,
-    '&:hover': {
-      boxShadow: `0px 10px 30px ${fade(theme.palette.text.primary, 0.14)}`,
-      background: theme.palette.buttonsGradient.hover,
-    },
-  },
   rounded: {
     // Note: to have complete radius for all heights
     borderRadius: '1000px',
   },
+  primary: {
+    'border': '1px solid transparent',
+    'background': theme.palette.primary.main,
+    'color': theme.palette.buttons.primary.textColor,
+    '&:hover': {
+      background: fade(theme.palette.primary.main, FADE_FACTOR),
+    },
+  },
   secondary: {
+    'border': '1px solid transparent',
+    'background': theme.palette.secondary.main,
+    'color': theme.palette.buttons.secondary.textColor,
+    '&:hover': {
+      background: fade(theme.palette.secondary.main, FADE_FACTOR),
+    },
+  },
+  primaryGradient: {
+    'background': theme.palette.buttons.primaryGradient.background,
+    'color': theme.palette.buttons.primaryGradient.textColor,
+    'boxShadow': `0px 8px 20px ${fade(theme.palette.text.primary, 0.08)}`,
+    '&:hover': {
+      boxShadow: `0px 10px 30px ${fade(theme.palette.text.primary, 0.14)}`,
+      // Note: this needs to be a gradient because otherwise some weird visual effects happen
+      // Something is transitioning on the background and gradients to do not like to be
+      // transitioned at all
+      background: theme.palette.buttons.primaryGradient.hover,
+    },
+  },
+  secondaryGradient: {
     // https://codepen.io/miraviolet/pen/ZobWEg
     'background': theme.palette.background.default,
-    'color': theme.palette.primary.main,
-    'borderRadius': ({rounded}) => (rounded ? '1000px' : null),
+    'color': theme.palette.buttons.secondaryGradient.textColor,
 
     '&:hover': {
-      backgroundImage: `${REFERENCE_GRADIENT}, ${theme.palette.buttonsGradient.hover}`,
+      backgroundImage: `${REFERENCE_GRADIENT}, ${theme.palette.buttons.secondaryGradient.hover}`,
+      color: theme.palette.buttons.secondaryGradient.textHover,
     },
     'border': '1px solid transparent',
-    'backgroundImage': `${REFERENCE_GRADIENT}, ${theme.palette.buttonsGradient.normal}`,
+    'backgroundImage': `${REFERENCE_GRADIENT}, ${theme.palette.buttons.secondaryGradient.background}`,
     'backgroundOrigin': 'border-box',
     'backgroundClip': 'content-box, border-box',
     'boxShadow': `2px 1000px 1px ${theme.palette.background.default} inset`,
@@ -59,14 +78,6 @@ const useStyles = makeStyles((theme) => ({
       boxShadow: `0px 10px 30px ${fade(theme.palette.text.primary, 0.14)}`,
     },
   },
-  primary: {
-    'border': '1px solid transparent',
-    'background': theme.palette.primary.main,
-    'color': theme.palette.getContrastText(theme.palette.primary.main),
-    '&:hover': {
-      background: fade(theme.palette.primary.main, FADE_FACTOR),
-    },
-  },
   disabled: {
     background: `${fade(theme.palette.primary.main, 0.25)} !important`,
     color: `${theme.palette.background.default} !important`,
@@ -74,7 +85,7 @@ const useStyles = makeStyles((theme) => ({
   },
   secondaryDisabled: {
     backgroundImage: `${REFERENCE_GRADIENT},
-      ${theme.palette.buttonsGradient.hover}
+      ${theme.palette.buttons.hover}
     } !important`,
     color: `${theme.palette.primary.main} !important`,
     opacity: 0.35,
@@ -82,20 +93,22 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 type ButtonProps = {
-  +gradient?: boolean,
   +rounded?: boolean,
-  +secondary?: boolean,
   +primary?: boolean,
+  +secondary?: boolean,
+  +primaryGradient?: boolean,
+  +secondaryGradient?: boolean,
   +disabled?: boolean,
   +className?: string,
   +children: React$Node,
 }
 
 const Button = ({
-  gradient,
   rounded,
-  secondary,
   primary,
+  secondary,
+  primaryGradient,
+  secondaryGradient,
   disabled,
   className,
   children,
@@ -106,10 +119,11 @@ const Button = ({
     <MaterialButton
       disabled={disabled}
       className={cn(classes.root, className, {
-        [classes.gradient]: gradient,
         [classes.rounded]: rounded,
-        [classes.secondary]: secondary,
         [classes.primary]: primary,
+        [classes.secondary]: secondary,
+        [classes.primaryGradient]: primaryGradient,
+        [classes.secondaryGradient]: secondaryGradient,
       })}
       classes={{
         disabled: cn(!secondary && classes.disabled, secondary && classes.secondaryDisabled),
