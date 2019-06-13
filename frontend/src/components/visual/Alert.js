@@ -66,9 +66,6 @@ const useAppStyles = makeStyles(({type, spacing, palette, breakpoints}) =>
       },
     },
     [TYPES.NEUTRAL]: {},
-    darkIconButton: {
-      color: palette.primary.main,
-    },
   })
 )
 
@@ -119,7 +116,7 @@ const Alert = ({title, type, message, className, onClose}: PropTypes) => {
         {onClose && (
           <CloseIconButton
             onClick={onClose}
-            className={type === TYPES.NO_RESULTS && classes.darkIconButton}
+            color={type === TYPES.NO_RESULTS ? 'primary' : 'default'}
           />
         )}
       </Grid>
