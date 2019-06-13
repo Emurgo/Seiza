@@ -7,7 +7,7 @@ import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
 
 import {useI18n} from '@/i18n/helpers'
-import {useBackendSyncingStatus} from '@/components/hooks/useBackendSyncingStatus'
+import {useBackendSyncingStatus} from '@/hooks/useBackendSyncingStatus'
 import SyncingAlertIcon from '@/assets/icons/syncing-alert.svg'
 
 const text = defineMessages({

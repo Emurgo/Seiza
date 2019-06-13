@@ -7,7 +7,7 @@ import {defineMessages} from 'react-intl'
 
 import {useI18n} from '@/i18n/helpers'
 import {Slider, Select} from '@/components/visual'
-import {useStateWithChangingDefault} from '@/components/hooks/useStateWithChangingDefault'
+import {useStateWithChangingDefault} from '@/hooks/useStateWithChangingDefault'
 import {usePerformanceContext} from '../context/performance'
 
 const messages = defineMessages({

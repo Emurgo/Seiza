@@ -6,7 +6,7 @@ import {makeStyles, useTheme} from '@material-ui/styles'
 import {lighten, fade, darken} from '@material-ui/core/styles/colorManipulator'
 import {Grid, Typography} from '@material-ui/core'
 
-import {useCurrentBreakpoint} from '@/components/hooks/useBreakpoints'
+import {useCurrentBreakpoint} from '@/hooks/useBreakpoints'
 
 import {Card} from '@/components/visual'
 

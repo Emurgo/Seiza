@@ -16,7 +16,7 @@ import {darken, fade} from '@material-ui/core/styles/colorManipulator'
 import {ZoomOutMap} from '@material-ui/icons'
 import {defineMessages} from 'react-intl'
 
-import {useRequestAnimationFrame} from '@/components/hooks/useRequestAnimationFrame'
+import {useRequestAnimationFrame} from '@/hooks/useRequestAnimationFrame'
 import WithModalState from '@/components/headless/modalState'
 import {useI18n} from '@/i18n/helpers'
 import {VisualHash, ExternalLink} from '@/components/visual'

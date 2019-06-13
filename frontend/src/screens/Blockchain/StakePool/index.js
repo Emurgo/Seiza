@@ -14,7 +14,7 @@ import {
   LoadingError,
 } from '@/components/visual'
 
-import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
+import {useScrollFromBottom} from '@/hooks/useScrollFromBottom'
 import {useI18n} from '@/i18n/helpers'
 import {useAnalytics} from '@/helpers/googleAnalytics'
 

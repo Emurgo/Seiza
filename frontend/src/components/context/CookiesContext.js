@@ -1,7 +1,7 @@
 // @flow
 import React, {useContext, useCallback} from 'react'
 
-import useLocalStorage from '@/components/hooks/useLocalStorage'
+import useLocalStorage from '@/hooks/useLocalStorage'
 
 type ContextType = {
   cookiesAccepted: boolean,

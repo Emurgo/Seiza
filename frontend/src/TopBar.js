@@ -13,7 +13,7 @@ import seizaLogoDesktop from './assets/icons/logo-seiza.svg'
 import seizaLogoMobile from './assets/icons/seiza-symbol.svg'
 import {NavLinks, MobileNavLinks, Link} from './components/visual'
 
-import {useIsMobile} from '@/components/hooks/useBreakpoints'
+import {useIsMobile} from '@/hooks/useBreakpoints'
 
 import ArrowDownIcon from '@material-ui/icons/ArrowDropDown'
 import LanguageSelect, {MobileLanguage} from '@/components/common/LanguageSelect'

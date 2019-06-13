@@ -13,9 +13,9 @@ import {routeTo} from '@/helpers/routes'
 import {Link} from 'react-router-dom'
 
 import config from '@/config'
-import useCurrency, {CURRENCIES} from '@/components/hooks/useCurrency'
+import useCurrency, {CURRENCIES} from '@/hooks/useCurrency'
 import {useQuery} from 'react-apollo-hooks'
-import useNavigateTo from '@/components/hooks/useNavigateTo'
+import useNavigateTo from '@/hooks/useNavigateTo'
 import {useAnalytics} from '@/helpers/googleAnalytics'
 
 const PRELOAD_FONT_WEIGHT = 300

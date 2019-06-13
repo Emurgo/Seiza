@@ -6,7 +6,7 @@ import _ from 'lodash'
 import * as urlUtils from '@/helpers/url'
 import localStorage from '@/helpers/localStorage'
 import sessionStorage from '@/helpers/sessionStorage'
-import {useUrlManager} from '@/components/hooks/useUrlManager'
+import {useUrlManager} from '@/hooks/useUrlManager'
 
 // Note: dont set `defaultValue` in below function to `null` as due to query-string api,
 // we sometimes need default value to be `undefined` which `null` overrides

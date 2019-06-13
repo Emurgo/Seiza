@@ -16,7 +16,7 @@ import {
   Card,
 } from '@/components/visual'
 import WithModalState from '@/components/headless/modalState'
-import {useIsMobile} from '@/components/hooks/useBreakpoints'
+import {useIsMobile} from '@/hooks/useBreakpoints'
 import {useI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
 import CopyToClipboard from '@/components/common/CopyToClipboard'

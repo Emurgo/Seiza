@@ -5,7 +5,7 @@ import useReactRouter from 'use-react-router'
 import {Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
-import {useUrlManager} from '@/components/hooks/useUrlManager'
+import {useUrlManager} from '@/hooks/useUrlManager'
 import {LoadingInProgress} from '@/components/visual'
 
 const useStyles = makeStyles((theme) => ({

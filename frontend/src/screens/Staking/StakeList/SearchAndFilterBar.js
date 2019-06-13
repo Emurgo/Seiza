@@ -6,7 +6,7 @@ import {makeStyles} from '@material-ui/styles'
 
 import {useI18n} from '@/i18n/helpers'
 import {Searchbar, ToggleButton} from '@/components/visual'
-import {useStateWithChangingDefault} from '@/components/hooks/useStateWithChangingDefault'
+import {useStateWithChangingDefault} from '@/hooks/useStateWithChangingDefault'
 import Filters from './Filters'
 import {useSearchTextContext} from '../context/searchText'
 import {usePerformanceContext} from '../context/performance'

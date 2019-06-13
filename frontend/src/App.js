@@ -30,7 +30,7 @@ import DefaultErrorBoundary from '@/components/common/DefaultErrorBoundary'
 import {SubscribeProvider} from '@/components/context/SubscribeContext'
 import {CookiesProvider} from '@/components/context/CookiesContext'
 import {AnalyticsProvider} from '@/helpers/googleAnalytics' // TODO move to context?
-import {CurrencyProvider} from '@/components/hooks/useCurrency'
+import {CurrencyProvider} from '@/hooks/useCurrency'
 import {SearchbarRefProvider} from '@/components/context/SearchbarRef'
 import EnvOverrides from './screens/EnvOverrides'
 import TopBar from './TopBar'

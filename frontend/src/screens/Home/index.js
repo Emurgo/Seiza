@@ -7,7 +7,7 @@ import GeneralInfo from './GeneralInfo'
 import StakePoolsInfo from './StakePoolsInfo'
 import Charts from './Charts'
 
-import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
+import {useScrollFromBottom} from '@/hooks/useScrollFromBottom'
 
 import SyncIssuesBar from '@/components/common/SyncIssuesBar'
 

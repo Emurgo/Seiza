@@ -22,8 +22,8 @@ import {
   LoadingError,
   Alert,
 } from '@/components/visual'
-import useTabState from '@/components/hooks/useTabState'
-import {useCurrentBreakpoint} from '@/components/hooks/useBreakpoints'
+import useTabState from '@/hooks/useTabState'
+import {useCurrentBreakpoint} from '@/hooks/useBreakpoints'
 import {TabsProvider as Tabs, TabItem as Tab, useTabContext} from '@/components/context/TabContext'
 import BarChart from './BarChart'
 import {useCurrentEpoch} from '../common'

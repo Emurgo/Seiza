@@ -6,7 +6,7 @@ import {Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
 import {SimpleLayout, ExpansionPanel, ExternalLink} from '@/components/visual'
-import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
+import {useScrollFromBottom} from '@/hooks/useScrollFromBottom'
 
 import {routeTo} from '@/helpers/routes'
 import {useI18n} from '@/i18n/helpers'

@@ -5,7 +5,7 @@ import idx from 'idx'
 import {useQuery} from 'react-apollo-hooks'
 
 import {Pagination} from '@/components/visual'
-import {useManageQueryValue} from '@/components/hooks/useManageQueryValue'
+import {useManageQueryValue} from '@/hooks/useManageQueryValue'
 import {toIntOrNull} from '@/helpers/utils'
 
 const useLoadData = (cursor, autoUpdate) => {

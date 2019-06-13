@@ -11,7 +11,7 @@ import {makeStyles} from '@material-ui/styles'
 import {Tooltip} from '@/components/visual'
 import type {ShowSign} from '@/i18n/helpers'
 import {useI18n} from '@/i18n/helpers'
-import useCurrency from '@/components/hooks/useCurrency'
+import useCurrency from '@/hooks/useCurrency'
 import LoadingDots from './LoadingDots'
 import moment from 'moment-timezone'
 
@@ -50,7 +50,10 @@ const useHistoricalPrice = (currency, timestamp, shouldFetch) => {
     {
       variables: {
         currency,
-        timestamp: moment(timestamp).utc().startOf('day').toISOString(),
+        timestamp: moment(timestamp)
+          .utc()
+          .startOf('day')
+          .toISOString(),
       },
       skip: !shouldFetch,
     }
@@ -208,15 +211,15 @@ const getColorType = ({value, colorful}): ColorType => {
   // (parseFloat("40 years") parsed as 40)
   // where Math.sign("40 years") returns NaN
   // $FlowFixMe
-  return (Math.sign(value) >= 0) ? 'plus' : 'minus'
+  return Math.sign(value) >= 0 ? 'plus' : 'minus'
 }
 
 const useAdaValueStyles = ({value, colorful}) => {
-  const classes = ({
+  const classes = {
     plus: usePlusStyles(),
     minus: useMinusStyles(),
     neutral: useNeutralStyles(),
-  })
+  }
 
   return classes[getColorType({value, colorful})]
 }

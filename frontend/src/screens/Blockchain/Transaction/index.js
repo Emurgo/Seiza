@@ -7,7 +7,7 @@ import idx from 'idx'
 import gql from 'graphql-tag'
 import {extractError} from '@/helpers/errors'
 
-import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
+import {useScrollFromBottom} from '@/hooks/useScrollFromBottom'
 import {
   SummaryCard,
   SimpleLayout,

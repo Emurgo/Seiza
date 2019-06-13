@@ -17,7 +17,7 @@ import {fade} from '@material-ui/core/styles/colorManipulator'
 
 import {Card, KeyValueCard} from '@/components/visual'
 import {useI18n} from '@/i18n/helpers'
-import {useIsMobile} from '@/components/hooks/useBreakpoints'
+import {useIsMobile} from '@/hooks/useBreakpoints'
 
 import Overlay from './Overlay'
 import LoadingOverlay from './LoadingOverlay'

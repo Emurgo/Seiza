@@ -6,7 +6,7 @@ import {makeStyles} from '@material-ui/styles'
 import {ExpansionPanel, EntityCardContent, Link} from '@/components/visual'
 import {useI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
-import useCutClickableArea from '@/components/hooks/useCutClickableArea'
+import useCutClickableArea from '@/hooks/useCutClickableArea'
 
 const messages = defineMessages({
   transactionId: 'Transacton Id:',

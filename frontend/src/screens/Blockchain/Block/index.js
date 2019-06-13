@@ -20,7 +20,7 @@ import {
 } from '@/components/visual'
 
 import blockIcon from '@/assets/icons/metrics-blocks.svg'
-import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
+import {useScrollFromBottom} from '@/hooks/useScrollFromBottom'
 import {useAnalytics} from '@/helpers/googleAnalytics'
 
 import TransactionCard from '@/components/common/TransactionCard'
