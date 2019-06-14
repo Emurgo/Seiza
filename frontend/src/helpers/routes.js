@@ -20,7 +20,7 @@ const STAKING_KEY_ROUTE = `${BLOCKCHAIN_ROUTE}/staking-key`
 const HAVE_BLOCKCHAIN = true
 const HAVE_STAKING = config.showStakingData
 const HAVE_LEGAL = true
-const HAVE_MORE = true
+const HAVE_MORE = config.showStakingData
 
 const anyOfPaths = (paths: Array<?string>) => {
   const disjunction = paths.filter((p) => !!p).join('|')
