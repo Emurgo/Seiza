@@ -22,7 +22,7 @@ const HAVE_BLOCKCHAIN = true
 const HAVE_STAKING_CENTER = config.showStakingData
 const HAVE_STAKE_POOLS_LIST = config.showStakePoolsListData
 const HAVE_LEGAL = true
-const HAVE_MORE = true
+const HAVE_MORE = config.showStakingData
 
 const anyOfPaths = (paths: Array<?string>) => {
   const disjunction = paths.filter((p) => !!p).join('|')
