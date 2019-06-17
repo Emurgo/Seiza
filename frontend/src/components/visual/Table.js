@@ -139,7 +139,7 @@ const DesktopSeparator = ({fieldsConfig, row: {text}}) => {
     <td colSpan="8" className={classes.separatorContainerDesktop}>
       <Grid container>
         <div className={classes.separatorLine} />
-        <span>{text}</span>
+        <Typography>{text}</Typography>
         <div className={classes.separatorLine} />
       </Grid>
     </td>
