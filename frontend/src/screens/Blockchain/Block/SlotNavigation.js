@@ -23,8 +23,8 @@ const useSlotNavigation = (slot: any) => {
 }
 
 const messages = defineMessages({
-  goPreviousBlock: 'Previous Block',
-  goNextBlock: 'Next Block',
+  goPreviousBlock: 'Previous',
+  goNextBlock: 'Next',
 })
 
 // TODO: use proper flow type
