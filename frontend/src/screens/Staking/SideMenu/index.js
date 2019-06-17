@@ -13,6 +13,7 @@ import {useI18n} from '@/i18n/helpers'
 import {Link} from '@/components/visual'
 import {useResetUrlAndStorage} from '../context'
 import {useAutoSyncContext} from '../context/autoSync'
+import {useIsMobile} from '@/components/hooks/useBreakpoints'
 
 const messages = defineMessages({
   reset: 'Reset all settings',
@@ -51,6 +52,9 @@ const SideMenu = () => {
   const resetUrlAndStorage = useResetUrlAndStorage()
   const onReset = useCallback(() => resetUrlAndStorage(), [resetUrlAndStorage])
   const {autoSync, toggleAutoSync} = useAutoSyncContext()
+  const isMobile = useIsMobile()
+
+  if (isMobile) return <NavigationBar />
 
   return (
     <div className={classes.wrapper}>
