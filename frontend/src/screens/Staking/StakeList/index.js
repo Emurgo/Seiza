@@ -89,7 +89,7 @@ const StakeList = ({onLoadMore, pagedStakePoolList, loading}) => {
       {hasMore ? (
         <Grid item className={classes.loadMoreWrapper}>
           <Grid container justify="center" direction="row">
-            <Button className={classes.loadMore} gradient rounded onClick={onLoadMore}>
+            <Button className={classes.loadMore} primaryGradient rounded onClick={onLoadMore}>
               {tr(messages.loadMore)}
             </Button>
           </Grid>

@@ -4,14 +4,28 @@ import _ from 'lodash'
 const theme = _.merge({}, common, {
   palette: {
     type: 'dark',
-    gradient: 'linear-gradient(97deg, #8673EC 0%, #99B0EA 100%)',
-    buttonsGradient: {
-      direction: 97,
-      start: '#715BD3',
-      end: '#95BAF7',
-      startPercent: 0,
-      endPercent: 100,
-      gradient: 'linear-gradient(97deg, #715BD3 0%, #95BAF7 100%)',
+    gradient: 'linear-gradient(97deg, #5a25be 0%, #9bb8e7 100%)',
+    buttons: {
+      primary: {
+        textColor: '#FFFFFF',
+        textHover: '#FFFFFF',
+      },
+      secondary: {
+        textColor: '#FFFFFF',
+        textHover: '#FFFFFF',
+      },
+      primaryGradient: {
+        background: 'linear-gradient(97deg, #715BD3 0%, #95BAF7 100%)',
+        hover: 'linear-gradient(90deg, #95BAF7 0%,  #95BAF7 100%)',
+        textColor: '#FFFFFF',
+        textHover: '#FFFFFF',
+      },
+      secondaryGradient: {
+        background: 'linear-gradient(97deg, #715BD3 0%, #95BAF7 100%)',
+        hover: 'linear-gradient(90deg, #95BAF7 0%,  #95BAF7 100%)',
+        textColor: '#90ACFE',
+        textHover: '#95BAF7',
+      },
     },
     text: {
       primary: '#ffffff',
@@ -52,9 +66,10 @@ const theme = _.merge({}, common, {
       background: '#CEC0F2',
     },
     background: {
-      default: '#34005A',
-      paper: '#3D1769',
-      paperContrast: '#220049',
+      default: '#180d48',
+      paper: 'rgba(146, 185, 252, 0.1)',
+      paperContrast: 'rgb(18, 5, 70)',
+      tooltip: '#180d48',
     },
     contentFocus: '#6F7290',
     contentUnfocus: '#BFC5D2',
@@ -67,8 +82,6 @@ const theme = _.merge({}, common, {
     },
     shadowBase: '#412596',
   },
-
 })
 
 export default theme
-

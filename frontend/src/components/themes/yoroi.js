@@ -14,12 +14,27 @@ const theme = _.merge({}, common, {
       hover: '#F4F6FC',
     },
     gradient: 'linear-gradient(97deg, #C5D9F5 0%, #CAF2ED 100%)',
-    buttonsGradient: {
-      normal: 'linear-gradient(90deg, #3154CB 0%, #17D1AA 100%)',
-      hover: 'linear-gradient(90deg, #17D1AA 0%,  #17D1AA 100%)',
-    },
-    primary: {
-      main: '#3E60CD',
+    buttons: {
+      primary: {
+        textColor: '#FFFFFF',
+        textHover: '#FFFFFF',
+      },
+      secondary: {
+        textColor: '#FFFFFF',
+        textHover: '#FFFFFF',
+      },
+      primaryGradient: {
+        background: 'linear-gradient(90deg, #3154CB 0%, #17D1AA 100%)',
+        hover: 'linear-gradient(90deg, #17D1AA 0%,  #17D1AA 100%)',
+        textColor: '#FFFFFF',
+        textHover: '#FFFFFF',
+      },
+      secondaryGradient: {
+        background: 'linear-gradient(90deg, #3154CB 0%, #17D1AA 100%)',
+        hover: 'linear-gradient(90deg, #17D1AA 0%,  #17D1AA 100%)',
+        textColor: '#3E60CD',
+        textHover: '#17D1AA',
+      },
     },
     // Note:
     // <Typography color="primary"> ---> selects palette.primary.main
@@ -30,8 +45,11 @@ const theme = _.merge({}, common, {
       primary: '#120546',
       secondary: '#6F7290',
     },
+    primary: {
+      main: '#3E60CD',
+    },
     secondary: {
-      main: '#FF0000',
+      main: '#17D1AA',
     },
     tertiary: {
       main: '#92B9FC', // underscore of navbar, icons have it
@@ -65,6 +83,7 @@ const theme = _.merge({}, common, {
       paperContrast: '#F4F5FC',
       paper: '#FFFFFF',
       default: '#F9FAFF',
+      tooltip: '#F4F5FC',
     },
     contentFocus: '#6F7290',
     contentUnfocus: '#BFC5D2',

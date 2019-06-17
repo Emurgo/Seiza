@@ -23,7 +23,7 @@ const styles = (theme) =>
       },
       '&:hover': {
         '&>fieldset': {
-          borderColor: `${theme.palette.primary.main} !important`,
+          borderColor: `${theme.palette.secondary.main} !important`,
         },
       },
     },
@@ -119,7 +119,7 @@ class Searchbar extends React.Component<Props> {
             },
           }}
         />
-        <Button primary type="submit" variant="contained" className={classes.searchButton}>
+        <Button secondary type="submit" variant="contained" className={classes.searchButton}>
           <Search fontSize="large" />
         </Button>
       </form>

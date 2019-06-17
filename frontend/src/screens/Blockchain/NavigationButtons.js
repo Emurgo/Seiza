@@ -48,7 +48,7 @@ const NavigationButtons = ({
       <Grid item>
         <Button
           rounded
-          secondary
+          secondaryGradient
           className={classes.navigationButton}
           disabled={!hasPrev}
           /* Link requires `to` prop even if disabled */
@@ -62,7 +62,7 @@ const NavigationButtons = ({
       <Grid item>
         <Button
           rounded
-          secondary
+          secondaryGradient
           className={classes.navigationButton}
           disabled={!hasNext}
           /* Link requires `to` prop even if disabled */
