@@ -69,6 +69,7 @@ const theme = _.merge({}, common, {
       default: '#180d48',
       paper: 'rgba(146, 185, 252, 0.1)',
       paperContrast: 'rgb(18, 5, 70)',
+      tooltip: '#180d48',
     },
     contentFocus: '#6F7290',
     contentUnfocus: '#BFC5D2',
