@@ -80,7 +80,7 @@ const StakeList = ({onLoadMore, pagedStakePoolList, loading}) => {
   const stakePoolList = pagedStakePoolList.stakePools.map(stakePoolFacade)
 
   return (
-    <Overlay.Wrapper>
+    <Overlay.Wrapper className="w-100">
       {stakePoolList.map((pool) => (
         <Grid item key={pool.hash} className={classes.rowWrapper}>
           <StakePool data={pool} />
