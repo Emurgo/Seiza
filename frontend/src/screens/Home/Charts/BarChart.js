@@ -206,7 +206,7 @@ export default ({
             offset={-5}
             value={yLabel}
             position="insideLeft"
-            style={{textAnchor: 'middle'}}
+            style={{textAnchor: 'middle', fill: textColor}}
           />
         )}
       </YAxis>
