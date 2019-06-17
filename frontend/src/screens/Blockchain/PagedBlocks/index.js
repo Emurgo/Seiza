@@ -11,7 +11,7 @@ import {useI18n} from '@/i18n/helpers'
 import {useQueryNotBuggedForBlocks} from '@/components/hooks/useQueryNotBugged'
 import {useManageQueryValue} from '@/components/hooks/useManageQueryValue'
 import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
-import {toIntOrNull} from '@/helpers/utils'
+import {toIntOrNull, getPageCount} from '@/helpers/utils'
 import BlocksTable, {ALL_COLUMNS} from './BlocksTable'
 import {useAnalytics} from '@/helpers/googleAnalytics'
 import {getPageAndBoundaryFromCursor} from './util'
@@ -151,8 +151,7 @@ const PagedBlocks = () => {
 
   const pagination = (
     <Pagination
-      count={totalCount}
-      rowsPerPage={rowsPerPage}
+      pageCount={getPageCount(totalCount, rowsPerPage)}
       page={effectivePage}
       onChangePage={setPage}
       reverseDirection

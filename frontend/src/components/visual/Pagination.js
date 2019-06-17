@@ -1,23 +1,20 @@
 // @flow
-import React from 'react'
+import React, {useCallback} from 'react'
 import classnames from 'classnames'
 import {IconButton, Grid, Input} from '@material-ui/core'
-// $FlowFixMe flow does not know about useTheme
 import {useTheme, makeStyles} from '@material-ui/styles'
 import {unstable_useMediaQuery as useMediaQuery} from '@material-ui/core/useMediaQuery'
-import {compose} from 'redux'
-import {withHandlers, withStateHandlers, withProps} from 'recompose'
 import {defineMessages} from 'react-intl'
 
 import {ReactComponent as FirstPageArrow} from '@/assets/icons/arrow-first-page.svg'
 import {ReactComponent as LastPageArrow} from '@/assets/icons/arrow-last-page.svg'
 import {ReactComponent as ArrowLeft} from '@/assets/icons/arrow-left.svg'
 import {ReactComponent as ArrowRight} from '@/assets/icons/arrow-right.svg'
-import {onDidUpdate, onDidMount} from '@/components/HOC/lifecycles'
-import {isInRange} from '@/helpers/validators'
+import {isInRange, isInteger} from '@/helpers/validators'
 import {useI18n} from '@/i18n/helpers'
+import {useStateWithChangingDefault} from '@/components/hooks/useStateWithChangingDefault'
 
-// Note!!!: pages are numbered from 1 so that urls is consistent with the rest of UI
+// Note!!!: pages are numbered from 1 so that urls are consistent with the rest of UI
 
 const INPUT_PADDING_MOBILE = 2
 const INPUT_PADDING_DESKTOP = 8
@@ -75,25 +72,87 @@ const getEstimatedInputWidth = (pageCount: number, isDesktop): number => {
   return String(pageCount).length * charSize + baseWidth
 }
 
-export const getPageCount = (itemsCount: number, rowsPerPage: number) =>
-  Math.ceil(itemsCount / rowsPerPage)
-
 const inputProps = {style: {textAlign: 'center', padding: '6px 0 6px'}}
 
-const Pagination = ({
-  onFirstPageButtonClick,
-  onBackButtonClick,
-  onNextButtonClick,
-  onLastPageButtonClick,
-  pageCount,
-  page,
-  goToPageValue,
-  onGoToPageChange,
-  onGoToPageSubmit,
-  reverseDirection,
-}) => {
+const ArrowWrapper = ({children, onClick, disabled, ariaLabel}) => {
+  const classes = useStyles()
+  return (
+    <Grid item className={classes.arrowWrapper}>
+      <IconButton
+        className={classes.arrow}
+        onClick={onClick}
+        disabled={disabled}
+        aria-label={ariaLabel}
+        color="primary"
+      >
+        {children}
+      </IconButton>
+    </Grid>
+  )
+}
+
+const usePaginationHandlers = (page, onChangePage, pageCount, inputValue, setInputValue) => {
+  const onFirstPageButtonClick = useCallback((event) => onChangePage(1), [onChangePage])
+  const onBackButtonClick = useCallback((event) => onChangePage(page - 1), [onChangePage, page])
+  const onNextButtonClick = useCallback((event) => onChangePage(page + 1), [onChangePage, page])
+  const onLastPageButtonClick = useCallback((event) => onChangePage(Math.max(1, pageCount)), [
+    onChangePage,
+    pageCount,
+  ])
+
+  const onInputValueChange = useCallback(
+    (event) => {
+      const {value} = event.target
+      if (value === '') {
+        setInputValue(value)
+      } else {
+        const parsed = parseInt(value, 10)
+        if (!isNaN(parsed) && isInRange(parsed, 1, pageCount + 1)) setInputValue(parsed)
+      }
+    },
+    [pageCount, setInputValue]
+  )
+
+  const onInputValueSubmit = useCallback(
+    (e) => {
+      e.preventDefault()
+      if (inputValue === '') return
+      onChangePage(inputValue)
+    },
+    [inputValue, onChangePage]
+  )
+
+  return {
+    onFirstPageButtonClick,
+    onBackButtonClick,
+    onNextButtonClick,
+    onLastPageButtonClick,
+    onInputValueChange,
+    onInputValueSubmit,
+  }
+}
+
+type InnerProps = {|
+  pageCount: number,
+  page: number,
+  onChangePage: Function,
+  reverseDirection?: boolean,
+|}
+
+const Pagination = ({page, reverseDirection, pageCount, onChangePage}: InnerProps) => {
   const classes = useStyles()
   const {translate: tr} = useI18n()
+
+  const [inputValue, setInputValue] = useStateWithChangingDefault(page)
+
+  const {
+    onFirstPageButtonClick,
+    onBackButtonClick,
+    onNextButtonClick,
+    onLastPageButtonClick,
+    onInputValueChange,
+    onInputValueSubmit,
+  } = usePaginationHandlers(page, onChangePage, pageCount, inputValue, setInputValue)
 
   const theme = useTheme()
   const isDesktop = useMediaQuery(theme.breakpoints.up('md'))
@@ -104,67 +163,51 @@ const Pagination = ({
 
   const LeftSideArrows = (
     <React.Fragment>
-      <Grid item className={classes.arrowWrapper}>
-        <IconButton
-          className={classes.arrow}
-          onClick={reverseDirection ? onLastPageButtonClick : onFirstPageButtonClick}
-          disabled={reverseDirection ? isLastPage : isFirstPage}
-          aria-label={reverseDirection ? tr(ariaLabels.lastPage) : tr(ariaLabels.firstPage)}
-          color="primary"
-        >
-          {theme.direction === 'rtl' ? <LastPageArrow /> : <FirstPageArrow />}
-        </IconButton>
-      </Grid>
-      <Grid item className={classes.arrowWrapper}>
-        <IconButton
-          className={classes.arrow}
-          onClick={reverseDirection ? onNextButtonClick : onBackButtonClick}
-          disabled={reverseDirection ? isLastPage : isFirstPage}
-          aria-label={reverseDirection ? tr(ariaLabels.nextPage) : tr(ariaLabels.prevPage)}
-          color="primary"
-        >
-          {theme.direction === 'rtl' ? <ArrowRight /> : <ArrowLeft />}
-        </IconButton>
-      </Grid>
+      <ArrowWrapper
+        onClick={reverseDirection ? onLastPageButtonClick : onFirstPageButtonClick}
+        disabled={reverseDirection ? isLastPage : isFirstPage}
+        ariaLabel={reverseDirection ? tr(ariaLabels.lastPage) : tr(ariaLabels.firstPage)}
+      >
+        <FirstPageArrow />
+      </ArrowWrapper>
+      <ArrowWrapper
+        onClick={reverseDirection ? onNextButtonClick : onBackButtonClick}
+        disabled={reverseDirection ? isLastPage : isFirstPage}
+        ariaLabel={reverseDirection ? tr(ariaLabels.nextPage) : tr(ariaLabels.prevPage)}
+      >
+        <ArrowLeft />
+      </ArrowWrapper>
     </React.Fragment>
   )
 
   const RightSideArrows = (
     <React.Fragment>
-      <Grid item className={classes.arrowWrapper}>
-        <IconButton
-          className={classes.arrow}
-          onClick={reverseDirection ? onBackButtonClick : onNextButtonClick}
-          disabled={reverseDirection ? isFirstPage : isLastPage}
-          aria-label={reverseDirection ? tr(ariaLabels.prevPage) : tr(ariaLabels.nextPage)}
-          color="primary"
-        >
-          {theme.direction === 'rtl' ? <ArrowLeft /> : <ArrowRight />}
-        </IconButton>
-      </Grid>
-      <Grid item className={classes.arrowWrapper}>
-        <IconButton
-          className={classes.arrow}
-          onClick={reverseDirection ? onFirstPageButtonClick : onLastPageButtonClick}
-          disabled={reverseDirection ? isFirstPage : isLastPage}
-          aria-label={reverseDirection ? tr(ariaLabels.firstPage) : tr(ariaLabels.lastPage)}
-          color="primary"
-        >
-          {theme.direction === 'rtl' ? <FirstPageArrow /> : <LastPageArrow />}
-        </IconButton>
-      </Grid>
+      <ArrowWrapper
+        onClick={reverseDirection ? onBackButtonClick : onNextButtonClick}
+        disabled={reverseDirection ? isFirstPage : isLastPage}
+        ariaLabel={reverseDirection ? tr(ariaLabels.prevPage) : tr(ariaLabels.nextPage)}
+      >
+        <ArrowRight />
+      </ArrowWrapper>
+      <ArrowWrapper
+        onClick={reverseDirection ? onFirstPageButtonClick : onLastPageButtonClick}
+        disabled={reverseDirection ? isFirstPage : isLastPage}
+        ariaLabel={reverseDirection ? tr(ariaLabels.firstPage) : tr(ariaLabels.lastPage)}
+      >
+        <LastPageArrow />
+      </ArrowWrapper>
     </React.Fragment>
   )
 
   const Controls = (
     <Grid item>
       <Grid container direction="row" alignItems="center" justify="center">
-        <form onSubmit={onGoToPageSubmit}>
+        <form onSubmit={onInputValueSubmit}>
           <Input
             style={inputStyle}
             disableUnderline
-            value={goToPageValue}
-            onChange={onGoToPageChange}
+            value={inputValue}
+            onChange={onInputValueChange}
             className={classnames(classes.input, classes.editableInput)}
             inputProps={inputProps}
           />
@@ -182,6 +225,8 @@ const Pagination = ({
     </Grid>
   )
 
+  // Note: used this way as if we wanted to divide pagination on mobile to multiple
+  // rows, it would be easy.
   return (
     <Grid container wrap="nowrap" direction="row" justify="center" alignItems="center">
       {LeftSideArrows}
@@ -191,56 +236,34 @@ const Pagination = ({
   )
 }
 
-// TODO: refactor this whole `composition` of hell
-export default compose(
-  // $FlowFixMe (lets just refactor to hooks)
-  withProps((props) => ({
-    page: props.page == null ? 1 : props.page,
-    pageCount: getPageCount(props.count, props.rowsPerPage),
-  })),
-  withStateHandlers((props) => ({goToPageValue: props.pageCount > 0 ? props.page : 0}), {
-    setGoToPageValue: () => (goToPageValue) => ({goToPageValue}),
-  }),
-  withHandlers({
-    setValidatedPage: ({onChangePage, reverseDirection, setGoToPageValue, pageCount}) => (page) => {
-      // TODO: handle invalid page input some better way
-      if (!pageCount) return
-      let _page = page
-      if (page < 1 || page > pageCount) {
-        _page = reverseDirection ? pageCount : 1
-        onChangePage(_page)
-      }
-      setGoToPageValue(_page)
-    },
-  }),
-  onDidMount((props) => {
-    props.setValidatedPage(props.page)
-  }),
-  onDidUpdate((props, prevProps) => {
-    if (
-      (props.pageCount > 0 && prevProps.pageCount !== props.pageCount) ||
-      prevProps.page !== props.page
-    ) {
-      props.setValidatedPage(props.page)
-    }
-  }),
-  withHandlers({
-    onFirstPageButtonClick: ({onChangePage}) => (event) => onChangePage(1),
-    onBackButtonClick: ({onChangePage, page}) => (event) => onChangePage(page - 1),
-    onNextButtonClick: ({onChangePage, page}) => (event) => onChangePage(page + 1),
-    onLastPageButtonClick: ({onChangePage, pageCount}) => (event) =>
-      onChangePage(Math.max(1, pageCount)),
-    onGoToPageChange: ({setGoToPageValue, pageCount, goToPageValue}) => (event) => {
-      const value = event.target.value
-      if (value === '') return setGoToPageValue(value)
-      return setGoToPageValue(
-        isInRange(value, 1, pageCount + 1) ? parseInt(value, 10) : goToPageValue
-      )
-    },
-    onGoToPageSubmit: ({onChangePage, goToPageValue}) => (e) => {
-      e.preventDefault()
-      if (goToPageValue === '') return
-      onChangePage(goToPageValue)
-    },
-  })
-)((props) => <Pagination {...props} />)
+type OuterProps = {|
+  pageCount: ?number,
+  page: ?number,
+  onChangePage: Function,
+  reverseDirection?: boolean,
+|}
+
+const isPageValid = (page: ?number, pageCount: ?number) => {
+  if (!isInteger(page)) return false
+
+  // Cant really determine in that case
+  if (pageCount == null) return true
+
+  if (!isInRange(page, 1, pageCount + 1)) return false
+
+  return true
+}
+
+const getValidatedPage = (page: ?number, pageCount: ?number) => {
+  // Note: parseInt is used because of flow
+  return isPageValid(page, pageCount) ? parseInt(page, 10) : 0
+}
+
+// Note: all responsibility of this wrapper could be moved to components calling <Pagination />
+// but for simplicity is now encapsulated in single place
+export default ({page, pageCount, ...rest}: OuterProps) => {
+  // Note: Instead of showing 0/0 loading, it looks better when pagination is hidden
+  if (!pageCount) return null
+
+  return <Pagination page={getValidatedPage(page, pageCount)} pageCount={pageCount} {...rest} />
+}

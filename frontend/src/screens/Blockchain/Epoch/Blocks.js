@@ -9,7 +9,7 @@ import {useI18n} from '@/i18n/helpers'
 import {useQueryNotBuggedForBlocks} from '@/components/hooks/useQueryNotBugged'
 import {EntityHeading} from '@/components/visual'
 import {useManageQueryValue} from '@/components/hooks/useManageQueryValue'
-import {toIntOrNull} from '@/helpers/utils'
+import {toIntOrNull, getPageCount} from '@/helpers/utils'
 import BlocksTable, {COLUMNS_MAP} from '../PagedBlocks/BlocksTable'
 import {getPageAndBoundaryFromCursor} from '../PagedBlocks/util'
 
@@ -114,8 +114,7 @@ const Blocks = ({blocksCount, epochNumber}) => {
 
   const pagination = (
     <Pagination
-      count={totalCount}
-      rowsPerPage={rowsPerPage}
+      pageCount={getPageCount(totalCount, rowsPerPage)}
       page={effectivePage}
       onChangePage={setPage}
       reverseDirection

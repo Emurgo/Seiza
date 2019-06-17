@@ -9,7 +9,7 @@ import idx from 'idx'
 import {GET_ADDRESS_BY_ADDRESS58, GET_TXS_BY_ADDRESS} from '@/api/queries'
 import {useI18n} from '@/i18n/helpers'
 import {useAnalytics} from '@/helpers/googleAnalytics'
-import {toIntOrNull} from '@/helpers/utils'
+import {toIntOrNull, getPageCount} from '@/helpers/utils'
 import {ObjectValues} from '@/helpers/flow'
 import {useQueryNotBugged} from '@/components/hooks/useQueryNotBugged'
 
@@ -131,11 +131,11 @@ const useTransactions = (address58, filterType, cursor) => {
 }
 
 const usePaginations = () => {
-  const [tabOnePage, onTabOnePageChange] = useManageQueryValue(FILTER_TYPES.ALL, null, toIntOrNull)
-  const [tabTwoPage, onTabTwoPageChange] = useManageQueryValue(FILTER_TYPES.SENT, null, toIntOrNull)
+  const [tabOnePage, onTabOnePageChange] = useManageQueryValue(FILTER_TYPES.ALL, 1, toIntOrNull)
+  const [tabTwoPage, onTabTwoPageChange] = useManageQueryValue(FILTER_TYPES.SENT, 1, toIntOrNull)
   const [tabThreePage, onTabThreePageChange] = useManageQueryValue(
     FILTER_TYPES.RECEIVED,
-    null,
+    1,
     toIntOrNull
   )
 
@@ -278,8 +278,7 @@ const AddressScreen = () => {
               changeFilterType={setTab}
               pagination={
                 <Pagination
-                  count={totalCount}
-                  rowsPerPage={ROWS_PER_PAGE}
+                  pageCount={getPageCount(totalCount, ROWS_PER_PAGE)}
                   page={page}
                   onChangePage={onChangePage}
                 />

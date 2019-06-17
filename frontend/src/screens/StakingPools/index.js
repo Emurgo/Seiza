@@ -6,7 +6,7 @@ import {useQuery} from 'react-apollo-hooks'
 
 import {Pagination} from '@/components/visual'
 import {useManageQueryValue} from '@/components/hooks/useManageQueryValue'
-import {toIntOrNull} from '@/helpers/utils'
+import {toIntOrNull, getPageCount} from '@/helpers/utils'
 
 const useLoadData = (cursor, autoUpdate) => {
   const {error, loading, data} = useQuery(
@@ -61,8 +61,7 @@ const StakingPools = () => {
   return (
     <div>
       <Pagination
-        count={stakePools.length}
-        rowsPerPage={ROWS_PER_PAGE}
+        pageCount={getPageCount(stakePools.length, ROWS_PER_PAGE)}
         page={page}
         onChangePage={setPage}
       />
