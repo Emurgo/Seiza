@@ -67,8 +67,8 @@ const theme = _.merge({}, common, {
     },
     background: {
       default: '#180d48',
-      paper: '#231d57',
-      paperContrast: '#180d48',
+      paper: 'rgba(146, 185, 252, 0.1)',
+      paperContrast: 'rgb(18, 5, 70)',
     },
     contentFocus: '#6F7290',
     contentUnfocus: '#BFC5D2',
