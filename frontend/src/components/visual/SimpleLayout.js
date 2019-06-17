@@ -6,14 +6,14 @@ import EntityHeading from './EntityHeading'
 const styles = ({palette, spacing, breakpoints}) =>
   createStyles({
     container: {
-      paddingTop: spacing.unit * 2.5,
-      paddingBottom: spacing.unit * 7,
+      paddingTop: spacing(2.5),
+      paddingBottom: spacing(7),
     },
     titleWrapper: {
-      margin: spacing.unit * 4,
+      margin: spacing(4),
     },
     title: {
-      'margin': spacing.unit * 3,
+      'margin': spacing(3),
       '&:after': {
         content: '""',
         background: palette.text.secondary,
@@ -27,7 +27,7 @@ const styles = ({palette, spacing, breakpoints}) =>
     },
     content: {
       // Pretty tight margins on mobile
-      width: `calc(100vw - ${spacing.unit * 6}px)`,
+      width: `calc(100vw - ${spacing(6)}px)`,
       [breakpoints.up('sm')]: {
         // Wide margins on desktop
         width: '85vw',
@@ -40,7 +40,7 @@ const styles = ({palette, spacing, breakpoints}) =>
       'display': 'flex',
       'flexDirection': 'column',
       '& > *': {
-        marginBottom: spacing.unit * 2.5,
+        marginBottom: spacing(2.5),
         width: '100%',
       },
     },

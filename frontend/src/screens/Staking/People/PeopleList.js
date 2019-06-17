@@ -27,26 +27,26 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   row: {
-    padding: theme.spacing.unit * 3,
+    padding: theme.spacing(3),
   },
   owners: {
     '& > *': {
       borderBottom: `1px solid ${theme.palette.unobtrusiveContentHighlight}`,
-      paddingTop: theme.spacing.unit * 3,
-      paddingBottom: theme.spacing.unit * 3,
+      paddingTop: theme.spacing(3),
+      paddingBottom: theme.spacing(3),
     },
     '& > :last-child': {
       borderBottom: 'none',
     },
     '& > :first-child': {
-      paddingTop: theme.spacing.unit,
+      paddingTop: theme.spacing(1),
     },
   },
   ownersWrapper: {
-    paddingTop: theme.spacing.unit * 3,
+    paddingTop: theme.spacing(3),
   },
   visualHashWrapper: {
-    paddingRight: theme.spacing.unit,
+    paddingRight: theme.spacing(1),
   },
   stakeKeyLink: {
     color: theme.palette.primary.main,

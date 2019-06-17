@@ -12,13 +12,10 @@ const useTabsStyles = makeStyles(({palette}) => ({
 const useTabStyles = makeStyles(({palette, spacing}) => ({
   wrapper: {
     flexDirection: 'row',
-    paddingBottom: `${spacing.unit * 4}px`,
-    paddingTop: `${spacing.unit * 3.25}px`,
+    paddingBottom: `${spacing(4)}px`,
+    paddingTop: `${spacing(3.25)}px`,
     borderBottom: `1px solid ${palette.contentUnfocus}`,
     letterSpacing: 1,
-  },
-  labelContainer: {
-    width: 'auto',
   },
   selected: {},
 }))

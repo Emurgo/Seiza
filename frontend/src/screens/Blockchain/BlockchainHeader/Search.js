@@ -99,15 +99,15 @@ const useStyles = makeStyles((theme) => ({
     position: 'relative',
   },
   alert: {
-    marginTop: theme.spacing.unit * 1.5,
+    marginTop: theme.spacing(1.5),
     position: 'absolute',
     width: '100%',
     zIndex: 1,
   },
   helpText: {
-    marginLeft: theme.spacing.unit * 4,
-    marginRight: theme.spacing.unit * 4,
-    marginTop: theme.spacing.unit * 2,
+    marginLeft: theme.spacing(4),
+    marginRight: theme.spacing(4),
+    marginTop: theme.spacing(2),
   },
   helpTextHidden: {
     visibility: 'hidden',
@@ -141,6 +141,7 @@ export const SearchHelpText = ({className}: SearchHelpTextProps) => {
       color="textSecondary"
       className={cn(classes.helpText, className)}
       align="center"
+      component="div"
     >
       {tr(text.helpText)}
     </Typography>
@@ -181,7 +182,7 @@ const Search = ({isMobile = false}: SearchProps) => {
         search: urlHelpers.stringify({redirectTo}),
       })
     }
-  })
+  }, [searchResult, history, analytics, location.pathname])
 
   const onChange = useCallback(
     (value) => {

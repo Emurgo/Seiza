@@ -46,8 +46,8 @@ const useStyles = makeStyles((theme) => {
   return createStyles({
     ellipsis: ellipsizeStyles,
     wrapper: {
-      margin: theme.spacing.unit * 6,
-      marginTop: theme.spacing.unit,
+      margin: theme.spacing(6),
+      marginTop: theme.spacing(1),
       display: 'flex',
       overflow: 'hidden',
     },
@@ -127,15 +127,15 @@ const useStyles = makeStyles((theme) => {
     },
     header: {
       background: darken(theme.palette.background.default, 0.04),
-      paddingRight: theme.spacing.unit * 2.5,
-      paddingLeft: theme.spacing.unit * 2.5,
+      paddingRight: theme.spacing(2.5),
+      paddingLeft: theme.spacing(2.5),
       display: 'flex',
       alignItems: 'center',
       height: '60px', // Note: otherwise there is +1 pixel strange issue
     },
     visualHashWrapper: {
       marginTop: '2px', // Note: strange, but looks better centered
-      marginRight: theme.spacing.unit,
+      marginRight: theme.spacing(1),
     },
     itemHeader: {
       width: valuesPanelWidth,
@@ -448,13 +448,13 @@ const useFullWidthStyles = makeStyles((theme) => ({
     margin: 'auto',
     overflow: 'auto',
     justifyContent: 'center',
-    paddingTop: theme.spacing.unit * 5,
+    paddingTop: theme.spacing(5),
     outline: 'none',
     maxWidth: '1920px',
   },
   openFullScreenWrapper: {
-    paddingTop: theme.spacing.unit,
-    paddingLeft: theme.spacing.unit * 5,
+    paddingTop: theme.spacing(1),
+    paddingLeft: theme.spacing(5),
   },
   openFullScreen: {
     width: 'initial',

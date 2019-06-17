@@ -45,7 +45,7 @@ const blockSummaryLabels = defineMessages({
 const useStyles = makeStyles((theme) => ({
   transactionList: {
     '& > :not(:first-child)': {
-      marginTop: theme.spacing.unit * 1.25,
+      marginTop: theme.spacing(1.25),
     },
   },
 }))

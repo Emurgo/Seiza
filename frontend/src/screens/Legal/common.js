@@ -13,22 +13,22 @@ import {useI18n} from '@/i18n/helpers'
 
 const useStyles = makeStyles((theme) => ({
   container: {
-    margin: theme.spacing.unit * 10,
+    margin: theme.spacing(0),
   },
   preamble: {
-    padding: theme.spacing.unit * 2,
+    padding: theme.spacing(2),
   },
   heading: {
     marginBottom: '10px',
   },
   panelContent: {
-    padding: `${theme.spacing.unit}px ${theme.spacing.unit * 4}px`,
+    padding: `${theme.spacing(1)}px ${theme.spacing(4)}px`,
   },
   mdParagraph: {
     textAlign: 'justify',
   },
   list: {
-    paddingLeft: theme.spacing.unit * 2,
+    paddingLeft: theme.spacing(2),
     listStyleType: 'none',
   },
 }))
@@ -78,7 +78,7 @@ type PanelProps = {
 const Panel = ({head, content}: PanelProps) => {
   const classes = useStyles()
   return (
-    <ExpansionPanel summary={<Typography variant="title">{replaceBreak(head)}</Typography>}>
+    <ExpansionPanel summary={<Typography variant="h6">{replaceBreak(head)}</Typography>}>
       <div className={classes.panelContent}>
         <Markdown>{replaceBreak(content)}</Markdown>
       </div>

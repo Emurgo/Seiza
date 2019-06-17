@@ -27,7 +27,7 @@ const styles = (theme) => ({
     display: 'flex',
   },
   themeLabelText: {
-    paddingLeft: theme.spacing.unit,
+    paddingLeft: theme.spacing(1),
   },
 })
 

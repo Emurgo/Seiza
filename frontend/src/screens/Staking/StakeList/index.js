@@ -39,10 +39,10 @@ const useStyles = makeStyles((theme) =>
       marginTop: '30px',
       marginBottom: '50px',
       minWidth: '120px',
-      paddingLeft: theme.spacing.unit * 3,
-      paddingRight: theme.spacing.unit * 3,
-      paddingTop: theme.spacing.unit,
-      paddingBottom: theme.spacing.unit,
+      paddingLeft: theme.spacing(3),
+      paddingRight: theme.spacing(3),
+      paddingTop: theme.spacing(1),
+      paddingBottom: theme.spacing(1),
     },
     loadMoreWrapper: {
       width: '100%',
@@ -52,7 +52,7 @@ const useStyles = makeStyles((theme) =>
       marginBottom: '-15px',
     },
     lastItemSpace: {
-      padding: theme.spacing.unit * 5,
+      padding: theme.spacing(5),
     },
   })
 )

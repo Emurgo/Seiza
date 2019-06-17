@@ -15,10 +15,10 @@ const messages = defineMessages({
 const useStyles = makeStyles((theme) => ({
   wrapper: {
     height: '100%',
-    padding: theme.spacing.unit * 6,
+    padding: theme.spacing(6),
   },
   message: {
-    marginBottom: theme.spacing.unit * 3,
+    marginBottom: theme.spacing(3),
   },
   image: {
     maxWidth: '100%',

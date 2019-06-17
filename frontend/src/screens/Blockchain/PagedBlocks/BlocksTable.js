@@ -54,7 +54,7 @@ const useTHStyles = makeStyles((theme) => ({
     alignItems: 'center',
   },
   icon: {
-    marginRight: theme.spacing.unit * 0.5,
+    marginRight: theme.spacing(0.5),
     display: 'inline-block',
     height: '100%',
     verticalAlign: 'middle',

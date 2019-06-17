@@ -23,18 +23,18 @@ const messages = defineMessages({
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    marginTop: theme.spacing.unit * 3,
-    marginBottom: theme.spacing.unit * 3,
+    marginTop: theme.spacing(3),
+    marginBottom: theme.spacing(3),
   },
   loadingWrapper: {
     paddingTop: 100,
     paddingBottom: 100,
   },
   error: {
-    padding: theme.spacing.unit * 2,
+    padding: theme.spacing(2),
   },
   noPools: {
-    padding: theme.spacing.unit * 2,
+    padding: theme.spacing(2),
   },
 }))
 

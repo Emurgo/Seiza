@@ -81,6 +81,13 @@ const common = {
         },
       },
     },
+    MuiCssBaseline: {
+      '@global': {
+        strong: {
+          fontWeight: 'bold',
+        },
+      },
+    },
   },
 }
 

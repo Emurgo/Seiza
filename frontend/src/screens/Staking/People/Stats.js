@@ -22,16 +22,16 @@ const configMessages = defineMessages({
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {
-    paddingBottom: theme.spacing.unit * 2,
+    paddingBottom: theme.spacing(2),
   },
   loadingWrapper: {
     marginTop: 100,
   },
   error: {
-    padding: theme.spacing.unit * 2,
+    padding: theme.spacing(2),
   },
   noPools: {
-    padding: theme.spacing.unit * 2,
+    padding: theme.spacing(2),
   },
 }))
 

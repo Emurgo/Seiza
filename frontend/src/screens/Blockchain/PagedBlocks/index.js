@@ -53,10 +53,10 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   bottomPagination: {
-    marginTop: theme.spacing.unit * 3,
+    marginTop: theme.spacing(3),
   },
   upperPagination: {
-    marginTop: theme.spacing.unit * 2.5,
+    marginTop: theme.spacing(2.5),
     [theme.breakpoints.up('sm')]: {
       marginTop: 0,
     },
@@ -99,7 +99,7 @@ const usePagedBlocks = () => {
 
   useEffect(() => {
     if (dataTotalCount > totalCount) setTotalCount(dataTotalCount)
-  })
+  }, [totalCount, dataTotalCount])
 
   const effectivePage = page == null ? Math.ceil(totalCount / rowsPerPage) : page
 

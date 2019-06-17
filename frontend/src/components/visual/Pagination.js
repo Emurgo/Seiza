@@ -3,7 +3,7 @@ import React, {useCallback} from 'react'
 import classnames from 'classnames'
 import {IconButton, Grid, Input} from '@material-ui/core'
 import {useTheme, makeStyles} from '@material-ui/styles'
-import {unstable_useMediaQuery as useMediaQuery} from '@material-ui/core/useMediaQuery'
+import useMediaQuery from '@material-ui/core/useMediaQuery'
 import {defineMessages} from 'react-intl'
 
 import {ReactComponent as FirstPageArrow} from '@/assets/icons/arrow-first-page.svg'
@@ -33,10 +33,10 @@ const useStyles = makeStyles(({palette, typography, breakpoints, spacing}) => ({
     padding: 0.5 * typography.fontSize,
   },
   input: {
-    padding: spacing.unit * 0.25,
+    padding: spacing(0.25),
     fontSize: '14px',
     [breakpoints.up('md')]: {
-      padding: spacing.unit,
+      padding: spacing(1),
       fontSize: '18px',
     },
   },
@@ -47,19 +47,19 @@ const useStyles = makeStyles(({palette, typography, breakpoints, spacing}) => ({
     },
   },
   arrow: {
-    padding: spacing.unit * 0.5,
+    padding: spacing(0.5),
     [breakpoints.up('md')]: {
-      padding: spacing.unit * 1.5,
+      padding: spacing(1.5),
     },
   },
   divider: {
     color: palette.contentFocus,
-    paddingLeft: spacing.unit * 0.4,
+    paddingLeft: spacing(0.4),
     [breakpoints.up('sm')]: {
-      paddingLeft: spacing.unit,
+      paddingLeft: spacing(1),
     },
     [breakpoints.up('md')]: {
-      paddingLeft: spacing.unit * 2.5,
+      paddingLeft: spacing(2.5),
     },
   },
 }))

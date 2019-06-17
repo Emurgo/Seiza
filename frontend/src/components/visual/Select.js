@@ -22,7 +22,7 @@ const styles = (theme) => ({
     textTransform: 'uppercase',
   },
   formControl: {
-    margin: theme.spacing.unit,
+    margin: theme.spacing(1),
   },
 })
 

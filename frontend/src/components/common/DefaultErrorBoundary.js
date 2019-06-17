@@ -16,7 +16,7 @@ const messages = defineMessages({
 
 const useStyles = makeStyles((theme) => ({
   item: {
-    marginTop: theme.spacing.unit * 3,
+    marginTop: theme.spacing(3),
   },
 }))
 

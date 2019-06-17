@@ -248,11 +248,11 @@ const AddressHash = ({address58, isLink, hasHighlight}) => {
 
 const useBreakdownItemStyles = makeStyles((theme) => ({
   rowSpacing: {
-    marginTop: theme.spacing.unit * 1.5,
-    marginBottom: theme.spacing.unit * 1.5,
+    marginTop: theme.spacing(1.5),
+    marginBottom: theme.spacing(1.5),
   },
   copy: {
-    marginLeft: theme.spacing.unit,
+    marginLeft: theme.spacing(1),
   },
 }))
 

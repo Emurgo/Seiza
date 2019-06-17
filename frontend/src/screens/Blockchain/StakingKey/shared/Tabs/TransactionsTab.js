@@ -8,8 +8,8 @@ import {useI18n} from '@/i18n/helpers'
 
 const useStyles = makeStyles((theme) => ({
   paginationWrapper: {
-    marginTop: theme.spacing.unit * 6,
-    marginBottom: theme.spacing.unit * 6,
+    marginTop: theme.spacing(6),
+    marginBottom: theme.spacing(6),
   },
 }))
 

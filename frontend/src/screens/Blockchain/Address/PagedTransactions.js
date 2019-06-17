@@ -58,7 +58,7 @@ const useStyles = makeStyles((theme) => ({
   headerPagination: {
     marginTop: 0,
     [theme.breakpoints.down('sm')]: {
-      marginTop: theme.spacing.unit * 2,
+      marginTop: theme.spacing(2),
     },
   },
 }))

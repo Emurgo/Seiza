@@ -74,7 +74,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'flex-end',
   },
   layout: {
-    paddingBottom: theme.spacing.unit * 2.5,
+    paddingBottom: theme.spacing(2.5),
   },
 }))
 

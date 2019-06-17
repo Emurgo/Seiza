@@ -10,13 +10,13 @@ import EpochIcon from '@/assets/icons/epoch.svg'
 const useStyles = makeStyles((theme) => ({
   headerWrapper: {
     borderTop: `1px solid ${theme.palette.contentUnfocus}`,
-    padding: theme.spacing.unit * 2,
+    padding: theme.spacing(2),
   },
   header: {
-    'paddingTop': theme.spacing.unit,
+    'paddingTop': theme.spacing(1),
     'textTransform': 'uppercase',
     '& > *': {
-      paddingRight: theme.spacing.unit,
+      paddingRight: theme.spacing(1),
     },
   },
 }))

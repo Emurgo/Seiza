@@ -29,8 +29,8 @@ const useRowStyles = makeStyles((theme) => ({
     },
   },
   listRow: {
-    paddingTop: theme.spacing.unit * 2.5,
-    paddingBottom: theme.spacing.unit * 2.5,
+    paddingTop: theme.spacing(2.5),
+    paddingBottom: theme.spacing(2.5),
     paddingLeft: getDefaultSpacing(theme),
     paddingRight: getDefaultSpacing(theme),
   },

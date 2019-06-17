@@ -59,7 +59,7 @@ const messages = defineMessages({
 
 const useStyles = makeStyles((theme) => ({
   timeHeader: {
-    marginTop: theme.spacing.unit * 2,
+    marginTop: theme.spacing(2),
     [theme.breakpoints.up('md')]: {
       marginTop: 0,
     },
@@ -70,7 +70,7 @@ const useStyles = makeStyles((theme) => ({
     background: '#BFC5D2',
     textTransform: 'uppercase',
     fontSize: theme.typography.fontSize * 0.8125,
-    marginLeft: theme.spacing.unit,
+    marginLeft: theme.spacing(1),
   },
   date: {
     display: 'inline-block',

@@ -11,7 +11,7 @@ const Section = ({title, children}) => (
 
 const Row = ({children}) => (
   <Grid item>
-    <Grid container direction="row" justify="space-around" spacing={24}>
+    <Grid container direction="row" justify="space-around" spacing={3}>
       {children}
     </Grid>
   </Grid>

@@ -43,7 +43,7 @@ const useMenuItemStyles = makeStyles(({palette, spacing}) => ({
     color: palette.primary.dark,
   },
   icon: {
-    paddingRight: spacing.unit * 2,
+    paddingRight: spacing(2),
   },
 }))
 
@@ -78,8 +78,8 @@ const useNavigationBarStyles = makeStyles((theme) => ({
     top: 74, // TODO: change, keep in sync with main navigation bar height
     background: theme.palette.background.paper,
     zIndex: 1,
-    paddingTop: theme.spacing.unit * 3,
-    paddingLeft: theme.spacing.unit * 3,
+    paddingTop: theme.spacing(3),
+    paddingLeft: theme.spacing(3),
     maxWidth: '100%',
   },
 }))

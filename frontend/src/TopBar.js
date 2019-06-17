@@ -26,16 +26,16 @@ const useTopBarStyles = makeStyles((theme) => ({
     position: 'relative',
     background: theme.palette.background.paper,
     boxShadow: `0px 5px 25px ${fade(theme.palette.shadowBase, 0.12)}`,
-    padding: theme.spacing.unit,
+    padding: theme.spacing(1),
     [theme.breakpoints.up('sm')]: {
-      padding: `${theme.spacing.unit}px ${theme.spacing.unit * 5}px`,
+      padding: `${theme.spacing(1)}px ${theme.spacing(5)}px`,
     },
   },
   mobileSearch: {
     flex: 1,
     marginLeft: 0,
     [theme.breakpoints.up('sm')]: {
-      marginLeft: theme.spacing.unit * 2,
+      marginLeft: theme.spacing(2),
     },
   },
 }))
@@ -49,10 +49,10 @@ const useMobileMenuStyles = makeStyles(({palette, spacing}) => ({
     '-webkit-tap-highlight-color': 'transparent',
   },
   mobileMenuWrapper: {
-    padding: spacing.unit,
+    padding: spacing(1),
   },
   languageWrapper: {
-    padding: `${spacing.unit * 0.75}px ${spacing.unit * 1.5}px`,
+    padding: `${spacing(0.75)}px ${spacing(1.5)}px`,
   },
   dropdownIcon: {
     color: '#BFC5D2', // TODO: consider adding to theme
