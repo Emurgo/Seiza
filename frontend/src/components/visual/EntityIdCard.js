@@ -1,6 +1,7 @@
 import React from 'react'
 import {Typography, Grid} from '@material-ui/core'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
+import {fade} from '@material-ui/core/styles/colorManipulator'
 
 import {makeStyles} from '@material-ui/styles'
 import cn from 'classnames'
@@ -59,7 +60,7 @@ const useContentStyles = makeStyles((theme) => ({
   },
   epochAppear: {
     borderRadius: 10,
-    backgroundColor: theme.palette.secondary.main,
+    backgroundColor: fade(theme.palette.secondary.main, 0.1),
   },
   epochAppearActive: {
     transition: 'background-color 2s ease',
