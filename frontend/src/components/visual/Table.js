@@ -44,6 +44,7 @@ const useTableStyles = makeStyles(({hover, palette}) => ({
   },
   hoverableRow: {
     'transition': hover.transitionOut(['box-shadow']),
+    'borderTop': '1px solid transparent', // Note: for rows not to change size on hover
     '&:hover': {
       marginTop: '-1px',
       borderTop: `1px solid ${palette.unobtrusiveContentHighlight}`,
