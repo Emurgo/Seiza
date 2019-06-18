@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
     'maxHeight': 600,
 
     // We do not have direct control over LoadScript's div
-    '&>*': {
+    '&:nth-child(2)': {
       height: '100%',
     },
   },
