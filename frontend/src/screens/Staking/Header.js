@@ -4,6 +4,7 @@ import React from 'react'
 import {compose} from 'redux'
 import {Grid, Typography, createStyles, withStyles} from '@material-ui/core'
 import {defineMessages} from 'react-intl'
+import ReactMarkdown from 'react-markdown'
 
 import {Card} from '@/components/visual'
 import iconEpoch from '@/assets/icons/metrics-epoch.svg'
@@ -11,9 +12,9 @@ import {withI18n} from '@/i18n/helpers'
 
 const messages = defineMessages({
   header: 'Explore Stake Pools',
-  card1: 'You can search for stake pool you like',
-  card2: 'You can download or share it',
-  card3: 'You can compare it by diff features',
+  card1: '## Search\nfor stake pool you like',
+  card2: '## Download or share\nyour results in just a click',
+  card3: '## Compare\nstake pool details',
 })
 
 const styles = ({palette, spacing}) =>
@@ -33,6 +34,15 @@ const styles = ({palette, spacing}) =>
     },
   })
 
+const cardRenderers = {
+  paragraph: ({children}) => <Typography variant="body1">{children}</Typography>,
+  heading: ({children, level}) => (
+    <Typography variant="h4">
+      <strong>{children}</strong>
+    </Typography>
+  ),
+}
+
 const StakePoolCard = withStyles(styles)(({classes, value, iconSrc}) => (
   <Card classes={{root: classes.card}}>
     <Grid container direction="row" alignItems="center" wrap="nowrap">
@@ -40,7 +50,7 @@ const StakePoolCard = withStyles(styles)(({classes, value, iconSrc}) => (
         <img alt="" src={iconSrc} />
       </Grid>
       <Grid item>
-        <Typography variant="h4">{value}</Typography>
+        <ReactMarkdown source={value} renderers={cardRenderers} />
       </Grid>
     </Grid>
   </Card>
