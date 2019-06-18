@@ -75,7 +75,7 @@ const calculateTabIndicatorPosition = (tabRef) => {
   const labelNode = labelNodeFromTabNode(tabNode)
 
   const left = labelNode && labelNode.offsetLeft + labelNode.parentElement.offsetLeft
-  const width = labelNode && labelNode.parentElement.offsetWidth
+  const width = labelNode && labelNode.offsetWidth
   return {
     left: left || 0,
     width: (width || 0) * TAB_INDICATOR_WIDTH,
