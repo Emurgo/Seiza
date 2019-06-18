@@ -153,14 +153,20 @@ const _StakePoolItem = ({classes, label, onDelete, hash}) => (
 
 const StakePoolItem = withStyles(poolsStyles)(_StakePoolItem)
 
-const Action = withStyles(poolsStyles)(({classes, label, icon, onClick}) => (
+const Action = ({classes, label, icon, onClick}) => (
   <Grid container direction="row" alignItems="center">
-    <Typography className={classes.text}>{label}</Typography>
-    <IconButton onClick={onClick} aria-label={label} color="primary">
-      {icon}
-    </IconButton>
+    <Grid item>
+      <IconButton onClick={onClick} aria-label={label} color="primary">
+        {icon}
+      </IconButton>
+    </Grid>
+    <Grid item>
+      <Typography color="textSecondary" variant="overline">
+        {label}
+      </Typography>
+    </Grid>
   </Grid>
-))
+)
 
 const PoolNamesFragment = gql`
   fragment PoolNamesFragment on BootstrapEraStakePool {
@@ -229,7 +235,10 @@ const PoolsToCompare = ({classes, i18n: {translate}}) => {
       <Grid container direction="row" alignItems="center" className={classes.header}>
         {data.length ? (
           <React.Fragment>
-            <Typography variant="overline">{translate(messages.header)}</Typography>&nbsp;
+            <Typography color="textSecondary" variant="overline">
+              {translate(messages.header)}
+            </Typography>
+            &nbsp;
             <Typography variant="overline">{data.length}</Typography>
           </React.Fragment>
         ) : (
@@ -278,9 +287,13 @@ const PoolsToCompare = ({classes, i18n: {translate}}) => {
           <Action
             label={translate(messages.share)}
             icon={
-              <CopyToClipboard value={currentUrl}>
-                <Share color="primary" />
-              </CopyToClipboard>
+              // Note(ppershing): this is a temporary workaround
+              // as tooltip somehow messes up line height
+              <div style={{height: '1em'}}>
+                <CopyToClipboard value={currentUrl}>
+                  <Share color="primary" />
+                </CopyToClipboard>
+              </div>
             }
             onClick={() => null}
           />

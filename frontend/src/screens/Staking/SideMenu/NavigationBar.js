@@ -29,7 +29,7 @@ const navigationMessages = defineMessages({
 const useMenuItemStyles = makeStyles(({palette, spacing}) => ({
   link: {
     'background': palette.background.paper,
-    'padding': '40px 40px 40px 60px',
+    'padding': '35px 40px 35px 60px',
     'textTransform': 'uppercase',
     '&:hover': {
       background: palette.background.paperContrast,
@@ -38,9 +38,7 @@ const useMenuItemStyles = makeStyles(({palette, spacing}) => ({
   },
   active: {
     background: palette.background.paperContrast,
-  },
-  activeText: {
-    color: palette.primary.dark,
+    color: palette.primary.main,
   },
   icon: {
     paddingRight: spacing(2),
@@ -60,7 +58,7 @@ const MenuItem = ({active, label, icon}) => {
         {icon}
       </Grid>
       <Grid item>
-        <Typography className={cn(active && classes.activeText)}>{label}</Typography>
+        <Typography>{label}</Typography>
       </Grid>
     </Grid>
   )
@@ -69,6 +67,7 @@ const MenuItem = ({active, label, icon}) => {
 const useNavigationBarStyles = makeStyles((theme) => ({
   href: {
     textDecoration: 'none',
+    color: theme.palette.text.secondary,
   },
   // Note: parent can't have `overflow: hidden` and must span full height
   navBar: {
@@ -88,37 +87,37 @@ const navItems = [
   {
     link: routeTo.stakingCenter.poolList(),
     i18nLabel: navigationMessages.list,
-    icon: <Search color="primary" />,
+    icon: <Search color="inherit" />,
     id: 'POOL_LIST',
   },
   {
     link: routeTo.stakingCenter.poolComparison(),
     i18nLabel: navigationMessages.comparison,
-    icon: <Compare color="primary" />,
+    icon: <Compare color="inherit" />,
     id: 'COMPARISON_MATRIX',
   },
   {
     link: routeTo.stakingCenter.history(),
     i18nLabel: navigationMessages.history,
-    icon: <History color="primary" />,
+    icon: <History color="inherit" />,
     id: 'HISTORY',
   },
   {
     link: routeTo.stakingCenter.charts(),
     i18nLabel: navigationMessages.charts,
-    icon: <BarChart color="primary" />,
+    icon: <BarChart color="inherit" />,
     id: 'CHARTS',
   },
   {
     link: routeTo.stakingCenter.location(),
     i18nLabel: navigationMessages.location,
-    icon: <LocationOn color="primary" />,
+    icon: <LocationOn color="inherit" />,
     id: 'LOCATION',
   },
   {
     link: routeTo.stakingCenter.people(),
     i18nLabel: navigationMessages.people,
-    icon: <People color="primary" />,
+    icon: <People color="inherit" />,
     id: 'PEOPLE',
   },
 ]
