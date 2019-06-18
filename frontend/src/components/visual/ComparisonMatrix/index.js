@@ -2,28 +2,24 @@
 
 import * as React from 'react'
 import classnames from 'classnames'
-import {makeStyles} from '@material-ui/styles'
-import {
-  Grid,
-  Typography,
-  Tooltip,
-  Modal,
-  IconButton,
-  ClickAwayListener,
-  createStyles,
-} from '@material-ui/core'
+import {makeStyles, useTheme} from '@material-ui/styles'
+import {Grid, Typography, Tooltip, Modal, IconButton, ClickAwayListener} from '@material-ui/core'
 import {darken, fade} from '@material-ui/core/styles/colorManipulator'
 import {ZoomOutMap} from '@material-ui/icons'
 import {defineMessages} from 'react-intl'
 
-import {useRequestAnimationFrame} from '@/components/hooks/useRequestAnimationFrame'
 import WithModalState from '@/components/headless/modalState'
 import {useI18n} from '@/i18n/helpers'
 import {VisualHash, ExternalLink} from '@/components/visual'
 import CopyToClipboard from '@/components/common/CopyToClipboard'
 
-// TODO: full width scenario
+import ScrollingSideArrow from './ScrollingSideArrow'
+import {ScrollOverlayWrapper} from './ScrollOverlay'
+import {useArrowsScrolling, useKeyboardScrolling} from './scrollingHooks'
+
 // TODO (postpone): colors based on "goodness" for comparable rows
+// TODO (?): dont show arrows where there is nowhere to scroll
+// TODO: further divide into more files
 
 const messages = defineMessages({
   copyText: 'Copy',
@@ -38,22 +34,29 @@ const ellipsizeStyles = {
 
 const VALUES_PANEL_WIDTH = 300
 const PADDING = 16
+const SCROLL_SPEED = 14
+const BORDER_RADIUS = 5
+
+const getHeaderBackground = (theme) => darken(theme.palette.background.default, 0.04)
+
+const getBodyBackground = (theme) => theme.palette.background.paper
 
 const useStyles = makeStyles((theme) => {
   const darkBorder = `1px solid ${darken(theme.palette.unobtrusiveContentHighlight, 0.2)}`
   const lightBorder = `1px solid ${darken(theme.palette.unobtrusiveContentHighlight, 0.05)}`
   const valuesPanelWidth = `${VALUES_PANEL_WIDTH}px`
-  return createStyles({
+  return {
     ellipsis: ellipsizeStyles,
     wrapper: {
-      margin: theme.spacing(6),
+      position: 'relative',
       marginTop: theme.spacing(1),
+      marginBottom: theme.spacing(3),
       display: 'flex',
       overflow: 'hidden',
     },
     categoriesWrapper: {
-      'borderRadius': '5px 0 0 0',
-      'background': theme.palette.background.paper,
+      'borderTopLeftRadius': BORDER_RADIUS,
+      'background': getBodyBackground(theme),
       '& > *': {
         borderRight: darkBorder,
         borderBottom: darkBorder,
@@ -82,9 +85,9 @@ const useStyles = makeStyles((theme) => {
       ...ellipsizeStyles,
     },
     scrollWrapper: {
-      'background': theme.palette.background.paper,
+      'background': getBodyBackground(theme),
       'overflowX': 'auto',
-      'borderRadius': '0 5px 0 0',
+      'borderTopRightRadius': BORDER_RADIUS,
 
       '&::-webkit-scrollbar': {
         height: '8px',
@@ -102,7 +105,7 @@ const useStyles = makeStyles((theme) => {
           0.6
         ),
         outline: '1px solid slategrey',
-        borderRadius: '5px',
+        borderRadius: BORDER_RADIUS,
       },
     },
     rowsWrapper: {
@@ -126,7 +129,7 @@ const useStyles = makeStyles((theme) => {
       padding: PADDING,
     },
     header: {
-      background: darken(theme.palette.background.default, 0.04),
+      background: getHeaderBackground(theme),
       paddingRight: theme.spacing(2.5),
       paddingLeft: theme.spacing(2.5),
       display: 'flex',
@@ -142,7 +145,7 @@ const useStyles = makeStyles((theme) => {
       ...ellipsizeStyles,
     },
     categoryHeader: {
-      borderRadius: '5px 0 0 0',
+      borderTopLeftRadius: BORDER_RADIUS,
       ...ellipsizeStyles,
     },
     categoryRowWrapper: {
@@ -167,11 +170,15 @@ const useStyles = makeStyles((theme) => {
         fontWeight: 600,
       },
     },
-  })
+  }
 })
 
 const useTooltipStyles = makeStyles((theme) => {
   return {
+    wrapper: {
+      position: 'relative',
+      zIndex: 2,
+    },
     text: {
       wordBreak: 'break-word',
       color: 'white',
@@ -189,7 +196,7 @@ export const CustomTooltip = ({text}: {text: string}) => {
   const {translate} = useI18n()
   const classes = useTooltipStyles()
   return (
-    <div>
+    <div className={classes.wrapper}>
       <Typography className={classes.text}>{text}</Typography>
       <div className={classes.copy}>
         <CopyToClipboard value={text}>{translate(messages.copyText)}</CopyToClipboard>
@@ -222,8 +229,8 @@ const useDescriptionStyles = makeStyles((theme) => {
     overlay: {
       height: '90px',
       width: '100%',
-      background: `linear-gradient(to top, ${theme.palette.background.paper} 0%, ${fade(
-        theme.palette.background.paper,
+      background: `linear-gradient(to top, ${getBodyBackground(theme)} 0%, ${fade(
+        getBodyBackground(theme),
         0.15
       )} 70%)`,
       position: 'absolute',
@@ -401,7 +408,18 @@ type ComparisonMatrixProps = {|
     categoryLabel?: string,
   }>,
   getIdentifier: (Object) => string,
-  scrollRef?: any,
+|}
+
+type ComparisonMatrixLayoutProps = {|
+  title: string,
+  data: Array<{name: string}>,
+  categoryConfigs: Array<{
+    config: CategoryConfigType,
+    categoryLabel?: string,
+  }>,
+  getIdentifier: (Object) => string,
+  scrollRef: any,
+  fullScreenScrollRef?: any,
 |}
 
 const ComparisonMatrixLayout = ({
@@ -410,34 +428,70 @@ const ComparisonMatrixLayout = ({
   title,
   getIdentifier,
   scrollRef,
-}: ComparisonMatrixProps) => {
-  const classes = useStyles()
+  fullScreenScrollRef,
+}: ComparisonMatrixLayoutProps) => {
+  const theme = useTheme()
+  const headerBackground = getHeaderBackground(theme)
+  const bodyBackground = getBodyBackground(theme)
+  const classes = useStyles({headerBackground})
+
+  const scrollAreaRef = React.useRef(null)
 
   // Note: the 'divs' below are intentional as Grid had some issues with overflows
 
+  const {onArrowLeft, onArrowRight, onMouseUp, isHoldingRight, isHoldingLeft} = useArrowsScrolling(
+    scrollRef.current,
+    SCROLL_SPEED
+  )
+
   return (
-    <div className={classes.wrapper}>
+    <div className={classes.wrapper} ref={scrollAreaRef}>
+      <ScrollingSideArrow
+        onUp={onMouseUp}
+        onDown={onArrowLeft}
+        direction="left"
+        background={bodyBackground}
+        active={isHoldingLeft}
+        {...{scrollAreaRef, fullScreenScrollRef}}
+      />
+
       <div className={classes.categoriesWrapper}>
         <CategoryHeader title={title} />
         {categoryConfigs.map(({config, categoryLabel}, index) => (
           <CategoryKeys key={index} categoryConfig={config} categoryLabel={categoryLabel} />
         ))}
       </div>
-      <div className={classes.scrollWrapper} ref={scrollRef}>
-        <Grid container direction="column" className={classes.rowsWrapper}>
-          {categoryConfigs.map(({config, categoryLabel}, index) => (
-            <Grid item key={index}>
-              <CategoryDataRow
-                getIdentifier={getIdentifier}
-                data={data}
-                showGap={categoryLabel != null}
-                categoryConfig={config}
-                showHeader={index === 0}
-              />
-            </Grid>
-          ))}
-        </Grid>
-      </div>
+
+      <ScrollOverlayWrapper
+        upBackground={headerBackground}
+        downBackground={bodyBackground}
+        borderRadius={BORDER_RADIUS}
+      >
+        <div className={classes.scrollWrapper} ref={scrollRef}>
+          <Grid container direction="column" className={classes.rowsWrapper}>
+            {categoryConfigs.map(({config, categoryLabel}, index) => (
+              <Grid item key={index}>
+                <CategoryDataRow
+                  getIdentifier={getIdentifier}
+                  data={data}
+                  showGap={categoryLabel != null}
+                  categoryConfig={config}
+                  showHeader={index === 0}
+                />
+              </Grid>
+            ))}
+          </Grid>
+        </div>
+      </ScrollOverlayWrapper>
+
+      <ScrollingSideArrow
+        onUp={onMouseUp}
+        onDown={onArrowRight}
+        direction="right"
+        background={bodyBackground}
+        active={isHoldingRight}
+        {...{scrollAreaRef, fullScreenScrollRef}}
+      />
     </div>
   )
 }
@@ -453,15 +507,26 @@ const useFullWidthStyles = makeStyles((theme) => ({
     maxWidth: '1920px',
   },
   openFullScreenWrapper: {
-    paddingTop: theme.spacing(1),
-    paddingLeft: theme.spacing(5),
+    paddingTop: theme.spacing(),
+    paddingLeft: theme.spacing(11),
   },
   openFullScreen: {
     width: 'initial',
     cursor: 'pointer',
   },
+  // In order to listen to 'onscroll' event, we need to remove overflow from
+  // material modal where listening to scrolling is disabled, so we can later set it
+  // to our 'fakeModal'. In order to retain layout fakeModal, is styled similar to material modal.
   modal: {
+    overflow: 'hidden',
+  },
+  fakeModal: {
     overflow: 'auto',
+    position: 'fixed',
+    right: 0,
+    bottom: 0,
+    left: 0,
+    top: 0,
   },
 }))
 
@@ -482,52 +547,26 @@ const FullScreenModeOpener = ({onClick}) => {
   )
 }
 
-const useKeyboardScrolling = (el, speed) => {
-  const [scrollStep, setScrollStep] = React.useState(0)
-
-  const scroll = () => {
-    if (el == null || scrollStep === 0) return
-
-    // Note: no need to clamp, if value is "out of range", browser will just deal with it
-    el.scrollLeft = el.scrollLeft + scrollStep
-  }
-
-  const onKeyDown = React.useCallback(
-    (e) => {
-      const isLeftArrow = e.keyCode === 37
-      const isRightArrow = e.keyCode === 39
-
-      if (!isLeftArrow && !isRightArrow) return
-
-      setScrollStep(speed * (isLeftArrow ? -1 : 1))
-    },
-    [speed]
+const FullWidthComparisonMatrix = ({fullScreenScrollRef, ...rest}) => {
+  const scrollRef = React.useRef(null)
+  useKeyboardScrolling(scrollRef.current, SCROLL_SPEED)
+  return (
+    <ComparisonMatrixLayout
+      {...rest}
+      scrollRef={scrollRef}
+      fullScreenScrollRef={fullScreenScrollRef}
+    />
   )
-
-  const onKeyUp = React.useCallback((e) => setScrollStep(0), [])
-
-  React.useEffect(() => {
-    window.addEventListener('keydown', onKeyDown)
-    window.addEventListener('keyup', onKeyUp)
-    return () => {
-      window.removeEventListener('keydown', onKeyDown)
-      window.removeEventListener('keyup', onKeyUp)
-    }
-  }, [onKeyDown, onKeyUp])
-
-  useRequestAnimationFrame(scroll, scrollStep !== 0)
 }
 
-const FullWidthComparisonMatrix = (props) => {
+const StandardComparisonMatrix = (props) => {
   const scrollRef = React.useRef(null)
-
-  useKeyboardScrolling(scrollRef.current, 14)
-
   return <ComparisonMatrixLayout {...props} scrollRef={scrollRef} />
 }
 
 const ComparisonMatrix = (props: ComparisonMatrixProps) => {
   const classes = useFullWidthStyles()
+  const fullScreenScrollRef = React.useRef(null)
 
   return (
     <WithModalState>
@@ -536,15 +575,17 @@ const ComparisonMatrix = (props: ComparisonMatrixProps) => {
           {!isOpen && (
             <React.Fragment>
               <FullScreenModeOpener onClick={openModal} />
-              <ComparisonMatrixLayout {...props} />
+              <StandardComparisonMatrix {...props} />
             </React.Fragment>
           )}
 
           <Modal onClose={closeModal} open={isOpen} className={classes.modal}>
-            <div className={classes.fullScreenWrapper}>
-              <ClickAwayListener onClickAway={closeModal} style={{position: 'relative'}}>
-                <FullWidthComparisonMatrix {...props} />
-              </ClickAwayListener>
+            <div className={classes.fakeModal} ref={fullScreenScrollRef}>
+              <div className={classes.fullScreenWrapper}>
+                <ClickAwayListener onClickAway={closeModal} style={{position: 'relative'}}>
+                  <FullWidthComparisonMatrix fullScreenScrollRef={fullScreenScrollRef} {...props} />
+                </ClickAwayListener>
+              </div>
             </div>
           </Modal>
         </React.Fragment>

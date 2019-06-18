@@ -57,7 +57,7 @@ const useAppStyles = makeStyles((theme) => ({
   },
   navHeaderWrapper: {
     top: 0,
-    zIndex: 1,
+    zIndex: 2,
     [theme.breakpoints.up('md')]: {
       position: 'static',
       zIndex: 0,
