@@ -22,7 +22,7 @@
   "components.common.CookiesBanner.cookieBannerText": "This website uses cookies to offer you a better browsing experience and anonymous analytics in order to continuously improve our services. You can agree to our use of cookies by clicking {accept}.{break}Want to know more? Check out our {privacyLink}.",
   "components.common.CookiesBanner.header": "We use cookies!",
   "components.common.CookiesBanner.privacyLink": "Privacy and Cookies Policy",
-  "components.common.CopyToClipboard.altText": "Copy to clipboard",
+  "components.common.CopyToClipboard.altText": "Copiar al portapapeles",
   "components.common.CopyToClipboard.tooltipCopied": "Copiado!",
   "components.common.CopyToClipboard.tooltipCopy": "Copiar al portapapeles",
   "components.common.DefaultErrorBoundary.errorMsg": "Por favor, refrescar la página",
