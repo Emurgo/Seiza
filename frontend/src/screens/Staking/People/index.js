@@ -4,13 +4,12 @@ import React from 'react'
 import gql from 'graphql-tag'
 import {useQuery} from 'react-apollo-hooks'
 import {Typography} from '@material-ui/core'
-import {People as OwnersIcon, ViewHeadline as StatsIcon} from '@material-ui/icons'
 import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
 
 import {useI18n} from '@/i18n/helpers'
-import {Tab, Tabs, LoadingInProgress, LoadingError, Card} from '@/components/visual'
-import WithTabState from '@/components/headless/tabState'
+import {LiteTabs, LiteTab, LoadingInProgress, LoadingError, Card} from '@/components/visual'
+import useTabState from '@/components/hooks/useTabState'
 import {useSelectedPoolsContext} from '../context/selectedPools'
 import PeopleList from './PeopleList'
 import Stats from './Stats'
@@ -135,26 +134,22 @@ const People = () => {
   const {translate: tr} = useI18n()
   const classes = useStyles()
   const {error, loading, stakePools} = useLoadPoolsData()
+  const {setTabByEventIndex, currentTabIndex} = useTabState(TAB_NAMES)
+  const TabContent = TABS[TAB_NAMES[currentTabIndex]]
 
   return (
-    <WithTabState tabNames={TAB_NAMES}>
-      {({setTab, currentTab, currentTabName}) => {
-        const TabContent = TABS[currentTabName]
-        return (
-          <Card classes={classes}>
-            <Tabs value={currentTab} onChange={setTab}>
-              <Tab icon={<OwnersIcon />} label={tr(messages.owners)} />
-              <Tab icon={<StatsIcon />} label={tr(messages.stats)} />
-            </Tabs>
-
-            <TabContent
-              data={stakePools}
-              {...{loading, error, NoDataComponent, ErrorComponent, LoadingComponent}}
-            />
-          </Card>
-        )
-      }}
-    </WithTabState>
+    <React.Fragment>
+      <LiteTabs value={currentTabIndex} onChange={setTabByEventIndex}>
+        <LiteTab label={tr(messages.owners)} />
+        <LiteTab label={tr(messages.stats)} />
+      </LiteTabs>
+      <Card classes={classes}>
+        <TabContent
+          data={stakePools}
+          {...{loading, error, NoDataComponent, ErrorComponent, LoadingComponent}}
+        />
+      </Card>
+    </React.Fragment>
   )
 }
 
