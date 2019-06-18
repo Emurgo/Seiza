@@ -77,7 +77,9 @@ const SideMenu = () => {
         <Grid container alignItems="center" direction="row">
           <Refresh />
           &nbsp;&nbsp;
-          <Typography variant="overline">{tr(messages.reset)}</Typography>
+          <Typography color="textSecondary" variant="overline">
+            {tr(messages.reset)}
+          </Typography>
         </Grid>
       </IconButton>
       <PoolsToCompare />
