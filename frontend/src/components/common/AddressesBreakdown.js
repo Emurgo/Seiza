@@ -73,10 +73,10 @@ const Header = ({transaction}) => {
           <HeaderContent
             caption={
               <React.Fragment>
-                <Typography variant="body1" inline color="textSecondary">
+                <Typography variant="body1" inline color="textSecondary" component="span">
                   {tr(messages.from)}
                 </Typography>{' '}
-                <Typography variant="body1" inline color="textPrimary">
+                <Typography variant="body1" inline color="textPrimary" component="span">
                   {tr(messages.addressCount, {count: transaction.inputs.length})}
                 </Typography>
               </React.Fragment>
@@ -97,10 +97,10 @@ const Header = ({transaction}) => {
           <HeaderContent
             caption={
               <React.Fragment>
-                <Typography variant="body1" inline color="textSecondary">
+                <Typography variant="body1" inline color="textSecondary" component="span">
                   {tr(messages.to)}
                 </Typography>{' '}
-                <Typography variant="body1" inline color="textPrimary">
+                <Typography variant="body1" inline color="textPrimary" component="span">
                   {tr(messages.addressCount, {count: transaction.outputs.length})}
                 </Typography>
               </React.Fragment>
