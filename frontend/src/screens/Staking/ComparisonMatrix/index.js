@@ -13,7 +13,7 @@ import {LoadingInProgress, ComparisonMatrix, LoadingError, AdaValue} from '@/com
 import {
   FadeoutFieldWithTooltip,
   EllipsizedLinkFieldWithTooltip,
-} from '@/components/visual/ComparisonMatrix'
+} from '@/components/visual/ComparisonMatrix/fields'
 
 const messages = defineMessages({
   stakePools: 'Stake pools',
