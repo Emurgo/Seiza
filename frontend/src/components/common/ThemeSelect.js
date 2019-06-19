@@ -31,7 +31,7 @@ const styles = (theme) => ({
   },
 })
 
-const THEME_NAMES = _.values(THEMES)
+const THEME_NAMES = _.values(_.omit(THEMES, '_default'))
 
 // Note: wanted to use `makeStyles/withStyles` and access color props inside,
 // however it causes the color to disappear when items was selected for some reason

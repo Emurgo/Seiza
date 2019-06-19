@@ -6,6 +6,7 @@ import yoroi from './yoroi'
 
 // Note: keep synced with theme select intl keys
 export const THEMES = {
+  _default: 'bright',
   BRIGHT: 'bright',
   DARK: 'dark',
   YOROI: 'yoroi',
