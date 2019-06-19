@@ -5,7 +5,6 @@ import {SimpleLayout} from '@/components/visual'
 import {Card} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
-
 const useStyles = makeStyles({
   card: {
     padding: '20px',
@@ -34,9 +33,7 @@ const EnvOverride = ({_key}) => {
   return (
     <Card className={classes.card}>
       <h3>{_key}</h3>
-      <div>
-        Default: "{defaultValue}"
-      </div>
+      <div>Default: "{defaultValue}"</div>
       <div>
         <form onSubmit={onSubmit}>
           <input type="text" name={_key} value={val} onChange={(evt) => setVal(evt.target.value)} />
@@ -47,26 +44,19 @@ const EnvOverride = ({_key}) => {
           <input type="submit" name="reset" value="Reset to default" />
         </form>
       </div>
-
     </Card>
   )
-
 }
 
 const EnvOverrides = () => {
   return (
     <SimpleLayout maxWidth="800px">
       <h1>(Dev-only) override env settings</h1>
-      {
-        OVERRIDABLE_ENV.map((key) =>
-          <EnvOverride key={key} _key={key} />
-        )
-      }
+      {OVERRIDABLE_ENV.map((key) => (
+        <EnvOverride key={key} _key={key} />
+      ))}
     </SimpleLayout>
   )
-
 }
 
 export default EnvOverrides
-
-
