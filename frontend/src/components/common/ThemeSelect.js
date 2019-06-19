@@ -10,7 +10,7 @@ import {useI18n, withI18n} from '@/i18n/helpers'
 
 import {withTheme, THEME_DEFINITIONS, THEMES} from '@/components/HOC/theme'
 import {Select} from '@/components/visual'
-import {NavTypography} from '@/components/visual/Navbar'
+import {NavTypography} from '@/components/common/Navbar'
 
 // Note: keys must be kept synced with THEME_DEFINITIONS keys
 export const themeMessages = defineMessages({

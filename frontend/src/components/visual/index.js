@@ -7,7 +7,6 @@ export {default as DebugApolloError} from './DebugApolloError'
 export {default as SimpleLayout} from './SimpleLayout'
 export {default as SummaryCard} from './SummaryCard'
 export {default as Button} from './Button'
-export {NavLinks, MobileNavLinks} from './Navbar'
 export {default as EntityIdCard, EntityCardContent, EntityCardShell} from './EntityIdCard'
 export {
   default as ExpandableCard,
