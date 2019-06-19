@@ -201,6 +201,12 @@ const useFontStyles = makeStyles((theme) => ({
   },
 }))
 
+const useStyles = makeStyles(() => ({
+  noWrapWhiteSpace: {
+    whiteSpace: 'nowrap',
+  },
+}))
+
 type ColorType = 'neutral' | 'plus' | 'minus'
 
 const getColorType = ({value, colorful}): ColorType => {
@@ -235,8 +241,9 @@ const AdaValue = ({
 }: Props) => {
   const {formatAdaSplit} = useI18n()
 
+  const classes = useStyles()
   const fontClasses = useFontStyles()
-  const classes = useAdaValueStyles({
+  const adaValueClasses = useAdaValueStyles({
     // Note: we want negative styles if we have value='1234' and showSign="-"
     value: value != null && ['+', '-'].includes(showSign) ? `${showSign}${value}` : value,
     colorful,
@@ -254,11 +261,11 @@ const AdaValue = ({
       title={<AdaFiatTooltip value={value} timestamp={timestamp} />}
       placement="top"
     >
-      <span>
+      <span className={classes.noWrapWhiteSpace}>
         <Typography
           variant="body1"
           component="span"
-          className={cn(classes.integral, fontClasses.thick)}
+          className={cn(adaValueClasses.integral, fontClasses.thick)}
         >
           {integral}
         </Typography>
@@ -266,7 +273,7 @@ const AdaValue = ({
           variant="caption"
           color="textSecondary"
           component="span"
-          className={cn(classes.fractional, fontClasses.thin)}
+          className={cn(adaValueClasses.fractional, fontClasses.thin)}
         >
           {fractional}
         </Typography>
@@ -274,7 +281,7 @@ const AdaValue = ({
           <Typography
             variant="body1"
             component="span"
-            className={cn(classes.adaSymbol, fontClasses.thick)}
+            className={cn(adaValueClasses.adaSymbol, fontClasses.thick)}
           >
             &nbsp;ADA
           </Typography>

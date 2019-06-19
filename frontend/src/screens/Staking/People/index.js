@@ -9,6 +9,7 @@ import {defineMessages} from 'react-intl'
 
 import {useI18n} from '@/i18n/helpers'
 import {LiteTabs, LiteTab, LoadingInProgress, LoadingError, Card} from '@/components/visual'
+import {getPadding as getLiteTabDefaultPadding} from '@/components/visual/LiteTabs'
 import useTabState from '@/components/hooks/useTabState'
 import {useSelectedPoolsContext} from '../context/selectedPools'
 import PeopleList from './PeopleList'
@@ -24,6 +25,12 @@ const useStyles = makeStyles((theme) => ({
   root: {
     marginTop: theme.spacing(3),
     marginBottom: theme.spacing(3),
+    marginLeft: theme.spacing(2),
+    marginRight: theme.spacing(2),
+    [theme.breakpoints.up('md')]: {
+      marginLeft: theme.spacing(0),
+      marginRight: theme.spacing(0),
+    },
   },
   loadingWrapper: {
     paddingTop: 100,
@@ -34,6 +41,24 @@ const useStyles = makeStyles((theme) => ({
   },
   noPools: {
     padding: theme.spacing(2),
+  },
+}))
+
+const useTabWrapperStyles = makeStyles((theme) => ({
+  root: {
+    display: 'flex',
+    justifyContent: 'center',
+    marginTop: theme.spacing(3),
+    [theme.breakpoints.up('md')]: {
+      justifyContent: 'flex-start',
+      marginTop: 0,
+    },
+  },
+  fixTabsPadding: {
+    paddingLeft: getLiteTabDefaultPadding(theme),
+    [theme.breakpoints.up('md')]: {
+      paddingLeft: 0,
+    },
   },
 }))
 
@@ -133,16 +158,23 @@ const TAB_NAMES = Object.keys(TABS)
 const People = () => {
   const {translate: tr} = useI18n()
   const classes = useStyles()
+  const tabWrapperClasses = useTabWrapperStyles()
   const {error, loading, stakePools} = useLoadPoolsData()
   const {setTabByEventIndex, currentTabIndex} = useTabState(TAB_NAMES)
   const TabContent = TABS[TAB_NAMES[currentTabIndex]]
 
   return (
     <React.Fragment>
-      <LiteTabs value={currentTabIndex} onChange={setTabByEventIndex}>
-        <LiteTab label={tr(messages.owners)} />
-        <LiteTab label={tr(messages.stats)} />
-      </LiteTabs>
+      <div className={tabWrapperClasses.root}>
+        {/* TODO: When className is applied
+        for LiteTabs it's used twice hence why this wrapper */}
+        <div className={tabWrapperClasses.fixTabsPadding}>
+          <LiteTabs value={currentTabIndex} onChange={setTabByEventIndex}>
+            <LiteTab label={tr(messages.owners)} />
+            <LiteTab label={tr(messages.stats)} />
+          </LiteTabs>
+        </div>
+      </div>
       <Card classes={classes}>
         <TabContent
           data={stakePools}
