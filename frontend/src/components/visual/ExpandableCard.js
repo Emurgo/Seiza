@@ -71,24 +71,48 @@ const useFooterClasses = makeStyles((theme) => ({
   },
 }))
 
+type ExpandableCardFooterProps = {
+  expanded: boolean,
+  label: string,
+}
+
 type ExpandableCardPT = {
   expanded: boolean,
   onChange: (event: any, expanded: boolean) => any,
   renderExpandedArea: () => Node,
   renderHeader: () => Node,
-  footer: Node,
+  renderFooter: (expanded: boolean) => Node,
   className?: string,
 }
 
+export const ExpandableCardFooter = ({expanded, label}: ExpandableCardFooterProps) => {
+  const classes = useStyles()
+  const footerClasses = useFooterClasses()
+
+  return (
+    <Grid container justify="center" alignItems="center" direction="row">
+      <Grid item className={classes.spacing}>
+        <Typography variant="overline" color="primary" classes={footerClasses}>
+          {label}
+        </Typography>
+      </Grid>
+      <Grid item>
+        <IconButton color="primary">
+          <ExpandMoreIcon className={cn(classes.icon, expanded && classes.iconExpanded)} />
+        </IconButton>
+      </Grid>
+    </Grid>
+  )
+}
+
 export const ExpandableCardContent = (props: ExpandableCardPT) => {
-  const {expanded, onChange, renderExpandedArea, renderHeader, footer, className} = props
+  const {expanded, onChange, renderExpandedArea, renderHeader, renderFooter, className} = props
 
   const classes = useStyles()
 
   const expansionPanelClasses = useExpansionPanelClasses()
   const summaryClasses = useSummaryClasses()
   const detailsClasses = useDetailsClasses()
-  const footerClasses = useFooterClasses()
 
   return (
     <Grid container className={className} direction="row">
@@ -101,20 +125,7 @@ export const ExpandableCardContent = (props: ExpandableCardPT) => {
         <Grid item xs={12}>
           <ExpansionPanel classes={expansionPanelClasses} onChange={onChange} expanded={expanded}>
             <ExpansionPanelSummary classes={summaryClasses}>
-              <Grid container justify="center" alignItems="center" direction="row">
-                <Grid item className={classes.spacing}>
-                  <Typography variant="overline" color="primary" classes={footerClasses}>
-                    {footer}
-                  </Typography>
-                </Grid>
-                <Grid item>
-                  <IconButton color="primary">
-                    <ExpandMoreIcon
-                      className={cn(classes.icon, expanded && classes.iconExpanded)}
-                    />
-                  </IconButton>
-                </Grid>
-              </Grid>
+              {renderFooter(props.expanded)}
             </ExpansionPanelSummary>
             <ExpansionPanelDetails classes={detailsClasses}>
               {renderExpandedArea()}

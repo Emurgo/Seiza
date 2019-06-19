@@ -8,6 +8,7 @@ import {Typography, Grid, Hidden} from '@material-ui/core'
 
 import {
   ExpandableCardContent,
+  ExpandableCardFooter,
   Divider,
   EllipsizeMiddle,
   ContentSpacing,
@@ -309,7 +310,12 @@ export const AddressesBreakdownContent = ({tx, targetAddress}: Props) => {
           renderExpandedArea={() => (
             <BreakdownList transaction={tx} targetAddress={targetAddress} />
           )}
-          footer={isOpen ? tr(messages.hideAll) : tr(messages.seeAll)}
+          renderFooter={(expanded) => (
+            <ExpandableCardFooter
+              label={expanded ? tr(messages.hideAll) : tr(messages.seeAll)}
+              expanded={expanded}
+            />
+          )}
         />
       )}
     </WithModalState>
