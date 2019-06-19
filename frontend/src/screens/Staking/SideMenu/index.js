@@ -10,7 +10,7 @@ import {defineMessages} from 'react-intl'
 import PoolsToCompare from './PoolsToCompare'
 import NavigationBar from './NavigationBar'
 import {useI18n} from '@/i18n/helpers'
-import {Link} from '@/components/visual'
+import {Link, Card} from '@/components/visual'
 import {useResetUrlAndStorage} from '../context'
 import {useAutoSyncContext} from '../context/autoSync'
 import {useIsMobile} from '@/components/hooks/useBreakpoints'
@@ -57,7 +57,7 @@ const SideMenu = () => {
   if (isMobile) return <NavigationBar />
 
   return (
-    <div className={classes.wrapper}>
+    <Card className={classes.wrapper}>
       <Grid container className={classes.autoSync} alignItems="center">
         <FormControlLabel
           control={<Switch color="primary" checked={!!autoSync} onChange={toggleAutoSync} />}
@@ -84,7 +84,7 @@ const SideMenu = () => {
       </IconButton>
       <PoolsToCompare />
       <NavigationBar />
-    </div>
+    </Card>
   )
 }
 
