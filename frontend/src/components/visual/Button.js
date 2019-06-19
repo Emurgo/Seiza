@@ -72,6 +72,7 @@ const useStyles = makeStyles((theme) => ({
       height: '100%',
       background: 'transparent',
       bottom: -1,
+      right: 0,
       boxShadow: `0px 8px 20px ${fade(theme.palette.text.primary, 0.08)}`,
     },
     '&:hover:after': {

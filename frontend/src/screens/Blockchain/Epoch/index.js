@@ -37,8 +37,8 @@ import {APOLLO_CACHE_OPTIONS} from '@/constants'
 
 const messages = defineMessages({
   notAvailable: 'N/A',
-  goPreviousEpoch: 'Previous Epoch',
-  goNextEpoch: 'Next Epoch',
+  goPreviousEpoch: 'Previous',
+  goNextEpoch: 'Next',
   header: 'Epoch',
   entityHeader: 'Epoch Number',
   timePeriod: 'Time Period',
