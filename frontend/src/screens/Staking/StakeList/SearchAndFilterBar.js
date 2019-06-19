@@ -1,7 +1,7 @@
 // @flow
 import React, {useCallback, useState} from 'react'
 import {defineMessages} from 'react-intl'
-import {Grid} from '@material-ui/core'
+import {Grid, Collapse} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
 import {useI18n} from '@/i18n/helpers'
@@ -90,11 +90,11 @@ export default () => {
           </ToggleButton>
         </Grid>
       </Grid>
-      {showFilters && (
+      <Collapse in={showFilters}>
         <Grid item className={classes.filtersWrapper}>
           <Filters />
         </Grid>
-      )}
+      </Collapse>
     </Grid>
   )
 }
