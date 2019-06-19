@@ -23,7 +23,7 @@ import {
   Alert,
 } from '@/components/visual'
 import useTabState from '@/components/hooks/useTabState'
-import {useCurrentBreakpoint} from '@/components/hooks/useCurrentBreakpoint'
+import {useCurrentBreakpoint} from '@/components/hooks/useBreakpoints'
 import {TabsProvider as Tabs, TabItem as Tab, useTabContext} from '@/components/context/TabContext'
 import BarChart from './BarChart'
 import {useCurrentEpoch} from '../common'
@@ -32,7 +32,7 @@ const messages = defineMessages({
   header: 'Charts',
   totalSentBar: 'Total ADA Sent',
   transactionsCount: 'Transactions Count',
-  totalUtxo: 'Total UTXO',
+  totalUtxo: 'Total new UTXO',
   noDataTitle: 'No data',
   noDataMsg: 'There are no data to plot',
   adaInBillions: '{count}B', // TODO: some better approach to intl billions character?,
@@ -48,7 +48,7 @@ const xLabels = defineMessages({
 const yLabels = defineMessages({
   txCount: 'Transactions Count',
   adaSent: 'Total Ada Sent',
-  utxo: 'Total UTXO',
+  utxo: 'Total new UTXO',
 })
 
 const X_AXIS = {

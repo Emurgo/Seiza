@@ -1,7 +1,6 @@
 // @flow
-import React, {useState, useRef} from 'react'
+import React, {useRef, useCallback, useState, useEffect} from 'react'
 import {defineMessages} from 'react-intl'
-import idx from 'idx'
 import {Switch, Typography, Grid, Hidden} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
@@ -9,18 +8,15 @@ import Pagination from '@/components/visual/Pagination'
 import {SimpleLayout} from '@/components/visual'
 import {GET_PAGED_BLOCKS} from '@/api/queries'
 import {useI18n} from '@/i18n/helpers'
-import {
-  useBlocksTablePagedProps,
-  useTotalItemsCount,
-} from '@/components/hooks/useBlocksTablePagedProps'
-import {useQueryNotBugged} from '@/components/hooks/useQueryNotBugged'
+import {useQueryNotBuggedForBlocks} from '@/components/hooks/useQueryNotBugged'
 import {useManageQueryValue} from '@/components/hooks/useManageQueryValue'
 import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
 import {toIntOrNull} from '@/helpers/utils'
 import BlocksTable, {ALL_COLUMNS} from './BlocksTable'
 import {useAnalytics} from '@/helpers/googleAnalytics'
+import {getPageAndBoundaryFromCursor} from './util'
 
-const AUTOUPDATE_REFRESH_INTERVAL = 10 * 1000
+const AUTOUPDATE_REFRESH_INTERVAL = 20 * 1000
 
 const messages = defineMessages({
   refreshState: 'Refresh state:',
@@ -68,66 +64,102 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const useLoadData = (cursor, autoUpdate) => {
-  const dataKey = 'pagedBlocks'
-
-  const {error, loading, data, startPolling, stopPolling} = useQueryNotBugged(GET_PAGED_BLOCKS, {
-    variables: {cursor},
-    notifyOnNetworkStatusChange: true,
-    shouldInvalidatePreviousData: autoUpdate,
-  })
+  const {error, loading, data, startPolling, stopPolling} = useQueryNotBuggedForBlocks(
+    GET_PAGED_BLOCKS,
+    {
+      variables: {cursor},
+      notifyOnNetworkStatusChange: true,
+    }
+  )
 
   autoUpdate ? startPolling(AUTOUPDATE_REFRESH_INTERVAL) : stopPolling()
-
-  const pagedData = idx(data[dataKey], (_) => _.blocks)
 
   return {
     error,
     loading,
-    pagedDataResult: {
-      ...data[dataKey],
-      pagedData,
+    data: data.pagedBlocks,
+  }
+}
+
+// TODO: for now `PAGE_SIZE` is hardcoded both in client and server
+const PAGE_SIZE = 10
+const rowsPerPage = PAGE_SIZE
+
+const usePagedBlocks = () => {
+  const [page, setPage] = useManageQueryValue('page', null, toIntOrNull)
+  const [totalCount, setTotalCount] = useState(0)
+  const autoUpdate = page == null
+
+  const {data: pagedDataResult, loading, error} = useLoadData(
+    page == null ? null : page * rowsPerPage,
+    autoUpdate
+  )
+
+  const {totalCount: dataTotalCount, blocks: pagedBlocks} = pagedDataResult || {}
+
+  useEffect(() => {
+    if (dataTotalCount > totalCount) setTotalCount(dataTotalCount)
+  })
+
+  const effectivePage = page == null ? Math.ceil(totalCount / rowsPerPage) : page
+
+  const onChangeAutoUpdate = useCallback(
+    (evt) => {
+      const checked = evt.target.checked
+      if (checked) {
+        setPage(null)
+      } else {
+        setPage(effectivePage)
+      }
     },
+    [effectivePage, setPage]
+  )
+
+  return {
+    page,
+    effectivePage,
+    setPage,
+    totalCount: totalCount || 0,
+    pagedBlocks,
+    autoUpdate,
+    onChangeAutoUpdate,
+    loading,
+    error,
+    nextPageCursor: pagedDataResult && pagedDataResult.cursor,
   }
 }
 
 const PagedBlocks = () => {
   const classes = useStyles()
   const {translate} = useI18n()
-  const [page, setPage] = useManageQueryValue('page', null, toIntOrNull)
-
-  const [cursor, setCursor] = useState(null)
-  const [autoUpdate, setAutoupdate] = useState(true)
-
-  const {pagedDataResult, loading, error} = useLoadData(cursor, autoUpdate)
-  const [totalItemsCount, setTotalItemsCount] = useTotalItemsCount(pagedDataResult, autoUpdate)
-
-  const {onChangePage, rowsPerPage, onChangeAutoUpdate} = useBlocksTablePagedProps(
-    page,
-    setPage,
-    setCursor,
-    totalItemsCount,
-    setTotalItemsCount,
-    autoUpdate,
-    setAutoupdate
-  )
-
-  const pagedBlocks = pagedDataResult.pagedData
-
   const analytics = useAnalytics()
   analytics.useTrackPageVisitEvent('blocks')
 
+  const {
+    pagedBlocks,
+    setPage,
+    effectivePage,
+    totalCount,
+    autoUpdate,
+    onChangeAutoUpdate,
+    nextPageCursor,
+    loading,
+    error,
+  } = usePagedBlocks()
   const scrollToRef = useRef(null)
   useScrollFromBottom(scrollToRef, pagedBlocks)
 
   const pagination = (
     <Pagination
-      count={totalItemsCount}
+      count={totalCount}
       rowsPerPage={rowsPerPage}
-      page={page}
-      onChangePage={onChangePage}
+      page={effectivePage}
+      onChangePage={setPage}
       reverseDirection
     />
   )
+
+  const {nextPageNumber, pageBoundary} = getPageAndBoundaryFromCursor(nextPageCursor, rowsPerPage)
 
   return (
     <div ref={scrollToRef}>
@@ -137,16 +169,19 @@ const PagedBlocks = () => {
             <AutoUpdateSwitch checked={autoUpdate} onChange={onChangeAutoUpdate} />
           </Grid>
           <Grid item className={classes.upperPagination}>
-            <Pagination
-              count={totalItemsCount}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onChangePage={onChangePage}
-              reverseDirection
-            />
+            {pagination}
           </Grid>
         </Grid>
-        <BlocksTable loading={loading} error={error} blocks={pagedBlocks} columns={ALL_COLUMNS} />
+        <BlocksTable
+          {...{
+            loading,
+            error,
+            nextPageNumber,
+            pageBoundary,
+          }}
+          blocks={pagedBlocks}
+          columns={ALL_COLUMNS}
+        />
         {pagedBlocks && (
           <Hidden mdUp>
             <Grid item className={classes.bottomPagination}>

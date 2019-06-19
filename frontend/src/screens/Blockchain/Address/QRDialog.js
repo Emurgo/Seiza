@@ -3,6 +3,7 @@ import React from 'react'
 import QRCode from 'qrcode.react'
 import {Grid, Dialog, DialogContent, DialogContentText, withMobileDialog} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
+import {CloseIconButton} from '@/components/visual'
 
 type QRDialogProps = {
   +isOpen: boolean,
@@ -20,6 +21,10 @@ const useStyles = makeStyles((theme) => ({
   entity: {
     maxWidth: QR_CODE_SIZE + theme.spacing.unit * 3,
   },
+  closeWrapper: {
+    height: 24, // Must be same as spacing in Grid in DialogContent
+    textAlign: 'right',
+  },
 }))
 
 const paperProps = {elevation: 0}
@@ -35,10 +40,14 @@ const QRDialog = withMobileDialog()(
         PaperProps={paperProps}
         aria-labelledby="Address QR code"
       >
+        <div className={classes.closeWrapper}>
+          <CloseIconButton aria-label="Hide-subscribe-footer" onClick={onClose} />
+        </div>
         <DialogContent>
           <Grid
             container
             justify="center"
+            alignItems="center"
             direction="column"
             spacing={24}
             className={classes.dialogContent}

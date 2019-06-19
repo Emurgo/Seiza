@@ -92,6 +92,7 @@ export const EntityCardContent = ({
   iconRenderer,
   badge,
   ellipsizeValue = true,
+  monospaceValue = true,
 }) => {
   const classes = useContentStyles({showCopyIcon})
 
@@ -130,7 +131,7 @@ export const EntityCardContent = ({
                 <Typography
                   noWrap={ellipsizeValue}
                   variant="body1"
-                  className={cn(classes.value, classes.monospace)}
+                  className={cn(classes.value, monospaceValue && classes.monospace)}
                 >
                   {value}
                 </Typography>

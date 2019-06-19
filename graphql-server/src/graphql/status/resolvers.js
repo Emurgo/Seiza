@@ -1,5 +1,4 @@
 import {fetchLatestBlock} from '../block/dataProviders'
-import {runConsistencyCheck} from '../utils'
 
 import moment from 'moment'
 
@@ -13,7 +12,7 @@ const fetchCurrentPrice = async ({pricingAPI}, currency) => {
 }
 
 export const fetchCurrentSyncTime = async (context) => {
-  const {E, elastic} = context
+  const {E, elastic, runConsistencyCheck} = context
 
   // Note(ppershing): fetchCurrentSyncTime is a frequent
   // request and so we perform an error reporting pipeline

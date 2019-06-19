@@ -2,26 +2,26 @@
 import 'babel-polyfill'
 import './loadEnv'
 
+import {ApolloServer} from 'apollo-server'
+import {GraphQLError} from 'graphql'
+import {FormatErrorWithContextExtension} from 'graphql-format-error-context-extension'
+import uuidv1 from 'uuid/v1'
+import _ from 'lodash'
+
 // TODO: how to distinguish between _logger and logger with request id closured in it?
 import _logger from './logger'
 import CostAnalysis from './costAnalysis'
-import {ApolloServer} from 'apollo-server'
-import {GraphQLError} from 'graphql'
-import uuidv1 from 'uuid/v1'
-
 import {getActiveCampaign} from './api/activeCampaign'
 import schema from './graphql/schema'
 import resolvers from './graphql/resolvers'
-import {initErrorReporting, reportError} from './utils/errorReporting'
-import {isProduction} from './config'
+import {initErrorReporting, reportError, getInfoFromError} from './utils/errorReporting'
+import {getRunConsistencyCheck} from './utils/validation'
 
 import {pricingAPI, getElastic} from './api'
 
-isProduction && initErrorReporting()
+initErrorReporting()
 
 export type Parent = any
-
-const logError = (error: any) => _logger.log({level: 'error', error})
 
 const stripSensitiveInfoFromError = (error: any) => {
   if (error.extensions.code === 'INTERNAL_SERVER_ERROR') {
@@ -58,17 +58,40 @@ async function _new(req, res) {
 ApolloServer.prototype.createGraphQLServerOptions = _new
 // end of workaround
 
-const getLogger = (uuid) => {
-  return {
-    log: (value, options = {}) => {
-      const toLog = {
-        logType: options.type || 'default',
-        uuid,
-        value,
-      }
-      _logger.log({level: 'info', logValue: toLog})
-    },
-  }
+const _getErrorInfo = (error, reqId, reqBody, reqHeaders) => ({
+  logType: 'error',
+  reqId,
+  reqBody,
+  reqHeaders,
+  ...getInfoFromError(error),
+})
+
+const getLogger = ({reqId, reqBody, reqHeaders}) => ({
+  log: (value, options = {}) => {
+    const info = {
+      logType: options.type || 'default',
+      reqId,
+      value,
+    }
+    _logger.log({level: options.level || 'info', info})
+  },
+  error: (error) => {
+    const info = _getErrorInfo(error, reqId, reqBody, reqHeaders)
+    _logger.log({level: 'error', info})
+  },
+})
+
+const getReporter = ({reqId, reqBody, reqHeaders}) => ({
+  error: (error) => {
+    const info = _.omit(_getErrorInfo(error, reqId, reqBody, reqHeaders), 'logType')
+    reportError(error, info)
+  },
+})
+
+const handleError = (error, {logger, reporter}) => {
+  logger.error(error)
+  reporter.error(error)
+  return error
 }
 
 const createServer = () =>
@@ -78,22 +101,30 @@ const createServer = () =>
     engine: {
       apiKey: process.env.APOLLO_ENGINE_API_KEY,
     },
-    // TODO: replace with production-ready logger
+    extensions: [() => new FormatErrorWithContextExtension(handleError)],
     formatError: (error: GraphQLError): any => {
-      // TODO: how can we get Context here, so that we can connect error to request uuid?
-      logError(error)
-      isProduction && reportError(error)
+      // Note: Can not be applied only to `formatError` inside context extension
       stripSensitiveInfoFromError(error)
       return error
     },
-    formatResponse: (response: any): any => {
-      // TODO: do we want to log responses?
-      // _logger.info('RESPONSE', response)
-      return response
-    },
     context: ({req}) => {
+      // Note: `req` seems not to be defined in integration test
       const reqId = (req && req.headers['x-request-id']) || uuidv1()
-      const logger = getLogger(reqId)
+
+      // Note: `req.body` could be batched, but even batched
+      // query should be good enough to debug in case of error
+      const logger = getLogger({reqId, reqBody: req && req.body, reqHeaders: req && req.headers})
+      const reporter = getReporter({
+        reqId,
+        reqBody: req && req.body,
+        reqHeaders: req && req.headers,
+      })
+
+      // So that we have `reqId` available also in failed run away promises
+      const runConsistencyCheck = getRunConsistencyCheck((error) =>
+        handleError(error, {logger, reporter})
+      )
+
       const elastic = getElastic(logger)
       const activeCampaign = getActiveCampaign(logger)
       return {
@@ -102,6 +133,9 @@ const createServer = () =>
         elastic,
         E: elastic.E,
         reqId,
+        logger,
+        reporter,
+        runConsistencyCheck,
       }
     },
   })

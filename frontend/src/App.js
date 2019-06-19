@@ -15,12 +15,13 @@ import config from './config'
 import {routeTo} from './helpers/routes'
 import {provideIntl} from './components/HOC/intl'
 import {provideTheme, withTheme, THEME_DEFINITIONS} from './components/HOC/theme'
-import {Navbar, MobileNavbar, Footer, Link} from './components/visual'
+import {Navbar, MobileNavbar, Link} from './components/visual'
+import Footer from './screens/Footer'
 import {useI18n, InjectHookIntlContext} from '@/i18n/helpers'
 import {AutoSyncProvider} from './screens/Staking/context/autoSync'
 
-import Terms from './screens/Officials/Terms'
-import Privacy from './screens/Officials/Privacy'
+import Terms from './screens/Legal/Terms'
+import Privacy from './screens/Legal/Privacy'
 import Home from './screens/Home'
 import Blockchain from './screens/Blockchain'
 import BlockchainHeader from './screens/Blockchain/BlockchainHeader'
@@ -35,7 +36,9 @@ import {SubscribeProvider} from '@/components/context/SubscribeContext'
 import {CookiesProvider} from '@/components/context/CookiesContext'
 import {AnalyticsProvider} from '@/helpers/googleAnalytics' // TODO move to context?
 import {CurrencyProvider} from '@/components/hooks/useCurrency'
+import {SearchbarRefProvider} from '@/components/context/SearchbarRef'
 import Search from './screens/Blockchain/BlockchainHeader/Search'
+import EnvOverrides from './screens/EnvOverrides'
 
 import './App.css'
 import seizaLogo from './assets/icons/logo-seiza.svg'
@@ -90,34 +93,33 @@ const useAppStyles = makeStyles((theme) => ({
 // and due it is mostly temporary feature
 const getTranslatedNavItems = (translate) =>
   [
-    {link: routeTo.home(), label: translate(navigationMessages.home), __hide: false},
-    {link: routeTo.blockchain(), label: translate(navigationMessages.blockchain), __hide: false},
+    {link: routeTo.home(), label: translate(navigationMessages.home)},
+    {link: routeTo.blockchain(), label: translate(navigationMessages.blockchain)},
     {
       link: routeTo.staking.home(),
       label: translate(navigationMessages.staking),
-      disabledText: !config.showStakingData ? translate(navigationMessages.disabledText) : null,
-      __hide: false,
+      disabledText: translate(navigationMessages.disabledText),
     },
     {
       link: routeTo.staking.home(), // Note: not yet implemented screen
       label: translate(navigationMessages.stakePools),
-      disabledText: !config.showStakingData ? translate(navigationMessages.disabledText) : null,
-      __hide: false,
+      disabledText: translate(navigationMessages.disabledText),
     },
     {
       link: routeTo.more(),
       label: translate(navigationMessages.more),
-      __hide: !config.showStakingData,
     },
-  ].filter((item) => !item.__hide)
+    // $FlowFixMe
+  ].filter((item) => item.link || item.disabledText)
 
 const getTranslatedFooterNavItems = (translate) => {
   const mainNavItems = getTranslatedNavItems(translate)
   return [
     ...mainNavItems,
-    {link: routeTo.termsOfUse(), label: translate(navigationMessages.termsOfUse), __hide: false},
-    {link: routeTo.privacy(), label: translate(navigationMessages.privacy), __hide: false},
-  ]
+    {link: routeTo.termsOfUse(), label: translate(navigationMessages.termsOfUse)},
+    {link: routeTo.privacy(), label: translate(navigationMessages.privacy)},
+    // $FlowFixMe
+  ].filter((item) => item.link || item.disabledText)
 }
 
 const TopBar = compose(withRouter)(({location: {pathname}}) => {
@@ -142,7 +144,7 @@ const TopBar = compose(withRouter)(({location: {pathname}}) => {
             <Grid container direction="row" alignItems="center">
               <Navbar currentPathname={pathname} items={getTranslatedNavItems(translate)} />
               <LanguageSelect />
-              {config.showStakingData && <ThemeSelect />}
+              {config.featureEnableThemes && <ThemeSelect />}
             </Grid>
           </Grid>
         </Grid>
@@ -153,8 +155,6 @@ const TopBar = compose(withRouter)(({location: {pathname}}) => {
           <div className={classes.mobileSearch}>
             <Search isMobile />
           </div>
-          {config.showStakingData && <LanguageSelect />}
-          {config.showStakingData && <ThemeSelect />}
         </div>
       </Hidden>
     </React.Fragment>
@@ -167,16 +167,22 @@ const Providers = ({children}) => (
     <AnalyticsProvider>
       <CurrencyProvider>
         <SubscribeProvider>
-          <AutoSyncProvider>{children}</AutoSyncProvider>
+          <AutoSyncProvider>
+            <SearchbarRefProvider>{children}</SearchbarRefProvider>
+          </AutoSyncProvider>
         </SubscribeProvider>
       </CurrencyProvider>
     </AnalyticsProvider>
   </CookiesProvider>
 )
 
+const renderRouteDef = ({path, ...rest}) => (path ? <Route path={path} {...rest} /> : null)
+
 const AppLayout = () => {
   const classes = useAppStyles()
   const {translate} = useI18n()
+
+  const combinedBlockchainPath = routeTo._anyOf([routeTo.blockchain(), routeTo.home()])
 
   return (
     <Grid container direction="column" className={classes.mainWrapper} wrap="nowrap">
@@ -192,18 +198,20 @@ const AppLayout = () => {
             <Switch>
               <Redirect exact from="/" to={routeTo.home()} />
 
-              <Route path={`:path(${routeTo.home()}|${routeTo.blockchain()})`}>
-                <BlockchainHeader />
-                <Route exact path={routeTo.home()} component={Home} />
-                <Route path={routeTo.blockchain()} component={Blockchain} />
-              </Route>
-
-              {config.showStakingData && (
-                <Route path={routeTo.staking.home()} component={Staking} />
+              {combinedBlockchainPath && (
+                <Route path={combinedBlockchainPath}>
+                  <BlockchainHeader />
+                  {routeTo.home() && <Route exact path={routeTo.home()} component={Home} />}
+                  {routeTo.blockchain() && (
+                    <Route path={routeTo.blockchain()} component={Blockchain} />
+                  )}
+                </Route>
               )}
-              {config.showStakingData && <Route path={routeTo.more()} component={More} />}
-              <Route exact path={routeTo.termsOfUse()} component={Terms} />
-              <Route exact path={routeTo.privacy()} component={Privacy} />
+              {renderRouteDef({path: routeTo.staking.home(), component: Staking})}
+              {renderRouteDef({exact: true, path: routeTo.more(), component: More})}
+              {renderRouteDef({exact: true, path: routeTo.termsOfUse(), component: Terms})}
+              {renderRouteDef({exact: true, path: routeTo.privacy(), component: Privacy})}
+              {renderRouteDef({exact: true, path: routeTo.envOverrides(), component: EnvOverrides})}
               <Route component={PageNotFound} />
             </Switch>
           </Grid>

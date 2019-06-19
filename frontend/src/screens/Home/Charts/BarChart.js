@@ -2,12 +2,11 @@
 
 import React, {useState, useEffect} from 'react'
 import {BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell, Label} from 'recharts'
-// $FlowFixMe flow does not know about `useTheme`
 import {makeStyles, useTheme} from '@material-ui/styles'
 import {lighten, fade, darken} from '@material-ui/core/styles/colorManipulator'
 import {Grid, Typography} from '@material-ui/core'
 
-import {useCurrentBreakpoint} from '@/components/hooks/useCurrentBreakpoint'
+import {useCurrentBreakpoint} from '@/components/hooks/useBreakpoints'
 
 import {Card} from '@/components/visual'
 
@@ -183,8 +182,11 @@ export default ({
 
   const chartMargin = getChartMargin(isExtraSM)
 
+  // https://github.com/recharts/recharts/issues/444
+  // onClick={null} fixes iOS touch events
   return (
     <BarChart
+      onClick={null}
       onMouseLeave={() => setActiveBar(null)}
       margin={chartMargin}
       {...{width, height, data}}
@@ -209,6 +211,7 @@ export default ({
         )}
       </YAxis>
       <Tooltip
+        enterTouchDelay={100}
         isAnimationActive
         // $FlowFixMe recharts pass other props using some `magic`
         cursor={<CustomCursor setActiveBar={setActiveBar} />}

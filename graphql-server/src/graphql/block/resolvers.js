@@ -1,8 +1,10 @@
 import {facadeElasticBlock} from './dataProviders'
 import assert from 'assert'
 import E from '../../api/elasticHelpers'
+import {validate} from '../../utils/validation'
 
 const PAGE_SIZE = 10
+const EMPTY_RESULT = {cursor: null, data: []}
 
 const currentBlocks = E.q('slot')
   .filter(E.onlyActiveFork())
@@ -23,14 +25,26 @@ export const pagedBlocksResolver = async (parent, args, context) => {
   assert(hits.length > 0)
 
   const startHeight = blockData[0].height
+
   // self-check
-  assert(total === startHeight)
+  await context.runConsistencyCheck(() => {
+    validate(total === startHeight, 'Blocks height inconsistency', {
+      startHeight,
+      total,
+      cursor,
+      blockData,
+    })
+  })
 
   const nextCursor = startHeight - PAGE_SIZE
 
+  const totalCount = await elastic.q(currentBlocks).getCount()
+
   return {
     cursor: nextCursor > 0 ? nextCursor : null,
-    data: blockData,
+    hasMore: nextCursor > 0,
+    blocks: blockData,
+    totalCount,
   }
 }
 
@@ -50,6 +64,11 @@ export const pagedBlocksInEpochResolver = async (parent, args, context) => {
     assert(previousEnd[0]._source.height === previousEpochs)
   }
 
+  const totalCount = await elastic
+    .q(currentBlocks)
+    .filter(E.eq('epoch', epoch))
+    .getCount()
+
   const hits = await elastic
     .q(currentBlocks)
     .filter(E.eq('epoch', epoch))
@@ -58,16 +77,21 @@ export const pagedBlocksInEpochResolver = async (parent, args, context) => {
     .getHits(PAGE_SIZE)
 
   if (cursor) {
-    assert(hits.total === cursor)
+    assert(hits.total === Math.min(cursor, totalCount))
   }
 
   const blockData = hits.hits.map((h) => facadeElasticBlock(h._source))
+
+  // When we query epoch that did not start yet
+  if (!blockData.length) return EMPTY_RESULT
 
   const startHeight = blockData[0].height
   const nextCursor = startHeight - PAGE_SIZE - previousEpochs
 
   return {
     cursor: nextCursor > 0 ? nextCursor : null,
-    data: blockData,
+    hasMore: nextCursor > 0,
+    blocks: blockData,
+    totalCount,
   }
 }

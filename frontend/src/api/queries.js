@@ -27,6 +27,7 @@ export const GET_PAGED_BLOCKS = gql`
       }
       cursor
       hasMore
+      totalCount
     }
   }
   ${BLOCK_INFO_FRAGMENT}
@@ -40,6 +41,7 @@ export const GET_PAGED_BLOCKS_IN_EPOCH = gql`
       }
       cursor
       hasMore
+      totalCount
     }
   }
   ${BLOCK_INFO_FRAGMENT}

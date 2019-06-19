@@ -22,4 +22,5 @@ type MarketHistoryResult {
 type Query {
 
   marketHistory(currency: CurrencyEnum!): MarketHistoryResult
+  averageDailyPrice(currency: CurrencyEnum!, timestamp: Timestamp!): Float
 }

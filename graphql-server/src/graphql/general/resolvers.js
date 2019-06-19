@@ -1,7 +1,8 @@
 // @flow
 import _ from 'lodash'
 import {fetchGeneralInfo, fetchSlotInfo, fetchEpochInfo} from './dataProviders'
-import {parseAdaValue, validate, runConsistencyCheck} from '../utils'
+import {parseAdaValue} from '../utils'
+import {validate} from '../../utils/validation'
 import assert from 'assert'
 
 const fetchSupplyAfterSlot = async ({elastic, E}, {epoch, slot}) => {
@@ -76,7 +77,12 @@ const aggByDay = (E, {from, to}, defs) => ({
     }),
 })
 
-const fetchAggregateInfo = ({elastic, E}, groupBy, epochInterval = {}, dateInterval = {}) => {
+const fetchAggregateInfo = (
+  {elastic, E, runConsistencyCheck},
+  groupBy,
+  epochInterval = {},
+  dateInterval = {}
+) => {
   const wrapInGroupBy = (defs) => {
     return {
       DAY: aggByDay(E, dateInterval, defs),

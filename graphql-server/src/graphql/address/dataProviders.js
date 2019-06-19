@@ -1,8 +1,10 @@
 // @flow
 import assert from 'assert'
-import {parseAdaValue, annotateNotFoundError, validate, runConsistencyCheck} from '../utils'
+import {parseAdaValue} from '../utils'
+import {validate} from '../../utils/validation'
+import {annotateNotFoundError} from '../../utils/errors'
 
-export const fetchAddress = async ({elastic, E}: any, address58: string) => {
+export const fetchAddress = async ({elastic, E, runConsistencyCheck}: any, address58: string) => {
   assert(address58)
 
   const hit = await elastic
@@ -14,6 +16,7 @@ export const fetchAddress = async ({elastic, E}: any, address58: string) => {
   const ioTotalValue = (address58, type) =>
     elastic
       .q('txio')
+      .filter(E.onlyActiveFork())
       .filter(E.matchPhrase('address', address58))
       .filter(E.matchPhrase('type', type))
       .getAggregations({
