@@ -99,20 +99,24 @@ const checkTxsCountConsistency = (
   totalTxsInTxIndex
 ) =>
   runConsistencyCheck(async () => {
-    const [{cnt: totalTxsInAddressIndex}, {cnt: totalTxsInTxioIndex}] = await Promise.all([
+    const [totalTxsInAddressIndex, totalTxsInTxioIndex] = await Promise.all([
       elastic
         .q('address')
         .filter(E.matchPhrase('_id', address58))
         .getAggregations({
           cnt: E.agg.max(`ios.${typeField}`),
-        }),
+        })
+        // Note: empty addresses would return null
+        .then(({cnt}) => cnt || 0),
       elastic
         .q('txio')
         .filter(E.onlyActiveFork())
         .filter(E.matchPhrase('address', address58))
         .getAggregations({
           cnt: E.agg.max(typeField),
-        }),
+        })
+        // Note: empty addresses would return null
+        .then(({cnt}) => cnt || 0),
     ])
 
     validate(
@@ -137,9 +141,11 @@ export const fetchTransactionsOnAddress = async (
   const totalCount = await elastic
     .q('tx')
     .filter(E.onlyActiveFork())
-    .filter(makeAddressFilter({
-      targetAddress: address58,
-    }))
+    .filter(
+      makeAddressFilter({
+        targetAddress: address58,
+      })
+    )
     .filter(filterSent)
     .filter(filterReceived)
     .getCount()

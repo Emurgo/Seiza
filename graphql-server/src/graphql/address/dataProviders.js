@@ -2,18 +2,38 @@
 import assert from 'assert'
 import {parseAdaValue} from '../utils'
 import {validate} from '../../utils/validation'
-import {annotateNotFoundError} from '../../utils/errors'
+import {EntityNotFoundError} from '../../utils/errors'
+import {isAddress} from '../../utils/cardano'
+
+import {ApolloError} from 'apollo-server'
 
 export const fetchAddress = async ({elastic, E, runConsistencyCheck}: any, address58: string) => {
   assert(address58)
+  if (!isAddress(address58)) {
+    throw new ApolloError('Not an address', 'NOT_FOUND', {address58})
+  }
 
   const hit = await elastic
     .q('address')
     .pickFields('tx_num', 'balance')
     .filter(E.matchPhrase('_id', address58))
     .getSingleHit()
-    .catch(annotateNotFoundError({entity: 'Address', address: address58}))
+    .catch((err) => {
+      if (!(err instanceof EntityNotFoundError)) throw err
+      return {
+        _source: {
+          tx_num: 0,
+          balance: {
+            integers: 0,
+            decimals: 0,
+            full: 0,
+          },
+        },
+      }
+    })
 
+  // Note: in theory we could here stop and return
+  // if address wasn't found. But we can still run the consistency-check
   const ioTotalValue = (address58, type) =>
     elastic
       .q('txio')
