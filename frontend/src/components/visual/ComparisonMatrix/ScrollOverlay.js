@@ -53,18 +53,16 @@ const useStyles = makeStyles((theme) => ({
     height: 60,
     borderRadius: ({borderRadius}) => borderRadius,
     background: ({direction, upBackground, downBackground}) =>
-      `linear-gradient(to ${REVERSED_DIRECTIONS[direction]}, ${upBackground} 0%, ${fade(
-        darken(downBackground, 0.04),
-        0.15
-      )} 100%)`,
+      `linear-gradient(to ${REVERSED_DIRECTIONS[direction]},
+        ${upBackground} 0%,
+        ${fade(darken(downBackground, 0.04), 0)} 100%)`,
   },
   down: {
     flex: 1,
     background: ({direction, upBackground, downBackground}) =>
-      `linear-gradient(to ${REVERSED_DIRECTIONS[direction]}, ${downBackground} 0%, ${fade(
-        downBackground,
-        0.15
-      )} 100%)`,
+      `linear-gradient(to ${REVERSED_DIRECTIONS[direction]},
+        ${downBackground} 0%,
+        ${fade(downBackground, 0)} 100%)`,
   },
 }))
 
