@@ -528,6 +528,9 @@ const useFullWidthStyles = makeStyles((theme) => ({
     left: 0,
     top: 0,
   },
+  clickAwayListenerChild: {
+    maxWidth: '100%',
+  },
 }))
 
 const FullScreenModeOpener = ({onClick}) => {
@@ -582,8 +585,15 @@ const ComparisonMatrix = (props: ComparisonMatrixProps) => {
           <Modal onClose={closeModal} open={isOpen} className={classes.modal}>
             <div className={classes.fakeModal} ref={fullScreenScrollRef}>
               <div className={classes.fullScreenWrapper}>
-                <ClickAwayListener onClickAway={closeModal} style={{position: 'relative'}}>
-                  <FullWidthComparisonMatrix fullScreenScrollRef={fullScreenScrollRef} {...props} />
+                <ClickAwayListener onClickAway={closeModal}>
+                  {/* Note: <div> is required by ClickAwayListener as it needs a component
+                      that can directly cary a ref */}
+                  <div className={classes.clickAwayListenerChild}>
+                    <FullWidthComparisonMatrix
+                      fullScreenScrollRef={fullScreenScrollRef}
+                      {...props}
+                    />
+                  </div>
                 </ClickAwayListener>
               </div>
             </div>
