@@ -1,8 +1,8 @@
 import React from 'react'
 import {compose} from 'redux'
 import {withState, withHandlers} from 'recompose'
-import {THEMES} from '../themes'
 import localStorage from '../../helpers/localStorage'
+import {THEMES} from '../themes'
 
 export {THEMES, THEME_DEFINITIONS} from '../themes'
 
@@ -13,7 +13,7 @@ const Context = React.createContext({
 
 export const provideTheme = (WrappedComponent) =>
   compose(
-    withState('currentTheme', 'setTheme', localStorage.getItem('theme') || THEMES.BRIGHT),
+    withState('currentTheme', 'setTheme', localStorage.getItem('theme') || ''),
     withHandlers({
       setTheme: ({setTheme}) => (newTheme) => {
         setTheme(newTheme)
@@ -24,7 +24,7 @@ export const provideTheme = (WrappedComponent) =>
     <Context.Provider
       value={{
         setTheme,
-        currentTheme,
+        currentTheme: Object.values(THEMES).includes(currentTheme) ? currentTheme : THEMES._default,
       }}
     >
       <WrappedComponent {...props} />
