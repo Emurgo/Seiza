@@ -10,7 +10,7 @@ import {defineMessages} from 'react-intl'
 
 import WithModalState from '@/components/headless/modalState'
 import {useI18n} from '@/i18n/helpers'
-import {VisualHash, ExternalLink} from '@/components/visual'
+import {VisualHash, ExternalLink, Card} from '@/components/visual'
 import CopyToClipboard from '@/components/common/CopyToClipboard'
 
 import ScrollingSideArrow from './ScrollingSideArrow'
@@ -52,7 +52,7 @@ const useStyles = makeStyles((theme) => {
       marginTop: theme.spacing(1),
       marginBottom: theme.spacing(3),
       display: 'flex',
-      overflow: 'hidden',
+      width: '100%',
     },
     categoriesWrapper: {
       'borderTopLeftRadius': BORDER_RADIUS,
@@ -170,6 +170,10 @@ const useStyles = makeStyles((theme) => {
         fontWeight: 600,
       },
     },
+    matrix: {
+      display: 'flex',
+      overflow: 'hidden',
+    },
   }
 })
 
@@ -278,7 +282,9 @@ const CategoryKeys = ({categoryConfig, categoryLabel}: CategoryKeysProps) => {
     <Grid className={classes.category} container direction="column">
       {categoryLabel != null && (
         <div className={classes.categogyTitle}>
-          <Typography variant="caption">{categoryLabel}</Typography>
+          <Typography variant="caption" color="textSecondary">
+            {categoryLabel}
+          </Typography>
         </div>
       )}
       {categoryConfig.map(({i18nLabel, height}) => (
@@ -287,6 +293,7 @@ const CategoryKeys = ({categoryConfig, categoryLabel}: CategoryKeysProps) => {
           style={height ? {height} : {}}
           className={classes.categoryKey}
           variant="body1"
+          color="textSecondary"
         >
           {translate(i18nLabel)}
         </Typography>
@@ -455,34 +462,36 @@ const ComparisonMatrixLayout = ({
         {...{scrollAreaRef, fullScreenScrollRef}}
       />
 
-      <div className={classes.categoriesWrapper}>
-        <CategoryHeader title={title} />
-        {categoryConfigs.map(({config, categoryLabel}, index) => (
-          <CategoryKeys key={index} categoryConfig={config} categoryLabel={categoryLabel} />
-        ))}
-      </div>
-
-      <ScrollOverlayWrapper
-        upBackground={headerBackground}
-        downBackground={bodyBackground}
-        borderRadius={BORDER_RADIUS}
-      >
-        <div className={classes.scrollWrapper} ref={scrollRef}>
-          <Grid container direction="column" className={classes.rowsWrapper}>
-            {categoryConfigs.map(({config, categoryLabel}, index) => (
-              <Grid item key={index}>
-                <CategoryDataRow
-                  getIdentifier={getIdentifier}
-                  data={data}
-                  showGap={categoryLabel != null}
-                  categoryConfig={config}
-                  showHeader={index === 0}
-                />
-              </Grid>
-            ))}
-          </Grid>
+      <Card className={classes.matrix}>
+        <div className={classes.categoriesWrapper}>
+          <CategoryHeader title={title} />
+          {categoryConfigs.map(({config, categoryLabel}, index) => (
+            <CategoryKeys key={index} categoryConfig={config} categoryLabel={categoryLabel} />
+          ))}
         </div>
-      </ScrollOverlayWrapper>
+
+        <ScrollOverlayWrapper
+          upBackground={headerBackground}
+          downBackground={darken(bodyBackground, 0.04)}
+          borderRadius={BORDER_RADIUS}
+        >
+          <div className={classes.scrollWrapper} ref={scrollRef}>
+            <Grid container direction="column" className={classes.rowsWrapper}>
+              {categoryConfigs.map(({config, categoryLabel}, index) => (
+                <Grid item key={index}>
+                  <CategoryDataRow
+                    getIdentifier={getIdentifier}
+                    data={data}
+                    showGap={categoryLabel != null}
+                    categoryConfig={config}
+                    showHeader={index === 0}
+                  />
+                </Grid>
+              ))}
+            </Grid>
+          </div>
+        </ScrollOverlayWrapper>
+      </Card>
 
       <ScrollingSideArrow
         onUp={onMouseUp}
