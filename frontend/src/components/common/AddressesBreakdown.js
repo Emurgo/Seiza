@@ -154,7 +154,7 @@ const BreakdownList = ({transaction, targetAddress}) => {
   const commonClasses = useCommonStyles()
 
   const hasTargetAddress = useCallback(
-    (inputOrOutput) => targetAddress && inputOrOutput.address58 === targetAddress,
+    (inputOrOutput) => (targetAddress ? inputOrOutput.address58 === targetAddress : false),
     [targetAddress]
   )
   const timestamp = idx(transaction, (_) => _.block.timeIssued)
@@ -285,7 +285,13 @@ const BreakdownItem = (props) => {
         </Grid>
         <Grid item xs={12} sm={6}>
           <Grid container justify="flex-end" direction="row">
-            <AdaValue value={amount} showSign={valuePrefix} showCurrency timestamp={timestamp} />
+            <AdaValue
+              value={amount}
+              showSign={valuePrefix}
+              showCurrency
+              timestamp={timestamp}
+              colorful={hasHighlight}
+            />
           </Grid>
         </Grid>
       </Grid>
