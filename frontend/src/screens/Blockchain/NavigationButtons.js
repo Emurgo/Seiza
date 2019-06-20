@@ -23,10 +23,10 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'space-between',
   },
   prevButton: {
-    marginRight: theme.spacing.unit,
+    marginRight: theme.spacing(1),
   },
   nextButton: {
-    marginLeft: theme.spacing.unit,
+    marginLeft: theme.spacing(1),
   },
 }))
 type Props = {|

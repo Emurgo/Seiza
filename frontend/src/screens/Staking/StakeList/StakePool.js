@@ -39,7 +39,7 @@ const messages = defineMessages({
 const useHeaderStyles = makeStyles(({palette, spacing, breakpoints}) => ({
   wrapper: {
     background: palette.background.paperContrast,
-    padding: spacing.unit,
+    padding: spacing(1),
     [breakpoints.up('md')]: {
       padding: spacing(3),
     },
@@ -48,7 +48,7 @@ const useHeaderStyles = makeStyles(({palette, spacing, breakpoints}) => ({
     marginTop: '7px',
   },
   info: {
-    paddingLeft: spacing.unit,
+    paddingLeft: spacing(1),
   },
   button: {
     width: '120px',

@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
     background: active ? darken(background, 0.1) : background,
     position: 'absolute',
     display: 'flex',
-    padding: theme.spacing.unit * 1.5,
+    padding: theme.spacing(1.5),
     borderRadius: 30,
     transition: theme.hover.transitionIn(['top'], 500),
     ...(direction === 'left' ? {left: 30} : {right: 30}),
