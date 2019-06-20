@@ -82,10 +82,16 @@ const calculateTabIndicatorPosition = (tabRef) => {
   }
 }
 
+// Note: we need to have this separate component as MuiTabs append
+// some extra props to each children and React.div then warns about them
+const Indicator = ({style}) => {
+  const indicatorClassName = useTabIndicatorStyles().root
+  return <div style={style} className={indicatorClassName} />
+}
+
 export const LiteTabs = ({children, defaultBottomOffset, ...props}) => {
   const classes = useWrapperStyles()
   const tabsClasses = useTabsStyles({defaultBottomOffset})
-  const indicatorClassName = useTabIndicatorStyles().root
 
   // https://stackoverflow.com/questions/54633690
   // This seems to me like escape hatch for looping over useRef
@@ -110,7 +116,7 @@ export const LiteTabs = ({children, defaultBottomOffset, ...props}) => {
     }
   }, [childrenRefs, currentTabIndex, indicatorLocation, setIndicatorLocation])
 
-  const indicator = <div style={{...indicatorLocation}} className={indicatorClassName} />
+  const indicator = <Indicator style={indicatorLocation} />
 
   return (
     <div className={cn(props.className, classes.wrapper)}>
