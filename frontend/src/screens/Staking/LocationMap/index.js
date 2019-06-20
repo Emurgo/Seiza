@@ -103,7 +103,7 @@ const LocationMap = ({pools}) => {
       language={'en'}
       region={'EN'}
       version={'weekly'}
-      libraries={[]}
+      libraries={null}
       onError={(e) => {
         setError(true)
       }}
