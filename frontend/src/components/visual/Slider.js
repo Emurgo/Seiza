@@ -119,9 +119,9 @@ export default compose(
       <FormControl className={classnames(classes.formControl, className)}>
         {label && (
           <FormLabel focused={focused} className={classes.label} component="legend">
-            <span>{label}</span>&nbsp;&nbsp;
             <span>
-              {tipFormatter(value[0])} - {tipFormatter(value[1])}
+              {label}
+              &nbsp; {tipFormatter(value[0])}&nbsp;-&nbsp;{tipFormatter(value[1])}
             </span>
           </FormLabel>
         )}

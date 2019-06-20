@@ -23,11 +23,18 @@ const useStyles = makeStyles((theme) => ({
   wrapper: {
     background: theme.palette.background.paper,
   },
+  // We need these corrections because both select
+  // and slider have formControl below them which
+  // adds its own margins
   select: {
-    width: '85%',
+    width: `calc(100% - ${theme.spacing(2)}px)`,
+    paddingLeft: theme.spacing(1),
+    paddingRight: theme.spacing(1),
   },
   slider: {
-    width: '95%',
+    width: `calc(100% - ${theme.spacing(1)}px)`,
+    paddingLeft: theme.spacing(1),
+    paddingRight: theme.spacing(1),
   },
 }))
 
@@ -55,7 +62,7 @@ const Filters = () => {
     <Card>
       <CardContent>
         <Grid container className={classes.wrapper} direction="row">
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <Select
               value={region}
               label={tr(messages.regions)}
@@ -64,7 +71,7 @@ const Filters = () => {
               options={[{value: 'all', label: tr(messages.allRegions)}]}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <Select
               value={language}
               label={tr(messages.languages)}
@@ -73,7 +80,7 @@ const Filters = () => {
               options={[{value: 'all', label: tr(messages.allLanguages)}]}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <div className={classes.slider}>
               <Slider
                 min={RANGE_START}
