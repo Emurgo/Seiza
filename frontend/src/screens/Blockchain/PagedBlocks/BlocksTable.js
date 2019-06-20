@@ -94,6 +94,15 @@ type Props = {
   pageBoundary: number | null,
 }
 
+const Shorthand = ({shorthand, full}) =>
+  shorthand !== full ? (
+    <Tooltip title={full} placement="top">
+      <span style={{borderBottom: '1px dotted gray'}}>{shorthand}</span>
+    </Tooltip>
+  ) : (
+    full
+  )
+
 const BlocksTable = ({blocks, columns, loading, error, nextPageNumber, pageBoundary}: Props) => {
   const {formatInt, formatTimestamp, translate: tr} = useI18n()
 
@@ -148,9 +157,7 @@ const BlocksTable = ({blocks, columns, loading, error, nextPageNumber, pageBound
       header: {
         icon: TransactionsIcon,
         label: (
-          <Tooltip title={tr(tableMessages.transactions)} placement="top">
-            <span style={{borderBottom: '1px dotted gray'}}>{tr(tableMessages.txs)}</span>
-          </Tooltip>
+          <Shorthand shorthand={tr(tableMessages.txs)} full={tr(tableMessages.transactions)} />
         ),
       },
       cell: (block) => formatInt(block.transactionsCount),
