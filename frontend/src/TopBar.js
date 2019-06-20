@@ -11,7 +11,8 @@ import {routeTo} from './helpers/routes'
 import Search from './screens/Blockchain/BlockchainHeader/Search'
 import seizaLogoDesktop from './assets/icons/logo-seiza.svg'
 import seizaLogoMobile from './assets/icons/seiza-symbol.svg'
-import {NavLinks, MobileNavLinks, Link} from './components/visual'
+import {NavLinks, MobileNavLinks} from '@/components/common/Navbar'
+import {Link} from '@/components/visual'
 
 import {useIsMobile} from '@/components/hooks/useBreakpoints'
 
@@ -57,6 +58,9 @@ const useMobileMenuStyles = makeStyles(({palette, spacing}) => ({
   dropdownIcon: {
     color: '#BFC5D2', // TODO: consider adding to theme
   },
+  popper: {
+    zIndex: 99999, // We just always want it to be on top
+  },
 }))
 
 const MobileMenu = ({items = [], currentPathname}: any) => {
@@ -79,18 +83,25 @@ const MobileMenu = ({items = [], currentPathname}: any) => {
     [setIsOpen, anchorEl, setAnchorEl, isOpen]
   )
 
+  /* Note: not using IconButton as its hover does not look good when it wraps both icons,
+     and also on mobile that hover will not be visible anyway. */
   return (
     <ClickAwayListener onClickAway={onClose}>
-      {/* Note: not using IconButton as its hover does not look good when it wraps both icons,
-          and also on mobile that hover will not be visible anyway. */}
-      {/* Note: we get warning without using Fragment */}
-      <React.Fragment>
+      {/* Note: <div> is required by ClickAwayListener as it needs a component
+          that can directly cary a ref */}
+      <div>
         <div className={classes.mobileWrapper} onClick={onClick}>
           <img src={seizaLogoMobile} alt="logo" />
           <ArrowDownIcon className={classes.dropdownIcon} />
         </div>
         {isOpen && (
-          <Popper open={isOpen} anchorEl={anchorEl} transition placement="bottom-end">
+          <Popper
+            open={isOpen}
+            anchorEl={anchorEl}
+            transition
+            placement="bottom-end"
+            className={classes.popper}
+          >
             {({TransitionProps}) => (
               <Grow {...TransitionProps}>
                 <Card classes={{root: classes.mobileMenuWrapper}}>
@@ -109,7 +120,7 @@ const MobileMenu = ({items = [], currentPathname}: any) => {
             )}
           </Popper>
         )}
-      </React.Fragment>
+      </div>
     </ClickAwayListener>
   )
 }

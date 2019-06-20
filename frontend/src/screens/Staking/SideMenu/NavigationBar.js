@@ -7,6 +7,7 @@ import {Typography, Grid} from '@material-ui/core'
 import {Search, LocationOn, BarChart, History, Compare, People} from '@material-ui/icons'
 import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
+import {fade} from '@material-ui/core/styles/colorManipulator'
 
 import NavLink from '@/components/common/NavLink'
 import {routeTo} from '@/helpers/routes'
@@ -26,24 +27,29 @@ const navigationMessages = defineMessages({
   people: 'People',
 })
 
-const useMenuItemStyles = makeStyles(({palette, spacing}) => ({
-  link: {
-    'background': palette.background.paper,
-    'padding': '35px 40px 35px 60px',
-    'textTransform': 'uppercase',
-    '&:hover': {
-      background: palette.background.paperContrast,
+const useMenuItemStyles = makeStyles(({palette, spacing}) => {
+  const shadow = `inset 0px 10px 20px -7px ${fade(palette.shadowBase, 0.12)}`
+  return {
+    link: {
+      'background': palette.background.paper,
+      'padding': '35px 40px 35px 60px',
+      'textTransform': 'uppercase',
+      '&:hover': {
+        background: palette.background.paperContrast,
+        boxShadow: shadow,
+      },
+      'borderBottom': `1px solid ${palette.unobtrusiveContentHighlight}`,
     },
-    'borderBottom': `1px solid ${palette.unobtrusiveContentHighlight}`,
-  },
-  active: {
-    background: palette.background.paperContrast,
-    color: palette.primary.main,
-  },
-  icon: {
-    paddingRight: spacing(2),
-  },
-}))
+    active: {
+      background: palette.background.paperContrast,
+      color: palette.primary.main,
+      boxShadow: shadow,
+    },
+    icon: {
+      paddingRight: spacing(2),
+    },
+  }
+})
 
 const MenuItem = ({active, label, icon}) => {
   const classes = useMenuItemStyles()

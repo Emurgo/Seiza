@@ -4,7 +4,7 @@ import cn from 'classnames'
 import {Grid, withStyles} from '@material-ui/core'
 import {withSetLocale} from '@/components/HOC/intl'
 import {Select} from '@/components/visual'
-import {NavTypography} from '@/components/visual/Navbar'
+import {NavTypography} from '@/components/common/Navbar'
 
 import EnglishFlag from '@/assets/icons/flags/english.svg'
 import JapaneseFlag from '@/assets/icons/flags/japanese.svg'
@@ -41,7 +41,7 @@ const Label = withStyles(styles)(({langCode, flagSrc, mobile, classes}) => {
 })
 
 // Helper to conditional inclusion
-const insertIf = (cond, value) => cond ? [value] : []
+const insertIf = (cond, value) => (cond ? [value] : [])
 
 const LANGUAGES = [
   {
@@ -54,18 +54,16 @@ const LANGUAGES = [
     label: <Label langCode="JA" flagSrc={JapaneseFlag} />,
     mobileLabel: <Label langCode="JA" flagSrc={JapaneseFlag} mobile />,
   },
-  ...insertIf(config.featureEnableRussian,
-    {
-      locale: 'ru',
-      label: <Label langCode="RU" flagSrc={RussianFlag} />,
-      mobileLabel: <Label langCode="RU" flagSrc={RussianFlag} mobile />,
-    }),
-  ...insertIf(config.featureEnableSpanish,
-    {
-      locale: 'es',
-      label: <Label langCode="ES" flagSrc={RussianFlag} />,
-      mobileLabel: <Label langCode="ES" flagSrc={RussianFlag} mobile />,
-    }),
+  ...insertIf(config.featureEnableRussian, {
+    locale: 'ru',
+    label: <Label langCode="RU" flagSrc={RussianFlag} />,
+    mobileLabel: <Label langCode="RU" flagSrc={RussianFlag} mobile />,
+  }),
+  ...insertIf(config.featureEnableSpanish, {
+    locale: 'es',
+    label: <Label langCode="ES" flagSrc={RussianFlag} />,
+    mobileLabel: <Label langCode="ES" flagSrc={RussianFlag} mobile />,
+  }),
   /*
   {
     locale: 'cn',

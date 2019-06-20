@@ -11,21 +11,8 @@ const fetchCurrentPrice = async ({pricingAPI}, currency) => {
   return result[currency]
 }
 
-export const fetchCurrentSyncTime = async (context) => {
-  const {E, elastic, runConsistencyCheck} = context
-
-  // Note(ppershing): fetchCurrentSyncTime is a frequent
-  // request and so we perform an error reporting pipeline
-  // health on it
-  await runConsistencyCheck(() => {
-    const SAMPLE_RATE = 100
-    if (Math.random() < 1.0 / SAMPLE_RATE) {
-      throw new Error(
-        `runConsistencyCheck() self check.
-         You should see this error for about 1/${SAMPLE_RATE} requests`
-      )
-    }
-  })
+export const fetchCurrentSyncTime = (context) => {
+  const {E, elastic} = context
 
   return elastic
     .q('slot')

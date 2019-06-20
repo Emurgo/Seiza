@@ -7,9 +7,12 @@ export {default as DebugApolloError} from './DebugApolloError'
 export {default as SimpleLayout} from './SimpleLayout'
 export {default as SummaryCard} from './SummaryCard'
 export {default as Button} from './Button'
-export {NavLinks, MobileNavLinks} from './Navbar'
 export {default as EntityIdCard, EntityCardContent, EntityCardShell} from './EntityIdCard'
-export {default as ExpandableCard, ExpandableCardContent} from './ExpandableCard'
+export {
+  default as ExpandableCard,
+  ExpandableCardContent,
+  ExpandableCardFooter,
+} from './ExpandableCard'
 export {default as KeyValueCard} from './KeyValueCard'
 export {default as MetricsCard} from './MetricsCard'
 export {default as AdaValue} from './AdaValue'
