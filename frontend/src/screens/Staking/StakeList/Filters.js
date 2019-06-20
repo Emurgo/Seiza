@@ -28,9 +28,13 @@ const useStyles = makeStyles((theme) => ({
   // adds its own margins
   select: {
     width: `calc(100% - ${theme.spacing(2)}px)`,
+    paddingLeft: theme.spacing(1),
+    paddingRight: theme.spacing(1),
   },
   slider: {
     width: `calc(100% - ${theme.spacing(1)}px)`,
+    paddingLeft: theme.spacing(1),
+    paddingRight: theme.spacing(1),
   },
 }))
 
