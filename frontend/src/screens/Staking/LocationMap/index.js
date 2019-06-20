@@ -77,6 +77,16 @@ const POOLS = [
     location: {lat: 47, lng: 11},
     name: 'Adalite.io',
   },
+  {
+    hash: 'tmp2',
+    location: {lat: 49, lng: 11},
+    name: 'Adalite.io',
+  },
+  {
+    hash: 'tm3',
+    location: {lat: 47, lng: 1},
+    name: 'Adalite.io',
+  },
 ]
 
 const messages = defineMessages({
