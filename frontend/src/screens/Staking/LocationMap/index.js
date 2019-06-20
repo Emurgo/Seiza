@@ -17,6 +17,9 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     padding: theme.spacing(4),
+    [theme.breakpoints.down('md')]: {
+      height: '100vh',
+    },
   },
   mapContainer: {
     'flexGrow': 1,
