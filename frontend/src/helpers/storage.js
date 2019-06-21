@@ -3,6 +3,7 @@
 export type Storage = {|
   getItem: (key: string) => any,
   setItem: (key: string, value: any) => void,
+  removeItem: (key: string) => void,
 |}
 
 type StorageType = 'local' | 'session'
@@ -24,8 +25,11 @@ export const _getStorage = (storage: Object, type: StorageType): Storage => {
     return null
   }
 
+  const removeItem = (key: string): void => storage.removeItem(key)
+
   return {
     setItem,
     getItem,
+    removeItem,
   }
 }
