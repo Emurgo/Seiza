@@ -4,6 +4,7 @@ import {defineMessages} from 'react-intl'
 import idx from 'idx'
 import {Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
+import BigNumber from 'bignumber.js'
 // import type {Transaction} from '@/__generated__/schema.flow'
 
 import {
@@ -61,7 +62,31 @@ const useStyles = makeStyles((theme) => ({
       marginTop: theme.spacing(2),
     },
   },
+  balanceDiff: {
+    // really such weird spacing
+    paddingBottom: theme.spacing(1.5 + 2 / 3),
+    verticalAlign: 'bottom',
+    [theme.breakpoints.up('md')]: {
+      textAlign: 'right',
+    },
+  },
 }))
+
+const calculateTxAddressBalanceDiff = (tx, targetAddress) => {
+  const {inputs, outputs} = tx
+
+  const _sum = (arr) => {
+    return arr.reduce((acc, amount) => acc.plus(new BigNumber(amount, 10)), new BigNumber(0))
+  }
+
+  const isRelevantIO = ({address58}) => address58 === targetAddress
+  const ioToAmount = ({amount}) => amount
+
+  // Note: incoming/outgoing is reversed from the perspective of an address vs tx!
+  const sumOutgoing = _sum(inputs.filter(isRelevantIO).map(ioToAmount))
+  const sumIncoming = _sum(outputs.filter(isRelevantIO).map(ioToAmount))
+  return sumIncoming.minus(sumOutgoing)
+}
 
 const TransactionCard = ({transaction: tx, targetAddress}) => {
   const {translate: tr, formatInt, formatTimestamp} = useI18n()
@@ -76,6 +101,7 @@ const TransactionCard = ({transaction: tx, targetAddress}) => {
     epoch: idx(tx, (_) => _.block.epoch),
     slot: idx(tx, (_) => _.block.slot),
     creationDate: idx(tx, (_) => _.block.timeIssued),
+    balanceDiff: tx ? calculateTxAddressBalanceDiff(tx, targetAddress) : null,
   }
 
   const __ = {
@@ -98,16 +124,25 @@ const TransactionCard = ({transaction: tx, targetAddress}) => {
         NA
       ),
     creationDate: formatTimestamp(data.creationDate, {defaultValue: NA}),
+    balanceDiff: <AdaValue showCurrency value={data.balanceDiff} colorful showSign="always" />,
   }
 
   return (
     <Card>
       <div className={classes.txCard}>
-        <EntityCardContent
-          label={tr(messages.transactionEntity)}
-          value={<Link to={routeTo.transaction(tx.txHash)}>{tx.txHash}</Link>}
-          rawValue={tx.txHash}
-        />
+        <Grid container>
+          <Grid item xs={12} md={8} alignItems="center">
+            <EntityCardContent
+              label={tr(messages.transactionEntity)}
+              value={<Link to={routeTo.transaction(tx.txHash)}>{tx.txHash}</Link>}
+              rawValue={tx.txHash}
+            />
+          </Grid>
+          <Grid item xs={12} md={4} container direction="column">
+            <span className="flex-grow-1" />
+            <span className={classes.balanceDiff}>{__.balanceDiff}</span>
+          </Grid>
+        </Grid>
       </div>
       <Grid container direction="row">
         <Grid item xs={12} sm={12} md={6} className={classes.leftSide}>
