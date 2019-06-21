@@ -34,7 +34,6 @@ const addSentryPlugin = (config) => {
 }
 
 const addEnvironmentVariables = (config) => {
-  console.log('loading env variables')
   config.plugins = [
     ...(config.plugins || []),
 
