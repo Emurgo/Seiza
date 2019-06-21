@@ -32,7 +32,7 @@ import {
   Pagination,
 } from '@/components/visual'
 
-import addressIcon from '@/assets/icons/qrcode.svg'
+import qrCodeIcon from '@/static/assets/icons/qrcode.svg'
 import {extractError} from '@/helpers/errors'
 
 import {FILTER_TYPES} from './constants'
@@ -234,7 +234,7 @@ const AddressScreen = () => {
                       onClick={openModal}
                       color="primary"
                     >
-                      <img alt="show qr code" src={addressIcon} />
+                      <img alt="show qr code" src={qrCodeIcon} />
                     </IconButton>
                   </Tooltip>
                   <QRDialog

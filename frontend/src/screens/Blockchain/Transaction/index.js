@@ -21,7 +21,7 @@ import {
 } from '@/components/visual'
 import AddressesBreakdown from '@/components/common/AddressesBreakdown'
 import AssuranceChip from '@/components/common/AssuranceChip'
-import AdaIcon from '@/assets/icons/transaction-id.svg'
+import AdaIcon from '@/static/assets/icons/transaction-id.svg'
 
 import {ASSURANCE_LEVELS_VALUES, APOLLO_CACHE_OPTIONS} from '@/constants'
 import {useI18n} from '@/i18n/helpers'

@@ -5,7 +5,7 @@ import {makeStyles} from '@material-ui/styles'
 
 import {SummaryCard, AdaValue} from '@/components/visual'
 import {useI18n} from '@/i18n/helpers'
-import EpochIcon from '@/assets/icons/epoch.svg'
+import EpochIcon from '@/static/assets/icons/epoch.svg'
 
 const useStyles = makeStyles((theme) => ({
   headerWrapper: {

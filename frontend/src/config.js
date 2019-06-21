@@ -1,12 +1,38 @@
 // @flow
-
 import assert from 'assert'
+import localStorage from '@/helpers/localStorage'
 
 const isProduction = process.env.NODE_ENV === 'production'
 
-// clone
+// ***** Next.js environment variables explanation
+
+// publicRuntimeConfig
+// 1. publicRuntimeConfig gets filled within next.config.js
+// 2. next.config.js is run twice: during build and also during start
+// 3. Variables defined within publicRuntimeConfig get redefined during build,
+//    but also start script.
+//    (e.g. if variable was defined inline during build script,
+//    it gets overwritten by value during start script)
+
+// process.env
+// 1. Variables defined during build get bundled with help of dotenv-webpack plugin
+// 2. Variables defined inline during build script aren't accessible during
+//    runtime by destructuring {...process.env},
+//    but need to be accessed directly with process.env.SOMETHING
+// 3. When some variables are defined inline within "start" script,
+//    they will not be available in bundle.
+
 const env = {
-  ...process.env,
+  REACT_APP_SENTRY_RELEASE_VERSION: process.env.REACT_APP_SENTRY_RELEASE_VERSION,
+  REACT_APP_GRAPHQL_SERVER_URL: process.env.REACT_APP_GRAPHQL_SERVER_URL,
+  REACT_APP_GOOGLE_ANALYTICS_ID: process.env.REACT_APP_GOOGLE_ANALYTICS_ID,
+  REACT_APP_SENTRY_DSN: process.env.REACT_APP_SENTRY_DSN,
+  REACT_APP_GOOGLE_MAPS_API_KEY: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
+  REACT_APP_SHOW_STAKING_DATA: process.env.REACT_APP_SHOW_STAKING_DATA,
+  REACT_APP_FEATURE_ENABLE_THEMES: process.env.REACT_APP_FEATURE_ENABLE_THEMES,
+  REACT_APP_FEATURE_ENABLE_RUSSIAN: process.env.REACT_APP_FEATURE_ENABLE_RUSSIAN,
+  REACT_APP_FEATURE_ENABLE_SPANISH: process.env.REACT_APP_FEATURE_ENABLE_SPANISH,
+  REACT_SHOW_STAKE_POOLS_LIST_DATA: process.env.REACT_SHOW_STAKE_POOLS_LIST_DATA,
 }
 
 export const OVERRIDABLE_ENV = [
@@ -30,7 +56,7 @@ if (!isProduction) {
     const value = localStorage.getItem(key)
     if (value != null) {
       // eslint-disable-next-line no-console
-      console.warn(`Overriding process.env.${_key} from "${env[_key]}" to "${value}"`)
+      console.warn(`Overriding process.env.${_key} from "${env[_key] || ''}" to "${value}"`) // env[_key] || '' to fix flow error
       env[_key] = value
     }
   })

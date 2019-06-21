@@ -7,7 +7,7 @@ import {defineMessages} from 'react-intl'
 
 import {useI18n} from '@/i18n/helpers'
 import {logError} from '@/helpers/errorReporting'
-import errorImage from '@/assets/error-screen.svg'
+import errorImage from '@/static/assets/error-screen.svg'
 
 const messages = defineMessages({
   errorTitle: 'Oops! Something went wrong',
@@ -32,7 +32,7 @@ type State = {|
 // this default error handler should use minimum number of components so that they
 // can not introduce next error within this handler.
 // User can still navigate via navigation in most cases, or refresh manually.
-const DefaultErrorScreen = () => {
+export const DefaultErrorScreen = () => {
   const {translate: tr} = useI18n()
   const classes = useStyles()
   return (
@@ -45,6 +45,7 @@ const DefaultErrorScreen = () => {
           <Typography className={classes.item} variant="h2">
             {tr(messages.errorMsg)}
           </Typography>
+
           <img className={classes.item} alt="" src={errorImage} />
         </Grid>
       </Grid>

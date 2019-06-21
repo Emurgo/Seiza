@@ -8,7 +8,8 @@ import {defineMessages} from 'react-intl'
 
 import {useI18n, withI18n} from '@/i18n/helpers'
 
-import {withTheme, THEME_DEFINITIONS, THEMES} from '@/components/HOC/theme'
+import {withTheme} from '@/components/HOC/theme'
+import {THEME_DEFINITIONS, THEMES} from '@/components/themes'
 import {Select} from '@/components/visual'
 import {NavTypography} from '@/components/common/Navbar'
 

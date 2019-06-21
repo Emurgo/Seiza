@@ -22,11 +22,11 @@ import {useI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
 import {useAnalytics} from '@/helpers/googleAnalytics'
 import {Button, CloseIconButton, LoadingOverlay, Link as CustomLink} from '@/components/visual'
-import alertIcon from '@/assets/icons/alert.svg'
-import subscribedIcon from '@/assets/icons/subscribed.svg'
+import alertIcon from '@/static/assets/icons/alert.svg'
+import subscribedIcon from '@/static/assets/icons/subscribed.svg'
+import {ReactComponent as Rocket} from '@/static/assets/icons/emoji/rocket.svg'
 import {useSubscribeContext} from '@/components/context/SubscribeContext'
 
-import {ReactComponent as Rocket} from '@/assets/icons/emoji/rocket.svg'
 const messages = defineMessages({
   copyright: 'All rights reserved',
   subscribeToNewsletter: 'Subscribe to newsletter',

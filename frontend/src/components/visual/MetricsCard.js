@@ -21,11 +21,11 @@ import {fade} from '@material-ui/core/styles/colorManipulator'
 
 import {Card} from '@/components/visual'
 import WithModalState from '@/components/headless/modalState'
-import IconEpoch from '@/assets/icons/metrics-epoch.svg'
-import IconBlocks from '@/assets/icons/metrics-blocks.svg'
-import IconDecentralization from '@/assets/icons/metrics-decentralization.svg'
-import IconPrice from '@/assets/icons/metrics-currency.svg'
-import IconPools from '@/assets/icons/metrics-stakepools.svg'
+import IconEpoch from '@/static/assets/icons/metrics-epoch.svg'
+import IconBlocks from '@/static/assets/icons/metrics-blocks.svg'
+import IconDecentralization from '@/static/assets/icons/metrics-decentralization.svg'
+import IconPrice from '@/static/assets/icons/metrics-currency.svg'
+import IconPools from '@/static/assets/icons/metrics-stakepools.svg'
 
 const styles = (theme) =>
   createStyles({

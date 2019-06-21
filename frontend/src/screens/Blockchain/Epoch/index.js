@@ -21,8 +21,8 @@ import {
   Chip,
 } from '@/components/visual'
 import {useI18n} from '@/i18n/helpers'
-import EpochNumberIcon from '@/assets/icons/epoch-number.svg'
-import EpochIcon from '@/assets/icons/metrics-epoch.svg'
+import EpochNumberIcon from '@/static/assets/icons/epoch-number.svg'
+import EpochIcon from '@/static/assets/icons/metrics-epoch.svg'
 import WithTabState from '@/components/headless/tabState'
 import Blocks from './Blocks'
 import StakingPoolsTab from './StakingPools'

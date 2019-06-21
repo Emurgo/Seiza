@@ -11,10 +11,10 @@ import Layout from './Layout'
 import InfoCard from './InfoCard'
 import {withI18n} from '@/i18n/helpers'
 
-import {ReactComponent as EpochIcon} from '@/assets/icons/epoch.svg'
-import {ReactComponent as SlotIcon} from '@/assets/icons/slot.svg'
-import {ReactComponent as TimeIcon} from '@/assets/icons/time.svg'
-import {ReactComponent as FromGenesisIcon} from '@/assets/icons/from-genesis.svg'
+import {ReactComponent as EpochIcon} from '@/static/assets/icons/epoch.svg'
+import {ReactComponent as SlotIcon} from '@/static/assets/icons/slot.svg'
+import {ReactComponent as TimeIcon} from '@/static/assets/icons/time.svg'
+import {ReactComponent as FromGenesisIcon} from '@/static/assets/icons/from-genesis.svg'
 
 const POLL_INTERVAL = 1000 * 60
 const SLOT_POLL_INTERVAL = 1000 * 10

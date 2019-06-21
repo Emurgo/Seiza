@@ -2,15 +2,15 @@
 import React from 'react'
 import cn from 'classnames'
 import {Grid, withStyles} from '@material-ui/core'
-import {withSetLocale} from '@/components/HOC/intl'
+import {useLocale} from '@/components/HOC/intl'
 import {Select} from '@/components/visual'
 import {NavTypography} from '@/components/common/Navbar'
 
-import EnglishFlag from '@/assets/icons/flags/english.svg'
-import JapaneseFlag from '@/assets/icons/flags/japanese.svg'
-import RussianFlag from '@/assets/icons/flags/russian.svg'
-// import ChineseFlag from '@/assets/icons/flags/chinese.svg'
-// import KoreanFlag from '@/assets/icons/flags/korean.svg'
+import EnglishFlag from '@/static/assets/icons/flags/english.svg'
+import JapaneseFlag from '@/static/assets/icons/flags/japanese.svg'
+import RussianFlag from '@/static/assets/icons/flags/russian.svg'
+// import ChineseFlag from '@/static/assets/icons/flags/chinese.svg'
+// import KoreanFlag from '@/static/assets/icons/flags/korean.svg'
 import config from '@/config'
 
 const styles = (theme) => ({
@@ -75,21 +75,28 @@ const LANGUAGES = [
   },*/
 ].map(({locale, label, mobileLabel}) => ({value: locale, label, mobileLabel}))
 
-export default withSetLocale(({setLocale, locale}) => (
-  <Select
-    hasBorder={false}
-    value={locale}
-    onChange={(e) => setLocale(e.target.value)}
-    options={LANGUAGES}
-  />
-))
+// TODO: refactor using useLocale() hook
+export default () => {
+  const {locale, setLocale} = useLocale()
+  return (
+    <Select
+      hasBorder={false}
+      value={locale}
+      onChange={(e) => setLocale(e.target.value)}
+      options={LANGUAGES}
+    />
+  )
+}
 
-export const MobileLanguage = withSetLocale(({setLocale, locale}) => (
-  <Grid container justify="space-between">
-    {LANGUAGES.map(({mobileLabel, value}) => (
-      <Grid item key={value} onClick={(e) => setLocale(value)}>
-        {mobileLabel}
-      </Grid>
-    ))}
-  </Grid>
-))
+export const MobileLanguage = () => {
+  const {setLocale} = useLocale()
+  return (
+    <Grid container justify="space-between">
+      {LANGUAGES.map(({mobileLabel, value}) => (
+        <Grid item key={value} onClick={(e) => setLocale(value)}>
+          {mobileLabel}
+        </Grid>
+      ))}
+    </Grid>
+  )
+}

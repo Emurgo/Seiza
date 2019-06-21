@@ -258,7 +258,6 @@ const useBreakdownItemStyles = makeStyles((theme) => ({
 }))
 
 const IMG_DIMENSIONS = {width: 20, height: 20}
-
 const BreakdownItem = (props) => {
   const {valuePrefix, target, hasHighlight, isLink, timestamp, showDivider} = props
   const {address58, amount} = target
