@@ -57,7 +57,7 @@ const useStyles = makeStyles((theme) => {
     centeredItem: {
       maxWidth: ({maxWidth}) => maxWidth,
       width: '100%',
-      padding: `${theme.spacing.unit * 6}px ${theme.spacing.unit * 2}px`,
+      padding: `${theme.spacing(6)}px ${theme.spacing(2)}px`,
     },
     rightSideWrapper: {
       width: 0,

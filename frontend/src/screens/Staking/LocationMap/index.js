@@ -17,6 +17,9 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     padding: theme.spacing(4),
+    [theme.breakpoints.down('md')]: {
+      height: '100vh',
+    },
   },
   mapContainer: {
     'flexGrow': 1,
@@ -74,6 +77,16 @@ const POOLS = [
     location: {lat: 47, lng: 11},
     name: 'Adalite.io',
   },
+  {
+    hash: 'tmp2',
+    location: {lat: 49, lng: 11},
+    name: 'Adalite.io',
+  },
+  {
+    hash: 'tm3',
+    location: {lat: 47, lng: 1},
+    name: 'Adalite.io',
+  },
 ]
 
 const messages = defineMessages({
@@ -103,7 +116,7 @@ const LocationMap = ({pools}) => {
       language={'en'}
       region={'EN'}
       version={'weekly'}
-      libraries={[]}
+      libraries={null}
       onError={(e) => {
         setError(true)
       }}
