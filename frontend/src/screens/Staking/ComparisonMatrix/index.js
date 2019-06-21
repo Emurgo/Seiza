@@ -15,6 +15,8 @@ import {
   EllipsizedLinkFieldWithTooltip,
 } from '@/components/visual/ComparisonMatrix/fields'
 
+import {useIsMobile} from '@/components/hooks/useBreakpoints'
+
 const messages = defineMessages({
   stakePools: 'Stake pools',
   categoryOneLabel: 'Category 1',
@@ -106,6 +108,11 @@ const categoryTwoConfig = [
   },
 ]
 
+const DescriptionField = ({text, height}) => {
+  const isMobile = useIsMobile()
+  return isMobile ? text : <FadeoutFieldWithTooltip {...{text, height}} />
+}
+
 // TODO: proper fields that make sense (now just taken from design)
 const categoryThreeConfig = [
   {
@@ -123,7 +130,7 @@ const categoryThreeConfig = [
   {
     i18nLabel: categoryThreeMessages.description,
     render: (stakePool, formatters) => {
-      return <FadeoutFieldWithTooltip text={stakePool.description} height={132} />
+      return <DescriptionField text={stakePool.description} height={132} />
     },
     height: 132, // used to sync height with label field
   },

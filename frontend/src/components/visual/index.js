@@ -12,6 +12,7 @@ export {
   default as ExpandableCard,
   ExpandableCardContent,
   ExpandableCardFooter,
+  SimpleExpandableCard,
 } from './ExpandableCard'
 export {default as KeyValueCard} from './KeyValueCard'
 export {default as MetricsCard} from './MetricsCard'

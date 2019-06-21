@@ -124,7 +124,7 @@ export const ExpandableCardContent = (props: ExpandableCardPT) => {
         </Grid>
         <Grid item xs={12}>
           <ExpansionPanel classes={expansionPanelClasses} onChange={onChange} expanded={expanded}>
-            <ExpansionPanelSummary classes={summaryClasses}>
+            <ExpansionPanelSummary classes={summaryClasses} expandIcon={<ExpandMoreIcon />}>
               {renderFooter(props.expanded)}
             </ExpansionPanelSummary>
             <ExpansionPanelDetails classes={detailsClasses}>
@@ -134,6 +134,39 @@ export const ExpandableCardContent = (props: ExpandableCardPT) => {
         </Grid>
       </Paper>
     </Grid>
+  )
+}
+
+type SimpleExpandableCardProps = {|
+  expanded: boolean,
+  onChange: (event: any, expanded: boolean) => any,
+  renderExpandedArea: (expanded: boolean) => Node,
+  renderHeader: (expanded: boolean) => Node,
+  headerClasses: {},
+|}
+
+// TODO: could be reused for TransactionCard?
+export const SimpleExpandableCard = ({
+  onChange,
+  expanded,
+  renderHeader,
+  renderExpandedArea,
+  headerClasses = {},
+}: SimpleExpandableCardProps) => {
+  return (
+    <Card>
+      <ExpansionPanel>
+        <ExpansionPanelSummary
+          expandIcon={<ExpandMoreIcon />}
+          onChange={onChange}
+          expanded={expanded}
+          classes={headerClasses}
+        >
+          {renderHeader(expanded)}
+        </ExpansionPanelSummary>
+        <ExpansionPanelDetails>{renderExpandedArea(expanded)}</ExpansionPanelDetails>
+      </ExpansionPanel>
+    </Card>
   )
 }
 

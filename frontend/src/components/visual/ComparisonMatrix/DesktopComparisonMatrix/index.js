@@ -10,13 +10,19 @@ import {defineMessages} from 'react-intl'
 
 import WithModalState from '@/components/headless/modalState'
 import {useI18n} from '@/i18n/helpers'
-import {VisualHash, Card} from '@/components/visual'
+import {Card} from '@/components/visual'
 
 import ScrollingSideArrow from './ScrollingSideArrow'
 import {ScrollOverlayWrapper} from './ScrollOverlay'
 import {useArrowsScrolling, useKeyboardScrolling} from './scrollingHooks'
 
-import {PADDING, ellipsizeStyles, getHeaderBackground, getBodyBackground} from '../utils'
+import {
+  PADDING,
+  ellipsizeStyles,
+  getHeaderBackground,
+  getBodyBackground,
+  ItemIdentifier,
+} from '../utils'
 
 import type {ComparisonMatrixProps, CategoryConfigType} from '../types'
 
@@ -235,24 +241,9 @@ type HeaderProps = {|
 const Header = ({title, identifier}: HeaderProps) => {
   const classes = useStyles()
   return (
-    <Grid
-      container
-      direction="row"
-      className={classnames(classes.header, classes.itemHeader)}
-      wrap="nowrap"
-    >
-      {/* Note: not working properly when text overflows if not wrapped this way */}
-      <Grid item>
-        <div className={classes.visualHashWrapper}>
-          <VisualHash value={identifier} size={24} />
-        </div>
-      </Grid>
-      <Grid item>
-        <Typography className={classes.ellipsis} variant="overline">
-          {title}
-        </Typography>
-      </Grid>
-    </Grid>
+    <div className={classnames(classes.header, classes.itemHeader)}>
+      <ItemIdentifier {...{title, identifier}} />
+    </div>
   )
 }
 
@@ -429,6 +420,10 @@ const useFullWidthStyles = makeStyles((theme) => ({
     left: 0,
     top: 0,
   },
+  clickAwayChild: {
+    display: 'flex',
+    overflow: 'hidden',
+  },
 }))
 
 const FullScreenModeOpener = ({onClick}) => {
@@ -483,8 +478,13 @@ const ComparisonMatrix = (props: ComparisonMatrixProps) => {
           <Modal onClose={closeModal} open={isOpen} className={classes.modal}>
             <div className={classes.fakeModal} ref={fullScreenScrollRef}>
               <div className={classes.fullScreenWrapper}>
-                <ClickAwayListener onClickAway={closeModal} style={{position: 'relative'}}>
-                  <FullWidthComparisonMatrix fullScreenScrollRef={fullScreenScrollRef} {...props} />
+                <ClickAwayListener onClickAway={closeModal}>
+                  <div className={classes.clickAwayChild}>
+                    <FullWidthComparisonMatrix
+                      fullScreenScrollRef={fullScreenScrollRef}
+                      {...props}
+                    />
+                  </div>
                 </ClickAwayListener>
               </div>
             </div>
