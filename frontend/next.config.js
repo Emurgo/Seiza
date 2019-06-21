@@ -1,7 +1,6 @@
 // next.config.js is not transformed by Babel. So you can only use javascript features supported by your version of Node.js.
 require('dotenv').config()
 const path = require('path')
-const Dotenv = require('dotenv-webpack')
 const SentryCliPlugin = require('@sentry/webpack-plugin')
 const withPlugins = require('next-compose-plugins')
 const withCSS = require('@zeit/next-css')
@@ -33,21 +32,6 @@ const addSentryPlugin = (config) => {
   return config
 }
 
-const addEnvironmentVariables = (config) => {
-  console.log('loading env variables')
-  config.plugins = [
-    ...(config.plugins || []),
-
-    // Read the .env file
-    new Dotenv({
-      path: path.join(__dirname, '.env'),
-      systemvars: true,
-    }),
-  ]
-
-  return config
-}
-
 const addSvgFilesHandling = (config) => {
   config.module.rules = [
     ...(config.module.rules || []),
@@ -68,8 +52,19 @@ module.exports = withPlugins(
       addAbsolutePathImport(config)
       addSvgFilesHandling(config)
       !isServer && !dev && addSentryPlugin(config)
-      addEnvironmentVariables(config)
       return config
+    },
+    env: {
+      REACT_APP_SENTRY_RELEASE_VERSION: process.env.REACT_APP_SENTRY_RELEASE_VERSION,
+      REACT_APP_GRAPHQL_SERVER_URL: process.env.REACT_APP_GRAPHQL_SERVER_URL,
+      REACT_APP_GOOGLE_ANALYTICS_ID: process.env.REACT_APP_GOOGLE_ANALYTICS_ID,
+      REACT_APP_SENTRY_DSN: process.env.REACT_APP_SENTRY_DSN,
+      REACT_APP_GOOGLE_MAPS_API_KEY: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
+      REACT_APP_SHOW_STAKING_DATA: process.env.REACT_APP_SHOW_STAKING_DATA,
+      REACT_APP_FEATURE_ENABLE_THEMES: process.env.REACT_APP_FEATURE_ENABLE_THEMES,
+      REACT_APP_FEATURE_ENABLE_RUSSIAN: process.env.REACT_APP_FEATURE_ENABLE_RUSSIAN,
+      REACT_APP_FEATURE_ENABLE_SPANISH: process.env.REACT_APP_FEATURE_ENABLE_SPANISH,
+      REACT_SHOW_STAKE_POOLS_LIST_DATA: process.env.REACT_SHOW_STAKE_POOLS_LIST_DATA,
     },
   }
 )
