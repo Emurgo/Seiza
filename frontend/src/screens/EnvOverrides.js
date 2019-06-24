@@ -2,15 +2,15 @@
 import React, {useState} from 'react'
 import {OVERRIDABLE_ENV} from '../config'
 import {SimpleLayout} from '@/components/visual'
-import {Card} from '@material-ui/core'
+import {Card, Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import localStorage from '@/helpers/localStorage'
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(() => ({
   card: {
     padding: '20px',
   },
-})
+}))
 
 const EnvOverride = ({_key}) => {
   const lsKey = `env.${_key}`
@@ -33,8 +33,8 @@ const EnvOverride = ({_key}) => {
 
   return (
     <Card className={classes.card}>
-      <h3>{_key}</h3>
-      <div>Default: "{defaultValue}"</div>
+      <Typography variant="h4">{_key}</Typography>
+      <Typography variant="body1">Default: "{defaultValue}"</Typography>
       <div>
         <form onSubmit={onSubmit}>
           <input type="text" name={_key} value={val} onChange={(evt) => setVal(evt.target.value)} />

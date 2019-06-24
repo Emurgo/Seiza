@@ -79,7 +79,7 @@ const convertAdaToFiat = (amount: string, rate: number): number => {
   return (parseInt(amount, 10) * rate) / 1000000
 }
 
-const useTooltipStyles = makeStyles({
+const useTooltipStyles = makeStyles(() => ({
   wrapper: {
     // Needed because when tooltip opens with
     // loading state, it gets too narrow and expanding
@@ -89,7 +89,7 @@ const useTooltipStyles = makeStyles({
   value: {
     textAlign: 'right',
   },
-})
+}))
 
 const AdaFiatTooltip = ({value, timestamp}) => {
   const {formatFiat, translate: tr} = useI18n()
