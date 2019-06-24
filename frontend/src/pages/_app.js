@@ -1,5 +1,5 @@
 // @flow
-import '@/initErrorReporter'
+import {reportError} from '@/helpers/errorReporting'
 import '@/App.css'
 import '@/utils.css'
 import '@/polyfills'
@@ -88,16 +88,34 @@ const Intl = ({children}) => {
 
 class MyApp extends App {
   static async getInitialProps({Component, ctx}) {
-    let pageProps = {}
-    if (Component.getInitialProps) {
-      pageProps = await Component.getInitialProps(ctx)
-    }
+    try {
+      let pageProps = {}
 
-    // what is returned here, gets injected into __NEXT_DATA__
-    return {
-      pageProps,
+      if (Component.getInitialProps) {
+        pageProps = await Component.getInitialProps(ctx)
+      }
+
+      // what is returned here, gets injected into __NEXT_DATA__
+      return {
+        pageProps,
+      }
+      // ***** BEGIN INSPIRED BY: https://github.com/zeit/next.js/blob/master/examples/with-sentry/pages/_app.js
+    } catch (error) {
+      // Capture errors that happen during a page's getInitialProps.
+      // This will work on both client and server sides.
+      reportError(error, ctx)
+      return {
+        hasError: true,
+      }
     }
+    // ***** END INSPIRED BY: https://github.com/zeit/next.js/blob/master/examples/with-sentry/pages/_app.js
   }
+
+  // ***** BEGIN INSPIRED BY: https://github.com/zeit/next.js/blob/master/examples/with-sentry/pages/_app.js
+  componentDidCatch(error, errorInfo) {
+    reportError(error, {errorInfo})
+  }
+  // ***** END INSPIRED BY: https://github.com/zeit/next.js/blob/master/examples/with-sentry/pages/_app.js
 
   // ***** BEGIN TAKEN FROM: https://github.com/mui-org/material-ui/blob/master/examples/nextjs/pages/_app.js
   componentDidMount() {

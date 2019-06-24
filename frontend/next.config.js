@@ -5,6 +5,7 @@ const Dotenv = require('dotenv-webpack')
 const SentryCliPlugin = require('@sentry/webpack-plugin')
 const withPlugins = require('next-compose-plugins')
 const withCSS = require('@zeit/next-css')
+const withSourceMaps = require('@zeit/next-source-maps')
 const withTranspileModules = require('next-transpile-modules')
 const _ = require('lodash')
 
@@ -59,7 +60,7 @@ const addSvgFilesHandling = (config) => {
 }
 
 module.exports = withPlugins(
-  [[withTranspileModules, {transpileModules: ['@react-google-maps/api']}], withCSS],
+  [[withTranspileModules, {transpileModules: ['@react-google-maps/api']}], withCSS, withSourceMaps],
   {
     webpack: (config, {buildId, dev, isServer, defaultLoaders, webpack}) => {
       // Note: we provide webpack above so you should not `require` it
@@ -68,6 +69,13 @@ module.exports = withPlugins(
       addSvgFilesHandling(config)
       !isServer && !dev && addSentryPlugin(config)
       addEnvironmentVariables(config)
+
+      // ***** BEGIN TAKEN FROM: https://github.com/zeit/next.js/blob/master/examples/with-sentry/next.config.js
+      if (!isServer) {
+        config.resolve.alias['@sentry/node'] = '@sentry/browser'
+      }
+      // ***** END TAKEN FROM: https://github.com/zeit/next.js/blob/master/examples/with-sentry/next.config.js
+
       return config
     },
   }

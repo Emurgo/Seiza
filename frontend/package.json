@@ -5,9 +5,11 @@
   "scripts": {
     "dev": "NODE_ENV=development node server.js",
     "build": "next build ./src",
-    "build:heroku": "sentry-cli releases new $SOURCE_VERSION; REACT_APP_SENTRY_RELEASE_VERSION=$SOURCE_VERSION yarn build; sentry-cli releases files $SOURCE_VERSION upload-sourcemaps --ext map ./src/.next",
     "build:local": "REACT_APP_SENTRY_RELEASE_VERSION=`sentry-cli releases propose-version` yarn build",
-    "start": "NODE_ENV=production node server.js",
+    "build:heroku": "sentry-cli releases new $SOURCE_VERSION; REACT_APP_SENTRY_RELEASE_VERSION=$SOURCE_VERSION yarn build; sentry-cli releases files $SOURCE_VERSION upload-sourcemaps --ext map ./src/.next",
+    "start": "if test ! -z $(echo $NODE_HOME | grep heroku); then yarn start:heroku; else yarn start:local; fi",
+    "start:local": "REACT_APP_SENTRY_RELEASE_VERSION=`sentry-cli releases propose-version` yarn start",
+    "start:heroku": "REACT_APP_SENTRY_RELEASE_VERSION=$HEROKU_SLUG_COMMIT yarn start",
     "heroku-postbuild": "yarn build:heroku",
     "eslint": "eslint src --max-warnings=0",
     "flow": "flow",
@@ -26,14 +28,18 @@
     "@nivo/line": "^0.58.0",
     "@react-google-maps/api": "^1.2.3",
     "@sentry/browser": "^5.4.0",
+    "@sentry/integrations": "^5.4.2",
+    "@sentry/node": "^5.4.2",
     "@sentry/webpack-plugin": "^1.6.2",
     "@svgr/webpack": "^4.3.0",
     "@zeit/next-css": "^1.0.1",
+    "@zeit/next-source-maps": "0.0.4-canary.1",
     "apollo-cache-inmemory": "^1.6.0",
     "apollo-client": "^2.6.0",
     "apollo-link-http": "^1.5.14",
     "bignumber.js": "^9.0.0",
     "classnames": "^2.2.6",
+    "cookie-parser": "^1.4.4",
     "copy-to-clipboard": "^3.2.0",
     "css-mediaquery": "^0.1.2",
     "customize-cra": "^0.2.12",
@@ -92,7 +98,8 @@
     "graphql-codegen-flow-common": "^0.15.0-alpha.1885b0cc",
     "graphql-codegen-flow-documents": "^0.18.2",
     "node-sass": "^4.12.0",
-    "prettier-eslint-cli": "^4.7.1"
+    "prettier-eslint-cli": "^4.7.1",
+    "sentry-testkit": "^2.2.1"
   },
   "eslintConfig": {
     "extends": "react-app"
