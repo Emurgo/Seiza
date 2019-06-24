@@ -84,6 +84,10 @@ const useOutlinedInputStyles = makeStyles((theme) => ({
     // TODO: get from theme
     borderColor: `${fade(theme.palette.primary.main, 0.4)} !important`,
   },
+  // Following two classes need to be here so that root's pseudoselector
+  // won't complain
+  disabled: {},
+  error: {},
   focused: {
     '&>fieldset': {
       borderWidth: '1px !important',
