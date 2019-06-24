@@ -2,8 +2,7 @@
 import React, {useCallback} from 'react'
 import classnames from 'classnames'
 import {IconButton, Grid, Input} from '@material-ui/core'
-import {useTheme, makeStyles} from '@material-ui/styles'
-import useMediaQuery from '@material-ui/core/useMediaQuery'
+import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
 
 import {ReactComponent as FirstPageArrow} from '@/static/assets/icons/arrow-first-page.svg'
@@ -13,6 +12,7 @@ import {ReactComponent as ArrowRight} from '@/static/assets/icons/arrow-right.sv
 import {isInRange, isInteger} from '@/helpers/validators'
 import {useI18n} from '@/i18n/helpers'
 import {useStateWithChangingDefault} from '@/components/hooks/useStateWithChangingDefault'
+import {useIsMobile} from '@/components/hooks/useBreakpoints'
 
 // Note!!!: pages are numbered from 1 so that urls are consistent with the rest of UI
 
@@ -154,10 +154,9 @@ const Pagination = ({page, reverseDirection, pageCount, onChangePage}: InnerProp
     onInputValueSubmit,
   } = usePaginationHandlers(page, onChangePage, pageCount, inputValue, setInputValue)
 
-  const theme = useTheme()
-  const isDesktop = useMediaQuery(theme.breakpoints.up('md'))
+  const isMobile = useIsMobile()
 
-  const inputStyle = {width: `${getEstimatedInputWidth(pageCount, isDesktop)}px`}
+  const inputStyle = {width: `${getEstimatedInputWidth(pageCount, !isMobile)}px`}
   const isFirstPage = page <= 1
   const isLastPage = page >= pageCount
 
