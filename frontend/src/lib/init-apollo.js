@@ -15,7 +15,7 @@ function create(initialState) {
     connectToDevTools: process.browser,
     ssrMode: !process.browser, // Disables forceFetch on the server (so queries are only run once)
     link: new HttpLink({
-      link: new HttpLink({uri: config.graphQLServerUrl}),
+      uri: config.graphQLServerUrl,
       fetch,
     }),
     cache: new InMemoryCache({dataIdFromObject}).restore(initialState || {}),

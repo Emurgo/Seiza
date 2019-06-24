@@ -14,16 +14,12 @@ import Head from 'next/head'
 import {ApolloProvider} from 'react-apollo'
 import {ApolloProvider as ApolloHooksProvider} from 'react-apollo-hooks'
 
-import {HttpLink} from 'apollo-link-http'
-import {InMemoryCache} from 'apollo-cache-inmemory'
-import {ApolloClient} from 'apollo-client'
 import withApolloClient from '../lib/with-apollo-client'
 import {InjectHookIntlContext} from '@/i18n/helpers'
 
 import CssBaseline from '@material-ui/core/CssBaseline'
 
 import config from '@/config'
-import {dataIdFromObject} from '@/helpers/apollo'
 import {ThemeContextProvider, useThemeContext} from '@/components/HOC/theme'
 import {THEME_DEFINITIONS} from '@/components/themes'
 import {IntlContextProvider, useLocale} from '@/components/HOC/intl'
@@ -42,15 +38,7 @@ config.featureEnableSpanish && addLocaleData(esLocaleData)
 // translations
 addLocaleData(jaLocaleData)
 
-const client = new ApolloClient({
-  // $FlowFixMe Not sure why ApolloLink is not compatible with HttpLink
-  link: new HttpLink({uri: config.graphQLServerUrl}),
-  cache: new InMemoryCache({
-    dataIdFromObject,
-  }),
-})
-
-const ApolloProviders = ({children}) => {
+const ApolloProviders = ({children, client}) => {
   return (
     <ApolloProvider client={client}>
       <ApolloHooksProvider client={client}>{children}</ApolloHooksProvider>
@@ -123,11 +111,11 @@ class MyApp extends App {
   // ***** END TAKEN FROM: https://github.com/mui-org/material-ui/blob/master/examples/nextjs/pages/_app.js
 
   render() {
-    const {Component, pageProps} = this.props
+    const {Component, pageProps, apolloClient} = this.props
 
     return (
       <Container>
-        <ApolloProviders>
+        <ApolloProviders client={apolloClient}>
           <Head>
             <title>Seiza</title>
           </Head>
