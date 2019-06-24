@@ -1,18 +1,22 @@
 // @flow
 
-import React from 'react'
+import React, {useState, useMemo, useCallback} from 'react'
+import _ from 'lodash'
 import cn from 'classnames'
-
+import {defineMessages} from 'react-intl'
 import {Grid, Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
-import {SimpleExpandableCard} from '@/components/visual'
-import WithModalState from '@/components/headless/modalState'
+import {SimpleExpandableCard, Button} from '@/components/visual'
 import {useI18n} from '@/i18n/helpers'
-
 import {ItemIdentifier, getHeaderBackground} from '../utils'
 
 import type {ComparisonMatrixProps} from '../types'
+
+const messages = defineMessages({
+  expandAll: 'Expand all',
+  collapseAll: 'Collapse all',
+})
 
 const useCategoryStyles = makeStyles((theme) => ({
   wrapper: {
@@ -30,12 +34,15 @@ const useCategoryStyles = makeStyles((theme) => ({
   },
 }))
 
-const Category = ({getIdentifier, data, categoryConfig}) => {
+const getFieldId = (config) => config.i18nLabel.id
+
+const Category = ({getIdentifier, data, categoryConfig, expandedFields, toggle}) => {
   const intlFormatters = useI18n()
   const {translate: tr} = intlFormatters
   const classes = useCategoryStyles()
 
-  return categoryConfig.map(({i18nLabel, getValue, render, height}, index) => {
+  return categoryConfig.map((config, index) => {
+    const {i18nLabel, getValue, render, height} = config
     const renderExpandedArea = () => (
       <Grid container>
         {data.map((d, index, arr) => (
@@ -71,38 +78,109 @@ const Category = ({getIdentifier, data, categoryConfig}) => {
       </Typography>
     )
 
+    const fieldId = getFieldId(config)
+
     return (
       <div className={classes.wrapper} key={index}>
-        <WithModalState>
-          {({isOpen, toggle}) => (
-            <SimpleExpandableCard
-              expanded={isOpen}
-              onChange={toggle}
-              renderHeader={renderHeader}
-              renderExpandedArea={renderExpandedArea}
-              headerClasses={{root: classes.header}}
-            />
-          )}
-        </WithModalState>
+        <SimpleExpandableCard
+          expanded={expandedFields[fieldId]}
+          onChange={() => toggle(fieldId)}
+          renderHeader={renderHeader}
+          renderExpandedArea={renderExpandedArea}
+          headerClasses={{root: classes.header}}
+        />
       </div>
     )
   })
 }
 
-const MobileComparisonMatrix = ({
+type ComparisonLayoutProps = {
+  ...ComparisonMatrixProps,
+  expandedFields: {},
+  toggle: Function,
+}
+
+const ComparisonMatrixLayout = ({
   data,
   categoryConfigs,
   title,
   getIdentifier,
-}: ComparisonMatrixProps) => {
+  expandedFields,
+  toggle,
+}: ComparisonLayoutProps) => (
+  <Grid container direction="column">
+    {categoryConfigs.map(({config, categoryLabel}, index) => (
+      <Grid item key={index}>
+        <Category categoryConfig={config} {...{data, getIdentifier, expandedFields, toggle}} />
+      </Grid>
+    ))}
+  </Grid>
+)
+
+const useGetInitialExpandState = (categoryConfigs) =>
+  useMemo(
+    () =>
+      _(categoryConfigs)
+        .map((category) => category.config.map((config) => [getFieldId(config), false]))
+        .flatten()
+        .fromPairs()
+        .value(),
+    [categoryConfigs]
+  )
+
+// TODO: sync with local storage
+const useToggleCardsState = (categoryConfigs) => {
+  const initialState = useGetInitialExpandState(categoryConfigs)
+  const [expandedFields, setExpandedFields] = useState(initialState)
+
+  const toggle = useCallback(
+    (field) => setExpandedFields((state) => ({...state, [field]: !state[field]})),
+    [setExpandedFields]
+  )
+
+  const expandAll = useCallback(
+    () => setExpandedFields((state) => _.mapValues(state, (v) => true)),
+    [setExpandedFields]
+  )
+
+  const collapseAll = useCallback(
+    () => setExpandedFields((state) => _.mapValues(state, (v) => false)),
+    [setExpandedFields]
+  )
+
+  const expandedAll = useMemo(() => _.every(expandedFields, (value) => value === true), [
+    expandedFields,
+  ])
+
+  return {toggle, expandAll, collapseAll, expandedAll, expandedFields}
+}
+
+const ToggleExpandAllButton = ({expandAll, collapseAll, expandedAll}) => {
+  const {translate: tr} = useI18n()
+  const label = tr(expandedAll ? messages.collapseAll : messages.expandAll)
+
+  return <Button onClick={expandedAll ? collapseAll : expandAll}>{label}</Button>
+}
+
+const useWrapperStyles = makeStyles((theme) => ({
+  toggleWrapper: {
+    padding: theme.spacing(1),
+  },
+}))
+
+const MobileComparisonMatrix = (props: ComparisonMatrixProps) => {
+  const {expandAll, collapseAll, expandedAll, toggle, expandedFields} = useToggleCardsState(
+    props.categoryConfigs
+  )
+  const classes = useWrapperStyles()
+
   return (
-    <Grid container direction="column">
-      {categoryConfigs.map(({config, categoryLabel}, index) => (
-        <Grid item key={index}>
-          <Category getIdentifier={getIdentifier} data={data} categoryConfig={config} />
-        </Grid>
-      ))}
-    </Grid>
+    <React.Fragment>
+      <Grid container justify="flex-end" className={classes.toggleWrapper}>
+        <ToggleExpandAllButton {...{expandAll, collapseAll, expandedAll}} />
+      </Grid>
+      <ComparisonMatrixLayout {...props} {...{expandedFields, toggle}} />
+    </React.Fragment>
   )
 }
 

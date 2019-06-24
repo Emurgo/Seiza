@@ -155,13 +155,8 @@ export const SimpleExpandableCard = ({
 }: SimpleExpandableCardProps) => {
   return (
     <Card>
-      <ExpansionPanel>
-        <ExpansionPanelSummary
-          expandIcon={<ExpandMoreIcon />}
-          onChange={onChange}
-          expanded={expanded}
-          classes={headerClasses}
-        >
+      <ExpansionPanel onChange={onChange} expanded={expanded}>
+        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />} classes={headerClasses}>
           {renderHeader(expanded)}
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>{renderExpandedArea(expanded)}</ExpansionPanelDetails>
