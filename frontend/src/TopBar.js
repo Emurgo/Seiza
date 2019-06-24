@@ -19,6 +19,7 @@ import {useIsMobile} from '@/components/hooks/useBreakpoints'
 import ArrowDownIcon from '@material-ui/icons/ArrowDropDown'
 import LanguageSelect, {MobileLanguage} from '@/components/common/LanguageSelect'
 import ThemeSelect from '@/components/common/ThemeSelect'
+import NoSSR from 'react-no-ssr'
 
 import config from '@/config'
 
@@ -142,18 +143,22 @@ const TopBar = compose(withRouter)(({location: {pathname}, navItems}) => {
         </Link>
       </Grid>
       <Grid item>
-        <Grid container direction="row" alignItems="center">
-          <NavLinks currentPathname={pathname} items={navItems} />
-          <LanguageSelect />
-          {config.featureEnableThemes && <ThemeSelect />}
-        </Grid>
+        <NoSSR>
+          <Grid container direction="row" alignItems="center">
+            <NavLinks currentPathname={pathname} items={navItems} />
+            <LanguageSelect />
+            {config.featureEnableThemes && <ThemeSelect />}
+          </Grid>
+        </NoSSR>
       </Grid>
     </Grid>
   ) : (
     <div className={cn(classes.topBar, 'd-flex')}>
       <MobileMenu currentPathname={pathname} items={navItems} />
       <div className={classes.mobileSearch}>
-        <Search isMobile />
+        <NoSSR>
+          <Search isMobile />
+        </NoSSR>
       </div>
     </div>
   )

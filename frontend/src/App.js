@@ -2,7 +2,7 @@
 
 import cn from 'classnames'
 import React from 'react'
-import {BrowserRouter as Router, Route, Switch, Redirect} from 'react-router-dom'
+import {BrowserRouter, StaticRouter, Route, Switch, Redirect} from 'react-router-dom'
 import {CssBaseline, Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
@@ -145,7 +145,11 @@ const AppLayout = () => {
               {renderRouteDef({exact: true, path: routeTo.more(), component: More})}
               {renderRouteDef({exact: true, path: routeTo.termsOfUse(), component: Terms})}
               {renderRouteDef({exact: true, path: routeTo.privacy(), component: Privacy})}
-              {renderRouteDef({exact: true, path: routeTo.envOverrides(), component: EnvOverrides})}
+              {renderRouteDef({
+                exact: true,
+                path: routeTo.envOverrides(),
+                component: EnvOverrides,
+              })}
               <Route component={PageNotFound} />
             </Switch>
           </Grid>
@@ -158,13 +162,21 @@ const AppLayout = () => {
   )
 }
 
-const App = () => (
+const _Router = process.browser
+  ? ({children}) => <BrowserRouter>{children}</BrowserRouter>
+  : ({children, context}) => (
+    <StaticRouter location={context.location} context={context}>
+      {children}
+    </StaticRouter>
+  )
+
+const App = ({routerCtx}: {routerCtx: any}) => (
   <DefaultErrorBoundary>
-    <Router>
+    <_Router context={routerCtx}>
       <Providers>
         <AppLayout />
       </Providers>
-    </Router>
+    </_Router>
   </DefaultErrorBoundary>
 )
 

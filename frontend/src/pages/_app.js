@@ -89,7 +89,6 @@ const Intl = ({children}) => {
 class MyApp extends App {
   static async getInitialProps({Component, ctx}) {
     let pageProps = {}
-
     if (Component.getInitialProps) {
       pageProps = await Component.getInitialProps(ctx)
     }
@@ -111,7 +110,7 @@ class MyApp extends App {
   // ***** END TAKEN FROM: https://github.com/mui-org/material-ui/blob/master/examples/nextjs/pages/_app.js
 
   render() {
-    const {Component, pageProps, apolloClient} = this.props
+    const {Component, pageProps, routerCtx, apolloClient} = this.props
 
     return (
       <Container>
@@ -124,7 +123,7 @@ class MyApp extends App {
               <IntlContextProvider>
                 <Intl>
                   <InjectHookIntlContext>
-                    <Component {...pageProps} />
+                    <Component {...pageProps} routerCtx={routerCtx} />
                   </InjectHookIntlContext>
                 </Intl>
               </IntlContextProvider>
