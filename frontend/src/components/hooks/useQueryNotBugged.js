@@ -14,7 +14,9 @@ export const useQueryNotBugged = (...args: any) => {
     }
   }, [data, loading])
 
-  return {data: notNullData, error, loading, ...rest}
+  // Note(ppershing): above useEffect runs only on client
+  // for server we should return data if we have
+  return {data: data && !loading ? data : notNullData, error, loading, ...rest}
 }
 
 // Leaving previous version, so we can use do quick fix without testing
