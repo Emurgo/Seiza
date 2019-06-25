@@ -1,14 +1,15 @@
 // @flow
 import React, {useState, useCallback} from 'react'
-import {withRouter} from 'react-router'
-import {compose} from 'redux'
+import {Switch, Route} from 'react-router-dom'
+import useReactRouter from 'use-react-router'
 import {Grid, Grow, Card, Popper, ClickAwayListener, Divider} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {fade} from '@material-ui/core/styles/colorManipulator'
 import cn from 'classnames'
-import {routeTo} from './helpers/routes'
+import {routeTo, combinedBlockchainPath} from './helpers/routes'
+import type {NavItem} from '@/components/common/Navbar'
 
-import Search from './screens/Blockchain/BlockchainHeader/Search'
+import BlockchainSearch from './screens/Blockchain/BlockchainHeader/Search'
 import {Link} from '@/components/visual'
 import seizaLogoDesktop from '@/static/assets/icons/logo-seiza.svg'
 import seizaLogoMobile from '@/static/assets/icons/seiza-symbol.svg'
@@ -125,10 +126,17 @@ const MobileMenu = ({items = [], currentPathname}: any) => {
     </ClickAwayListener>
   )
 }
+type TopBarProps = {
+  navItems: Array<NavItem>,
+}
 
-const TopBar = compose(withRouter)(({location: {pathname}, navItems}) => {
+const TopBar = ({navItems}: TopBarProps) => {
+  const {
+    location: {pathname},
+  } = useReactRouter()
   const classes = useTopBarStyles()
   const isMobile = useIsMobile()
+
   return !isMobile ? (
     <Grid
       container
@@ -154,13 +162,19 @@ const TopBar = compose(withRouter)(({location: {pathname}, navItems}) => {
     <div className={cn(classes.topBar, 'd-flex')}>
       <MobileMenu currentPathname={pathname} items={navItems} />
       <div className={classes.mobileSearch}>
-        <NoSSR>
-          {/* Search uses portals and it doesn't like to be rendered on server */}
-          <Search isMobile />
-        </NoSSR>
+        {combinedBlockchainPath && (
+          <Switch>
+            <Route path={combinedBlockchainPath}>
+              <NoSSR>
+                {/* Search uses portals and it doesn't like to be rendered on server */}
+                <BlockchainSearch isMobile />
+              </NoSSR>
+            </Route>
+          </Switch>
+        )}
       </div>
     </div>
   )
-})
+}
 
 export default TopBar

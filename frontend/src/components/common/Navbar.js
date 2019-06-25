@@ -67,10 +67,10 @@ const NavMenuItem = ({disabledText, label, link, isMobile}) => {
   )
 }
 
-type NavItem = {
-  link: ?string,
+export type NavItem = {
+  link: string,
   label: string,
-  disabledText: ?string,
+  disabledText?: ?string,
 }
 
 type NavLinksProps = {

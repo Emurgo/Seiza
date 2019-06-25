@@ -7,7 +7,7 @@ import {CssBaseline, Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
 
-import {routeTo} from './helpers/routes'
+import {routeTo, combinedBlockchainPath} from './helpers/routes'
 import Footer from './screens/Footer'
 import {useI18n} from '@/i18n/helpers'
 import {AutoSyncProvider} from './screens/Staking/context/autoSync'
@@ -114,8 +114,6 @@ const renderRouteDef = ({path, ...rest}) => (path ? <Route path={path} {...rest}
 const AppLayout = () => {
   const classes = useAppStyles()
   const {translate} = useI18n()
-
-  const combinedBlockchainPath = routeTo._anyOf([routeTo.blockchain(), routeTo.home()])
 
   return (
     <Grid container direction="column" className={classes.mainWrapper} wrap="nowrap">
