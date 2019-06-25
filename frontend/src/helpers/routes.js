@@ -76,7 +76,7 @@ export const routeTo = {
     privacy: () => '/privacy',
   }),
 
-  envOverrides: () => enableIf(!config.isProduction, '/__env__'),
+  envOverrides: () => enableIf(config.envOverridesEnabled, '/__env__'),
   // Helper
   _anyOf: anyOfPaths,
 }

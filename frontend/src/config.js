@@ -33,8 +33,8 @@ const env = {
   REACT_APP_FEATURE_ENABLE_RUSSIAN: process.env.REACT_APP_FEATURE_ENABLE_RUSSIAN,
   REACT_APP_FEATURE_ENABLE_SPANISH: process.env.REACT_APP_FEATURE_ENABLE_SPANISH,
   REACT_SHOW_STAKE_POOLS_LIST_DATA: process.env.REACT_SHOW_STAKE_POOLS_LIST_DATA,
+  REACT_APP_ENABLE_ENV_OVERRIDES: process.env.REACT_APP_ENABLE_ENV_OVERRIDES,
 }
-
 export const OVERRIDABLE_ENV = [
   'REACT_APP_GRAPHQL_SERVER_URL',
   'REACT_APP_GOOGLE_ANALYTICS_ID',
@@ -50,7 +50,9 @@ export const OVERRIDABLE_ENV = [
   'REACT_APP_FEATURE_ENABLE_SPANISH',
 ]
 
-if (!isProduction) {
+const envOverridesEnabled = env.REACT_APP_ENABLE_ENV_OVERRIDES === 'true'
+
+if (envOverridesEnabled) {
   OVERRIDABLE_ENV.forEach((_key) => {
     const key = `env.${_key}`
     const value = localStorage.getItem(key)
@@ -76,6 +78,7 @@ isProduction && assert(sentryRelease)
 
 export default {
   isProduction,
+  envOverridesEnabled,
 
   googleMapsApiKey: env.REACT_APP_GOOGLE_MAPS_API_KEY,
   graphQLServerUrl: graphQLServerUrl || '', // flow does not know about above assert
