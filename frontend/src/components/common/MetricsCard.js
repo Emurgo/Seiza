@@ -54,7 +54,7 @@ const styles = (theme) =>
     },
     icon: {
       display: 'none',
-      [theme.breakpoints.up('sm')]: {
+      [theme.breakpoints.up('lg')]: {
         width: 50,
         marginRight: theme.spacing(2),
         display: 'block',

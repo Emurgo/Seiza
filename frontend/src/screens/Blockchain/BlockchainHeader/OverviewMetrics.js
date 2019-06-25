@@ -7,7 +7,7 @@ import {compose} from 'redux'
 
 import {Grid, createStyles, withStyles} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
-import {LoadingDots} from '@/components/visual'
+import {LoadingDots, Scrollbar} from '@/components/visual'
 import {MetricsCard} from '@/components/common'
 import {getIntlFormatters} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
@@ -27,6 +27,9 @@ const usePreloadStyles = makeStyles((theme) => ({
     width: 0,
     height: 0,
     opacity: 0,
+    top: 0,
+    left: 0,
+    position: 'fixed',
   },
 }))
 
@@ -53,6 +56,9 @@ const styles = (theme) =>
     card: {
       minWidth: '85px',
       [theme.breakpoints.up('md')]: {
+        minWidth: '145px',
+      },
+      [theme.breakpoints.up('lg')]: {
         minWidth: '200px',
       },
       minHeight: '75px',
@@ -60,10 +66,14 @@ const styles = (theme) =>
     cardDimensions: {
       marginRight: theme.spacing(0.5),
       marginLeft: theme.spacing(0.5),
-      [theme.breakpoints.up('sm')]: {
+      [theme.breakpoints.up('md')]: {
         marginRight: theme.spacing(1.5),
         marginLeft: theme.spacing(1.5),
       },
+    },
+    metricWrapper: {
+      margin: 'auto',
+      paddingBottom: theme.spacing(2),
     },
   })
 
@@ -174,54 +184,56 @@ const OverviewMetrics = ({intl, data, classes}) => {
   }
 
   return (
-    <Grid container justify="center" wrap="wrap" direction="row">
-      <PreloadFont />
-      <Grid item className={classes.cardDimensions}>
-        <MetricWithLink
-          className={classes.card}
-          icon="epoch"
-          metric={translate(text.epochLabel)}
-          value={epochNumber}
-          to={epochLink}
-        />
-      </Grid>
-      <GridItem>
-        <MetricWithLink
-          className={classes.card}
-          icon="blocks"
-          metric={translate(text.slotsLabel)}
-          value={blockCount}
-          to={blockLink}
-        />
-      </GridItem>
-      {config.showStakingData && (
-        <GridItem>
-          <MetricsCard
+    <Scrollbar>
+      <Grid container wrap="nowrap" direction="row" className={classes.metricWrapper}>
+        <PreloadFont />
+        <Grid item className={classes.cardDimensions}>
+          <MetricWithLink
             className={classes.card}
-            icon="decentralization"
-            metric={translate(text.decentralizationLabel)}
-            value={decentralization}
+            icon="epoch"
+            metric={translate(text.epochLabel)}
+            value={epochNumber}
+            to={epochLink}
           />
-        </GridItem>
-      )}
-      <GridItem>
-        <MetricWithLink
-          {...commonMarketDataProps}
-          to={config.showStakingData ? marketDataLink : null}
-        />
-      </GridItem>
-      {config.showStakingData && (
+        </Grid>
         <GridItem>
           <MetricWithLink
             className={classes.card}
-            icon="pools"
-            metric={translate(text.poolsLabel)}
-            value={pools}
-            to={stakePoolsLink}
+            icon="blocks"
+            metric={translate(text.slotsLabel)}
+            value={blockCount}
+            to={blockLink}
           />
         </GridItem>
-      )}
-    </Grid>
+        {config.showStakingData && (
+          <GridItem>
+            <MetricsCard
+              className={classes.card}
+              icon="decentralization"
+              metric={translate(text.decentralizationLabel)}
+              value={decentralization}
+            />
+          </GridItem>
+        )}
+        <GridItem>
+          <MetricWithLink
+            {...commonMarketDataProps}
+            to={config.showStakingData ? marketDataLink : null}
+          />
+        </GridItem>
+        {config.showStakingData && (
+          <GridItem>
+            <MetricWithLink
+              className={classes.card}
+              icon="pools"
+              metric={translate(text.poolsLabel)}
+              value={pools}
+              to={stakePoolsLink}
+            />
+          </GridItem>
+        )}
+      </Grid>
+    </Scrollbar>
   )
 }
 
