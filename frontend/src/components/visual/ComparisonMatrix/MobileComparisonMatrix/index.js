@@ -6,9 +6,11 @@ import cn from 'classnames'
 import {defineMessages} from 'react-intl'
 import {Grid, Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
+import {lighten} from '@material-ui/core/styles/colorManipulator'
 
 import {SimpleExpandableCard, Button} from '@/components/visual'
 import {useI18n} from '@/i18n/helpers'
+
 import {ItemIdentifier, getHeaderBackground} from '../utils'
 
 import type {ComparisonMatrixProps} from '../types'
@@ -27,10 +29,13 @@ const useCategoryStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(1),
   },
   poolBorder: {
-    borderBottom: `1px solid ${theme.palette.contentUnfocus}`,
+    borderBottom: `1px solid ${lighten(theme.palette.contentUnfocus, 0.6)}`,
   },
   header: {
     background: getHeaderBackground(theme),
+  },
+  headerText: {
+    fontWeight: 'bold',
   },
 }))
 
@@ -73,7 +78,7 @@ const Category = ({getIdentifier, data, categoryConfig, expandedFields, toggle})
     )
 
     const renderHeader = () => (
-      <Typography variant="overline" color="textSecondary">
+      <Typography variant="overline" color="textSecondary" className={classes.headerText}>
         {tr(i18nLabel)}
       </Typography>
     )
