@@ -55,7 +55,7 @@ const BlockchainHeader = () => {
               </Grid>
             </Hidden>
 
-            <Grid item className={classes.metricsWrapper}>
+            <Grid item className={classes.metricsWrapper} xs={12}>
               <OverviewMetrics />
             </Grid>
           </React.Fragment>
