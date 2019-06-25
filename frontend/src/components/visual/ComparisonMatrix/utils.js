@@ -26,8 +26,10 @@ const useItemIdentifierStyles = makeStyles((theme) => ({
   visualHashWrapper: {
     marginRight: theme.spacing(1),
   },
-  // TODO?: fixed width
-  ellipsis: ellipsizeStyles,
+  ellipsis: {
+    ...ellipsizeStyles,
+    display: 'block',
+  },
 }))
 
 type ItemIdentifierProps = {|
@@ -38,13 +40,14 @@ type ItemIdentifierProps = {|
 export const ItemIdentifier = ({identifier, title}: ItemIdentifierProps) => {
   const classes = useItemIdentifierStyles()
   return (
-    <Grid container wrap="nowrap">
+    <Grid container wrap="nowrap" alignItems="center">
       <Grid item>
         <div className={classes.visualHashWrapper}>
           <VisualHash value={identifier} size={24} />
         </div>
       </Grid>
-      <Grid item>
+      {/* See: https://css-tricks.com/flexbox-truncated-text/ */}
+      <Grid item style={{minWidth: 0}}>
         <Typography className={classes.ellipsis} variant="overline" color="textSecondary">
           {title}
         </Typography>

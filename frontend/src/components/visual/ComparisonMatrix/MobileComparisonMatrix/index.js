@@ -53,15 +53,15 @@ const Category = ({getIdentifier, data, categoryConfig, expandedFields, toggle})
             className={cn(classes.pool, index < arr.length - 1 && classes.poolBorder)}
           >
             <Grid container justify="space-between">
-              <Grid item>
+              <Grid item xs={4}>
                 <ItemIdentifier identifier={getIdentifier(d)} title={d.name} />
               </Grid>
-              <Grid item>
+              <Grid item xs={7}>
                 {/* TODO: this logic is same in Desktop version, try to unify */}
                 {render ? (
                   render(d, intlFormatters)
                 ) : getValue ? (
-                  <Typography style={height ? {height} : {}} variant="body1">
+                  <Typography style={height ? {height} : {}} variant="body1" noWrap>
                     {getValue(d, intlFormatters)}
                   </Typography>
                 ) : null}
@@ -110,7 +110,7 @@ const ComparisonMatrixLayout = ({
 }: ComparisonLayoutProps) => (
   <Grid container direction="column">
     {categoryConfigs.map(({config, categoryLabel}, index) => (
-      <Grid item key={index}>
+      <Grid item key={index} className="w-100">
         <Category categoryConfig={config} {...{data, getIdentifier, expandedFields, toggle}} />
       </Grid>
     ))}
