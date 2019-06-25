@@ -1,7 +1,7 @@
 // @flow
 import React, {useContext, useCallback} from 'react'
 
-import useLocalStorage from '@/components/hooks/useLocalStorage'
+import {useLocalStorageState} from '@/components/hooks/useStorageState'
 
 type ContextType = {
   hidden: boolean,
@@ -17,7 +17,7 @@ type Props = {|
 |}
 
 export const SubscribeProvider = ({children}: Props) => {
-  const [hidden, setHidden] = useLocalStorage('subscribedToNewsletter', false)
+  const [hidden, setHidden] = useLocalStorageState<boolean>('subscribedToNewsletter', false)
 
   const hideSubscribe = useCallback(() => {
     setHidden(true)

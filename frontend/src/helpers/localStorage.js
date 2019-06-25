@@ -6,4 +6,8 @@ import {_getStorage} from './storage'
 export default (process.browser
   ? _getStorage(localStorage, 'local')
   : // eslint-disable-next-line no-empty-function
-  {getItem: (...args: Array<any>): any => {}, setItem: (...args: Array<any>): any => {}})
+  {
+    getItem: (...args: Array<any>): any => ({}),
+    setItem: (...args: Array<any>): any => ({}),
+    removeItem: (...args: Array<any>): any => ({}),
+  })
