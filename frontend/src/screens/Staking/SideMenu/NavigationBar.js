@@ -16,7 +16,6 @@ import {useIsMobile} from '@/components/hooks/useBreakpoints'
 
 import {LiteTabs, LiteTab} from '@/components/visual'
 import useTabState from '@/components/hooks/useTabState'
-import {TabsProvider as Tabs, useTabContext} from '@/components/context/TabContext'
 
 const navigationMessages = defineMessages({
   list: 'Stake pools list',
@@ -89,7 +88,14 @@ const useNavigationBarStyles = makeStyles((theme) => ({
   },
 }))
 
-const navItems = [
+type NavItems = Array<{|
+  link: string,
+  i18nLabel: string,
+  icon: React$Node,
+  id: string,
+|}>
+
+const navItems: NavItems = [
   {
     link: routeTo.stakingCenter.poolList(),
     i18nLabel: navigationMessages.list,
@@ -130,10 +136,17 @@ const navItems = [
 
 const TAB_NAMES = navItems.filter(({link}) => link).map(({id}) => id)
 
+const useTabStateFromUrl = () => {
+  const {location} = useReactRouter()
+  const initialTabName = navItems.find(({link}) => location.pathname === link)
+  const tabState = useTabState(TAB_NAMES, initialTabName && initialTabName.id)
+  return tabState
+}
+
 const TabsHeader = () => {
   const {translate: tr} = useI18n()
-  const {currentTabIndex, setTabByEventIndex} = useTabContext()
   const {history, location} = useReactRouter()
+  const {currentTabIndex, setTabByEventIndex} = useTabStateFromUrl()
 
   const tabs = navItems.map(({i18nLabel, id}) => ({id, label: tr(i18nLabel)}))
 
@@ -158,14 +171,10 @@ const TabsHeader = () => {
 
 const MobileNavigation = () => {
   const classes = useNavigationBarStyles()
-  const tabNames = TAB_NAMES
-  const tabState = useTabState(tabNames)
 
   return (
     <div className={cn(classes.mobileNavBar, 'sticky')}>
-      <Tabs {...tabState}>
-        <TabsHeader />
-      </Tabs>
+      <TabsHeader />
     </div>
   )
 }
