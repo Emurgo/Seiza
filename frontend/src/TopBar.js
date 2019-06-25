@@ -143,13 +143,11 @@ const TopBar = compose(withRouter)(({location: {pathname}, navItems}) => {
         </Link>
       </Grid>
       <Grid item>
-        <NoSSR>
-          <Grid container direction="row" alignItems="center">
-            <NavLinks currentPathname={pathname} items={navItems} />
-            <LanguageSelect />
-            {config.featureEnableThemes && <ThemeSelect />}
-          </Grid>
-        </NoSSR>
+        <Grid container direction="row" alignItems="center">
+          <NavLinks currentPathname={pathname} items={navItems} />
+          <LanguageSelect />
+          {config.featureEnableThemes && <ThemeSelect />}
+        </Grid>
       </Grid>
     </Grid>
   ) : (
@@ -157,6 +155,7 @@ const TopBar = compose(withRouter)(({location: {pathname}, navItems}) => {
       <MobileMenu currentPathname={pathname} items={navItems} />
       <div className={classes.mobileSearch}>
         <NoSSR>
+          {/* Search uses portals and it doesn't like to be rendered on server */}
           <Search isMobile />
         </NoSSR>
       </div>

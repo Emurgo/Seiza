@@ -26,7 +26,8 @@ export default (App) => {
       const apollo = initApollo()
       if (!process.browser) {
         try {
-          // Warning(ppershing): Hack routing redirects
+          // Warning(ppershing):
+          // routerCtx might be mutated during render!
           const routerCtx = {location: req.originalUrl}
 
           // Run all GraphQL queries
@@ -39,7 +40,8 @@ export default (App) => {
               routerCtx={routerCtx}
             />
           )
-          if (routerCtx.url && res) {
+          // router sets ctx.url after <Redirect>
+          if (routerCtx.url) {
             res.writeHead(302, {Location: routerCtx.url})
             res.end()
             return {}
@@ -56,6 +58,12 @@ export default (App) => {
               />
             ),
           })
+          // Hopefully we don' get redirect on second pass but better check for it ...
+          if (routerCtx.url) {
+            res.writeHead(302, {Location: routerCtx.url})
+            res.end()
+            return {}
+          }
         } catch (error) {
           // Prevent Apollo Client GraphQL errors from crashing SSR.
           // Handle them in components via the data.error prop:
