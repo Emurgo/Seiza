@@ -9,6 +9,7 @@ export const fetchAddress = async ({elastic, E, runConsistencyCheck}: any, addre
 
   const hit = await elastic
     .q('address')
+    .pickFields('tx_num', 'balance')
     .filter(E.matchPhrase('_id', address58))
     .getSingleHit()
     .catch(annotateNotFoundError({entity: 'Address', address: address58}))
