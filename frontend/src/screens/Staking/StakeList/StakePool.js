@@ -18,7 +18,7 @@ import {
 import WithModalState from '@/components/headless/modalState'
 import {useI18n} from '@/i18n/helpers'
 import {useSelectedPoolsContext} from '../context/selectedPools'
-import {useIsMobile, useCurrentBreakpoint} from '@/components/hooks/useBreakpoints'
+import {useIsMobile} from '@/components/hooks/useBreakpoints'
 
 const messages = defineMessages({
   revenue: 'Revenue',
@@ -49,9 +49,14 @@ const useHeaderStyles = makeStyles(({palette, spacing, breakpoints}) => ({
   },
   info: {
     paddingLeft: spacing(1),
+    paddingRight: spacing(1),
   },
   button: {
     width: '120px',
+  },
+  flexEllipsize: {
+    // needed for proper ellipsize in children components with flex
+    minWidth: 0,
   },
 }))
 
@@ -129,16 +134,6 @@ const Header = ({name, hash}) => {
   const onAddPool = useCallback(() => addPool(hash), [addPool, hash])
   const onRemovePool = useCallback(() => removePool(hash), [removePool, hash])
   const isMobile = useIsMobile()
-  const breakpoint = useCurrentBreakpoint()
-
-  // TODO: try to do better
-  const maxTextWidth = {
-    xs: 140,
-    sm: 400,
-    md: 200, // goes down because side-menu appears
-    lg: 500,
-    xl: 600,
-  }[breakpoint]
 
   return (
     <Grid
@@ -148,22 +143,18 @@ const Header = ({name, hash}) => {
       alignItems="center"
       className={classes.wrapper}
     >
-      <Grid item>
-        <Grid container>
-          <Grid item className={classes.dot}>
+      <Grid item className={classes.flexEllipsize}>
+        <div className="d-flex">
+          <div className={classes.dot}>
             <VisualHash value={hash} size={isMobile ? 36 : 48} />
-          </Grid>
-          <Grid item>
-            <Grid container direction="column" className={classes.info}>
-              <Typography style={{maxWidth: maxTextWidth}} noWrap variant="h6">
-                {name}
-              </Typography>
-              <Typography style={{maxWidth: maxTextWidth}} noWrap>
-                {hash}
-              </Typography>
-            </Grid>
-          </Grid>
-        </Grid>
+          </div>
+          <div className={cn(classes.info, classes.flexEllipsize, 'flex-grow-1')}>
+            <Typography noWrap variant="h6">
+              {name}
+            </Typography>
+            <Typography noWrap>{hash}</Typography>
+          </div>
+        </div>
       </Grid>
       <Grid item>
         {selected ? (

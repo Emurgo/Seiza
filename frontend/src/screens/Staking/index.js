@@ -50,6 +50,7 @@ const useStyles = makeStyles((theme) => {
       display: 'flex',
       flex: 1,
       justifyContent: 'flex-start',
+      minWidth: 0, // needed for proper ellipsize in children components with flex
       [theme.breakpoints.up('xl')]: {
         justifyContent: 'center',
       },
