@@ -63,6 +63,20 @@ export const fetchAddress = async ({elastic, E, runConsistencyCheck}: any, addre
     })
   })
 
+  await runConsistencyCheck(async () => {
+    const cnt = await elastic
+      .q('tx')
+      .filter(E.onlyActiveFork())
+      .filter(
+        E.nested('addresses', {
+          query: E.filter([E.match('addresses.address', address58)]),
+        })
+      )
+      .getCount()
+
+    validate(cnt === hit._source.tx_num, 'Address tx_num inconsistency', {cnt, hit: hit._source})
+  })
+
   return {
     address58,
     transactionsCount: hit._source.tx_num,
