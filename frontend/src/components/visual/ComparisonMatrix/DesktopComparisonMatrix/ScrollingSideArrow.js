@@ -3,14 +3,13 @@
 import React, {useEffect, useState, useCallback} from 'react'
 import _ from 'lodash'
 import idx from 'idx'
-import {makeStyles} from '@material-ui/styles'
+import {makeStyles, useTheme} from '@material-ui/styles'
 import {ChevronLeft, ChevronRight} from '@material-ui/icons'
 
-import {darken} from '@material-ui/core/styles/colorManipulator'
+import {lighten} from '@material-ui/core/styles/colorManipulator'
 
 const useStyles = makeStyles((theme) => ({
-  arrow: ({direction, background, active}) => ({
-    background: active ? darken(background, 0.1) : background,
+  arrow: ({direction}) => ({
     position: 'absolute',
     display: 'flex',
     padding: theme.spacing(1.5),
@@ -18,13 +17,13 @@ const useStyles = makeStyles((theme) => ({
     transition: theme.hover.transitionIn(['top'], 500),
     ...(direction === 'left' ? {left: 30} : {right: 30}),
   }),
-  arrowWrapper: ({direction}) => ({
+  arrowWrapper: {
     // In context of CM this actually behaves as 100%, because 100% does not work
     height: 'inherit',
     minWidth: 100,
     cursor: 'pointer',
     position: 'relative',
-  }),
+  },
 }))
 
 type Props = {|
@@ -42,6 +41,19 @@ const ARROWS = {
   right: ChevronRight,
 }
 
+const useArrowHover = () => {
+  const [isHoveringOverArrow, setIsHoveringOverArrow] = useState(false)
+
+  const activateHoverOverArrow = useCallback(() => setIsHoveringOverArrow(true), [
+    setIsHoveringOverArrow,
+  ])
+  const removeHoverOverArrow = useCallback(() => setIsHoveringOverArrow(false), [
+    setIsHoveringOverArrow,
+  ])
+
+  return {isHoveringOverArrow, activateHoverOverArrow, removeHoverOverArrow}
+}
+
 const ScrollingSideArrow = ({
   scrollAreaRef, // The area within which arrows perform scrolling
   direction,
@@ -52,7 +64,10 @@ const ScrollingSideArrow = ({
   fullScreenScrollRef, // where `onscroll` listens
 }: Props) => {
   const [topOffset, setTopOffset] = useState(0)
-  const classes = useStyles({top: topOffset, direction, background, active})
+  const {isHoveringOverArrow, activateHoverOverArrow, removeHoverOverArrow} = useArrowHover()
+  const classes = useStyles({direction})
+  const theme = useTheme()
+  const primaryColor = theme.palette.primary.main
 
   const onWindowScroll = useCallback(
     _.debounce((e) => {
@@ -88,10 +103,29 @@ const ScrollingSideArrow = ({
   }, [fullScreenScrollRef, onWindowScroll])
 
   const Arrow = ARROWS[direction]
+  const arrowBackground = active
+    ? lighten(primaryColor, 0.8)
+    : isHoveringOverArrow
+      ? lighten(primaryColor, 0.85)
+      : background
+  const arrowShadow = `0px 0px 2px ${lighten(primaryColor, 0.8)}`
 
   return (
-    <div className={classes.arrowWrapper} onMouseDown={onDown} onMouseUp={onUp}>
-      <div className={classes.arrow} style={{top: topOffset}}>
+    <div
+      className={classes.arrowWrapper}
+      onMouseOver={activateHoverOverArrow}
+      onMouseOut={removeHoverOverArrow}
+      onMouseDown={onDown}
+      onMouseUp={onUp}
+    >
+      <div
+        className={classes.arrow}
+        style={{
+          top: topOffset,
+          background: arrowBackground,
+          boxShadow: isHoveringOverArrow ? arrowShadow : 'none',
+        }}
+      >
         <Arrow color="primary" />
       </div>
     </div>
