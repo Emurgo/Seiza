@@ -5,6 +5,21 @@ import {annotateNotFoundError} from '../../utils/errors'
 import {validate} from '../../utils/validation'
 import E from '../../api/elasticHelpers'
 
+const USED_TX_FIELDS = [
+  'hash',
+  'epoch',
+  'slot',
+  'sum_inputs',
+  'sum_outputs',
+  'fees',
+  'inputs.address',
+  'inputs.value',
+  'outputs.address',
+  'outputs.value',
+  //'size',
+  'supply_after_this_tx',
+]
+
 export const facadeTransaction = (source: any) => {
   return {
     txHash: source.hash,
@@ -14,12 +29,12 @@ export const facadeTransaction = (source: any) => {
     // TODO: what about refunds?
     fees: parseAdaValue(source.fees),
 
-    // TODO: this is a hack for now
-    inputs: source.inputs.map((input) => ({
+    // for `|| []` See https://github.com/elastic/elasticsearch/issues/23796
+    inputs: (source.inputs || []).map((input) => ({
       address58: input.address,
       amount: parseAdaValue(input.value),
     })),
-    outputs: source.outputs.map((output) => ({
+    outputs: (source.outputs || []).map((output) => ({
       address58: output.address,
       amount: parseAdaValue(output.value),
     })),
@@ -35,6 +50,7 @@ export const fetchTransaction = async ({elastic, E}: any, txHash: string) => {
     .q('tx')
     .filter(E.onlyActiveFork())
     .filter(E.matchPhrase('hash', txHash))
+    .pickFields(...USED_TX_FIELDS)
     .getSingleHit()
     .catch(annotateNotFoundError({elasticType: 'tx', entity: 'Transaction', txHash}))
   return facadeTransaction(hit._source)
@@ -170,6 +186,7 @@ export const fetchTransactionsOnAddress = async (
       'desc',
       E.nested('addresses', {filter: E.match('addresses.address', address58)})
     )
+    .pickFields(...USED_TX_FIELDS)
     .getHits(PAGE_SIZE)
   const transactions = hits.map((hit) => facadeTransaction(hit._source))
 

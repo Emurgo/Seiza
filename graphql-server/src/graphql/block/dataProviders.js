@@ -6,6 +6,21 @@ import {validate} from '../../utils/validation'
 import {annotateNotFoundError} from '../../utils/errors'
 import E from '../../api/elasticHelpers'
 
+const USED_BLOCK_FIELDS = [
+  'epoch',
+  'slot',
+  'time',
+  'hash',
+  'time',
+  'tx_num',
+  'sent',
+  'fees',
+  'size',
+  'lead',
+  'tx.hash',
+  'height',
+]
+
 export const facadeElasticBlock = (data) => ({
   epoch: data.epoch,
   slot: data.slot,
@@ -16,7 +31,8 @@ export const facadeElasticBlock = (data) => ({
   totalFees: parseAdaValue(data.fees),
   size: data.size,
   _blockLeader: data.lead,
-  _txs: data.tx.map((tx) => tx.hash),
+  // for `|| []` See https://github.com/elastic/elasticsearch/issues/23796
+  _txs: (data.tx || []).map((tx) => tx.hash),
   // New
   height: data.height,
   blockHeight: data.height,
@@ -47,6 +63,7 @@ export const fetchBlockByHash = async ({elastic, E, runConsistencyCheck}, blockH
   const hit = await elastic
     .q(currentBlocks)
     .filter(E.matchPhrase('hash', blockHash))
+    .pickFields(...USED_BLOCK_FIELDS)
     .getSingleHit()
     .catch(annotateNotFoundError({entity: 'Block', blockHash}))
 
@@ -71,6 +88,7 @@ export const fetchLatestBlock = async ({elastic, E, runConsistencyCheck}) => {
   const hit = await elastic
     .q(currentBlocks)
     .sortBy('height', 'desc')
+    .pickFields(...USED_BLOCK_FIELDS)
     .getFirstHit()
 
   return facadeAndValidate(hit._source, runConsistencyCheck)
