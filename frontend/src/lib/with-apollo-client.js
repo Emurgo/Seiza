@@ -10,7 +10,11 @@ export default (App) => {
   return class Apollo extends React.Component {
     static displayName = 'withApollo(App)'
     static async getInitialProps(ctx) {
-      const {Component, router} = ctx
+      const {
+        Component,
+        router,
+        ctx: {res, req},
+      } = ctx
 
       let appProps = {}
       if (App.getInitialProps) {
@@ -22,14 +26,44 @@ export default (App) => {
       const apollo = initApollo()
       if (!process.browser) {
         try {
+          // Warning(ppershing):
+          // routerCtx might be mutated during render!
+          const routerCtx = {location: req.originalUrl}
+
           // Run all GraphQL queries
           await getDataFromTree(
-            <App {...appProps} Component={Component} router={router} apolloClient={apollo} />
+            <App
+              {...appProps}
+              Component={Component}
+              router={router}
+              apolloClient={apollo}
+              routerCtx={routerCtx}
+            />
           )
+          // router sets ctx.url after <Redirect>
+          if (routerCtx.url) {
+            res.writeHead(302, {Location: routerCtx.url})
+            res.end()
+            return {}
+          }
           await getMarkupFromTree({
             renderFunction: renderToString,
-            tree: <App {...appProps} Component={Component} router={router} apolloClient={apollo} />,
+            tree: (
+              <App
+                {...appProps}
+                Component={Component}
+                router={router}
+                apolloClient={apollo}
+                routerCtx={routerCtx}
+              />
+            ),
           })
+          // Hopefully we don' get redirect on second pass but better check for it ...
+          if (routerCtx.url) {
+            res.writeHead(302, {Location: routerCtx.url})
+            res.end()
+            return {}
+          }
         } catch (error) {
           // Prevent Apollo Client GraphQL errors from crashing SSR.
           // Handle them in components via the data.error prop:
@@ -47,6 +81,9 @@ export default (App) => {
       const apolloState = apollo.cache.extract()
 
       return {
+        routerCtx: {
+          location: req.originalUrl,
+        },
         ...appProps,
         apolloState,
       }

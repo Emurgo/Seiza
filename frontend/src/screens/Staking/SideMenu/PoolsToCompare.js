@@ -228,7 +228,7 @@ const PoolsToCompare = ({classes, i18n: {translate}}) => {
 
   // Note: not using `window.location.href` as then the component would not properly
   // listen to changes in url query
-  const currentUrl = window.location.origin + history.createHref(location)
+  const currentUrl = process.browser ? window.location.origin + history.createHref(location) : ''
 
   return (
     <Grid container className={classes.wrapper} direction="row">

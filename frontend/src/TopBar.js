@@ -19,6 +19,7 @@ import {useIsMobile} from '@/components/hooks/useBreakpoints'
 import ArrowDownIcon from '@material-ui/icons/ArrowDropDown'
 import LanguageSelect, {MobileLanguage} from '@/components/common/LanguageSelect'
 import ThemeSelect from '@/components/common/ThemeSelect'
+import NoSSR from 'react-no-ssr'
 
 import config from '@/config'
 
@@ -153,7 +154,10 @@ const TopBar = compose(withRouter)(({location: {pathname}, navItems}) => {
     <div className={cn(classes.topBar, 'd-flex')}>
       <MobileMenu currentPathname={pathname} items={navItems} />
       <div className={classes.mobileSearch}>
-        <Search isMobile />
+        <NoSSR>
+          {/* Search uses portals and it doesn't like to be rendered on server */}
+          <Search isMobile />
+        </NoSSR>
       </div>
     </div>
   )

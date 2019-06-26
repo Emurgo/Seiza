@@ -1,13 +1,8 @@
 import React from 'react'
-import NoSSR from 'react-no-ssr'
 import FrontendApp from '@/App'
-const Index = () => {
+const Index = ({routerCtx}) => {
   // TODO: Incrementally switch to next router and remove NoSSR
-  return (
-    <NoSSR>
-      <FrontendApp />
-    </NoSSR>
-  )
+  return <FrontendApp routerCtx={routerCtx} />
 }
 
 export default Index

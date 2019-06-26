@@ -19,11 +19,11 @@ const useContentStyles = makeStyles((theme) => ({
   },
 }))
 
-const useWrapperStyles = makeStyles({
+const useWrapperStyles = makeStyles(() => ({
   overlayWrapper: {
     position: 'relative',
   },
-})
+}))
 
 type ContentProps = {
   background?: string,

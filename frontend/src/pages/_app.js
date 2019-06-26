@@ -4,7 +4,7 @@ import '@/App.css'
 import '@/utils.css'
 import '@/polyfills'
 
-import React from 'react'
+import React, {useMemo, useState, useEffect} from 'react'
 import {IntlProvider, addLocaleData} from 'react-intl'
 import {ThemeProvider} from '@material-ui/styles'
 
@@ -14,16 +14,12 @@ import Head from 'next/head'
 import {ApolloProvider} from 'react-apollo'
 import {ApolloProvider as ApolloHooksProvider} from 'react-apollo-hooks'
 
-import {HttpLink} from 'apollo-link-http'
-import {InMemoryCache} from 'apollo-cache-inmemory'
-import {ApolloClient} from 'apollo-client'
 import withApolloClient from '../lib/with-apollo-client'
 import {InjectHookIntlContext} from '@/i18n/helpers'
 
 import CssBaseline from '@material-ui/core/CssBaseline'
 
 import config from '@/config'
-import {dataIdFromObject} from '@/helpers/apollo'
 import {ThemeContextProvider, useThemeContext} from '@/components/HOC/theme'
 import {THEME_DEFINITIONS} from '@/components/themes'
 import {IntlContextProvider, useLocale} from '@/components/HOC/intl'
@@ -42,15 +38,7 @@ config.featureEnableSpanish && addLocaleData(esLocaleData)
 // translations
 addLocaleData(jaLocaleData)
 
-const client = new ApolloClient({
-  // $FlowFixMe Not sure why ApolloLink is not compatible with HttpLink
-  link: new HttpLink({uri: config.graphQLServerUrl}),
-  cache: new InMemoryCache({
-    dataIdFromObject,
-  }),
-})
-
-const ApolloProviders = ({children}) => {
+const ApolloProviders = ({children, client}) => {
   return (
     <ApolloProvider client={client}>
       <ApolloHooksProvider client={client}>{children}</ApolloHooksProvider>
@@ -61,8 +49,26 @@ const ApolloProviders = ({children}) => {
 // ***** BEGIN TAKEN FROM: https://github.com/mui-org/material-ui/blob/master/examples/nextjs/pages/_app.js
 const MuiProviders = ({children}) => {
   const {currentTheme} = useThemeContext()
+
+  const [forceClientReload, setForceClientReload] = useState(false)
+  const theme = useMemo(() => {
+    // Note(ppershing): prettier-eslint tends to remove forceClientReload if not stated here
+    // eslint-disable-next-line
+    forceClientReload
+    return {
+      // Warning(ppershing): This forces re-load of theme on client which is good
+      // bacause otherwise we are left with inconsistent state after hydration
+      // and react is unwilling to fix it for us
+      ...THEME_DEFINITIONS[currentTheme],
+    }
+  }, [currentTheme, forceClientReload])
+
+  useEffect(() => {
+    setForceClientReload(true)
+  }, [])
+
   return (
-    <ThemeProvider theme={THEME_DEFINITIONS[currentTheme]}>
+    <ThemeProvider theme={theme}>
       {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
       <CssBaseline />
       {children}
@@ -83,7 +89,6 @@ const Intl = ({children}) => {
 class MyApp extends App {
   static async getInitialProps({Component, ctx}) {
     let pageProps = {}
-
     if (Component.getInitialProps) {
       pageProps = await Component.getInitialProps(ctx)
     }
@@ -105,11 +110,11 @@ class MyApp extends App {
   // ***** END TAKEN FROM: https://github.com/mui-org/material-ui/blob/master/examples/nextjs/pages/_app.js
 
   render() {
-    const {Component, pageProps} = this.props
+    const {Component, pageProps, routerCtx, apolloClient} = this.props
 
     return (
       <Container>
-        <ApolloProviders>
+        <ApolloProviders client={apolloClient}>
           <Head>
             <title>Seiza</title>
           </Head>
@@ -118,7 +123,7 @@ class MyApp extends App {
               <IntlContextProvider>
                 <Intl>
                   <InjectHookIntlContext>
-                    <Component {...pageProps} />
+                    <Component {...pageProps} routerCtx={routerCtx} />
                   </InjectHookIntlContext>
                 </Intl>
               </IntlContextProvider>
