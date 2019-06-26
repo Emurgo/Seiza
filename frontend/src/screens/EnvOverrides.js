@@ -1,11 +1,10 @@
 // Note(ppershing): this is development only screen
 import React, {useState} from 'react'
-import {OVERRIDABLE_ENV} from '../config'
+import {origEnv, OVERRIDABLE_ENV} from '../config'
 import {SimpleLayout} from '@/components/visual'
 import {Card, Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import localStorage from '@/helpers/localStorage'
-
 const useStyles = makeStyles(() => ({
   card: {
     padding: '20px',
@@ -15,7 +14,7 @@ const useStyles = makeStyles(() => ({
 const EnvOverride = ({_key}) => {
   const lsKey = `env.${_key}`
   const value = localStorage.getItem(lsKey)
-  const defaultValue = process.env[_key]
+  const defaultValue = origEnv[_key]
   const [val, setVal] = useState(value || '')
   const classes = useStyles()
 
