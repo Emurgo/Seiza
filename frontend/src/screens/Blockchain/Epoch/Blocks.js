@@ -6,7 +6,7 @@ import {makeStyles} from '@material-ui/styles'
 import Pagination from '@/components/visual/Pagination'
 import {GET_PAGED_BLOCKS_IN_EPOCH} from '@/api/queries'
 import {useI18n} from '@/i18n/helpers'
-import {useQueryNotBuggedForBlocks} from '@/components/hooks/useQueryNotBugged'
+import {useQueryNotBugged} from '@/components/hooks/useQueryNotBugged'
 import {EntityHeading} from '@/components/visual'
 import {useManageQueryValue} from '@/components/hooks/useManageQueryValue'
 import {toIntOrNull, getPageCount} from '@/helpers/utils'
@@ -41,7 +41,7 @@ const messages = defineMessages({
 })
 
 const useLoadData = (cursor, epochNumber) => {
-  const {error, loading, data} = useQueryNotBuggedForBlocks(GET_PAGED_BLOCKS_IN_EPOCH, {
+  const {error, loading, data} = useQueryNotBugged(GET_PAGED_BLOCKS_IN_EPOCH, {
     variables: {cursor, epochNumber},
     notifyOnNetworkStatusChange: true,
   })
