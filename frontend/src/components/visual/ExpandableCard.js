@@ -124,7 +124,7 @@ export const ExpandableCardContent = (props: ExpandableCardPT) => {
         </Grid>
         <Grid item xs={12}>
           <ExpansionPanel classes={expansionPanelClasses} onChange={onChange} expanded={expanded}>
-            <ExpansionPanelSummary classes={summaryClasses} expandIcon={<ExpandMoreIcon />}>
+            <ExpansionPanelSummary classes={summaryClasses}>
               {renderFooter(props.expanded)}
             </ExpansionPanelSummary>
             <ExpansionPanelDetails classes={detailsClasses}>
