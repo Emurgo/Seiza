@@ -1,8 +1,5 @@
 import React from 'react'
-import {withRouter} from 'react-router'
-import {withProps} from 'recompose'
-
-import {compose} from 'redux'
+import useReactRouter from 'use-react-router'
 import {Switch, Route, Redirect} from 'react-router-dom'
 
 import NotFound from '@/screens/PageNotFound'
@@ -10,8 +7,10 @@ import {routeTo} from '@/helpers/routes'
 import StakePool from './Pool'
 import UserStakingKey from './User'
 
-const StakingKey = ({location, stakingKeyHash}) => {
-  // TODO: do check to decide which link to redirect to
+const StakingKey = () => {
+  const {location, match} = useReactRouter()
+  const stakingKeyHash = match.params.stakingKey
+  // TODO: check to decide which link to redirect to
   // TODO: TEMPORARY to be able to see that this logic is working
   const isStakingPoolType = location.search === '?pool'
   const to = isStakingPoolType
@@ -28,9 +27,4 @@ const StakingKey = ({location, stakingKeyHash}) => {
   )
 }
 
-export default compose(
-  withRouter,
-  withProps((props) => ({
-    stakingKeyHash: props.match.params.stakingKey,
-  }))
-)(StakingKey)
+export default StakingKey

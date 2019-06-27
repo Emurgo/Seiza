@@ -1,18 +1,13 @@
 import React from 'react'
 import {defineMessages} from 'react-intl'
 import {Card} from '@material-ui/core'
-import WithTabState from '@/components/headless/tabState'
-import {Tab, Tabs} from '@/components/visual'
+import {makeStyles} from '@material-ui/styles'
+import {LiteTab, LiteTabs} from '@/components/visual'
+import useTabState from '@/components/hooks/useTabState'
 import {useI18n} from '@/i18n/helpers'
 import DelegatedPoolInfoTab from './DelegatedPoolInfoTab'
 import HistoryTab from '../../shared/Tabs/HistoryTab'
 import TransactionsTab from '../../shared/Tabs/TransactionsTab'
-
-// Note: We have "currentColor" inside of these svg files
-// which magically uses current inherited CSS color
-import {ReactComponent as DelegatedPoolIcon} from '@/static/assets/icons/delegated-stakepool-info.svg'
-import {ReactComponent as HistoryIcon} from '@/static/assets/icons/stakepool-history.svg'
-import {ReactComponent as TransactionsIcon} from '@/static/assets/icons/transactions.svg'
 
 const messages = defineMessages({
   delegatedPoolInfoTabName: 'Delegated Pool Info',
@@ -44,43 +39,46 @@ const TABS = {
   },
 }
 
+const useStyles = makeStyles(({spacing}) => ({
+  tabs: {
+    marginTop: spacing(4),
+    marginBottom: spacing(4),
+  },
+}))
+
 const UserTabs = ({stakingKey}) => {
+  const classes = useStyles()
   const {translate: tr} = useI18n()
+  const {setTabByEventIndex, currentTabIndex, currentTab} = useTabState(TABS.ORDER)
+  const TabContent = TABS.RENDER_CONTENT[currentTab]
 
   return (
-    <WithTabState tabNames={TABS.ORDER}>
-      {({setTab, currentTab, currentTabName}) => {
-        const TabContent = TABS.RENDER_CONTENT[currentTabName]
-        return (
-          <Card>
-            <Tabs value={currentTab} onChange={setTab}>
-              <Tab icon={<DelegatedPoolIcon />} label={tr(messages.delegatedPoolInfoTabName)} />
-              <Tab
-                icon={<HistoryIcon />}
-                label={
-                  <React.Fragment>
-                    {tr(messages.historyTabName, {
-                      count: stakingKey.currentStakePool.timeActive.epochs,
-                    })}{' '}
-                  </React.Fragment>
-                }
-              />
-              <Tab
-                icon={<TransactionsIcon />}
-                label={
-                  <React.Fragment>
-                    {tr(messages.transactionsTabName, {
-                      count: stakingKey.currentStakePool.transactions.length,
-                    })}
-                  </React.Fragment>
-                }
-              />
-            </Tabs>
-            <TabContent stakingKey={stakingKey} />
-          </Card>
-        )
-      }}
-    </WithTabState>
+    <React.Fragment>
+      <LiteTabs className={classes.tabs} value={currentTabIndex} onChange={setTabByEventIndex}>
+        <LiteTab label={tr(messages.delegatedPoolInfoTabName)} />
+        <LiteTab
+          label={
+            <React.Fragment>
+              {tr(messages.historyTabName, {
+                count: stakingKey.currentStakePool.timeActive.epochs,
+              })}{' '}
+            </React.Fragment>
+          }
+        />
+        <LiteTab
+          label={
+            <React.Fragment>
+              {tr(messages.transactionsTabName, {
+                count: stakingKey.currentStakePool.transactions.length,
+              })}
+            </React.Fragment>
+          }
+        />
+      </LiteTabs>
+      <Card>
+        <TabContent stakingKey={stakingKey} />
+      </Card>
+    </React.Fragment>
   )
 }
 
