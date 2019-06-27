@@ -1,6 +1,13 @@
+import {createMuiTheme} from '@material-ui/core'
+
 import muiTransitions from '@material-ui/core/styles/transitions'
 
 import {defaultShadowsDefs, createShadow} from './shadows'
+
+// https://stackoverflow.com/questions/52472372/responsive-typography-in-material-ui
+const breakpoints = createMuiTheme({}).breakpoints
+
+const xsMobile = breakpoints.down('xs')
 
 const makeFontFamilies = (fontFamilies) => fontFamilies.map((ff) => `"${ff}"`).join(',')
 
@@ -32,6 +39,10 @@ const common = {
     h1: {
       fontSize: 36,
       fontWeight: 700,
+      // Note: for demostration, consider using mobile first in practise
+      [xsMobile]: {
+        fontSize: 30,
+      },
     },
     h2: {
       fontSize: 24,
