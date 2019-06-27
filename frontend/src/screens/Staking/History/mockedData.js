@@ -4,7 +4,7 @@ import _ from 'lodash'
 
 import {PROPERTIES_VALUES} from './common'
 
-const getRandomValue = () => Math.random() * 100
+const getRandomValue = () => `${_.round(Math.random() * 100, 3)} RANDOM`
 
 const getRandomPropertiesCount = () => Math.ceil(PROPERTIES_VALUES.length * Math.random())
 
@@ -15,18 +15,21 @@ const getChangedProperties = () => {
 
 // TODO: for now ignores "current" and "next" epoch
 // TODO: very simple mock, get real data
-export const getMockedHistory = (pools: Array<string>, toEpoch: number) =>
+export const getMockedHistory = (poolsHashes: Array<string>, toEpoch: number) =>
   _.range(0, toEpoch + 1)
     .map((epochNumber) => {
-      const poolsWithChanges = pools.filter(() => Math.random() > 0.9)
+      const poolsWithChanges = poolsHashes.filter(() => Math.random() > 0.9)
       return poolsWithChanges.length
         ? {
           epochNumber,
-          changes: poolsWithChanges.reduce((acc, pool) => {
+          changes: poolsWithChanges.reduce((acc, poolHash) => {
             const changedProperties = getChangedProperties()
             return {
               ...acc,
-              [pool]: changedProperties.reduce((acc, p) => ({...acc, [p]: getRandomValue()}), {}),
+              [poolHash]: changedProperties.reduce(
+                (acc, p) => ({...acc, [p]: getRandomValue()}),
+                {}
+              ),
             }
           }, {}),
         }

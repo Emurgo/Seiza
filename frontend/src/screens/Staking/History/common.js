@@ -3,6 +3,7 @@
 import React from 'react'
 import _ from 'lodash'
 import {Grid, Typography} from '@material-ui/core'
+import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
 
 import {useI18n} from '@/i18n/helpers'
@@ -15,10 +16,10 @@ export const PROPERTIES = {
 }
 
 const messages = defineMessages({
-  costChanged: 'Cost changed',
-  marginChanged: 'Margin changed',
-  poolCreated: 'Pool created',
-  poolRetired: 'Pool retired',
+  costChanged: 'Cost changed:',
+  marginChanged: 'Margin changed:',
+  poolCreated: 'Pool created:',
+  poolRetired: 'Pool retired:',
 })
 
 export const PROPERTIES_VALUES = _.values(PROPERTIES)
@@ -28,16 +29,30 @@ type CommonRendererProps = {|
   value: string,
 |}
 
-const CommonRenderer = ({label, value}: CommonRendererProps) => (
-  <Grid container justify="space-between">
-    <Grid item>
-      <Typography>{label}</Typography>
+const useStyles = makeStyles((theme) => ({
+  valueWrapper: {
+    justifyContent: 'flex-start',
+    [theme.breakpoints.up('sm')]: {
+      justifyContent: 'flex-end',
+    },
+  },
+}))
+
+const CommonRenderer = ({label, value}: CommonRendererProps) => {
+  const classes = useStyles()
+  return (
+    <Grid container justify="space-between">
+      <Grid item xs={12} sm={6}>
+        <Typography color="textSecondary">{label}</Typography>
+      </Grid>
+      <Grid item xs={12} sm={6}>
+        <Grid container className={classes.valueWrapper}>
+          <Typography>{value}</Typography>
+        </Grid>
+      </Grid>
     </Grid>
-    <Grid item>
-      <Typography>{value}</Typography>
-    </Grid>
-  </Grid>
-)
+  )
+}
 
 type RendererProps = {|
   value: string,
