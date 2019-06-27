@@ -214,7 +214,7 @@ const MainFooter = ({navItems}: Props) => {
               <ul className={classes.nav}>
                 {navItems.map(({link, label, disabledText}) => (
                   <li key={label}>
-                    {disabledText ? (
+                    {!link ? (
                       <DisabledLink {...{label, disabledText}} />
                     ) : (
                       <Link className={classes.link} to={link}>
