@@ -7,7 +7,11 @@ export default (process.browser
   ? _getStorage(localStorage, 'local')
   : // eslint-disable-next-line no-empty-function
   {
-    getItem: (...args: Array<any>): any => ({}),
-    setItem: (...args: Array<any>): any => ({}),
-    removeItem: (...args: Array<any>): any => ({}),
+    getItem: (...args: Array<any>): any => null,
+    setItem: (...args: Array<any>): any => {
+      // Do nothing
+    },
+    removeItem: (...args: Array<any>): any => {
+      // Do nothing
+    },
   })
