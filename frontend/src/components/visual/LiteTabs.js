@@ -109,11 +109,14 @@ export const LiteTabs = ({children, defaultBottomOffset, ...props}) => {
   const currentTabIndex = props.value
 
   useEffect(() => {
-    const currentTabRef = childrenRefs[currentTabIndex]
-    const {left, width} = calculateTabIndicatorPosition(currentTabRef)
-    if (indicatorLocation.left !== left || indicatorLocation.width !== width) {
-      setIndicatorLocation({left, width})
-    }
+    // setTimeout because we need to calculate indicator position after the scroll
+    setTimeout(() => {
+      const currentTabRef = childrenRefs[currentTabIndex]
+      const {left, width} = calculateTabIndicatorPosition(currentTabRef)
+      if (indicatorLocation.left !== left || indicatorLocation.width !== width) {
+        setIndicatorLocation({left, width})
+      }
+    })
   }, [childrenRefs, currentTabIndex, indicatorLocation, setIndicatorLocation])
 
   const indicator = <Indicator style={indicatorLocation} />
