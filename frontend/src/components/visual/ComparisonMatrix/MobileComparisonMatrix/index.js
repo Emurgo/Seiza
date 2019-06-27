@@ -63,14 +63,16 @@ const Category = ({getIdentifier, data, categoryConfig, expandedFields, toggle})
                 <ItemIdentifier identifier={getIdentifier(d)} title={d.name} />
               </Grid>
               <Grid item xs={7}>
-                {/* TODO: this logic is same in Desktop version, try to unify */}
-                {render ? (
-                  render(d, intlFormatters)
-                ) : getValue ? (
-                  <Typography style={height ? {height} : {}} variant="body1" noWrap>
-                    {getValue(d, intlFormatters)}
-                  </Typography>
-                ) : null}
+                <Grid container justify="flex-end">
+                  {/* TODO: this logic is same in Desktop version, try to unify */}
+                  {render ? (
+                    render(d, intlFormatters)
+                  ) : getValue ? (
+                    <Typography style={height ? {height} : {}} variant="body1" noWrap>
+                      {getValue(d, intlFormatters)}
+                    </Typography>
+                  ) : null}
+                </Grid>
               </Grid>
             </Grid>
           </Grid>
