@@ -18,7 +18,7 @@ import {
 import WithModalState from '@/components/headless/modalState'
 import {useI18n} from '@/i18n/helpers'
 import {useSelectedPoolsContext} from '../context/selectedPools'
-import {useIsMobile} from '@/components/hooks/useBreakpoints'
+import {useIsMobile, useIsBreakpointDown} from '@/components/hooks/useBreakpoints'
 
 const messages = defineMessages({
   revenue: 'Revenue',
@@ -88,7 +88,7 @@ const useContentStyles = makeStyles(({palette, spacing, breakpoints}) => ({
     textAlign: 'right',
   },
   revenueWrapper: {
-    width: 100,
+    minWidth: 90,
     display: 'flex',
     alignItems: 'center',
   },
@@ -167,7 +167,7 @@ const Header = ({name, hash}) => {
   )
 }
 
-const DataGrid = ({items, alignRight = false}) => {
+const DataGrid = ({items, leftSpan, rightSpan, alignRight = false}) => {
   const classes = useContentStyles()
 
   return (
@@ -176,10 +176,14 @@ const DataGrid = ({items, alignRight = false}) => {
       {items.map(({label, value}) => (
         <Grid item key={label} xs={12}>
           <Grid container direction="row">
-            <Grid xs={6} item className={classes.rowItem}>
+            <Grid xs={leftSpan} item className={classes.rowItem}>
               <Typography className={classes.label}>{label}</Typography>
             </Grid>
-            <Grid xs={6} item className={cn(classes.rowItem, alignRight && classes.alignRight)}>
+            <Grid
+              xs={rightSpan}
+              item
+              className={cn(classes.rowItem, alignRight && classes.alignRight)}
+            >
               {value}
             </Grid>
           </Grid>
@@ -193,6 +197,7 @@ const Content = ({data}) => {
   const {translate, formatPercent, formatTimestamp} = useI18n()
   const classes = useContentStyles()
   const isMobile = useIsMobile()
+  const isDownLg = useIsBreakpointDown('lg')
   return (
     <div className={classes.innerWrapper}>
       {!isMobile && (
@@ -200,49 +205,55 @@ const Content = ({data}) => {
           <CircularProgressBar label={translate(messages.revenue)} value={0.25} />
         </div>
       )}
-      <div className="flex-grow-1">
-        <DataGrid
-          alignRight={isMobile}
-          items={[
-            {
-              label: translate(messages.performance),
-              value: <Typography>{formatPercent(data.performance)}</Typography>,
-            },
-            {
-              label: translate(messages.pledge),
-              value: <AdaValue value={data.pledge} />,
-            },
-            {
-              label: translate(messages.margins),
-              value: <Typography>{formatPercent(data.margins)}</Typography>,
-            },
-          ]}
-        />
-      </div>
+      <Grid container>
+        <Grid item xs={12} lg={4} xl={5}>
+          <DataGrid
+            alignRight={isDownLg}
+            leftSpan={isDownLg ? 6 : 9}
+            rightSpan={isDownLg ? 6 : 3}
+            items={[
+              {
+                label: translate(messages.performance),
+                value: <Typography>{formatPercent(data.performance)}</Typography>,
+              },
+              {
+                label: translate(messages.fullness),
+                value: <Typography>{formatPercent(data.fullness)}</Typography>,
+              },
+              {
+                label: translate(messages.margins),
+                value: <Typography>{formatPercent(data.margins)}</Typography>,
+              },
+            ]}
+          />
+        </Grid>
 
-      <div className="flex-grow-1">
-        <DataGrid
-          alignRight={isMobile}
-          items={[
-            {
-              label: translate(messages.createdAt),
-              value: (
-                <Typography>
-                  {formatTimestamp(data.createdAt, {format: formatTimestamp.FMT_MONTH_NUMERAL})}
-                </Typography>
-              ),
-            },
-            {
-              label: translate(messages.fullness),
-              value: <Typography>{formatPercent(data.fullness)}</Typography>,
-            },
-            {
-              label: translate(messages.stake),
-              value: <AdaValue value={data.stake} />,
-            },
-          ]}
-        />
-      </div>
+        <Grid item xs={12} lg={8} xl={7}>
+          <DataGrid
+            alignRight={isDownLg}
+            leftSpan={6}
+            rightSpan={6}
+            items={[
+              {
+                label: translate(messages.createdAt),
+                value: (
+                  <Typography>
+                    {formatTimestamp(data.createdAt, {format: formatTimestamp.FMT_MONTH_NUMERAL})}
+                  </Typography>
+                ),
+              },
+              {
+                label: translate(messages.pledge),
+                value: <AdaValue value={data.pledge} />,
+              },
+              {
+                label: translate(messages.stake),
+                value: <AdaValue value={data.stake} />,
+              },
+            ]}
+          />
+        </Grid>
+      </Grid>
     </div>
   )
 }
