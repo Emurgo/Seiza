@@ -15,7 +15,6 @@ import {useCurrentEpoch} from './common'
 import {ReactComponent as EpochIcon} from '@/static/assets/icons/epoch.svg'
 import {ReactComponent as FromGenesisIcon} from '@/static/assets/icons/from-genesis.svg'
 
-// TODO: icons
 // TODO: how often are snapshots created? Do we want to periodically load `Current snapshot`?
 
 const messages = defineMessages({
