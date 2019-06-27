@@ -8,7 +8,7 @@ import {Grid, Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {lighten} from '@material-ui/core/styles/colorManipulator'
 
-import {SimpleExpandableCard, Button} from '@/components/visual'
+import {SimpleExpandableCard, Button, Tooltip} from '@/components/visual'
 import {useI18n} from '@/i18n/helpers'
 
 import {useLocalStorageState} from '@/components/hooks/useStorageState'
@@ -38,6 +38,9 @@ const useCategoryStyles = makeStyles((theme) => ({
   headerText: {
     fontWeight: 'bold',
   },
+  popper: {
+    top: '-10px!important', // Note: does not work without "!important"
+  },
 }))
 
 const getFieldId = (config) => config.i18nLabel.id
@@ -60,7 +63,17 @@ const Category = ({getIdentifier, data, categoryConfig, expandedFields, toggle})
           >
             <Grid container justify="space-between">
               <Grid item xs={4}>
-                <ItemIdentifier identifier={getIdentifier(d)} title={d.name} />
+                <Tooltip
+                  title={d.name}
+                  placement="bottom"
+                  classes={{popper: classes.popper}}
+                  interactive
+                >
+                  {/* Note: Without this extra `div` tooltip is not working */}
+                  <div>
+                    <ItemIdentifier identifier={getIdentifier(d)} title={d.name} />
+                  </div>
+                </Tooltip>
               </Grid>
               <Grid item xs={7}>
                 <Grid container justify="flex-end">
