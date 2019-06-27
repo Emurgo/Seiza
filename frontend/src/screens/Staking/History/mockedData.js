@@ -13,7 +13,6 @@ const getChangedProperties = () => {
   return PROPERTIES_VALUES.slice(0, changedPropertiesCount)
 }
 
-// TODO: for now ignores "current" and "next" epoch
 // TODO: very simple mock, get real data
 export const getMockedHistory = (poolsHashes: Array<string>, toEpoch: number) =>
   _.range(0, toEpoch + 1)
