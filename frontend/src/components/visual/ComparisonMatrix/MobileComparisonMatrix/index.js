@@ -1,6 +1,6 @@
 // @flow
 
-import React, {useState, useMemo, useCallback} from 'react'
+import React, {useMemo, useCallback} from 'react'
 import _ from 'lodash'
 import cn from 'classnames'
 import {defineMessages} from 'react-intl'
@@ -11,6 +11,7 @@ import {lighten} from '@material-ui/core/styles/colorManipulator'
 import {SimpleExpandableCard, Button} from '@/components/visual'
 import {useI18n} from '@/i18n/helpers'
 
+import {useLocalStorageState} from '@/components/hooks/useStorageState'
 import {ItemIdentifier, getHeaderBackground} from '../utils'
 
 import type {ComparisonMatrixProps} from '../types'
@@ -126,17 +127,18 @@ const useGetInitialExpandState = (categoryConfigs) =>
   useMemo(
     () =>
       _(categoryConfigs)
-        .map((category) => category.config.map((config) => [getFieldId(config), false]))
+        .map((category) => category.config.map((config) => [getFieldId(config), true]))
         .flatten()
         .fromPairs()
         .value(),
     [categoryConfigs]
   )
 
-// TODO: sync with local storage
+const LS_KEY = 'mobile-comparison-matrix-fields'
+
 const useToggleCardsState = (categoryConfigs) => {
   const initialState = useGetInitialExpandState(categoryConfigs)
-  const [expandedFields, setExpandedFields] = useState(initialState)
+  const [expandedFields, setExpandedFields] = useLocalStorageState<{}>(LS_KEY, initialState)
 
   const toggle = useCallback(
     (field) => setExpandedFields((state) => ({...state, [field]: !state[field]})),
