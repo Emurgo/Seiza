@@ -44,7 +44,7 @@
   "components.visual.ComparisonMatrix.DesktopComparisonMatrix.index.fullScreen": "Full screen mode",
   "components.visual.ComparisonMatrix.MobileComparisonMatrix.index.collapseAll": "Collapse all",
   "components.visual.ComparisonMatrix.MobileComparisonMatrix.index.expandAll": "Expand all",
-  "components.visual.ComparisonMatrix.fields.copyText": "Copy",
+  "components.visual.ComparisonMatrix.fields.copyText": "Copiar",
   "components.visual.ComparisonMatrix.fields.fullScreen": "Full screen mode",
   "components.visual.LoadingError.GENERIC": "There was an error loading the data",
   "components.visual.LoadingError.NETWORK_ERROR": "We have trouble communicating with the backend",
