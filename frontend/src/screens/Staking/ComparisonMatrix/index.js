@@ -1,19 +1,17 @@
 // @flow
 
 import * as React from 'react'
-import gql from 'graphql-tag'
-import {useQuery} from 'react-apollo-hooks'
 import {defineMessages} from 'react-intl'
-import {makeStyles} from '@material-ui/styles'
-import {Typography} from '@material-ui/core'
 
 import {useI18n} from '@/i18n/helpers'
-import {useSelectedPoolsContext} from '../context/selectedPools'
-import {LoadingInProgress, ComparisonMatrix, LoadingError, AdaValue} from '@/components/visual'
+import {ComparisonMatrix, AdaValue} from '@/components/visual'
 import {
   FadeoutFieldWithTooltip,
   EllipsizedLinkFieldWithTooltip,
 } from '@/components/visual/ComparisonMatrix/fields'
+
+import {WithEnsureStakePoolsLoaded} from '../utils'
+import {useLoadSelectedPools} from './dataLoaders'
 
 import {useIsMobile} from '@/components/hooks/useBreakpoints'
 
@@ -136,88 +134,25 @@ const categoryThreeConfig = [
   },
 ]
 
-const useStyles = makeStyles((theme) => ({
-  noPools: {
-    padding: theme.spacing(2),
-  },
-  loading: {
-    marginTop: '100px',
-  },
-  error: {
-    marginTop: theme.spacing(2),
-    marginLeft: theme.spacing(2),
-  },
-}))
-
 const ComparisonMatrixScreen = () => {
-  const classes = useStyles()
   const {translate: tr} = useI18n()
-  const {selectedPools: poolHashes} = useSelectedPoolsContext()
-
-  const {error, loading, data} = useQuery(
-    gql`
-      query($poolHashes: [String!]!) {
-        stakePools(poolHashes: $poolHashes) {
-          poolHash
-          name
-          createdAt
-          description
-          website
-          summary {
-            revenue
-            performance
-            adaStaked
-            rewards
-            keysDelegating
-            fullness
-            margins
-            ownerPledge {
-              actual
-              declared
-            }
-          }
-        }
-      }
-    `,
-    {
-      variables: {poolHashes},
-    }
-  )
-
-  if (loading && !data.stakePools) {
-    // Note: this can hardly be cented right using FullWidth layout
-    return (
-      <div className={classes.loading}>
-        <LoadingInProgress />
-      </div>
-    )
-  }
-
-  if (error) {
-    return (
-      <div className={classes.error}>
-        <LoadingError error={error} />
-      </div>
-    )
-  }
-
-  const stakePools = data.stakePools || []
-
-  if (!loading && !stakePools.length) {
-    return <Typography className={classes.noPools}>{tr(messages.noData)}</Typography>
-  }
+  const {error, loading, data} = useLoadSelectedPools()
 
   return (
-    <ComparisonMatrix
-      title={tr(messages.stakePools)}
-      categoryConfigs={[
-        {categoryLabel: tr(messages.categoryOneLabel), config: categoryOneConfig},
-        {categoryLabel: tr(messages.categoryTwoLabel), config: categoryTwoConfig},
-        {categoryLabel: tr(messages.categoryThreeLabel), config: categoryThreeConfig},
-      ]}
-      data={stakePools}
-      getIdentifier={(data) => data.poolHash}
-    />
+    <WithEnsureStakePoolsLoaded {...{loading, error, data}}>
+      {({data: stakePools}) => (
+        <ComparisonMatrix
+          title={tr(messages.stakePools)}
+          categoryConfigs={[
+            {categoryLabel: tr(messages.categoryOneLabel), config: categoryOneConfig},
+            {categoryLabel: tr(messages.categoryTwoLabel), config: categoryTwoConfig},
+            {categoryLabel: tr(messages.categoryThreeLabel), config: categoryThreeConfig},
+          ]}
+          data={stakePools}
+          getIdentifier={(data) => data.poolHash}
+        />
+      )}
+    </WithEnsureStakePoolsLoaded>
   )
 }
 
