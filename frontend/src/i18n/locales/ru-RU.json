@@ -44,7 +44,7 @@
   "components.visual.ComparisonMatrix.DesktopComparisonMatrix.index.fullScreen": "Full screen mode",
   "components.visual.ComparisonMatrix.MobileComparisonMatrix.index.collapseAll": "Collapse all",
   "components.visual.ComparisonMatrix.MobileComparisonMatrix.index.expandAll": "Expand all",
-  "components.visual.ComparisonMatrix.fields.copyText": "Copy",
+  "components.visual.ComparisonMatrix.fields.copyText": "Скопировать",
   "components.visual.ComparisonMatrix.fields.fullScreen": "Full screen mode",
   "components.visual.LoadingError.GENERIC": "Произошла ошибка при загрузке данных",
   "components.visual.LoadingError.NETWORK_ERROR": "У нас возникли трудности при связи с бэкендом",
