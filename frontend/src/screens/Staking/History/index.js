@@ -2,13 +2,10 @@
 import React, {useState, useMemo} from 'react'
 import cn from 'classnames'
 import _ from 'lodash'
-import gql from 'graphql-tag'
-import idx from 'idx'
 import {defineMessages} from 'react-intl'
 import {Grid, Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {fade} from '@material-ui/core/styles/colorManipulator'
-import {useQuery} from 'react-apollo-hooks'
 
 import {getPageCount} from '@/helpers/utils'
 import {useIsMobile} from '@/components/hooks/useBreakpoints'
@@ -19,34 +16,16 @@ import {useI18n} from '@/i18n/helpers'
 import {ItemIdentifier} from '@/components/visual/ComparisonMatrix/utils'
 import {ReactComponent as EpochIcon} from '@/static/assets/icons/epoch.svg'
 
-import {useSelectedPoolsContext} from '../context/selectedPools'
-import {getMockedHistory} from './mockedData'
-import {WithEnsureStakePoolsLoaded} from '../utils'
+import {WithEnsureStakePoolsLoaded, WithEnsureDataLoaded} from '../utils'
 import {POOL_ACTION_RENDERERS} from './common'
+import {useLoadCurrentEpoch, useLoadPoolsHistory, useLoadSelectedPoolsData} from './dataLoaders'
 
 const ROWS_PER_PAGE = 5
 
 const messages = defineMessages({
   epoch: 'Epoch:',
+  currentEpoch: 'Current epoch:',
 })
-
-export const useLoadSelectedPoolsData = () => {
-  const {selectedPools: poolHashes} = useSelectedPoolsContext()
-  const {loading, error, data} = useQuery(
-    gql`
-      query($poolHashes: [String!]!) {
-        stakePools(poolHashes: $poolHashes) {
-          name
-          poolHash
-        }
-      }
-    `,
-    {
-      variables: {poolHashes},
-    }
-  )
-  return {loading, error, data: idx(data, (_) => _.stakePools)}
-}
 
 const useHistoryHeaderStyles = makeStyles((theme) => ({
   wrapper: {
@@ -133,14 +112,25 @@ const HistoryBody = ({changes, stakePoolsMap}) => {
   })
 }
 
-const HistoryCard = ({changes, epochNumber, stakePoolsMap}) => {
+const formatFutureEpochLabel = (epochNumber, currentEpochNumber) => {
+  return `${epochNumber} (${currentEpochNumber} + ${epochNumber - currentEpochNumber})`
+}
+
+const HistoryCard = ({changes, epochNumber, currentEpochNumber, stakePoolsMap}) => {
   const {translate: tr} = useI18n()
+  const headerLabel = tr(
+    epochNumber === currentEpochNumber ? messages.currentEpoch : messages.epoch
+  )
+  const headerValue =
+    epochNumber > currentEpochNumber
+      ? formatFutureEpochLabel(epochNumber, currentEpochNumber)
+      : epochNumber
   return (
     <ContentSpacing type="margin" bottom={0.75} top={0.75} left={0.5} right={0.5}>
       <Card>
         <Grid container>
           <Grid item xs={12}>
-            <HistoryHeader label={tr(messages.epoch)} value={epochNumber} />
+            <HistoryHeader value={headerValue} label={headerLabel} />
           </Grid>
           <Grid item xs={12}>
             <HistoryBody {...{changes, stakePoolsMap}} />
@@ -150,8 +140,6 @@ const HistoryCard = ({changes, epochNumber, stakePoolsMap}) => {
     </ContentSpacing>
   )
 }
-
-// TODO: "current" and "next" epoch
 
 const usePaginationStyles = makeStyles((theme) => ({
   wrapper: {
@@ -174,19 +162,15 @@ const PaginationWrapper = ({children, placement}) => {
   )
 }
 
-const HistoryCards = ({stakePools}) => {
-  // TODO: get current epoch
-  const currentEpoch = 50
-  const poolHashes = useMemo(() => stakePools.map((p) => p.poolHash), [stakePools])
+const _HistoryCards = ({stakePools, poolsHistory, currentEpochNumber}) => {
   const stakePoolsMap = useMemo(() => _.keyBy(stakePools, (pool) => pool.poolHash), [stakePools])
-  const changesData = useMemo(() => getMockedHistory(poolHashes, currentEpoch), [poolHashes])
   const [page, setPage] = useState(1)
 
-  const currentChanges = changesData.slice((page - 1) * ROWS_PER_PAGE, page * ROWS_PER_PAGE)
+  const currentChanges = poolsHistory.slice((page - 1) * ROWS_PER_PAGE, page * ROWS_PER_PAGE)
 
   const pagination = (
     <Pagination
-      pageCount={getPageCount(changesData.length, ROWS_PER_PAGE)}
+      pageCount={getPageCount(poolsHistory.length, ROWS_PER_PAGE)}
       page={page}
       onChangePage={setPage}
     />
@@ -195,21 +179,51 @@ const HistoryCards = ({stakePools}) => {
   return (
     <React.Fragment>
       <PaginationWrapper placement="up">{pagination}</PaginationWrapper>
-
       {currentChanges.map(({epochNumber, changes}) => (
-        <HistoryCard key={epochNumber} {...{epochNumber, changes, stakePoolsMap}} />
+        <HistoryCard
+          key={epochNumber}
+          {...{epochNumber, changes, stakePoolsMap, currentEpochNumber}}
+        />
       ))}
       <PaginationWrapper placement="down">{pagination}</PaginationWrapper>
     </React.Fragment>
   )
 }
 
-const HistoryScreen = () => {
-  const {loading, error, data} = useLoadSelectedPoolsData()
+const HistoryCards = ({stakePools, currentEpochNumber}) => {
+  const poolHashes = useMemo(() => stakePools.map((p) => p.poolHash), [stakePools])
+  const {loading, error, data} = useLoadPoolsHistory(poolHashes, currentEpochNumber + 1)
+
   return (
-    <WithEnsureStakePoolsLoaded {...{loading, error, data}}>
-      {({data: stakePools}) => <HistoryCards stakePools={stakePools} />}
-    </WithEnsureStakePoolsLoaded>
+    <WithEnsureDataLoaded {...{loading, error, data}}>
+      {({data: poolsHistory}) => (
+        <_HistoryCards {...{stakePools, poolsHistory, currentEpochNumber}} />
+      )}
+    </WithEnsureDataLoaded>
+  )
+}
+
+const HistoryScreen = () => {
+  const poolsRes = useLoadSelectedPoolsData()
+  const epochRes = useLoadCurrentEpoch()
+  // Note: we dont combine this as WithEnsureStakePoolsLoaded specificaly handles empty stake
+  // pools and WithEnsureDataLoaded is just a generic data loader
+  return (
+    <WithEnsureDataLoaded
+      loading={epochRes.loading}
+      error={epochRes.error}
+      data={epochRes.currentEpoch}
+    >
+      {({data: currentEpochNumber}) => (
+        <WithEnsureStakePoolsLoaded
+          loading={poolsRes.loading}
+          error={poolsRes.error}
+          data={poolsRes.data}
+        >
+          {({data: stakePools}) => <HistoryCards {...{stakePools, currentEpochNumber}} />}
+        </WithEnsureStakePoolsLoaded>
+      )}
+    </WithEnsureDataLoaded>
   )
 }
 
