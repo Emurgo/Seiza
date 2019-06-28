@@ -126,11 +126,7 @@ const BlocksTable = ({blocks, columns, loading, error, nextPageNumber, pageBound
         icon: SlotIcon,
         label: tr(tableMessages.slot),
       },
-      cell: (block) => (
-        <Link key={1} to={routeTo.block(block.blockHash)}>
-          {formatInt(block.slot)}
-        </Link>
-      ),
+      cell: (block) => <Link to={routeTo.block(block.blockHash)}>{formatInt(block.slot)}</Link>,
       align: 'left',
     },
     [TIME]: {
@@ -138,7 +134,9 @@ const BlocksTable = ({blocks, columns, loading, error, nextPageNumber, pageBound
         icon: TimeIcon,
         label: tr(tableMessages.time),
       },
-      cell: (block) => formatTimestamp(block.timeIssued),
+      cell: (block) => (
+        <Link to={routeTo.block(block.blockHash)}>{formatTimestamp(block.timeIssued)}</Link>
+      ),
       align: 'left',
     },
     [SLOT_LEADER]: {

@@ -121,6 +121,7 @@ export const LiteTabs = ({children, defaultBottomOffset, ...props}) => {
 
   const indicator = <Indicator style={indicatorLocation} />
 
+  // FIXME: props.className applied twice!
   return (
     <div className={cn(props.className, classes.wrapper)}>
       <MuiTabs

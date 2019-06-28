@@ -5,8 +5,9 @@ import useReactRouter from 'use-react-router'
 import {defineMessages} from 'react-intl'
 import idx from 'idx'
 import gql from 'graphql-tag'
-import {extractError} from '@/helpers/errors'
 
+import {extractError} from '@/helpers/errors'
+import env from '@/config'
 import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
 import {
   SummaryCard,
@@ -27,6 +28,8 @@ import {ASSURANCE_LEVELS_VALUES, APOLLO_CACHE_OPTIONS} from '@/constants'
 import {useI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
 import {useAnalytics} from '@/helpers/googleAnalytics'
+import Certificates from './Certificates'
+import CERT_TYPES from './certificateTypes'
 
 const messages = defineMessages({
   header: 'Transaction',
@@ -168,6 +171,17 @@ const useScreenParams = () => {
   return {txHash}
 }
 
+const mockedCertificates = [
+  {
+    type: CERT_TYPES.KEY_REGISTERED,
+    deposit: '500000',
+    stakingKey: '0x12345',
+    deregisteredStakingKey: '0x98765',
+  },
+  {type: CERT_TYPES.KEY_DEREGISTERED, deposit: '500000', stakingKey: '0x123456'},
+  {type: CERT_TYPES.POOL_RETIRING, stakingKey: '0x123456', epoch: 42},
+]
+
 const TransactionScreen = () => {
   const {txHash} = useScreenParams()
   const {loading, transactionData, error} = useTransactionData(txHash)
@@ -193,6 +207,7 @@ const TransactionScreen = () => {
           <React.Fragment>
             <TransactionSummary loading={loading} transaction={transactionData} />
             {loading ? <LoadingInProgress /> : <AddressesBreakdown tx={transactionData} />}
+            {env.showStakingData && <Certificates certificates={mockedCertificates} />}
           </React.Fragment>
         )}
       </SimpleLayout>
