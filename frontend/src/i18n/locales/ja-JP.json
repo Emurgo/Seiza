@@ -298,7 +298,7 @@
   "screens.Home.StakePoolsInfo.poolsCount": "ステークプール",
   "screens.Home.StakePoolsInfo.previousSnapshot": "前のスナップショット:",
   "screens.Home.StakePoolsInfo.rewardsPerBlock": "ブロックごとの報酬",
-  "screens.Home.StakePoolsInfo.total": "Total:",
+  "screens.Home.StakePoolsInfo.total": "合計:",
   "screens.Home.StakePoolsInfo.totalBlocksCreated": "作成されたブロック",
   "screens.Home.StakePoolsInfo.totalBlocksMissed": "失敗したブロック",
   "screens.Home.StakePoolsInfo.totalPoolsCreated": "作成されたステークプールの合計:",
