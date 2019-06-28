@@ -94,10 +94,6 @@ const styles = (theme) =>
     },
     value: {
       paddingBottom: theme.spacing(0.5),
-      fontSize: theme.typography.h2.fontSize * 0.8,
-      [theme.breakpoints.up('sm')]: {
-        fontSize: theme.typography.h2.fontSize,
-      },
     },
   })
 
@@ -211,7 +207,7 @@ class MetricsCard extends React.Component<MetricsCardProps> {
                   </Grid>
                   <Grid container direction="column" justify="center">
                     <Grid item>
-                      <Typography variant="h2" className={classes.value}>
+                      <Typography variant="h3" className={classes.value}>
                         {value}
                       </Typography>
                     </Grid>

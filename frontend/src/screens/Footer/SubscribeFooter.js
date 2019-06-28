@@ -236,9 +236,6 @@ const useSubscribeFooterStyles = makeStyles(({palette, spacing, breakpoints, typ
   'enterSubscribeActive': {
     animation: 'footer-enter 2000ms',
   },
-  'subscribeInfo': {
-    fontSize: typography.fontSize * 0.8,
-  },
   'rocket': {
     marginBottom: -4,
   },
@@ -431,7 +428,7 @@ const SubscribeFooter = () => {
                 </Grid>
 
                 <Grid item className={classes.row}>
-                  <Typography className={classes.subscribeInfo}>
+                  <Typography variant="caption">
                     <FormattedMessage
                       // $FlowFixMe
                       id={messages.subscribeInfo.id}
