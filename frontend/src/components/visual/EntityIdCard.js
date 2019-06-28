@@ -72,6 +72,7 @@ const useContentStyles = makeStyles((theme) => ({
     alignItems: 'center',
     paddingRight: theme.spacing(2),
     overflow: 'hidden',
+    flex: 1,
   },
   autoWidth: {
     width: 'auto',
