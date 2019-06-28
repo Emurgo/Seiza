@@ -12,7 +12,9 @@ import {SimpleLayout, AdaValue, LoadingError} from '@/components/visual'
 import {useI18n} from '@/i18n/helpers'
 import {useCurrentEpoch} from './common'
 
-// TODO: icons
+import {ReactComponent as EpochIcon} from '@/static/assets/icons/epoch.svg'
+import {ReactComponent as FromGenesisIcon} from '@/static/assets/icons/from-genesis.svg'
+
 // TODO: how often are snapshots created? Do we want to periodically load `Current snapshot`?
 
 const messages = defineMessages({
@@ -35,10 +37,10 @@ const perEpochInfoMessages = defineMessages({
 })
 
 const cardHeaders = defineMessages({
-  total: 'Total',
-  currentSnapshot: 'Current snapshot',
-  previousSnapshot: 'Previous snapshot',
-  nextSnapshot: 'Next snapshot',
+  total: 'Total:',
+  currentSnapshot: 'Current snapshot:',
+  previousSnapshot: 'Previous snapshot:',
+  nextSnapshot: 'Next snapshot:',
   fromGenesis: 'From genesis',
   usedInEpoch: 'Used in epoch {epoch}',
   willBeUsedInEpoch: 'Will be used in epoch {epoch}',
@@ -101,6 +103,7 @@ const AllTimeCard = () => {
       data={data && data.allTimeStakingSummary}
       cardValue={formatters.translate(cardHeaders.fromGenesis)}
       cardLabel={formatters.translate(cardHeaders.total)}
+      icon={<FromGenesisIcon />}
       {...{loading, error}}
     />
   )
@@ -140,6 +143,7 @@ const PerEpochCard = ({cardLabel, cardValue, epoch}: PerEpochCardProps) => {
   return (
     <InfoCard
       fields={getPerEpochFields(formatters)}
+      icon={<EpochIcon />}
       {...{cardLabel, cardValue, error, loading, data}}
     />
   )
