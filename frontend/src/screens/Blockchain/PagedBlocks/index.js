@@ -8,7 +8,7 @@ import Pagination from '@/components/visual/Pagination'
 import {SimpleLayout} from '@/components/visual'
 import {GET_PAGED_BLOCKS} from '@/api/queries'
 import {useI18n} from '@/i18n/helpers'
-import {useQueryNotBuggedForBlocks} from '@/components/hooks/useQueryNotBugged'
+import {useQueryNotBugged} from '@/components/hooks/useQueryNotBugged'
 import {useManageQueryValue} from '@/components/hooks/useManageQueryValue'
 import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
 import {toIntOrNull, getPageCount} from '@/helpers/utils'
@@ -64,13 +64,10 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const useLoadData = (cursor, autoUpdate) => {
-  const {error, loading, data, startPolling, stopPolling} = useQueryNotBuggedForBlocks(
-    GET_PAGED_BLOCKS,
-    {
-      variables: {cursor},
-      notifyOnNetworkStatusChange: true,
-    }
-  )
+  const {error, loading, data, startPolling, stopPolling} = useQueryNotBugged(GET_PAGED_BLOCKS, {
+    variables: {cursor},
+    notifyOnNetworkStatusChange: true,
+  })
 
   autoUpdate ? startPolling(AUTOUPDATE_REFRESH_INTERVAL) : stopPolling()
 
