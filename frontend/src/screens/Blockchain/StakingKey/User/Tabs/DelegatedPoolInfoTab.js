@@ -3,9 +3,9 @@ import {defineMessages} from 'react-intl'
 import {Typography} from '@material-ui/core'
 import {SummaryCard, AdaValue} from '@/components/visual'
 import {useI18n} from '@/i18n/helpers'
+import PoolEntityContent from '@/components/common/PoolEntityContent'
 
 const delegatedPoolMessages = defineMessages({
-  stakePool: 'Stake Pool',
   stakePoolPosition: 'Stake Pool Position',
   marginDiff: 'Stake Pool Margin Difference with Top #1',
   costDiff: 'Stake Pool Cost Difference with Top #1',
@@ -20,13 +20,9 @@ const DelegatedPoolInfoTab = ({stakePool, epochsInCurrentStakePool}) => {
   const {Row, Label, Value} = SummaryCard
 
   return (
-    <SummaryCard>
-      <Row>
-        <Label>{translate(delegatedPoolMessages.stakePool)}</Label>
-        <Value>
-          {stakePool.name} {stakePool.hash}
-        </Value>
-      </Row>
+    <React.Fragment>
+      <PoolEntityContent name={stakePool.name} hash={stakePool.hash} />
+
       <Row>
         <Label>{translate(delegatedPoolMessages.stakePoolPosition)}</Label>
         <Value>#{formatInt(stakePool.topPoolComparison.position)}</Value>
@@ -71,7 +67,7 @@ const DelegatedPoolInfoTab = ({stakePool, epochsInCurrentStakePool}) => {
           })}
         </Value>
       </Row>
-    </SummaryCard>
+    </React.Fragment>
   )
 }
 

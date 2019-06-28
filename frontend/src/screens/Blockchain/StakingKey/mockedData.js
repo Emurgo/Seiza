@@ -202,7 +202,10 @@ export const getUserStakingKey = (stakingKeyHash) => ({
   addressesCount: 5134,
   totalEpochsActive: 11,
   rewardAddress: 'a5c3af824de94faff971d1b2488c5017dcf0f3c3a056334195efb368c0fe2f75',
-  delegationCert: '6b686ed997b3846ebf93642b5bfe482ca2682245b826601ca352d2c3c0394a68',
+  delegation: {
+    stakePoolHash: '6b686ed997b3846ebf93642b5bfe482ca2682245b826601ca352d2c3c0394a68',
+    tx: 'c71214e798fa8e25615f2d967858c58213eb43eca2d2b5f1650e18cf1962208b',
+  },
   epochsInCurrentStakePool: 3,
   currentStakePool: generateStakePool(
     'dd4548f88bebd98653a6977cb6cf1cf6a57dcec8ed8655f6e8b690e998bb2164'
