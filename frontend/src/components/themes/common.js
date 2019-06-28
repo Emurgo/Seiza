@@ -7,7 +7,7 @@ import {defaultShadowsDefs, createShadow} from './shadows'
 // https://stackoverflow.com/questions/52472372/responsive-typography-in-material-ui
 const breakpoints = createMuiTheme({}).breakpoints
 
-const xsMobile = breakpoints.down('xs')
+const desktopFontBreakpoint = breakpoints.up('sm')
 
 const makeFontFamilies = (fontFamilies) => fontFamilies.map((ff) => `"${ff}"`).join(',')
 
@@ -32,29 +32,46 @@ const common = {
   typography: {
     useNextVariants: true,
     fontFamily: makeFontFamilies(FF.normal),
-    fontSize: 16,
+    fontSize: 16, // Note: this can not be set based on breakpoints
     opaqueText: {
       opacity: 0.54,
     },
     h1: {
-      fontSize: 36,
+      fontSize: 30,
       fontWeight: 700,
-      // Note: for demostration, consider using mobile first in practise
-      [xsMobile]: {
-        fontSize: 30,
+      [desktopFontBreakpoint]: {
+        fontSize: 36,
       },
     },
     h2: {
-      fontSize: 24,
+      fontSize: 20,
       fontWeight: 700,
+      [desktopFontBreakpoint]: {
+        fontSize: 24,
+      },
+    },
+    h3: {
+      fontSize: 18,
+      fontWeight: 600,
+      [desktopFontBreakpoint]: {
+        fontSize: 20,
+      },
     },
     h4: {
-      fontSize: 20,
+      fontSize: 18,
       fontWeight: 400,
+      [desktopFontBreakpoint]: {
+        fontSize: 20,
+      },
     },
+    // Material default typography
     body1: {
-      fontSize: 16,
+      fontSize: 14,
+      [desktopFontBreakpoint]: {
+        fontSize: 16,
+      },
     },
+    // ???: is this ever used?
     button: {
       fontWeight: 700,
       letterSpacing: 1,
@@ -64,8 +81,11 @@ const common = {
     },
     overline: {
       letterSpacing: 1,
-      fontSize: 13,
+      fontSize: 12,
       lineHeight: 1.5,
+      [desktopFontBreakpoint]: {
+        fontSize: 13,
+      },
     },
     // This is our custom style. <Typography /> does not support it
     // but it is useful to have it here
