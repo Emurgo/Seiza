@@ -82,7 +82,10 @@ export default (App) => {
 
       return {
         routerCtx: {
-          location: req.originalUrl,
+          // Note: req is not defined on client.
+          // However, client does not care about routerCtx
+          // as it uses real router
+          location: req ? req.originalUrl : null,
         },
         ...appProps,
         apolloState,
