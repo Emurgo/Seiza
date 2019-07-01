@@ -6,7 +6,8 @@ import {compose} from 'redux'
 import idx from 'idx'
 import {withI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
-import {LoadingInProgress, DebugApolloError, AdaValue, Link} from '@/components/visual'
+import {LoadingInProgress, DebugApolloError, Link} from '@/components/visual'
+import {AdaValue} from '@/components/common'
 import Table, {ROW_TYPE} from '@/components/visual/Table'
 
 const GET_STAKE_POOLS_IN_EPOCH = gql`

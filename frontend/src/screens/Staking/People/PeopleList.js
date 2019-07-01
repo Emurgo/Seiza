@@ -5,7 +5,8 @@ import {Grid, Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
 
-import {AdaValue, VisualHash, Link, EntityCardContent} from '@/components/visual'
+import {VisualHash, Link, EntityCardContent} from '@/components/visual'
+import {AdaValue} from '@/components/common'
 import {routeTo} from '@/helpers/routes'
 import {useI18n} from '@/i18n/helpers'
 

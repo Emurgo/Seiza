@@ -15,7 +15,6 @@ import {
   LoadingDots,
   LoadingInProgress,
   LoadingError,
-  AdaValue,
   Link,
 } from '@/components/visual'
 
@@ -23,6 +22,7 @@ import blockIcon from '@/static/assets/icons/metrics-blocks.svg'
 import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
 import {useAnalytics} from '@/helpers/googleAnalytics'
 
+import {AdaValue} from '@/components/common'
 import TransactionCard from '@/components/common/TransactionCard'
 
 import {useI18n} from '@/i18n/helpers'

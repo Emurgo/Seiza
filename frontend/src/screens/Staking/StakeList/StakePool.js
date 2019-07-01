@@ -11,10 +11,10 @@ import {
   ExpandableCard,
   ExpandableCardFooter,
   Button,
-  AdaValue,
   CircularProgressBar,
   VisualHash,
 } from '@/components/visual'
+import {AdaValue} from '@/components/common'
 import WithModalState from '@/components/headless/modalState'
 import {useI18n} from '@/i18n/helpers'
 import {useSelectedPoolsContext} from '../context/selectedPools'

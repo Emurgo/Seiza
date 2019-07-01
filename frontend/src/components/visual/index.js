@@ -16,7 +16,6 @@ export {
 } from './ExpandableCard'
 export {default as KeyValueCard} from './KeyValueCard'
 export {default as MetricsCard} from './MetricsCard'
-export {default as AdaValue} from './AdaValue'
 export {default as Pagination} from './Pagination'
 export {default as Link} from './Link'
 export {default as ExternalLink} from './ExternalLink'

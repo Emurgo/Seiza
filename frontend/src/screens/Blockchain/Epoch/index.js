@@ -13,13 +13,13 @@ import {
   EntityCardContent,
   EntityCardShell,
   LoadingError,
-  AdaValue,
   Tab,
   Tabs,
   Overlay,
   LoadingOverlay,
   Chip,
 } from '@/components/visual'
+import {AdaValue} from '@/components/common'
 import {useI18n} from '@/i18n/helpers'
 import EpochNumberIcon from '@/static/assets/icons/epoch-number.svg'
 import EpochIcon from '@/static/assets/icons/metrics-epoch.svg'
