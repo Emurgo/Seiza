@@ -1,13 +1,16 @@
-import {createMuiTheme} from '@material-ui/core'
-
 import muiTransitions from '@material-ui/core/styles/transitions'
 
 import {defaultShadowsDefs, createShadow} from './shadows'
 
+/*
+// For responsive font-size across the app
 // https://stackoverflow.com/questions/52472372/responsive-typography-in-material-ui
+import {createMuiTheme} from '@material-ui/core'
 const breakpoints = createMuiTheme({}).breakpoints
-
+// use in theme definition
 const desktopFontBreakpoint = breakpoints.up('sm')
+}
+*/
 
 const makeFontFamilies = (fontFamilies) => fontFamilies.map((ff) => `"${ff}"`).join(',')
 
@@ -37,39 +40,24 @@ const common = {
       opacity: 0.54,
     },
     h1: {
-      fontSize: 30,
+      fontSize: 36,
       fontWeight: 700,
-      [desktopFontBreakpoint]: {
-        fontSize: 36,
-      },
     },
     h2: {
-      fontSize: 20,
+      fontSize: 24,
       fontWeight: 700,
-      [desktopFontBreakpoint]: {
-        fontSize: 24,
-      },
     },
     h3: {
-      fontSize: 18,
+      fontSize: 20,
       fontWeight: 600,
-      [desktopFontBreakpoint]: {
-        fontSize: 20,
-      },
     },
     h4: {
-      fontSize: 18,
+      fontSize: 20,
       fontWeight: 400,
-      [desktopFontBreakpoint]: {
-        fontSize: 20,
-      },
     },
     // Material default typography
     body1: {
-      fontSize: 14,
-      [desktopFontBreakpoint]: {
-        fontSize: 16,
-      },
+      fontSize: 16,
     },
     // ???: is this ever used?
     button: {
@@ -81,11 +69,8 @@ const common = {
     },
     overline: {
       letterSpacing: 1,
-      fontSize: 12,
+      fontSize: 13,
       lineHeight: 1.5,
-      [desktopFontBreakpoint]: {
-        fontSize: 13,
-      },
     },
     // This is our custom style. <Typography /> does not support it
     // but it is useful to have it here
