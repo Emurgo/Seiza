@@ -6,7 +6,7 @@ import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
 
 import {useI18n} from '@/i18n/helpers'
-import {logError} from '@/helpers/errorReporting'
+import {reportError} from '@/helpers/errorReporting'
 import errorImage from '@/static/assets/error-screen.svg'
 
 const messages = defineMessages({
@@ -64,8 +64,8 @@ class DefaultErrorBoundary extends React.Component<Props, State> {
     return {hasError: true}
   }
 
-  componentDidCatch(error: any, info: any) {
-    logError(error, info)
+  componentDidCatch(error: any, errorInfo: any) {
+    reportError(error, {errorInfo})
   }
 
   render() {
