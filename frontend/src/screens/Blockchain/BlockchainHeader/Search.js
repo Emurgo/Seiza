@@ -12,7 +12,8 @@ import {makeStyles} from '@material-ui/styles'
 import {Typography, Portal} from '@material-ui/core'
 
 import {useI18n} from '@/i18n/helpers'
-import {Searchbar, LoadingError, Alert} from '@/components/visual'
+import {Searchbar, Alert} from '@/components/visual'
+import {LoadingError} from '@/components/common'
 import {useSearchbarRefContext} from '@/components/context/SearchbarRef'
 
 import {routeTo} from '@/helpers/routes'

@@ -1,7 +1,8 @@
 // @flow
 import * as React from 'react'
 
-import {KeyValueCard, LoadingOverlay, ErrorOverlay, Overlay} from '@/components/visual'
+import {KeyValueCard, Overlay} from '@/components/visual'
+import {LoadingOverlay, ErrorOverlay} from '@/components/common'
 
 type Field = {|
   label: string,

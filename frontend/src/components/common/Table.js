@@ -15,13 +15,10 @@ import {defineMessages} from 'react-intl'
 import cn from 'classnames'
 import {fade} from '@material-ui/core/styles/colorManipulator'
 
-import {Card, KeyValueCard} from '@/components/visual'
+import {Card, KeyValueCard, Overlay} from '@/components/visual'
 import {useI18n} from '@/i18n/helpers'
 import {useIsMobile} from '@/components/hooks/useBreakpoints'
-
-import Overlay from './Overlay'
-import LoadingOverlay from './LoadingOverlay'
-import ErrorOverlay from './ErrorOverlay'
+import {LoadingOverlay, ErrorOverlay} from '@/components/common'
 
 export const ROW_TYPE = {
   DATA: 'data',

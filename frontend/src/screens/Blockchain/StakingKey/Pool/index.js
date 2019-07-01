@@ -12,10 +12,9 @@ import {
   EntityIdCard,
   Alert,
   CircularProgressBar,
-  LoadingError,
   LoadingInProgress,
 } from '@/components/visual'
-import {AdaValue} from '@/components/common'
+import {AdaValue, LoadingError} from '@/components/common'
 import {useI18n} from '@/i18n/helpers'
 import AdaIcon from '@/static/assets/icons/transaction-id.svg'
 import CertificateIcon from '@/static/assets/icons/reward-address.svg'
