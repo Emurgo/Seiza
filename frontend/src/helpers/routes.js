@@ -80,3 +80,5 @@ export const routeTo = {
   // Helper
   _anyOf: anyOfPaths,
 }
+
+export const combinedBlockchainPath = anyOfPaths([routeTo.blockchain(), routeTo.home()])
