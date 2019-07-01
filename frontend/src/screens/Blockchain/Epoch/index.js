@@ -4,6 +4,7 @@ import {defineMessages} from 'react-intl'
 import moment from 'moment-timezone'
 import gql from 'graphql-tag'
 import idx from 'idx'
+import {MetadataOverrides} from '@/pages/_meta'
 import useReactRouter from 'use-react-router'
 import {Card, Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
@@ -36,6 +37,8 @@ import NavigationButtons from '../NavigationButtons'
 import {APOLLO_CACHE_OPTIONS} from '@/constants'
 
 const messages = defineMessages({
+  screenTitle: 'Epoch {epochNumber} - Seiza',
+  metaDescription: 'Cardano epoch {epochNumber}',
   notAvailable: 'N/A',
   goPreviousEpoch: 'Previous',
   goNextEpoch: 'Next',
@@ -329,6 +332,12 @@ const EpochEntityCard = ({epochNumber, startTime, endTime}) => {
   )
 }
 
+const getEpochMetaDescription = ({tr, epochNumber, epochData}) => {
+  return tr(messages.metaDescription, {
+    epochNumber,
+  })
+}
+
 const EpochScreen = () => {
   const {epochNumber} = useScreenParams()
   const {epochData, error, loading} = useEpochData(epochNumber)
@@ -344,6 +353,10 @@ const EpochScreen = () => {
 
   return (
     <div ref={scrollToRef}>
+      <MetadataOverrides
+        title={tr(messages.screenTitle, {epochNumber})}
+        description={getEpochMetaDescription({epochNumber, epochData, tr})}
+      />
       <SimpleLayout title={tr(messages.header)}>
         <EpochNavigation currentEpochNumber={epochNumber} />
         <EpochEntityCard

@@ -25,6 +25,8 @@ import {THEME_DEFINITIONS} from '@/components/themes'
 import {IntlContextProvider, useLocale} from '@/components/HOC/intl'
 import translations from '@/i18n/locales'
 
+import {CrawlerMetadata, TwitterMetadata, FacebookMetadata} from './_meta'
+
 // Note: see https://medium.com/@shalkam/create-react-app-i18n-the-easy-way-b05536c594cb
 // for more info
 import jaLocaleData from 'react-intl/locale-data/ja'
@@ -71,6 +73,10 @@ const MuiProviders = ({children}) => {
     <ThemeProvider theme={theme}>
       {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
       <CssBaseline />
+      <Head>
+        {/* Progressive web app primary color */}
+        <meta name="theme-color" content={theme.palette.primary.main} />
+      </Head>
       {children}
     </ThemeProvider>
   )
@@ -132,10 +138,10 @@ class MyApp extends App {
 
     return (
       <Container>
+        <TwitterMetadata />
+        <FacebookMetadata />
+        <CrawlerMetadata />
         <ApolloProviders client={apolloClient}>
-          <Head>
-            <title>Seiza</title>
-          </Head>
           <ThemeContextProvider>
             <MuiProviders>
               <IntlContextProvider>
