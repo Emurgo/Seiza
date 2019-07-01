@@ -1,5 +1,6 @@
 import React, {useContext, useState} from 'react'
-import {parseCookies, setCookie} from 'nookies'
+
+import {useCookies} from '@/components/context/CookiesProvider'
 
 // export { THEMES, THEME_DEFINITIONS } from "../themes";
 import {THEMES} from '../themes'
@@ -16,14 +17,15 @@ export const withTheme = (WrappedComponent) => (props) => (
   </Context.Consumer>
 )
 
-export const getThemeFromCookies = () => parseCookies().theme || ''
+export const getThemeFromCookies = (cookies) => cookies.theme || ''
 
 // TODO: move out of this file
 export const ThemeContextProvider = ({children}) => {
-  const [currentTheme, setCurrentTheme] = useState(getThemeFromCookies())
+  const {cookies, setCookie} = useCookies()
+  const [currentTheme, setCurrentTheme] = useState(getThemeFromCookies(cookies))
   const setTheme = (newTheme) => {
     setCurrentTheme(newTheme)
-    setCookie({}, 'theme', newTheme)
+    setCookie('theme', newTheme)
   }
   return (
     <Context.Provider

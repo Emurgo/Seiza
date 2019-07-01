@@ -14,7 +14,7 @@ type Props = {|
   children: React$Node,
 |}
 
-export const CookiesProvider = ({children}: Props) => {
+export const AcceptCookiesProvider = ({children}: Props) => {
   const [cookiesAccepted, setCookiesAccepted] = useLocalStorageState<boolean>(
     'acceptCookies',
     false
@@ -27,4 +27,4 @@ export const CookiesProvider = ({children}: Props) => {
   return <Context.Provider value={{cookiesAccepted, acceptCookies}}>{children}</Context.Provider>
 }
 
-export const useCookiesContext = () => useContext(Context)
+export const useAcceptCookiesContext = () => useContext(Context)

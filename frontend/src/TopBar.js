@@ -154,7 +154,7 @@ const TopBar = ({navItems}: TopBarProps) => {
         <Grid container direction="row" alignItems="center">
           <NavLinks currentPathname={pathname} items={navItems} />
           <LanguageSelect />
-          {config.featureEnableThemes && <ThemeSelect />}
+          <ThemeSelect />
         </Grid>
       </Grid>
     </Grid>

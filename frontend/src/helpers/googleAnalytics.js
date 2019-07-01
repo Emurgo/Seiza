@@ -6,7 +6,7 @@ import React, {useContext, useEffect} from 'react'
 import _ from 'lodash'
 import config from '@/config'
 
-import {useCookiesContext} from '@/components/context/CookiesContext'
+import {useAcceptCookiesContext} from '@/components/context/AcceptCookiesContext'
 
 // <<<< Google code (https://developers.google.com/analytics/devguides/collection/gtagjs/)
 export function gtag(...args: any) {
@@ -33,7 +33,7 @@ const trackEvent = (resourceName: string, actionName: string, label?: string) =>
 
 const useTrackPageVisitEvent = (screenName: string) => {
   const f = formatter
-  const {cookiesAccepted} = useCookiesContext()
+  const {cookiesAccepted} = useAcceptCookiesContext()
   useEffect(() => {
     cookiesAccepted && gtag('event', 'screen_view', {screen_name: f(screenName)})
     // We want to call this only once
@@ -93,7 +93,7 @@ type Props = {|
 |}
 
 export const AnalyticsProvider = ({children}: Props) => {
-  const {cookiesAccepted} = useCookiesContext()
+  const {cookiesAccepted} = useAcceptCookiesContext()
 
   // used to make all function "do nothing" until the cookies were not allowed
   const dummyF = () => null

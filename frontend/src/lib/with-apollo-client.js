@@ -10,6 +10,7 @@ export default (App) => {
   return class Apollo extends React.Component {
     static displayName = 'withApollo(App)'
     static async getInitialProps(ctx) {
+      // Component is the "page" to be rendered
       const {
         Component,
         router,
@@ -30,7 +31,8 @@ export default (App) => {
           // routerCtx might be mutated during render!
           const routerCtx = {location: req.originalUrl}
 
-          // Run all GraphQL queries
+          // Run all GraphQL queries in given React tree to prefetch the data.
+          // Promise is resolved once the data are ready in apollo client.
           await getDataFromTree(
             <App
               {...appProps}
@@ -46,6 +48,7 @@ export default (App) => {
             res.end()
             return {}
           }
+          // required for `react-apollo-hooks` to work in SSR
           await getMarkupFromTree({
             renderFunction: renderToString,
             tree: (

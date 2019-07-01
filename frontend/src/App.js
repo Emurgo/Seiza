@@ -24,7 +24,7 @@ import PageNotFound from './screens/PageNotFound'
 import CookiesBanner from '@/components/common/CookiesBanner'
 import DefaultErrorBoundary from '@/components/common/DefaultErrorBoundary'
 import {SubscribeProvider} from '@/components/context/SubscribeContext'
-import {CookiesProvider} from '@/components/context/CookiesContext'
+import {AcceptCookiesProvider} from '@/components/context/AcceptCookiesContext'
 import {AnalyticsProvider} from '@/helpers/googleAnalytics' // TODO move to context?
 import {CurrencyProvider} from '@/components/hooks/useCurrency'
 import {SearchbarRefProvider} from '@/components/context/SearchbarRef'
@@ -95,8 +95,8 @@ const getTranslatedFooterNavItems = (translate) => {
 }
 
 const Providers = ({children}) => (
-  <CookiesProvider>
-    {/* Note: must be defined after CookiesProvider */}
+  <AcceptCookiesProvider>
+    {/* Note: must be defined after AcceptCookiesProvider */}
     <AnalyticsProvider>
       <CurrencyProvider>
         <SubscribeProvider>
@@ -106,7 +106,7 @@ const Providers = ({children}) => (
         </SubscribeProvider>
       </CurrencyProvider>
     </AnalyticsProvider>
-  </CookiesProvider>
+  </AcceptCookiesProvider>
 )
 
 const renderRouteDef = ({path, ...rest}) => (path ? <Route path={path} {...rest} /> : null)
