@@ -6,7 +6,6 @@ import {Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
 import {
-  AdaValue,
   SummaryCard,
   ExternalLink,
   SimpleLayout,
@@ -16,6 +15,7 @@ import {
   LoadingError,
   LoadingInProgress,
 } from '@/components/visual'
+import {AdaValue} from '@/components/common'
 import {useI18n} from '@/i18n/helpers'
 import AdaIcon from '@/static/assets/icons/transaction-id.svg'
 import CertificateIcon from '@/static/assets/icons/reward-address.svg'

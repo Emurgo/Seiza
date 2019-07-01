@@ -1,7 +1,8 @@
 import React from 'react'
 import {defineMessages} from 'react-intl'
 import {Typography} from '@material-ui/core'
-import {SummaryCard, AdaValue} from '@/components/visual'
+import {SummaryCard} from '@/components/visual'
+import {AdaValue} from '@/components/common'
 import {useI18n} from '@/i18n/helpers'
 import PoolEntityContent from '@/components/common/PoolEntityContent'
 

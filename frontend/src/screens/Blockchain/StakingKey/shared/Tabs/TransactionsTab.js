@@ -3,7 +3,8 @@ import {defineMessages} from 'react-intl'
 import {makeStyles} from '@material-ui/styles'
 
 import TransactionCard from '@/components/common/TransactionCard'
-import {AdaValue, SummaryCard, Pagination} from '@/components/visual'
+import {SummaryCard, Pagination} from '@/components/visual'
+import {AdaValue} from '@/components/common'
 import {useI18n} from '@/i18n/helpers'
 
 const useStyles = makeStyles((theme) => ({

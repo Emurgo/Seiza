@@ -3,7 +3,8 @@ import {defineMessages} from 'react-intl'
 import {Typography, Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
-import {SummaryCard, AdaValue} from '@/components/visual'
+import {SummaryCard} from '@/components/visual'
+import {AdaValue} from '@/components/common'
 import {useI18n} from '@/i18n/helpers'
 import EpochIcon from '@/static/assets/icons/epoch.svg'
 

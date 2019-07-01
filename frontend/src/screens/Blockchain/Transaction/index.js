@@ -15,11 +15,11 @@ import {
   LoadingInProgress,
   LoadingError,
   EntityIdCard,
-  AdaValue,
   Link,
   Overlay,
   LoadingOverlay,
 } from '@/components/visual'
+import {AdaValue} from '@/components/common'
 import AddressesBreakdown from '@/components/common/AddressesBreakdown'
 import AssuranceChip from '@/components/common/AssuranceChip'
 import AdaIcon from '@/static/assets/icons/transaction-id.svg'
