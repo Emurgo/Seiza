@@ -6,7 +6,7 @@ import gql from 'graphql-tag'
 import idx from 'idx'
 import {MetadataOverrides} from '@/pages/_meta'
 import useReactRouter from 'use-react-router'
-import {Card, Grid} from '@material-ui/core'
+import {Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {
   SummaryCard,
