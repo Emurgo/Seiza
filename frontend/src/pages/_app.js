@@ -21,11 +21,13 @@ import CssBaseline from '@material-ui/core/CssBaseline'
 
 import config from '@/config'
 import {ThemeContextProvider, useThemeContext} from '@/components/HOC/theme'
+import {CookiesProvider} from '@/components/context/CookiesProvider'
 import {THEME_DEFINITIONS} from '@/components/themes'
 import {IntlContextProvider, useLocale} from '@/components/HOC/intl'
 import translations from '@/i18n/locales'
 
 import {CrawlerMetadata, TwitterMetadata, FacebookMetadata} from './_meta'
+import {parseCookies, setCookie} from 'nookies'
 
 // Note: see https://medium.com/@shalkam/create-react-app-i18n-the-easy-way-b05536c594cb
 // for more info
@@ -92,11 +94,25 @@ const Intl = ({children}) => {
   )
 }
 
+const getCookiesProps = (ctx) => {
+  // Note: this is returned for both client and server
+  const cookies = parseCookies(ctx || {})
+
+  // Note: this function is returned only when rendered server-side as it is not
+  // seriazable
+  const _setCookie = (name, value, options = {}) => {
+    setCookie(ctx, name, value, options)
+  }
+
+  return {cookies, setCookie: _setCookie}
+}
+
 class MyApp extends App {
   static async getInitialProps({Component, ctx}) {
     try {
       let pageProps = {}
 
+      // Component is the "page" to be rendered
       if (Component.getInitialProps) {
         pageProps = await Component.getInitialProps(ctx)
       }
@@ -104,6 +120,7 @@ class MyApp extends App {
       // what is returned here, gets injected into __NEXT_DATA__
       return {
         pageProps,
+        cookiesProps: getCookiesProps(ctx),
       }
       // ***** BEGIN INSPIRED BY: https://github.com/zeit/next.js/blob/master/examples/with-sentry/pages/_app.js
     } catch (error) {
@@ -134,26 +151,38 @@ class MyApp extends App {
   // ***** END TAKEN FROM: https://github.com/mui-org/material-ui/blob/master/examples/nextjs/pages/_app.js
 
   render() {
-    const {Component, pageProps, routerCtx, apolloClient} = this.props
+    const {Component, pageProps, routerCtx, apolloClient, cookiesProps} = this.props
+
+    // `setCookie` can be passed from `getInitialProps` only on server, on client
+    // it is not, so we use "browser" version where we do not need `ctx`
+    const _setCookie = (...args) => {
+      if (!process.browser) {
+        cookiesProps.setCookie(...args)
+      } else {
+        setCookie({}, ...args)
+      }
+    }
 
     return (
       <Container>
-        <TwitterMetadata />
-        <FacebookMetadata />
-        <CrawlerMetadata />
-        <ApolloProviders client={apolloClient}>
-          <ThemeContextProvider>
-            <MuiProviders>
-              <IntlContextProvider>
-                <Intl>
-                  <InjectHookIntlContext>
-                    <Component {...pageProps} routerCtx={routerCtx} />
-                  </InjectHookIntlContext>
-                </Intl>
-              </IntlContextProvider>
-            </MuiProviders>
-          </ThemeContextProvider>
-        </ApolloProviders>
+        <CookiesProvider {...{cookies: cookiesProps.cookies, setCookie: _setCookie}}>
+          <TwitterMetadata />
+          <FacebookMetadata />
+          <CrawlerMetadata />
+          <ApolloProviders client={apolloClient}>
+            <ThemeContextProvider>
+              <MuiProviders>
+                <IntlContextProvider>
+                  <Intl>
+                    <InjectHookIntlContext>
+                      <Component {...pageProps} routerCtx={routerCtx} />
+                    </InjectHookIntlContext>
+                  </Intl>
+                </IntlContextProvider>
+              </MuiProviders>
+            </ThemeContextProvider>
+          </ApolloProviders>
+        </CookiesProvider>
       </Container>
     )
   }
