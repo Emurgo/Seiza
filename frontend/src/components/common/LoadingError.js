@@ -2,7 +2,7 @@
 import React from 'react'
 import {defineMessages} from 'react-intl'
 
-import Alert from './Alert'
+import {Alert} from '@/components/visual'
 import {useI18n} from '@/i18n/helpers'
 import {ERROR_TYPES} from '@/helpers/errors'
 

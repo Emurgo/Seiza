@@ -8,8 +8,8 @@ import {useQuery} from 'react-apollo-hooks'
 import InfoCard from './InfoCard'
 import Layout from './Layout'
 
-import {SimpleLayout, LoadingError} from '@/components/visual'
-import {AdaValue} from '@/components/common'
+import {SimpleLayout} from '@/components/visual'
+import {AdaValue, LoadingError} from '@/components/common'
 import {useI18n} from '@/i18n/helpers'
 import {useCurrentEpoch} from './common'
 

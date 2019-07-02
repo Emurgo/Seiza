@@ -1,8 +1,7 @@
 // @flow
 import React, {useState, useEffect, useRef} from 'react'
 import {Fade} from '@material-ui/core'
-import LoadingInProgress from './LoadingInProgress'
-import Overlay from './Overlay'
+import {LoadingInProgress, Overlay} from '@/components/visual'
 
 type Props = {
   loading: boolean,
