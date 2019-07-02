@@ -5,7 +5,7 @@ import {makeStyles} from '@material-ui/styles'
 import _ from 'lodash'
 import assert from 'assert'
 
-import Pagination from '@/components/visual/Pagination'
+import {Pagination} from '@/components/common'
 import {GET_PAGED_BLOCKS_IN_EPOCH} from '@/api/queries'
 import {useI18n} from '@/i18n/helpers'
 import {useQueryNotBugged} from '@/components/hooks/useQueryNotBugged'

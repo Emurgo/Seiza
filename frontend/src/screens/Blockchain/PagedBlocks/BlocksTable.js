@@ -4,9 +4,9 @@ import {defineMessages} from 'react-intl'
 import {Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
-import {Link, Tooltip} from '@/components/visual'
+import {Tooltip} from '@/components/visual'
 import Table, {ROW_TYPE} from '@/components/common/Table'
-import {AdaValue} from '@/components/common'
+import {AdaValue, Link} from '@/components/common'
 import {useI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
 

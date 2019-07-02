@@ -9,15 +9,8 @@ import gql from 'graphql-tag'
 import {extractError} from '@/helpers/errors'
 import env from '@/config'
 import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
-import {
-  SummaryCard,
-  SimpleLayout,
-  LoadingInProgress,
-  EntityIdCard,
-  Link,
-  Overlay,
-} from '@/components/visual'
-import {AdaValue, LoadingError, LoadingOverlay} from '@/components/common'
+import {SummaryCard, SimpleLayout, LoadingInProgress, Overlay} from '@/components/visual'
+import {AdaValue, LoadingError, LoadingOverlay, EntityIdCard, Link} from '@/components/common'
 import AddressesBreakdown from '@/components/common/AddressesBreakdown'
 import AssuranceChip from '@/components/common/AssuranceChip'
 import AdaIcon from '@/static/assets/icons/transaction-id.svg'

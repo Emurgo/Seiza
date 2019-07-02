@@ -6,8 +6,8 @@ import gql from 'graphql-tag'
 import {useQuery} from 'react-apollo-hooks'
 import useReactRouter from 'use-react-router'
 
-import {EntityIdCard, SummaryCard, SimpleLayout, LoadingInProgress} from '@/components/visual'
-import {LoadingError} from '@/components/common'
+import {SummaryCard, SimpleLayout, LoadingInProgress} from '@/components/visual'
+import {LoadingError, EntityIdCard} from '@/components/common'
 
 import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
 import {useI18n} from '@/i18n/helpers'

@@ -12,14 +12,13 @@ import {
   Divider,
   EllipsizeMiddle,
   ContentSpacing,
-  Link,
   Card,
 } from '@/components/visual'
 import WithModalState from '@/components/headless/modalState'
 import {useIsMobile} from '@/components/hooks/useBreakpoints'
 import {useI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
-import {AdaValue} from '@/components/common'
+import {AdaValue, Link} from '@/components/common'
 import CopyToClipboard from '@/components/common/CopyToClipboard'
 
 import type {Transaction} from '@/__generated__/schema.flow'
