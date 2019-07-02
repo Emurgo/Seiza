@@ -5,9 +5,9 @@ import {Divider} from '@material-ui/core'
 
 import {Card, ContentSpacing} from '@/components/visual'
 import {EntityCardContent} from '@/components/common'
-import {ReactComponent as CertificateIcon} from '@/static/assets/icons/reward-address.svg'
+import {ReactComponent as CertificateActionIcon} from '@/static/assets/icons/reward-address.svg'
 import {useI18n} from '@/i18n/helpers'
-import CertificateList from '@/screens/Blockchain/Certificates/CertificateList'
+import CertificateActionList from '@/screens/Blockchain/Certificates/ActionList'
 
 const messages = defineMessages({
   certificatesLabel: 'Certificates',
@@ -16,10 +16,10 @@ const messages = defineMessages({
 })
 
 type Props = {|
-  certificates: Array<any>,
+  certificateActions: Array<any>,
 |}
 
-const Certificates = ({certificates}: Props) => {
+const CertificateActions = ({certificateActions}: Props) => {
   const {translate: tr} = useI18n()
   return (
     <Card>
@@ -31,20 +31,20 @@ const Certificates = ({certificates}: Props) => {
               // $FlowFixMe
               id={messages.certificatesValue.id}
               values={{
-                count: certificates.length,
+                count: certificateActions.length,
               }}
             />
           }
-          iconRenderer={<CertificateIcon />}
+          iconRenderer={<CertificateActionIcon />}
           ellipsizeValue={false}
           monospaceValue={false}
           showCopyIcon={false}
         />
       </ContentSpacing>
       <Divider />
-      <CertificateList certificates={certificates} />
+      <CertificateActionList actions={certificateActions} />
     </Card>
   )
 }
 
-export default Certificates
+export default CertificateActions

@@ -22,7 +22,7 @@ import {
 import {useI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
 import AdaIcon from '@/static/assets/icons/transaction-id.svg'
-import CertificateIcon from '@/static/assets/icons/reward-address.svg'
+import CertificateActionIcon from '@/static/assets/icons/reward-address.svg'
 import RewardAddressIcon from '@/static/assets/icons/certificate.svg'
 import {useLoadStakepoolData} from './dataLoaders'
 import Tabs from './Tabs'
@@ -244,7 +244,7 @@ const StakePool = () => {
           <EntityIdCard
             label={translate(messages.stakePoolCertificate)}
             value={stakePool.stakePoolCertificate}
-            iconRenderer={<img alt="" src={CertificateIcon} width={40} height={40} />}
+            iconRenderer={<img alt="" src={CertificateActionIcon} width={40} height={40} />}
           />
           <Tabs stakePool={stakePool} />
         </React.Fragment>

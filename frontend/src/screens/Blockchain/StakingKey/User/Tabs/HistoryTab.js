@@ -6,8 +6,8 @@ import {makeStyles} from '@material-ui/styles'
 import {ContentSpacing, Card} from '@/components/visual'
 import {useI18n} from '@/i18n/helpers'
 import EpochIcon from '@/static/assets/icons/epoch.svg'
-import {MOCKED_CERTIFICATES} from '@/screens/Blockchain/Certificates/helpers'
-import CertificateList from '@/screens/Blockchain/Certificates/CertificateList'
+import {MOCKED_STAKING_KEY_ACTIONS} from '@/screens/Blockchain/Certificates/mockedActions'
+import CertificateActionList from '@/screens/Blockchain/Certificates/ActionList'
 
 const useStyles = makeStyles(({palette, spacing}) => ({
   headerWrapper: {
@@ -69,8 +69,8 @@ const HistoryTab = ({history}) => {
   return history.map(({epochNumber}, index) => (
     <Card className={classes.headerWrapper} key={index}>
       <EpochHeader epochNumber={epochNumber} />
-      <CertificatesCount count={MOCKED_CERTIFICATES.length} />
-      <CertificateList showTxHash certificates={MOCKED_CERTIFICATES} />
+      <CertificatesCount count={MOCKED_STAKING_KEY_ACTIONS.length} />
+      <CertificateActionList showTxHash actions={MOCKED_STAKING_KEY_ACTIONS} />
     </Card>
   ))
 }

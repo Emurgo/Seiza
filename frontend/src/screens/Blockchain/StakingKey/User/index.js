@@ -10,7 +10,7 @@ import {AdaValue, LoadingError, EntityIdCard, Link} from '@/components/common'
 import {routeTo} from '@/helpers/routes'
 import {useI18n} from '@/i18n/helpers'
 import AdaIcon from '@/static/assets/icons/transaction-id.svg'
-import CertificateIcon from '@/static/assets/icons/reward-address.svg'
+import CertificateActionIcon from '@/static/assets/icons/reward-address.svg'
 import RewardAddressIcon from '@/static/assets/icons/certificate.svg'
 import Tabs from './Tabs'
 import {useLoadStakingKeyData} from './dataLoaders'
@@ -181,7 +181,7 @@ const UserStakingKey = () => {
                 </Typography>
               </React.Fragment>
             }
-            iconRenderer={<img alt="" src={CertificateIcon} />}
+            iconRenderer={<img alt="" src={CertificateActionIcon} />}
             showCopyIcon={false}
           />
           <div className={classes.tabsWrapper}>
