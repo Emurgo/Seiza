@@ -6,6 +6,14 @@ import {getDataFromTree} from 'react-apollo'
 import {getMarkupFromTree} from 'react-apollo-hooks'
 import {renderToString} from 'react-dom/server'
 
+// router sets ctx.url after <Redirect>
+const shouldRedirect = (routerCtx) => routerCtx.url
+
+const redirect = (routerCtx, res) => {
+  res.writeHead(302, {Location: routerCtx.url})
+  res.end()
+}
+
 export default (App) => {
   return class Apollo extends React.Component {
     static displayName = 'withApollo(App)'
@@ -31,9 +39,7 @@ export default (App) => {
           // routerCtx might be mutated during render!
           const routerCtx = {location: req.originalUrl}
 
-          // Run all GraphQL queries in given React tree to prefetch the data.
-          // Promise is resolved once the data are ready in apollo client.
-          await getDataFromTree(
+          const renderedApp = (
             <App
               {...appProps}
               Component={Component}
@@ -42,29 +48,25 @@ export default (App) => {
               routerCtx={routerCtx}
             />
           )
-          // router sets ctx.url after <Redirect>
-          if (routerCtx.url) {
-            res.writeHead(302, {Location: routerCtx.url})
-            res.end()
+
+          // Run all GraphQL queries in given React tree to prefetch the data.
+          // Promise is resolved once the data are ready in apollo client.
+          await getDataFromTree(renderedApp)
+
+          if (shouldRedirect(routerCtx)) {
+            redirect(routerCtx, res)
             return {}
           }
+
           // required for `react-apollo-hooks` to work in SSR
           await getMarkupFromTree({
             renderFunction: renderToString,
-            tree: (
-              <App
-                {...appProps}
-                Component={Component}
-                router={router}
-                apolloClient={apollo}
-                routerCtx={routerCtx}
-              />
-            ),
+            tree: renderedApp,
           })
-          // Hopefully we don' get redirect on second pass but better check for it ...
-          if (routerCtx.url) {
-            res.writeHead(302, {Location: routerCtx.url})
-            res.end()
+
+          // Hopefully we don't get redirect on second pass but better check for it ...
+          if (shouldRedirect(routerCtx)) {
+            redirect(routerCtx, res)
             return {}
           }
         } catch (error) {
@@ -72,7 +74,7 @@ export default (App) => {
           // Handle them in components via the data.error prop:
           // https://www.apollographql.com/docs/react/api/react-apollo.html#graphql-query-data-error
           // eslint-disable-next-line no-console
-          console.error('Error while running `getDataFromTree`', error)
+          console.error('Error during apollo initialization', error)
         }
 
         // getDataFromTree does not call componentWillUnmount
