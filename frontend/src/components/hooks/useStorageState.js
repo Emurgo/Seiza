@@ -1,8 +1,10 @@
 // @flow
 
-import {useState, useEffect} from 'react'
+import {useState, useEffect, useMemo} from 'react'
 
 import localStorage from '@/helpers/localStorage'
+import {useCookies} from '@/components/context/CookiesProvider'
+import {_getStorage} from '@/helpers/storage'
 
 import type {Storage} from '@/helpers/storage'
 
@@ -26,7 +28,24 @@ export const useStorageState = <T>(
 
 export const useLocalStorageState = <T>(
   key: string,
-  getInitialState: Function
+  initialState: T
 ): [T, (newState: T) => void | ((state: T) => T)] => {
-  return useStorageState<T>(localStorage, key, getInitialState)
+  return useStorageState<T>(localStorage, key, initialState)
+}
+
+export const useCookieState = <T>(
+  key: string,
+  initialState: T
+): [T, (newState: T) => void | ((state: T) => T)] => {
+  const {cookies, setCookie, destroyCookie} = useCookies()
+  const _cookieStorage = useMemo(
+    () => ({
+      getItem: (key) => cookies[key],
+      setItem: (key, value) => setCookie(key, value),
+      removeItem: (key) => destroyCookie(key),
+    }),
+    [cookies, setCookie, destroyCookie]
+  )
+  const cookieStorage = useMemo(() => _getStorage(_cookieStorage, 'cookie'), [_cookieStorage])
+  return useStorageState<T>(cookieStorage, key, initialState)
 }

@@ -2,7 +2,7 @@
 import React from 'react'
 import cn from 'classnames'
 import {Grid, withStyles} from '@material-ui/core'
-import {useLocale} from '@/components/HOC/intl'
+import {useLocale} from '@/components/context/intl'
 import {Select} from '@/components/visual'
 import {NavTypography} from '@/components/common/Navbar'
 
