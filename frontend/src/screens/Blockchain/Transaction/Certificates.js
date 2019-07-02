@@ -6,7 +6,7 @@ import {Divider} from '@material-ui/core'
 import {EntityCardContent, Card, ContentSpacing} from '@/components/visual'
 import {ReactComponent as CertificateIcon} from '@/static/assets/icons/reward-address.svg'
 import {useI18n} from '@/i18n/helpers'
-import CertificateList from './CertificateList'
+import CertificateList from '@/screens/Blockchain/Certificates/CertificateList'
 
 const messages = defineMessages({
   certificatesLabel: 'Certificates',

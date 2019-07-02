@@ -1,12 +1,12 @@
 import React from 'react'
 import {defineMessages} from 'react-intl'
 import {makeStyles} from '@material-ui/styles'
-import {Card} from '@material-ui/core'
 import useTabState from '@/components/hooks/useTabState'
 import {LiteTabs, LiteTab} from '@/components/visual'
 import {useI18n} from '@/i18n/helpers'
 import HistoryTab from '../../shared/Tabs/HistoryTab'
 import TransactionsTab from '../../shared/Tabs/TransactionsTab'
+import {MOCKED_CERTIFICATES} from '../../../Certificates/helpers'
 
 const messages = defineMessages({
   historyTabName: 'History ({count, plural, =0 {# epochs} one {# epoch} other {# epochs}})',
@@ -23,7 +23,7 @@ const TABS = {
   RENDER_CONTENT: {
     [TAB_NAMES.HISTORY]: ({stakePool}) => <HistoryTab history={stakePool.history} />,
     [TAB_NAMES.TRANSACTIONS]: ({stakePool}) => (
-      <TransactionsTab transactions={stakePool.transactions} />
+      <TransactionsTab transactions={stakePool.transactions} certificates={MOCKED_CERTIFICATES} />
     ),
   },
 }
@@ -42,7 +42,7 @@ const StakingPoolTabs = ({stakePool}) => {
 
   const TabContent = TABS.RENDER_CONTENT[currentTab]
   return (
-    <React.Fragment>
+    <div>
       <div className={classes.tabsWrapper}>
         <LiteTabs value={currentTabIndex} onChange={setTabByEventIndex}>
           <LiteTab
@@ -65,10 +65,8 @@ const StakingPoolTabs = ({stakePool}) => {
           />
         </LiteTabs>
       </div>
-      <Card>
-        <TabContent stakePool={stakePool} />
-      </Card>
-    </React.Fragment>
+      <TabContent stakePool={stakePool} />
+    </div>
   )
 }
 

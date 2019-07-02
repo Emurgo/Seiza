@@ -1,8 +1,8 @@
 import React from 'react'
 import {defineMessages} from 'react-intl'
 import {Typography} from '@material-ui/core'
-import {SummaryCard} from '@/components/visual'
 import {AdaValue} from '@/components/common'
+import {SummaryCard, Card} from '@/components/visual'
 import {useI18n} from '@/i18n/helpers'
 import PoolEntityContent from '@/components/common/PoolEntityContent'
 
@@ -21,7 +21,7 @@ const DelegatedPoolInfoTab = ({stakePool, epochsInCurrentStakePool}) => {
   const {Row, Label, Value} = SummaryCard
 
   return (
-    <React.Fragment>
+    <Card>
       <PoolEntityContent name={stakePool.name} hash={stakePool.hash} />
 
       <Row>
@@ -68,7 +68,7 @@ const DelegatedPoolInfoTab = ({stakePool, epochsInCurrentStakePool}) => {
           })}
         </Value>
       </Row>
-    </React.Fragment>
+    </Card>
   )
 }
 

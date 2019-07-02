@@ -3,19 +3,17 @@ import {defineMessages, FormattedMessage} from 'react-intl'
 import {Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
-import {SummaryCard, Link} from '@/components/visual'
 import {AdaValue} from '@/components/common'
+import {SummaryCard, Link, Divider} from '@/components/visual'
 import {useI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
-import keyDeregisteredIcon from '@/static/assets/icons/action-key-deregistered.svg'
-import keyRegisteredIcon from '@/static/assets/icons/action-key-registered.svg'
-import poolRetiringIcon from '@/static/assets/icons/action-pool-retiring.svg'
-import CERT_TYPES from './certificateTypes'
+import CertificateIcon from './CertificateIcon'
+import {CERT_TYPES} from './helpers'
 
 const messages = defineMessages({
-  keyRegistered: 'Key registered:',
-  keyDeregistered: 'Key de-registered:',
-  poolRetiring: 'Pool retiring:',
+  keyRegistered: 'Key registered',
+  keyDeregistered: 'Key de-registered',
+  poolRetiring: 'Pool retiring',
   deposit: 'Deposit:',
   registration: '{stakingKey} is registered.',
   deregistration: '{stakingKey} is deregistered',
@@ -24,11 +22,14 @@ const messages = defineMessages({
 })
 
 const useStyles = makeStyles(({spacing}) => ({
+  wrapper: {
+    width: '100%',
+  },
   icon: {
     verticalAlign: 'bottom',
   },
   contentLeftSpacing: {
-    paddingLeft: spacing(3),
+    paddingLeft: spacing(1),
   },
 }))
 
@@ -36,25 +37,18 @@ const Row = SummaryCard.Row
 const Label = SummaryCard.Label
 const Value = SummaryCard.Value
 
-const ICON_SIZE = 24 // in sync with actual size of svgs
-const useEmptyIconPlaceholderStyles = makeStyles(() => ({
-  root: {
-    display: 'inline-block',
-    width: ICON_SIZE,
-    height: ICON_SIZE,
-  },
-}))
-const EmptyIconPlaceholder = () => {
-  const className = useEmptyIconPlaceholderStyles().root
-  return <span className={className} />
-}
-
-const IconLabel = ({iconSrc, children}) => {
+const IconLabel = ({icon, children}) => {
   const classes = useStyles()
   return (
     <Label>
-      {iconSrc ? <img alt="" src={iconSrc} className={classes.icon} /> : <EmptyIconPlaceholder />}
-      <span className={classes.contentLeftSpacing}>{children}</span>
+      {icon}
+      <Typography
+        color="textPrimary"
+        component="span"
+        className={icon && classes.contentLeftSpacing}
+      >
+        {children}
+      </Typography>
     </Label>
   )
 }
@@ -64,7 +58,9 @@ const KeyRegistered = ({certificate}) => {
   return (
     <React.Fragment>
       <Row>
-        <IconLabel iconSrc={keyRegisteredIcon}>{tr(messages.keyRegistered)}</IconLabel>
+        <IconLabel icon={<CertificateIcon type={CERT_TYPES.KEY_REGISTERED} />}>
+          {tr(messages.keyRegistered)}
+        </IconLabel>
         <Value>
           <Typography variant="body1" color="textSecondary">
             <FormattedMessage
@@ -86,8 +82,8 @@ const KeyRegistered = ({certificate}) => {
           </Typography>
         </Value>
       </Row>
-      <Row>
-        <IconLabel>{tr(messages.deposit)}</IconLabel>
+      <Row hideSeparator>
+        {tr(messages.deposit)}
         <Value>
           <AdaValue showCurrency value={certificate.deposit} />
         </Value>
@@ -100,7 +96,9 @@ const KeyDeregistered = ({certificate}) => {
   return (
     <React.Fragment>
       <Row>
-        <IconLabel iconSrc={keyDeregisteredIcon}>{tr(messages.keyDeregistered)}</IconLabel>
+        <IconLabel icon={<CertificateIcon type={CERT_TYPES.KEY_DEREGISTERED} />}>
+          {tr(messages.keyDeregistered)}
+        </IconLabel>
         <Value>
           <Typography variant="body1" color="textSecondary">
             <FormattedMessage
@@ -119,8 +117,8 @@ const KeyDeregistered = ({certificate}) => {
           {tr(messages.deregistration2)}
         </Value>
       </Row>
-      <Row>
-        <IconLabel>{tr(messages.deposit)}</IconLabel>
+      <Row hideSeparator>
+        {tr(messages.deposit)}
         <Value>
           <AdaValue showCurrency value={certificate.deposit} />
         </Value>
@@ -133,7 +131,9 @@ const PoolRetiring = ({certificate}) => {
   const {translate: tr} = useI18n()
   return (
     <Row>
-      <IconLabel iconSrc={poolRetiringIcon}>{tr(messages.poolRetiring)}</IconLabel>
+      <IconLabel icon={<CertificateIcon type={CERT_TYPES.POOL_RETIRING} />}>
+        {tr(messages.poolRetiring)}
+      </IconLabel>
       <Value>
         <Typography variant="body1" color="textSecondary">
           <FormattedMessage
@@ -165,11 +165,17 @@ const CERT_TYPE_TO_COMPONENT = {
 }
 
 const CertificateList = ({certificates}) => {
+  const classes = useStyles()
   return (
-    <div>
+    <div className={classes.wrapper}>
       {certificates.map((certificate, index) => {
         const Certificate = CERT_TYPE_TO_COMPONENT[certificate.type]
-        return <Certificate key={index} certificate={certificate} />
+        return (
+          <React.Fragment key={index}>
+            <Divider />
+            <Certificate certificate={certificate} />
+          </React.Fragment>
+        )
       })}
     </div>
   )

@@ -62,11 +62,16 @@ const SummaryCard = ({children}) => {
   )
 }
 
-const Row = ({children, onClick, className, showLastSeparator = false}) => {
+const Row = ({children, onClick, className, hideSeparator = false, showLastSeparator = false}) => {
   const classes = useRowStyles({showLastSeparator})
   const clickable = !!onClick
   return (
-    <div className={cn(classes.listRowWrapper, clickable && classes.clickableListWrapper)}>
+    <div
+      className={cn(
+        !hideSeparator && classes.listRowWrapper,
+        clickable && classes.clickableListWrapper
+      )}
+    >
       <Grid
         container
         direction="row"
