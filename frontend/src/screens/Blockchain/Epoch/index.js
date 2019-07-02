@@ -13,16 +13,16 @@ import {
   SimpleLayout,
   EntityCardContent,
   EntityCardShell,
-  Tab,
-  Tabs,
+  LiteTab,
+  LiteTabs,
   Overlay,
   Chip,
 } from '@/components/visual'
 import {AdaValue, LoadingError, LoadingOverlay} from '@/components/common'
+import useTabState from '@/components/hooks/useTabState'
 import {useI18n} from '@/i18n/helpers'
 import EpochNumberIcon from '@/static/assets/icons/epoch-number.svg'
 import EpochIcon from '@/static/assets/icons/metrics-epoch.svg'
-import WithTabState from '@/components/headless/tabState'
 import Blocks from './Blocks'
 import StakingPoolsTab from './StakingPools'
 import {routeTo} from '@/helpers/routes'
@@ -340,7 +340,6 @@ const EpochScreen = () => {
   const {epochNumber} = useScreenParams()
   const {epochData, error, loading} = useEpochData(epochNumber)
   const scrollToRef = useRef()
-
   const {translate: tr} = useI18n()
   const blocksInEpoch = idx(epochData, (_) => _.summary.blocksCreated)
 
@@ -348,6 +347,9 @@ const EpochScreen = () => {
   analytics.useTrackPageVisitEvent('epoch')
 
   useScrollFromBottom(scrollToRef, epochData)
+
+  const {setTabByEventIndex, currentTabIndex, currentTab} = useTabState(TABS.ORDER)
+  const TabContent = TABS.CONTENT[currentTab]
 
   return (
     <div ref={scrollToRef}>
@@ -368,20 +370,13 @@ const EpochScreen = () => {
           <React.Fragment>
             <EpochSummaryCard epoch={epochData} loading={loading} />
             {config.showStakingData ? (
-              <WithTabState tabNames={TABS.ORDER}>
-                {({setTab, currentTab, currentTabName}) => {
-                  const TabContent = TABS.CONTENT[currentTabName]
-                  return (
-                    <Card>
-                      <Tabs value={currentTab} onChange={setTab}>
-                        <Tab label={tr(messages.blocksTab)} />
-                        <Tab label={tr(messages.stakingPoolsTab)} />
-                      </Tabs>
-                      <TabContent epochNumber={epochNumber} />
-                    </Card>
-                  )
-                }}
-              </WithTabState>
+              <React.Fragment>
+                <LiteTabs value={currentTabIndex} onChange={setTabByEventIndex}>
+                  <LiteTab label={tr(messages.blocksTab)} />
+                  <LiteTab label={tr(messages.stakingPoolsTab)} />
+                </LiteTabs>
+                <TabContent epochNumber={epochNumber} />
+              </React.Fragment>
             ) : (
               blocksInEpoch != null &&
               blocksInEpoch > 0 && <Blocks epochNumber={epochNumber} blocksCount={blocksInEpoch} />
