@@ -12,7 +12,7 @@ import {AdaValue, LoadingError, EntityCardContent, Link} from '@/components/comm
 import {getDefaultSpacing} from '@/components/visual/ContentSpacing'
 import {useI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
-import {TabsProvider as Tabs, TabItem as Tab, useTabContext} from '@/components/context/TabContext'
+import {TabsProvider as Tabs, TabItem as Tab, useTabContext} from '@/components/common/Tabs'
 import {AddressesBreakdownContent} from '@/components/common/AddressesBreakdown'
 import {FILTER_TYPES} from './constants'
 

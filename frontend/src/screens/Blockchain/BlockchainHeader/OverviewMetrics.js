@@ -17,7 +17,7 @@ import config from '@/config'
 import useCurrency, {CURRENCIES} from '@/components/hooks/useCurrency'
 import {useQuery} from 'react-apollo-hooks'
 import useNavigateTo from '@/components/hooks/useNavigateTo'
-import {useAnalytics} from '@/helpers/googleAnalytics'
+import {useAnalytics} from '@/components/context/googleAnalytics'
 
 const PRELOAD_FONT_WEIGHT = 300
 

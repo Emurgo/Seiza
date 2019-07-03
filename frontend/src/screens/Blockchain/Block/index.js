@@ -13,7 +13,7 @@ import {AdaValue, LoadingError, EntityIdCard, Link} from '@/components/common'
 
 import blockIcon from '@/static/assets/icons/metrics-blocks.svg'
 import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
-import {useAnalytics} from '@/helpers/googleAnalytics'
+import {useAnalytics} from '@/components/context/googleAnalytics'
 
 import TransactionCard from '@/components/common/TransactionCard'
 

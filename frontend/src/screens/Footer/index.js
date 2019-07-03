@@ -1,6 +1,7 @@
 // @flow
 import React from 'react'
 
+import {SubscribeProvider} from './context/subscribe'
 import SubscribeFooter from './SubscribeFooter'
 import MainFooter from './MainFooter'
 
@@ -9,10 +10,10 @@ type Props = {|
 |}
 
 const Footer = ({navItems}: Props) => (
-  <React.Fragment>
+  <SubscribeProvider>
     <SubscribeFooter />
     <MainFooter navItems={navItems} />
-  </React.Fragment>
+  </SubscribeProvider>
 )
 
 export default Footer

@@ -11,7 +11,7 @@ import {LoadingError, EntityIdCard} from '@/components/common'
 
 import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
 import {useI18n} from '@/i18n/helpers'
-import {useAnalytics} from '@/helpers/googleAnalytics'
+import {useAnalytics} from '@/components/context/googleAnalytics'
 
 const summaryLabels = defineMessages({
   name: 'Name',

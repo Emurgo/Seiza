@@ -3,7 +3,7 @@
 import {useState, useEffect, useMemo} from 'react'
 
 import localStorage from '@/helpers/localStorage'
-import {useCookies} from '@/components/context/CookiesProvider'
+import {useCookies} from '@/components/context/cookies'
 import {_getStorage} from '@/helpers/storage'
 
 import type {Storage} from '@/helpers/storage'

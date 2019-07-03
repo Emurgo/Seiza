@@ -14,11 +14,11 @@ import {Typography, Portal} from '@material-ui/core'
 import {useI18n} from '@/i18n/helpers'
 import {Searchbar, Alert} from '@/components/visual'
 import {LoadingError} from '@/components/common'
-import {useSearchbarRefContext} from '@/components/context/SearchbarRef'
+import {useSearchbarRef} from '../context/searchbarRef'
 
 import {routeTo} from '@/helpers/routes'
 import * as urlHelpers from '@/helpers/url'
-import {useAnalytics} from '@/helpers/googleAnalytics'
+import {useAnalytics} from '@/components/context/googleAnalytics'
 import {APOLLO_CACHE_OPTIONS} from '@/constants'
 
 const text = defineMessages({
@@ -211,7 +211,7 @@ const Search = ({isMobile = false}: SearchProps) => {
 
   const showAlert = searchQuery && !error && !loading && !searchResult
 
-  const searchbarRef = useSearchbarRefContext()
+  const searchbarRef = useSearchbarRef()
 
   const {isFocused: isSearchbarFocused, onFocus, onBlur} = useTextfieldFocus(false)
 

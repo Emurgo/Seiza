@@ -13,4 +13,4 @@ export const SearchbarRefProvider = ({children}: Props) => {
   return <Context.Provider value={ref}>{children}</Context.Provider>
 }
 
-export const useSearchbarRefContext = () => useContext(Context)
+export const useSearchbarRef = () => useContext(Context)
