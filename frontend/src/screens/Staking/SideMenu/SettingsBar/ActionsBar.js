@@ -1,7 +1,8 @@
 // @flow
 
-import React from 'react'
+import React, {useCallback} from 'react'
 import useReactRouter from 'use-react-router'
+import moment from 'moment-timezone'
 import {defineMessages} from 'react-intl'
 
 import {IconButton, Grid, Typography} from '@material-ui/core'
@@ -43,6 +44,20 @@ const ActionButton = ({
   </Grid>
 )
 
+const toPrettyJSON = (data) => JSON.stringify(data, null, 4)
+
+const exportPoolsToJson = (selectedPoolsHashes) => {
+  const data = {
+    type: 'seiza-pool-export:1',
+    // TODO: what format do we want? This is ISO 8601 which relative to UTC
+    export_time: moment().format(),
+    pools: selectedPoolsHashes,
+    check: 'TODO',
+  }
+
+  download('data.json', toPrettyJSON(data))
+}
+
 type Props = {|
   selectedPoolsHashes: Array<string>,
 |}
@@ -54,6 +69,10 @@ const ActionsBar = ({selectedPoolsHashes}: Props) => {
   // Note: not using `window.location.href` as then the component would not properly
   // listen to changes in url query
   const currentUrl = process.browser ? window.location.origin + history.createHref(location) : ''
+
+  const downloadSelectedPools = useCallback(() => exportPoolsToJson(selectedPoolsHashes), [
+    selectedPoolsHashes,
+  ])
 
   return (
     <Grid container direction="row" alignItems="center" justify="space-between" wrap="nowrap">
@@ -86,10 +105,7 @@ const ActionsBar = ({selectedPoolsHashes}: Props) => {
         <ActionButton
           label={tr(messages.export)}
           icon={<CallMade color="primary" />}
-          onClick={() => {
-            // TODO: next PR
-            download('data.json', JSON.stringify(selectedPoolsHashes))
-          }}
+          onClick={downloadSelectedPools}
         />
       </Grid>
     </Grid>
