@@ -7,7 +7,7 @@ import {Refresh} from '@material-ui/icons'
 import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
 
-import PoolsToCompare from './PoolsToCompare'
+import SettingsBar from './SettingsBar'
 import NavigationBar from './NavigationBar'
 import {useI18n} from '@/i18n/helpers'
 import {Card} from '@/components/visual'
@@ -83,7 +83,7 @@ const SideMenu = () => {
           </Typography>
         </Grid>
       </IconButton>
-      <PoolsToCompare />
+      <SettingsBar />
       <NavigationBar />
     </Card>
   )
