@@ -10,7 +10,7 @@ import {routeTo, combinedBlockchainPath} from './helpers/routes'
 import type {NavItem} from '@/components/common/Navbar'
 
 import BlockchainSearch from './screens/Blockchain/BlockchainHeader/Search'
-import {Link} from '@/components/visual'
+import {Link} from '@/components/common'
 import seizaLogoDesktop from '@/static/assets/icons/logo-seiza.svg'
 import seizaLogoMobile from '@/static/assets/icons/seiza-symbol.svg'
 import {NavLinks, MobileNavLinks} from '@/components/common/Navbar'

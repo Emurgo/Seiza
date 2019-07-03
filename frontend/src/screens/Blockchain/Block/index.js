@@ -8,15 +8,8 @@ import idx from 'idx'
 import gql from 'graphql-tag'
 import {defineMessages} from 'react-intl'
 
-import {
-  EntityIdCard,
-  SummaryCard,
-  SimpleLayout,
-  LoadingDots,
-  LoadingInProgress,
-  Link,
-} from '@/components/visual'
-import {AdaValue, LoadingError} from '@/components/common'
+import {SummaryCard, SimpleLayout, LoadingDots, LoadingInProgress} from '@/components/visual'
+import {AdaValue, LoadingError, EntityIdCard, Link} from '@/components/common'
 
 import blockIcon from '@/static/assets/icons/metrics-blocks.svg'
 import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'

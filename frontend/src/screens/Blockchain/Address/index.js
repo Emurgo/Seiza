@@ -19,17 +19,14 @@ import {useManageQueryValue} from '@/components/hooks/useManageQueryValue'
 import WithModalState from '@/components/headless/modalState'
 import PagedTransactions from './PagedTransactions'
 import QRDialog from './QRDialog'
+import {SimpleLayout, LoadingDots, SummaryCard, Tooltip, EntityHeading} from '@/components/visual'
 import {
+  AdaValue,
+  LoadingError,
   EntityIdCard,
-  SimpleLayout,
-  LoadingDots,
-  SummaryCard,
   EntityCardContent,
-  Tooltip,
-  EntityHeading,
   Pagination,
-} from '@/components/visual'
-import {AdaValue, LoadingError} from '@/components/common'
+} from '@/components/common'
 
 import qrCodeIcon from '@/static/assets/icons/qrcode.svg'
 import {extractError} from '@/helpers/errors'
