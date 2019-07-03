@@ -1,0 +1,26 @@
+{
+  "name": "sitemap-generator",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "build": "node --max-old-space-size=16000 src/index.js"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.487.0",
+    "dotenv": "^8.0.0",
+    "elasticsearch": "^16.1.1",
+    "eslint": "^6.0.1",
+    "fs-extra": "^8.1.0",
+    "http-aws-es": "^6.0.0",
+    "lodash": "^4.17.11",
+    "xmlbuilder": "^13.0.2"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.0.2",
+    "eslint-config-vacuumlabs": "^1.8.2",
+    "eslint-plugin-import": "^2.18.0",
+    "eslint-plugin-react": "^7.14.2",
+    "prettier-eslint-cli": "^5.0.0"
+  }
+}
