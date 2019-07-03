@@ -9,7 +9,7 @@ import {defineMessages} from 'react-intl'
 import {useI18n, withI18n} from '@/i18n/helpers'
 
 import {useTheme} from '@/components/context/theme'
-import {THEME_DEFINITIONS, THEMES} from '@/components/themes'
+import {THEME_DEFINITIONS, THEMES} from '@/themes'
 import {Select} from '@/components/visual'
 import {NavTypography} from '@/components/common/Navbar'
 
