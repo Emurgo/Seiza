@@ -23,7 +23,7 @@
   "components.common.ComparisonMatrix.DesktopComparisonMatrix.index.fullScreen": "Full screen mode",
   "components.common.ComparisonMatrix.MobileComparisonMatrix.index.collapseAll": "Collapse all",
   "components.common.ComparisonMatrix.MobileComparisonMatrix.index.expandAll": "Expand all",
-  "components.common.ComparisonMatrix.fields.copyText": "Copy",
+  "components.common.ComparisonMatrix.fields.copyText": "Copiar",
   "components.common.ComparisonMatrix.fields.fullScreen": "Full screen mode",
   "components.common.CookiesBanner.accept": "Aceptar",
   "components.common.CookiesBanner.confirm": "I accept cookies",
