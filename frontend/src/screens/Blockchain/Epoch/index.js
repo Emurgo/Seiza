@@ -8,17 +8,14 @@ import {MetadataOverrides} from '@/pages/_meta'
 import useReactRouter from 'use-react-router'
 import {Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
+import {SummaryCard, SimpleLayout, LiteTab, LiteTabs, Overlay, Chip} from '@/components/visual'
 import {
-  SummaryCard,
-  SimpleLayout,
+  AdaValue,
+  LoadingError,
+  LoadingOverlay,
   EntityCardContent,
   EntityCardShell,
-  LiteTab,
-  LiteTabs,
-  Overlay,
-  Chip,
-} from '@/components/visual'
-import {AdaValue, LoadingError, LoadingOverlay} from '@/components/common'
+} from '@/components/common'
 import useTabState from '@/components/hooks/useTabState'
 import {useI18n} from '@/i18n/helpers'
 import EpochNumberIcon from '@/static/assets/icons/epoch-number.svg'

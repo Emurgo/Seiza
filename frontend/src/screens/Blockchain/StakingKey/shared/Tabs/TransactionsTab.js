@@ -3,14 +3,8 @@ import {defineMessages, FormattedMessage} from 'react-intl'
 import {makeStyles} from '@material-ui/styles'
 
 import TwoColumnRow from '../TwoColumnRow'
-import {
-  Pagination,
-  ExpandableCard,
-  ExpandableCardFooter,
-  EntityCardContent,
-  ContentSpacing,
-  Link,
-} from '@/components/visual'
+import {ExpandableCard, ExpandableCardFooter, ContentSpacing} from '@/components/visual'
+import {Pagination, EntityCardContent, Link} from '@/components/common'
 import useToggle from '@/components/hooks/useToggle'
 import {useI18n} from '@/i18n/helpers'
 import CertificateList from '@/screens/Blockchain/Certificates/CertificateList'

@@ -4,12 +4,11 @@ import * as React from 'react'
 import {defineMessages} from 'react-intl'
 
 import {useI18n} from '@/i18n/helpers'
-import {ComparisonMatrix} from '@/components/visual'
-import {AdaValue} from '@/components/common'
+import {AdaValue, ComparisonMatrix} from '@/components/common'
 import {
   FadeoutFieldWithTooltip,
   EllipsizedLinkFieldWithTooltip,
-} from '@/components/visual/ComparisonMatrix/fields'
+} from '@/components/common/ComparisonMatrix/fields'
 
 import {WithEnsureStakePoolsLoaded} from '../utils'
 import {useLoadSelectedPools} from './dataLoaders'

@@ -1,6 +1,8 @@
 // @flow
 import React from 'react'
-import {EntityCardContent, VisualHash, ContentSpacing} from '@/components/visual'
+
+import {VisualHash, ContentSpacing} from '@/components/visual'
+import {EntityCardContent} from '@/components/common'
 
 type Props = {
   name: string,

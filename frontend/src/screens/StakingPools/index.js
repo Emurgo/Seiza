@@ -4,7 +4,7 @@ import gql from 'graphql-tag'
 import idx from 'idx'
 import {useQuery} from 'react-apollo-hooks'
 
-import {Pagination} from '@/components/visual'
+import {Pagination} from '@/components/common'
 import {useManageQueryValue} from '@/components/hooks/useManageQueryValue'
 import {toIntOrNull, getPageCount} from '@/helpers/utils'
 

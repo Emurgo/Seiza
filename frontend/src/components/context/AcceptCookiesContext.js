@@ -1,7 +1,7 @@
 // @flow
 import React, {useContext, useCallback} from 'react'
 
-import {useLocalStorageState} from '@/components/hooks/useStorageState'
+import {useCookieState} from '@/components/hooks/useStorageState'
 
 type ContextType = {
   cookiesAccepted: boolean,
@@ -15,10 +15,7 @@ type Props = {|
 |}
 
 export const AcceptCookiesProvider = ({children}: Props) => {
-  const [cookiesAccepted, setCookiesAccepted] = useLocalStorageState<boolean>(
-    'acceptCookies',
-    false
-  )
+  const [cookiesAccepted, setCookiesAccepted] = useCookieState<boolean>('acceptCookies', false)
 
   const acceptCookies = useCallback(() => {
     setCookiesAccepted(true)

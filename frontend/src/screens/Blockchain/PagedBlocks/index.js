@@ -4,7 +4,7 @@ import {defineMessages} from 'react-intl'
 import {Switch, Typography, Grid, Hidden} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
-import Pagination from '@/components/visual/Pagination'
+import {Pagination} from '@/components/common'
 import {SimpleLayout} from '@/components/visual'
 import {GET_PAGED_BLOCKS} from '@/api/queries'
 import {useI18n} from '@/i18n/helpers'

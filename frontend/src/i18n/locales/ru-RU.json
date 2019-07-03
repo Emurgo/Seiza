@@ -229,7 +229,7 @@
   "screens.Blockchain.StakingKey.shared.Tabs.TransactionsTab.epochSlot": "Эпоха/Слот:",
   "screens.Blockchain.StakingKey.shared.Tabs.TransactionsTab.hideActionDetails": "Hide details of Actions",
   "screens.Blockchain.StakingKey.shared.Tabs.TransactionsTab.showActionDetails": "Show details of Actions",
-  "screens.Blockchain.StakingKey.shared.Tabs.TransactionsTab.transactionEntity": "Transaction",
+  "screens.Blockchain.StakingKey.shared.Tabs.TransactionsTab.transactionEntity": "Транзакция",
   "screens.Blockchain.StakingKey.shared.Tabs.TransactionsTab.transactionPage": "transaction page",
   "screens.Blockchain.StakingKey.shared.Tabs.TransactionsTab.truncatedCertificateList": "In this transaction more than {txCount} actions - see them on {txPage}",
   "screens.Blockchain.Transaction.Certificates.certificatesLabel": "Certificates",

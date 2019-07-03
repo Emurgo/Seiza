@@ -9,11 +9,12 @@ import {fade} from '@material-ui/core/styles/colorManipulator'
 
 import {getPageCount} from '@/helpers/utils'
 import {useIsMobile} from '@/components/hooks/useBreakpoints'
-import {Card, Pagination, ContentSpacing} from '@/components/visual'
+import {Card, ContentSpacing} from '@/components/visual'
+import {Pagination} from '@/components/common'
 import {useI18n} from '@/i18n/helpers'
 
 // TODO: Consider extracting this outside ComparisonMatrix
-import {ItemIdentifier} from '@/components/visual/ComparisonMatrix/utils'
+import {ItemIdentifier} from '@/components/common/ComparisonMatrix/utils'
 import {ReactComponent as EpochIcon} from '@/static/assets/icons/epoch.svg'
 
 import {WithEnsureStakePoolsLoaded, WithEnsureDataLoaded} from '../utils'

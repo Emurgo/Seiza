@@ -7,16 +7,8 @@ import {makeStyles} from '@material-ui/styles'
 import BigNumber from 'bignumber.js'
 // import type {Transaction} from '@/__generated__/schema.flow'
 
-import {
-  LoadingInProgress,
-  EntityCardContent,
-  SummaryCard,
-  Link,
-  LiteTabs,
-  LiteTab,
-  Card,
-} from '@/components/visual'
-import {AdaValue, LoadingError} from '@/components/common'
+import {LoadingInProgress, SummaryCard, LiteTabs, LiteTab, Card} from '@/components/visual'
+import {AdaValue, LoadingError, EntityCardContent, Link} from '@/components/common'
 import {getDefaultSpacing} from '@/components/visual/ContentSpacing'
 import {useI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'

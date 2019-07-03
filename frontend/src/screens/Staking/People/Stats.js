@@ -5,8 +5,7 @@ import {defineMessages} from 'react-intl'
 import {makeStyles} from '@material-ui/styles'
 
 import {useI18n} from '@/i18n/helpers'
-import {ComparisonMatrix} from '@/components/visual'
-import {AdaValue} from '@/components/common'
+import {AdaValue, ComparisonMatrix} from '@/components/common'
 
 const messages = defineMessages({
   stakePools: 'Stake pools',
