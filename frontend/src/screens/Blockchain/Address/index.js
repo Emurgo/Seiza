@@ -23,14 +23,13 @@ import {
   EntityIdCard,
   SimpleLayout,
   LoadingDots,
-  LoadingError,
   SummaryCard,
   EntityCardContent,
-  AdaValue,
   Tooltip,
   EntityHeading,
   Pagination,
 } from '@/components/visual'
+import {AdaValue, LoadingError} from '@/components/common'
 
 import qrCodeIcon from '@/static/assets/icons/qrcode.svg'
 import {extractError} from '@/helpers/errors'

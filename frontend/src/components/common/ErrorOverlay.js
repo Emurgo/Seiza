@@ -3,7 +3,7 @@ import React from 'react'
 
 import DebugApolloError from './DebugApolloError'
 import LoadingError from './LoadingError'
-import Overlay from './Overlay'
+import {Overlay} from '@/components/visual'
 
 type Props = {
   error: any,

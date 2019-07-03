@@ -9,15 +9,14 @@ import BigNumber from 'bignumber.js'
 
 import {
   LoadingInProgress,
-  LoadingError,
   EntityCardContent,
   SummaryCard,
-  AdaValue,
   Link,
   LiteTabs,
   LiteTab,
   Card,
 } from '@/components/visual'
+import {AdaValue, LoadingError} from '@/components/common'
 import {getDefaultSpacing} from '@/components/visual/ContentSpacing'
 import {useI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'

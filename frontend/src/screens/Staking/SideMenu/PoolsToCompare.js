@@ -1,6 +1,7 @@
 // @flow
 
 import React from 'react'
+import assert from 'assert'
 import useReactRouter from 'use-react-router'
 import gql from 'graphql-tag'
 import {useApolloClient, useQuery} from 'react-apollo-hooks'
@@ -12,9 +13,11 @@ import {fade} from '@material-ui/core/styles/colorManipulator'
 import {IconButton, Grid, Typography, Avatar, withStyles} from '@material-ui/core'
 import {Share, CallMade, CallReceived, Clear} from '@material-ui/icons'
 
-import {LoadingDots, DebugApolloError, VisualHash, Chip} from '@/components/visual'
+import {LoadingDots, VisualHash, Chip} from '@/components/visual'
+import {DebugApolloError} from '@/components/common'
 import CopyToClipboard from '@/components/common/CopyToClipboard'
-import assert from 'assert'
+import FileInputHandler from '@/components/common/FileInputHandler'
+import {download} from '@/helpers/utils'
 import {withI18n} from '@/i18n/helpers'
 import {dataIdFromObject} from '@/helpers/apollo'
 import {useSelectedPoolsContext} from '../context/selectedPools'
@@ -153,10 +156,21 @@ const _StakePoolItem = ({classes, label, onDelete, hash}) => (
 
 const StakePoolItem = withStyles(poolsStyles)(_StakePoolItem)
 
-const Action = ({classes, label, icon, onClick}) => (
+// TODO (next PR): move ActionButtons related logic to a separate file
+const ActionButton = ({
+  label,
+  icon,
+  onClick,
+}: {
+  label: string,
+  icon: React$Node,
+  onClick?: Function,
+}) => (
   <Grid container direction="row" alignItems="center">
     <Grid item>
-      <IconButton onClick={onClick} aria-label={label} color="primary">
+      {/* Note: `component="span"` is required so that this can be used
+          as a children of `ReadFile` */}
+      <IconButton component="span" aria-label={label} color="primary" onClick={onClick}>
         {icon}
       </IconButton>
     </Grid>
@@ -284,7 +298,7 @@ const PoolsToCompare = ({classes, i18n: {translate}}) => {
       {/* TODO: onClick handling and real work */}
       <Grid container direction="row" alignItems="center" justify="space-between" wrap="nowrap">
         <Grid item>
-          <Action
+          <ActionButton
             label={translate(messages.share)}
             icon={
               // Note(ppershing): this is a temporary workaround
@@ -295,21 +309,30 @@ const PoolsToCompare = ({classes, i18n: {translate}}) => {
                 </CopyToClipboard>
               </div>
             }
-            onClick={() => null}
           />
         </Grid>
         <Grid item>
-          <Action
-            label={translate(messages.import)}
-            icon={<CallReceived color="primary" />}
-            onClick={() => null}
-          />
+          <FileInputHandler
+            id="import-staking-settings"
+            onFileLoaded={(content) => {
+              // TODO: next PR
+              console.log('File loaded:', content) // eslint-disable-line
+            }}
+          >
+            <ActionButton
+              label={translate(messages.import)}
+              icon={<CallReceived color="primary" />}
+            />
+          </FileInputHandler>
         </Grid>
         <Grid item>
-          <Action
+          <ActionButton
             label={translate(messages.export)}
             icon={<CallMade color="primary" />}
-            onClick={() => null}
+            onClick={() => {
+              // TODO: next PR
+              download('data.json', JSON.stringify(poolHashes))
+            }}
           />
         </Grid>
       </Grid>

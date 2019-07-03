@@ -7,7 +7,8 @@ import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
 
 import {useI18n} from '@/i18n/helpers'
-import {LoadingError, LoadingInProgress} from '@/components/visual'
+import {LoadingInProgress} from '@/components/visual'
+import {LoadingError} from '@/components/common'
 
 const messages = defineMessages({
   noData: 'There are no pools selected.',

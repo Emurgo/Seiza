@@ -3,7 +3,8 @@ import {defineMessages} from 'react-intl'
 import {Typography, Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
-import {SummaryCard, AdaValue} from '@/components/visual'
+import {AdaValue} from '@/components/common'
+import {SummaryCard, Card} from '@/components/visual'
 import {useI18n} from '@/i18n/helpers'
 import EpochIcon from '@/static/assets/icons/epoch.svg'
 
@@ -88,7 +89,7 @@ const HistoryTab = ({history}) => {
   const classes = useStyles()
   const {Row, Label, Value} = SummaryCard
   return history.map(({epochNumber, actions}, index) => (
-    <div className={classes.headerWrapper} key={index}>
+    <Card className={classes.headerWrapper} key={index}>
       <EpochHeader epochNumber={epochNumber} />
       {actions.map((action, index) => {
         const label = tr(messages[action.type])
@@ -106,7 +107,7 @@ const HistoryTab = ({history}) => {
           </Row>
         )
       })}
-    </div>
+    </Card>
   ))
 }
 

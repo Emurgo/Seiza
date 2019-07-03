@@ -6,7 +6,7 @@ import {compose} from 'redux'
 import {withProps} from 'recompose'
 import {graphql} from 'react-apollo'
 
-import {AdaValue} from '@/components/visual'
+import {AdaValue} from '@/components/common'
 import Layout from './Layout'
 import InfoCard from './InfoCard'
 import {withI18n} from '@/i18n/helpers'

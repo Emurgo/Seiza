@@ -4,15 +4,8 @@ import {Typography} from '@material-ui/core'
 import useReactRouter from 'use-react-router'
 import {makeStyles} from '@material-ui/styles'
 
-import {
-  AdaValue,
-  SummaryCard,
-  SimpleLayout,
-  EntityIdCard,
-  Link,
-  LoadingError,
-  LoadingInProgress,
-} from '@/components/visual'
+import {SummaryCard, SimpleLayout, EntityIdCard, Link, LoadingInProgress} from '@/components/visual'
+import {AdaValue, LoadingError} from '@/components/common'
 import {routeTo} from '@/helpers/routes'
 import {useI18n} from '@/i18n/helpers'
 import AdaIcon from '@/static/assets/icons/transaction-id.svg'

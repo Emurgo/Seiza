@@ -1,10 +1,22 @@
 import React from 'react'
-import {defineMessages} from 'react-intl'
+import {defineMessages, FormattedMessage} from 'react-intl'
 import {makeStyles} from '@material-ui/styles'
 
-import TransactionCard from '@/components/common/TransactionCard'
-import {AdaValue, SummaryCard, Pagination} from '@/components/visual'
+import TwoColumnRow from '../TwoColumnRow'
+import {
+  Pagination,
+  ExpandableCard,
+  ExpandableCardFooter,
+  EntityCardContent,
+  ContentSpacing,
+  Link,
+} from '@/components/visual'
+import useToggle from '@/components/hooks/useToggle'
 import {useI18n} from '@/i18n/helpers'
+import CertificateList from '@/screens/Blockchain/Certificates/CertificateList'
+import {routeTo} from '@/helpers/routes'
+import CertificatesSummary from '../../../Certificates/CertificatesSummary'
+import EmphasizedMessage from './EmphasizedMessage'
 
 const useStyles = makeStyles((theme) => ({
   paginationWrapper: {
@@ -14,71 +26,102 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const transactionMessages = defineMessages({
-  epoch: 'Epoch:',
-  slot: 'Slot:',
+  transactionEntity: 'Transaction',
+  epochSlot: 'Epoch / Slot:',
   date: 'Date:',
-  action: 'Action:',
-  actionValue: 'Action Value:',
+  showActionDetails: 'Show details of Actions',
+  hideActionDetails: 'Hide details of Actions',
+  truncatedCertificateList:
+    'In this transaction more than {txCount} actions - see them on {txPage}',
+  transactionPage: 'transaction page',
 })
 
-const actionMessages = defineMessages({
-  CREATED: 'Created',
-  DELETED: 'Deleted',
-  DELEGATES: 'Delegates',
-  FUNDS: 'Funds',
-  FUNDED_BY: 'Funded by',
-  WITHDRAWAL: 'Withdrawal',
-  REWARD: 'Reward',
-  FUNDING_POOL_REMOVED: 'Funding pool removed',
-})
+const useTxStyles = makeStyles((theme) => ({
+  bottomSpace: {
+    marginBottom: theme.spacing(3),
+  },
+}))
 
-const ACTION_VALUE_RENDERER = {
-  CREATED: ({value: {depositAmount}}) => <AdaValue value={depositAmount} showCurrency />,
-  DELETED: ({value: {refundAmount}}) => <AdaValue value={refundAmount} showCurrency />,
-  DELEGATES: ({value: {poolName, poolHash}}) => `${poolName} ${poolHash}`,
-  FUNDS: ({value: {poolName, poolHash}}) => `${poolName} ${poolHash}`,
-  FUNDED_BY: ({value: {poolName, poolHash}}) => `${poolName} ${poolHash}`,
-  WITHDRAWAL: ({value: {inputAmount}}) => <AdaValue value={inputAmount} showCurrency />,
-  REWARD: ({value: {rewardAmount}}) => <AdaValue value={rewardAmount} showCurrency />,
-  FUNDING_POOL_REMOVED: ({value: {poolName, poolHash}}) => `${poolName} ${poolHash}`,
+const TruncatedCertificateList = ({txCount, txHash}) => {
+  const {translate: tr, formatInt} = useI18n()
+  return (
+    <EmphasizedMessage>
+      <FormattedMessage
+        // $FlowFixMe
+        id={transactionMessages.truncatedCertificateList.id}
+        values={{
+          txCount: formatInt(txCount),
+          txPage: (
+            <Link to={routeTo.transaction(txHash)}>{tr(transactionMessages.transactionPage)}</Link>
+          ),
+        }}
+      />
+    </EmphasizedMessage>
+  )
 }
 
-const TransactionsTab = ({transactions}) => {
-  const {Row, Label, Value} = SummaryCard
+const MAX_SHOWN_CERTIFICATES = 3
+
+const TransactionCard = ({tx, certificates = []}) => {
+  const classes = useTxStyles()
+  const [isOpen, toggle] = useToggle()
   const {translate: tr, formatInt, formatTimestamp} = useI18n()
+  return (
+    <div className={classes.bottomSpace}>
+      <ExpandableCard
+        expanded={isOpen}
+        onChange={toggle}
+        renderHeader={() => (
+          <React.Fragment>
+            <ContentSpacing>
+              <EntityCardContent
+                label={tr(transactionMessages.transactionEntity)}
+                value={<Link to={routeTo.transaction(tx.txHash)}>{tx.txHash}</Link>}
+                rawValue={tx.txHash}
+              />
+              <CertificatesSummary certificates={certificates} />
+            </ContentSpacing>
+            <TwoColumnRow
+              label1={tr(transactionMessages.date)}
+              value1={formatTimestamp(tx.date)}
+              label2={tr(transactionMessages.epochSlot)}
+              value2={
+                <React.Fragment>
+                  {formatInt(tx.epochNumber)} / {formatInt(tx.slot)}
+                </React.Fragment>
+              }
+            />
+          </React.Fragment>
+        )}
+        renderExpandedArea={() => (
+          <React.Fragment>
+            <CertificateList certificates={certificates.slice(0, MAX_SHOWN_CERTIFICATES)} />
+            {certificates.length > MAX_SHOWN_CERTIFICATES && (
+              <TruncatedCertificateList txCount={MAX_SHOWN_CERTIFICATES} txHash={tx.txHash} />
+            )}
+          </React.Fragment>
+        )}
+        renderFooter={(expanded) => (
+          <ExpandableCardFooter
+            label={
+              expanded
+                ? tr(transactionMessages.hideActionDetails)
+                : tr(transactionMessages.showActionDetails)
+            }
+            expanded={expanded}
+          />
+        )}
+      />
+    </div>
+  )
+}
+
+const TransactionsTab = ({transactions, certificates}) => {
   const classes = useStyles()
   return (
     <div>
       {transactions &&
-        transactions.map((tx) => {
-          const ActionValue = ACTION_VALUE_RENDERER[tx.action.type]
-          return (
-            <TransactionCard key={tx.txHash} txHash={tx.txHash}>
-              <Row>
-                <Label>{tr(transactionMessages.epoch)}</Label>
-                <Value>{formatInt(tx.epochNumber)}</Value>
-              </Row>
-              <Row>
-                <Label>{tr(transactionMessages.slot)}</Label>
-                <Value>{formatInt(tx.slot)}</Value>
-              </Row>
-              <Row>
-                <Label>{tr(transactionMessages.date)}</Label>
-                <Value>{formatTimestamp(tx.date)}</Value>
-              </Row>
-              <Row>
-                <Label>{tr(transactionMessages.action)}</Label>
-                <Value>{tr(actionMessages[tx.action.type])}</Value>
-              </Row>
-              <Row>
-                <Label>{tr(transactionMessages.actionValue)}</Label>
-                <Value>
-                  <ActionValue value={tx.action.value} />
-                </Value>
-              </Row>
-            </TransactionCard>
-          )
-        })}
+        transactions.map((tx) => <TransactionCard key={tx.txHash} {...{tx, certificates}} />)}
       <div className={classes.paginationWrapper}>
         <Pagination pageCount={1} page={1} onChangePage={() => null} />
       </div>

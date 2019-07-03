@@ -1,19 +1,21 @@
 //@flow
 import React from 'react'
-import {defineMessages} from 'react-intl'
+import moment from 'moment-timezone'
 import gql from 'graphql-tag'
-import {useQuery} from 'react-apollo-hooks'
 import cn from 'classnames'
 import idx from 'idx'
+import {defineMessages} from 'react-intl'
+import {useQuery} from 'react-apollo-hooks'
 import {Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
-import {Tooltip} from '@/components/visual'
-import type {ShowSign} from '@/i18n/helpers'
 import {useI18n} from '@/i18n/helpers'
 import useCurrency from '@/components/hooks/useCurrency'
-import LoadingDots from './LoadingDots'
-import moment from 'moment-timezone'
+import {Tooltip, LoadingDots} from '@/components/visual'
+
+import type {ShowSign} from '@/i18n/helpers'
+
+// TODO: divide into multiple files (at least move data loading into a separate file)
 
 const useCurrentPrice = (currency) => {
   const {loading, error, data} = useQuery(

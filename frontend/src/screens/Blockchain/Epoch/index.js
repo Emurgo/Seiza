@@ -4,26 +4,25 @@ import {defineMessages} from 'react-intl'
 import moment from 'moment-timezone'
 import gql from 'graphql-tag'
 import idx from 'idx'
+import {MetadataOverrides} from '@/pages/_meta'
 import useReactRouter from 'use-react-router'
-import {Card, Grid} from '@material-ui/core'
+import {Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {
   SummaryCard,
   SimpleLayout,
   EntityCardContent,
   EntityCardShell,
-  LoadingError,
-  AdaValue,
-  Tab,
-  Tabs,
+  LiteTab,
+  LiteTabs,
   Overlay,
-  LoadingOverlay,
   Chip,
 } from '@/components/visual'
+import {AdaValue, LoadingError, LoadingOverlay} from '@/components/common'
+import useTabState from '@/components/hooks/useTabState'
 import {useI18n} from '@/i18n/helpers'
 import EpochNumberIcon from '@/static/assets/icons/epoch-number.svg'
 import EpochIcon from '@/static/assets/icons/metrics-epoch.svg'
-import WithTabState from '@/components/headless/tabState'
 import Blocks from './Blocks'
 import StakingPoolsTab from './StakingPools'
 import {routeTo} from '@/helpers/routes'
@@ -36,6 +35,8 @@ import NavigationButtons from '../NavigationButtons'
 import {APOLLO_CACHE_OPTIONS} from '@/constants'
 
 const messages = defineMessages({
+  screenTitle: 'Epoch {epochNumber} - Seiza',
+  metaDescription: 'Cardano epoch {epochNumber}',
   notAvailable: 'N/A',
   goPreviousEpoch: 'Previous',
   goNextEpoch: 'Next',
@@ -329,11 +330,16 @@ const EpochEntityCard = ({epochNumber, startTime, endTime}) => {
   )
 }
 
+const getEpochMetaDescription = ({tr, epochNumber, epochData}) => {
+  return tr(messages.metaDescription, {
+    epochNumber,
+  })
+}
+
 const EpochScreen = () => {
   const {epochNumber} = useScreenParams()
   const {epochData, error, loading} = useEpochData(epochNumber)
   const scrollToRef = useRef()
-
   const {translate: tr} = useI18n()
   const blocksInEpoch = idx(epochData, (_) => _.summary.blocksCreated)
 
@@ -342,8 +348,15 @@ const EpochScreen = () => {
 
   useScrollFromBottom(scrollToRef, epochData)
 
+  const {setTabByEventIndex, currentTabIndex, currentTab} = useTabState(TABS.ORDER)
+  const TabContent = TABS.CONTENT[currentTab]
+
   return (
     <div ref={scrollToRef}>
+      <MetadataOverrides
+        title={tr(messages.screenTitle, {epochNumber})}
+        description={getEpochMetaDescription({epochNumber, epochData, tr})}
+      />
       <SimpleLayout title={tr(messages.header)}>
         <EpochNavigation currentEpochNumber={epochNumber} />
         <EpochEntityCard
@@ -357,20 +370,13 @@ const EpochScreen = () => {
           <React.Fragment>
             <EpochSummaryCard epoch={epochData} loading={loading} />
             {config.showStakingData ? (
-              <WithTabState tabNames={TABS.ORDER}>
-                {({setTab, currentTab, currentTabName}) => {
-                  const TabContent = TABS.CONTENT[currentTabName]
-                  return (
-                    <Card>
-                      <Tabs value={currentTab} onChange={setTab}>
-                        <Tab label={tr(messages.blocksTab)} />
-                        <Tab label={tr(messages.stakingPoolsTab)} />
-                      </Tabs>
-                      <TabContent epochNumber={epochNumber} />
-                    </Card>
-                  )
-                }}
-              </WithTabState>
+              <React.Fragment>
+                <LiteTabs value={currentTabIndex} onChange={setTabByEventIndex}>
+                  <LiteTab label={tr(messages.blocksTab)} />
+                  <LiteTab label={tr(messages.stakingPoolsTab)} />
+                </LiteTabs>
+                <TabContent epochNumber={epochNumber} />
+              </React.Fragment>
             ) : (
               blocksInEpoch != null &&
               blocksInEpoch > 0 && <Blocks epochNumber={epochNumber} blocksCount={blocksInEpoch} />

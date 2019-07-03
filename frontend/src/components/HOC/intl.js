@@ -1,5 +1,6 @@
 import React, {useContext, useState} from 'react'
-import {parseCookies, setCookie} from 'nookies'
+
+import {useCookies} from '@/components/context/CookiesProvider'
 
 const Context = React.createContext({
   setLanguage: null,
@@ -14,10 +15,11 @@ export const withSetLocale = (WrappedComponent) => (props) => (
 
 // TODO: move this out of this file
 export const IntlContextProvider = ({children}) => {
-  const [locale, setLocale] = useState(parseCookies().locale || 'en')
+  const {cookies, setCookie} = useCookies()
+  const [locale, setLocale] = useState(cookies.locale || 'en')
   const setLocaleHandler = (newLocale) => {
     setLocale(newLocale)
-    setCookie({}, 'locale', newLocale)
+    setCookie('locale', newLocale)
   }
   return (
     <Context.Provider

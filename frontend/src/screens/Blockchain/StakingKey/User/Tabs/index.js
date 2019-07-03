@@ -1,6 +1,5 @@
 import React from 'react'
 import {defineMessages} from 'react-intl'
-import {Card} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {LiteTab, LiteTabs} from '@/components/visual'
 import useTabState from '@/components/hooks/useTabState'
@@ -8,6 +7,7 @@ import {useI18n} from '@/i18n/helpers'
 import DelegatedPoolInfoTab from './DelegatedPoolInfoTab'
 import HistoryTab from '../../shared/Tabs/HistoryTab'
 import TransactionsTab from '../../shared/Tabs/TransactionsTab'
+import {MOCKED_CERTIFICATES} from '../../../Certificates/helpers'
 
 const messages = defineMessages({
   delegatedPoolInfoTabName: 'Delegated Pool Info',
@@ -34,7 +34,10 @@ const TABS = {
       <HistoryTab history={stakingKey.currentStakePool.history} />
     ),
     [TAB_NAMES.TRANSACTIONS]: ({stakingKey}) => (
-      <TransactionsTab transactions={stakingKey.currentStakePool.transactions} />
+      <TransactionsTab
+        transactions={stakingKey.currentStakePool.transactions}
+        certificates={MOCKED_CERTIFICATES}
+      />
     ),
   },
 }
@@ -75,9 +78,8 @@ const UserTabs = ({stakingKey}) => {
           }
         />
       </LiteTabs>
-      <Card>
-        <TabContent stakingKey={stakingKey} />
-      </Card>
+
+      <TabContent stakingKey={stakingKey} />
     </React.Fragment>
   )
 }

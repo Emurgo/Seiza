@@ -11,6 +11,9 @@ import {useI18n} from '@/i18n/helpers'
 import {VisualHash, Alert, SummaryCard, LoadingInProgress} from '@/components/visual'
 import {dangerouslyEmbedIntoDataURI} from '@/helpers/url'
 
+import {useLoadSelectedPoolsData} from './dataLoaders'
+import {WithEnsureStakePoolsLoaded} from '../utils'
+
 const useStyles = makeStyles((theme) => ({
   root: {
     height: '100%',
@@ -61,34 +64,6 @@ PoolMarker.dataURI = ({poolHash}) =>
     renderToStaticMarkup(<PoolMarker poolHash={poolHash} />)
   )
 
-const POOLS = [
-  {
-    hash: 'abc',
-    location: {lat: -30, lng: 150},
-    name: 'Pool A',
-  },
-  {
-    hash: 'def',
-    location: {lat: -10, lng: -10},
-    name: 'Pool B',
-  },
-  {
-    hash: 'tmp',
-    location: {lat: 47, lng: 11},
-    name: 'Adalite.io',
-  },
-  {
-    hash: 'tmp2',
-    location: {lat: 49, lng: 11},
-    name: 'Adalite.io',
-  },
-  {
-    hash: 'tm3',
-    location: {lat: 47, lng: 1},
-    name: 'Adalite.io',
-  },
-]
-
 const messages = defineMessages({
   errorLoadingMap: 'We were unable to load the map',
   missingApiKey: 'Ooops. We are missing Google maps API key',
@@ -129,10 +104,10 @@ const LocationMap = ({pools}) => {
       >
         {pools.map((pool) => (
           <Marker
-            key={pool.hash}
+            key={pool.poolHash}
             position={pool.location}
             title={pool.name}
-            icon={PoolMarker.dataURI({poolHash: pool.hash})}
+            icon={PoolMarker.dataURI({poolHash: pool.poolHash})}
           />
         ))}
       </GoogleMap>
@@ -145,7 +120,7 @@ const PoolEntry = ({pool}) => {
   return (
     <SummaryCard.Row>
       <div className={classes.poolRowIcon}>
-        <VisualHash value={pool.hash} size={48} />
+        <VisualHash value={pool.poolHash} size={48} />
       </div>
       <div className={classes.poolRowMain}>
         <div>
@@ -165,7 +140,7 @@ const LocationList = ({pools}) => {
   return (
     <SummaryCard>
       {pools.map((pool) => (
-        <PoolEntry pool={pool} key={pool.hash} />
+        <PoolEntry pool={pool} key={pool.poolHash} />
       ))}
     </SummaryCard>
   )
@@ -173,13 +148,19 @@ const LocationList = ({pools}) => {
 
 const LocationMapScreen = () => {
   const classes = useStyles()
+  const {error, loading, data} = useLoadSelectedPoolsData()
+
   return (
-    <div className={classes.root}>
-      <div className={classes.mapContainer}>
-        <LocationMap pools={POOLS} />
-      </div>
-      <LocationList pools={POOLS} />
-    </div>
+    <WithEnsureStakePoolsLoaded {...{error, loading, data}}>
+      {({data: pools}) => (
+        <div className={classes.root}>
+          <div className={classes.mapContainer}>
+            <LocationMap pools={pools} />
+          </div>
+          <LocationList pools={pools} />
+        </div>
+      )}
+    </WithEnsureStakePoolsLoaded>
   )
 }
 

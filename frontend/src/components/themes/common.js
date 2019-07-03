@@ -2,6 +2,16 @@ import muiTransitions from '@material-ui/core/styles/transitions'
 
 import {defaultShadowsDefs, createShadow} from './shadows'
 
+/*
+// For responsive font-size across the app
+// https://stackoverflow.com/questions/52472372/responsive-typography-in-material-ui
+import {createMuiTheme} from '@material-ui/core'
+const breakpoints = createMuiTheme({}).breakpoints
+// use in theme definition
+const desktopFontBreakpoint = breakpoints.up('sm')
+}
+*/
+
 const makeFontFamilies = (fontFamilies) => fontFamilies.map((ff) => `"${ff}"`).join(',')
 
 // TODO: Which font families to fallback to?
@@ -25,7 +35,7 @@ const common = {
   typography: {
     useNextVariants: true,
     fontFamily: makeFontFamilies(FF.normal),
-    fontSize: 16,
+    fontSize: 16, // Note: this can not be set based on breakpoints
     opaqueText: {
       opacity: 0.54,
     },
@@ -37,13 +47,19 @@ const common = {
       fontSize: 24,
       fontWeight: 700,
     },
+    h3: {
+      fontSize: 20,
+      fontWeight: 600,
+    },
     h4: {
       fontSize: 20,
       fontWeight: 400,
     },
+    // Material default typography
     body1: {
       fontSize: 16,
     },
+    // ???: is this ever used?
     button: {
       fontWeight: 700,
       letterSpacing: 1,

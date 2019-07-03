@@ -4,7 +4,8 @@ import * as React from 'react'
 import {defineMessages} from 'react-intl'
 
 import {useI18n} from '@/i18n/helpers'
-import {ComparisonMatrix, AdaValue} from '@/components/visual'
+import {ComparisonMatrix} from '@/components/visual'
+import {AdaValue} from '@/components/common'
 import {
   FadeoutFieldWithTooltip,
   EllipsizedLinkFieldWithTooltip,

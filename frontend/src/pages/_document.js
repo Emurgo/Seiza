@@ -3,9 +3,7 @@
 
 // ./pages/_document.js
 import React from 'react'
-import Document, {Html, Head, Main, NextScript} from 'next/document'
-import {SEO} from '@/constants'
-import {getThemeFromCookies} from '@/components/HOC/theme'
+import Document, {Html, Main, NextScript, Head} from 'next/document'
 import {ServerStyleSheets} from '@material-ui/styles'
 
 class MyDocument extends Document {
@@ -62,19 +60,12 @@ class MyDocument extends Document {
   render() {
     return (
       <Html>
+        {/*
+            Note(ppershing): this head is non-overrideable,
+            store overrideable parts in _app.js
+        */}
         <Head>
           <meta charSet="utf-8" />
-          <meta name="robots" content="index,follow" />
-
-          <meta name="description" content={SEO.escapeAttr(SEO.desc)} />
-          <meta name="keywords" content={SEO.escapeAttr(SEO.keywords)} />
-          {Object.entries(SEO.twitterData).forEach(([key, value]) => (
-            <meta name={`twitter:${key}`} content={SEO.escapeAttr(value)} />
-          ))}
-          {Object.entries(SEO.fbData).forEach(([key, value]) => (
-            <meta name={`og:${key}`} content={SEO.escapeAttr(value)} />
-          ))}
-
           {/* Use minimum-scale=1 to enable GPU rasterization */}
           <meta
             name="viewport"
@@ -82,10 +73,6 @@ class MyDocument extends Document {
           />
           {/* We remove auto translate as it causes React apps to fail */}
           <meta name="google" content="notranslate" />
-          {/* PWA primary color */}
-
-          <meta name="theme-color" content={getThemeFromCookies()} />
-
           <link href="/static/assets/css/loadFonts.css" rel="stylesheet" />
           <link rel="shortcut icon" href="/static/favicon.ico" />
           <script src="https://polyfill.io/v3/polyfill.js?features=es6,es7,es2017" />

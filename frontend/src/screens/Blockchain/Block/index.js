@@ -14,10 +14,9 @@ import {
   SimpleLayout,
   LoadingDots,
   LoadingInProgress,
-  LoadingError,
-  AdaValue,
   Link,
 } from '@/components/visual'
+import {AdaValue, LoadingError} from '@/components/common'
 
 import blockIcon from '@/static/assets/icons/metrics-blocks.svg'
 import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'

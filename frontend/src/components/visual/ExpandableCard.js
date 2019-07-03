@@ -60,6 +60,8 @@ const useSummaryClasses = makeStyles((theme) => ({
 const useDetailsClasses = makeStyles((theme) => ({
   root: {
     padding: 0,
+    display: 'flex',
+    flexDirection: 'column',
   },
 }))
 

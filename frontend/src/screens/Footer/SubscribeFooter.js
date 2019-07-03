@@ -21,7 +21,8 @@ import {fade} from '@material-ui/core/styles/colorManipulator'
 import {useI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
 import {useAnalytics} from '@/helpers/googleAnalytics'
-import {Button, CloseIconButton, LoadingOverlay, Link as CustomLink} from '@/components/visual'
+import {Button, CloseIconButton, Link as CustomLink} from '@/components/visual'
+import {LoadingOverlay} from '@/components/common'
 import alertIcon from '@/static/assets/icons/alert.svg'
 import subscribedIcon from '@/static/assets/icons/subscribed.svg'
 import {ReactComponent as Rocket} from '@/static/assets/icons/emoji/rocket.svg'
@@ -236,9 +237,6 @@ const useSubscribeFooterStyles = makeStyles(({palette, spacing, breakpoints, typ
   'enterSubscribeActive': {
     animation: 'footer-enter 2000ms',
   },
-  'subscribeInfo': {
-    fontSize: typography.fontSize * 0.8,
-  },
   'rocket': {
     marginBottom: -4,
   },
@@ -431,7 +429,7 @@ const SubscribeFooter = () => {
                 </Grid>
 
                 <Grid item className={classes.row}>
-                  <Typography className={classes.subscribeInfo}>
+                  <Typography variant="caption">
                     <FormattedMessage
                       // $FlowFixMe
                       id={messages.subscribeInfo.id}
