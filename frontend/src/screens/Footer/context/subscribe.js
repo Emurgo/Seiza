@@ -34,4 +34,4 @@ export const SubscribeProvider = ({children}: Props) => {
   )
 }
 
-export const useSubscribeContext = () => useContext(Context)
+export const useSubscribe = () => useContext(Context)

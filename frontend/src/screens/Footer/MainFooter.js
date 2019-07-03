@@ -8,10 +8,10 @@ import {makeStyles} from '@material-ui/styles'
 import {darken} from '@material-ui/core/styles/colorManipulator'
 
 import {useI18n} from '@/i18n/helpers'
-import {useAnalytics} from '@/helpers/googleAnalytics'
+import {useAnalytics} from '@/components/context/googleAnalytics'
 import {ExternalLink, Tooltip} from '@/components/visual'
 import logo from '@/static/assets/icons/logo-seiza-white.svg'
-import {useSubscribeContext} from '@/components/context/SubscribeContext'
+import {useSubscribe} from './context/subscribe'
 
 import fbIcon from '@/static/assets/icons/social/fb.svg'
 import linkedInIcon from '@/static/assets/icons/social/linkedin.svg'
@@ -185,7 +185,7 @@ type Props = {
 }
 
 const MainFooter = ({navItems}: Props) => {
-  const {showSubscribe, hidden} = useSubscribeContext()
+  const {showSubscribe, hidden} = useSubscribe()
   const classes = useMainFooterStyles()
   const {translate: tr} = useI18n()
 

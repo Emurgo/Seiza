@@ -18,7 +18,7 @@ import AdaIcon from '@/static/assets/icons/transaction-id.svg'
 import {ASSURANCE_LEVELS_VALUES, APOLLO_CACHE_OPTIONS} from '@/constants'
 import {useI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
-import {useAnalytics} from '@/helpers/googleAnalytics'
+import {useAnalytics} from '@/components/context/googleAnalytics'
 import Certificates from './Certificates'
 import {MOCKED_CERTIFICATES} from '../Certificates/helpers'
 

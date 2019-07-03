@@ -5,8 +5,8 @@ import '@/utils.css'
 import '@/polyfills'
 
 import React, {useMemo, useState, useEffect} from 'react'
-import {IntlProvider, addLocaleData} from 'react-intl'
-import {ThemeProvider} from '@material-ui/styles'
+import {IntlProvider as ReactIntlProvider, addLocaleData} from 'react-intl'
+import {ThemeProvider as MuiThemeProvider} from '@material-ui/styles'
 
 import App, {Container} from 'next/app'
 import Head from 'next/head'
@@ -20,10 +20,10 @@ import {InjectHookIntlContext} from '@/i18n/helpers'
 import CssBaseline from '@material-ui/core/CssBaseline'
 
 import config from '@/config'
-import {ThemeContextProvider, useTheme} from '@/components/context/theme'
-import {CookiesProvider} from '@/components/context/CookiesProvider'
+import {ThemeProvider, useTheme} from '@/components/context/theme'
+import {CookiesProvider} from '@/components/context/cookies'
 import {THEME_DEFINITIONS} from '@/components/themes'
-import {IntlContextProvider, useLocale} from '@/components/context/intl'
+import {IntlProvider, useLocale} from '@/components/context/intl'
 import translations from '@/i18n/locales'
 
 import {CrawlerMetadata, TwitterMetadata, FacebookMetadata} from './_meta'
@@ -72,7 +72,7 @@ const MuiProviders = ({children}) => {
   }, [])
 
   return (
-    <ThemeProvider theme={theme}>
+    <MuiThemeProvider theme={theme}>
       {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
       <CssBaseline />
       <Head>
@@ -80,7 +80,7 @@ const MuiProviders = ({children}) => {
         <meta name="theme-color" content={theme.palette.primary.main} />
       </Head>
       {children}
-    </ThemeProvider>
+    </MuiThemeProvider>
   )
 }
 // ***** END TAKEN FROM: https://github.com/mui-org/material-ui/blob/master/examples/nextjs/pages/_app.js
@@ -88,9 +88,9 @@ const MuiProviders = ({children}) => {
 const Intl = ({children}) => {
   const {locale} = useLocale() || 'en'
   return (
-    <IntlProvider locale={locale} messages={translations[locale]}>
+    <ReactIntlProvider locale={locale} messages={translations[locale]}>
       {children}
-    </IntlProvider>
+    </ReactIntlProvider>
   )
 }
 
@@ -191,17 +191,17 @@ class MyApp extends App {
           <FacebookMetadata />
           <CrawlerMetadata />
           <ApolloProviders client={apolloClient}>
-            <ThemeContextProvider>
+            <ThemeProvider>
               <MuiProviders>
-                <IntlContextProvider>
+                <IntlProvider>
                   <Intl>
                     <InjectHookIntlContext>
                       <Component {...pageProps} routerCtx={routerCtx} />
                     </InjectHookIntlContext>
                   </Intl>
-                </IntlContextProvider>
+                </IntlProvider>
               </MuiProviders>
-            </ThemeContextProvider>
+            </ThemeProvider>
           </ApolloProviders>
         </CookiesProvider>
       </Container>

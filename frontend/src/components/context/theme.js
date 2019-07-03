@@ -19,7 +19,7 @@ type Props = {|
   children: React$Node,
 |}
 
-export const ThemeContextProvider = ({children}: Props) => {
+export const ThemeProvider = ({children}: Props) => {
   const [currentTheme, setTheme] = useCookieState<string>('theme', THEMES._default)
 
   return (

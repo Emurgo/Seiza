@@ -8,7 +8,7 @@ import idx from 'idx'
 
 import {GET_ADDRESS_BY_ADDRESS58, GET_TXS_BY_ADDRESS} from '@/api/queries'
 import {useI18n} from '@/i18n/helpers'
-import {useAnalytics} from '@/helpers/googleAnalytics'
+import {useAnalytics} from '@/components/context/googleAnalytics'
 import {toIntOrNull, getPageCount} from '@/helpers/utils'
 import {ObjectValues} from '@/helpers/flow'
 import {useQueryNotBugged} from '@/components/hooks/useQueryNotBugged'

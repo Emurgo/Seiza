@@ -23,11 +23,9 @@ import More from './screens/More'
 import PageNotFound from './screens/PageNotFound'
 import CookiesBanner from '@/components/common/CookiesBanner'
 import DefaultErrorBoundary from '@/components/common/DefaultErrorBoundary'
-import {SubscribeProvider} from '@/components/context/SubscribeContext'
-import {AcceptCookiesProvider} from '@/components/context/AcceptCookiesContext'
-import {AnalyticsProvider} from '@/helpers/googleAnalytics' // TODO move to context?
+import {AcceptCookiesProvider} from '@/components/context/acceptCookies'
+import {AnalyticsProvider} from '@/components/context/googleAnalytics'
 import {CurrencyProvider} from '@/components/hooks/useCurrency'
-import {SearchbarRefProvider} from '@/components/context/SearchbarRef'
 import EnvOverrides from './screens/EnvOverrides'
 import TopBar from './TopBar'
 
@@ -99,11 +97,7 @@ const Providers = ({children}) => (
     {/* Note: must be defined after AcceptCookiesProvider */}
     <AnalyticsProvider>
       <CurrencyProvider>
-        <SubscribeProvider>
-          <AutoSyncProvider>
-            <SearchbarRefProvider>{children}</SearchbarRefProvider>
-          </AutoSyncProvider>
-        </SubscribeProvider>
+        <AutoSyncProvider>{children}</AutoSyncProvider>
       </CurrencyProvider>
     </AnalyticsProvider>
   </AcceptCookiesProvider>

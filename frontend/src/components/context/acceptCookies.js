@@ -24,4 +24,4 @@ export const AcceptCookiesProvider = ({children}: Props) => {
   return <Context.Provider value={{cookiesAccepted, acceptCookies}}>{children}</Context.Provider>
 }
 
-export const useAcceptCookiesContext = () => useContext(Context)
+export const useAcceptCookies = () => useContext(Context)

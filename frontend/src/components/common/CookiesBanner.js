@@ -10,7 +10,7 @@ import {Card, ContentSpacing, Button} from '@/components/visual'
 import {Link} from '@/components/common'
 import {routeTo} from '@/helpers/routes'
 import {useI18n} from '@/i18n/helpers'
-import {useAcceptCookiesContext} from '@/components/context/AcceptCookiesContext'
+import {useAcceptCookies} from '@/components/context/acceptCookies'
 import {isCrawler} from '@/helpers/userAgent'
 import cookiesIcon from '@/static/assets/icons/cookies.svg'
 
@@ -69,7 +69,7 @@ const useStyles = makeStyles((theme) => ({
 const CookiesBanner = () => {
   const classes = useStyles()
   const {translate: tr} = useI18n()
-  const {cookiesAccepted, acceptCookies} = useAcceptCookiesContext()
+  const {cookiesAccepted, acceptCookies} = useAcceptCookies()
 
   return (
     /* No need to render this for crawlers/clients which don't run javascript*/

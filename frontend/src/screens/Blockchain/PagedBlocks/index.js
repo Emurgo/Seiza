@@ -13,7 +13,7 @@ import {useManageQueryValue} from '@/components/hooks/useManageQueryValue'
 import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
 import {toIntOrNull, getPageCount} from '@/helpers/utils'
 import BlocksTable, {ALL_COLUMNS} from './BlocksTable'
-import {useAnalytics} from '@/helpers/googleAnalytics'
+import {useAnalytics} from '@/components/context/googleAnalytics'
 import {getPageAndBoundaryFromCursor} from './util'
 
 const AUTOUPDATE_REFRESH_INTERVAL = 20 * 1000

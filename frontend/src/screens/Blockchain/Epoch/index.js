@@ -26,7 +26,7 @@ import {routeTo} from '@/helpers/routes'
 import config from '@/config'
 import {useQueryNotBugged} from '@/components/hooks/useQueryNotBugged'
 import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
-import {useAnalytics} from '@/helpers/googleAnalytics'
+import {useAnalytics} from '@/components/context/googleAnalytics'
 
 import NavigationButtons from '../NavigationButtons'
 import {APOLLO_CACHE_OPTIONS} from '@/constants'
