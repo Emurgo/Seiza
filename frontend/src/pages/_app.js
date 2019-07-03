@@ -20,14 +20,14 @@ import {InjectHookIntlContext} from '@/i18n/helpers'
 import CssBaseline from '@material-ui/core/CssBaseline'
 
 import config from '@/config'
-import {ThemeContextProvider, useThemeContext} from '@/components/HOC/theme'
+import {ThemeContextProvider, useTheme} from '@/components/context/theme'
 import {CookiesProvider} from '@/components/context/CookiesProvider'
 import {THEME_DEFINITIONS} from '@/components/themes'
-import {IntlContextProvider, useLocale} from '@/components/HOC/intl'
+import {IntlContextProvider, useLocale} from '@/components/context/intl'
 import translations from '@/i18n/locales'
 
 import {CrawlerMetadata, TwitterMetadata, FacebookMetadata} from './_meta'
-import {parseCookies, setCookie} from 'nookies'
+import {parseCookies, setCookie, destroyCookie} from 'nookies'
 
 // Note: see https://medium.com/@shalkam/create-react-app-i18n-the-easy-way-b05536c594cb
 // for more info
@@ -52,7 +52,7 @@ const ApolloProviders = ({children, client}) => {
 
 // ***** BEGIN TAKEN FROM: https://github.com/mui-org/material-ui/blob/master/examples/nextjs/pages/_app.js
 const MuiProviders = ({children}) => {
-  const {currentTheme} = useThemeContext()
+  const {currentTheme} = useTheme()
 
   const [forceClientReload, setForceClientReload] = useState(false)
   const theme = useMemo(() => {
@@ -104,7 +104,11 @@ const getCookiesProps = (ctx) => {
     setCookie(ctx, name, value, options)
   }
 
-  return {cookies, setCookie: _setCookie}
+  const _destroyCookie = (name) => {
+    destroyCookie(ctx, name)
+  }
+
+  return {cookies, setCookie: _setCookie, destroyCookie: _destroyCookie}
 }
 
 class MyApp extends App {
@@ -150,11 +154,9 @@ class MyApp extends App {
   }
   // ***** END TAKEN FROM: https://github.com/mui-org/material-ui/blob/master/examples/nextjs/pages/_app.js
 
-  render() {
-    const {Component, pageProps, routerCtx, apolloClient, cookiesProps} = this.props
-
-    // `setCookie` can be passed from `getInitialProps` only on server, on client
-    // it is not, so we use "browser" version where we do not need `ctx`
+  // setCookie and destroyCookie (functions in general) can be passed from `getInitialProps`
+  // only on server. On client we use "browser" version where we do not need `ctx`.
+  getHackedCookieHandlers(cookiesProps) {
     const _setCookie = (...args) => {
       if (!process.browser) {
         cookiesProps.setCookie(...args)
@@ -163,9 +165,28 @@ class MyApp extends App {
       }
     }
 
+    const _destroyCookie = (...args) => {
+      if (!process.browser) {
+        cookiesProps.destroyCookie(...args)
+      } else {
+        destroyCookie({}, ...args)
+      }
+    }
+
+    return {setCookie: _setCookie, destroyCookie: _destroyCookie}
+  }
+
+  render() {
+    const {Component, pageProps, routerCtx, apolloClient, cookiesProps} = this.props
+
     return (
       <Container>
-        <CookiesProvider {...{cookies: cookiesProps.cookies, setCookie: _setCookie}}>
+        <CookiesProvider
+          {...{
+            cookies: cookiesProps.cookies,
+            ...this.getHackedCookieHandlers(cookiesProps),
+          }}
+        >
           <TwitterMetadata />
           <FacebookMetadata />
           <CrawlerMetadata />

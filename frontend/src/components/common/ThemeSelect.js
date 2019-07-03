@@ -8,7 +8,7 @@ import {defineMessages} from 'react-intl'
 
 import {useI18n, withI18n} from '@/i18n/helpers'
 
-import {withTheme} from '@/components/HOC/theme'
+import {useTheme} from '@/components/context/theme'
 import {THEME_DEFINITIONS, THEMES} from '@/components/themes'
 import {Select} from '@/components/visual'
 import {NavTypography} from '@/components/common/Navbar'
@@ -79,19 +79,24 @@ export const themeLabels = {
     />
   ),
 }
+
+const ThemeSelect = ({classes, i18n: {translate}}) => {
+  const {currentTheme, setTheme} = useTheme()
+  return (
+    <Select
+      hasBorder={false}
+      className={classes.select}
+      value={currentTheme}
+      onChange={(e) => setTheme(e.target.value)}
+      options={THEME_NAMES.map((theme) => ({
+        value: theme,
+        label: themeLabels[theme],
+      }))}
+    />
+  )
+}
+
 export default compose(
   withStyles(styles),
-  withI18n,
-  withTheme
-)(({setTheme, currentTheme, classes, i18n: {translate}}) => (
-  <Select
-    hasBorder={false}
-    className={classes.select}
-    value={currentTheme}
-    onChange={(e) => setTheme(e.target.value)}
-    options={THEME_NAMES.map((theme) => ({
-      value: theme,
-      label: themeLabels[theme],
-    }))}
-  />
-))
+  withI18n
+)(ThemeSelect)

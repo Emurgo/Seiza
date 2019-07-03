@@ -6,7 +6,7 @@ export type Storage = {|
   removeItem: (key: string) => void,
 |}
 
-type StorageType = 'local' | 'session'
+type StorageType = 'local' | 'session' | 'cookie'
 
 export const _getStorage = (storage: Object, type: StorageType): Storage => {
   const setItem = (key: string, item: any) => {
