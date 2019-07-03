@@ -24,7 +24,7 @@ const addSentryPlugin = (config) => {
   config.plugins = [
     ...(config.plugins || []),
     new SentryCliPlugin({
-      include: './src/.next',
+      include: './build',
       // We don't necessarily need to specify release,
       // because this is default Sentry's behaviour.
       // We are just being explicit.
@@ -78,5 +78,7 @@ module.exports = withPlugins(
 
       return config
     },
+    // this path is relative to the "project dir", which is set to src/ in server.js
+    distDir: '../build',
   }
 )
