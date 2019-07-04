@@ -1,22 +1,37 @@
 // @flow
 
-import React, {useCallback} from 'react'
+import React, {useCallback, useState} from 'react'
 import useReactRouter from 'use-react-router'
 import moment from 'moment-timezone'
 import {defineMessages} from 'react-intl'
 
-import {IconButton, Grid, Typography} from '@material-ui/core'
+import {
+  IconButton,
+  Grid,
+  Typography,
+  Dialog,
+  DialogTitle,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+} from '@material-ui/core'
 import {Share, CallMade, CallReceived} from '@material-ui/icons'
 
 import CopyToClipboard from '@/components/common/CopyToClipboard'
 import FileInputHandler from '@/components/common/FileInputHandler'
+import {Button} from '@/components/visual'
 import {download} from '@/helpers/utils'
 import {useI18n} from '@/i18n/helpers'
+
+import {useSelectedPoolsContext} from '../../context/selectedPools'
 
 const messages = defineMessages({
   share: 'Share',
   import: 'Import',
   export: 'Export',
+  errorTitle: 'Could not load stake pools!',
+  errorDesc: 'Stake pools could not be imported. Please make sure that the file is not corrupted.',
+  errorClose: 'Close',
 })
 
 const ActionButton = ({
@@ -51,20 +66,50 @@ const exportPoolsToJson = (selectedPoolsHashes) => {
     type: 'seiza-pool-export:1',
     // TODO: what format do we want? This is ISO 8601 which relative to UTC
     export_time: moment().format(),
-    pools: selectedPoolsHashes,
+    pools: selectedPoolsHashes, // TODO: add pool names (for yoroi)
     check: 'TODO',
   }
 
   download('data.json', toPrettyJSON(data))
 }
 
-type Props = {|
-  selectedPoolsHashes: Array<string>,
-|}
+const ErrorDialog = ({onClose, open}) => {
+  const {translate: tr} = useI18n()
+  return (
+    <Dialog {...{open, onClose}}>
+      <DialogTitle>{tr(messages.errorTitle)}</DialogTitle>
+      <DialogContent>
+        <DialogContentText>{tr(messages.errorDesc)}</DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onClose}>{tr(messages.errorClose)}</Button>
+      </DialogActions>
+    </Dialog>
+  )
+}
 
-const ActionsBar = ({selectedPoolsHashes}: Props) => {
+const ActionsBar = () => {
   const {translate: tr} = useI18n()
   const {history} = useReactRouter()
+  const [showError, setShowError] = useState(false)
+
+  const onCloseErrorDialog = useCallback(() => setShowError(false), [setShowError])
+
+  const {setPools, selectedPools: selectedPoolsHashes} = useSelectedPoolsContext()
+  const setImportedPools = useCallback(
+    (data) => {
+      // TODO: CRC check
+      // TODO: format check
+      let pools = []
+      try {
+        pools = JSON.parse(data).pools
+      } catch (e) {
+        setShowError(true)
+      }
+      setPools(pools)
+    },
+    [setPools]
+  )
 
   // Note: not using `window.location.href` as then the component would not properly
   // listen to changes in url query
@@ -75,40 +120,37 @@ const ActionsBar = ({selectedPoolsHashes}: Props) => {
   ])
 
   return (
-    <Grid container direction="row" alignItems="center" justify="space-between" wrap="nowrap">
-      <Grid item>
-        <ActionButton
-          label={tr(messages.share)}
-          icon={
-            // Note(ppershing): this is a temporary workaround
-            // as tooltip somehow messes up line height
-            <div style={{height: '1em'}}>
-              <CopyToClipboard value={currentUrl}>
-                <Share color="primary" />
-              </CopyToClipboard>
-            </div>
-          }
-        />
+    <React.Fragment>
+      <ErrorDialog open={showError} onClose={onCloseErrorDialog} />
+      <Grid container direction="row" alignItems="center" justify="space-between" wrap="nowrap">
+        <Grid item>
+          <ActionButton
+            label={tr(messages.share)}
+            icon={
+              // Note(ppershing): this is a temporary workaround
+              // as tooltip somehow messes up line height
+              <div style={{height: '1em'}}>
+                <CopyToClipboard value={currentUrl}>
+                  <Share color="primary" />
+                </CopyToClipboard>
+              </div>
+            }
+          />
+        </Grid>
+        <Grid item>
+          <FileInputHandler id="import-staking-settings" onFileLoaded={setImportedPools}>
+            <ActionButton label={tr(messages.import)} icon={<CallReceived color="primary" />} />
+          </FileInputHandler>
+        </Grid>
+        <Grid item>
+          <ActionButton
+            label={tr(messages.export)}
+            icon={<CallMade color="primary" />}
+            onClick={downloadSelectedPools}
+          />
+        </Grid>
       </Grid>
-      <Grid item>
-        <FileInputHandler
-          id="import-staking-settings"
-          onFileLoaded={(content) => {
-            // TODO: next PR
-            console.log('File loaded:', content) // eslint-disable-line
-          }}
-        >
-          <ActionButton label={tr(messages.import)} icon={<CallReceived color="primary" />} />
-        </FileInputHandler>
-      </Grid>
-      <Grid item>
-        <ActionButton
-          label={tr(messages.export)}
-          icon={<CallMade color="primary" />}
-          onClick={downloadSelectedPools}
-        />
-      </Grid>
-    </Grid>
+    </React.Fragment>
   )
 }
 

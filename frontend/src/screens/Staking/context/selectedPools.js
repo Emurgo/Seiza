@@ -15,6 +15,7 @@ type ContextType = {
   selectedPools: Array<string>,
   addPool: Function,
   removePool: Function,
+  setPools: Function,
   _setSelectedPoolsStorageFromQuery: Function,
   _selectedPoolsStorageToQuery: Function,
   _setSelectedPoolsStorageToDefault: Function,
@@ -24,6 +25,7 @@ const Context = React.createContext<ContextType>({
   selectedPools: DEFAULT_VALUE,
   addPool: null,
   removePool: null,
+  setPools: null,
   _setSelectedPoolsStorageFromQuery: null,
   _selectedPoolsStorageToQuery: null,
   _setSelectedPoolsStorageToDefault: null,
@@ -32,7 +34,7 @@ const Context = React.createContext<ContextType>({
 export const SelectedPoolsProvider = ({children, autoSync}: ProviderProps) => {
   const {
     value: selectedPools,
-    setValue: _setPools,
+    setValue: setPools,
     _setStorageFromQuery: _setSelectedPoolsStorageFromQuery,
     _storageToQuery: _selectedPoolsStorageToQuery,
     _setStorageToDefault: _setSelectedPoolsStorageToDefault,
@@ -44,9 +46,9 @@ export const SelectedPoolsProvider = ({children, autoSync}: ProviderProps) => {
         throw new Error(`Could not remove pool ${poolHash}`)
       }
       const newSelectedPools = selectedPools.filter((_poolHash) => _poolHash !== poolHash)
-      _setPools(newSelectedPools)
+      setPools(newSelectedPools)
     },
-    [selectedPools, _setPools]
+    [selectedPools, setPools]
   )
 
   const addPool = useCallback(
@@ -55,9 +57,9 @@ export const SelectedPoolsProvider = ({children, autoSync}: ProviderProps) => {
         throw new Error(`Pool ${poolHash} is already added.`)
       }
       const newSelectedPools = [...selectedPools, poolHash]
-      _setPools(newSelectedPools)
+      setPools(newSelectedPools)
     },
-    [selectedPools, _setPools]
+    [selectedPools, setPools]
   )
 
   return (
@@ -66,6 +68,7 @@ export const SelectedPoolsProvider = ({children, autoSync}: ProviderProps) => {
         selectedPools,
         addPool,
         removePool,
+        setPools,
         _setSelectedPoolsStorageFromQuery,
         _selectedPoolsStorageToQuery,
         _setSelectedPoolsStorageToDefault,
