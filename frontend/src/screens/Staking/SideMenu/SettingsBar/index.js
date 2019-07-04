@@ -6,7 +6,6 @@ import {makeStyles} from '@material-ui/styles'
 
 import PoolsToCompare from './PoolsToCompare'
 import ActionsBar from './ActionsBar'
-import {useSelectedPoolsContext} from '../../context/selectedPools'
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {
@@ -18,12 +17,11 @@ const useStyles = makeStyles((theme) => ({
 
 const SettingsBar = () => {
   const classes = useStyles()
-  const {selectedPools: selectedPoolsHashes} = useSelectedPoolsContext()
 
   return (
     <Grid container className={classes.wrapper} direction="row">
-      <PoolsToCompare selectedPoolsHashes={selectedPoolsHashes} />
-      <ActionsBar selectedPoolsHashes={selectedPoolsHashes} />
+      <PoolsToCompare />
+      <ActionsBar />
     </Grid>
   )
 }

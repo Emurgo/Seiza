@@ -142,14 +142,10 @@ const StakePoolItem = ({label, onDelete, hash}) => {
   )
 }
 
-type Props = {|
-  selectedPoolsHashes: Array<string>,
-|}
-
-const PoolsToCompare = ({selectedPoolsHashes}: Props) => {
+const PoolsToCompare = () => {
   const classes = useStyles()
   const {translate: tr} = useI18n()
-  const {removePool} = useSelectedPoolsContext()
+  const {removePool, selectedPools: selectedPoolsHashes} = useSelectedPoolsContext()
 
   const {data, error} = useLoadSelectedPoolsData(selectedPoolsHashes)
 

@@ -1,6 +1,6 @@
 // @flow
 
-import React from 'react'
+import React, {useCallback} from 'react'
 import {makeStyles} from '@material-ui/styles'
 
 const useStyles = makeStyles((theme) => ({
@@ -37,9 +37,14 @@ const FileInputHandler = ({id, onFileLoaded, children}: Props) => {
     fileReader.readAsText(file)
   }
 
+  // Note: without this `onChange` is not fired for same file
+  const onInputClick = useCallback((event) => {
+    event.target.value = ''
+  }, [])
+
   return (
     <React.Fragment>
-      <input type="file" className={classes.input} {...{id, onChange}} />
+      <input type="file" className={classes.input} {...{id, onChange}} onClick={onInputClick} />
       <label htmlFor={id}>{children}</label>
     </React.Fragment>
   )
