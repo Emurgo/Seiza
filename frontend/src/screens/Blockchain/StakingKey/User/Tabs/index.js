@@ -5,9 +5,9 @@ import {LiteTab, LiteTabs} from '@/components/visual'
 import useTabState from '@/components/hooks/useTabState'
 import {useI18n} from '@/i18n/helpers'
 import DelegatedPoolInfoTab from './DelegatedPoolInfoTab'
-import HistoryTab from '../../shared/Tabs/HistoryTab'
-import TransactionsTab from '../../shared/Tabs/TransactionsTab'
-import {MOCKED_CERTIFICATES} from '../../../Certificates/helpers'
+import {MOCKED_CERTIFICATES} from '@/screens/Blockchain/Certificates/helpers'
+import HistoryTab from './HistoryTab'
+import TransactionsTab from '../../common/TransactionsTab'
 
 const messages = defineMessages({
   delegatedPoolInfoTabName: 'Delegated Pool Info',

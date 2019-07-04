@@ -1,3 +1,4 @@
+// TODO: reuse what's in Staking Simulator's history
 import React from 'react'
 import {defineMessages} from 'react-intl'
 import {Typography, Grid} from '@material-ui/core'
