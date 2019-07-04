@@ -2,14 +2,14 @@ import React from 'react'
 import {defineMessages, FormattedMessage} from 'react-intl'
 import {makeStyles} from '@material-ui/styles'
 
-import TwoColumnRow from '../TwoColumnRow'
-import {ExpandableCard, ExpandableCardFooter, ContentSpacing} from '@/components/visual'
+import {ExpandableCard, ExpandableCardFooter, ContentSpacing, Card} from '@/components/visual'
 import {Pagination, EntityCardContent, Link} from '@/components/common'
 import useToggle from '@/components/hooks/useToggle'
 import {useI18n} from '@/i18n/helpers'
 import CertificateList from '@/screens/Blockchain/Certificates/CertificateList'
 import {routeTo} from '@/helpers/routes'
-import CertificatesSummary from '../../../Certificates/CertificatesSummary'
+import CertificatesSummary from '@/screens/Blockchain/Certificates/CertificatesSummary'
+import TwoColumnRow from './TwoColumnRow'
 import EmphasizedMessage from './EmphasizedMessage'
 
 const useStyles = makeStyles((theme) => ({
@@ -113,13 +113,13 @@ const TransactionCard = ({tx, certificates = []}) => {
 const TransactionsTab = ({transactions, certificates}) => {
   const classes = useStyles()
   return (
-    <div>
+    <Card>
       {transactions &&
         transactions.map((tx) => <TransactionCard key={tx.txHash} {...{tx, certificates}} />)}
       <div className={classes.paginationWrapper}>
         <Pagination pageCount={1} page={1} onChangePage={() => null} />
       </div>
-    </div>
+    </Card>
   )
 }
 

@@ -4,9 +4,9 @@ import {makeStyles} from '@material-ui/styles'
 import useTabState from '@/components/hooks/useTabState'
 import {LiteTabs, LiteTab} from '@/components/visual'
 import {useI18n} from '@/i18n/helpers'
-import HistoryTab from '../../shared/Tabs/HistoryTab'
-import TransactionsTab from '../../shared/Tabs/TransactionsTab'
-import {MOCKED_CERTIFICATES} from '../../../Certificates/helpers'
+import {MOCKED_CERTIFICATES} from '@/screens/Blockchain/Certificates/helpers'
+import HistoryTab from './HistoryTab'
+import TransactionsTab from '../../common/TransactionsTab'
 
 const messages = defineMessages({
   historyTabName: 'History ({count, plural, =0 {# epochs} one {# epoch} other {# epochs}})',

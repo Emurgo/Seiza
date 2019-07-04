@@ -15,6 +15,7 @@ const messages = defineMessages({
   keyDeregistered: 'Key de-registered',
   poolRetiring: 'Pool retiring',
   deposit: 'Deposit:',
+  txHash: 'Transaction: ',
   registration: '{stakingKey} is registered.',
   deregistration: '{stakingKey} is deregistered',
   deregistration2: 'and is not longer active.',
@@ -56,74 +57,58 @@ const IconLabel = ({icon, children}) => {
 const KeyRegistered = ({certificate}) => {
   const {translate: tr} = useI18n()
   return (
-    <React.Fragment>
-      <Row>
-        <IconLabel icon={<CertificateIcon type={CERT_TYPES.KEY_REGISTERED} />}>
-          {tr(messages.keyRegistered)}
-        </IconLabel>
-        <Value>
-          <Typography variant="body1" color="textSecondary">
-            <FormattedMessage
-              // $FlowFixMe
-              id={messages.registration.id}
-              values={{
-                stakingKey: (
-                  <Link to={routeTo.stakingKey.home(certificate.stakingKey)}>
-                    {certificate.stakingKey}
-                  </Link>
-                ),
-                deregisteredStakingKey: (
-                  <Link to={routeTo.stakingKey.home(certificate.deregisteredStakingKey)}>
-                    {certificate.deregisteredStakingKey}
-                  </Link>
-                ),
-              }}
-            />{' '}
-          </Typography>
-        </Value>
-      </Row>
-      <Row hideSeparator>
-        {tr(messages.deposit)}
-        <Value>
-          <AdaValue showCurrency value={certificate.deposit} />
-        </Value>
-      </Row>
-    </React.Fragment>
+    <Row>
+      <IconLabel icon={<CertificateIcon type={CERT_TYPES.KEY_REGISTERED} />}>
+        {tr(messages.keyRegistered)}
+      </IconLabel>
+      <Value>
+        <Typography variant="body1" color="textSecondary">
+          <FormattedMessage
+            // $FlowFixMe
+            id={messages.registration.id}
+            values={{
+              stakingKey: (
+                <Link to={routeTo.stakingKey.home(certificate.stakingKey)}>
+                  {certificate.stakingKey}
+                </Link>
+              ),
+              deregisteredStakingKey: (
+                <Link to={routeTo.stakingKey.home(certificate.deregisteredStakingKey)}>
+                  {certificate.deregisteredStakingKey}
+                </Link>
+              ),
+            }}
+          />{' '}
+        </Typography>
+      </Value>
+    </Row>
   )
 }
 const KeyDeregistered = ({certificate}) => {
   const {translate: tr} = useI18n()
   return (
-    <React.Fragment>
-      <Row>
-        <IconLabel icon={<CertificateIcon type={CERT_TYPES.KEY_DEREGISTERED} />}>
-          {tr(messages.keyDeregistered)}
-        </IconLabel>
-        <Value>
-          <Typography variant="body1" color="textSecondary">
-            <FormattedMessage
-              // $FlowFixMe
-              id={messages.deregistration.id}
-              values={{
-                stakingKey: (
-                  <Link to={routeTo.stakingKey.home(certificate.stakingKey)}>
-                    {certificate.stakingKey}
-                  </Link>
-                ),
-              }}
-            />
-          </Typography>
+    <Row>
+      <IconLabel icon={<CertificateIcon type={CERT_TYPES.KEY_DEREGISTERED} />}>
+        {tr(messages.keyDeregistered)}
+      </IconLabel>
+      <Value>
+        <Typography variant="body1" color="textSecondary">
+          <FormattedMessage
+            // $FlowFixMe
+            id={messages.deregistration.id}
+            values={{
+              stakingKey: (
+                <Link to={routeTo.stakingKey.home(certificate.stakingKey)}>
+                  {certificate.stakingKey}
+                </Link>
+              ),
+            }}
+          />
+        </Typography>
 
-          {tr(messages.deregistration2)}
-        </Value>
-      </Row>
-      <Row hideSeparator>
-        {tr(messages.deposit)}
-        <Value>
-          <AdaValue showCurrency value={certificate.deposit} />
-        </Value>
-      </Row>
-    </React.Fragment>
+        {tr(messages.deregistration2)}
+      </Value>
+    </Row>
   )
 }
 
@@ -158,13 +143,42 @@ const PoolRetiring = ({certificate}) => {
   )
 }
 
+const DepositRow = ({deposit}) => {
+  const {translate: tr} = useI18n()
+  return (
+    <Row hideSeparator>
+      {tr(messages.deposit)}
+      <Value>
+        <AdaValue showCurrency value={deposit} />
+      </Value>
+    </Row>
+  )
+}
+
+const TransactionRow = ({tx}) => {
+  const {translate: tr, formatTimestamp} = useI18n()
+  return (
+    <Row hideSeparator>
+      {tr(messages.txHash)}
+      <Value>
+        <Typography variant="body1" align="right">
+          <Link to={routeTo.transaction(tx.txHash)}>{tx.txHash}</Link>
+        </Typography>
+        <Typography variant="caption" color="textSecondary" align="right">
+          {formatTimestamp(tx.timestamp)}
+        </Typography>
+      </Value>
+    </Row>
+  )
+}
+
 const CERT_TYPE_TO_COMPONENT = {
   [CERT_TYPES.KEY_REGISTERED]: KeyRegistered,
   [CERT_TYPES.KEY_DEREGISTERED]: KeyDeregistered,
   [CERT_TYPES.POOL_RETIRING]: PoolRetiring,
 }
 
-const CertificateList = ({certificates}) => {
+const CertificateList = ({certificates, showTxHash}) => {
   const classes = useStyles()
   return (
     <div className={classes.wrapper}>
@@ -174,6 +188,8 @@ const CertificateList = ({certificates}) => {
           <React.Fragment key={index}>
             <Divider />
             <Certificate certificate={certificate} />
+            {certificate.deposit && <DepositRow deposit={certificate.deposit} />}
+            {showTxHash && <TransactionRow tx={certificate.tx} />}
           </React.Fragment>
         )
       })}
