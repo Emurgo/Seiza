@@ -1,5 +1,6 @@
 // @flow
 
+import _ from 'lodash'
 import React, {useCallback, useState} from 'react'
 import useReactRouter from 'use-react-router'
 import moment from 'moment-timezone'
@@ -61,13 +62,12 @@ const ActionButton = ({
 
 const toPrettyJSON = (data) => JSON.stringify(data, null, 4)
 
-const exportPoolsToJson = (selectedPoolsHashes) => {
+const exportPoolsToJson = (poolsData) => {
   const data = {
     type: 'seiza-pool-export:1',
-    // TODO: what format do we want? This is ISO 8601 which relative to UTC
+    // ISO 8601 which relative to UTC
     export_time: moment().format(),
-    pools: selectedPoolsHashes, // TODO: add pool names (for yoroi)
-    check: 'TODO',
+    pools: poolsData,
   }
 
   download('data.json', toPrettyJSON(data))
@@ -88,25 +88,29 @@ const ErrorDialog = ({onClose, open}) => {
   )
 }
 
-const ActionsBar = () => {
+type Props = {|
+  selectedPools: Array<{name: string, poolHash: string}>,
+|}
+
+const ActionsBar = ({selectedPools}: Props) => {
   const {translate: tr} = useI18n()
   const {history} = useReactRouter()
   const [showError, setShowError] = useState(false)
 
   const onCloseErrorDialog = useCallback(() => setShowError(false), [setShowError])
-
-  const {setPools, selectedPools: selectedPoolsHashes} = useSelectedPoolsContext()
+  const {setPools} = useSelectedPoolsContext()
   const setImportedPools = useCallback(
     (data) => {
-      // TODO: CRC check
-      // TODO: format check
       let pools = []
       try {
-        pools = JSON.parse(data).pools
+        pools = JSON.parse(data).pools.map(({hash}) => {
+          if (!_.isString(hash)) throw new Error('Invalid hash format')
+          return hash
+        })
+        setPools(pools)
       } catch (e) {
         setShowError(true)
       }
-      setPools(pools)
     },
     [setPools]
   )
@@ -115,9 +119,10 @@ const ActionsBar = () => {
   // listen to changes in url query
   const currentUrl = process.browser ? window.location.origin + history.createHref(location) : ''
 
-  const downloadSelectedPools = useCallback(() => exportPoolsToJson(selectedPoolsHashes), [
-    selectedPoolsHashes,
-  ])
+  const downloadSelectedPools = useCallback(
+    () => exportPoolsToJson(selectedPools.map((p) => ({name: p.name, hash: p.poolHash}))),
+    [selectedPools]
+  )
 
   return (
     <React.Fragment>
