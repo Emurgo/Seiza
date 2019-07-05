@@ -78,6 +78,9 @@ const synchronizedScreenFactory = (Screen, useSetScreenStorageFromQuery) => () =
   const {setScreenStorageFromQuery, getScreenUrlQuery} = useSetScreenStorageFromQuery()
   const {autoSync, setAutosync} = useAutoSyncContext()
 
+  // Note: we currently use localStorage and sessionStorage which is not available on server
+  if (!process.browser) return <Screen />
+
   const storageQuery = getScreenUrlQuery()
 
   React.useEffect(() => {
