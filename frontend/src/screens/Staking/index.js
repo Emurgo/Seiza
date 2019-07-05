@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => {
   return {
     mainWrapper: {
       maxWidth: '100%',
-      overflow: 'auto',
+      // Note: dont set other 'overflow' than 'visible', will disable sticky navigation
     },
     layoutWrapper: {
       display: 'flex',
