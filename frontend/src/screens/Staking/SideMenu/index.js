@@ -1,6 +1,7 @@
 // @flow
 
 import React, {useCallback} from 'react'
+import cn from 'classnames'
 import useReactRouter from 'use-react-router'
 import {IconButton, Typography, Grid, Switch, FormControlLabel} from '@material-ui/core'
 import {Refresh} from '@material-ui/icons'
@@ -26,17 +27,20 @@ const useStyles = makeStyles((theme) => ({
   wrapper: {
     height: '100%',
   },
+  panel: {
+    height: 80,
+    paddingRight: 40,
+    paddingLeft: 60,
+    borderBottom: `1px solid ${theme.palette.contentUnfocus}`,
+  },
   iconButton: {
     width: '100%',
-    padding: '20px 40px 20px 60px',
     borderRadius: 0,
-    borderBottom: `1px solid ${theme.palette.contentUnfocus}`,
     background: theme.palette.background.paper,
+    padding: 0,
   },
   autoSync: {
-    borderBottom: `1px solid ${theme.palette.contentUnfocus}`,
     background: theme.palette.background.paper,
-    padding: '5px 40px 5px 60px',
   },
   link: {
     textDecoration: 'none',
@@ -59,7 +63,7 @@ const SideMenu = () => {
 
   return (
     <Card className={classes.wrapper}>
-      <Grid container className={classes.autoSync} alignItems="center">
+      <Grid container className={cn(classes.autoSync, classes.panel)} alignItems="center">
         <FormControlLabel
           control={<Switch color="primary" checked={!!autoSync} onChange={toggleAutoSync} />}
           label={tr(messages.autoSync)}
@@ -75,12 +79,14 @@ const SideMenu = () => {
         className={classes.iconButton}
         color="primary"
       >
-        <Grid container alignItems="center" direction="row">
-          <Refresh />
-          &nbsp;&nbsp;
-          <Typography color="textSecondary" variant="overline">
-            {tr(messages.reset)}
-          </Typography>
+        <Grid container className={classes.panel} alignItems="center">
+          <Grid container alignItems="center" direction="row">
+            <Refresh />
+            &nbsp;&nbsp;
+            <Typography color="textSecondary" variant="overline">
+              {tr(messages.reset)}
+            </Typography>
+          </Grid>
         </Grid>
       </IconButton>
       <SettingsBar />
