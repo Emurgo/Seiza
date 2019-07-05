@@ -100,8 +100,8 @@ const getCookiesProps = (ctx) => {
 
   // Note: this function is returned only when rendered server-side as it is not
   // seriazable
-  const _setCookie = (name, value, options = {}) => {
-    setCookie(ctx, name, value, options)
+  const _setCookie = (...args) => {
+    setCookie(ctx, ...args)
   }
 
   const _destroyCookie = (name) => {
@@ -157,7 +157,11 @@ class MyApp extends App {
   // setCookie and destroyCookie (functions in general) can be passed from `getInitialProps`
   // only on server. On client we use "browser" version where we do not need `ctx`.
   getHackedCookieHandlers(cookiesProps) {
-    const _setCookie = (...args) => {
+    const _setCookie = (key, value, options = {}) => {
+      // Note: for staking section `path` was set to `/staking`, but for some
+      // reason it did not happen for other pathnames
+      const defaultOptions = {path: '/'}
+      const args = [key, value, {...defaultOptions, ...options}]
       if (!process.browser) {
         cookiesProps.setCookie(...args)
       } else {
