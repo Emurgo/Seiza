@@ -56,7 +56,14 @@ const SideMenu = () => {
   const {autoSync, toggleAutoSync} = useAutoSyncContext()
   const isMobile = useIsMobile()
 
-  if (isMobile) return <NavigationBar />
+  if (isMobile) {
+    return (
+      <React.Fragment>
+        <SettingsBar />
+        <NavigationBar />
+      </React.Fragment>
+    )
+  }
 
   return (
     <Card className={classes.wrapper}>

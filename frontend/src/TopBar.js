@@ -10,6 +10,7 @@ import {routeTo, combinedBlockchainPath} from './helpers/routes'
 import type {NavItem} from '@/components/common/Navbar'
 
 import BlockchainSearch from './screens/Blockchain/BlockchainHeader/Search'
+import {useMobileStakingSettingsRef} from '@/components/context/refs'
 import {Link} from '@/components/common'
 import seizaLogoDesktop from '@/static/assets/icons/logo-seiza.svg'
 import seizaLogoMobile from '@/static/assets/icons/seiza-symbol.svg'
@@ -33,6 +34,7 @@ const useTopBarStyles = makeStyles((theme) => ({
     [theme.breakpoints.up('sm')]: {
       padding: `${theme.spacing(1)}px ${theme.spacing(5)}px`,
     },
+    justifyContent: 'space-between',
   },
   mobileSearch: {
     flex: 1,
@@ -40,6 +42,12 @@ const useTopBarStyles = makeStyles((theme) => ({
     [theme.breakpoints.up('sm')]: {
       marginLeft: theme.spacing(2),
     },
+  },
+  stakingSettingsPortal: {
+    position: 'relative',
+    // Note: for portal flex positioning does not seem to work that good
+    right: 25,
+    top: 7,
   },
 }))
 
@@ -91,7 +99,7 @@ const MobileMenu = ({items = [], currentPathname}: any) => {
     <ClickAwayListener onClickAway={onClose}>
       {/* Note: <div> is required by ClickAwayListener as it needs a component
           that can directly cary a ref */}
-      <div>
+      <div style={{display: 'inline-block'}}>
         <div className={classes.mobileWrapper} onClick={onClick}>
           <img src={seizaLogoMobile} alt="logo" />
           <ArrowDownIcon className={classes.dropdownIcon} />
@@ -136,6 +144,7 @@ const TopBar = ({navItems}: TopBarProps) => {
   } = useReactRouter()
   const classes = useTopBarStyles()
   const isMobile = useIsMobile()
+  const {callbackRef: mobileStakingSettingsRef} = useMobileStakingSettingsRef()
 
   return !isMobile ? (
     <Grid
@@ -161,18 +170,30 @@ const TopBar = ({navItems}: TopBarProps) => {
   ) : (
     <div className={cn(classes.topBar, 'd-flex')}>
       <MobileMenu currentPathname={pathname} items={navItems} />
-      <div className={classes.mobileSearch}>
-        {combinedBlockchainPath && (
+      {routeTo.stakingCenter.home() && (
+        <NoSSR>
           <Switch>
-            <Route path={combinedBlockchainPath}>
+            <Route path={routeTo.stakingCenter.home()}>
+              <NoSSR>
+                {/* Portal output */}
+                <div className={classes.stakingSettingsPortal} ref={mobileStakingSettingsRef} />
+              </NoSSR>
+            </Route>
+          </Switch>
+        </NoSSR>
+      )}
+      {combinedBlockchainPath && (
+        <Switch>
+          <Route path={combinedBlockchainPath}>
+            <div className={classes.mobileSearch}>
               <NoSSR>
                 {/* Search uses portals and it doesn't like to be rendered on server */}
                 <BlockchainSearch isMobile />
               </NoSSR>
-            </Route>
-          </Switch>
-        )}
-      </div>
+            </div>
+          </Route>
+        </Switch>
+      )}
     </div>
   )
 }

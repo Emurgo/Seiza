@@ -25,6 +25,7 @@ import CookiesBanner from '@/components/common/CookiesBanner'
 import DefaultErrorBoundary from '@/components/common/DefaultErrorBoundary'
 import {AcceptCookiesProvider} from '@/components/context/acceptCookies'
 import {AnalyticsProvider} from '@/components/context/googleAnalytics'
+import {RefProviders} from '@/components/context/refs'
 import {CurrencyProvider} from '@/components/hooks/useCurrency'
 import EnvOverrides from './screens/EnvOverrides'
 import TopBar from './TopBar'
@@ -97,7 +98,9 @@ const Providers = ({children}) => (
     {/* Note: must be defined after AcceptCookiesProvider */}
     <AnalyticsProvider>
       <CurrencyProvider>
-        <AutoSyncProvider>{children}</AutoSyncProvider>
+        <AutoSyncProvider>
+          <RefProviders>{children}</RefProviders>
+        </AutoSyncProvider>
       </CurrencyProvider>
     </AnalyticsProvider>
   </AcceptCookiesProvider>
