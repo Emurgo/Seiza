@@ -14,7 +14,7 @@ export default ({open, children, ...restProps}: Props) => {
   return (
     <Button {...restProps}>
       {children}
-      {open ? <ArrowRight /> : <ArrowDropDown />}
+      {open ? <ArrowDropDown /> : <ArrowRight />}
     </Button>
   )
 }
