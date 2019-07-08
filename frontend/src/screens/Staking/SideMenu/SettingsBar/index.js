@@ -20,8 +20,11 @@ import {useMobileStakingSettingsRef} from '@/components/context/refs'
 import {useI18n} from '@/i18n/helpers'
 
 import {useSelectedPoolsContext} from '../../context/selectedPools'
+import {LoadingError} from '@/components/common'
+
 import PoolsToCompare from './PoolsToCompare'
 import ActionsBar from './ActionsBar'
+import {useLoadSelectedPoolsData} from './dataLoaders'
 
 const messages = defineMessages({
   modalTitle: 'Settings',
@@ -83,6 +86,9 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom: theme.spacing(1),
     paddingRight: theme.spacing(1),
   },
+  error: {
+    padding: '20px 40px 20px 60px',
+  },
 }))
 
 const useDialogStyles = makeStyles((theme) => ({
@@ -95,10 +101,13 @@ const useDialogStyles = makeStyles((theme) => ({
   },
 }))
 
-const MobileSettingsBar = () => {
+type Props = {|
+  selectedPools: Array<{name: string, poolHash: string}>,
+|}
+
+const MobileSettingsBar = ({selectedPools}: Props) => {
   const classes = useStyles()
   const {translate: tr} = useI18n()
-  const {selectedPools} = useSelectedPoolsContext()
   const modalClasses = useDialogStyles()
 
   return (
@@ -116,10 +125,10 @@ const MobileSettingsBar = () => {
               </Grid>
             </DialogTitle>
             <DialogContent className={classes.modalContent}>
-              <PoolsToCompare />
+              <PoolsToCompare selectedPools={selectedPools} />
             </DialogContent>
             <DialogActions>
-              <ActionsBar />
+              <ActionsBar selectedPools={selectedPools} />
             </DialogActions>
           </Dialog>
         </React.Fragment>
@@ -128,26 +137,38 @@ const MobileSettingsBar = () => {
   )
 }
 
-const DesktopSettingsBar = () => {
+const DesktopSettingsBar = ({selectedPools}: Props) => {
   const classes = useStyles()
   return (
     <Grid container className={classes.wrapper} direction="row">
-      <PoolsToCompare />
-      <ActionsBar />
+      <PoolsToCompare selectedPools={selectedPools} />
+      <ActionsBar selectedPools={selectedPools} />
     </Grid>
   )
 }
 
 const SettingsBar = () => {
+  const classes = useStyles()
   const isMobile = useIsMobile()
   const {htmlNode} = useMobileStakingSettingsRef()
 
+  const {selectedPools: selectedPoolsHashes} = useSelectedPoolsContext()
+  const {data: selectedPools, error} = useLoadSelectedPoolsData(selectedPoolsHashes)
+
+  if (error) {
+    return (
+      <div className={classes.error}>
+        <LoadingError error={error} />
+      </div>
+    )
+  }
+
   return isMobile ? (
     <Portal container={htmlNode}>
-      <MobileSettingsBar />
+      <MobileSettingsBar selectedPools={selectedPools} />
     </Portal>
   ) : (
-    <DesktopSettingsBar />
+    <DesktopSettingsBar selectedPools={selectedPools} />
   )
 }
 

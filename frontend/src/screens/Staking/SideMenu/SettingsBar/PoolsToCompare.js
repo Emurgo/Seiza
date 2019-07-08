@@ -9,11 +9,8 @@ import {makeStyles} from '@material-ui/styles'
 import {Clear} from '@material-ui/icons'
 
 import {LoadingDots, VisualHash, Chip} from '@/components/visual'
-import {DebugApolloError} from '@/components/common'
 import {useI18n} from '@/i18n/helpers'
 import {useSelectedPoolsContext} from '../../context/selectedPools'
-
-import {useLoadSelectedPoolsData} from './dataLoaders'
 
 const messages = defineMessages({
   header: 'Stake pools to compare:',
@@ -142,27 +139,25 @@ const StakePoolItem = ({label, onDelete, hash}) => {
   )
 }
 
-const PoolsToCompare = () => {
+type Props = {|
+  selectedPools: Array<{name: string, poolHash: string}>,
+|}
+
+const PoolsToCompare = ({selectedPools}: Props) => {
   const classes = useStyles()
   const {translate: tr} = useI18n()
-  const {removePool, selectedPools: selectedPoolsHashes} = useSelectedPoolsContext()
-
-  const {data, error} = useLoadSelectedPoolsData(selectedPoolsHashes)
-
-  if (error) {
-    return <DebugApolloError />
-  }
+  const {removePool} = useSelectedPoolsContext()
 
   return (
     <React.Fragment>
       <Grid container direction="row" alignItems="center" className={classes.header}>
-        {data.length ? (
+        {selectedPools.length ? (
           <React.Fragment>
             <Typography color="textSecondary" variant="overline">
               {tr(messages.header)}
             </Typography>
             &nbsp;
-            <Typography variant="overline">{data.length}</Typography>
+            <Typography variant="overline">{selectedPools.length}</Typography>
           </React.Fragment>
         ) : (
           <Typography variant="overline">{tr(messages.noPools)}</Typography>
@@ -182,7 +177,7 @@ const PoolsToCompare = () => {
           transitionLeave
           transitionEnter
         >
-          {data.map(({name, poolHash}) => (
+          {selectedPools.map(({name, poolHash}) => (
             <div className="d-flex" key={poolHash}>
               <StakePoolItem
                 key={poolHash}
