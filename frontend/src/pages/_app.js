@@ -22,9 +22,10 @@ import CssBaseline from '@material-ui/core/CssBaseline'
 import config from '@/config'
 import {ThemeProvider, useTheme} from '@/components/context/theme'
 import {CookiesProvider} from '@/components/context/cookies'
-import {IntlProvider, useLocale} from '@/components/context/intl'
-import {THEME_DEFINITIONS} from '@/themes'
+import {IntlProvider, useLocale, DEFAULT_LOCALE} from '@/components/context/intl'
+import {THEME_DEFINITIONS, THEMES} from '@/themes'
 import translations from '@/i18n/locales'
+import {DefaultErrorScreen} from '@/components/common/DefaultErrorBoundary'
 
 import {CrawlerMetadata, TwitterMetadata, FacebookMetadata} from './_meta'
 import {parseCookies, setCookie, destroyCookie} from 'nookies'
@@ -86,7 +87,7 @@ const MuiProviders = ({children}) => {
 // ***** END TAKEN FROM: https://github.com/mui-org/material-ui/blob/master/examples/nextjs/pages/_app.js
 
 const Intl = ({children}) => {
-  const {locale} = useLocale() || 'en'
+  const {locale} = useLocale()
   return (
     <ReactIntlProvider locale={locale} messages={translations[locale]}>
       {children}
@@ -181,7 +182,23 @@ class MyApp extends App {
   }
 
   render() {
-    const {Component, pageProps, routerCtx, apolloClient, cookiesProps} = this.props
+    const {Component, pageProps, routerCtx, apolloClient, cookiesProps, hasError} = this.props
+
+    if (hasError) {
+      // Note: we dont have (may not have) cookies in this case,
+      // so we default language and theme.
+      // Note: we relly that we will not get another error inside those wrappers,
+      // (TODO: consider no dependencies error screen)
+      return (
+        <MuiThemeProvider theme={THEME_DEFINITIONS[THEMES._default]}>
+          <ReactIntlProvider locale={DEFAULT_LOCALE} messages={translations[DEFAULT_LOCALE]}>
+            <InjectHookIntlContext>
+              <DefaultErrorScreen />
+            </InjectHookIntlContext>
+          </ReactIntlProvider>
+        </MuiThemeProvider>
+      )
+    }
 
     return (
       <Container>
