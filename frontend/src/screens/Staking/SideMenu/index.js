@@ -25,6 +25,7 @@ const messages = defineMessages({
 const useStyles = makeStyles((theme) => ({
   wrapper: {
     height: '100%',
+    overflow: 'visible', // Note: sticky navigation is not working without this
   },
   iconButton: {
     width: '100%',
