@@ -13,6 +13,7 @@ const StyledSelect = withStyles({
   select: {
     paddingTop: '10px',
     paddingBottom: '10px',
+    paddingRight: '32px',
   },
 })(SelectMUI)
 
