@@ -28,10 +28,10 @@ export default (props) => (
       {renderRouteDef({path: routeTo.address(':address58'), component: Address})}
       {renderRouteDef({path: routeTo.epoch(':epoch'), component: Epoch})}
       {renderRouteDef({path: routeTo.searchResults(), component: SearchResults})}
-
+      {/* TODO: Important: Need to merge logic of bootstrap stakepools and other stakepools */}
+      {/* Do that when #775 is merged */}
       {renderRouteDef({path: routeTo.stakepool(':poolHash'), component: StakePool})}
-      {/* TODO: should staking key be here? See notes in routeTo */}
-      {renderRouteDef({path: routeTo.stakingKey.home(':stakingKey'), component: StakingKey})}
+      {renderRouteDef({path: routeTo.stakingKey(':stakingKey'), component: StakingKey})}
       <Route component={NotFound} />
     </Switch>
   </React.Fragment>

@@ -30,16 +30,12 @@ const More = () => {
     <SimpleLayout title="Market data i18n">
       <Typography variant="h4">{tr(messages.stakingKeyScreens)}</Typography>
       <Link
-        to={routeTo.stakingKey.user(
-          'c4ca4238a0b923820dcc509a6f75849bc81e728d9d4c2f636f067f89cc14862c'
-        )}
+        to={routeTo.stakingKey('c4ca4238a0b923820dcc509a6f75849bc81e728d9d4c2f636f067f89cc14862c')}
       >
         {tr(messages.userStakingKeyScreen)}
       </Link>
       <Link
-        to={routeTo.stakingKey.stakePool(
-          'eccbc87e4b5ce2fe28308fd9f2a7baf3a87ff679a2f3e71d9181a67b7542122c'
-        )}
+        to={routeTo.stakepool('eccbc87e4b5ce2fe28308fd9f2a7baf3a87ff679a2f3e71d9181a67b7542122c')}
       >
         {tr(messages.stakePoolProfileScreen)}
       </Link>

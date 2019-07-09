@@ -14,13 +14,13 @@ const StakingKey = () => {
   // TODO: TEMPORARY to be able to see that this logic is working
   const isStakingPoolType = location.search === '?pool'
   const to = isStakingPoolType
-    ? routeTo.stakingKey.stakePool(stakingKeyHash)
-    : routeTo.stakingKey.user(stakingKeyHash)
+    ? routeTo.stakepool(stakingKeyHash)
+    : routeTo.stakingKey(stakingKeyHash)
 
   return (
     <Switch>
-      <Route path={routeTo.stakingKey.user(':stakingKey')} component={UserStakingKey} />
-      <Route path={routeTo.stakingKey.stakePool(':stakingKey')} component={StakePool} />
+      <Route path={routeTo.stakingKey(':stakingKey')} component={UserStakingKey} />
+      <Route path={routeTo.stakepool(':stakingKey')} component={StakePool} />
       <Redirect to={to} />
       <NotFound />
     </Switch>
