@@ -84,10 +84,10 @@ const useNavigationBarStyles = makeStyles((theme) => ({
     top: 0,
   },
   mobileNavBar: {
-    top: 74, // TODO: change, keep in sync with main navigation bar height
+    top: 67, // TODO: figure out how to keep in sync with main navigation bar height
     background: theme.palette.background.paper,
-    zIndex: 1,
-    paddingTop: theme.spacing(3),
+    zIndex: 2, // To hide shadow from TopBar
+    paddingTop: theme.spacing(1),
     paddingLeft: theme.spacing(3),
     maxWidth: '100%',
   },
@@ -166,7 +166,7 @@ const TabsHeader = () => {
   )
 
   return (
-    <LiteTabs defaultBottomOffset value={currentTabIndex} onChange={onChange}>
+    <LiteTabs value={currentTabIndex} onChange={onChange}>
       {tabs.map(({id, label}) => (
         <LiteTab key={id} label={label} />
       ))}
