@@ -9,7 +9,7 @@ import {defineMessages} from 'react-intl'
 
 import {useI18n} from '@/i18n/helpers'
 import {ExternalLink} from '@/components/visual'
-import CopyToClipboard from '@/components/common/CopyToClipboard'
+import {CopyToClipboard} from '@/components/common'
 
 import {getBodyBackground, PADDING, ellipsizeStyles} from './utils'
 

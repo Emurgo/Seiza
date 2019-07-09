@@ -1,10 +1,10 @@
 import React from 'react'
 import {defineMessages} from 'react-intl'
 import {Typography} from '@material-ui/core'
-import {AdaValue} from '@/components/common'
-import {SummaryCard, Card} from '@/components/visual'
+
+import {AdaValue, PoolEntityContent} from '@/components/common'
+import {SummaryCard, Card, ContentSpacing} from '@/components/visual'
 import {useI18n} from '@/i18n/helpers'
-import PoolEntityContent from '@/components/common/PoolEntityContent'
 
 const delegatedPoolMessages = defineMessages({
   stakePoolPosition: 'Stake Pool Position',
@@ -22,7 +22,9 @@ const DelegatedPoolInfoTab = ({stakePool, epochsInCurrentStakePool}) => {
 
   return (
     <Card>
-      <PoolEntityContent name={stakePool.name} hash={stakePool.hash} />
+      <ContentSpacing bottom={0.75} top={0.75}>
+        <PoolEntityContent name={stakePool.name} hash={stakePool.hash} />
+      </ContentSpacing>
 
       <Row>
         <Label>{translate(delegatedPoolMessages.stakePoolPosition)}</Label>
