@@ -162,7 +162,9 @@ const TransactionRow = ({tx}) => {
       {tr(messages.txHash)}
       <Value>
         <Typography variant="body1" align="right">
-          <Link to={routeTo.transaction(tx.txHash)}>{tx.txHash}</Link>
+          <Link monospace to={routeTo.transaction(tx.txHash)}>
+            {tx.txHash}
+          </Link>
         </Typography>
         <Typography variant="caption" color="textSecondary" align="right">
           {formatTimestamp(tx.timestamp)}

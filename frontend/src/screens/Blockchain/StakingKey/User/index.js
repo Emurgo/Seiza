@@ -142,7 +142,11 @@ const UserStakingKey = () => {
 
           <EntityIdCard
             label={translate(messages.rewardAddress)}
-            value={stakingKey.rewardAddress}
+            value={
+              <Link monospace to={routeTo.address(stakingKey.rewardAddress)}>
+                {stakingKey.rewardAddress}
+              </Link>
+            }
             iconRenderer={<img alt="" src={RewardAddressIcon} />}
           />
           <EntityIdCard
@@ -159,7 +163,10 @@ const UserStakingKey = () => {
                   color="textPrimary"
                   className={classes.resetTextTransform}
                 >
-                  <Link to={routeTo.stakingKey.stakePool(stakingKey.delegation.stakePoolHash)}>
+                  <Link
+                    monospace
+                    to={routeTo.stakingKey.stakePool(stakingKey.delegation.stakePoolHash)}
+                  >
                     {stakingKey.delegation.stakePoolHash}
                   </Link>
                 </Typography>
@@ -171,7 +178,7 @@ const UserStakingKey = () => {
                   {translate(messages.inTransaction)}
                 </Typography>{' '}
                 <Typography component="span" variant="body1" color="textPrimary">
-                  <Link to={routeTo.transaction(stakingKey.delegation.tx)}>
+                  <Link monospace to={routeTo.transaction(stakingKey.delegation.tx)}>
                     {stakingKey.delegation.tx}
                   </Link>
                 </Typography>

@@ -1,13 +1,13 @@
 // @flow
 import React from 'react'
 import cn from 'classnames'
-
 import {Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
-import {VisualHash} from '@/components/visual'
-import {CopyToClipboard} from '@/components/common'
 import {useIsMobile} from '@/components/hooks/useBreakpoints'
+import {VisualHash} from '@/components/visual'
+import {Link, CopyToClipboard} from '@/components/common'
+import {routeTo} from '@/helpers/routes'
 
 type Props = {
   name: string,
@@ -50,7 +50,11 @@ const PoolEntityContent = ({name, hash}: Props) => {
           {name}
         </Typography>
         <div className={classes.hashWrapper}>
-          <Typography noWrap>{hash}</Typography>
+          <Typography noWrap>
+            <Link monospace to={routeTo.stakepool(hash)}>
+              {hash}
+            </Link>
+          </Typography>
           <CopyToClipboard value={hash} imgDimensions={COPY_DIMENSIONS} outlineSize={4} />
         </div>
       </div>
