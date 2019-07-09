@@ -84,9 +84,10 @@ const useNavigationBarStyles = makeStyles((theme) => ({
     top: 0,
   },
   mobileNavBar: {
+    position: 'sticky',
     top: 67, // TODO: figure out how to keep in sync with main navigation bar height
     background: theme.palette.background.paper,
-    zIndex: 2, // To hide shadow from TopBar
+    zIndex: 10,
     paddingTop: theme.spacing(1),
     paddingLeft: theme.spacing(3),
     maxWidth: '100%',
@@ -178,7 +179,7 @@ const MobileNavigation = () => {
   const classes = useNavigationBarStyles()
 
   return (
-    <div className={cn(classes.mobileNavBar, 'sticky')}>
+    <div className={classes.mobileNavBar}>
       <TabsHeader />
     </div>
   )
@@ -189,7 +190,7 @@ const DesktopNavigation = () => {
   const {translate: tr} = useI18n()
 
   return (
-    <div className={cn(classes.navBar, 'sticky')}>
+    <div className={classes.navBar}>
       {navItems.map(
         ({link, i18nLabel, icon}) =>
           link && (

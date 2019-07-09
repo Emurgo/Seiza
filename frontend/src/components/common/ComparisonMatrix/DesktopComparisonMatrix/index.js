@@ -22,6 +22,7 @@ import {
   getHeaderBackground,
   getBodyBackground,
   ItemIdentifier,
+  stackingContext,
 } from '../utils'
 
 import type {ComparisonMatrixProps, CategoryConfigType} from '../types'
@@ -50,6 +51,7 @@ const useStyles = makeStyles((theme) => {
       marginBottom: theme.spacing(3),
       display: 'flex',
       width: '100%',
+      ...stackingContext,
     },
     categoriesWrapper: {
       'borderTopLeftRadius': BORDER_RADIUS,
