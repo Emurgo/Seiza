@@ -47,72 +47,47 @@ const useStyles = makeStyles(({palette}) => {
   const poolHeight = 32 + poolMargin * 2
   const poolTransitionShift = 350
   return {
-    // Note: Keyframes not working without using `@global`
-    '@global': {
-      '@keyframes pool-leave': {
-        '0%': {
-          opacity: 1,
-          left: 0,
-          height: poolHeight,
-        },
-        '50%': {
-          left: poolTransitionShift,
-          opacity: 0,
-          height: poolHeight,
-        },
-        '100%': {
-          height: 0,
-          opacity: 0,
-          left: poolTransitionShift,
-        },
-      },
-      '@keyframes pool-enter': {
-        '0%': {
-          opacity: 0,
-          left: poolTransitionShift,
-          height: 0,
-        },
-        '25%': {
-          opacity: 0,
-          left: poolTransitionShift,
-          height: poolHeight,
-        },
-        '100%': {
-          height: poolHeight,
-          opacity: 1,
-          left: 0,
-        },
-      },
-    },
-    'header': {
+    header: {
       paddingBottom: '15px',
     },
-    'stakePools': {
+    stakePools: {
       paddingBottom: '15px',
       width: '100%',
       overflow: 'hidden',
     },
-    'chip': {
+    chip: {
       // If set directly on `chipWrapper`, dimiss height transition is not smooth
       marginTop: poolMargin,
       marginBottom: poolMargin,
     },
-    'chipWrapper': {
+    chipWrapper: {
       height: poolHeight,
     },
     // Note: the `active` naming is common for CSSTransitionGroup
-    // Note: all 4 classes must be supplied (otherwise not working)
-    'poolAppear': {
+    poolAppear: {
+      opacity: 0,
+      left: poolTransitionShift,
+      height: 0,
       position: 'relative',
     },
-    'poolAppearActive': {
-      animation: 'pool-enter 600ms',
-    },
-    'poolLeave': {
+    poolAppearActive: {
+      height: poolHeight,
+      opacity: 1,
+      left: 0,
       position: 'relative',
+      transition: 'height 150ms, opacity 450ms ease 150ms, left 450ms ease 150ms',
     },
-    'poolLeaveActive': {
-      animation: 'pool-leave 600ms',
+    poolLeave: {
+      position: 'relative',
+      opacity: 1,
+      height: poolHeight,
+      left: 0,
+    },
+    poolLeaveActive: {
+      opacity: 0,
+      height: 0,
+      left: poolTransitionShift,
+      transition: 'height 300ms ease 300ms, opacity 300ms, left 300ms',
     },
   }
 })
@@ -172,8 +147,10 @@ const PoolsToCompare = ({selectedPools}: Props) => {
             enterActive: classes.poolAppearActive,
           }}
           transitionAppear={false}
-          transitionEnterTimeout={600}
-          transitionLeaveTimeout={600}
+          // looks better when time is greater that transitions declare to take
+          transitionEnterTimeout={1000}
+          // looks better when time is greater that transitions declare to take
+          transitionLeaveTimeout={1000}
           transitionLeave
           transitionEnter
         >
