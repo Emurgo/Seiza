@@ -10,6 +10,7 @@ import {defineMessages} from 'react-intl'
 import {routeTo, combinedBlockchainPath} from './helpers/routes'
 import Footer from './screens/Footer'
 import {useI18n} from '@/i18n/helpers'
+import {setupWhyDidYouRender} from '@/helpers/performance'
 import {AutoSyncProvider} from './screens/Staking/context/autoSync'
 
 import Terms from './screens/Legal/Terms'
@@ -29,6 +30,12 @@ import {RefProviders} from '@/components/context/refs'
 import {CurrencyProvider} from '@/components/hooks/useCurrency'
 import EnvOverrides from './screens/EnvOverrides'
 import TopBar from './TopBar'
+
+import config from '@/config'
+
+if (!config.isProduction && config.watchRenderPerformance) {
+  setupWhyDidYouRender()
+}
 
 const navigationMessages = defineMessages({
   home: 'Home',
