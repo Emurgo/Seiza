@@ -4,7 +4,6 @@ import React, {useCallback} from 'react'
 import cn from 'classnames'
 import useReactRouter from 'use-react-router'
 import {Typography, Grid} from '@material-ui/core'
-import {Search, LocationOn, BarChart, History, Compare, People} from '@material-ui/icons'
 import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
 import {fade} from '@material-ui/core/styles/colorManipulator'
@@ -13,9 +12,15 @@ import NavLink from '@/components/common/NavLink'
 import {routeTo} from '@/helpers/routes'
 import {useI18n} from '@/i18n/helpers'
 import {useIsMobile} from '@/components/hooks/useBreakpoints'
-
 import {LiteTabs, LiteTab} from '@/components/visual'
 import useTabState from '@/components/hooks/useTabState'
+
+import {ReactComponent as ListIcon} from '@/static/assets/icons/staking-simulator/list.svg'
+import {ReactComponent as ComparisonMatrixIcon} from '@/static/assets/icons/staking-simulator/comparison-matrix.svg'
+import {ReactComponent as HistoryIcon} from '@/static/assets/icons/staking-simulator/history.svg'
+import {ReactComponent as ChartsIcon} from '@/static/assets/icons/staking-simulator/charts.svg'
+import {ReactComponent as LocationIcon} from '@/static/assets/icons/staking-simulator/location.svg'
+import {ReactComponent as PeopleIcon} from '@/static/assets/icons/staking-simulator/people.svg'
 
 const navigationMessages = defineMessages({
   list: 'Stake pools list',
@@ -99,37 +104,37 @@ const navItems: NavItems = [
   {
     link: routeTo.stakingCenter.poolList(),
     i18nLabel: navigationMessages.list,
-    icon: <Search color="inherit" />,
+    icon: <ListIcon color="inherit" />,
     id: 'POOL_LIST',
   },
   {
     link: routeTo.stakingCenter.poolComparison(),
     i18nLabel: navigationMessages.comparison,
-    icon: <Compare color="inherit" />,
+    icon: <ComparisonMatrixIcon color="inherit" />,
     id: 'COMPARISON_MATRIX',
   },
   {
     link: routeTo.stakingCenter.history(),
     i18nLabel: navigationMessages.history,
-    icon: <History color="inherit" />,
+    icon: <HistoryIcon color="inherit" />,
     id: 'HISTORY',
   },
   {
     link: routeTo.stakingCenter.charts(),
     i18nLabel: navigationMessages.charts,
-    icon: <BarChart color="inherit" />,
+    icon: <ChartsIcon color="inherit" />,
     id: 'CHARTS',
   },
   {
     link: routeTo.stakingCenter.location(),
     i18nLabel: navigationMessages.location,
-    icon: <LocationOn color="inherit" />,
+    icon: <LocationIcon color="inherit" />,
     id: 'LOCATION',
   },
   {
     link: routeTo.stakingCenter.people(),
     i18nLabel: navigationMessages.people,
-    icon: <People color="inherit" />,
+    icon: <PeopleIcon color="inherit" />,
     id: 'PEOPLE',
   },
 ]
