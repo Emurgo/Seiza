@@ -17,8 +17,10 @@ type Props = {|
   children: React$Node,
 |}
 
+export const DEFAULT_LOCALE = 'en'
+
 export const IntlProvider = ({children}: Props) => {
-  const [locale, setLocale] = useCookieState('locale', 'en')
+  const [locale, setLocale] = useCookieState('locale', DEFAULT_LOCALE)
 
   return (
     <Context.Provider
