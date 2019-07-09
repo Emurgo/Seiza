@@ -2,28 +2,27 @@
 import React, {useState, useCallback} from 'react'
 import {Switch, Route} from 'react-router-dom'
 import useReactRouter from 'use-react-router'
+import NoSSR from 'react-no-ssr'
 import {Grid, Grow, Card, Popper, ClickAwayListener, Divider} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {fade} from '@material-ui/core/styles/colorManipulator'
+import ArrowDownIcon from '@material-ui/icons/ArrowDropDown'
 import cn from 'classnames'
 import {routeTo, combinedBlockchainPath} from './helpers/routes'
-import type {NavItem} from '@/components/common/Navbar'
 
 import BlockchainSearch from './screens/Blockchain/BlockchainHeader/Search'
 import {useMobileStakingSettingsRef} from '@/components/context/refs'
 import {Link} from '@/components/common'
-import seizaLogoDesktop from '@/static/assets/icons/logo-seiza.svg'
-import seizaLogoMobile from '@/static/assets/icons/seiza-symbol.svg'
 import {NavLinks, MobileNavLinks} from '@/components/common/Navbar'
-
-import {useIsMobile} from '@/components/hooks/useBreakpoints'
-
-import ArrowDownIcon from '@material-ui/icons/ArrowDropDown'
 import LanguageSelect, {MobileLanguage} from '@/components/common/LanguageSelect'
 import ThemeSelect from '@/components/common/ThemeSelect'
-import NoSSR from 'react-no-ssr'
-
+import {MobileOnly, DesktopOnly} from '@/components/visual'
 import config from '@/config'
+
+import seizaLogoDesktop from '@/static/assets/icons/logo-seiza.svg'
+import seizaLogoMobile from '@/static/assets/icons/seiza-symbol.svg'
+
+import type {NavItem} from '@/components/common/Navbar'
 
 const useTopBarStyles = makeStyles((theme) => ({
   topBar: {
@@ -143,58 +142,62 @@ const TopBar = ({navItems}: TopBarProps) => {
     location: {pathname},
   } = useReactRouter()
   const classes = useTopBarStyles()
-  const isMobile = useIsMobile()
   const {callbackRef: mobileStakingSettingsRef} = useMobileStakingSettingsRef()
 
-  return !isMobile ? (
-    <Grid
-      container
-      direction="row"
-      justify="space-between"
-      alignItems="center"
-      className={classes.topBar}
-    >
-      <Grid item>
-        <Link to={routeTo.home()}>
-          <img alt="" src={seizaLogoDesktop} />
-        </Link>
-      </Grid>
-      <Grid item>
-        <Grid container direction="row" alignItems="center">
-          <NavLinks currentPathname={pathname} items={navItems} />
-          <LanguageSelect />
-          <ThemeSelect />
+  return (
+    <React.Fragment>
+      <DesktopOnly>
+        <Grid
+          container
+          direction="row"
+          justify="space-between"
+          alignItems="center"
+          className={classes.topBar}
+        >
+          <Grid item>
+            <Link to={routeTo.home()}>
+              <img alt="" src={seizaLogoDesktop} />
+            </Link>
+          </Grid>
+          <Grid item>
+            <Grid container direction="row" alignItems="center">
+              <NavLinks currentPathname={pathname} items={navItems} />
+              <LanguageSelect />
+              <ThemeSelect />
+            </Grid>
+          </Grid>
         </Grid>
-      </Grid>
-    </Grid>
-  ) : (
-    <div className={cn(classes.topBar, 'd-flex')}>
-      <MobileMenu currentPathname={pathname} items={navItems} />
-      {routeTo.stakingCenter.home() && (
-        <NoSSR>
-          <Switch>
-            <Route path={routeTo.stakingCenter.home()}>
-              <NoSSR>
-                {/* Portal output */}
-                <div className={classes.stakingSettingsPortal} ref={mobileStakingSettingsRef} />
-              </NoSSR>
-            </Route>
-          </Switch>
-        </NoSSR>
-      )}
-      {combinedBlockchainPath && (
-        <Switch>
-          <Route path={combinedBlockchainPath}>
-            <div className={classes.mobileSearch}>
-              <NoSSR>
-                {/* Search uses portals and it doesn't like to be rendered on server */}
-                <BlockchainSearch isMobile />
-              </NoSSR>
-            </div>
-          </Route>
-        </Switch>
-      )}
-    </div>
+      </DesktopOnly>
+      <MobileOnly>
+        <div className={cn(classes.topBar, 'd-flex')}>
+          <MobileMenu currentPathname={pathname} items={navItems} />
+          {routeTo.stakingCenter.home() && (
+            <NoSSR>
+              <Switch>
+                <Route path={routeTo.stakingCenter.home()}>
+                  <NoSSR>
+                    {/* Portal output */}
+                    <div className={classes.stakingSettingsPortal} ref={mobileStakingSettingsRef} />
+                  </NoSSR>
+                </Route>
+              </Switch>
+            </NoSSR>
+          )}
+          {combinedBlockchainPath && (
+            <Switch>
+              <Route path={combinedBlockchainPath}>
+                <div className={classes.mobileSearch}>
+                  <NoSSR>
+                    {/* Search uses portals and it doesn't like to be rendered on server */}
+                    <BlockchainSearch isMobile />
+                  </NoSSR>
+                </div>
+              </Route>
+            </Switch>
+          )}
+        </div>
+      </MobileOnly>
+    </React.Fragment>
   )
 }
 
