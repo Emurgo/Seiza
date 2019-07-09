@@ -72,8 +72,25 @@ const styles = (theme) =>
       },
     },
     metricWrapper: {
-      margin: 'auto',
-      paddingBottom: theme.spacing(2),
+      'margin': 'auto',
+
+      // Selectors below are to show cards shadow in overflow mode
+      '& > :last-child': {
+        [theme.breakpoints.up('sm')]: {
+          marginRight: 40,
+        },
+      },
+      '& > :first-child': {
+        [theme.breakpoints.up('sm')]: {
+          marginLeft: 40,
+        },
+      },
+      '& > *': {
+        marginBottom: 10,
+        [theme.breakpoints.up('sm')]: {
+          marginBottom: 40,
+        },
+      },
     },
   })
 
@@ -184,56 +201,58 @@ const OverviewMetrics = ({intl, data, classes}) => {
   }
 
   return (
-    <Scrollbar>
-      <Grid container wrap="nowrap" direction="row" className={classes.metricWrapper}>
-        <PreloadFont />
-        <Grid item className={classes.cardDimensions}>
-          <MetricWithLink
-            className={classes.card}
-            icon="epoch"
-            metric={translate(text.epochLabel)}
-            value={epochNumber}
-            to={epochLink}
-          />
-        </Grid>
-        <GridItem>
-          <MetricWithLink
-            className={classes.card}
-            icon="blocks"
-            metric={translate(text.slotsLabel)}
-            value={blockCount}
-            to={blockLink}
-          />
-        </GridItem>
-        {config.showStakingData && (
-          <GridItem>
-            <MetricsCard
+    <React.Fragment>
+      <PreloadFont />
+      <Scrollbar>
+        <Grid container wrap="nowrap" direction="row" className={classes.metricWrapper}>
+          <Grid item className={classes.cardDimensions}>
+            <MetricWithLink
               className={classes.card}
-              icon="decentralization"
-              metric={translate(text.decentralizationLabel)}
-              value={decentralization}
+              icon="epoch"
+              metric={translate(text.epochLabel)}
+              value={epochNumber}
+              to={epochLink}
             />
-          </GridItem>
-        )}
-        <GridItem>
-          <MetricWithLink
-            {...commonMarketDataProps}
-            to={config.showStakingData ? marketDataLink : null}
-          />
-        </GridItem>
-        {config.showStakingData && (
+          </Grid>
           <GridItem>
             <MetricWithLink
               className={classes.card}
-              icon="pools"
-              metric={translate(text.poolsLabel)}
-              value={pools}
-              to={stakePoolsLink}
+              icon="blocks"
+              metric={translate(text.slotsLabel)}
+              value={blockCount}
+              to={blockLink}
             />
           </GridItem>
-        )}
-      </Grid>
-    </Scrollbar>
+          {config.showStakingData && (
+            <GridItem>
+              <MetricsCard
+                className={classes.card}
+                icon="decentralization"
+                metric={translate(text.decentralizationLabel)}
+                value={decentralization}
+              />
+            </GridItem>
+          )}
+          <GridItem>
+            <MetricWithLink
+              {...commonMarketDataProps}
+              to={config.showStakingData ? marketDataLink : null}
+            />
+          </GridItem>
+          {config.showStakingData && (
+            <GridItem>
+              <MetricWithLink
+                className={classes.card}
+                icon="pools"
+                metric={translate(text.poolsLabel)}
+                value={pools}
+                to={stakePoolsLink}
+              />
+            </GridItem>
+          )}
+        </Grid>
+      </Scrollbar>
+    </React.Fragment>
   )
 }
 

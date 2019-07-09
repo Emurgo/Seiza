@@ -40,10 +40,20 @@ const styles = (theme) =>
       border: '0px solid transparent !important',
       display: 'flex',
       flexDirection: 'row',
+      // Note: special case when not using mobile-first
+      [theme.breakpoints.down('md')]: {
+        'boxShadow': 'none',
+        '&:hover': {
+          boxShadow: 'none',
+        },
+      },
     },
     clickableCard: {
       '&:hover': {
-        boxShadow: `0px 20px 40px 0px ${fade(theme.palette.shadowBase, 0.3)} !important`,
+        boxShadow: `0px 7px 7px 0px ${fade(theme.palette.shadowBase, 0.2)} !important`,
+        [theme.breakpoints.up('sm')]: {
+          boxShadow: `0px 20px 30px 0px ${fade(theme.palette.shadowBase, 0.3)} !important`,
+        },
       },
     },
     dropdownArrow: {
