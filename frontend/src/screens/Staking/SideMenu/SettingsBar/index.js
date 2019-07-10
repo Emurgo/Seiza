@@ -102,11 +102,21 @@ const useDialogStyles = makeStyles((theme) => ({
   },
 }))
 
+const Error = ({error}) => {
+  const classes = useStyles()
+  return (
+    <div className={classes.error}>
+      <LoadingError error={error} />
+    </div>
+  )
+}
+
 type Props = {|
   selectedPools: Array<{name: string, poolHash: string}>,
+  error: any,
 |}
 
-const MobileSettingsBar = ({selectedPools}: Props) => {
+const MobileSettingsBar = ({selectedPools, error}: Props) => {
   const classes = useStyles()
   const {translate: tr} = useI18n()
   const modalClasses = useDialogStyles()
@@ -126,6 +136,7 @@ const MobileSettingsBar = ({selectedPools}: Props) => {
               </Grid>
             </DialogTitle>
             <DialogContent className={classes.modalContent}>
+              {error && <Error error={error} />}
               <PoolsToCompare selectedPools={selectedPools} />
             </DialogContent>
             <DialogActions>
@@ -138,10 +149,11 @@ const MobileSettingsBar = ({selectedPools}: Props) => {
   )
 }
 
-const DesktopSettingsBar = ({selectedPools}: Props) => {
+const DesktopSettingsBar = ({selectedPools, error}: Props) => {
   const classes = useStyles()
   return (
     <Grid container className={classes.wrapper} direction="row">
+      {error && <Error error={error} />}
       <PoolsToCompare selectedPools={selectedPools} />
       <ActionsBar selectedPools={selectedPools} />
     </Grid>
@@ -149,27 +161,18 @@ const DesktopSettingsBar = ({selectedPools}: Props) => {
 }
 
 const SettingsBar = () => {
-  const classes = useStyles()
   const isMobile = useIsMobile()
   const {htmlNode} = useMobileStakingSettingsRef()
 
   const {selectedPools: selectedPoolsHashes} = useSelectedPoolsContext()
   const {data: selectedPools, error} = useLoadSelectedPoolsData(selectedPoolsHashes)
 
-  if (error) {
-    return (
-      <div className={classes.error}>
-        <LoadingError error={error} />
-      </div>
-    )
-  }
-
   return isMobile ? (
     <Portal container={htmlNode}>
-      <MobileSettingsBar selectedPools={selectedPools} />
+      <MobileSettingsBar {...{selectedPools, error}} />
     </Portal>
   ) : (
-    <DesktopSettingsBar selectedPools={selectedPools} />
+    <DesktopSettingsBar {...{selectedPools, error}} />
   )
 }
 
