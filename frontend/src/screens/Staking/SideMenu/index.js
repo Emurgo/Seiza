@@ -13,7 +13,8 @@ import SettingsBar from './SettingsBar'
 import NavigationBar from './NavigationBar'
 import {useI18n} from '@/i18n/helpers'
 import {Card, Tooltip} from '@/components/visual'
-import {Link} from '@/components/common'
+import {Link, ConfirmationDialog} from '@/components/common'
+import useModalState from '@/components/hooks/useModalState'
 import {useResetUrlAndStorage} from '../context'
 import {useAutoSyncContext} from '../context/autoSync'
 import {useIsMobile} from '@/components/hooks/useBreakpoints'
@@ -22,8 +23,14 @@ const messages = defineMessages({
   reset: 'Reset all settings',
   autoSync: 'Auto-save',
   openSaved: 'Open saved settings',
-  openSavedTooltip: 'Will **open current page** in a **new tab** with filters and selected pools reflecting **saved settings**.',
-  autoSaveTooltip: 'When **turned on**, selected pools or filter changes will be **saved locally**.<br/>When **turned off**, those changes will **not be saved**.<br/>After turning the switch off and making changes, you can restore to previously saved settings by clicking on **Open saved settings** link which will open saved settings in a new tab.',
+  openSavedTooltip:
+    'Will **open current page** in a **new tab** with filters and selected pools reflecting **saved settings**.',
+  autoSaveTooltip:
+    'When **turned on**, selected pools or filter changes will be **saved locally**.<br/>When **turned off**, those changes will **not be saved**.<br/>After turning the switch off and making changes, you can restore to previously saved settings by clicking on **Open saved settings** link which will open saved settings in a new tab.',
+  resetConfirmTitle: 'Are you sure you want to reset all settings?',
+  resetConfirmMessage:
+    'Removes selected pools and resets all filters to defaults within staking simulator.',
+  resetActionButton: 'Reset',
 })
 
 const useStyles = makeStyles((theme) => ({
@@ -65,12 +72,50 @@ const Markdown = ({source}: {source: string}) => (
   <ReactMarkdown source={replaceBreak(source)} renderers={renderers} />
 )
 
+const ResetButton = () => {
+  const classes = useStyles()
+  const {translate: tr} = useI18n()
+  const resetUrlAndStorage = useResetUrlAndStorage()
+  const {isOpen, openModal, closeModal} = useModalState()
+  const onReset = useCallback(() => {
+    resetUrlAndStorage()
+    closeModal()
+  }, [closeModal, resetUrlAndStorage])
+  return (
+    <React.Fragment>
+      <IconButton
+        onClick={openModal}
+        aria-label="Reset settings"
+        className={classes.iconButton}
+        color="primary"
+      >
+        <Grid container className={classes.panel} alignItems="center">
+          <Grid container alignItems="center" direction="row">
+            <Refresh />
+            &nbsp;&nbsp;
+            <Typography color="textSecondary" variant="overline">
+              {tr(messages.reset)}
+            </Typography>
+          </Grid>
+        </Grid>
+      </IconButton>
+
+      <ConfirmationDialog
+        title={tr(messages.resetConfirmTitle)}
+        message={tr(messages.resetConfirmMessage)}
+        confirmationButtonText={tr(messages.resetActionButton)}
+        open={isOpen}
+        onCancel={closeModal}
+        onConfirm={onReset}
+      />
+    </React.Fragment>
+  )
+}
+
 const SideMenu = () => {
   const {match} = useReactRouter()
   const classes = useStyles()
   const {translate: tr} = useI18n()
-  const resetUrlAndStorage = useResetUrlAndStorage()
-  const onReset = useCallback(() => resetUrlAndStorage(), [resetUrlAndStorage])
   const {autoSync, toggleAutoSync} = useAutoSyncContext()
   const isMobile = useIsMobile()
 
@@ -86,13 +131,21 @@ const SideMenu = () => {
   return (
     <Card className={classes.wrapper}>
       <Grid container className={cn(classes.autoSync, classes.panel)} alignItems="center">
-        <Tooltip title={<Markdown source={tr(messages.autoSaveTooltip)} />} placement="bottom" interactive>
+        <Tooltip
+          title={<Markdown source={tr(messages.autoSaveTooltip)} />}
+          placement="bottom"
+          interactive
+        >
           <FormControlLabel
             control={<Switch color="primary" checked={!!autoSync} onChange={toggleAutoSync} />}
             label={tr(messages.autoSync)}
           />
         </Tooltip>
-        <Tooltip title={<Markdown source={tr(messages.openSavedTooltip)} />} placement="bottom" interactive>
+        <Tooltip
+          title={<Markdown source={tr(messages.openSavedTooltip)} />}
+          placement="bottom"
+          interactive
+        >
           {/* Note: Tooltip not working without that <div /> */}
           <div>
             <Link to={{pathname: match.url}} target="_blank" className={classes.link}>
@@ -102,22 +155,8 @@ const SideMenu = () => {
         </Tooltip>
         {/* Link to show current saved settings in same tab? */}
       </Grid>
-      <IconButton
-        onClick={onReset}
-        aria-label="Reset settings"
-        className={classes.iconButton}
-        color="primary"
-      >
-        <Grid container className={classes.panel} alignItems="center">
-          <Grid container alignItems="center" direction="row">
-            <Refresh />
-            &nbsp;&nbsp;
-            <Typography color="textSecondary" variant="overline">
-              {tr(messages.reset)}
-            </Typography>
-          </Grid>
-        </Grid>
-      </IconButton>
+      <ResetButton />
+
       <SettingsBar />
       <NavigationBar />
     </Card>
