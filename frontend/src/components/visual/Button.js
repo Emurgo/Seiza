@@ -86,7 +86,7 @@ const useStyles = makeStyles((theme) => ({
   },
   secondaryDisabled: {
     backgroundImage: `${REFERENCE_GRADIENT},
-      ${theme.palette.buttons.hover}
+      ${theme.palette.buttons.secondaryGradient.hover}
     } !important`,
     color: `${theme.palette.primary.main} !important`,
     opacity: 0.35,

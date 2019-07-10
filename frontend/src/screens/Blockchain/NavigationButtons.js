@@ -58,6 +58,7 @@ const NavigationButtons = ({
       <Grid item className={classes.navigationButtonWrapper}>
         <Button
           rounded
+          secondary
           secondaryGradient
           className={cn(classes.prevButton, classes.navigationButton)}
           disabled={!hasPrev}
@@ -74,6 +75,7 @@ const NavigationButtons = ({
       <Grid item className={classes.navigationButtonWrapper}>
         <Button
           rounded
+          secondary
           secondaryGradient
           className={cn(classes.nextButton, classes.navigationButton)}
           disabled={!hasNext}
