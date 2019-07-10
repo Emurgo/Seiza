@@ -1,5 +1,6 @@
 import React from 'react'
-import {defineMessages} from 'react-intl'
+import {defineMessages, FormattedMessage} from 'react-intl'
+import _ from 'lodash'
 import {Typography} from '@material-ui/core'
 import useReactRouter from 'use-react-router'
 import {makeStyles} from '@material-ui/styles'
@@ -30,6 +31,10 @@ const messages = defineMessages({
   rewardAddress: 'Reward Address:',
   delegatedTo: 'Delegated to Pool:',
   inTransaction: 'In transaction:',
+  currentStatusLabel: 'Current Status:',
+  statusDeregistered: 'De-registered since transaction: {txHash}',
+  statusDelegating: 'Currently active, delegating to {poolHash}',
+  statusNotDelegating: 'Currently active, but not delegating to any pool',
 })
 
 const useStyles = makeStyles(({spacing}) => ({
@@ -40,6 +45,33 @@ const useStyles = makeStyles(({spacing}) => ({
     textTransform: 'none',
   },
 }))
+
+const CurrentStatus = () => {
+  // TODO: add logic to pick the right status message
+  const pick = _.random(0, 2)
+  const {translate: tr} = useI18n()
+  if (pick === 0) {
+    return (
+      <FormattedMessage
+        id={messages.statusDeregistered.id}
+        values={{
+          txHash: <Link to={routeTo.transaction('0x1234')}>0x1234</Link>,
+        }}
+      />
+    )
+  } else if (pick === 1) {
+    return (
+      <FormattedMessage
+        id={messages.statusDelegating.id}
+        values={{
+          poolHash: <Link to={routeTo.stakepool('0x1234')}>0x1234</Link>,
+        }}
+      />
+    )
+  } else {
+    return tr(messages.statusNotDelegating)
+  }
+}
 
 const UserStakingKey = () => {
   const classes = useStyles()
@@ -61,6 +93,13 @@ const UserStakingKey = () => {
             label={translate(messages.stakingKey)}
             value={stakingKey.hash}
             iconRenderer={<img alt="" src={AdaIcon} />}
+          />
+          <EntityIdCard
+            label={translate(messages.currentStatusLabel)}
+            value={<CurrentStatus />}
+            iconRenderer={<img alt="" src={RewardAddressIcon} />}
+            showCopyIcon={false}
+            monospaceValue={false}
           />
 
           <SummaryCard>
