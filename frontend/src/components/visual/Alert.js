@@ -3,7 +3,7 @@ import React from 'react'
 import type {Node} from 'react'
 import cn from 'classnames'
 import {defineMessages} from 'react-intl'
-import {Paper, createStyles, Grid, Typography} from '@material-ui/core'
+import {Paper, Grid, Typography} from '@material-ui/core'
 import {darken} from '@material-ui/core/styles/colorManipulator'
 import {makeStyles} from '@material-ui/styles'
 
@@ -34,40 +34,38 @@ const messages = defineMessages({
 
 const getBorderColorStyle = (backgroundColor) => darken(backgroundColor, 0.05)
 
-const useAppStyles = makeStyles(({type, spacing, palette, breakpoints}) =>
-  createStyles({
-    wrapper: {
-      padding: spacing(1.5),
-      paddingLeft: spacing(2),
-      paddingRight: spacing(2),
+const useAppStyles = makeStyles(({type, spacing, palette, breakpoints}) => ({
+  wrapper: {
+    padding: spacing(1.5),
+    paddingLeft: spacing(2),
+    paddingRight: spacing(2),
+  },
+  [TYPES.EMPHASIS]: {
+    backgroundColor: palette.emphasis.background,
+    border: `1px solid ${getBorderColorStyle(palette.emphasis.background)}`,
+  },
+  [TYPES.WARNING]: {
+    backgroundColor: palette.warning.background,
+    border: `1px solid ${getBorderColorStyle(palette.warning.background)}`,
+  },
+  [TYPES.ALERT]: {
+    backgroundColor: palette.alertStrong.background,
+    border: `1px solid ${getBorderColorStyle(palette.alertStrong.background)}`,
+  },
+  [TYPES.NO_RESULTS]: {
+    backgroundColor: palette.noResults.background,
+    border: `1px solid ${getBorderColorStyle(palette.noResults.background)}`,
+    // Note: not mobile-first approach because
+    // we have !important overrides
+    [breakpoints.down('sm')]: {
+      width: 'unset !important',
+      position: 'fixed !important',
+      left: spacing(2),
+      right: spacing(2),
     },
-    [TYPES.EMPHASIS]: {
-      backgroundColor: palette.emphasis.background,
-      border: `1px solid ${getBorderColorStyle(palette.emphasis.background)}`,
-    },
-    [TYPES.WARNING]: {
-      backgroundColor: palette.warning.background,
-      border: `1px solid ${getBorderColorStyle(palette.warning.background)}`,
-    },
-    [TYPES.ALERT]: {
-      backgroundColor: palette.alertStrong.background,
-      border: `1px solid ${getBorderColorStyle(palette.alertStrong.background)}`,
-    },
-    [TYPES.NO_RESULTS]: {
-      backgroundColor: palette.noResults.background,
-      border: `1px solid ${getBorderColorStyle(palette.noResults.background)}`,
-      // Note: not mobile-first approach because
-      // we have !important overrides
-      [breakpoints.down('sm')]: {
-        width: 'unset !important',
-        position: 'fixed !important',
-        left: spacing(2),
-        right: spacing(2),
-      },
-    },
-    [TYPES.NEUTRAL]: {},
-  })
-)
+  },
+  [TYPES.NEUTRAL]: {},
+}))
 
 const ICONS = {
   [TYPES.EMPHASIS]: <img alt="" src={emphasisIcon} />,
