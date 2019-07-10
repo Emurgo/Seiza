@@ -28,8 +28,6 @@ export default (props) => (
       {renderRouteDef({path: routeTo.address(':address58'), component: Address})}
       {renderRouteDef({path: routeTo.epoch(':epoch'), component: Epoch})}
       {renderRouteDef({path: routeTo.searchResults(), component: SearchResults})}
-      {/* TODO: Important: Need to merge logic of bootstrap stakepools and other stakepools */}
-      {/* Do that when #775 is merged */}
       {renderRouteDef({path: routeTo.stakepool(':poolHash'), component: StakePool})}
       {renderRouteDef({path: routeTo.stakingKey(':stakingKey'), component: StakingKey})}
       <Route component={NotFound} />
