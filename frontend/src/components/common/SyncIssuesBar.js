@@ -17,7 +17,7 @@ const text = defineMessages({
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {
-    backgroundImage: theme.palette.buttons.primaryGradient.background,
+    backgroundImage: theme.palette.buttons.getContainedGradient().background,
     padding: theme.spacing(1.5),
   },
   text: {

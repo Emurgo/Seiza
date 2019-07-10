@@ -107,9 +107,7 @@ const CookiesBanner = () => {
           </Grid>
           <Grid item xs={12} md={3}>
             <Grid container justify="center">
-              <Button onClick={acceptCookies} color="primary">
-                {tr(messages.confirm)}
-              </Button>
+              <Button onClick={acceptCookies}>{tr(messages.confirm)}</Button>
             </Grid>
           </Grid>
         </Grid>

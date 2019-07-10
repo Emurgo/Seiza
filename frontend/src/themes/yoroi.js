@@ -15,32 +15,18 @@ const theme = _.merge({}, common, {
     },
     gradient: 'linear-gradient(97deg, #C5D9F5 0%, #CAF2ED 100%)',
     buttons: {
-      primary: {
+      getContainedGradient: (degree = 90) => ({
+        background: `linear-gradient(${degree}deg, #3154CB 0%, #17D1AA 100%)`,
+        hover: `linear-gradient(${degree}deg, #17D1AA 0%,  #17D1AA 100%)`,
         textColor: '#FFFFFF',
         textHover: '#FFFFFF',
-      },
-      secondary: {
-        textColor: '#FFFFFF',
-        textHover: '#FFFFFF',
-      },
-      primaryGradient: {
-        background: 'linear-gradient(90deg, #3154CB 0%, #17D1AA 100%)',
-        hover: 'linear-gradient(90deg, #17D1AA 0%,  #17D1AA 100%)',
-        textColor: '#FFFFFF',
-        textHover: '#FFFFFF',
-      },
-      secondaryGradient: {
-        background: 'linear-gradient(90deg, #3154CB 0%, #17D1AA 100%)',
-        hover: 'linear-gradient(90deg, #17D1AA 0%,  #17D1AA 100%)',
+      }),
+      getOutlinedGradient: (degree = 90) => ({
+        background: `linear-gradient(${degree}deg, #3154CB 0%, #17D1AA 100%)`,
+        hover: `linear-gradient(${degree}deg, #17D1AA 0%,  #17D1AA 100%)`,
         textColor: '#3E60CD',
         textHover: '#17D1AA',
-      },
-      tertiaryGradient: {
-        background: 'linear-gradient(45deg, #3154CB 0%, #17D1AA 100%)',
-        hover: 'linear-gradient(45deg, #17D1AA 0%,  #17D1AA 100%)',
-        textColor: '#3E60CD',
-        textHover: '#17D1AA',
-      },
+      }),
     },
     // Note:
     // <Typography color="primary"> ---> selects palette.primary.main

@@ -6,32 +6,19 @@ const theme = _.merge({}, common, {
     type: 'dark',
     gradient: 'linear-gradient(97deg, #5a25be 0%, #9bb8e7 100%)',
     buttons: {
-      primary: {
+      // Note(bigamasta): do we really need 97 or can we have also 90?
+      getContainedGradient: (degree = 90) => ({
+        background: `linear-gradient(${degree + 7}deg, #715BD3 0%, #95BAF7 100%)`,
+        hover: `linear-gradient(${degree}deg, #95BAF7 0%,  #95BAF7 100%)`,
         textColor: '#FFFFFF',
         textHover: '#FFFFFF',
-      },
-      secondary: {
-        textColor: '#FFFFFF',
-        textHover: '#FFFFFF',
-      },
-      primaryGradient: {
-        background: 'linear-gradient(97deg, #715BD3 0%, #95BAF7 100%)',
-        hover: 'linear-gradient(90deg, #95BAF7 0%,  #95BAF7 100%)',
-        textColor: '#FFFFFF',
-        textHover: '#FFFFFF',
-      },
-      secondaryGradient: {
-        background: 'linear-gradient(97deg, #715BD3 0%, #95BAF7 100%)',
-        hover: 'linear-gradient(90deg, #95BAF7 0%,  #95BAF7 100%)',
+      }),
+      getOutlinedGradient: (degree = 97) => ({
+        background: `linear-gradient(${degree}deg, #715BD3 0%, #95BAF7 100%)`,
+        hover: `linear-gradient(${degree}deg, #95BAF7 0%,  #95BAF7 100%)`,
         textColor: '#90ACFE',
         textHover: '#95BAF7',
-      },
-      tertiaryGradient: {
-        background: 'linear-gradient(45deg, #715BD3 0%, #95BAF7 100%)',
-        hover: 'linear-gradient(45deg, #95BAF7 0%,  #95BAF7 100%)',
-        textColor: '#90ACFE',
-        textHover: '#95BAF7',
-      },
+      }),
     },
     text: {
       primary: '#ffffff',

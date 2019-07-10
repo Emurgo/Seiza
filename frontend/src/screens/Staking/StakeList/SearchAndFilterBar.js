@@ -103,7 +103,7 @@ const FiltersButton = ({open, onClick}) => {
   const isMobile = useIsMobile()
 
   return isMobile ? (
-    <Button onClick={onClick} secondary className={classes.mobileButton}>
+    <Button variant="contained" onClick={onClick} className={classes.mobileButton}>
       <ReactCSSTransitionGroup
         transitionName={{
           enter: classes.enter,
@@ -126,7 +126,7 @@ const FiltersButton = ({open, onClick}) => {
       </ReactCSSTransitionGroup>
     </Button>
   ) : (
-    <ToggleButton {...{open, onClick}} secondary className={classes.desktopButton}>
+    <ToggleButton {...{open, onClick}} variant="contained" className={classes.desktopButton}>
       {tr(messages.filters)}
     </ToggleButton>
   )

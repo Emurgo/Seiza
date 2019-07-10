@@ -5,129 +5,156 @@ import MaterialButton from '@material-ui/core/Button'
 import {makeStyles} from '@material-ui/styles'
 import {fade} from '@material-ui/core/styles/colorManipulator'
 
-const FADE_FACTOR = 0.6
 // not sure REFERENCE_GRADIENT is the best naming, it was copied from
 // https://codepen.io/miraviolet/pen/ZobWEg and extracted to this constant here
 const REFERENCE_GRADIENT = 'linear-gradient(rgba(255, 255, 255, 0), rgba(255, 255, 255, 0))'
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    fontSize: theme.typography.fontSize * 0.9,
-    fontWeight: 700,
-    paddingTop: theme.spacing(1.5),
-    paddingBottom: theme.spacing(1.5),
-  },
-  rounded: {
-    // Note: to have complete radius for all heights
-    borderRadius: '1000px',
-  },
-  primary: {
-    'border': '1px solid transparent',
-    'background': theme.palette.primary.main,
-    'color': theme.palette.buttons.primary.textColor,
-    '&:hover': {
-      background: fade(theme.palette.primary.main, FADE_FACTOR),
+const useStyles = makeStyles((theme) => {
+  return {
+    root: {
+      // Note(bigamasta): Next line fixes SSR for buttonGradient,
+      // dunno why. We don't even pass any 'a'
+      color: ({a}) => a,
+      fontSize: theme.typography.fontSize * 0.9,
+      paddingTop: theme.spacing(1.5),
+      paddingBottom: theme.spacing(1.5),
     },
-  },
-  secondary: {
-    'border': '1px solid transparent',
-    'background': theme.palette.secondary.main,
-    'color': theme.palette.buttons.secondary.textColor,
-    '&:hover': {
-      background: fade(theme.palette.secondary.main, FADE_FACTOR),
+    rounded: {
+      // Note: to have complete radius for all heights
+      borderRadius: '1000px',
     },
-  },
-  primaryGradient: {
-    'background': theme.palette.buttons.primaryGradient.background,
-    'color': theme.palette.buttons.primaryGradient.textColor,
-    'boxShadow': `0px 8px 20px ${fade(theme.palette.text.primary, 0.08)}`,
-    '&:hover': {
-      boxShadow: `0px 10px 30px ${fade(theme.palette.text.primary, 0.14)}`,
-      // Note: this needs to be a gradient because otherwise some weird visual effects happen
-      // Something is transitioning on the background and gradients to do not like to be
-      // transitioned at all
-      background: theme.palette.buttons.primaryGradient.hover,
+    contained: {
+      '&:hover': {
+        background: fade(theme.palette.primary.main, 0.6),
+      },
     },
-  },
-  secondaryGradient: {
-    // https://codepen.io/miraviolet/pen/ZobWEg
-    'background': theme.palette.background.default,
-    'color': theme.palette.buttons.secondaryGradient.textColor,
+    gradientContained: {
+      'background': ({gradientDegree}) =>
+        theme.palette.buttons.getContainedGradient(gradientDegree).background,
+      'color': ({gradientDegree}) =>
+        theme.palette.buttons.getContainedGradient(gradientDegree).textColor,
+      'boxShadow': `0px 8px 20px ${fade(theme.palette.text.primary, 0.08)}`,
+      '&:hover': {
+        boxShadow: `0px 10px 30px ${fade(theme.palette.text.primary, 0.14)}`,
+        // Note: this needs to be a gradient because otherwise some weird visual effects happen
+        // Something is transitioning on the background and gradients to do not like to be
+        // transitioned at all
+        background: ({gradientDegree}) =>
+          theme.palette.buttons.getContainedGradient(gradientDegree).hover,
+      },
+    },
+    gradientOutlined: {
+      // https://codepen.io/miraviolet/pen/ZobWEg
+      'background': theme.palette.background.default,
+      'color': ({gradientDegree}) =>
+        theme.palette.buttons.getOutlinedGradient(gradientDegree).textColor,
 
-    '&:hover': {
-      backgroundImage: `${REFERENCE_GRADIENT}, ${theme.palette.buttons.secondaryGradient.hover}`,
-      color: theme.palette.buttons.secondaryGradient.textHover,
+      '&:hover': {
+        backgroundImage: ({gradientDegree}) =>
+          `${REFERENCE_GRADIENT}, ${
+            theme.palette.buttons.getOutlinedGradient(gradientDegree).hover
+          }`,
+        color: ({gradientDegree}) =>
+          theme.palette.buttons.getOutlinedGradient(gradientDegree).textHover,
+      },
+      'border': '1px solid transparent',
+      'backgroundImage': ({gradientDegree}) =>
+        `${REFERENCE_GRADIENT}, ${
+          theme.palette.buttons.getOutlinedGradient(gradientDegree).background
+        }`,
+      'backgroundOrigin': 'border-box',
+      'backgroundClip': 'content-box, border-box',
+      'boxShadow': `2px 1000px 1px ${theme.palette.background.default} inset`,
+      // :after is used only for proper shadow
+      '&:after': {
+        borderRadius: ({rounded}) => (rounded ? '1000px' : '4px'), // 4px is material-ui Button's default
+        content: '""',
+        position: 'absolute',
+        width: '100%',
+        height: '100%',
+        background: 'transparent',
+        bottom: -1,
+        right: 0,
+        boxShadow: `0px 8px 20px ${fade(theme.palette.text.primary, 0.08)}`,
+      },
+      '&:hover:after': {
+        boxShadow: `0px 10px 30px ${fade(theme.palette.text.primary, 0.14)}`,
+      },
     },
-    'border': '1px solid transparent',
-    'backgroundImage': `${REFERENCE_GRADIENT}, ${theme.palette.buttons.secondaryGradient.background}`,
-    'backgroundOrigin': 'border-box',
-    'backgroundClip': 'content-box, border-box',
-    'boxShadow': `2px 1000px 1px ${theme.palette.background.default} inset`,
-    // :after is used only for proper shadow
-    '&:after': {
-      borderRadius: ({rounded}) => (rounded ? '1000px' : '4px'), // 4px is material-ui Button's default
-      content: '""',
-      position: 'absolute',
-      width: '100%',
-      height: '100%',
-      background: 'transparent',
-      bottom: -1,
-      right: 0,
-      boxShadow: `0px 8px 20px ${fade(theme.palette.text.primary, 0.08)}`,
+    disabledText: {
+      color: `${fade(theme.palette.primary.main, 0.25)} !important`,
     },
-    '&:hover:after': {
-      boxShadow: `0px 10px 30px ${fade(theme.palette.text.primary, 0.14)}`,
+    disabledContained: {
+      background: `${fade(theme.palette.primary.main, 0.25)} !important`,
+      color: `${theme.palette.background.default} !important`,
+      boxShadow: 'none',
     },
-  },
-  disabled: {
-    background: `${fade(theme.palette.primary.main, 0.25)} !important`,
-    color: `${theme.palette.background.default} !important`,
-    boxShadow: 'none',
-  },
-  secondaryDisabled: {
-    backgroundImage: `${REFERENCE_GRADIENT},
-      ${theme.palette.buttons.secondaryGradient.hover}
+    disabledOutlined: {
+      borderColor: `${fade(theme.palette.primary.main, 0.25)} !important`,
+      color: `${fade(theme.palette.primary.main, 0.25)} !important`,
+      boxShadow: 'none',
+    },
+    disabledContainedGradient: {
+      background: `${fade(theme.palette.primary.main, 0.25)} !important`,
+      color: `${theme.palette.background.default} !important`,
+      boxShadow: 'none',
+    },
+    disabledOutlinedGradient: {
+      backgroundImage: ({gradientDegree}) => `${REFERENCE_GRADIENT},
+      ${theme.palette.buttons.getOutlinedGradient(gradientDegree).hover}
     } !important`,
-    color: `${theme.palette.primary.main} !important`,
-    opacity: 0.35,
-  },
-}))
+      color: `${theme.palette.primary.main} !important`,
+      opacity: 0.25,
+    },
+  }
+})
 
 type ButtonProps = {
+  +variant?: 'outlined' | 'contained' | 'text',
   +rounded?: boolean,
-  +primary?: boolean,
-  +secondary?: boolean,
-  +primaryGradient?: boolean,
-  +secondaryGradient?: boolean,
+  +gradient?: boolean,
   +disabled?: boolean,
-  +className?: string,
   +children: React$Node,
+  +gradientDegree?: number,
+  props?: Array<any>,
 }
 
 const Button = ({
-  rounded,
-  primary,
-  secondary,
-  primaryGradient,
-  secondaryGradient,
-  disabled,
-  className,
+  variant = 'text',
+  rounded = false,
+  gradient = false,
+  disabled = false,
+  gradientDegree = 90,
   children,
   ...props
 }: ButtonProps) => {
-  const classes = useStyles({rounded})
+  const classes = useStyles({rounded, gradientDegree})
+
+  if (variant === 'text' && gradient) {
+    // Note(bigamasta): text gradient combination is not used anywhere
+    // in entire app, extend this if needed
+    throw new Error('Text Button with gradient is not yet defined.')
+  }
   return (
     <MaterialButton
+      variant={variant}
+      color="primary"
       disabled={disabled}
-      className={cn(classes.root, className, {
-        [classes.rounded]: rounded,
-        [classes.primary]: primary,
-        [classes.secondary]: secondary,
-        [classes.primaryGradient]: primaryGradient,
-        [classes.secondaryGradient]: secondaryGradient,
-      })}
       classes={{
-        disabled: cn(!secondary && classes.disabled, secondary && classes.secondaryDisabled),
+        root: cn(
+          classes.root,
+          rounded && classes.rounded,
+          gradient && variant === 'contained' && classes.gradientContained,
+          gradient && variant === 'outlined' && classes.gradientOutlined
+        ),
+        disabled: cn(
+          disabled && variant === 'text' && classes.disabledText,
+          disabled && variant === 'contained' && !gradient && classes.disabledContained,
+          disabled && variant === 'outlined' && !gradient && classes.disabledOutlined,
+          disabled && variant === 'contained' && gradient && classes.disabledContainedGradient,
+          disabled && variant === 'outlined' && gradient && classes.disabledOutlinedGradient
+        ),
+        contained: classes.contained,
       }}
       {...props}
     >
