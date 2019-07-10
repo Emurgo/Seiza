@@ -7,7 +7,7 @@ import {makeStyles} from '@material-ui/styles'
 import cn from 'classnames'
 
 import {Card, ContentSpacing} from '@/components/visual'
-import CopyToClipboard from '@/components/common/CopyToClipboard'
+import {CopyToClipboard} from '@/components/common'
 
 export const EntityCardShell = ({children}) => {
   return (

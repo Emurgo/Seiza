@@ -18,8 +18,7 @@ import {
 } from '@material-ui/core'
 import {Share, CallMade, CallReceived} from '@material-ui/icons'
 
-import CopyToClipboard from '@/components/common/CopyToClipboard'
-import FileInputHandler from '@/components/common/FileInputHandler'
+import {CopyToClipboard, FileInputHandler} from '@/components/common'
 import {Button} from '@/components/visual'
 import {download} from '@/helpers/utils'
 import {useI18n} from '@/i18n/helpers'

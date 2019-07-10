@@ -12,9 +12,8 @@ import {
   ExpandableCardFooter,
   Button,
   CircularProgressBar,
-  VisualHash,
 } from '@/components/visual'
-import {AdaValue} from '@/components/common'
+import {AdaValue, PoolEntityContent} from '@/components/common'
 import WithModalState from '@/components/headless/modalState'
 import {useI18n} from '@/i18n/helpers'
 import {useSelectedPoolsContext} from '../context/selectedPools'
@@ -43,13 +42,6 @@ const useHeaderStyles = makeStyles(({palette, spacing, breakpoints}) => ({
     [breakpoints.up('md')]: {
       padding: spacing(3),
     },
-  },
-  dot: {
-    marginTop: '7px',
-  },
-  info: {
-    paddingLeft: spacing(1),
-    paddingRight: spacing(1),
   },
   button: {
     width: '120px',
@@ -124,7 +116,6 @@ const RemovePoolButton = ({onClick, label}) => {
   )
 }
 
-// TODO: add copy to clipboard for hash
 const Header = ({name, hash}) => {
   const classes = useHeaderStyles()
   const {translate} = useI18n()
@@ -133,7 +124,6 @@ const Header = ({name, hash}) => {
 
   const onAddPool = useCallback(() => addPool(hash), [addPool, hash])
   const onRemovePool = useCallback(() => removePool(hash), [removePool, hash])
-  const isMobile = useIsMobile()
 
   return (
     <Grid
@@ -144,17 +134,7 @@ const Header = ({name, hash}) => {
       className={classes.wrapper}
     >
       <Grid item className={classes.flexEllipsize}>
-        <div className="d-flex">
-          <div className={classes.dot}>
-            <VisualHash value={hash} size={isMobile ? 36 : 48} />
-          </div>
-          <div className={cn(classes.info, classes.flexEllipsize, 'flex-grow-1')}>
-            <Typography noWrap variant="h6">
-              {name}
-            </Typography>
-            <Typography noWrap>{hash}</Typography>
-          </div>
-        </div>
+        <PoolEntityContent name={name} hash={hash} />
       </Grid>
       <Grid item>
         {selected ? (
