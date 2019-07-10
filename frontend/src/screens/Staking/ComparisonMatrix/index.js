@@ -1,6 +1,6 @@
 // @flow
 
-import * as React from 'react'
+import React, {useMemo, useCallback} from 'react'
 import {defineMessages} from 'react-intl'
 
 import {useI18n} from '@/i18n/helpers'
@@ -138,18 +138,25 @@ const ComparisonMatrixScreen = () => {
   const {translate: tr} = useI18n()
   const {error, loading, data} = useLoadSelectedPools()
 
+  const categoryConfigs = useMemo(
+    () => [
+      {categoryLabel: tr(messages.categoryOneLabel), config: categoryOneConfig},
+      {categoryLabel: tr(messages.categoryTwoLabel), config: categoryTwoConfig},
+      {categoryLabel: tr(messages.categoryThreeLabel), config: categoryThreeConfig},
+    ],
+    [tr]
+  )
+
+  const getIdentifier = useCallback((data) => data.poolHash, [])
+
   return (
     <WithEnsureStakePoolsLoaded {...{loading, error, data}}>
       {({data: stakePools}) => (
         <ComparisonMatrix
           title={tr(messages.stakePools)}
-          categoryConfigs={[
-            {categoryLabel: tr(messages.categoryOneLabel), config: categoryOneConfig},
-            {categoryLabel: tr(messages.categoryTwoLabel), config: categoryTwoConfig},
-            {categoryLabel: tr(messages.categoryThreeLabel), config: categoryThreeConfig},
-          ]}
+          categoryConfigs={categoryConfigs}
           data={stakePools}
-          getIdentifier={(data) => data.poolHash}
+          getIdentifier={getIdentifier}
         />
       )}
     </WithEnsureStakePoolsLoaded>
