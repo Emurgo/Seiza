@@ -92,10 +92,11 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const useDialogStyles = makeStyles((theme) => ({
-  modalContainer: {
+  container: {
     marginTop: theme.spacing(3),
+    alignItems: 'flex-start',
   },
-  modalPaper: {
+  paper: {
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1),
   },
