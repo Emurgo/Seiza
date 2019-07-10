@@ -13,6 +13,9 @@ export const getHeaderBackground = (theme: any) => darken(theme.palette.backgrou
 
 export const getBodyBackground = (theme: any) => theme.palette.background.paper
 
+// So that zIndexes defined inside comparison matrix files dont affect outer files.
+export const stackingContext = {position: 'relative', zIndex: 0}
+
 // TODO: make something better than PADDING
 export const PADDING = 16
 

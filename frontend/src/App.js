@@ -1,6 +1,5 @@
 // @flow
 
-import cn from 'classnames'
 import React from 'react'
 import {BrowserRouter, StaticRouter, Route, Switch, Redirect} from 'react-router-dom'
 import {CssBaseline, Grid} from '@material-ui/core'
@@ -59,10 +58,10 @@ const useAppStyles = makeStyles((theme) => ({
   },
   navHeaderWrapper: {
     top: 0,
-    zIndex: 2,
+    zIndex: 30,
+    position: 'sticky',
     [theme.breakpoints.up('md')]: {
-      position: 'static',
-      zIndex: 0,
+      position: 'relative',
     },
   },
 }))
@@ -123,7 +122,7 @@ const AppLayout = () => {
     <Grid container direction="column" className={classes.mainWrapper} wrap="nowrap">
       <CookiesBanner />
 
-      <Grid item className={cn(classes.navHeaderWrapper, 'sticky')}>
+      <Grid item className={classes.navHeaderWrapper}>
         <CssBaseline />
         <TopBar navItems={getTranslatedNavItems(translate)} />
       </Grid>

@@ -76,30 +76,24 @@ export const FadeoutFieldWithTooltip = ({text, height}: {text: string, height: n
   )
 }
 
-const useTooltipStyles = makeStyles((theme) => {
-  return {
-    wrapper: {
-      position: 'relative',
-      zIndex: 2,
-    },
-    text: {
-      wordBreak: 'break-word',
-      color: 'white',
-    },
-    copy: {
-      cursor: 'pointer',
-      padding: '10px 0',
-      display: 'flex',
-      justifyContent: 'center',
-    },
-  }
-})
+const useTooltipStyles = makeStyles((theme) => ({
+  text: {
+    wordBreak: 'break-word',
+    color: 'white',
+  },
+  copy: {
+    cursor: 'pointer',
+    padding: '10px 0',
+    display: 'flex',
+    justifyContent: 'center',
+  },
+}))
 
 export const CustomTooltip = ({text}: {text: string}) => {
   const {translate} = useI18n()
   const classes = useTooltipStyles()
   return (
-    <div className={classes.wrapper}>
+    <div>
       <Typography className={classes.text}>{text}</Typography>
       <div className={classes.copy}>
         <CopyToClipboard value={text}>{translate(messages.copyText)}</CopyToClipboard>

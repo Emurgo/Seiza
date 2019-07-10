@@ -12,7 +12,7 @@ import {SimpleExpandableCard, Button, Tooltip} from '@/components/visual'
 import {useI18n} from '@/i18n/helpers'
 
 import {useLocalStorageState} from '@/components/hooks/useStorageState'
-import {ItemIdentifier, getHeaderBackground} from '../utils'
+import {ItemIdentifier, getHeaderBackground, stackingContext} from '../utils'
 
 import type {ComparisonMatrixProps} from '../types'
 
@@ -24,6 +24,7 @@ const messages = defineMessages({
 const useCategoryStyles = makeStyles((theme) => ({
   wrapper: {
     padding: theme.spacing(1),
+    ...stackingContext,
   },
   pool: {
     marginTop: theme.spacing(1),

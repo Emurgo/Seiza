@@ -1,6 +1,7 @@
 // @flow
 import React, {useState, useCallback} from 'react'
 import {Switch, Route} from 'react-router-dom'
+import {matchPath} from 'react-router'
 import useReactRouter from 'use-react-router'
 import NoSSR from 'react-no-ssr'
 import {Grid, Grow, Card, Popper, ClickAwayListener, Divider} from '@material-ui/core'
@@ -8,8 +9,8 @@ import {makeStyles} from '@material-ui/styles'
 import {fade} from '@material-ui/core/styles/colorManipulator'
 import ArrowDownIcon from '@material-ui/icons/ArrowDropDown'
 import cn from 'classnames'
-import {routeTo, combinedBlockchainPath} from './helpers/routes'
 
+import {routeTo, combinedBlockchainPath} from './helpers/routes'
 import BlockchainSearch from './screens/Blockchain/BlockchainHeader/Search'
 import {useMobileStakingSettingsRef} from '@/components/context/refs'
 import {Link} from '@/components/common'
@@ -25,16 +26,16 @@ import seizaLogoMobile from '@/static/assets/icons/seiza-symbol.svg'
 import type {NavItem} from '@/components/common/Navbar'
 
 const useTopBarStyles = makeStyles((theme) => ({
-  topBar: {
+  topBar: ({addShadow}) => ({
     position: 'relative',
     background: theme.palette.background.paper,
-    boxShadow: `0px 5px 25px ${fade(theme.palette.shadowBase, 0.12)}`,
+    boxShadow: addShadow ? `0px 5px 25px ${fade(theme.palette.shadowBase, 0.12)}` : 'none',
     padding: theme.spacing(1),
     [theme.breakpoints.up('sm')]: {
       padding: `${theme.spacing(1)}px ${theme.spacing(5)}px`,
     },
     justifyContent: 'space-between',
-  },
+  }),
   mobileSearch: {
     flex: 1,
     marginLeft: 0,
@@ -68,7 +69,7 @@ const useMobileMenuStyles = makeStyles(({palette, spacing}) => ({
     color: '#BFC5D2', // TODO: consider adding to theme
   },
   popper: {
-    zIndex: 99999, // We just always want it to be on top
+    zIndex: 40,
   },
 }))
 
@@ -141,7 +142,11 @@ const TopBar = ({navItems}: TopBarProps) => {
   const {
     location: {pathname},
   } = useReactRouter()
-  const classes = useTopBarStyles()
+  // Note: for stakingCenter there is next navigation below topBar which should not be affected
+  // by shadow. It can not set higher z-index because when scrolling much it would overlap main
+  // navigation what is not desired.
+  const addShadow = !matchPath(pathname, routeTo.stakingCenter.home())
+  const classes = useTopBarStyles({addShadow})
   const {callbackRef: mobileStakingSettingsRef} = useMobileStakingSettingsRef()
 
   return (
