@@ -2,8 +2,7 @@
 import React from 'react'
 import {makeStyles} from '@material-ui/styles'
 
-import {Card} from '@/components/visual'
-import {useIsMobile} from '@/components/hooks/useBreakpoints'
+import {Card, MobileOnly, DesktopOnly} from '@/components/visual'
 import SettingsBar from './SettingsBar'
 import NavigationBar from './NavigationBar'
 
@@ -16,22 +15,20 @@ const useStyles = makeStyles((theme) => ({
 
 const SideMenu = () => {
   const classes = useStyles()
-  const isMobile = useIsMobile()
-
-  if (isMobile) {
-    return (
-      <React.Fragment>
-        <SettingsBar />
-        <NavigationBar />
-      </React.Fragment>
-    )
-  }
 
   return (
-    <Card className={classes.wrapper}>
-      <SettingsBar />
-      <NavigationBar />
-    </Card>
+    <React.Fragment>
+      <MobileOnly>
+        <SettingsBar />
+        <NavigationBar />
+      </MobileOnly>
+      <DesktopOnly>
+        <Card className={classes.wrapper}>
+          <SettingsBar />
+          <NavigationBar />
+        </Card>
+      </DesktopOnly>
+    </React.Fragment>
   )
 }
 

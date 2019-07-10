@@ -11,8 +11,7 @@ import {fade} from '@material-ui/core/styles/colorManipulator'
 import NavLink from '@/components/common/NavLink'
 import {routeTo} from '@/helpers/routes'
 import {useI18n} from '@/i18n/helpers'
-import {useIsMobile} from '@/components/hooks/useBreakpoints'
-import {LiteTabs, LiteTab} from '@/components/visual'
+import {LiteTabs, LiteTab, MobileOnly, DesktopOnly} from '@/components/visual'
 import useTabState from '@/components/hooks/useTabState'
 
 import {ReactComponent as ListIcon} from '@/static/assets/icons/staking-simulator/list.svg'
@@ -203,9 +202,15 @@ const DesktopNavigation = () => {
   )
 }
 
-const NavigationBar = () => {
-  const isMobile = useIsMobile()
-  return isMobile ? <MobileNavigation /> : <DesktopNavigation />
-}
+const NavigationBar = () => (
+  <React.Fragment>
+    <MobileOnly>
+      <MobileNavigation />
+    </MobileOnly>
+    <DesktopOnly>
+      <DesktopNavigation />
+    </DesktopOnly>
+  </React.Fragment>
+)
 
 export default NavigationBar
