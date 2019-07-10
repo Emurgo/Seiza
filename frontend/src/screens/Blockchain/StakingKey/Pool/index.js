@@ -13,8 +13,9 @@ import {
   CircularProgressBar,
   LoadingInProgress,
 } from '@/components/visual'
-import {AdaValue, LoadingError, EntityIdCard} from '@/components/common'
+import {AdaValue, LoadingError, EntityIdCard, Link} from '@/components/common'
 import {useI18n} from '@/i18n/helpers'
+import {routeTo} from '@/helpers/routes'
 import AdaIcon from '@/static/assets/icons/transaction-id.svg'
 import CertificateIcon from '@/static/assets/icons/reward-address.svg'
 import RewardAddressIcon from '@/static/assets/icons/certificate.svg'
@@ -228,7 +229,11 @@ const StakePool = () => {
           </SummaryCard>
           <EntityIdCard
             label={translate(messages.rewardAddress)}
-            value={stakePool.rewardsAddress}
+            value={
+              <Link monospace to={routeTo.address(stakePool.rewardsAddress)}>
+                {stakePool.rewardsAddress}
+              </Link>
+            }
             iconRenderer={<img alt="" src={RewardAddressIcon} width={40} height={40} />}
           />
           <EntityIdCard
