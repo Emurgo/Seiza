@@ -13,6 +13,7 @@ import Head from 'next/head'
 
 import {ApolloProvider} from 'react-apollo'
 import {ApolloProvider as ApolloHooksProvider} from 'react-apollo-hooks'
+import {parseCookies, setCookie, destroyCookie} from 'nookies'
 
 import withApolloClient from '../lib/with-apollo-client'
 import {InjectHookIntlContext} from '@/i18n/helpers'
@@ -22,13 +23,20 @@ import CssBaseline from '@material-ui/core/CssBaseline'
 import config from '@/config'
 import {ThemeProvider, useTheme} from '@/components/context/theme'
 import {CookiesProvider} from '@/components/context/cookies'
-import {IntlProvider, useLocale, DEFAULT_LOCALE} from '@/components/context/intl'
+import {
+  IntlProvider,
+  useLocale,
+  getValidatedLocale,
+  DEFAULT_LOCALE,
+  LOCALE_KEY,
+} from '@/components/context/intl'
 import {THEME_DEFINITIONS, THEMES} from '@/themes'
 import translations from '@/i18n/locales'
 import {DefaultErrorScreen} from '@/components/common/DefaultErrorBoundary'
+import * as urlUtils from '@/helpers/url'
+import * as storageUtils from '@/helpers/storage'
 
 import {CrawlerMetadata, TwitterMetadata, FacebookMetadata} from './_meta'
-import {parseCookies, setCookie, destroyCookie} from 'nookies'
 
 // Note: see https://medium.com/@shalkam/create-react-app-i18n-the-easy-way-b05536c594cb
 // for more info
@@ -95,6 +103,13 @@ const Intl = ({children}) => {
   )
 }
 
+// Note: for staking section `path` was set to `/staking`, but for some
+// reason it did not happen for other pathnames
+const getSetCookieArgs = (key, value, options = {}) => {
+  const defaultOptions = {path: '/'}
+  return [key, value, {...defaultOptions, ...options}]
+}
+
 const getCookiesProps = (ctx) => {
   // Note: this is returned for both client and server
   const cookies = parseCookies(ctx || {})
@@ -102,7 +117,7 @@ const getCookiesProps = (ctx) => {
   // Note: this function is returned only when rendered server-side as it is not
   // seriazable
   const _setCookie = (...args) => {
-    setCookie(ctx, ...args)
+    setCookie(ctx, ...getSetCookieArgs(...args))
   }
 
   const _destroyCookie = (name) => {
@@ -110,6 +125,29 @@ const getCookiesProps = (ctx) => {
   }
 
   return {cookies, setCookie: _setCookie, destroyCookie: _destroyCookie}
+}
+
+// NOTE!!!
+// It would be nice if we did all this logic inside IntlProvider but there are some issues:
+// 1. To access url/change in convenient way, we need need IntlProvider defined after Router
+// 2. Settings language cookie:
+//  a) We can not call setCookie in `useEffect` as it will only run on client, so we would not
+//      see desired language in initial load
+//  b) We could force `useCookieState` to replace saved state with initial value,
+//     but that requires some hack or extra param
+// TODO: consider placing IntlProvider under Router and putting that code to IntlProvider
+const handleLocaleParam = (ctx, cookiesProps) => {
+  const localeParam = ctx.req.query.locale
+  if (localeParam) {
+    const origUrlQuery = urlUtils.stringify(ctx.req.query)
+    const newUrlQuery = urlUtils.replaceQueryParam(origUrlQuery, LOCALE_KEY, null)
+    cookiesProps.setCookie(
+      LOCALE_KEY,
+      storageUtils.toStorageFormat(getValidatedLocale(localeParam))
+    )
+    ctx.res.writeHead(302, {Location: `${ctx.req.path}${newUrlQuery ? `?${newUrlQuery}` : ''}`})
+    ctx.res.end()
+  }
 }
 
 class MyApp extends App {
@@ -122,10 +160,15 @@ class MyApp extends App {
         pageProps = await Component.getInitialProps(ctx)
       }
 
+      const cookiesProps = getCookiesProps(ctx)
+
+      // Note: this can set cookie and redirect
+      handleLocaleParam(ctx, cookiesProps)
+
       // what is returned here, gets injected into __NEXT_DATA__
       return {
         pageProps,
-        cookiesProps: getCookiesProps(ctx),
+        cookiesProps,
       }
       // ***** BEGIN INSPIRED BY: https://github.com/zeit/next.js/blob/master/examples/with-sentry/pages/_app.js
     } catch (error) {
@@ -158,11 +201,8 @@ class MyApp extends App {
   // setCookie and destroyCookie (functions in general) can be passed from `getInitialProps`
   // only on server. On client we use "browser" version where we do not need `ctx`.
   getHackedCookieHandlers(cookiesProps) {
-    const _setCookie = (key, value, options = {}) => {
-      // Note: for staking section `path` was set to `/staking`, but for some
-      // reason it did not happen for other pathnames
-      const defaultOptions = {path: '/'}
-      const args = [key, value, {...defaultOptions, ...options}]
+    const _setCookie = (key, value, options) => {
+      const args = getSetCookieArgs(key, value, options)
       if (!process.browser) {
         cookiesProps.setCookie(...args)
       } else {

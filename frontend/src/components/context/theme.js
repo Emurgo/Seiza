@@ -6,8 +6,6 @@ import {useCookieState} from '@/components/hooks/useStorageState'
 
 import {THEMES} from '@/themes'
 
-// TODO: consider to unify file names in "context" folder
-
 type ContextType = {
   setTheme: Function,
   currentTheme: string,

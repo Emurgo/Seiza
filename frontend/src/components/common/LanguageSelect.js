@@ -43,7 +43,7 @@ const Label = withStyles(styles)(({langCode, flagSrc, mobile, classes}) => {
 // Helper to conditional inclusion
 const insertIf = (cond, value) => (cond ? [value] : [])
 
-const LANGUAGES = [
+export const LANGUAGES = [
   {
     locale: 'en',
     label: <Label langCode="EN" flagSrc={EnglishFlag} />,
@@ -73,7 +73,9 @@ const LANGUAGES = [
     locale: 'kr',
     label: <Label langCode="KR" flagSrc={KoreanFlag} />,
   },*/
-].map(({locale, label, mobileLabel}) => ({value: locale, label, mobileLabel}))
+].map<{value: string, label: React$Node, mobileLabel: React$Node}>(
+  ({locale, label, mobileLabel}) => ({value: locale, label, mobileLabel})
+)
 
 // TODO: refactor using useLocale() hook
 export default () => {

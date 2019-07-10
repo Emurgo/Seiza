@@ -12,7 +12,7 @@ export const stringify = (queryObj: {}): string =>
 
 export const objToQueryString = (obj: {}) => stringify(obj)
 
-export const replaceQueryParam = (query: string, key: string, value: string) => {
+export const replaceQueryParam = (query: string, key: string, value: ?string) => {
   // eslint-disable-next-line no-unused-vars
   const {[key]: old, ...rest} = parse(query)
   return stringify(value == null ? rest : {...rest, [key]: value})
