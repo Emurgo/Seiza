@@ -62,7 +62,11 @@ const NavMenuItem = ({disabledText, label, link, isMobile}) => {
     <DisabledLink {...{label, disabledText}} className={cn(isMobile && classes.mobileLink)} />
   ) : (
     <NavLink className={cn(classes.link, isMobile && classes.mobileLink)} to={link}>
-      {(isActive) => <NavTypography {...{isActive, isMobile}}>{label}</NavTypography>}
+      {(isActive) => (
+        <NavTypography underlineActive={!isMobile} {...{isActive}}>
+          {label}
+        </NavTypography>
+      )}
     </NavLink>
   )
 }
@@ -107,7 +111,9 @@ const useNavTypographyStyles = makeStyles(({palette}) => ({
     },
   },
   active: {
-    'color': palette.primary.main,
+    color: palette.primary.main,
+  },
+  underlineActive: {
     '&:after': {
       content: '""',
       background: palette.tertiary.main,
@@ -118,21 +124,18 @@ const useNavTypographyStyles = makeStyles(({palette}) => ({
       height: '1px',
     },
   },
-  activeMobile: {
-    color: palette.primary.main,
-  },
 }))
 
 export const NavTypography = ({
   isActive,
   children,
   className,
-  isMobile,
+  underlineActive = false,
 }: {
   isActive?: boolean,
   children: any,
   className?: string,
-  isMobile?: boolean,
+  underlineActive?: boolean,
 }) => {
   const classes = useNavTypographyStyles()
 
@@ -140,7 +143,8 @@ export const NavTypography = ({
     <Typography
       className={cn(
         classes.linkText,
-        isActive && (isMobile ? classes.activeMobile : classes.active),
+        isActive && classes.active,
+        isActive && underlineActive && classes.underlineActive,
         className
       )}
       variant="body1"
