@@ -69,7 +69,7 @@ const StakePool = () => {
   const {Row, Label, Value} = SummaryCard
   const {translate, formatPercent, formatInt, formatTimestamp, formatAda} = useI18n()
   const {match} = useReactRouter()
-  const {data: stakePool, loading, error} = useLoadStakepoolData(match.params.stakingKey)
+  const {data: stakePool, loading, error} = useLoadStakepoolData(match.params.poolHash)
 
   return (
     <SimpleLayout title={stakePool.name}>

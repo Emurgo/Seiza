@@ -68,12 +68,12 @@ const KeyRegistered = ({certificate}) => {
             id={messages.registration.id}
             values={{
               stakingKey: (
-                <Link to={routeTo.stakingKey.home(certificate.stakingKey)}>
+                <Link to={routeTo.stakingKey(certificate.stakingKey)}>
                   {certificate.stakingKey}
                 </Link>
               ),
               deregisteredStakingKey: (
-                <Link to={routeTo.stakingKey.home(certificate.deregisteredStakingKey)}>
+                <Link to={routeTo.stakingKey(certificate.deregisteredStakingKey)}>
                   {certificate.deregisteredStakingKey}
                 </Link>
               ),
@@ -98,7 +98,7 @@ const KeyDeregistered = ({certificate}) => {
             id={messages.deregistration.id}
             values={{
               stakingKey: (
-                <Link to={routeTo.stakingKey.home(certificate.stakingKey)}>
+                <Link to={routeTo.stakingKey(certificate.stakingKey)}>
                   {certificate.stakingKey}
                 </Link>
               ),
@@ -126,7 +126,7 @@ const PoolRetiring = ({certificate}) => {
             id={messages.poolRetiringDescription.id}
             values={{
               stakingKey: (
-                <Link to={routeTo.stakingKey.home(certificate.stakingKey)}>
+                <Link to={routeTo.stakingKey(certificate.stakingKey)}>
                   {certificate.stakingKey}
                 </Link>
               ),
