@@ -1,7 +1,7 @@
 // @flow
 import React from 'react'
 import type {ElementRef} from 'react'
-import classnames from 'classnames'
+import cn from 'classnames'
 import {withProps} from 'recompose'
 import {
   withStyles,
@@ -15,16 +15,12 @@ import {
   ButtonBase,
   Typography,
 } from '@material-ui/core'
+import {makeStyles} from '@material-ui/styles'
 import {MoreVert} from '@material-ui/icons'
 import {fade} from '@material-ui/core/styles/colorManipulator'
 
 import {Card} from '@/components/visual'
 import WithModalState from '@/components/headless/modalState'
-import IconEpoch from '@/static/assets/icons/metrics-epoch.svg'
-import IconBlocks from '@/static/assets/icons/metrics-blocks.svg'
-import IconDecentralization from '@/static/assets/icons/metrics-decentralization.svg'
-import IconPrice from '@/static/assets/icons/metrics-currency.svg'
-import IconPools from '@/static/assets/icons/metrics-stakepools.svg'
 
 const styles = (theme) => ({
   contentWrapper: {
@@ -55,7 +51,7 @@ const styles = (theme) => ({
     [theme.breakpoints.up('sm')]: {
       width: 50,
       marginRight: theme.spacing(2),
-      display: 'block',
+      display: 'flex',
     },
   },
   optionsIcon: {
@@ -90,18 +86,13 @@ const styles = (theme) => ({
       },
     },
   },
-  value: {
+  primaryText: {
     paddingBottom: theme.spacing(0.5),
   },
+  secondaryText: {
+    lineHeight: 1,
+  },
 })
-
-const ICONS = {
-  epoch: IconEpoch,
-  blocks: IconBlocks,
-  decentralization: IconDecentralization,
-  price: IconPrice,
-  pools: IconPools,
-}
 
 type Option = {
   label: string,
@@ -150,18 +141,20 @@ const ClickableWrapper = ({onClick, classes, children, buttonBaseProps}) =>
     <div className={classes.noButton}>{children}</div>
   )
 
-type MetricsCardProps = {
-  metric: string,
-  value: string,
-  icon: $Keys<typeof ICONS>,
+type HeaderCardProps = {
+  primaryText: string,
+  secondaryText: string,
+  icon: React$Node,
   className: any,
   options?: Array<Option>,
   onClick?: (() => any) | null,
   classes: Object,
   clickableWrapperProps?: any,
+  smallPrimaryText: boolean,
 }
 
-class MetricsCard extends React.Component<MetricsCardProps> {
+// TODO: consider better naming
+class HeaderCard extends React.Component<HeaderCardProps> {
   anchorRef: {current: null | ElementRef<'div'>}
   buttonRef: {current: null | ElementRef<'button'>}
 
@@ -173,14 +166,15 @@ class MetricsCard extends React.Component<MetricsCardProps> {
 
   render() {
     const {
-      metric,
-      value,
+      primaryText,
+      secondaryText,
       icon,
       classes,
       className,
       options,
       onClick,
       clickableWrapperProps,
+      smallPrimaryText = false,
     } = this.props
 
     return (
@@ -189,7 +183,7 @@ class MetricsCard extends React.Component<MetricsCardProps> {
           <React.Fragment>
             <Card
               classes={{
-                root: classnames(classes.card, onClick && classes.clickableCard, className),
+                root: cn(classes.card, onClick && classes.clickableCard, className),
               }}
             >
               <ClickableWrapper {...{onClick, classes}} buttonBaseProps={clickableWrapperProps}>
@@ -199,25 +193,25 @@ class MetricsCard extends React.Component<MetricsCardProps> {
                     container
                     direction="column"
                     justify="space-around"
+                    alignItems="center"
                     className={classes.icon}
                   >
-                    <img alt="" src={ICONS[icon]} />
+                    {icon}
                   </Grid>
                   <Grid container direction="column" justify="center">
-                    <Grid item>
-                      <Typography variant="h3" className={classes.value}>
-                        {value}
-                      </Typography>
-                    </Grid>
-                    <Grid item>
-                      <Typography
-                        variant="caption"
-                        color="textSecondary"
-                        className={classes.metric}
-                      >
-                        {metric}
-                      </Typography>
-                    </Grid>
+                    <Typography
+                      variant={smallPrimaryText ? 'h5' : 'h2'}
+                      className={classes.primaryText}
+                    >
+                      {primaryText}
+                    </Typography>
+                    <Typography
+                      variant="caption"
+                      color="textSecondary"
+                      className={classes.secondaryText}
+                    >
+                      {secondaryText}
+                    </Typography>
                   </Grid>
                 </Grid>
               </ClickableWrapper>
@@ -257,4 +251,23 @@ class MetricsCard extends React.Component<MetricsCardProps> {
     )
   }
 }
-export default withStyles(styles)(MetricsCard)
+
+const useHeaderCardContainerStyles = makeStyles(({spacing, breakpoints}) => ({
+  root: {
+    '& > *': {
+      marginRight: spacing(0.5),
+      marginLeft: spacing(0.5),
+      [breakpoints.up('sm')]: {
+        marginRight: spacing(1.5),
+        marginLeft: spacing(1.5),
+      },
+    },
+  },
+}))
+
+export const HeaderCardContainer = ({children}: {children: React$Node}) => {
+  const classes = useHeaderCardContainerStyles()
+  return <div className={classes.root}>{children}</div>
+}
+
+export default withStyles(styles)(HeaderCard)

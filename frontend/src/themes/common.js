@@ -55,6 +55,10 @@ const common = {
       fontSize: 20,
       fontWeight: 400,
     },
+    h5: {
+      fontSize: 18,
+      fontWeight: 700,
+    },
     // Material default typography
     body1: {
       fontSize: 16,
