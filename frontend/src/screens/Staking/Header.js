@@ -7,8 +7,11 @@ import {defineMessages} from 'react-intl'
 import ReactMarkdown from 'react-markdown'
 
 import {Card} from '@/components/visual'
-import iconEpoch from '@/static/assets/icons/metrics-epoch.svg'
 import {withI18n} from '@/i18n/helpers'
+
+import searchForStakepoolIcon from '@/static/assets/icons/staking-simulator/search-for-stakepool.svg'
+import downloadOrShareIcon from '@/static/assets/icons/staking-simulator/download-or-share.svg'
+import compareIcon from '@/static/assets/icons/staking-simulator/compare.svg'
 
 const messages = defineMessages({
   header: 'Explore Stake Pools',
@@ -66,9 +69,9 @@ const Header = ({classes, i18n: {translate}}) => (
   >
     <Typography variant="h1">{translate(messages.header)}</Typography>
     <Grid container direction="row" justify="center" alignItems="center">
-      <StakePoolCard value={translate(messages.card1)} iconSrc={iconEpoch} />
-      <StakePoolCard value={translate(messages.card2)} iconSrc={iconEpoch} />
-      <StakePoolCard value={translate(messages.card3)} iconSrc={iconEpoch} />
+      <StakePoolCard value={translate(messages.card1)} iconSrc={searchForStakepoolIcon} />
+      <StakePoolCard value={translate(messages.card2)} iconSrc={downloadOrShareIcon} />
+      <StakePoolCard value={translate(messages.card3)} iconSrc={compareIcon} />
     </Grid>
   </Grid>
 )
