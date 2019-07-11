@@ -91,15 +91,9 @@ const useFiltersButtonClasses = makeStyles((theme) => ({
   },
   mobileButton: {
     position: 'relative',
-    // Note: keep in sync with searchbar height
-    // TODO: consider exporting/importing
-    height: 58,
   },
   icon: {
-    position: 'absolute',
-    // TODO: can we center both icons without absolute/top/left?
-    top: 18,
-    left: 22,
+    verticalAlign: 'middle',
   },
 }))
 
