@@ -7,7 +7,9 @@ import {
   fetchBootstrapEraPoolSummary,
 } from './dataProviders'
 
-import {mockedStakePools} from './mockedPools'
+import {currentStatusResolver} from '../status/resolvers'
+import {MOCKED_STAKEPOOLS} from './mockedPools'
+import {calculateAge} from '../utils'
 
 const EMPTY_RESPONSE = {
   cursor: null,
@@ -79,6 +81,11 @@ export const pagedStakePoolListResolver = (
   }
 }
 
+const ageResolver = async (pool, args, context) => {
+  const currentEpoch = await currentStatusResolver(null, args, context).epochNumber()
+  return calculateAge(pool.createdAt, currentEpoch)
+}
+
 export default {
   StakePoolSortByEnum: {
     REVENUE: 'revenue',
@@ -99,6 +106,12 @@ export default {
       return new BigNumber(stakepoolSummary.adaStaked).minus(stakepoolSummary.ownerPledge.declared)
     },
   },
+  BootstrapEraStakePool: {
+    age: ageResolver,
+  },
+  MockedStakePool: {
+    age: ageResolver,
+  },
   Query: {
     stakePool: (root, args, context) =>
       fetchBootstrapEraPool(null, args.poolHash, args.epochNumber),
@@ -107,6 +120,6 @@ export default {
     stakePoolList: (root, args, context) => fetchBootstrapEraPoolList(null, args.epochNumber),
     pagedStakePoolList: (_, args, context) =>
       pagedStakePoolListResolver(null, args.cursor, args.pageSize, args.searchOptions),
-    mockedStakePools: (root, args, context) => mockedStakePools,
+    mockedStakePools: (root, args, context) => MOCKED_STAKEPOOLS,
   },
 }

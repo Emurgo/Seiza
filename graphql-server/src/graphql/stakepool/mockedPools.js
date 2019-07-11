@@ -30,7 +30,7 @@ const generatePool = (index) => ({
   },
 })
 
-export const mockedStakePools = _.range(0, 1000).map((i) => generatePool(i))
+export const MOCKED_STAKEPOOLS = _.range(0, 1000).map((i) => generatePool(i))
 
 const _BOOTSTRAP_POOLS = [
   {

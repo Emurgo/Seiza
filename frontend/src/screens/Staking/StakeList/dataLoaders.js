@@ -35,6 +35,7 @@ export const useLoadPagedStakePoolList = () => {
             description
             name
             createdAt
+            age
             summary {
               adaStaked
               fullness

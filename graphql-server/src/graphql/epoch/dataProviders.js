@@ -1,7 +1,7 @@
 // @flow
 import moment from 'moment'
 import type {Elastic} from '../../api/elastic'
-import {parseAdaValue, slotCount, getEstimatedSlotTimestamp} from '../utils'
+import {parseAdaValue, SLOT_COUNT, getEstimatedSlotTimestamp} from '../utils'
 import {validate} from '../../utils/validation'
 import E from '../../api/elasticHelpers'
 
@@ -40,7 +40,7 @@ const mockedEpoch = (epochNumber: number): Epoch => {
     endTime: moment(endTs * 1000),
     summary: {
       _epochNumber: epochNumber,
-      slotCount,
+      slotCount: SLOT_COUNT,
       totalAdaStaked: '123456',
       stakingRewards: '123456',
       delegatingStakingKeysCount: 123456,

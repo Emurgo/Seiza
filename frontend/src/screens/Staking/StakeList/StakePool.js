@@ -1,5 +1,4 @@
 // @flow
-
 import React, {useCallback} from 'react'
 import cn from 'classnames'
 import {Grid, Typography, IconButton} from '@material-ui/core'
@@ -26,6 +25,7 @@ import {useIsMobile, useIsBreakpointDown} from '@/components/hooks/useBreakpoint
 import {ReactComponent as AddPoolIcon} from '@/static/assets/icons/staking-simulator/add-stakepool.svg'
 import {ReactComponent as RemovePoolIcon} from '@/static/assets/icons/close.svg'
 import {fade} from '@material-ui/core/styles/colorManipulator'
+import epochIcon from '@/static/assets/icons/epoch.svg'
 
 const messages = defineMessages({
   revenue: 'Revenue',
@@ -49,6 +49,8 @@ const messages = defineMessages({
   createdAtHelpText: 'TODO: CreatedAt Help Text',
   pledgeHelpText: 'TODO: Pledge Help Text',
   stakeHelpText: 'TODO: Stake Help Text',
+  ageLabel: 'Age:',
+  ageValue: '{epochCount, plural, =0 {# epochs} one {# epoch} other {# epochs}}',
 })
 
 const useHeaderStyles = makeStyles(({palette, spacing, breakpoints}) => ({
@@ -100,6 +102,12 @@ const useContentStyles = makeStyles(({palette, spacing, breakpoints}) => ({
     marginRight: spacing(2),
     display: 'flex',
     alignItems: 'center',
+  },
+  ageWrapper: {
+    'paddingTop': spacing(1),
+    '& > *': {
+      paddingRight: spacing(1),
+    },
   },
 }))
 
@@ -394,11 +402,34 @@ const MobileStakePool = ({isOpen, toggle, data}) => {
   )
 }
 
+type AgeProps = {|
+  +epochCount: number,
+|}
+
+const Age = ({epochCount}: AgeProps) => {
+  const {translate: tr} = useI18n()
+  const classes = useContentStyles()
+  return (
+    <Grid container alignItems="center" className={classes.ageWrapper}>
+      <img alt="" src={epochIcon} />
+      <Typography component="span" variant="overline" color="textSecondary">
+        {tr(messages.ageLabel)}
+      </Typography>
+      <Typography component="span" variant="overline">
+        {tr(messages.ageValue, {epochCount})}
+      </Typography>
+    </Grid>
+  )
+}
+
 const DesktopStakePool = ({isOpen, toggle, data}) => {
   const classes = useContentStyles()
 
   const renderExpandedArea = () => (
-    <Typography className={classes.extraContent}>{data.description}</Typography>
+    <div className={classes.extraContent}>
+      <Typography>{data.description}</Typography>
+      <Age epochCount={data.age} />
+    </div>
   )
 
   const renderHeader = () => (

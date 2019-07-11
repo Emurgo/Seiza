@@ -4,6 +4,8 @@ import assert from 'assert'
 import BOOTSTRAP_POOLS from './mockedPools'
 
 export const fetchBootstrapEraPoolSummary = (api, poolHash, epochNumber) => {
+  // TODO: use epochNumber when live data is available if needed
+  // to show something some info from summary after some certificate action
   const pool = BOOTSTRAP_POOLS[poolHash]
   assert(pool != null)
   return pool.summary
