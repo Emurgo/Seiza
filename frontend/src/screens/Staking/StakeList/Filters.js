@@ -1,12 +1,12 @@
 // @flow
 
 import React, {useState, useCallback} from 'react'
-import {Grid, Card, CardContent} from '@material-ui/core'
+import {Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
 
 import {useI18n} from '@/i18n/helpers'
-import {Slider, Select} from '@/components/visual'
+import {Slider, Select, Card, ContentSpacing} from '@/components/visual'
 import {useStateWithChangingDefault} from '@/components/hooks/useStateWithChangingDefault'
 import {usePerformanceContext} from '../context/performance'
 
@@ -60,7 +60,7 @@ const Filters = () => {
   const classes = useStyles()
   return (
     <Card>
-      <CardContent>
+      <ContentSpacing top={0.5} left={0.5} bottom={0.5} right={0.5}>
         <Grid container className={classes.wrapper} direction="row">
           <Grid item xs={12} sm={4}>
             <Select
@@ -95,7 +95,7 @@ const Filters = () => {
             </div>
           </Grid>
         </Grid>
-      </CardContent>
+      </ContentSpacing>
     </Card>
   )
 }
