@@ -14,7 +14,7 @@ import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
 
 import {useIsMobile} from '@/components/hooks/useBreakpoints'
-import {CloseIconButton} from '@/components/visual'
+import {CloseIconButton, Divider} from '@/components/visual'
 import WithModalState from '@/components/headless/modalState'
 import {useMobileStakingSettingsRef} from '@/components/context/refs'
 import {useI18n} from '@/i18n/helpers'
@@ -22,6 +22,7 @@ import {useI18n} from '@/i18n/helpers'
 import {useSelectedPoolsContext} from '../../context/selectedPools'
 import {LoadingError} from '@/components/common'
 
+import ResetButton from './ResetButton'
 import PoolsToCompare from './PoolsToCompare'
 import ActionsBar from './ActionsBar'
 import {useLoadSelectedPoolsData} from './dataLoaders'
@@ -73,6 +74,12 @@ const useStyles = makeStyles((theme) => ({
     padding: '20px 40px 20px 60px',
     background: theme.palette.background.paper,
     borderBottom: `1px solid ${theme.palette.contentUnfocus}`,
+  },
+  resetButton: {
+    paddingRight: 40,
+    paddingLeft: 60,
+    paddingTop: theme.spacing(3),
+    paddingBottom: theme.spacing(3),
   },
   title: {
     textTransform: 'uppercase',
@@ -136,7 +143,7 @@ const MobileSettingsBar = ({selectedPools, error}: Props) => {
               </Grid>
             </DialogTitle>
             <DialogContent className={classes.modalContent}>
-              {error && <Error error={error} />}
+              <ResetButton />
               <PoolsToCompare selectedPools={selectedPools} />
             </DialogContent>
             <DialogActions>
@@ -152,11 +159,16 @@ const MobileSettingsBar = ({selectedPools, error}: Props) => {
 const DesktopSettingsBar = ({selectedPools, error}: Props) => {
   const classes = useStyles()
   return (
-    <Grid container className={classes.wrapper} direction="row">
-      {error && <Error error={error} />}
-      <PoolsToCompare selectedPools={selectedPools} />
-      <ActionsBar selectedPools={selectedPools} />
-    </Grid>
+    <React.Fragment>
+      <Divider />
+      <ResetButton className={classes.resetButton} />
+      <Divider />
+      <Grid container className={classes.wrapper} direction="row">
+        {error && <Error error={error} />}
+        <PoolsToCompare selectedPools={selectedPools} />
+        <ActionsBar selectedPools={selectedPools} />
+      </Grid>
+    </React.Fragment>
   )
 }
 
