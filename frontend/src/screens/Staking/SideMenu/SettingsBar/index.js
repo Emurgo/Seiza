@@ -25,6 +25,7 @@ import {LoadingError} from '@/components/common'
 import ResetButton from './ResetButton'
 import PoolsToCompare from './PoolsToCompare'
 import ActionsBar from './ActionsBar'
+import AutoSaveBar from './AutoSaveBar'
 import {useLoadSelectedPoolsData} from './dataLoaders'
 
 const messages = defineMessages({
@@ -69,15 +70,23 @@ const MobileSettingsButton = ({onClick, value}) => {
   )
 }
 
+// TODO: use spacing(...) from theme
+const getSidePaddings = (theme) => ({paddingRight: 40, paddingLeft: 60})
+const getTopBottomPaddings = (theme) => ({paddingTop: 20, paddingBottom: 20})
 const useStyles = makeStyles((theme) => ({
   wrapper: {
-    padding: '20px 40px 20px 60px',
+    ...getTopBottomPaddings(theme),
+    ...getSidePaddings(theme),
+
     background: theme.palette.background.paper,
     borderBottom: `1px solid ${theme.palette.contentUnfocus}`,
   },
+  autoSaveBar: {
+    ...getSidePaddings(theme),
+    ...getTopBottomPaddings(theme),
+  },
   resetButton: {
-    paddingRight: 40,
-    paddingLeft: 60,
+    ...getSidePaddings(theme),
     paddingTop: theme.spacing(3),
     paddingBottom: theme.spacing(3),
   },
@@ -94,7 +103,8 @@ const useStyles = makeStyles((theme) => ({
     paddingRight: theme.spacing(1),
   },
   error: {
-    padding: '20px 40px 20px 60px',
+    ...getSidePaddings(theme),
+    ...getTopBottomPaddings(theme),
   },
 }))
 
@@ -160,6 +170,7 @@ const DesktopSettingsBar = ({selectedPools, error}: Props) => {
   const classes = useStyles()
   return (
     <React.Fragment>
+      <AutoSaveBar className={classes.autoSaveBar} />
       <Divider />
       <ResetButton className={classes.resetButton} />
       <Divider />
