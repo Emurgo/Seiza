@@ -118,26 +118,32 @@ type Props = {|
   selectedPools: Array<{name: string, poolHash: string}>,
 |}
 
-const PoolsToCompare = ({selectedPools}: Props) => {
+export const PoolsToCompareCount = ({selectedPools}: Props) => {
   const classes = useStyles()
   const {translate: tr} = useI18n()
+  return (
+    <Grid container direction="row" alignItems="center" className={classes.header}>
+      {selectedPools.length ? (
+        <React.Fragment>
+          <Typography color="textSecondary" variant="overline">
+            {tr(messages.header)}
+          </Typography>
+          &nbsp;
+          <Typography variant="overline">{selectedPools.length}</Typography>
+        </React.Fragment>
+      ) : (
+        <Typography variant="overline">{tr(messages.noPools)}</Typography>
+      )}
+    </Grid>
+  )
+}
+
+const PoolsToCompare = ({selectedPools}: Props) => {
+  const classes = useStyles()
   const {removePool} = useSelectedPoolsContext()
 
   return (
     <React.Fragment>
-      <Grid container direction="row" alignItems="center" className={classes.header}>
-        {selectedPools.length ? (
-          <React.Fragment>
-            <Typography color="textSecondary" variant="overline">
-              {tr(messages.header)}
-            </Typography>
-            &nbsp;
-            <Typography variant="overline">{selectedPools.length}</Typography>
-          </React.Fragment>
-        ) : (
-          <Typography variant="overline">{tr(messages.noPools)}</Typography>
-        )}
-      </Grid>
       <Grid container direction="column" className={classes.stakePools}>
         <ReactCSSTransitionGroup
           transitionName={{

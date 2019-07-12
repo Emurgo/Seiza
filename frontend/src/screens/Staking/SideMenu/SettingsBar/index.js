@@ -16,13 +16,12 @@ import {useIsMobile} from '@/components/hooks/useBreakpoints'
 import {CloseIconButton, Divider} from '@/components/visual'
 import WithModalState from '@/components/headless/modalState'
 import {useMobileStakingSettingsRef} from '@/components/context/refs'
-import {useI18n} from '@/i18n/helpers'
 
 import {useSelectedPoolsContext} from '../../context/selectedPools'
 import {LoadingError} from '@/components/common'
 
 import ResetButton from './ResetButton'
-import PoolsToCompare from './PoolsToCompare'
+import PoolsToCompare, {PoolsToCompareCount} from './PoolsToCompare'
 import ActionsBar from './ActionsBar'
 import AutoSaveBar from './AutoSaveBar'
 import {useLoadSelectedPoolsData} from './dataLoaders'
@@ -130,7 +129,6 @@ type Props = {|
 
 const MobileSettingsBar = ({selectedPools, error}: Props) => {
   const classes = useStyles()
-  const {translate: tr} = useI18n()
   const modalClasses = useDialogStyles()
 
   return (
@@ -168,6 +166,7 @@ const DesktopSettingsBar = ({selectedPools, error}: Props) => {
       <Divider />
       <Grid container className={classes.wrapper} direction="row">
         {error && <Error error={error} />}
+        <PoolsToCompareCount selectedPools={selectedPools} />
         <PoolsToCompare selectedPools={selectedPools} />
         <ActionsBar selectedPools={selectedPools} />
       </Grid>
