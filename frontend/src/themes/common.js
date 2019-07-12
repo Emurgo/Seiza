@@ -77,6 +77,11 @@ const common = {
     _monospace: {
       fontFamily: makeFontFamilies(FF.monospace),
     },
+    _ellipsize: {
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap',
+    },
   },
   hover: {
     transitionIn: (cssProps, duration = 100) =>

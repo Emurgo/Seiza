@@ -99,13 +99,15 @@ export const NavLinks = ({items = [], currentPathname}: NavLinksProps) => {
 
 const useNavTypographyStyles = makeStyles(({palette}) => ({
   linkText: {
-    'color': palette.text.secondary,
-    'fontSize': 14,
-    'fontWeight': 'bold',
-    'display': 'inline-block',
-    'textTransform': 'uppercase',
-    'position': 'relative',
-    'letterSpacing': 1,
+    color: palette.text.secondary,
+    fontSize: 14,
+    fontWeight: 'bold',
+    display: 'inline-block',
+    textTransform: 'uppercase',
+    position: 'relative',
+    letterSpacing: 1,
+  },
+  linkTextHover: {
     '&:hover': {
       color: palette.primary.dark,
     },
@@ -126,25 +128,29 @@ const useNavTypographyStyles = makeStyles(({palette}) => ({
   },
 }))
 
+// TODO: Make NavTypography dumb component
+// but merge #811 first to avoid conflicts
 export const NavTypography = ({
   isActive,
   children,
   className,
   underlineActive = false,
+  hasHoverStyled = true, // Temporary, see TODO above,
 }: {
   isActive?: boolean,
   children: any,
   className?: string,
   underlineActive?: boolean,
+  hasHoverStyled?: boolean,
 }) => {
   const classes = useNavTypographyStyles()
-
   return (
     <Typography
       className={cn(
         classes.linkText,
         isActive && classes.active,
         isActive && underlineActive && classes.underlineActive,
+        hasHoverStyled && classes.linkTextHover,
         className
       )}
       variant="body1"

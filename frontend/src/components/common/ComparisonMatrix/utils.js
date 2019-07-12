@@ -19,19 +19,13 @@ export const stackingContext = {position: 'relative', zIndex: 0}
 // TODO: make something better than PADDING
 export const PADDING = 16
 
-export const ellipsizeStyles = {
-  overflow: 'hidden',
-  textOverflow: 'ellipsis',
-  whiteSpace: 'nowrap',
-}
-
-const useItemIdentifierStyles = makeStyles((theme) => ({
+const useItemIdentifierStyles = makeStyles(({spacing, typography}) => ({
   visualHashWrapper: {
-    marginRight: theme.spacing(1),
+    marginRight: spacing(1),
   },
   ellipsis: {
-    ...ellipsizeStyles,
     display: 'block',
+    ...typography._ellipsize,
   },
 }))
 
