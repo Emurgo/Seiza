@@ -163,10 +163,7 @@ const UserStakingKey = () => {
                   color="textPrimary"
                   className={classes.resetTextTransform}
                 >
-                  <Link
-                    monospace
-                    to={routeTo.stakingKey.stakePool(stakingKey.delegation.stakePoolHash)}
-                  >
+                  <Link monospace to={routeTo.stakepool(stakingKey.delegation.stakePoolHash)}>
                     {stakingKey.delegation.stakePoolHash}
                   </Link>
                 </Typography>
