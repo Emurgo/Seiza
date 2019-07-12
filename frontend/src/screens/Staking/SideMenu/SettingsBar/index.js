@@ -11,7 +11,6 @@ import {
   Portal,
 } from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
-import {defineMessages} from 'react-intl'
 
 import {useIsMobile} from '@/components/hooks/useBreakpoints'
 import {CloseIconButton, Divider} from '@/components/visual'
@@ -27,10 +26,6 @@ import PoolsToCompare from './PoolsToCompare'
 import ActionsBar from './ActionsBar'
 import AutoSaveBar from './AutoSaveBar'
 import {useLoadSelectedPoolsData} from './dataLoaders'
-
-const messages = defineMessages({
-  modalTitle: 'Settings',
-})
 
 const useMobileSettingsButtonStyles = makeStyles((theme) => ({
   wrapper: {
@@ -145,10 +140,7 @@ const MobileSettingsBar = ({selectedPools, error}: Props) => {
           <MobileSettingsButton onClick={toggle} value={selectedPools.length} />
           <Dialog classes={modalClasses} open={isOpen} onClose={closeModal}>
             <DialogTitle className={classes.modalTitle}>
-              <Grid container justify="space-between" alignItems="center">
-                <Typography variant="h4" color="textSecondary" className={classes.title}>
-                  {tr(messages.modalTitle)}
-                </Typography>
+              <Grid container justify="flex-end" alignItems="center">
                 <CloseIconButton onClick={closeModal} />
               </Grid>
             </DialogTitle>
