@@ -146,7 +146,7 @@ type Props = {|
   |},
 |}
 
-const StakePoolsTable = ({data, headers}: Props) => {
+const StakepoolsTable = ({data, headers}: Props) => {
   const theme = useTheme()
   const classes = useStyles()
   const scrollRef = React.useRef(null)
@@ -201,4 +201,4 @@ const StakePoolsTable = ({data, headers}: Props) => {
   )
 }
 
-export default StakePoolsTable
+export default StakepoolsTable
