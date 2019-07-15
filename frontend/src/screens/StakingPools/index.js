@@ -1,8 +1,5 @@
 // @flow
 import React, {useMemo} from 'react'
-import gql from 'graphql-tag'
-import idx from 'idx'
-import {useQuery} from 'react-apollo-hooks'
 import {defineMessages} from 'react-intl'
 import {Typography} from '@material-ui/core'
 
@@ -14,38 +11,7 @@ import {toIntOrNull, getPageCount} from '@/helpers/utils'
 import {ItemIdentifier} from '@/components/common/ComparisonMatrix/utils'
 import {useI18n} from '@/i18n/helpers'
 import StakePoolsTable from './StakePoolsTable'
-
-// TODO: extract to separate file
-const useLoadData = (cursor, autoUpdate) => {
-  const {error, loading, data} = useQuery(
-    gql`
-      query {
-        mockedStakePools {
-          poolHash
-          createdAt
-          description
-          name
-          summary {
-            margins
-            performance
-            adaStaked
-            rewards
-            keysDelegating
-            fullness
-            revenue
-            stakersCount
-          }
-        }
-      }
-    `
-  )
-
-  return {
-    error,
-    loading,
-    stakePools: idx(data, (_) => _.mockedStakePools) || [],
-  }
-}
+import {useLoadStakePools} from './dataLoaders'
 
 const messages = defineMessages({
   NA: 'N/A',
@@ -66,7 +32,7 @@ const Header = ({title}) => (
 )
 
 const StakingPools = () => {
-  const {stakePools, loading, error} = useLoadData()
+  const {stakePools, loading, error} = useLoadStakePools()
   const {formatPercent, translate: tr} = useI18n()
   const [page, setPage] = useManageQueryValue('page', 1, toIntOrNull)
 
