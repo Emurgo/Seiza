@@ -12,8 +12,7 @@ import {
 } from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
-import {useIsMobile} from '@/components/hooks/useBreakpoints'
-import {CloseIconButton, Divider} from '@/components/visual'
+import {CloseIconButton, Divider, MobileOnly, DesktopOnly} from '@/components/visual'
 import WithModalState from '@/components/headless/modalState'
 import {useMobileStakingSettingsRef} from '@/components/context/refs'
 
@@ -175,18 +174,22 @@ const DesktopSettingsBar = ({selectedPools, error}: Props) => {
 }
 
 const SettingsBar = () => {
-  const isMobile = useIsMobile()
   const {htmlNode} = useMobileStakingSettingsRef()
 
   const {selectedPools: selectedPoolsHashes} = useSelectedPoolsContext()
   const {data: selectedPools, error} = useLoadSelectedPoolsData(selectedPoolsHashes)
 
-  return isMobile ? (
-    <Portal container={htmlNode}>
-      <MobileSettingsBar {...{selectedPools, error}} />
-    </Portal>
-  ) : (
-    <DesktopSettingsBar {...{selectedPools, error}} />
+  return (
+    <React.Fragment>
+      <MobileOnly>
+        <Portal container={htmlNode}>
+          <MobileSettingsBar {...{selectedPools, error}} />
+        </Portal>
+      </MobileOnly>
+      <DesktopOnly>
+        <DesktopSettingsBar {...{selectedPools, error}} />
+      </DesktopOnly>
+    </React.Fragment>
   )
 }
 
