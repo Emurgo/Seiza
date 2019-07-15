@@ -37,9 +37,9 @@ const messages = defineMessages({
 
 type AssuranceEnum = 'LOW' | 'MEDIUM' | 'HIGH'
 const assuranceFromConfirmations = (cnt: number): AssuranceEnum => {
-  if (cnt <= ASSURANCE_LEVELS_VALUES.LOW) {
+  if (cnt < ASSURANCE_LEVELS_VALUES.LOW) {
     return 'LOW'
-  } else if (cnt <= ASSURANCE_LEVELS_VALUES.MEDIUM) {
+  } else if (cnt < ASSURANCE_LEVELS_VALUES.MEDIUM) {
     return 'MEDIUM'
   } else {
     return 'HIGH'
