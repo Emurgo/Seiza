@@ -46,16 +46,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-type ExternalProps = {
+export type ExternalProps = {|
   +value: number,
   +label: string,
-}
+  +size: number,
+|}
 
 // Based on https://codepen.io/bbrady/pen/ozrjKE
-const CircularProgressBar: ComponentType<ExternalProps> = ({value, label}) => {
+const CircularProgressBar: ComponentType<ExternalProps> = ({value, label, size = 85}) => {
   const classes = useStyles({value})
-  const size = 75
-  const strokeWidth = 8
+  const strokeWidth = 7.5
 
   // SVG centers the stroke width on the radius
   const radius = (size - strokeWidth) / 2

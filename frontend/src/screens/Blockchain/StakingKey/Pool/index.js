@@ -10,10 +10,15 @@ import {
   ExternalLink,
   SimpleLayout,
   Alert,
-  CircularProgressBar,
   LoadingInProgress,
 } from '@/components/visual'
-import {AdaValue, LoadingError, EntityIdCard, Link} from '@/components/common'
+import {
+  AdaValue,
+  LoadingError,
+  EntityIdCard,
+  Link,
+  ResponsiveCircularProgressBar,
+} from '@/components/common'
 import {useI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
 import AdaIcon from '@/static/assets/icons/transaction-id.svg'
@@ -86,7 +91,7 @@ const StakePool = () => {
             value={stakePool.hash}
             iconRenderer={<img alt="" src={AdaIcon} width={40} height={40} />}
             badge={
-              <CircularProgressBar
+              <ResponsiveCircularProgressBar
                 label={translate(messages.entityBadge)}
                 value={stakePool.revenue}
               />

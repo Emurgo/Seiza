@@ -7,13 +7,8 @@ import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
 import {AddCircle as AddPoolIcon, RemoveCircle as RemovePoolIcon} from '@material-ui/icons'
 
-import {
-  ExpandableCard,
-  ExpandableCardFooter,
-  Button,
-  CircularProgressBar,
-} from '@/components/visual'
-import {AdaValue, PoolEntityContent} from '@/components/common'
+import {ExpandableCard, ExpandableCardFooter, Button} from '@/components/visual'
+import {AdaValue, PoolEntityContent, ResponsiveCircularProgressBar} from '@/components/common'
 import WithModalState from '@/components/headless/modalState'
 import {useI18n} from '@/i18n/helpers'
 import {useSelectedPoolsContext} from '../context/selectedPools'
@@ -81,6 +76,7 @@ const useContentStyles = makeStyles(({palette, spacing, breakpoints}) => ({
   },
   revenueWrapper: {
     minWidth: 90,
+    marginRight: spacing(2),
     display: 'flex',
     alignItems: 'center',
   },
@@ -182,7 +178,7 @@ const Content = ({data}) => {
     <div className={classes.innerWrapper}>
       {!isMobile && (
         <div className={classes.revenueWrapper}>
-          <CircularProgressBar label={translate(messages.revenue)} value={0.25} />
+          <ResponsiveCircularProgressBar label={translate(messages.revenue)} value={0.25} />
         </div>
       )}
       <Grid container>
@@ -265,7 +261,7 @@ const MobilePoolFooter = ({expanded}) => {
   const label = tr(expanded ? messages.hideDetails : messages.showDetails)
   return (
     <Grid container alignContent="center" wrap="nowrap" className={classes.wrapper}>
-      <CircularProgressBar label={tr(messages.revenue)} value={0.25} />
+      <ResponsiveCircularProgressBar label={tr(messages.revenue)} value={0.25} />
       <div className={classes.defaultFooterWrapper}>
         <ExpandableCardFooter {...{label, expanded}} />
       </div>
