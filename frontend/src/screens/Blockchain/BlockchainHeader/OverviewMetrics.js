@@ -2,14 +2,13 @@
 import React from 'react'
 import gql from 'graphql-tag'
 import idx from 'idx'
-import {injectIntl, defineMessages} from 'react-intl'
-import {compose} from 'redux'
-
-import {Grid, createStyles, withStyles} from '@material-ui/core'
+import {defineMessages} from 'react-intl'
+import {Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
+
 import {LoadingDots} from '@/components/visual'
 import {MetricsCard} from '@/components/common'
-import {getIntlFormatters} from '@/i18n/helpers'
+import {useI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
 import {Link} from 'react-router-dom'
 
@@ -48,30 +47,32 @@ const text = defineMessages({
   searchPlaceholder: 'Search addresses, epochs & slots on the Cardano network',
 })
 
-const styles = (theme) =>
-  createStyles({
-    card: {
-      minWidth: '85px',
-      [theme.breakpoints.up('md')]: {
-        minWidth: '200px',
-      },
-      minHeight: '75px',
+const useStyles = makeStyles((theme) => ({
+  card: {
+    minWidth: '85px',
+    [theme.breakpoints.up('md')]: {
+      minWidth: '200px',
     },
-    cardDimensions: {
-      marginRight: theme.spacing(0.5),
-      marginLeft: theme.spacing(0.5),
-      [theme.breakpoints.up('sm')]: {
-        marginRight: theme.spacing(1.5),
-        marginLeft: theme.spacing(1.5),
-      },
+    minHeight: '75px',
+  },
+  cardDimensions: {
+    marginRight: theme.spacing(0.5),
+    marginLeft: theme.spacing(0.5),
+    [theme.breakpoints.up('sm')]: {
+      marginRight: theme.spacing(1.5),
+      marginLeft: theme.spacing(1.5),
     },
-  })
+  },
+}))
 
-const GridItem = withStyles(styles)(({children, classes}) => (
-  <Grid item className={classes.cardDimensions}>
-    {children}
-  </Grid>
-))
+const GridItem = ({children}) => {
+  const classes = useStyles()
+  return (
+    <Grid item className={classes.cardDimensions}>
+      {children}
+    </Grid>
+  )
+}
 
 const OVERVIEW_METRICS_QUERY = gql`
   query($currency: CurrencyEnum!) {
@@ -114,7 +115,8 @@ const MetricWithLink = ({to, ...props}) => {
   )
 }
 
-const OverviewMetrics = ({intl, data, classes}) => {
+const OverviewMetrics = () => {
+  const classes = useStyles()
   const [currency, setCurrency] = useCurrency()
   const {
     data: {currentStatus: status},
@@ -126,7 +128,7 @@ const OverviewMetrics = ({intl, data, classes}) => {
       currency,
     },
   })
-  const {translate, formatInt, formatPercent, formatFiat} = getIntlFormatters(intl)
+  const {translate, formatInt, formatPercent, formatFiat} = useI18n()
 
   const NA = loading ? <LoadingDots /> : translate(error ? text.error : text.not_available)
 
@@ -225,7 +227,4 @@ const OverviewMetrics = ({intl, data, classes}) => {
   )
 }
 
-export default compose(
-  injectIntl,
-  withStyles(styles)
-)(OverviewMetrics)
+export default OverviewMetrics

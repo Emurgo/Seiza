@@ -2,11 +2,10 @@
 
 import React from 'react'
 import _ from 'lodash'
-import {compose} from 'redux'
-import {withStyles} from '@material-ui/core'
 import {defineMessages} from 'react-intl'
+import {makeStyles} from '@material-ui/styles'
 
-import {useI18n, withI18n} from '@/i18n/helpers'
+import {useI18n} from '@/i18n/helpers'
 
 import {useTheme} from '@/components/context/theme'
 import {THEME_DEFINITIONS, THEMES} from '@/themes'
@@ -20,7 +19,7 @@ export const themeMessages = defineMessages({
   yoroi: 'Yoroi',
 })
 
-const styles = (theme) => ({
+const useStyles = makeStyles((theme) => ({
   select: {
     marginRight: '40px',
   },
@@ -30,15 +29,17 @@ const styles = (theme) => ({
   themeLabelText: {
     paddingLeft: theme.spacing(1),
   },
-})
+}))
 
 const THEME_NAMES = _.values(_.omit(THEMES, '_default'))
 
 // Note: wanted to use `makeStyles/withStyles` and access color props inside,
 // however it causes the color to disappear when items was selected for some reason
-const ThemeLabel = withStyles(styles)(({classes, color1, color2, intlMessage}) => {
+const ThemeLabel = ({color1, color2, intlMessage}) => {
+  const classes = useStyles()
   const {translate: tr} = useI18n()
   const THEME_LABEL_SIZE = 20
+
   const styles = {
     themeLabel: {
       height: THEME_LABEL_SIZE,
@@ -54,7 +55,7 @@ const ThemeLabel = withStyles(styles)(({classes, color1, color2, intlMessage}) =
       <NavTypography className={classes.themeLabelText}>{tr(intlMessage)}</NavTypography>
     </div>
   )
-})
+}
 
 export const themeLabels = {
   [THEMES.BRIGHT]: (
@@ -80,7 +81,8 @@ export const themeLabels = {
   ),
 }
 
-const ThemeSelect = ({classes, i18n: {translate}}) => {
+const ThemeSelect = () => {
+  const classes = useStyles()
   const {currentTheme, setTheme} = useTheme()
   return (
     <Select
@@ -96,7 +98,4 @@ const ThemeSelect = ({classes, i18n: {translate}}) => {
   )
 }
 
-export default compose(
-  withStyles(styles),
-  withI18n
-)(ThemeSelect)
+export default ThemeSelect

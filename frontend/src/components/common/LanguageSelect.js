@@ -1,7 +1,8 @@
 // @flow
 import React from 'react'
 import cn from 'classnames'
-import {Grid, withStyles} from '@material-ui/core'
+import {Grid} from '@material-ui/core'
+import {makeStyles} from '@material-ui/styles'
 import {useLocale} from '@/components/context/intl'
 import {Select} from '@/components/visual'
 import {NavTypography} from '@/components/common/Navbar'
@@ -13,7 +14,7 @@ import RussianFlag from '@/static/assets/icons/flags/russian.svg'
 // import KoreanFlag from '@/static/assets/icons/flags/korean.svg'
 import config from '@/config'
 
-const styles = (theme) => ({
+const useStyles = makeStyles((theme) => ({
   wrapper: {
     cursor: 'pointer',
   },
@@ -21,9 +22,18 @@ const styles = (theme) => ({
     paddingTop: theme.spacing(0.625),
     paddingBottom: theme.spacing(0.625),
   },
-})
+}))
 
-const Label = withStyles(styles)(({langCode, flagSrc, mobile, classes}) => {
+const Label = ({
+  langCode,
+  flagSrc,
+  mobile,
+}: {
+  langCode: string,
+  flagSrc: string,
+  mobile?: boolean,
+}) => {
+  const classes = useStyles()
   const imgSize = mobile ? 34 : 24
   return (
     <Grid
@@ -38,7 +48,7 @@ const Label = withStyles(styles)(({langCode, flagSrc, mobile, classes}) => {
       <NavTypography>{langCode}</NavTypography>
     </Grid>
   )
-})
+}
 
 // Helper to conditional inclusion
 const insertIf = (cond, value) => (cond ? [value] : [])

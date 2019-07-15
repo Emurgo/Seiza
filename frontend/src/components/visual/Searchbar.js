@@ -3,52 +3,51 @@ import React from 'react'
 import type {ElementRef} from 'react'
 import {withHandlers} from 'recompose'
 import {compose} from 'redux'
-import {withStyles, createStyles, InputAdornment, TextField} from '@material-ui/core'
+import {withStyles, InputAdornment, TextField} from '@material-ui/core'
 import {Search} from '@material-ui/icons'
 import {Button, LoadingInProgress, CloseIconButton} from '@/components/visual'
 import {fade} from '@material-ui/core/styles/colorManipulator'
 
-const styles = (theme) =>
-  createStyles({
-    textField: {
-      flex: 1,
-      flexBasis: 500,
-      background: theme.palette.background.paper,
-      borderRadius: 5,
+const styles = (theme) => ({
+  textField: {
+    flex: 1,
+    flexBasis: 500,
+    background: theme.palette.background.paper,
+    borderRadius: 5,
+  },
+  input: {
+    '&>fieldset': {
+      borderBottomRightRadius: 0,
+      borderTopRightRadius: 0,
     },
-    input: {
+    '&:hover': {
       '&>fieldset': {
-        borderBottomRightRadius: 0,
-        borderTopRightRadius: 0,
-      },
-      '&:hover': {
-        '&>fieldset': {
-          borderColor: `${theme.palette.secondary.main} !important`,
-        },
+        borderColor: `${theme.palette.secondary.main} !important`,
       },
     },
-    // eslint-disable-next-line
+  },
+  // eslint-disable-next-line
     // https://github.com/wheredoesyourmindgo/react-mui-mapbox-geocoder/issues/2#issuecomment-478668535
-    focusedInput: {
-      '&>fieldset': {
-        borderWidth: '1px !important',
-      },
+  focusedInput: {
+    '&>fieldset': {
+      borderWidth: '1px !important',
     },
-    searchButton: {
-      borderBottomLeftRadius: 0,
-      borderTopLeftRadius: 0,
-      padding: 0,
-      boxShadow: 'none',
+  },
+  searchButton: {
+    borderBottomLeftRadius: 0,
+    borderTopLeftRadius: 0,
+    padding: 0,
+    boxShadow: 'none',
+  },
+  container: {
+    'display': 'flex',
+    'flex': 1,
+    'boxShadow': `0px 10px 20px 0px ${fade(theme.palette.shadowBase, 0.08)}`,
+    '&:hover': {
+      boxShadow: `0px 10px 30px 0px ${fade(theme.palette.shadowBase, 0.12)}`,
     },
-    container: {
-      'display': 'flex',
-      'flex': 1,
-      'boxShadow': `0px 10px 20px 0px ${fade(theme.palette.shadowBase, 0.08)}`,
-      '&:hover': {
-        boxShadow: `0px 10px 30px 0px ${fade(theme.palette.shadowBase, 0.12)}`,
-      },
-    },
-  })
+  },
+})
 
 type ExternalProps = {
   placeholder: string,

@@ -2,7 +2,7 @@
 
 import React, {useMemo} from 'react'
 import classnames from 'classnames'
-import {Typography, Grid, createStyles} from '@material-ui/core'
+import {Typography, Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
 
@@ -20,36 +20,35 @@ const messages = defineMessages({
   noResults: 'No matching results for the given query.',
 })
 
-const useStyles = makeStyles((theme) =>
-  createStyles({
-    rowWrapper: {
-      padding: '15px 30px',
-      width: '100%',
+const useStyles = makeStyles((theme) => ({
+  rowWrapper: {
+    padding: '15px 30px',
+    width: '100%',
+  },
+  wrapper: {
+    [theme.breakpoints.up('xl')]: {
+      alignItems: 'center',
     },
-    wrapper: {
-      [theme.breakpoints.up('xl')]: {
-        alignItems: 'center',
-      },
-    },
-    loadMore: {
-      marginTop: theme.spacing(4),
-      marginBottom: theme.spacing(6),
-      // TODO: use this padding as standard for all buttons
-      // Do that after #803 is merged
-      paddingLeft: theme.spacing(7),
-      paddingRight: theme.spacing(7),
-    },
-    loadMoreWrapper: {
-      width: '100%',
-    },
-    sortByBar: {
-      marginTop: '20px',
-      marginBottom: '-15px',
-    },
-    lastItemSpace: {
-      padding: theme.spacing(5),
-    },
-  })
+  },
+  loadMore: {
+    marginTop: theme.spacing(4),
+    marginBottom: theme.spacing(6),
+    // TODO: use this padding as standard for all buttons
+    // Do that after #803 is merged
+    paddingLeft: theme.spacing(7),
+    paddingRight: theme.spacing(7),
+  },
+  loadMoreWrapper: {
+    width: '100%',
+  },
+  sortByBar: {
+    marginTop: '20px',
+    marginBottom: '-15px',
+  },
+  lastItemSpace: {
+    padding: theme.spacing(5),
+  },
+})
 )
 
 const StakeList = ({onLoadMore, stakePools, hasMore, loading}) => {

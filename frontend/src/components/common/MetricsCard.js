@@ -5,7 +5,6 @@ import classnames from 'classnames'
 import {withProps} from 'recompose'
 import {
   withStyles,
-  createStyles,
   MenuList,
   MenuItem,
   Popper,
@@ -27,75 +26,74 @@ import IconDecentralization from '@/static/assets/icons/metrics-decentralization
 import IconPrice from '@/static/assets/icons/metrics-currency.svg'
 import IconPools from '@/static/assets/icons/metrics-stakepools.svg'
 
-const styles = (theme) =>
-  createStyles({
-    contentWrapper: {
-      padding: theme.spacing(1),
-      paddingLeft: theme.spacing(1),
-      [theme.breakpoints.up('md')]: {
-        paddingLeft: theme.spacing(2),
+const styles = (theme) => ({
+  contentWrapper: {
+    padding: theme.spacing(1),
+    paddingLeft: theme.spacing(1),
+    [theme.breakpoints.up('md')]: {
+      paddingLeft: theme.spacing(2),
+    },
+  },
+  card: {
+    border: '0px solid transparent !important',
+    display: 'flex',
+    flexDirection: 'row',
+  },
+  clickableCard: {
+    '&:hover': {
+      boxShadow: `0px 20px 40px 0px ${fade(theme.palette.shadowBase, 0.3)} !important`,
+    },
+  },
+  dropdownArrow: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  icon: {
+    display: 'none',
+    [theme.breakpoints.up('sm')]: {
+      width: 50,
+      marginRight: theme.spacing(2),
+      display: 'block',
+    },
+  },
+  optionsIcon: {
+    'color': theme.palette.contentUnfocus,
+    '&:hover': {
+      color: theme.palette.primary.main,
+    },
+  },
+  bottomSpace: {
+    height: '5px',
+  },
+  popper: {
+    minWidth: '150px',
+  },
+  noButton: {
+    padding: '4px',
+    width: '100%',
+    display: 'flex',
+  },
+  button: {
+    'padding': '4px',
+    'width': '100%',
+    'display': 'flex',
+    'borderRadius': '4px',
+    'transition': theme.transitions.create(['background-color', 'box-shadow'], {
+      duration: theme.transitions.duration.short,
+    }),
+    '&:hover': {
+      // Reset on touch devices, it doesn't add specificity
+      '@media (hover: none)': {
+        backgroundColor: 'transparent',
       },
     },
-    card: {
-      border: '0px solid transparent !important',
-      display: 'flex',
-      flexDirection: 'row',
-    },
-    clickableCard: {
-      '&:hover': {
-        boxShadow: `0px 20px 40px 0px ${fade(theme.palette.shadowBase, 0.3)} !important`,
-      },
-    },
-    dropdownArrow: {
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    icon: {
-      display: 'none',
-      [theme.breakpoints.up('sm')]: {
-        width: 50,
-        marginRight: theme.spacing(2),
-        display: 'block',
-      },
-    },
-    optionsIcon: {
-      'color': theme.palette.contentUnfocus,
-      '&:hover': {
-        color: theme.palette.primary.main,
-      },
-    },
-    bottomSpace: {
-      height: '5px',
-    },
-    popper: {
-      minWidth: '150px',
-    },
-    noButton: {
-      padding: '4px',
-      width: '100%',
-      display: 'flex',
-    },
-    button: {
-      'padding': '4px',
-      'width': '100%',
-      'display': 'flex',
-      'borderRadius': '4px',
-      'transition': theme.transitions.create(['background-color', 'box-shadow'], {
-        duration: theme.transitions.duration.short,
-      }),
-      '&:hover': {
-        // Reset on touch devices, it doesn't add specificity
-        '@media (hover: none)': {
-          backgroundColor: 'transparent',
-        },
-      },
-    },
-    value: {
-      paddingBottom: theme.spacing(0.5),
-    },
-  })
+  },
+  value: {
+    paddingBottom: theme.spacing(0.5),
+  },
+})
 
 const ICONS = {
   epoch: IconEpoch,
