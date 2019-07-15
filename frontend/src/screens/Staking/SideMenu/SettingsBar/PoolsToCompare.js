@@ -1,7 +1,7 @@
 // @flow
-
 import React from 'react'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
+import cn from 'classnames'
 import {defineMessages} from 'react-intl'
 import {fade} from '@material-ui/core/styles/colorManipulator'
 import {Grid, Typography, Avatar, withStyles} from '@material-ui/core'
@@ -42,18 +42,15 @@ const CustomChip = withStyles(({palette, spacing}) => ({
   },
 }))(Chip)
 
-const useStyles = makeStyles(({palette}) => {
+const useStyles = makeStyles(({spacing}) => {
   const poolMargin = 4
   const poolHeight = 32 + poolMargin * 2
   const poolTransitionShift = 350
   return {
-    header: {
-      paddingBottom: '15px',
-    },
     stakePools: {
-      paddingBottom: '15px',
       width: '100%',
       overflow: 'hidden',
+      marginTop: ({hasPoolsSelected}) => (hasPoolsSelected ? spacing(1) : 0),
     },
     chip: {
       // If set directly on `chipWrapper`, dimiss height transition is not smooth
@@ -89,6 +86,10 @@ const useStyles = makeStyles(({palette}) => {
       left: poolTransitionShift,
       transition: 'height 300ms ease 300ms, opacity 300ms, left 300ms',
     },
+    stakepoolWrapper: {
+      marginBottom: spacing(1),
+      marginTop: spacing(1),
+    },
   }
 })
 
@@ -119,10 +120,9 @@ type Props = {|
 |}
 
 export const PoolsToCompareCount = ({selectedPools}: Props) => {
-  const classes = useStyles()
   const {translate: tr} = useI18n()
   return (
-    <Grid container direction="row" alignItems="center" className={classes.header}>
+    <Grid container direction="row" alignItems="center">
       {selectedPools.length ? (
         <React.Fragment>
           <Typography color="textSecondary" variant="overline">
@@ -132,14 +132,16 @@ export const PoolsToCompareCount = ({selectedPools}: Props) => {
           <Typography variant="overline">{selectedPools.length}</Typography>
         </React.Fragment>
       ) : (
-        <Typography variant="overline">{tr(messages.noPools)}</Typography>
+        <Typography variant="overline" color="textSecondary">
+          {tr(messages.noPools)}
+        </Typography>
       )}
     </Grid>
   )
 }
 
 const PoolsToCompare = ({selectedPools}: Props) => {
-  const classes = useStyles()
+  const classes = useStyles({hasPoolsSelected: selectedPools.length > 0})
   const {removePool} = useSelectedPoolsContext()
 
   return (
@@ -161,7 +163,7 @@ const PoolsToCompare = ({selectedPools}: Props) => {
           transitionEnter
         >
           {selectedPools.map(({name, poolHash}) => (
-            <div className="d-flex" key={poolHash}>
+            <div className={cn(classes.stakepoolWrapper, 'd-flex')} key={poolHash}>
               <StakePoolItem
                 key={poolHash}
                 hash={poolHash}
