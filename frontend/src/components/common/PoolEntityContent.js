@@ -5,10 +5,8 @@ import {Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
 import {VisualHash} from '@/components/visual'
-import {Link, CopyToClipboard} from '@/components/common'
+import {Link, CopyToClipboard, NavTypography} from '@/components/common'
 import {routeTo} from '@/helpers/routes'
-import {NavTypography} from '@/components/common/Navbar'
-// TODO: remove hover effect
 
 type Props = {
   name: string,
@@ -44,7 +42,7 @@ const PoolEntityContent = ({name, hash}: Props) => {
       <VisualHash value={hash} size={48} />
       <div className={cn(classes.info, classes.flexEllipsize, 'flex-grow-1')}>
         <div className={cn(classes.ellipsize, classes.flexEllipsize)}>
-          <NavTypography hasHoverStyled={false}>{name}</NavTypography>
+          <NavTypography>{name}</NavTypography>
         </div>
         <div className={classes.hashWrapper}>
           <Typography noWrap>

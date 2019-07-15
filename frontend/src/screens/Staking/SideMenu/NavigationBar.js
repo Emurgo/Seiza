@@ -13,7 +13,7 @@ import {routeTo} from '@/helpers/routes'
 import {useI18n} from '@/i18n/helpers'
 import {LiteTabs, LiteTab, MobileOnly, DesktopOnly} from '@/components/visual'
 import useTabState from '@/components/hooks/useTabState'
-import {NavTypography} from '@/components/common/Navbar'
+import {NavbarLink} from '@/components/common/Navbar'
 
 import {ReactComponent as ListIcon} from '@/static/assets/icons/staking-simulator/list.svg'
 import {ReactComponent as ComparisonMatrixIcon} from '@/static/assets/icons/staking-simulator/comparison-matrix.svg'
@@ -70,9 +70,9 @@ const MenuItem = ({active, label, icon}) => {
     >
       {icon}
 
-      <NavTypography className={classes.menuItemText} isActive={active}>
+      <NavbarLink className={classes.menuItemText} isActive={active}>
         {label}
-      </NavTypography>
+      </NavbarLink>
     </Grid>
   )
 }
