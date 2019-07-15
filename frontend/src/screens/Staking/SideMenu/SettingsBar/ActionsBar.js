@@ -17,11 +17,9 @@ import {
   DialogContent,
   DialogContentText,
 } from '@material-ui/core'
-import {
-  Share as ShareIcon,
-  CallMade as ExportIcon,
-  CallReceived as ImportIcon,
-} from '@material-ui/icons'
+import {ReactComponent as ShareIcon} from '@/static/assets/icons/staking-simulator/share.svg'
+import {ReactComponent as ImportIcon} from '@/static/assets/icons/staking-simulator/import.svg'
+import {ReactComponent as ExportIcon} from '@/static/assets/icons/staking-simulator/export.svg'
 
 import {CopyToClipboard, FileInputHandler, ConfirmationDialog} from '@/components/common'
 import useModalState from '@/components/hooks/useModalState'
@@ -174,7 +172,7 @@ const ImportPools = () => {
       />
 
       <FileInputHandler id="import-staking-settings" onFileLoaded={setImportedPools}>
-        <ActionButton label={tr(messages.import)} icon={<ImportIcon color="primary" />} />
+        <ActionButton label={tr(messages.import)} icon={<ImportIcon />} />
       </FileInputHandler>
     </React.Fragment>
   )
@@ -191,7 +189,7 @@ const ExportPools = ({selectedPools}) => {
   return (
     <ActionButton
       label={tr(messages.export)}
-      icon={<ExportIcon color="primary" />}
+      icon={<ExportIcon />}
       onClick={downloadSelectedPools}
     />
   )
@@ -213,7 +211,7 @@ const Share = () => {
         // as tooltip somehow messes up line height
         <div style={{height: '1em'}}>
           <CopyToClipboard value={currentUrl}>
-            <ShareIcon color="primary" />
+            <ShareIcon />
           </CopyToClipboard>
         </div>
       }
