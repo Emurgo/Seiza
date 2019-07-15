@@ -32,13 +32,12 @@ const useStyles = makeStyles((theme) =>
       },
     },
     loadMore: {
-      marginTop: '30px',
-      marginBottom: '50px',
-      minWidth: '120px',
-      paddingLeft: theme.spacing(3),
-      paddingRight: theme.spacing(3),
-      paddingTop: theme.spacing(1),
-      paddingBottom: theme.spacing(1),
+      marginTop: theme.spacing(4),
+      marginBottom: theme.spacing(6),
+      // TODO: use this padding as standard for all buttons
+      // Do that after #803 is merged
+      paddingLeft: theme.spacing(7),
+      paddingRight: theme.spacing(7),
     },
     loadMoreWrapper: {
       width: '100%',
