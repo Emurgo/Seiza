@@ -3,8 +3,8 @@ import React, {useMemo} from 'react'
 import {defineMessages} from 'react-intl'
 import {Typography} from '@material-ui/core'
 
-import {Pagination, AdaValue} from '@/components/common'
-import {SimpleLayout} from '@/components/visual'
+import {Pagination, AdaValue, LoadingError} from '@/components/common'
+import {SimpleLayout, LoadingInProgress} from '@/components/visual'
 import {useManageQueryValue} from '@/components/hooks/useManageQueryValue'
 import {toIntOrNull, getPageCount} from '@/helpers/utils'
 
@@ -77,22 +77,24 @@ const StakingPools = () => {
     [tr]
   )
 
-  if (loading) {
-    // TODO: do something
-  }
-
-  if (error) {
-    // TODO: do something
-  }
-
   return (
     <SimpleLayout title="Stake Pools">
-      <Pagination
-        pageCount={getPageCount(stakePools.length, ROWS_PER_PAGE)}
-        page={page}
-        onChangePage={setPage}
-      />
-      <StakePoolsTable headers={tableHeaders} data={tableData} />
+      {error || loading ? (
+        error ? (
+          <LoadingError error={error} />
+        ) : (
+          <LoadingInProgress />
+        )
+      ) : (
+        <React.Fragment>
+          <Pagination
+            pageCount={getPageCount(stakePools.length, ROWS_PER_PAGE)}
+            page={page}
+            onChangePage={setPage}
+          />
+          <StakePoolsTable headers={tableHeaders} data={tableData} />
+        </React.Fragment>
+      )}
     </SimpleLayout>
   )
 }
