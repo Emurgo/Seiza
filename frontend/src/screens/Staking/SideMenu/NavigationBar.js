@@ -3,7 +3,7 @@
 import React, {useCallback} from 'react'
 import cn from 'classnames'
 import useReactRouter from 'use-react-router'
-import {Typography, Grid} from '@material-ui/core'
+import {Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
 import {fade} from '@material-ui/core/styles/colorManipulator'
@@ -13,6 +13,7 @@ import {routeTo} from '@/helpers/routes'
 import {useI18n} from '@/i18n/helpers'
 import {LiteTabs, LiteTab, MobileOnly, DesktopOnly} from '@/components/visual'
 import useTabState from '@/components/hooks/useTabState'
+import {NavTypography} from '@/components/common/Navbar'
 
 import {ReactComponent as ListIcon} from '@/static/assets/icons/staking-simulator/list.svg'
 import {ReactComponent as ComparisonMatrixIcon} from '@/static/assets/icons/staking-simulator/comparison-matrix.svg'
@@ -38,8 +39,12 @@ const useMenuItemStyles = makeStyles(({palette, spacing}) => {
       'padding': '35px 40px 35px 60px',
       'textTransform': 'uppercase',
       '&:hover': {
-        background: palette.background.paperContrast,
-        boxShadow: shadow,
+        'background': palette.background.paperContrast,
+        'boxShadow': shadow,
+        '& > *': {
+          // This makes hover style the same as active, do we want that?
+          color: palette.primary.main,
+        },
       },
       'borderBottom': `1px solid ${palette.unobtrusiveContentHighlight}`,
     },
@@ -48,8 +53,8 @@ const useMenuItemStyles = makeStyles(({palette, spacing}) => {
       color: palette.primary.main,
       boxShadow: shadow,
     },
-    icon: {
-      paddingRight: spacing(2),
+    menuItemText: {
+      paddingLeft: spacing(2),
     },
   }
 })
@@ -63,12 +68,11 @@ const MenuItem = ({active, label, icon}) => {
       alignItems="center"
       className={cn(classes.link, active && classes.active)}
     >
-      <Grid item className={classes.icon}>
-        {icon}
-      </Grid>
-      <Grid item>
-        <Typography>{label}</Typography>
-      </Grid>
+      {icon}
+
+      <NavTypography className={classes.menuItemText} isActive={active}>
+        {label}
+      </NavTypography>
     </Grid>
   )
 }
