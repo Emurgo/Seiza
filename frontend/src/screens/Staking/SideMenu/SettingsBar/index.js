@@ -11,24 +11,20 @@ import {
   Portal,
 } from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
-import {defineMessages} from 'react-intl'
 
 import {useIsMobile} from '@/components/hooks/useBreakpoints'
-import {CloseIconButton} from '@/components/visual'
+import {CloseIconButton, Divider} from '@/components/visual'
 import WithModalState from '@/components/headless/modalState'
 import {useMobileStakingSettingsRef} from '@/components/context/refs'
-import {useI18n} from '@/i18n/helpers'
 
 import {useSelectedPoolsContext} from '../../context/selectedPools'
 import {LoadingError} from '@/components/common'
 
-import PoolsToCompare from './PoolsToCompare'
+import ResetButton from './ResetButton'
+import PoolsToCompare, {PoolsToCompareCount} from './PoolsToCompare'
 import ActionsBar from './ActionsBar'
+import AutoSaveBar from './AutoSaveBar'
 import {useLoadSelectedPoolsData} from './dataLoaders'
-
-const messages = defineMessages({
-  modalTitle: 'Settings',
-})
 
 const useMobileSettingsButtonStyles = makeStyles((theme) => ({
   wrapper: {
@@ -68,11 +64,25 @@ const MobileSettingsButton = ({onClick, value}) => {
   )
 }
 
+// TODO: use spacing(...) from theme
+const getSidePaddings = (theme) => ({paddingRight: 40, paddingLeft: 60})
+const getTopBottomPaddings = (theme) => ({paddingTop: 20, paddingBottom: 20})
 const useStyles = makeStyles((theme) => ({
   wrapper: {
-    padding: '20px 40px 20px 60px',
+    ...getTopBottomPaddings(theme),
+    ...getSidePaddings(theme),
+
     background: theme.palette.background.paper,
     borderBottom: `1px solid ${theme.palette.contentUnfocus}`,
+  },
+  autoSaveBar: {
+    ...getSidePaddings(theme),
+    ...getTopBottomPaddings(theme),
+  },
+  resetButton: {
+    ...getSidePaddings(theme),
+    paddingTop: theme.spacing(3),
+    paddingBottom: theme.spacing(3),
   },
   title: {
     textTransform: 'uppercase',
@@ -87,7 +97,8 @@ const useStyles = makeStyles((theme) => ({
     paddingRight: theme.spacing(1),
   },
   error: {
-    padding: '20px 40px 20px 60px',
+    ...getSidePaddings(theme),
+    ...getTopBottomPaddings(theme),
   },
 }))
 
@@ -118,7 +129,6 @@ type Props = {|
 
 const MobileSettingsBar = ({selectedPools, error}: Props) => {
   const classes = useStyles()
-  const {translate: tr} = useI18n()
   const modalClasses = useDialogStyles()
 
   return (
@@ -128,15 +138,12 @@ const MobileSettingsBar = ({selectedPools, error}: Props) => {
           <MobileSettingsButton onClick={toggle} value={selectedPools.length} />
           <Dialog classes={modalClasses} open={isOpen} onClose={closeModal}>
             <DialogTitle className={classes.modalTitle}>
-              <Grid container justify="space-between" alignItems="center">
-                <Typography variant="h4" color="textSecondary" className={classes.title}>
-                  {tr(messages.modalTitle)}
-                </Typography>
+              <Grid container justify="flex-end" alignItems="center">
                 <CloseIconButton onClick={closeModal} />
               </Grid>
             </DialogTitle>
             <DialogContent className={classes.modalContent}>
-              {error && <Error error={error} />}
+              <ResetButton />
               <PoolsToCompare selectedPools={selectedPools} />
             </DialogContent>
             <DialogActions>
@@ -152,11 +159,18 @@ const MobileSettingsBar = ({selectedPools, error}: Props) => {
 const DesktopSettingsBar = ({selectedPools, error}: Props) => {
   const classes = useStyles()
   return (
-    <Grid container className={classes.wrapper} direction="row">
-      {error && <Error error={error} />}
-      <PoolsToCompare selectedPools={selectedPools} />
-      <ActionsBar selectedPools={selectedPools} />
-    </Grid>
+    <React.Fragment>
+      <AutoSaveBar className={classes.autoSaveBar} />
+      <Divider />
+      <ResetButton className={classes.resetButton} />
+      <Divider />
+      <Grid container className={classes.wrapper} direction="row">
+        {error && <Error error={error} />}
+        <PoolsToCompareCount selectedPools={selectedPools} />
+        <PoolsToCompare selectedPools={selectedPools} />
+        <ActionsBar selectedPools={selectedPools} />
+      </Grid>
+    </React.Fragment>
   )
 }
 
