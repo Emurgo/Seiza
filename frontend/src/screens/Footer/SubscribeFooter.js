@@ -82,7 +82,6 @@ const useOutlinedInputStyles = makeStyles((theme) => ({
   },
   notchedOutline: {
     borderRadius: '35px',
-    // TODO: get from theme
     borderColor: `${fade(theme.palette.primary.main, 0.4)} !important`,
   },
   // Following two classes need to be here so that root's pseudoselector
