@@ -7,7 +7,7 @@ import {IconButton, Typography, Grid} from '@material-ui/core'
 import {useI18n} from '@/i18n/helpers'
 import {ConfirmationDialog} from '@/components/common'
 import useModalState from '@/components/hooks/useModalState'
-import useToggle from '@/components/hooks/useToggle'
+import useBooleanState from '@/components/hooks/useBooleanState'
 import {useResetUrlAndStorage} from '../../context'
 import {ReactComponent as ResetIcon} from '@/static/assets/icons/staking-simulator/reset-settings.svg'
 
@@ -56,12 +56,12 @@ const ResetButton = ({className}) => {
   const {translate: tr} = useI18n()
   const resetUrlAndStorage = useResetUrlAndStorage()
   const {isOpen, openModal, closeModal} = useModalState()
-  const [animation, toggleAnimation] = useToggle()
+  const [spin, setSpinOn, setSpinOff] = useBooleanState()
   const onReset = useCallback(() => {
     resetUrlAndStorage()
     closeModal()
-    toggleAnimation()
-  }, [closeModal, resetUrlAndStorage, toggleAnimation])
+    setSpinOn()
+  }, [closeModal, resetUrlAndStorage, setSpinOn])
   return (
     <React.Fragment>
       <IconButton
@@ -72,7 +72,7 @@ const ResetButton = ({className}) => {
       >
         <Grid container className={cn(classes.panel, className)} alignItems="center">
           <Grid container alignItems="center" direction="row">
-            <div className={animation && classes.spin} onAnimationEnd={toggleAnimation}>
+            <div className={spin && classes.spin} onAnimationEnd={setSpinOff}>
               <ResetIcon />
             </div>
             &nbsp;&nbsp;
