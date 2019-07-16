@@ -6,9 +6,9 @@ import {ExpandableCard, ExpandableCardFooter, ContentSpacing, Card} from '@/comp
 import {Pagination, EntityCardContent, Link} from '@/components/common'
 import useToggle from '@/components/hooks/useToggle'
 import {useI18n} from '@/i18n/helpers'
-import CertificateList from '@/screens/Blockchain/Certificates/CertificateList'
+import CertificateActionList from '@/screens/Blockchain/Certificates/ActionList'
 import {routeTo} from '@/helpers/routes'
-import CertificatesSummary from '@/screens/Blockchain/Certificates/CertificatesSummary'
+import CertificateActionsSummary from '@/screens/Blockchain/Certificates/ActionsSummary'
 import TwoColumnRow from './TwoColumnRow'
 import EmphasizedMessage from './EmphasizedMessage'
 
@@ -56,7 +56,7 @@ const TruncatedCertificateList = ({txCount, txHash}) => {
 
 const MAX_SHOWN_CERTIFICATES = 3
 
-const TransactionCard = ({tx, certificates = []}) => {
+const TransactionCard = ({tx, certificateActions = []}) => {
   const classes = useTxStyles()
   const [isOpen, toggle] = useToggle()
   const {translate: tr, formatInt, formatTimestamp} = useI18n()
@@ -73,7 +73,7 @@ const TransactionCard = ({tx, certificates = []}) => {
                 value={<Link to={routeTo.transaction(tx.txHash)}>{tx.txHash}</Link>}
                 rawValue={tx.txHash}
               />
-              <CertificatesSummary certificates={certificates} />
+              <CertificateActionsSummary actions={certificateActions} />
             </ContentSpacing>
             <TwoColumnRow
               label1={tr(transactionMessages.date)}
@@ -89,8 +89,8 @@ const TransactionCard = ({tx, certificates = []}) => {
         )}
         renderExpandedArea={() => (
           <React.Fragment>
-            <CertificateList certificates={certificates.slice(0, MAX_SHOWN_CERTIFICATES)} />
-            {certificates.length > MAX_SHOWN_CERTIFICATES && (
+            <CertificateActionList actions={certificateActions.slice(0, MAX_SHOWN_CERTIFICATES)} />
+            {certificateActions.length > MAX_SHOWN_CERTIFICATES && (
               <TruncatedCertificateList txCount={MAX_SHOWN_CERTIFICATES} txHash={tx.txHash} />
             )}
           </React.Fragment>
@@ -110,12 +110,12 @@ const TransactionCard = ({tx, certificates = []}) => {
   )
 }
 
-const TransactionsTab = ({transactions, certificates}) => {
+const TransactionsTab = ({transactions, certificateActions}) => {
   const classes = useStyles()
   return (
     <Card>
       {transactions &&
-        transactions.map((tx) => <TransactionCard key={tx.txHash} {...{tx, certificates}} />)}
+        transactions.map((tx) => <TransactionCard key={tx.txHash} {...{tx, certificateActions}} />)}
       <div className={classes.paginationWrapper}>
         <Pagination pageCount={1} page={1} onChangePage={() => null} />
       </div>

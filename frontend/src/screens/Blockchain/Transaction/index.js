@@ -19,8 +19,8 @@ import {ASSURANCE_LEVELS_VALUES, APOLLO_CACHE_OPTIONS} from '@/constants'
 import {useI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
 import {useAnalytics} from '@/components/context/googleAnalytics'
-import Certificates from './Certificates'
-import {MOCKED_CERTIFICATES} from '../Certificates/helpers'
+import CertificateActions from './CertificateActions'
+import {MOCKED_CERT_ACTIONS} from '../Certificates/mockedActions'
 
 const messages = defineMessages({
   header: 'Transaction',
@@ -187,7 +187,7 @@ const TransactionScreen = () => {
           <React.Fragment>
             <TransactionSummary loading={loading} transaction={transactionData} />
             {loading ? <LoadingInProgress /> : <AddressesBreakdown tx={transactionData} />}
-            {env.showStakingData && <Certificates certificates={MOCKED_CERTIFICATES} />}
+            {env.showStakingData && <CertificateActions certificateActions={MOCKED_CERT_ACTIONS} />}
           </React.Fragment>
         )}
       </SimpleLayout>

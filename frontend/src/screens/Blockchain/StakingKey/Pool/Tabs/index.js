@@ -4,9 +4,9 @@ import {makeStyles} from '@material-ui/styles'
 import useTabState from '@/components/hooks/useTabState'
 import {LiteTabs, LiteTab} from '@/components/visual'
 import {useI18n} from '@/i18n/helpers'
-import {MOCKED_CERTIFICATES} from '@/screens/Blockchain/Certificates/helpers'
 import HistoryTab from './HistoryTab'
 import TransactionsTab from '../../common/TransactionsTab'
+import {MOCKED_POOL_ACTIONS} from '../../../Certificates/mockedActions'
 
 const messages = defineMessages({
   historyTabName: 'History ({count, plural, =0 {# epochs} one {# epoch} other {# epochs}})',
@@ -23,7 +23,10 @@ const TABS = {
   RENDER_CONTENT: {
     [TAB_NAMES.HISTORY]: ({stakePool}) => <HistoryTab history={stakePool.history} />,
     [TAB_NAMES.TRANSACTIONS]: ({stakePool}) => (
-      <TransactionsTab transactions={stakePool.transactions} certificates={MOCKED_CERTIFICATES} />
+      <TransactionsTab
+        transactions={stakePool.transactions}
+        certificateActions={MOCKED_POOL_ACTIONS}
+      />
     ),
   },
 }
