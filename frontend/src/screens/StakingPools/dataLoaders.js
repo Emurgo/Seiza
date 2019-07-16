@@ -1,9 +1,13 @@
 // @flow
+import _ from 'lodash'
 import gql from 'graphql-tag'
 import idx from 'idx'
 import {useQuery} from 'react-apollo-hooks'
+import {useMemo} from 'react'
 
-export const useLoadStakePools = () => {
+type Order = 'asc' | 'desc'
+
+export const useLoadStakepools = (sortBy: string, order: Order) => {
   const {error, loading, data} = useQuery(
     gql`
       query {
@@ -27,9 +31,20 @@ export const useLoadStakePools = () => {
     `
   )
 
+  const stakepools = idx(data, (_) => _.mockedStakePools) || []
+  const flattenPools = useMemo(() => stakepools.map((pool) => ({...pool, ...pool.summary})), [
+    stakepools,
+  ])
+
+  const sortedPools = useMemo(() => _.orderBy(flattenPools, (d) => d[sortBy], [order]), [
+    flattenPools,
+    order,
+    sortBy,
+  ])
+
   return {
     error,
     loading,
-    stakePools: idx(data, (_) => _.mockedStakePools) || [],
+    stakepools: sortedPools,
   }
 }
