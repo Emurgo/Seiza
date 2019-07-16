@@ -7,6 +7,8 @@ import {
   FormLabel,
   Select as SelectMUI,
   MenuItem,
+  ListItemText,
+  Checkbox,
 } from '@material-ui/core'
 import {ArrowDropDown} from '@material-ui/icons'
 
@@ -73,7 +75,17 @@ const StyledOutlinedInput = withStyles(({palette}) => ({
   },
 }))(OutlinedInput)
 
-const Select = ({classes, value, onChange, options, label, className, hasBorder = true}) => {
+const Select = ({
+  classes,
+  value,
+  onChange,
+  options,
+  label,
+  className,
+  renderValue,
+  hasBorder = true,
+  multiple = false,
+}) => {
   const InputComponent = hasBorder ? StyledOutlinedInput : NoBorderInput
 
   return (
@@ -84,16 +96,25 @@ const Select = ({classes, value, onChange, options, label, className, hasBorder 
         </FormLabel>
       )}
       <StyledSelect
+        multiple={multiple}
         value={value}
         onChange={onChange}
         input={<InputComponent labelWidth={0} />}
         IconComponent={StyledArrowDropDownIcon}
+        renderValue={renderValue}
       >
-        {options.map(({value, label}) => (
-          <StyledMenuItem key={value} value={value}>
-            {label}
-          </StyledMenuItem>
-        ))}
+        {multiple
+          ? options.map(({label, value: currentValue}) => (
+            <MenuItem key={currentValue} value={currentValue}>
+              <Checkbox checked={value.indexOf(currentValue) > -1} />
+              <ListItemText primary={label} />
+            </MenuItem>
+          ))
+          : options.map(({label, value: currentValue}) => (
+            <StyledMenuItem key={currentValue} value={currentValue}>
+              {label}
+            </StyledMenuItem>
+          ))}
       </StyledSelect>
     </FormControl>
   )
