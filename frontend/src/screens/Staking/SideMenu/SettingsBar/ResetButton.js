@@ -1,14 +1,15 @@
 import React, {useCallback} from 'react'
 import {defineMessages} from 'react-intl'
 import cn from 'classnames'
-import {Refresh} from '@material-ui/icons'
 import {makeStyles} from '@material-ui/styles'
 import {IconButton, Typography, Grid} from '@material-ui/core'
 
 import {useI18n} from '@/i18n/helpers'
 import {ConfirmationDialog} from '@/components/common'
 import useModalState from '@/components/hooks/useModalState'
+import useBooleanState from '@/components/hooks/useBooleanState'
 import {useResetUrlAndStorage} from '../../context'
+import {ReactComponent as ResetIcon} from '@/static/assets/icons/staking-simulator/reset-settings.svg'
 
 const messages = defineMessages({
   reset: 'Reset all settings',
@@ -19,19 +20,34 @@ const messages = defineMessages({
 })
 
 const useStyles = makeStyles((theme) => ({
-  wrapper: {
+  'wrapper': {
     height: '100%',
     overflow: 'visible', // Note: sticky navigation is not working without this
   },
-  panel: {
+  'panel': {
     paddingTop: theme.spacing(2),
     paddingBottom: theme.spacing(2),
   },
-  iconButton: {
+  'iconButton': {
     width: '100%',
     borderRadius: 0,
     background: theme.palette.background.paper,
     padding: 0,
+  },
+  '@global': {
+    '@keyframes spin': {
+      '0%': {
+        transform: 'rotate(0deg)',
+      },
+      '100%': {
+        transform: 'rotate(360deg)',
+      },
+    },
+  },
+  'spin': {
+    animationName: 'spin',
+    animationDuration: '500ms',
+    animationTimingFunction: 'linear',
   },
 }))
 
@@ -40,10 +56,12 @@ const ResetButton = ({className}) => {
   const {translate: tr} = useI18n()
   const resetUrlAndStorage = useResetUrlAndStorage()
   const {isOpen, openModal, closeModal} = useModalState()
+  const [spin, setSpinOn, setSpinOff] = useBooleanState()
   const onReset = useCallback(() => {
     resetUrlAndStorage()
     closeModal()
-  }, [closeModal, resetUrlAndStorage])
+    setSpinOn()
+  }, [closeModal, resetUrlAndStorage, setSpinOn])
   return (
     <React.Fragment>
       <IconButton
@@ -54,7 +72,9 @@ const ResetButton = ({className}) => {
       >
         <Grid container className={cn(classes.panel, className)} alignItems="center">
           <Grid container alignItems="center" direction="row">
-            <Refresh />
+            <div className={spin && classes.spin} onAnimationEnd={setSpinOff}>
+              <ResetIcon />
+            </div>
             &nbsp;&nbsp;
             <Typography color="textSecondary" variant="overline">
               {tr(messages.reset)}
