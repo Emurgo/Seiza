@@ -2,27 +2,28 @@
 import React, {useMemo, useState, useCallback} from 'react'
 import {defineMessages} from 'react-intl'
 import {Typography, Grid} from '@material-ui/core'
+import {makeStyles} from '@material-ui/styles'
+import {ArrowDropDown, ArrowDropUp} from '@material-ui/icons'
 
-import {Pagination, AdaValue, LoadingError} from '@/components/common'
-import {SimpleLayout, LoadingInProgress} from '@/components/visual'
+import {Pagination, LoadingError} from '@/components/common'
+import {SimpleLayout, LoadingInProgress, Select} from '@/components/visual'
 import {useManageQueryValue} from '@/components/hooks/useManageQueryValue'
-import {toIntOrNull, getPageCount} from '@/helpers/utils'
-
 import {ItemIdentifier} from '@/components/common/ComparisonMatrix/utils'
+import {toIntOrNull, getPageCount} from '@/helpers/utils'
 import {useI18n} from '@/i18n/helpers'
+
 import StakepoolsTable from './StakepoolsTable'
 import {useLoadStakepools} from './dataLoaders'
-
-import {ArrowDropDown, ArrowDropUp} from '@material-ui/icons'
+import {fieldsConfig} from './fieldsConfig'
 
 const messages = defineMessages({
   NA: 'N/A',
-  adaStaked: 'Ada staked',
-  fullness: 'Fullness',
-  margins: 'Margins',
-  performance: 'Performance',
-  rewards: 'Rewards',
   title: 'Name',
+  screenTitle: 'Stake Pools',
+  manageColumns: 'Manage columns',
+  noColumns: 'Please select some columns.',
+  showAll: 'Show all',
+  addressCount: 'Show {count, plural, =0 {# columns} one {# column} other {# columns}}',
 })
 
 const ROWS_PER_PAGE = 20
@@ -31,6 +32,13 @@ const ORDER = {
   ASC: 'asc',
   DESC: 'desc',
 }
+
+const useStyles = makeStyles((theme) => ({
+  wrapper: {
+    paddingRight: 90,
+    paddingLeft: 90,
+  },
+}))
 
 const Header = ({title, sortOptions, field, onClick}) => {
   const active = field === sortOptions.field
@@ -51,29 +59,6 @@ const Header = ({title, sortOptions, field, onClick}) => {
     </Grid>
   )
 }
-
-const fieldsConfig = [
-  {
-    field: 'adaStaked',
-    getValue: ({data, NA}) => <AdaValue value={data.adaStaked} noValue={NA} showCurrency />,
-  },
-  {
-    field: 'fullness',
-    getValue: ({data, formatPercent}) => formatPercent(data.fullness),
-  },
-  {
-    field: 'margins',
-    getValue: ({data, formatPercent}) => formatPercent(data.margins),
-  },
-  {
-    field: 'performance',
-    getValue: ({data, formatPercent}) => formatPercent(data.performance),
-  },
-  {
-    field: 'rewards',
-    getValue: ({data, NA}) => <AdaValue value={data.rewards} noValue={NA} showCurrency />,
-  },
-]
 
 const useSortOptions = () => {
   const [sortOptions, setSortOptions] = useState({field: fieldsConfig[0].field, order: ORDER.DESC})
@@ -96,17 +81,24 @@ const useSortOptions = () => {
   return {sortOptions, updateSortBy}
 }
 
-const useGetTableData = (stakepoolsToShow, sortOptions, onSortByChange) => {
-  const {formatPercent, translate: tr} = useI18n()
+const useGetTableData = (selectedFields, stakepoolsToShow, sortOptions, onSortByChange) => {
+  const _fieldsConfig = useMemo(
+    () => fieldsConfig.filter((conf) => selectedFields.includes(conf.field)),
+    [selectedFields]
+  )
+
+  const {formatPercent, formatTimestamp, formatInt, translate: tr} = useI18n()
   const NA = tr(messages.NA)
 
   const tableData = useMemo(
     () =>
       stakepoolsToShow.map((data) => ({
         title: <ItemIdentifier title={data.name} identifier={data.poolHash} />,
-        values: fieldsConfig.map((conf) => conf.getValue({data, formatPercent, NA})),
+        values: _fieldsConfig.map((conf) =>
+          conf.getValue({data, formatPercent, NA, formatTimestamp, formatInt})
+        ),
       })),
-    [NA, formatPercent, stakepoolsToShow]
+    [NA, _fieldsConfig, formatInt, formatPercent, formatTimestamp, stakepoolsToShow]
   )
 
   const tableHeaders = useMemo(
@@ -116,23 +108,53 @@ const useGetTableData = (stakepoolsToShow, sortOptions, onSortByChange) => {
           {tr(messages.title)}
         </Typography>
       ),
-      values: fieldsConfig.map(({field}) => (
+      values: _fieldsConfig.map(({field, getLabel}) => (
         <Header
           key={field}
           field={field}
           sortOptions={sortOptions}
-          title={tr(messages[field])}
+          title={getLabel({tr})}
           onClick={() => onSortByChange(field)}
         />
       )),
     }),
-    [onSortByChange, sortOptions, tr]
+    [_fieldsConfig, onSortByChange, sortOptions, tr]
   )
 
   return {tableData, tableHeaders}
 }
 
+const useSelectProps = () => {
+  const {translate: tr} = useI18n()
+  const defaultFieldsValues = useMemo(() => fieldsConfig.map(({field}) => field), [])
+  const selectOptions = useMemo(
+    () => fieldsConfig.map((conf) => ({label: conf.getLabel({tr}), value: conf.field})),
+    [tr]
+  )
+
+  // TODO: store in cookie that is set only for `staking-pools` url
+  const [selectedFields, setSelectedFields] = useState(defaultFieldsValues)
+
+  const onSelectedFieldsChange = useCallback((e) => setSelectedFields(e.target.value), [
+    setSelectedFields,
+  ])
+
+  const renderSelectValue = useCallback(
+    (selected) => {
+      return selected.length === selectOptions.length
+        ? tr(messages.showAll)
+        : tr(messages.addressCount, {count: selected.length})
+    },
+    [selectOptions.length, tr]
+  )
+
+  return {selectedFields, onSelectedFieldsChange, selectOptions, renderSelectValue}
+}
+
 const StakingPools = () => {
+  const classes = useStyles()
+  const {translate: tr} = useI18n()
+
   const [page, setPage] = useManageQueryValue('page', 1, toIntOrNull)
   const {sortOptions, updateSortBy} = useSortOptions()
 
@@ -151,11 +173,22 @@ const StakingPools = () => {
     [page, stakepools]
   )
 
-  // TODO: add "settings" to choose properties to be displayed
-  const {tableData, tableHeaders} = useGetTableData(stakepoolsToShow, sortOptions, onSortByChange)
+  const {
+    selectedFields,
+    onSelectedFieldsChange,
+    selectOptions,
+    renderSelectValue,
+  } = useSelectProps()
+
+  const {tableData, tableHeaders} = useGetTableData(
+    selectedFields,
+    stakepoolsToShow,
+    sortOptions,
+    onSortByChange
+  )
 
   return (
-    <SimpleLayout title="Stake Pools">
+    <SimpleLayout title={tr(messages.screenTitle)}>
       {error || loading ? (
         error ? (
           <LoadingError error={error} />
@@ -164,12 +197,31 @@ const StakingPools = () => {
         )
       ) : (
         <React.Fragment>
-          <Pagination
-            pageCount={getPageCount(stakepools.length, ROWS_PER_PAGE)}
-            page={page}
-            onChangePage={setPage}
+          <Grid container justify="space-between" className={classes.wrapper}>
+            <Grid item>
+              <Select
+                multiple
+                value={selectedFields}
+                onChange={onSelectedFieldsChange}
+                options={selectOptions}
+                label={tr(messages.manageColumns)}
+                renderValue={renderSelectValue}
+              />
+            </Grid>
+
+            <Grid item>
+              <Pagination
+                pageCount={getPageCount(stakepools.length, ROWS_PER_PAGE)}
+                page={page}
+                onChangePage={setPage}
+              />
+            </Grid>
+          </Grid>
+          <StakepoolsTable
+            headers={tableHeaders}
+            data={tableData}
+            noColumnsMsg={tr(messages.noColumns)}
           />
-          <StakepoolsTable headers={tableHeaders} data={tableData} />
         </React.Fragment>
       )}
     </SimpleLayout>

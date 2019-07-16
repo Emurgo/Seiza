@@ -1,8 +1,9 @@
 // @flow
 
 import React from 'react'
+import cn from 'classnames'
 import {makeStyles, useTheme} from '@material-ui/styles'
-import {Grid} from '@material-ui/core'
+import {Grid, Typography} from '@material-ui/core'
 import {darken, fade} from '@material-ui/core/styles/colorManipulator'
 
 import {Card} from '@/components/visual'
@@ -14,7 +15,6 @@ import {useArrowsScrolling} from '@/components/common/ComparisonMatrix/DesktopCo
 // TODO: reuse from comparison matrix
 const SCROLL_SPEED = 14
 const BORDER_RADIUS = 5
-const CELL_WIDTH = 200
 const fullScreenScrollRef = {current: null}
 
 const getBackgroundColor = (theme) => theme.palette.background.paper
@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => {
   const cell = {
     display: 'flex',
     alignItems: 'center',
-    width: CELL_WIDTH,
+    minWidth: 200,
     paddingLeft: theme.spacing(2),
     paddingRight: theme.spacing(2),
   }
@@ -76,13 +76,23 @@ const useStyles = makeStyles((theme) => {
       display: 'flex',
       overflow: 'hidden',
     },
-    cell: {
+    titleCell: {
       ...cell,
       height: 54,
+      width: '100%',
     },
     headerCell: {
       ...cell,
+      width: '20%',
       height: 80,
+    },
+    dataCell: {
+      ...cell,
+      width: '20%',
+      height: 54,
+    },
+    noColumns: {
+      paddingLeft: 100,
     },
   }
 })
@@ -92,7 +102,7 @@ const Row = ({data}) => {
   return (
     <div className="d-flex">
       {data.map((item, index) => (
-        <div className={classes.cell} key={index}>
+        <div className={classes.dataCell} key={index}>
           {item}
         </div>
       ))}
@@ -127,7 +137,7 @@ const Titles = ({headers, data}) => {
     <React.Fragment>
       <div className={classes.headerCell}>{headers.title}</div>
       {data.map(({title}, index) => (
-        <div className={classes.cell} key={index}>
+        <div className={classes.titleCell} key={index}>
           {title}
         </div>
       ))}
@@ -144,9 +154,11 @@ type Props = {|
     title: React$Node,
     values: Array<React$Node>,
   |},
+  noColumnsMsg: string,
 |}
 
-const StakepoolsTable = ({data, headers}: Props) => {
+const StakepoolsTable = ({data, headers, noColumnsMsg}: Props) => {
+  const columnsCount = data.length ? data[0].values.length : 0
   const theme = useTheme()
   const classes = useStyles()
   const scrollRef = React.useRef(null)
@@ -159,6 +171,14 @@ const StakepoolsTable = ({data, headers}: Props) => {
     SCROLL_SPEED
   )
 
+  if (columnsCount === 0) {
+    return (
+      <Typography variant="overline" className={classes.noColumns}>
+        {noColumnsMsg}
+      </Typography>
+    )
+  }
+
   return (
     <div className={classes.wrapper} ref={scrollAreaRef}>
       <ScrollingSideArrow
@@ -170,7 +190,7 @@ const StakepoolsTable = ({data, headers}: Props) => {
         {...{scrollAreaRef, fullScreenScrollRef}}
       />
 
-      <Card className={classes.innerWrapper}>
+      <Card className={cn(classes.innerWrapper, 'w-100')}>
         <div className={classes.titlesWrapper}>
           <Titles {...{headers, data}} />
         </div>
@@ -179,9 +199,10 @@ const StakepoolsTable = ({data, headers}: Props) => {
           upBackground={darken(backgroundColor, 0.01)}
           downBackground={darken(backgroundColor, 0.01)}
           borderRadius={BORDER_RADIUS}
+          className="w-100"
         >
-          <div className={classes.scrollWrapper} ref={scrollRef}>
-            <Grid container direction="column" className={classes.rowsWrapper}>
+          <div className={cn(classes.scrollWrapper, 'w-100')} ref={scrollRef}>
+            <Grid container direction="column" className={cn(classes.rowsWrapper, 'w-100')}>
               <Headers headers={headers.values} />
               <Rows data={data} />
             </Grid>
