@@ -35,6 +35,12 @@ const theme = _.merge({}, common, {
         textColor: '#4D20C0',
         textHover: '#4D20C0',
       },
+      tertiaryGradient: {
+        background: 'linear-gradient(45deg, #4D20C0 0%,  #B1E1F2 100%)',
+        hover: 'linear-gradient(45deg, #4D20C0 0%,  #4D20C0 100%)',
+        textColor: '#FFFFFF',
+        textHover: '#FFFFFF',
+      },
     },
     // Note:
     // <Typography color="primary"> ---> selects palette.primary.main
