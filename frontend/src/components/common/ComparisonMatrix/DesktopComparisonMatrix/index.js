@@ -18,7 +18,6 @@ import {useArrowsScrolling, useKeyboardScrolling} from './scrollingHooks'
 
 import {
   PADDING,
-  ellipsizeStyles,
   getHeaderBackground,
   getBodyBackground,
   ItemIdentifier,
@@ -44,7 +43,7 @@ const useStyles = makeStyles((theme) => {
   const lightBorder = `1px solid ${darken(theme.palette.unobtrusiveContentHighlight, 0.05)}`
   const valuesPanelWidth = `${VALUES_PANEL_WIDTH}px`
   return {
-    ellipsis: ellipsizeStyles,
+    ellipsis: theme.typography._ellipsize,
     wrapper: {
       position: 'relative',
       marginTop: theme.spacing(1),
@@ -81,7 +80,7 @@ const useStyles = makeStyles((theme) => {
     },
     categoryKey: {
       padding: PADDING,
-      ...ellipsizeStyles,
+      ...theme.typography._ellipsize,
     },
     scrollWrapper: {
       'background': getBodyBackground(theme),
@@ -141,11 +140,11 @@ const useStyles = makeStyles((theme) => {
     },
     itemHeader: {
       width: valuesPanelWidth,
-      ...ellipsizeStyles,
+      ...theme.typography._ellipsize,
     },
     categoryHeader: {
       borderTopLeftRadius: BORDER_RADIUS,
-      ...ellipsizeStyles,
+      ...theme.typography._ellipsize,
     },
     categoryRowWrapper: {
       '& > *': {

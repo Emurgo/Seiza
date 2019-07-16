@@ -14,7 +14,7 @@ import {routeTo, combinedBlockchainPath} from './helpers/routes'
 import BlockchainSearch from './screens/Blockchain/BlockchainHeader/Search'
 import {useMobileStakingSettingsRef} from '@/components/context/refs'
 import {Link} from '@/components/common'
-import {NavLinks, MobileNavLinks} from '@/components/common/Navbar'
+import {NavMenuItems, MobileNavMenuItems} from '@/components/common/Navbar'
 import LanguageSelect, {MobileLanguage} from '@/components/common/LanguageSelect'
 import ThemeSelect from '@/components/common/ThemeSelect'
 import {MobileOnly, DesktopOnly} from '@/components/visual'
@@ -115,7 +115,7 @@ const MobileMenu = ({items = [], currentPathname}: any) => {
             {({TransitionProps}) => (
               <Grow {...TransitionProps}>
                 <Card classes={{root: classes.mobileMenuWrapper}}>
-                  <MobileNavLinks
+                  <MobileNavMenuItems
                     items={items}
                     onClose={onClose}
                     currentPathname={currentPathname}
@@ -166,7 +166,7 @@ const TopBar = ({navItems}: TopBarProps) => {
           </Grid>
           <Grid item>
             <Grid container direction="row" alignItems="center">
-              <NavLinks currentPathname={pathname} items={navItems} />
+              <NavMenuItems currentPathname={pathname} items={navItems} />
               <LanguageSelect />
               <ThemeSelect />
             </Grid>

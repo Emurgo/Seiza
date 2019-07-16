@@ -11,15 +11,15 @@ import {useI18n} from '@/i18n/helpers'
 import {ExternalLink} from '@/components/visual'
 import {CopyToClipboard} from '@/components/common'
 
-import {getBodyBackground, PADDING, ellipsizeStyles} from './utils'
+import {getBodyBackground, PADDING} from './utils'
 
 const messages = defineMessages({
   copyText: 'Copy',
   fullScreen: 'Full screen mode',
 })
 
-const useStyles = makeStyles((theme) => ({
-  ellipsis: ellipsizeStyles,
+const useStyles = makeStyles(({typography}) => ({
+  ellipsis: typography._ellipsize,
 }))
 
 export const EllipsizedLinkFieldWithTooltip = ({text}: {text: string}) => {

@@ -10,7 +10,7 @@ import {useI18n} from '@/i18n/helpers'
 import {useTheme} from '@/components/context/theme'
 import {THEME_DEFINITIONS, THEMES} from '@/themes'
 import {Select} from '@/components/visual'
-import {NavTypography} from '@/components/common/Navbar'
+import {NavbarLink} from '@/components/common/Navbar'
 
 // Note: keys must be kept synced with THEME_DEFINITIONS keys
 export const themeMessages = defineMessages({
@@ -52,7 +52,7 @@ const ThemeLabel = ({color1, color2, intlMessage}) => {
   return (
     <div className={classes.themeLabelWrapper}>
       <div style={styles.themeLabel} />
-      <NavTypography className={classes.themeLabelText}>{tr(intlMessage)}</NavTypography>
+      <NavbarLink className={classes.themeLabelText}>{tr(intlMessage)}</NavbarLink>
     </div>
   )
 }

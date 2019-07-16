@@ -5,7 +5,7 @@ import {Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {useLocale} from '@/components/context/intl'
 import {Select} from '@/components/visual'
-import {NavTypography} from '@/components/common/Navbar'
+import {NavbarLink} from '@/components/common/Navbar'
 
 import EnglishFlag from '@/static/assets/icons/flags/english.svg'
 import JapaneseFlag from '@/static/assets/icons/flags/japanese.svg'
@@ -45,7 +45,7 @@ const Label = ({
       className={cn(classes.wrapper, mobile && classes.mobileWrapper)}
     >
       <img alt="" width={imgSize} height={imgSize} src={flagSrc} />
-      <NavTypography>{langCode}</NavTypography>
+      <NavbarLink>{langCode}</NavbarLink>
     </Grid>
   )
 }

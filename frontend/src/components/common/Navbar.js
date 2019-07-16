@@ -2,11 +2,11 @@
 import React from 'react'
 import cn from 'classnames'
 
-import {Typography, MenuList, MenuItem} from '@material-ui/core'
+import {MenuList, MenuItem} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {fade} from '@material-ui/core/styles/colorManipulator'
 
-import NavLink from '@/components/common/NavLink'
+import {NavTypography, NavLink as Link} from '@/components/common'
 import {Tooltip} from '@/components/visual'
 
 const useStyles = makeStyles(({palette, spacing}) => ({
@@ -29,6 +29,17 @@ const useStyles = makeStyles(({palette, spacing}) => ({
     padding: 0,
     height: '100%',
   },
+  underlineActive: {
+    '&:after': {
+      content: '""',
+      background: palette.tertiary.main,
+      position: 'absolute',
+      bottom: -5,
+      left: 0,
+      width: '50%',
+      height: '1px',
+    },
+  },
 }))
 
 const useDisabledLinkStyles = makeStyles(({palette}) => ({
@@ -50,7 +61,7 @@ const DisabledLink = ({label, disabledText, className}) => {
     <Tooltip title={disabledText}>
       {/* Tooltip is not shown without this wrapper */}
       <div className={classes.disabledWrapper}>
-        <NavTypography className={cn(classes.disabled, className)}>{label}</NavTypography>
+        <NavbarLink className={cn(classes.disabled, className)}>{label}</NavbarLink>
       </div>
     </Tooltip>
   )
@@ -61,13 +72,16 @@ const NavMenuItem = ({disabledText, label, link, isMobile}) => {
   return !link ? (
     <DisabledLink {...{label, disabledText}} className={cn(isMobile && classes.mobileLink)} />
   ) : (
-    <NavLink className={cn(classes.link, isMobile && classes.mobileLink)} to={link}>
+    <Link className={cn(classes.link, isMobile && classes.mobileLink)} to={link}>
       {(isActive) => (
-        <NavTypography underlineActive={!isMobile} {...{isActive}}>
+        <NavbarLink
+          isActive={isActive}
+          className={!isMobile && isActive ? classes.underlineActive : ''}
+        >
           {label}
-        </NavTypography>
+        </NavbarLink>
       )}
-    </NavLink>
+    </Link>
   )
 }
 
@@ -77,12 +91,12 @@ export type NavItem = {
   disabledText?: ?string,
 }
 
-type NavLinksProps = {
+type NavMenuItemsProps = {
   items: Array<NavItem>,
   currentPathname: string,
 }
 
-export const NavLinks = ({items = [], currentPathname}: NavLinksProps) => {
+export const NavMenuItems = ({items = [], currentPathname}: NavMenuItemsProps) => {
   const classes = useStyles()
   return (
     <nav>
@@ -97,64 +111,40 @@ export const NavLinks = ({items = [], currentPathname}: NavLinksProps) => {
   )
 }
 
-const useNavTypographyStyles = makeStyles(({palette}) => ({
-  linkText: {
-    'color': palette.text.secondary,
-    'fontSize': 14,
-    'fontWeight': 'bold',
-    'display': 'inline-block',
-    'textTransform': 'uppercase',
-    'position': 'relative',
-    'letterSpacing': 1,
+const useNavbarLinkStyles = makeStyles(({palette}) => ({
+  active: {
+    color: palette.primary.main,
+  },
+  link: {
     '&:hover': {
       color: palette.primary.dark,
     },
   },
-  active: {
-    color: palette.primary.main,
-  },
-  underlineActive: {
-    '&:after': {
-      content: '""',
-      background: palette.tertiary.main,
-      position: 'absolute',
-      bottom: -5,
-      left: 0,
-      width: '50%',
-      height: '1px',
-    },
-  },
 }))
 
-export const NavTypography = ({
+// TODO: is there a better name for this component?
+// Little ambiguity with NavLink
+export const NavbarLink = ({
   isActive,
   children,
   className,
-  underlineActive = false,
 }: {
   isActive?: boolean,
   children: any,
   className?: string,
-  underlineActive?: boolean,
 }) => {
-  const classes = useNavTypographyStyles()
-
+  const classes = useNavbarLinkStyles()
   return (
-    <Typography
-      className={cn(
-        classes.linkText,
-        isActive && classes.active,
-        isActive && underlineActive && classes.underlineActive,
-        className
-      )}
+    <NavTypography
+      className={cn(classes.link, isActive && classes.active, className)}
       variant="body1"
     >
       {children}
-    </Typography>
+    </NavTypography>
   )
 }
 
-export const MobileNavLinks = ({
+export const MobileNavMenuItems = ({
   onClose,
   items,
   currentPathname,
