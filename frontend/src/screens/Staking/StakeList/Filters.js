@@ -46,6 +46,7 @@ const tipFormatter = (value) => `${value}%`
 const Filters = () => {
   const performanceContext = usePerformanceContext()
   const [performance, setPerformance] = useStateWithChangingDefault(performanceContext.performance)
+  console.log('perf', performance)
   const [language, setLanguage] = useState('all')
   const [region, setRegion] = useState('all')
 

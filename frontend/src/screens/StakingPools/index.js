@@ -3,10 +3,10 @@ import React, {useMemo, useState, useCallback} from 'react'
 import {defineMessages} from 'react-intl'
 import {Typography, Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
-import {ArrowDropDown, ArrowDropUp} from '@material-ui/icons'
+import {ArrowDropDown, ArrowDropUp, FilterList} from '@material-ui/icons'
 
 import {Pagination, LoadingError} from '@/components/common'
-import {SimpleLayout, LoadingInProgress, Select} from '@/components/visual'
+import {SimpleLayout, LoadingInProgress, Select, Tooltip, Slider} from '@/components/visual'
 import {useManageQueryValue} from '@/components/hooks/useManageQueryValue'
 import {ItemIdentifier} from '@/components/common/ComparisonMatrix/utils'
 import {toIntOrNull, getPageCount} from '@/helpers/utils'
@@ -40,22 +40,50 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
+const tipFormatter = (value) => `${value}%`
+
+const JOZO = ({name}) => {
+  const [value, setValue] = useState([0, 100])
+  return (
+    <div>
+      <Slider
+        min={0}
+        max={100}
+        tipFormatter={tipFormatter}
+        value={value}
+        label={name}
+        onChange={setValue}
+        onDragEnd={() => null}
+      />
+    </div>
+  )
+}
+
 const Header = ({title, sortOptions, field, onClick}) => {
   const active = field === sortOptions.field
   return (
-    <Grid container alignItems="center" onClick={onClick}>
-      <Typography variant="overline" color={active ? 'textPrimary' : 'textSecondary'}>
-        {title}
-      </Typography>
-      {active ? (
-        sortOptions.order === ORDER.DESC ? (
-          <ArrowDropDown />
-        ) : (
-          <ArrowDropUp />
-        )
-      ) : (
-        <ArrowDropDown color="disabled" />
+    <Grid container alignItems="center" wrap="nowrap">
+      {(field === 'fullness' || field === 'margins' || field === 'performance') && (
+        <Tooltip interactive title={<JOZO name={title} />} placement="top">
+          <div>
+            <FilterList fontSize="small" color="disabled" />
+          </div>
+        </Tooltip>
       )}
+      <Grid container alignItems="center" onClick={onClick}>
+        <Typography variant="overline" color={active ? 'textPrimary' : 'textSecondary'}>
+          {title}
+        </Typography>
+        {active ? (
+          sortOptions.order === ORDER.DESC ? (
+            <ArrowDropDown />
+          ) : (
+            <ArrowDropUp />
+          )
+        ) : (
+          <ArrowDropDown color="disabled" />
+        )}
+      </Grid>
     </Grid>
   )
 }
