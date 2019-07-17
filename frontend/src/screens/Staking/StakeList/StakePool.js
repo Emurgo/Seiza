@@ -236,8 +236,8 @@ const DataGrid = ({items, leftSpan, rightSpan, alignRight = false}) => {
   return (
     // Note: when setting direction to `column` there is strange height misallignment
     <Grid container direction="row" className={classes.verticalBlock}>
-      {items.map(({label, value}) => (
-        <Grid item key={label} xs={12}>
+      {items.map(({label, value}, index) => (
+        <Grid item key={index} xs={12}>
           <Grid container direction="row">
             <Grid xs={leftSpan} item className={classes.rowItem}>
               <Typography className={classes.label}>{label}</Typography>
