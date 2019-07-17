@@ -20,7 +20,7 @@ import {useI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
 import {useAnalytics} from '@/components/context/googleAnalytics'
 import CertificateActions from './CertificateActions'
-import {MOCKED_CERT_ACTIONS} from '../Certificates/mockedActions'
+import MOCKED_CERT_ACTIONS from '@/screens/Blockchain/Certificates/mockedActions'
 
 const messages = defineMessages({
   header: 'Transaction',

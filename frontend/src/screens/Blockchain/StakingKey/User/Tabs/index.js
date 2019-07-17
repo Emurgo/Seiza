@@ -5,9 +5,8 @@ import {LiteTab, LiteTabs} from '@/components/visual'
 import useTabState from '@/components/hooks/useTabState'
 import {useI18n} from '@/i18n/helpers'
 import DelegatedPoolInfoTab from './DelegatedPoolInfoTab'
-import HistoryTab from './HistoryTab'
+import HistoryTab from '../../common/HistoryTab'
 import TransactionsTab from '../../common/TransactionsTab'
-import {MOCKED_STAKING_KEY_ACTIONS} from '../../../Certificates/mockedActions'
 
 const messages = defineMessages({
   delegatedPoolInfoTabName: 'Delegated Pool Info',
@@ -34,10 +33,7 @@ const TABS = {
       <HistoryTab history={stakingKey.currentStakePool.history} />
     ),
     [TAB_NAMES.TRANSACTIONS]: ({stakingKey}) => (
-      <TransactionsTab
-        transactions={stakingKey.currentStakePool.transactions}
-        certificateActions={MOCKED_STAKING_KEY_ACTIONS}
-      />
+      <TransactionsTab transactions={stakingKey.currentStakePool.transactions} />
     ),
   },
 }

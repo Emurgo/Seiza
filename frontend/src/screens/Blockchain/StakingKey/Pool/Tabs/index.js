@@ -4,9 +4,8 @@ import {makeStyles} from '@material-ui/styles'
 import useTabState from '@/components/hooks/useTabState'
 import {LiteTabs, LiteTab} from '@/components/visual'
 import {useI18n} from '@/i18n/helpers'
-import HistoryTab from './HistoryTab'
+import HistoryTab from '../../common/HistoryTab'
 import TransactionsTab from '../../common/TransactionsTab'
-import {MOCKED_POOL_ACTIONS} from '../../../Certificates/mockedActions'
 
 const messages = defineMessages({
   historyTabName: 'History ({count, plural, =0 {# epochs} one {# epoch} other {# epochs}})',
@@ -21,12 +20,9 @@ const TAB_NAMES = {
 const TABS = {
   ORDER: [TAB_NAMES.HISTORY, TAB_NAMES.TRANSACTIONS],
   RENDER_CONTENT: {
-    [TAB_NAMES.HISTORY]: ({stakePool}) => <HistoryTab history={stakePool.history} />,
-    [TAB_NAMES.TRANSACTIONS]: ({stakePool}) => (
-      <TransactionsTab
-        transactions={stakePool.transactions}
-        certificateActions={MOCKED_POOL_ACTIONS}
-      />
+    [TAB_NAMES.HISTORY]: ({stakepool}) => <HistoryTab history={stakepool.history} />,
+    [TAB_NAMES.TRANSACTIONS]: ({stakepool}) => (
+      <TransactionsTab transactions={stakepool.transactions} />
     ),
   },
 }
@@ -38,7 +34,7 @@ const useStyles = makeStyles(({spacing}) => ({
   },
 }))
 
-const StakingPoolTabs = ({stakePool}) => {
+const StakepoolTabs = ({stakepool}) => {
   const classes = useStyles()
   const {translate: tr} = useI18n()
   const {setTabByEventIndex, currentTabIndex, currentTab} = useTabState(TABS.ORDER)
@@ -52,7 +48,7 @@ const StakingPoolTabs = ({stakePool}) => {
             label={
               <React.Fragment>
                 {tr(messages.historyTabName, {
-                  count: stakePool.timeActive.epochs,
+                  count: stakepool.timeActive.epochs,
                 })}{' '}
               </React.Fragment>
             }
@@ -61,16 +57,16 @@ const StakingPoolTabs = ({stakePool}) => {
             label={
               <React.Fragment>
                 {tr(messages.transactionsTabName, {
-                  count: stakePool.transactions.length,
+                  count: stakepool.transactions.length,
                 })}
               </React.Fragment>
             }
           />
         </LiteTabs>
       </div>
-      <TabContent stakePool={stakePool} />
+      <TabContent stakepool={stakepool} />
     </div>
   )
 }
 
-export default StakingPoolTabs
+export default StakepoolTabs
