@@ -85,6 +85,7 @@ const useNavigationBarStyles = makeStyles((theme) => ({
   // Note: parent can't have `overflow: hidden` and must span full height
   navBar: {
     top: 0,
+    position: 'sticky',
   },
   mobileNavBar: {
     position: 'sticky',
@@ -211,7 +212,7 @@ const NavigationBar = () => (
     <MobileOnly>
       <MobileNavigation />
     </MobileOnly>
-    <DesktopOnly>
+    <DesktopOnly className="h-100">
       <DesktopNavigation />
     </DesktopOnly>
   </React.Fragment>

@@ -22,7 +22,7 @@ const SideMenu = () => {
         <SettingsBar />
         <NavigationBar />
       </MobileOnly>
-      <DesktopOnly>
+      <DesktopOnly className="h-100">
         <Card className={classes.wrapper}>
           <SettingsBar />
           <NavigationBar />
