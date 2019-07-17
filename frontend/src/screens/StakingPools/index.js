@@ -13,6 +13,7 @@ import {toIntOrNull, getPageCount} from '@/helpers/utils'
 import {useI18n} from '@/i18n/helpers'
 
 import StakepoolsTable from './StakepoolsTable'
+import Header from './Header'
 import {useLoadStakepools} from './dataLoaders'
 import {fieldsConfig} from './fieldsConfig'
 
@@ -40,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const Header = ({title, sortOptions, field, onClick}) => {
+const ColumnHeader = ({title, sortOptions, field, onClick}) => {
   const active = field === sortOptions.field
   return (
     <Grid container alignItems="center" onClick={onClick}>
@@ -109,7 +110,7 @@ const useGetTableData = (selectedFields, stakepoolsToShow, sortOptions, onSortBy
         </Typography>
       ),
       values: _fieldsConfig.map(({field, getLabel}) => (
-        <Header
+        <ColumnHeader
           key={field}
           field={field}
           sortOptions={sortOptions}
@@ -189,43 +190,46 @@ const StakingPools = () => {
   )
 
   return (
-    <SimpleLayout title={tr(messages.screenTitle)}>
-      {error || loading ? (
-        error ? (
-          <LoadingError error={error} />
+    <React.Fragment>
+      <Header />
+      <SimpleLayout title={tr(messages.screenTitle)}>
+        {error || loading ? (
+          error ? (
+            <LoadingError error={error} />
+          ) : (
+            <LoadingInProgress />
+          )
         ) : (
-          <LoadingInProgress />
-        )
-      ) : (
-        <React.Fragment>
-          <Grid container justify="space-between" className={classes.wrapper}>
-            <Grid item>
-              <Select
-                multiple
-                value={selectedFields}
-                onChange={onSelectedFieldsChange}
-                options={selectOptions}
-                label={tr(messages.manageColumns)}
-                renderValue={renderSelectValue}
-              />
-            </Grid>
+          <React.Fragment>
+            <Grid container justify="space-between" className={classes.wrapper}>
+              <Grid item>
+                <Select
+                  multiple
+                  value={selectedFields}
+                  onChange={onSelectedFieldsChange}
+                  options={selectOptions}
+                  label={tr(messages.manageColumns)}
+                  renderValue={renderSelectValue}
+                />
+              </Grid>
 
-            <Grid item>
-              <Pagination
-                pageCount={getPageCount(stakepools.length, ROWS_PER_PAGE)}
-                page={page}
-                onChangePage={setPage}
-              />
+              <Grid item>
+                <Pagination
+                  pageCount={getPageCount(stakepools.length, ROWS_PER_PAGE)}
+                  page={page}
+                  onChangePage={setPage}
+                />
+              </Grid>
             </Grid>
-          </Grid>
-          <StakepoolsTable
-            headers={tableHeaders}
-            data={tableData}
-            noColumnsMsg={tr(messages.noColumns)}
-          />
-        </React.Fragment>
-      )}
-    </SimpleLayout>
+            <StakepoolsTable
+              headers={tableHeaders}
+              data={tableData}
+              noColumnsMsg={tr(messages.noColumns)}
+            />
+          </React.Fragment>
+        )}
+      </SimpleLayout>
+    </React.Fragment>
   )
 }
 
