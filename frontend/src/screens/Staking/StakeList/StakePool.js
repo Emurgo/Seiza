@@ -13,7 +13,12 @@ import {
   MobileOnly,
   DesktopOnly,
 } from '@/components/visual'
-import {AdaValue, PoolEntityContent, ResponsiveCircularProgressBar} from '@/components/common'
+import {
+  AdaValue,
+  PoolEntityContent,
+  ResponsiveCircularProgressBar,
+  HelpTooltip,
+} from '@/components/common'
 import WithModalState from '@/components/headless/modalState'
 import {useI18n} from '@/i18n/helpers'
 import {useSelectedPoolsContext} from '../context/selectedPools'
@@ -36,6 +41,14 @@ const messages = defineMessages({
   showDetails: 'Show details',
   addPool: 'Add',
   removePool: 'Remove',
+  // Note(bigamasta): If needed to be reused on Stake pools screens,
+  // we can create something like helpers/helpMessages.js
+  performanceHelpText: 'TODO: Performance Help Text',
+  fullnessHelpText: 'TODO: Fullness Help Text',
+  marginsHelpText: 'TODO: Margins Help Text',
+  createdAtHelpText: 'TODO: CreatedAt Help Text',
+  pledgeHelpText: 'TODO: Pledge Help Text',
+  stakeHelpText: 'TODO: Stake Help Text',
 })
 
 const useHeaderStyles = makeStyles(({palette, spacing, breakpoints}) => ({
@@ -223,8 +236,8 @@ const DataGrid = ({items, leftSpan, rightSpan, alignRight = false}) => {
   return (
     // Note: when setting direction to `column` there is strange height misallignment
     <Grid container direction="row" className={classes.verticalBlock}>
-      {items.map(({label, value}) => (
-        <Grid item key={label} xs={12}>
+      {items.map(({label, value}, index) => (
+        <Grid item key={index} xs={12}>
           <Grid container direction="row">
             <Grid xs={leftSpan} item className={classes.rowItem}>
               <Typography className={classes.label}>{label}</Typography>
@@ -244,7 +257,7 @@ const DataGrid = ({items, leftSpan, rightSpan, alignRight = false}) => {
 }
 
 const Content = ({data}) => {
-  const {translate, formatPercent, formatTimestamp} = useI18n()
+  const {translate: tr, formatPercent, formatTimestamp} = useI18n()
   const classes = useContentStyles()
   const isMobile = useIsMobile()
   const isDownLg = useIsBreakpointDown('lg')
@@ -252,7 +265,7 @@ const Content = ({data}) => {
     <div className={classes.innerWrapper}>
       {!isMobile && (
         <div className={classes.revenueWrapper}>
-          <ResponsiveCircularProgressBar label={translate(messages.revenue)} value={0.25} />
+          <ResponsiveCircularProgressBar label={tr(messages.revenue)} value={0.25} />
         </div>
       )}
       <Grid container>
@@ -263,15 +276,27 @@ const Content = ({data}) => {
             rightSpan={isDownLg ? 6 : 3}
             items={[
               {
-                label: translate(messages.performance),
+                label: (
+                  <HelpTooltip text={tr(messages.performanceHelpText)}>
+                    {tr(messages.performance)}
+                  </HelpTooltip>
+                ),
                 value: <Typography>{formatPercent(data.performance)}</Typography>,
               },
               {
-                label: translate(messages.fullness),
+                label: (
+                  <HelpTooltip text={tr(messages.fullnessHelpText)}>
+                    {tr(messages.fullness)}
+                  </HelpTooltip>
+                ),
                 value: <Typography>{formatPercent(data.fullness)}</Typography>,
               },
               {
-                label: translate(messages.margins),
+                label: (
+                  <HelpTooltip text={tr(messages.marginsHelpText)}>
+                    {tr(messages.margins)}
+                  </HelpTooltip>
+                ),
                 value: <Typography>{formatPercent(data.margins)}</Typography>,
               },
             ]}
@@ -285,7 +310,11 @@ const Content = ({data}) => {
             rightSpan={6}
             items={[
               {
-                label: translate(messages.createdAt),
+                label: (
+                  <HelpTooltip text={tr(messages.createdAtHelpText)}>
+                    {tr(messages.createdAt)}
+                  </HelpTooltip>
+                ),
                 value: (
                   <Typography>
                     {formatTimestamp(data.createdAt, {format: formatTimestamp.FMT_MONTH_NUMERAL})}
@@ -293,11 +322,17 @@ const Content = ({data}) => {
                 ),
               },
               {
-                label: translate(messages.pledge),
+                label: (
+                  <HelpTooltip text={tr(messages.pledgeHelpText)}>
+                    {tr(messages.pledge)}
+                  </HelpTooltip>
+                ),
                 value: <AdaValue value={data.pledge} />,
               },
               {
-                label: translate(messages.stake),
+                label: (
+                  <HelpTooltip text={tr(messages.stakeHelpText)}>{tr(messages.stake)}</HelpTooltip>
+                ),
                 value: <AdaValue value={data.stake} />,
               },
             ]}
