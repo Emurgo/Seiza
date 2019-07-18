@@ -56,7 +56,7 @@ const TruncatedCertificateList = ({txCount, txHash}) => {
 
 const MAX_SHOWN_CERTIFICATES = 3
 
-const TransactionCard = ({tx, certificateActions = []}) => {
+const TransactionCard = ({tx}) => {
   const classes = useTxStyles()
   const [isOpen, toggle] = useToggle()
   const {translate: tr, formatInt, formatTimestamp} = useI18n()
@@ -73,7 +73,7 @@ const TransactionCard = ({tx, certificateActions = []}) => {
                 value={<Link to={routeTo.transaction(tx.txHash)}>{tx.txHash}</Link>}
                 rawValue={tx.txHash}
               />
-              <CertificateActionsSummary actions={certificateActions} />
+              <CertificateActionsSummary actions={tx.certificateActions} />
             </ContentSpacing>
             <TwoColumnRow
               label1={tr(transactionMessages.date)}
@@ -89,8 +89,10 @@ const TransactionCard = ({tx, certificateActions = []}) => {
         )}
         renderExpandedArea={() => (
           <React.Fragment>
-            <CertificateActionList actions={certificateActions.slice(0, MAX_SHOWN_CERTIFICATES)} />
-            {certificateActions.length > MAX_SHOWN_CERTIFICATES && (
+            <CertificateActionList
+              actions={tx.certificateActions.slice(0, MAX_SHOWN_CERTIFICATES)}
+            />
+            {tx.certificateActions.length > MAX_SHOWN_CERTIFICATES && (
               <TruncatedCertificateList txCount={MAX_SHOWN_CERTIFICATES} txHash={tx.txHash} />
             )}
           </React.Fragment>
@@ -110,12 +112,11 @@ const TransactionCard = ({tx, certificateActions = []}) => {
   )
 }
 
-const TransactionsTab = ({transactions, certificateActions}) => {
+const TransactionsTab = ({transactions}) => {
   const classes = useStyles()
   return (
     <Card>
-      {transactions &&
-        transactions.map((tx) => <TransactionCard key={tx.txHash} {...{tx, certificateActions}} />)}
+      {transactions && transactions.map((tx) => <TransactionCard key={tx.txHash} tx={tx} />)}
       <div className={classes.paginationWrapper}>
         <Pagination pageCount={1} page={1} onChangePage={() => null} />
       </div>
