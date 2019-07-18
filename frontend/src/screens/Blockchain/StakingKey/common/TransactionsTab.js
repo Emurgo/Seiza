@@ -2,7 +2,7 @@ import React from 'react'
 import {defineMessages, FormattedMessage} from 'react-intl'
 import {makeStyles} from '@material-ui/styles'
 
-import {ExpandableCard, ExpandableCardFooter, ContentSpacing, Card} from '@/components/visual'
+import {ExpandableCard, ExpandableCardFooter, ContentSpacing} from '@/components/visual'
 import {Pagination, EntityCardContent, Link} from '@/components/common'
 import useToggle from '@/components/hooks/useToggle'
 import {useI18n} from '@/i18n/helpers'
@@ -115,12 +115,13 @@ const TransactionCard = ({tx}) => {
 const TransactionsTab = ({transactions}) => {
   const classes = useStyles()
   return (
-    <Card>
+    <React.Fragment>
       {transactions && transactions.map((tx) => <TransactionCard key={tx.txHash} tx={tx} />)}
+      {/* TODO: Pagination on right side */}
       <div className={classes.paginationWrapper}>
         <Pagination pageCount={1} page={1} onChangePage={() => null} />
       </div>
-    </Card>
+    </React.Fragment>
   )
 }
 

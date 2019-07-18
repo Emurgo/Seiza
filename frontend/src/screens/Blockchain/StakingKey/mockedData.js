@@ -32,8 +32,9 @@ const MOCKED_POOL_ACTIONS = [
   MOCKED_POOL_RETIREMENT_ACTION,
   MOCKED_POOL_RETIREMENT_CANCELLATION_ACTION,
 ]
-const generateStakePool = (stakingKeyHash) => ({
-  hash: stakingKeyHash,
+
+const generateStakepool = (stakepoolHash) => ({
+  hash: stakepoolHash,
   name: 'Warren Buffett and Friend’s Stake Pool',
   validationCharacters: 'c0fe2f75',
   createdAt: '2019-02-13T10:58:31.000Z',
@@ -75,20 +76,6 @@ const generateStakePool = (stakingKeyHash) => ({
   description: 'let’s work together to make money!',
   rewardsAddress: 'a5c3af824de94faff971d1b2488c5017dcf0f3c3a056334195efb368c0fe2f75',
   stakePoolCertificate: '6b686ed997b3846ebf93642b5bfe482ca2682245b826601ca352d2c3c0394a68',
-  history: [
-    {
-      epochNumber: 103,
-      certificateActions: MOCKED_POOL_ACTIONS,
-    },
-    {
-      epochNumber: 102,
-      certificateActions: MOCKED_POOL_ACTIONS,
-    },
-    {
-      epochNumber: 101,
-      certificateActions: MOCKED_POOL_ACTIONS,
-    },
-  ],
   transactions: [
     {
       txHash: '40c0139a96635c09c224765add076dcc5a51a30bb126b37dcfa16b0e99b92240',
@@ -149,7 +136,9 @@ const generateStakePool = (stakingKeyHash) => ({
   ],
 })
 
-export const getUserStakingKey = (stakingKeyHash) => ({
+export const getStakepool = generateStakepool
+
+export const getStakingKey = (stakingKeyHash) => ({
   hash: stakingKeyHash,
   type: 'USER',
   createdAt: '2019-02-13T10:58:31.000Z',
@@ -163,24 +152,10 @@ export const getUserStakingKey = (stakingKeyHash) => ({
     stakePoolHash: '6b686ed997b3846ebf93642b5bfe482ca2682245b826601ca352d2c3c0394a68',
     tx: 'c71214e798fa8e25615f2d967858c58213eb43eca2d2b5f1650e18cf1962208b',
   },
-  epochsInCurrentStakePool: 3,
-  currentStakePool: generateStakePool(
+  epochsInCurrentStakepool: 3,
+  currentStakepool: generateStakepool(
     'dd4548f88bebd98653a6977cb6cf1cf6a57dcec8ed8655f6e8b690e998bb2164'
   ),
-  history: [
-    {
-      epochNumber: 103,
-      certificateActions: MOCKED_STAKING_KEY_ACTIONS,
-    },
-    {
-      epochNumber: 102,
-      certificateActions: MOCKED_STAKING_KEY_ACTIONS,
-    },
-    {
-      epochNumber: 101,
-      certificateActions: MOCKED_STAKING_KEY_ACTIONS,
-    },
-  ],
   transactions: [
     {
       txHash: '40c0139a96635c09c224765add076dcc5a51a30bb126b37dcfa16b0e99b92240',
@@ -240,6 +215,36 @@ export const getUserStakingKey = (stakingKeyHash) => ({
     },
   ],
 })
-export const getStakePoolStakingKey = (stakingKeyHash) => {
-  return generateStakePool(stakingKeyHash)
-}
+
+const stakepoolHistory = [
+  {
+    epochNumber: 103,
+    certificateActions: MOCKED_POOL_ACTIONS,
+  },
+  {
+    epochNumber: 102,
+    certificateActions: MOCKED_POOL_ACTIONS,
+  },
+  {
+    epochNumber: 101,
+    certificateActions: MOCKED_POOL_ACTIONS,
+  },
+]
+
+export const stakingKeyHistory = [
+  {
+    epochNumber: 103,
+    certificateActions: MOCKED_STAKING_KEY_ACTIONS,
+  },
+  {
+    epochNumber: 102,
+    certificateActions: MOCKED_STAKING_KEY_ACTIONS,
+  },
+  {
+    epochNumber: 101,
+    certificateActions: MOCKED_STAKING_KEY_ACTIONS,
+  },
+]
+
+export const getStakingKeyHistory = () => stakingKeyHistory
+export const getStakepoolHistory = () => stakepoolHistory

@@ -1,12 +1,14 @@
 import React from 'react'
 import {defineMessages} from 'react-intl'
 import {makeStyles} from '@material-ui/styles'
-import {LiteTab, LiteTabs} from '@/components/visual'
+import {LiteTab, LiteTabs, LoadingInProgress} from '@/components/visual'
+import {LoadingError} from '@/components/common'
 import useTabState from '@/components/hooks/useTabState'
 import {useI18n} from '@/i18n/helpers'
 import DelegatedPoolInfoTab from './DelegatedPoolInfoTab'
-import HistoryTab from '../../common/HistoryTab'
+import HistoryTab from '../../common/History'
 import TransactionsTab from '../../common/TransactionsTab'
+import {useLoadStakingKeyHistory} from '../dataLoaders'
 
 const messages = defineMessages({
   delegatedPoolInfoTabName: 'Delegated Pool Info',
@@ -25,15 +27,22 @@ const TABS = {
   RENDER_CONTENT: {
     [TAB_NAMES.DELEGATED_POOL_INFO]: ({stakingKey}) => (
       <DelegatedPoolInfoTab
-        stakePool={stakingKey.currentStakePool}
-        epochsInCurrentStakePool={stakingKey.epochsInCurrentStakePool}
+        stakePool={stakingKey.currentStakepool}
+        epochsInCurrentStakePool={stakingKey.epochsInCurrentStakepool}
       />
     ),
-    [TAB_NAMES.HISTORY]: ({stakingKey}) => (
-      <HistoryTab history={stakingKey.currentStakePool.history} />
-    ),
+    [TAB_NAMES.HISTORY]: ({stakingKey}) => {
+      const {error, loading, data: stakingKeyHistory} = useLoadStakingKeyHistory(stakingKey.hash)
+      return error ? (
+        <LoadingError error={error} />
+      ) : loading ? (
+        <LoadingInProgress />
+      ) : (
+        <HistoryTab history={stakingKeyHistory} />
+      )
+    },
     [TAB_NAMES.TRANSACTIONS]: ({stakingKey}) => (
-      <TransactionsTab transactions={stakingKey.currentStakePool.transactions} />
+      <TransactionsTab transactions={stakingKey.currentStakepool.transactions} />
     ),
   },
 }
@@ -59,7 +68,7 @@ const UserTabs = ({stakingKey}) => {
           label={
             <React.Fragment>
               {tr(messages.historyTabName, {
-                count: stakingKey.currentStakePool.timeActive.epochs,
+                count: stakingKey.currentStakepool.timeActive.epochs,
               })}{' '}
             </React.Fragment>
           }
@@ -68,13 +77,13 @@ const UserTabs = ({stakingKey}) => {
           label={
             <React.Fragment>
               {tr(messages.transactionsTabName, {
-                count: stakingKey.currentStakePool.transactions.length,
+                count: stakingKey.currentStakepool.transactions.length,
               })}
             </React.Fragment>
           }
         />
       </LiteTabs>
-
+      {/* TODO: Pagination on right side when transactions tab is selected */}
       <TabContent stakingKey={stakingKey} />
     </React.Fragment>
   )
