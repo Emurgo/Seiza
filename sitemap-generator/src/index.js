@@ -9,7 +9,8 @@ const elastic = require('./elastic')
 
 const writeFile = promisify(fs.writeFile)
 
-const PAGE_ROOT = 'http://seiza.com'
+const PAGE_ROOT = process.env.PAGE_ROOT || 'http://seiza.com'
+const SITEMAP_ROOT = process.env.SITEMAP_ROOT || 'http://seiza.com'
 
 const OUT_DIR = './generated'
 
@@ -21,7 +22,7 @@ const buildSitemapIndex = (shards) => {
   Object.entries(shards).forEach(([shard, pages]) => {
     doc = doc
       .ele('sitemap')
-      .ele('loc', `http://www.example.com/sitemap-${shard}.xml`)
+      .ele('loc', `${SITEMAP_ROOT}/sitemap-${shard}.xml`)
       .up()
       .ele('lastmod', _.max(pages, (p) => p.timestamp).timestamp)
       .up()
