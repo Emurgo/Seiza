@@ -104,7 +104,7 @@ const getElastic = (logger) => {
         .then((response) => legacyCheckResponse(response, {prevResponse}))
     }
 
-    const processAndreturnIteratorValue = (resp) => {
+    const processAndReturnIteratorValue = (resp) => {
       response = resp
       cnt += resp.hits.hits.length
 
@@ -122,9 +122,9 @@ const getElastic = (logger) => {
       [Symbol.asyncIterator]: () => ({
         next: () => {
           if (!response) {
-            return fetchInitial(type, body).then(processAndreturnIteratorValue)
+            return fetchInitial(type, body).then(processAndReturnIteratorValue)
           } else {
-            return fetchMore(response).then(processAndreturnIteratorValue)
+            return fetchMore(response).then(processAndReturnIteratorValue)
           }
         },
       }),
