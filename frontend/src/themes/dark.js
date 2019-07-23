@@ -26,6 +26,12 @@ const theme = _.merge({}, common, {
         textColor: '#90ACFE',
         textHover: '#95BAF7',
       },
+      tertiaryGradient: {
+        background: 'linear-gradient(45deg, #715BD3 0%, #95BAF7 100%)',
+        hover: 'linear-gradient(45deg, #95BAF7 0%,  #95BAF7 100%)',
+        textColor: '#90ACFE',
+        textHover: '#95BAF7',
+      },
     },
     text: {
       primary: '#ffffff',
