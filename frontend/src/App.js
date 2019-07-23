@@ -22,6 +22,8 @@ import StakingPools from './screens/StakingPools'
 import More from './screens/More'
 import PageNotFound from './screens/PageNotFound'
 import CookiesBanner from '@/components/common/CookiesBanner'
+import UnsupportedBrowserBanner from '@/components/common/UnsupportedBrowserBanner'
+
 import DefaultErrorBoundary from '@/components/common/DefaultErrorBoundary'
 import {AcceptCookiesProvider} from '@/components/context/acceptCookies'
 import {AnalyticsProvider} from '@/components/context/googleAnalytics'
@@ -120,6 +122,7 @@ const AppLayout = () => {
 
   return (
     <Grid container direction="column" className={classes.mainWrapper} wrap="nowrap">
+      <UnsupportedBrowserBanner />
       <CookiesBanner />
 
       <Grid item className={classes.navHeaderWrapper}>

@@ -3196,6 +3196,11 @@ boolify@^1.0.0:
   resolved "https://registry.yarnpkg.com/boolify/-/boolify-1.0.1.tgz#b5c09e17cacd113d11b7bb3ed384cc012994d86b"
   integrity sha1-tcCeF8rNET0Rt7s+04TMASmU2Gs=
 
+bowser@^2.5.2:
+  version "2.5.2"
+  resolved "https://registry.yarnpkg.com/bowser/-/bowser-2.5.2.tgz#5eac42a9ad4a4c95182b122fab8dd03d5941c891"
+  integrity sha512-82oFIAwiSzvw7wwMjg7fXOBq0ZXHXcH+vo9Ul6xleXmBvdlCvctrcFGJXCmckWXj2Qsspkhr1lIrRwK30oibRA==
+
 brace-expansion@^1.1.7:
   version "1.1.11"
   resolved "https://registry.yarnpkg.com/brace-expansion/-/brace-expansion-1.1.11.tgz#3c7fcbf529d87226f3d2f52b966ff5271eb441dd"

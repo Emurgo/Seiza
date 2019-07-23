@@ -39,6 +39,7 @@
     "apollo-client": "^2.6.0",
     "apollo-link-http": "^1.5.14",
     "bignumber.js": "^9.0.0",
+    "bowser": "^2.5.2",
     "classnames": "^2.2.6",
     "cookie-parser": "^1.4.4",
     "copy-to-clipboard": "^3.2.0",
