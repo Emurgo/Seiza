@@ -6,12 +6,10 @@ import {IconButton} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import idx from 'idx'
 
-import {GET_ADDRESS_BY_ADDRESS58, GET_TXS_BY_ADDRESS} from '@/api/queries'
 import {useI18n} from '@/i18n/helpers'
 import {useAnalytics} from '@/components/context/googleAnalytics'
 import {toIntOrNull, getPageCount} from '@/helpers/utils'
 import {ObjectValues} from '@/helpers/flow'
-import {useQueryNotBugged} from '@/components/hooks/useQueryNotBugged'
 
 import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
 import useTabState from '@/components/hooks/useTabState'
@@ -29,10 +27,9 @@ import {
 } from '@/components/common'
 
 import qrCodeIcon from '@/static/assets/icons/qrcode.svg'
-import {extractError} from '@/helpers/errors'
 
 import {FILTER_TYPES} from './constants'
-import {APOLLO_CACHE_OPTIONS} from '@/constants'
+import {useLoadAddressTransactions, useLoadAddressSummary} from './dataLoaders'
 
 const summaryMessages = defineMessages({
   NA: 'N/A',
@@ -102,30 +99,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const useAddressSummary = (address58) => {
-  const {loading, data, error} = useQueryNotBugged(GET_ADDRESS_BY_ADDRESS58, {
-    variables: {address58},
-    fetchPolicy: APOLLO_CACHE_OPTIONS.CACHE_AND_NETWORK,
-  })
-
-  // TODO: how to extract error properly???
-  return {loading, error: extractError(error, ['address']) || error, addressSummary: data.address}
-}
-
-const useTransactions = (address58, filterType, cursor) => {
-  const {loading, data, error} = useQueryNotBugged(GET_TXS_BY_ADDRESS, {
-    variables: {address58, filterType, cursor},
-    fetchPolicy: APOLLO_CACHE_OPTIONS.CACHE_AND_NETWORK,
-  })
-
-  // TODO: how to extract error properly???
-  return {
-    loading,
-    error: extractError(error, ['address']) || error,
-    transactions: idx(data, (_) => _.address.transactions),
-  }
-}
-
 const usePaginations = () => {
   const [tabOnePage, onTabOnePageChange] = useManageQueryValue(FILTER_TYPES.ALL, 1, toIntOrNull)
   const [tabTwoPage, onTabTwoPageChange] = useManageQueryValue(FILTER_TYPES.SENT, 1, toIntOrNull)
@@ -152,7 +125,7 @@ const useTransactionsData = (address58, paginations) => {
   // all/sent/received tabs.
 
   const useTransactionsHelper = (filterType) =>
-    useTransactions(
+    useLoadAddressTransactions(
       address58,
       filterType,
       paginations[filterType].page != null ? cursorFromPage(paginations[filterType].page) : null
@@ -192,7 +165,7 @@ const AddressScreen = () => {
   } = useReactRouter()
   const {pagination, transactionsData, tabState, currentTab, setTab} = useManageTabs(address58)
 
-  const {loading, error, addressSummary} = useAddressSummary(address58)
+  const {loading, error, addressSummary} = useLoadAddressSummary(address58)
 
   const {page, onChangePage} = pagination
   const {
