@@ -6,6 +6,7 @@ import {IconButton} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import idx from 'idx'
 
+import {MetadataOverrides, seoMessages} from '@/pages/_meta'
 import {useI18n} from '@/i18n/helpers'
 import {useAnalytics} from '@/components/context/googleAnalytics'
 import {toIntOrNull, getPageCount} from '@/helpers/utils'
@@ -38,6 +39,13 @@ const summaryMessages = defineMessages({
   balance: 'Address Balance',
   totalAdaReceived: 'Total received ADA',
   totalAdaSent: 'Total sent ADA',
+})
+
+const metadata = defineMessages({
+  screenTitle: 'Cardano Address {address58} | Seiza',
+  metaDescription:
+    'Cardano Address: {address58}. Total transactions: {txCount}. Address Balance: {balance}.',
+  keywords: 'Cardano Address {address58}, Cardano Address, {commonKeywords}',
 })
 
 const Row = ({label, value}) => {
@@ -157,6 +165,25 @@ const useManageTabs = (address58) => {
   }
 }
 
+const AddressMetadata = ({address58, addressSummary}) => {
+  const {translate: tr, formatAda} = useI18n()
+
+  const title = tr(metadata.screenTitle, {address58})
+
+  const desc = tr(metadata.metaDescription, {
+    address58,
+    txCount: idx(addressSummary, (_) => _.transactionsCount),
+    balance: formatAda(idx(addressSummary, (_) => _.balance)),
+  })
+
+  const keywords = tr(metadata.keywords, {
+    address58,
+    commonKeywords: tr(seoMessages.keywords),
+  })
+
+  return <MetadataOverrides title={title} description={desc} keywords={keywords} />
+}
+
 const AddressScreen = () => {
   const {
     match: {
@@ -190,6 +217,7 @@ const AddressScreen = () => {
   return (
     <div ref={scrollToRef}>
       <SimpleLayout title={tr(messages.title)}>
+        <AddressMetadata address58={address58} addressSummary={addressSummary} />
         <EntityIdCard
           label={tr(summaryMessages.address)}
           value={address58}

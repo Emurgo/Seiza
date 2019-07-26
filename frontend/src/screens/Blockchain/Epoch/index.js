@@ -4,7 +4,7 @@ import {defineMessages} from 'react-intl'
 import moment from 'moment-timezone'
 import gql from 'graphql-tag'
 import idx from 'idx'
-import {MetadataOverrides} from '@/pages/_meta'
+import {MetadataOverrides, seoMessages} from '@/pages/_meta'
 import useReactRouter from 'use-react-router'
 import {Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
@@ -32,8 +32,6 @@ import NavigationButtons from '../NavigationButtons'
 import {APOLLO_CACHE_OPTIONS} from '@/constants'
 
 const messages = defineMessages({
-  screenTitle: 'Epoch {epochNumber} - Seiza',
-  metaDescription: 'Cardano epoch {epochNumber}',
   notAvailable: 'N/A',
   goPreviousEpoch: 'Previous',
   goNextEpoch: 'Next',
@@ -74,6 +72,13 @@ const useStyles = makeStyles((theme) => ({
     display: 'inline-block',
   },
 }))
+
+const metadata = defineMessages({
+  screenTitle: 'Cardano Epoch {epochNumber} | Seiza',
+  metaDescription:
+    'Cardano Epoch {epochNumber}. Time Period: {startTime} — {endTime}. Transactions: {txCount}.',
+  keywords: 'Epoch {epochNumber}, Cardano Epochs, {commonKeywords}',
+})
 
 const GET_EPOCH_BY_NUMBER = gql`
   query($epochNumber: Int!) {
@@ -327,10 +332,28 @@ const EpochEntityCard = ({epochNumber, startTime, endTime}) => {
   )
 }
 
-const getEpochMetaDescription = ({tr, epochNumber, epochData}) => {
-  return tr(messages.metaDescription, {
+const EpochMetadata = ({epochNumber, epochData}) => {
+  const {translate: tr, formatTimestamp} = useI18n()
+
+  const title = tr(metadata.screenTitle, {epochNumber})
+
+  const desc = tr(metadata.metaDescription, {
     epochNumber,
+    startTime: formatTimestamp(idx(epochData, (_) => _.startTime), {
+      tz: 'UTC',
+    }),
+    endTime: formatTimestamp(idx(epochData, (_) => _.endTime), {
+      tz: 'UTC',
+    }),
+    txCount: idx(epochData, (_) => _.summary.transactionCount),
   })
+
+  const keywords = tr(metadata.keywords, {
+    epochNumber,
+    commonKeywords: tr(seoMessages.keywords),
+  })
+
+  return <MetadataOverrides title={title} description={desc} keywords={keywords} />
 }
 
 const EpochScreen = () => {
@@ -350,10 +373,7 @@ const EpochScreen = () => {
 
   return (
     <div ref={scrollToRef}>
-      <MetadataOverrides
-        title={tr(messages.screenTitle, {epochNumber})}
-        description={getEpochMetaDescription({epochNumber, epochData, tr})}
-      />
+      <EpochMetadata epochNumber={epochNumber} epochData={epochData} />
       <SimpleLayout title={tr(messages.header)}>
         <EpochNavigation currentEpochNumber={epochNumber} />
         <EpochEntityCard
