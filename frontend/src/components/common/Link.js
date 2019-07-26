@@ -15,7 +15,7 @@ const Link = ({to, children, target = '_self', underline, monospace = false}) =>
       to={to}
       target={target}
       underline={underline}
-      className={monospace && classes.monospace}
+      className={monospace ? classes.monospace : ''}
     >
       {children}
     </MuiLink>
