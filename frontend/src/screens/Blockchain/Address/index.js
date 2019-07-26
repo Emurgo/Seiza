@@ -184,6 +184,32 @@ const AddressMetadata = ({address58, addressSummary}) => {
   return <MetadataOverrides title={title} description={desc} keywords={keywords} />
 }
 
+const AddressIconWithModal = ({address58}) => {
+  const {translate: tr} = useI18n()
+  const classes = useStyles()
+  return (
+    <WithModalState>
+      {({isOpen, openModal, closeModal}) => (
+        <React.Fragment>
+          <Tooltip title={tr(messages.showQRCode)} enterTouchDelay={100}>
+            <IconButton className={classes.alignIconButton} onClick={openModal} color="primary">
+              <img alt="show qr code" src={qrCodeIcon} />
+            </IconButton>
+          </Tooltip>
+          <QRDialog
+            qrCodeValue={address58}
+            description={
+              <EntityCardContent label={tr(messages.qrCodeDialogEntityLabel)} value={address58} />
+            }
+            isOpen={isOpen}
+            onClose={closeModal}
+          />
+        </React.Fragment>
+      )}
+    </WithModalState>
+  )
+}
+
 const AddressScreen = () => {
   const {
     match: {
@@ -221,34 +247,7 @@ const AddressScreen = () => {
         <EntityIdCard
           label={tr(summaryMessages.address)}
           value={address58}
-          iconRenderer={
-            <WithModalState>
-              {({isOpen, openModal, closeModal}) => (
-                <React.Fragment>
-                  <Tooltip title={tr(messages.showQRCode)} enterTouchDelay={100}>
-                    <IconButton
-                      className={classes.alignIconButton}
-                      onClick={openModal}
-                      color="primary"
-                    >
-                      <img alt="show qr code" src={qrCodeIcon} />
-                    </IconButton>
-                  </Tooltip>
-                  <QRDialog
-                    qrCodeValue={address58}
-                    description={
-                      <EntityCardContent
-                        label={tr(messages.qrCodeDialogEntityLabel)}
-                        value={address58}
-                      />
-                    }
-                    isOpen={isOpen}
-                    onClose={closeModal}
-                  />
-                </React.Fragment>
-              )}
-            </WithModalState>
-          }
+          iconRenderer={<AddressIconWithModal address58={address58} />}
         />
         {error ? (
           <LoadingError error={error} />
