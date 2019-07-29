@@ -28,6 +28,7 @@ const blockSummaryLabels = defineMessages({
   epoch: 'Epoch',
   slot: 'Slot',
   issuedAt: 'Timestamp',
+  blockLeader: 'Block leader',
   transactionsCount: 'Transactions',
   blockHeight: 'Block Height',
   totalFees: 'Total Fees',
@@ -61,6 +62,8 @@ const BlockSummaryCard = ({blockData, loading}) => {
     slot: idx(blockData, (_) => _.slot),
     blockHash: idx(blockData, (_) => _.blockHash),
     issuedAt: idx(blockData, (_) => _.timeIssued),
+    blockLeaderHash: idx(blockData, (_) => _.blockLeader.poolHash),
+    blockLeaderName: idx(blockData, (_) => _.blockLeader.name),
     txCount: idx(blockData, (_) => _.transactionsCount),
     blockHeight: idx(blockData, (_) => _.blockHeight),
     totalSent: idx(blockData, (_) => _.totalSent),
@@ -77,6 +80,11 @@ const BlockSummaryCard = ({blockData, loading}) => {
       ),
     slot: formatInt(__.slot, {defaultValue: NA}), // no link, because it would be link to this page
     issuedAt: formatTimestamp(__.issuedAt, {defaultValue: NA}),
+    blockLeader: __.blockLeaderHash ? (
+      <Link to={routeTo.stakepool(__.blockLeaderHash)}>{__.blockLeaderName}</Link>
+    ) : (
+      NA
+    ),
     txCount: formatInt(__.txCount, {defaultValue: NA}),
     blockHeight: formatInt(__.blockHeight, {defaultValue: NA}),
     totalSent: <AdaValue value={__.totalSent} noValue={NA} showCurrency timestamp={__.issuedAt} />,
@@ -88,6 +96,7 @@ const BlockSummaryCard = ({blockData, loading}) => {
       <Item label={label.epoch}>{data.epoch}</Item>
       <Item label={label.slot}>{data.slot}</Item>
       <Item label={label.issuedAt}>{data.issuedAt}</Item>
+      <Item label={label.blockLeader}>{data.blockLeader}</Item>
       <Item label={label.transactionsCount}>{data.txCount}</Item>
       <Item label={label.blockHeight}>{data.blockHeight}</Item>
       <Item label={label.totalFees}>{data.totalFees}</Item>
