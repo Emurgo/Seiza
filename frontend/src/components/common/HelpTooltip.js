@@ -38,7 +38,7 @@ const HelpTooltip = ({children, text, className}: Props) => {
   const classes = useStyles()
   return (
     <Tooltip title={<Markdown source={text} />}>
-      <div className={cn(classes.underlined, className)}>{children}</div>
+      <span className={cn(classes.underlined, className)}>{children}</span>
     </Tooltip>
   )
 }
