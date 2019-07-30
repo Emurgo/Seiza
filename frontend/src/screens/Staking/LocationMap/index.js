@@ -1,9 +1,12 @@
 // @flow
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import {renderToStaticMarkup} from 'react-dom/server'
 import {makeStyles} from '@material-ui/styles'
 import {Typography} from '@material-ui/core'
-import {LoadScript, GoogleMap, Marker} from '@react-google-maps/api'
+import loadGoogleMapsApi from 'load-google-maps-api'
+// Note(ppershing): for some obscure reason, nextjs does not want to load
+// '@react-google-maps/api' properly so we use this workaround
+import {GoogleMap, Marker} from '@react-google-maps/api/dist/reactgooglemapsapi.es.production.js'
 import {defineMessages} from 'react-intl'
 
 import config from '@/config'
@@ -72,7 +75,32 @@ const messages = defineMessages({
 // https://github.com/tomchentw/react-google-maps/issues/373
 
 const LocationMap = ({pools}) => {
-  const [error, setError] = useState()
+  const [isLoaded, setIsLoaded] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState(null)
+
+  // Note(ppershing): THIS IS A WORKAROUND
+  // We use loadGoogleMapsApi package
+  // to load maps api instead of @react-google-maps/api's [use]LoadScript
+  // because that one started to fail in very weird ways (it claims
+  // isLoaded before window.google is available
+  useEffect(() => {
+    if (!isLoading) {
+      setIsLoading(true)
+
+      //https://stackoverflow.com/questions/45338480/try-catch-for-error-message-in-google-maps-api
+      window.gm_authFailure = () => setError('gm_authFailure')
+
+      loadGoogleMapsApi({
+        key: config.googleMapsApiKey,
+        language: ' en',
+        region: 'EN',
+      })
+        .then(() => setIsLoaded(true))
+        .catch((err) => setError(err))
+    }
+  }, [isLoading])
+
   const {translate: tr} = useI18n()
 
   if (!config.googleMapsApiKey) {
@@ -83,35 +111,29 @@ const LocationMap = ({pools}) => {
     )
   }
 
+  const renderMap = () => (
+    <GoogleMap
+      zoom={2}
+      center={{lat: 0, lng: 0}}
+      mapContainerStyle={{width: '100%', height: '100%'}}
+    >
+      {pools.map((pool) => (
+        <Marker
+          key={pool.poolHash}
+          position={pool.location}
+          title={pool.name}
+          icon={PoolMarker.dataURI({poolHash: pool.poolHash})}
+        />
+      ))}
+    </GoogleMap>
+  )
+
   return error ? (
     <Alert message={tr(messages.errorLoadingMap)} />
+  ) : isLoaded ? (
+    renderMap()
   ) : (
-    <LoadScript
-      googleMapsApiKey={config.googleMapsApiKey}
-      language={'en'}
-      region={'EN'}
-      version={'weekly'}
-      libraries={null}
-      onError={(e) => {
-        setError(true)
-      }}
-      loadingElement={<LoadingInProgress />}
-    >
-      <GoogleMap
-        zoom={2}
-        center={{lat: 0, lng: 0}}
-        mapContainerStyle={{width: '100%', height: '100%'}}
-      >
-        {pools.map((pool) => (
-          <Marker
-            key={pool.poolHash}
-            position={pool.location}
-            title={pool.name}
-            icon={PoolMarker.dataURI({poolHash: pool.poolHash})}
-          />
-        ))}
-      </GoogleMap>
-    </LoadScript>
+    <LoadingInProgress />
   )
 }
 
