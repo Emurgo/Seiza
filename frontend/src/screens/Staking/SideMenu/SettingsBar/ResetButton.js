@@ -72,7 +72,7 @@ const ResetButton = ({className}) => {
       >
         <Grid container className={cn(classes.panel, className)} alignItems="center">
           <Grid container alignItems="center" direction="row">
-            <div className={spin && classes.spin} onAnimationEnd={setSpinOff}>
+            <div className={spin ? classes.spin : null} onAnimationEnd={setSpinOff}>
               <ResetIcon />
             </div>
             &nbsp;&nbsp;
