@@ -4,8 +4,7 @@ import idx from 'idx'
 import {useQuery} from 'react-apollo-hooks'
 
 import {useSelectedPoolsContext} from '../context/selectedPools'
-
-import {getMockedHistory} from './mockedData'
+import {getStakepoolHistory} from '@/screens/Blockchain/StakingKey/mockedData'
 
 // TOOD: Dont we already have hook/dataProvider that we can reuse
 // current epoch from?
@@ -48,8 +47,8 @@ export const useLoadSelectedPoolsData = () => {
   return {loading, error, data: idx(data, (_) => _.stakePools)}
 }
 
-export const useLoadPoolsHistory = (poolHashes: Array<string>, toEpoch: number) => ({
+export const useLoadPoolsHistory = (stakepools: Array<Object>, toEpoch: number) => ({
   error: false,
   loading: false,
-  data: getMockedHistory(poolHashes, toEpoch),
+  data: stakepools.map<Object>((pool) => ({...pool, history: getStakepoolHistory(pool.poolHash)})),
 })
