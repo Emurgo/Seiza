@@ -85,6 +85,7 @@ const stakePoolFacade = (data) => ({
   name: data.name,
   description: data.description,
   createdAt: data.createdAt,
+  age: data.age,
   fullness: data.summary.fullness,
   margins: data.summary.margins,
   performance: data.summary.performance,
