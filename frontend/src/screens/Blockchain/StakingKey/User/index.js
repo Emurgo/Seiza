@@ -44,6 +44,14 @@ const useStyles = makeStyles(({spacing}) => ({
   resetTextTransform: {
     textTransform: 'none',
   },
+  valueContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  label: {
+    display: 'flex',
+    alignItems: 'center',
+  },
 }))
 
 const CurrentStatus = () => {
@@ -150,36 +158,48 @@ const UserStakingKey = () => {
             iconRenderer={<img alt="" src={RewardAddressIcon} />}
           />
           <EntityIdCard
-            label={
-              <React.Fragment>
-                <Typography component="span" variant="overline" color="textSecondary">
-                  {translate(messages.delegatedTo)}
-                </Typography>{' '}
-                {/* Note: EntityIdCard has variant="overline" on label,
-                    that's why we manually disable it here */}
-                <Typography
-                  component="span"
-                  variant="body1"
-                  color="textPrimary"
-                  className={classes.resetTextTransform}
-                >
-                  <Link monospace to={routeTo.stakepool(stakingKey.delegation.stakePoolHash)}>
-                    {stakingKey.delegation.stakePoolHash}
-                  </Link>
-                </Typography>
-              </React.Fragment>
-            }
+            label={null}
             value={
-              <React.Fragment>
-                <Typography component="span" variant="overline" color="textSecondary">
-                  {translate(messages.inTransaction)}
-                </Typography>{' '}
-                <Typography component="span" variant="body1" color="textPrimary">
-                  <Link monospace to={routeTo.transaction(stakingKey.delegation.tx)}>
-                    {stakingKey.delegation.tx}
-                  </Link>
-                </Typography>
-              </React.Fragment>
+              <div className={classes.valueContainer}>
+                <div className="d-flex">
+                  <Typography
+                    component="span"
+                    variant="overline"
+                    color="textSecondary"
+                    className={classes.label}
+                  >
+                    {translate(messages.delegatedTo)}
+                  </Typography>
+                  &nbsp;
+                  <Typography
+                    component="span"
+                    variant="body1"
+                    color="textPrimary"
+                    className={classes.resetTextTransform}
+                    noWrap
+                  >
+                    <Link monospace to={routeTo.stakepool(stakingKey.delegation.stakePoolHash)}>
+                      {stakingKey.delegation.stakePoolHash}
+                    </Link>
+                  </Typography>
+                </div>
+                <div className="d-flex">
+                  <Typography
+                    component="span"
+                    variant="overline"
+                    color="textSecondary"
+                    className={classes.label}
+                  >
+                    {translate(messages.inTransaction)}
+                  </Typography>
+                  &nbsp;
+                  <Typography component="span" variant="body1" color="textPrimary" noWrap>
+                    <Link monospace to={routeTo.transaction(stakingKey.delegation.tx)}>
+                      {stakingKey.delegation.tx}
+                    </Link>
+                  </Typography>
+                </div>
+              </div>
             }
             iconRenderer={<img alt="" src={CertificateActionIcon} />}
             showCopyIcon={false}
