@@ -10,6 +10,9 @@ const useStyles = makeStyles((theme) => ({
   wrapper: {
     height: '100%',
     overflow: 'visible', // Note: sticky navigation is not working without this
+    // Note(ppershing): this fixes EM-345
+    display: 'flex',
+    flexDirection: 'column',
   },
 }))
 
