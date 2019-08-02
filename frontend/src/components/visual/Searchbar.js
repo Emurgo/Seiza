@@ -118,7 +118,7 @@ class Searchbar extends React.Component<Props> {
             },
           }}
         />
-        <Button secondary type="submit" variant="contained" className={classes.searchButton}>
+        <Button type="submit" variant="contained" className={classes.searchButton}>
           <Search fontSize="large" />
         </Button>
       </form>

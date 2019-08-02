@@ -1,7 +1,7 @@
 // @flow
 import React, {useCallback} from 'react'
 import cn from 'classnames'
-import {Grid, Typography, IconButton} from '@material-ui/core'
+import {Grid, Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
 
@@ -24,7 +24,6 @@ import {useSelectedPoolsContext} from '../context/selectedPools'
 import {useIsMobile, useIsBreakpointDown} from '@/components/hooks/useBreakpoints'
 import {ReactComponent as AddPoolIcon} from '@/static/assets/icons/staking-simulator/add-stakepool.svg'
 import {ReactComponent as RemovePoolIcon} from '@/static/assets/icons/close.svg'
-import {fade} from '@material-ui/core/styles/colorManipulator'
 import epochIcon from '@/static/assets/icons/epoch.svg'
 
 const messages = defineMessages({
@@ -63,6 +62,13 @@ const useHeaderStyles = makeStyles(({palette, spacing, breakpoints}) => ({
   },
   button: {
     width: '120px',
+  },
+  mobileButton: {
+    borderRadius: '50%',
+    width: 48,
+    minWidth: 48,
+    height: 48,
+    padding: 0,
   },
   flexEllipsize: {
     // needed for proper ellipsize in children components with flex
@@ -111,74 +117,26 @@ const useContentStyles = makeStyles(({palette, spacing, breakpoints}) => ({
   },
 }))
 
-// TODO: move to refactored Button.js component (#803)
-// it's here temporarily to avoid nasty conflict resolution
-
-// not sure REFERENCE_GRADIENT is the best naming, it was copied from
-// https://codepen.io/miraviolet/pen/ZobWEg and extracted to this constant here
-const REFERENCE_GRADIENT = 'linear-gradient(rgba(255, 255, 255, 0), rgba(255, 255, 255, 0))'
-
-const useMobilePoolButtonStyles = makeStyles(({palette}) => ({
-  addButton: {
-    'borderRadius': '50%',
-    'width': 48,
-    'height': 48,
-    'background': palette.buttons.tertiaryGradient.background,
-    'color': palette.buttons.tertiaryGradient.textColor,
-    '&:hover': {
-      background: palette.buttons.tertiaryGradient.hover,
-      color: palette.buttons.tertiaryGradient.textHover,
-    },
-  },
-  removeButton: {
-    'borderRadius': '50%',
-    'width': 48,
-    'height': 48,
-
-    // https://codepen.io/miraviolet/pen/ZobWEg
-    'background': palette.background.default,
-    'color': palette.primary.main,
-
-    '&:hover': {
-      backgroundImage: `${REFERENCE_GRADIENT}, ${palette.buttons.tertiaryGradient.hover}`,
-    },
-    'border': '1px solid transparent',
-    'backgroundImage': `${REFERENCE_GRADIENT}, ${palette.buttons.tertiaryGradient.background}`,
-    'backgroundOrigin': 'border-box',
-    'backgroundClip': 'content-box, border-box',
-    'boxShadow': `2px 1000px 1px ${palette.background.default} inset`,
-    // :after is used only for proper shadow
-    '&:after': {
-      borderRadius: '50%',
-      content: '""',
-      position: 'absolute',
-      width: '100%',
-      height: '100%',
-      background: 'transparent',
-      bottom: -1,
-      right: 0,
-      boxShadow: `0px 8px 20px ${fade(palette.text.primary, 0.08)}`,
-    },
-    '&:hover:after': {
-      boxShadow: `0px 10px 30px ${fade(palette.text.primary, 0.14)}`,
-    },
-  },
-}))
-
 const AddPoolButton = ({onClick, label}) => {
   const classes = useHeaderStyles()
-  const buttonClasses = useMobilePoolButtonStyles()
 
   return (
     <React.Fragment>
       <MobileOnly>
-        <IconButton onClick={onClick} className={buttonClasses.addButton}>
+        <Button
+          rounded
+          gradient
+          variant="contained"
+          gradientDegree={45}
+          onClick={onClick}
+          className={classes.mobileButton}
+        >
           <AddPoolIcon />
-        </IconButton>
+        </Button>
       </MobileOnly>
 
       <DesktopOnly>
-        <Button rounded primaryGradient onClick={onClick} className={classes.button}>
+        <Button rounded gradient variant="contained" onClick={onClick} className={classes.button}>
           {label}
         </Button>
       </DesktopOnly>
@@ -188,18 +146,24 @@ const AddPoolButton = ({onClick, label}) => {
 
 const RemovePoolButton = ({onClick, label}) => {
   const classes = useHeaderStyles()
-  const buttonClasses = useMobilePoolButtonStyles()
 
   return (
     <React.Fragment>
       <MobileOnly>
-        <IconButton onClick={onClick} className={buttonClasses.removeButton}>
+        <Button
+          rounded
+          gradient
+          gradientDegree={45}
+          variant="outlined"
+          onClick={onClick}
+          className={classes.mobileButton}
+        >
           <RemovePoolIcon />
-        </IconButton>
+        </Button>
       </MobileOnly>
 
       <DesktopOnly>
-        <Button rounded secondaryGradient onClick={onClick} className={classes.button}>
+        <Button rounded gradient variant="outlined" onClick={onClick} className={classes.button}>
           {label}
         </Button>
       </DesktopOnly>

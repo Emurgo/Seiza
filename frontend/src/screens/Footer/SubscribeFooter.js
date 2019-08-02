@@ -457,7 +457,8 @@ const SubscribeFooter = () => {
                       <Grid item className={classes.textfieldButtonSpacing}>
                         <Button
                           rounded
-                          primaryGradient
+                          gradient
+                          variant="contained"
                           className={cn(classes.subscribe)}
                           type="submit"
                           onClick={validateAndSubscribe}

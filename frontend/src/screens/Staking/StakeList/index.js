@@ -67,7 +67,13 @@ const StakeList = ({onLoadMore, stakePools, hasMore, loading}) => {
       {hasMore ? (
         <Grid item className={classes.loadMoreWrapper}>
           <Grid container justify="center" direction="row">
-            <Button className={classes.loadMore} primaryGradient rounded onClick={onLoadMore}>
+            <Button
+              variant="contained"
+              rounded
+              gradient
+              className={classes.loadMore}
+              onClick={onLoadMore}
+            >
               {tr(messages.loadMore)}
             </Button>
           </Grid>
