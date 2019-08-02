@@ -113,9 +113,11 @@ export const EntityCardContent = ({
       <div className={classes.cardContent}>
         <div className={classes.correctureWrapper}>
           <div ref={innerRef} className={classes.wrapper}>
-            <Typography variant="overline" color="textSecondary" className={classes.label}>
-              {label}
-            </Typography>
+            {label && (
+              <Typography variant="overline" color="textSecondary" className={classes.label}>
+                {label}
+              </Typography>
+            )}
 
             <Grid item className={classes.valueContainer}>
               <ReactCSSTransitionGroup
