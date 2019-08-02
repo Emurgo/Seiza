@@ -49,7 +49,7 @@ const theme = _.merge({}, common, {
     // <Typography color="textSecondary"> ---> selects palette.text.secondary
     text: {
       primary: '#120546',
-      secondary: '#6F7290',
+      secondary: '#8791AD',
     },
     primary: {
       main: '#4D20C0',
