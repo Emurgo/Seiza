@@ -30,6 +30,8 @@ import {
   DEFAULT_LOCALE,
   LOCALE_KEY,
 } from '@/components/context/intl'
+import {UserAgentProvider} from '@/components/context/userAgent'
+
 import {THEME_DEFINITIONS, THEMES} from '@/themes'
 import translations from '@/i18n/locales'
 import {DefaultErrorScreen} from '@/components/common/DefaultErrorBoundary'
@@ -169,6 +171,7 @@ class MyApp extends App {
       return {
         pageProps,
         cookiesProps,
+        userAgent: ctx.req ? ctx.req.headers['user-agent'] : navigator.userAgent,
       }
       // ***** BEGIN INSPIRED BY: https://github.com/zeit/next.js/blob/master/examples/with-sentry/pages/_app.js
     } catch (error) {
@@ -222,7 +225,15 @@ class MyApp extends App {
   }
 
   render() {
-    const {Component, pageProps, routerCtx, apolloClient, cookiesProps, hasError} = this.props
+    const {
+      Component,
+      pageProps,
+      routerCtx,
+      apolloClient,
+      cookiesProps,
+      hasError,
+      userAgent,
+    } = this.props
 
     if (hasError) {
       // Note: we dont have (may not have) cookies in this case,
@@ -257,7 +268,9 @@ class MyApp extends App {
                 <IntlProvider>
                   <Intl>
                     <InjectHookIntlContext>
-                      <Component {...pageProps} routerCtx={routerCtx} />
+                      <UserAgentProvider userAgent={userAgent}>
+                        <Component {...pageProps} routerCtx={routerCtx} />
+                      </UserAgentProvider>
                     </InjectHookIntlContext>
                   </Intl>
                 </IntlProvider>

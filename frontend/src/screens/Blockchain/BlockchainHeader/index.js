@@ -5,11 +5,11 @@ import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
 
 import {SearchbarRefProvider, useSearchbarRef} from '../context/searchbarRef'
+import {useUserAgent} from '@/components/context/userAgent'
 
 import OverviewMetrics from './OverviewMetrics'
 import Search from './Search'
 import {useI18n} from '@/i18n/helpers'
-import {isCrawler} from '@/helpers/userAgent'
 
 const messages = defineMessages({
   header: 'Ada Blockchain Explorer',
@@ -38,6 +38,8 @@ const BlockchainHeader = () => {
   const classes = useStyles()
   const {translate: tr} = useI18n()
   const searchbarRef = useSearchbarRef()
+  const {isCrawler} = useUserAgent()
+
   return (
     <div className={classes.wrapper}>
       <Grid

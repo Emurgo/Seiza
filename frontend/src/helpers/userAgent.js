@@ -1,11 +1,33 @@
+import Bowser from 'bowser'
+
 // Taken from
 // https://stackoverflow.com/questions/20084513/detect-search-crawlers-via-javascript
-const re = /bot|google|baidu|bing|msn|duckduckbot|teoma|slurp|yandex/i
+const crawlerRe = /bot|google|baidu|bing|msn|duckduckbot|teoma|slurp|yandex/i
 
-// TODO: process.browser is just temporary, rethink for SSR
-// Jira issue: EM-269
-export const isCrawler = process.browser && re.test(navigator.userAgent)
+export const isCrawler = (userAgent) => crawlerRe.test(userAgent)
+
+// See https://github.com/lancedikson/bowser/blob/master/src/constants.js
+export const isSupportedBrowser = (userAgent) => {
+  const browser = Bowser.getParser(userAgent)
+  return !!browser.satisfies({
+    chrome: '>57',
+    chromium: '>57',
+    firefox: '>52',
+    opera: '>39',
+    edge: '>37',
+    // ie is not supported
+
+    // FIXME: safari?
+
+    mobile: {
+      safari: '>=10',
+      // FIXME: are current android browsers detected as android or as chrome?
+      // android: '>3',
+    },
+  })
+}
 
 export default {
   isCrawler,
+  isSupportedBrowser,
 }
