@@ -27,7 +27,7 @@ const useStyles = makeStyles(({palette, spacing, breakpoints}) => ({
   },
   content: {
     // Pretty tight margins on mobile
-    width: `calc(100vw - ${spacing(6)}px)`,
+    width: `calc(100vw - ${spacing(3)}px)`,
     [breakpoints.up('sm')]: {
       // Wide margins on desktop
       width: '85vw',
