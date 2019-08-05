@@ -477,14 +477,10 @@ const PoolRetirement = ({action}) => {
     <Row>
       <IconLabel certType={action.type}>{tr(messages.poolRetiring__label)}</IconLabel>
       <Value>
-        <Typography variant="body1" color="textSecondary">
+        <Typography variant="body1">
           {fmtdMsg(messages.poolRetirement__value.id, {
             poolHash: <PoolHashLink poolHash={poolHash} />,
-            epoch: (
-              <Typography color="textPrimary" component="span">
-                {epoch}
-              </Typography>
-            ),
+            epoch,
           })}{' '}
           <PoolCurrentlyExistsMessage poolExists={poolExists} />{' '}
           {retiring && <React.Fragment>{tr(messages.poolRetiring)} </React.Fragment>}
