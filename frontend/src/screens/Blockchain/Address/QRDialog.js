@@ -1,7 +1,7 @@
 // @flow
 import React from 'react'
 import QRCode from 'qrcode.react'
-import {Grid, Dialog, DialogContent, DialogContentText, withMobileDialog} from '@material-ui/core'
+import {Grid, Dialog, DialogContent, withMobileDialog} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {CloseIconButton} from '@/components/visual'
 
@@ -55,7 +55,7 @@ const QRDialog = withMobileDialog()(
               <QRCode value={qrCodeValue} size={QR_CODE_SIZE} />
             </Grid>
             <Grid item className={classes.entity}>
-              <DialogContentText>{description}</DialogContentText>
+              {description}
             </Grid>
           </Grid>
         </DialogContent>
