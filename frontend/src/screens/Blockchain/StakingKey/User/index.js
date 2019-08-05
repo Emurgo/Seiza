@@ -111,7 +111,7 @@ const useManageTabs = () => {
 
 const ROWS_PER_PAGE = 10
 
-const UserStakingKey = () => {
+const StakingKey = () => {
   const classes = useStyles()
   const {translate, formatTimestamp, formatInt} = useI18n()
   const {match} = useReactRouter()
@@ -256,4 +256,4 @@ const UserStakingKey = () => {
   )
 }
 
-export default UserStakingKey
+export default StakingKey
