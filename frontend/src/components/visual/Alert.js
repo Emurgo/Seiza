@@ -40,6 +40,9 @@ const useAppStyles = makeStyles(({type, spacing, palette, breakpoints}) => ({
     paddingLeft: spacing(2),
     paddingRight: spacing(2),
   },
+  label: {
+    fontWeight: 700,
+  },
   [TYPES.EMPHASIS]: {
     backgroundColor: palette.emphasis.background,
     border: `1px solid ${getBorderColorStyle(palette.emphasis.background)}`,
@@ -99,7 +102,7 @@ const Alert = ({title, type, message, className, onClose}: PropTypes) => {
             className={cn('h-100', 'flex-grow-1')}
           >
             <Grid item>
-              <Typography variant="overline" color="inherit">
+              <Typography variant="overline" color="inherit" className={classes.label}>
                 {/* Compare to null so we can hide title by setting it to empty string */}
                 {title == null ? tr(messages[type]) : title}
               </Typography>
