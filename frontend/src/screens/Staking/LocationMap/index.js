@@ -83,7 +83,7 @@ const LocationMap = ({pools}) => {
   // We use loadGoogleMapsApi package
   // to load maps api instead of @react-google-maps/api's [use]LoadScript
   // because that one started to fail in very weird ways (it claims
-  // isLoaded before window.google is available
+  // isLoaded before window.google is available)
   useEffect(() => {
     if (!isLoading) {
       setIsLoading(true)
@@ -93,7 +93,7 @@ const LocationMap = ({pools}) => {
 
       loadGoogleMapsApi({
         key: config.googleMapsApiKey,
-        language: ' en',
+        language: 'en',
         region: 'EN',
       })
         .then(() => setIsLoaded(true))
@@ -111,7 +111,11 @@ const LocationMap = ({pools}) => {
     )
   }
 
-  const renderMap = () => (
+  return error ? (
+    <Alert message={tr(messages.errorLoadingMap)} />
+  ) : !isLoaded ? (
+    <LoadingInProgress />
+  ) : (
     <GoogleMap
       zoom={2}
       center={{lat: 0, lng: 0}}
@@ -126,14 +130,6 @@ const LocationMap = ({pools}) => {
         />
       ))}
     </GoogleMap>
-  )
-
-  return error ? (
-    <Alert message={tr(messages.errorLoadingMap)} />
-  ) : isLoaded ? (
-    renderMap()
-  ) : (
-    <LoadingInProgress />
   )
 }
 
