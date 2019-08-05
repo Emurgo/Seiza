@@ -1,5 +1,5 @@
 // @flow
-import React, {useMemo, useState, useCallback} from 'react'
+import React, {useMemo, useCallback} from 'react'
 import {defineMessages} from 'react-intl'
 import {Typography, Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
@@ -62,21 +62,30 @@ const ColumnHeader = ({title, sortOptions, field, onClick}) => {
 }
 
 const useSortOptions = () => {
-  const [sortOptions, setSortOptions] = useState({field: fieldsConfig[0].field, order: ORDER.DESC})
+  const encode = JSON.stringify
+  const decode = JSON.parse
+
+  const [sortOptions, setSortOptions] = useManageQueryValue(
+    'sort',
+    encode({field: fieldsConfig[0].field, order: ORDER.DESC}),
+    decode
+  )
 
   const updateSortBy = useCallback(
     (field) => {
-      setSortOptions({
-        field,
-        order:
-          sortOptions.field === field
-            ? sortOptions.order === ORDER.DESC
-              ? ORDER.ASC
-              : ORDER.DESC
-            : ORDER.DESC,
-      })
+      setSortOptions(
+        encode({
+          field,
+          order:
+            sortOptions.field === field
+              ? sortOptions.order === ORDER.DESC
+                ? ORDER.ASC
+                : ORDER.DESC
+              : ORDER.DESC,
+        })
+      )
     },
-    [sortOptions.order, sortOptions.field]
+    [encode, setSortOptions, sortOptions.field, sortOptions.order]
   )
 
   return {sortOptions, updateSortBy}
@@ -134,8 +143,7 @@ const useSelectProps = () => {
     [tr]
   )
 
-  // TODO: store in cookie that is set only for `staking-pools` url
-  const [selectedFields, setSelectedFields] = useState(defaultFieldsValues)
+  const [selectedFields, setSelectedFields] = useManageQueryValue('fields', defaultFieldsValues)
 
   const onSelectedFieldsChange = useCallback((e) => setSelectedFields(e.target.value), [
     setSelectedFields,
