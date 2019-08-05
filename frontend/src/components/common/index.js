@@ -18,3 +18,4 @@ export {default as ResponsiveCircularProgressBar} from './ResponsiveCircularProg
 export {default as NavTypography} from './NavTypography'
 export {default as NavLink} from './NavLink'
 export {default as HelpTooltip} from './HelpTooltip'
+export {default as TabsPaginationLayout} from './TabsPaginationLayout'

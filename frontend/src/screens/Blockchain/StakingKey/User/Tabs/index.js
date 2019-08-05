@@ -1,9 +1,8 @@
 import React from 'react'
 import {defineMessages} from 'react-intl'
 import {Grid} from '@material-ui/core'
-import {makeStyles} from '@material-ui/styles'
 import {LiteTab, LiteTabs, LoadingInProgress} from '@/components/visual'
-import {LoadingError} from '@/components/common'
+import {LoadingError, TabsPaginationLayout} from '@/components/common'
 import {useI18n} from '@/i18n/helpers'
 import DelegatedPoolInfoTab from './DelegatedPoolInfoTab'
 import HistoryTab from '../../common/History'
@@ -44,33 +43,15 @@ const TABS_CONTENT = {
   ),
 }
 
-const useStyles = makeStyles((theme) => ({
-  headerWrapper: {
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    flexDirection: 'column',
-    [theme.breakpoints.up('md')]: {
-      flexDirection: 'row',
-    },
-  },
-  headerPagination: {
-    marginTop: theme.spacing(2),
-    [theme.breakpoints.up('md')]: {
-      marginTop: 0,
-    },
-  },
-}))
-
 const StakingKeyTabs = ({stakingKey, pagination, tabState}) => {
-  const classes = useStyles()
   const {translate: tr} = useI18n()
   const {setTabByEventIndex, currentTabIndex, currentTab} = tabState
   const TabContent = TABS_CONTENT[currentTab]
 
   return (
     <React.Fragment>
-      <Grid container className={classes.headerWrapper}>
-        <Grid item>
+      <TabsPaginationLayout
+        tabs={
           <LiteTabs value={currentTabIndex} onChange={setTabByEventIndex}>
             <LiteTab label={tr(messages.delegatedPoolInfoTabName)} />
             <LiteTab
@@ -92,11 +73,9 @@ const StakingKeyTabs = ({stakingKey, pagination, tabState}) => {
               }
             />
           </LiteTabs>
-        </Grid>
-        <Grid item className={classes.headerPagination}>
-          {pagination}
-        </Grid>
-      </Grid>
+        }
+        pagination={pagination}
+      />
       <TabContent stakingKey={stakingKey} />
       <Grid container justify="flex-end">
         <Grid item>{pagination}</Grid>
