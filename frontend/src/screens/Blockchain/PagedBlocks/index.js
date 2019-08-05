@@ -35,7 +35,9 @@ const AutoUpdateSwitch = ({checked, onChange}) => {
   return (
     <Grid container direction="row" justify="flex-start" alignItems="center">
       <Grid item>
-        <Typography className={classes.text}>{translate(messages.refreshState)}&nbsp;</Typography>
+        <Typography className={classes.text} color="textSecondary">
+          {translate(messages.refreshState)}&nbsp;
+        </Typography>
       </Grid>
       <Grid item>
         <Switch color="primary" checked={checked} onChange={onChange} />
