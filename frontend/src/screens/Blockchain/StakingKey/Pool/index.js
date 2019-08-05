@@ -89,7 +89,7 @@ const Stakepool = () => {
           <EntityIdCard
             label={translate(messages.stakepoolHash)}
             value={stakepool.hash}
-            iconRenderer={<img alt="" src={AdaIcon} width={40} height={40} />}
+            iconRenderer={<img alt="" src={AdaIcon} />}
             badge={
               <ResponsiveCircularProgressBar
                 label={translate(messages.entityBadge)}
@@ -239,12 +239,12 @@ const Stakepool = () => {
                 {stakepool.rewardsAddress}
               </Link>
             }
-            iconRenderer={<img alt="" src={RewardAddressIcon} width={40} height={40} />}
+            iconRenderer={<img alt="" src={RewardAddressIcon} />}
           />
           <EntityIdCard
             label={translate(messages.stakePoolCertificate)}
             value={stakepool.stakePoolCertificate}
-            iconRenderer={<img alt="" src={CertificateActionIcon} width={40} height={40} />}
+            iconRenderer={<img alt="" src={CertificateActionIcon} />}
           />
           <Tabs stakepool={stakepool} />
         </React.Fragment>

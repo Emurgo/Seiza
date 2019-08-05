@@ -179,7 +179,7 @@ const TransactionScreen = () => {
         <EntityIdCard
           label={translate(messages.transactionId)}
           value={txHash}
-          iconRenderer={<img alt="" src={AdaIcon} width={40} height={40} />}
+          iconRenderer={<img alt="" src={AdaIcon} />}
         />
         {error ? (
           <LoadingError error={error} />
