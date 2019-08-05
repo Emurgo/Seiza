@@ -28,14 +28,21 @@ const messages = defineMessages({
   noData: 'No data to show.',
 })
 
-const useTableStyles = makeStyles(({hover, palette}) => ({
+const useTableStyles = makeStyles(({hover, palette, breakpoints}) => ({
   wrapperRoot: {
     width: '100%',
     overflowX: 'auto',
   },
   row: {
-    '&:nth-child(odd)': {
-      backgroundColor: fade(palette.primary.main, 0.03),
+    [breakpoints.down('sm')]: {
+      '&:nth-child(even)': {
+        backgroundColor: fade(palette.primary.main, 0.03),
+      },
+    },
+    [breakpoints.up('md')]: {
+      '&:nth-child(odd)': {
+        backgroundColor: fade(palette.primary.main, 0.03),
+      },
     },
   },
   hoverableRow: {
