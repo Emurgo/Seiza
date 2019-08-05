@@ -237,7 +237,7 @@ const BlockScreen = () => {
         <EntityIdCard
           label={translate(blockMessages.blockHash)}
           value={blockHash}
-          iconRenderer={<img alt="" src={blockIcon} width={40} height={40} />}
+          iconRenderer={<img alt="" src={blockIcon} />}
         />
         {error ? (
           <LoadingError error={error} />
