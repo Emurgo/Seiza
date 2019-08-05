@@ -3,7 +3,6 @@ import {defineMessages} from 'react-intl'
 import {makeStyles} from '@material-ui/styles'
 import {LiteTab, LiteTabs, LoadingInProgress} from '@/components/visual'
 import {LoadingError} from '@/components/common'
-import useTabState from '@/components/hooks/useTabState'
 import {useI18n} from '@/i18n/helpers'
 import DelegatedPoolInfoTab from './DelegatedPoolInfoTab'
 import HistoryTab from '../../common/History'
@@ -16,35 +15,32 @@ const messages = defineMessages({
   transactionsTabName: 'Transactions ({count})',
 })
 
-const TAB_NAMES = {
+export const TAB_NAMES = {
   DELEGATED_POOL_INFO: 'DELEGATED_POOL_INFO',
   HISTORY: 'HISTORY',
   TRANSACTIONS: 'TRANSACTIONS',
 }
 
-const TABS = {
-  ORDER: [TAB_NAMES.DELEGATED_POOL_INFO, TAB_NAMES.HISTORY, TAB_NAMES.TRANSACTIONS],
-  RENDER_CONTENT: {
-    [TAB_NAMES.DELEGATED_POOL_INFO]: ({stakingKey}) => (
-      <DelegatedPoolInfoTab
-        stakePool={stakingKey.currentStakepool}
-        epochsInCurrentStakePool={stakingKey.epochsInCurrentStakepool}
-      />
-    ),
-    [TAB_NAMES.HISTORY]: ({stakingKey}) => {
-      const {error, loading, data: stakingKeyHistory} = useLoadStakingKeyHistory(stakingKey.hash)
-      return error ? (
-        <LoadingError error={error} />
-      ) : loading ? (
-        <LoadingInProgress />
-      ) : (
-        <HistoryTab history={stakingKeyHistory} />
-      )
-    },
-    [TAB_NAMES.TRANSACTIONS]: ({stakingKey}) => (
-      <TransactionsTab transactions={stakingKey.currentStakepool.transactions} />
-    ),
+const TABS_CONTENT = {
+  [TAB_NAMES.DELEGATED_POOL_INFO]: ({stakingKey}) => (
+    <DelegatedPoolInfoTab
+      stakePool={stakingKey.currentStakepool}
+      epochsInCurrentStakePool={stakingKey.epochsInCurrentStakepool}
+    />
+  ),
+  [TAB_NAMES.HISTORY]: ({stakingKey}) => {
+    const {error, loading, data: stakingKeyHistory} = useLoadStakingKeyHistory(stakingKey.hash)
+    return error ? (
+      <LoadingError error={error} />
+    ) : loading ? (
+      <LoadingInProgress />
+    ) : (
+      <HistoryTab history={stakingKeyHistory} />
+    )
   },
+  [TAB_NAMES.TRANSACTIONS]: ({stakingKey}) => (
+    <TransactionsTab transactions={stakingKey.currentStakepool.transactions} />
+  ),
 }
 
 const useStyles = makeStyles(({spacing}) => ({
@@ -54,11 +50,11 @@ const useStyles = makeStyles(({spacing}) => ({
   },
 }))
 
-const UserTabs = ({stakingKey}) => {
+const StakingKeyTabs = ({stakingKey, pagination, tabState}) => {
   const classes = useStyles()
   const {translate: tr} = useI18n()
-  const {setTabByEventIndex, currentTabIndex, currentTab} = useTabState(TABS.ORDER)
-  const TabContent = TABS.RENDER_CONTENT[currentTab]
+  const {setTabByEventIndex, currentTabIndex, currentTab} = tabState
+  const TabContent = TABS_CONTENT[currentTab]
 
   return (
     <React.Fragment>
@@ -83,10 +79,11 @@ const UserTabs = ({stakingKey}) => {
           }
         />
       </LiteTabs>
-      {/* TODO: Pagination on right side when transactions tab is selected */}
+      {pagination}
       <TabContent stakingKey={stakingKey} />
+      {pagination}
     </React.Fragment>
   )
 }
 
-export default UserTabs
+export default StakingKeyTabs
