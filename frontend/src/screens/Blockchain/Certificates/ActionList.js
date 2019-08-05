@@ -527,11 +527,17 @@ const PoolRetirementCancellation = ({action}) => {
   )
 }
 
+const AdditionalRowLabel = ({children}) => (
+  <Typography variant="body1" color="textSecondary">
+    {children}
+  </Typography>
+)
+
 const DepositRow = ({value}) => {
   const {translate: tr} = useI18n()
   return (
     <Row hideSeparator>
-      {tr(messages.deposit)}
+      <AdditionalRowLabel>{tr(messages.deposit)}</AdditionalRowLabel>
       <Value>
         <AdaValue showCurrency value={value} />
       </Value>
@@ -543,7 +549,7 @@ const RefundRow = ({value}) => {
   const {translate: tr} = useI18n()
   return (
     <Row hideSeparator>
-      {tr(messages.refund)}
+      <AdditionalRowLabel>{tr(messages.refund)}</AdditionalRowLabel>
       <Value>
         <AdaValue showCurrency value={value} />
       </Value>
@@ -555,7 +561,7 @@ const TransactionRow = ({tx}) => {
   const {translate: tr, formatTimestamp} = useI18n()
   return (
     <Row hideSeparator>
-      {tr(messages.txHash)}
+      <AdditionalRowLabel>{tr(messages.txHash)}</AdditionalRowLabel>
       <Value>
         <Typography variant="body1" align="right">
           <TxHashLink txHash={tx.txHash} />
