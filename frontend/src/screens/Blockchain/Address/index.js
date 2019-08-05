@@ -166,13 +166,13 @@ const useManageTabs = (address58) => {
 }
 
 const AddressMetadata = ({address58, addressSummary}) => {
-  const {translate: tr, formatAda} = useI18n()
+  const {translate: tr, formatAda, formatInt} = useI18n()
 
   const title = tr(metadata.screenTitle, {address58})
 
   const desc = tr(metadata.metaDescription, {
     address58,
-    txCount: idx(addressSummary, (_) => _.transactionsCount),
+    txCount: formatInt(idx(addressSummary, (_) => _.transactionsCount)),
     balance: formatAda(idx(addressSummary, (_) => _.balance)),
   })
 

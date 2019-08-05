@@ -333,19 +333,19 @@ const EpochEntityCard = ({epochNumber, startTime, endTime}) => {
 }
 
 const EpochMetadata = ({epochNumber, epochData}) => {
-  const {translate: tr, formatTimestamp} = useI18n()
+  const {translate: tr, formatTimestamp, formatInt} = useI18n()
 
   const title = tr(metadata.screenTitle, {epochNumber})
 
   const desc = tr(metadata.metaDescription, {
-    epochNumber,
+    epochNumber: formatInt(epochNumber),
     startTime: formatTimestamp(idx(epochData, (_) => _.startTime), {
       tz: 'UTC',
     }),
     endTime: formatTimestamp(idx(epochData, (_) => _.endTime), {
       tz: 'UTC',
     }),
-    txCount: idx(epochData, (_) => _.summary.transactionCount),
+    txCount: formatInt(idx(epochData, (_) => _.summary.transactionCount)),
   })
 
   const keywords = tr(metadata.keywords, {

@@ -225,20 +225,21 @@ const TransactionList = ({transactions, loading, timestamp}) => {
 }
 
 const BlockMetadata = ({blockHash, blockData}) => {
-  const {translate: tr, formatTimestamp, formatAda} = useI18n()
+  const {translate: tr, formatTimestamp, formatInt, formatAda} = useI18n()
 
   const title = tr(metadata.screenTitle, {blockHash})
 
   const desc = tr(metadata.metaDescription, {
     blockHash,
-    epoch: idx(blockData, (_) => _.epoch),
-    slot: idx(blockData, (_) => _.slot),
+    epoch: formatInt(idx(blockData, (_) => _.epoch)),
+    slot: formatInt(idx(blockData, (_) => _.slot)),
     date: formatTimestamp(idx(blockData, (_) => _.timeIssued), {tz: 'UTC'}),
     totalAdaSent: formatAda(idx(blockData, (_) => _.totalSent)),
   })
 
   const keywords = tr(metadata.keywords, {
     blockHash,
+    // Note: here we better not include commas in numbers as keywords are comma-separated
     slot: idx(blockData, (_) => _.slot),
     epoch: idx(blockData, (_) => _.epoch),
     commonKeywords: tr(seoMessages.keywords),
