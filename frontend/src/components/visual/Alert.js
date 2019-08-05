@@ -13,6 +13,7 @@ import alertIcon from '@/static/assets/icons/alert.svg'
 import noResultsIcon from '@/static/assets/icons/sad-smile.svg'
 import {useI18n} from '@/i18n/helpers'
 import {CloseIconButton} from '@/components/visual'
+import {getDefaultSpacing} from '@/components/visual/ContentSpacing'
 
 const TYPES = Object.freeze({
   EMPHASIS: 'emphasis',
@@ -34,37 +35,49 @@ const messages = defineMessages({
 
 const getBorderColorStyle = (backgroundColor) => darken(backgroundColor, 0.05)
 
-const useAppStyles = makeStyles(({type, spacing, palette, breakpoints}) => ({
+const useAppStyles = makeStyles((theme) => ({
   wrapper: {
-    padding: spacing(1.5),
-    paddingLeft: spacing(2),
-    paddingRight: spacing(2),
+    paddingTop: getDefaultSpacing(theme) * 0.25,
+    paddingBottom: getDefaultSpacing(theme) * 0.25,
+    paddingLeft: getDefaultSpacing(theme) * 0.5,
+    paddingRight: getDefaultSpacing(theme) * 0.5,
+    [theme.breakpoints.up('md')]: {
+      paddingTop: getDefaultSpacing(theme) * 0.75,
+      paddingBottom: getDefaultSpacing(theme) * 0.75,
+      paddingLeft: getDefaultSpacing(theme),
+      paddingRight: getDefaultSpacing(theme),
+    },
   },
   [TYPES.EMPHASIS]: {
-    backgroundColor: palette.emphasis.background,
-    border: `1px solid ${getBorderColorStyle(palette.emphasis.background)}`,
+    backgroundColor: theme.palette.emphasis.background,
+    border: `1px solid ${getBorderColorStyle(theme.palette.emphasis.background)}`,
   },
   [TYPES.WARNING]: {
-    backgroundColor: palette.warning.background,
-    border: `1px solid ${getBorderColorStyle(palette.warning.background)}`,
+    backgroundColor: theme.palette.warning.background,
+    border: `1px solid ${getBorderColorStyle(theme.palette.warning.background)}`,
   },
   [TYPES.ALERT]: {
-    backgroundColor: palette.alertStrong.background,
-    border: `1px solid ${getBorderColorStyle(palette.alertStrong.background)}`,
+    backgroundColor: theme.palette.alertStrong.background,
+    border: `1px solid ${getBorderColorStyle(theme.palette.alertStrong.background)}`,
   },
   [TYPES.NO_RESULTS]: {
-    backgroundColor: palette.noResults.background,
-    border: `1px solid ${getBorderColorStyle(palette.noResults.background)}`,
+    backgroundColor: theme.palette.noResults.background,
+    border: `1px solid ${getBorderColorStyle(theme.palette.noResults.background)}`,
     // Note: not mobile-first approach because
     // we have !important overrides
-    [breakpoints.down('sm')]: {
+    [theme.breakpoints.down('sm')]: {
       width: 'unset !important',
       position: 'fixed !important',
-      left: spacing(2),
-      right: spacing(2),
+      left: theme.spacing(2),
+      right: theme.spacing(2),
     },
   },
   [TYPES.NEUTRAL]: {},
+  icon: {
+    display: 'flex',
+    alignItems: 'center',
+    paddingRight: getDefaultSpacing(theme) * 0.5,
+  },
 }))
 
 const ICONS = {
@@ -86,10 +99,14 @@ type PropTypes = {
 const Alert = ({title, type, message, className, onClose}: PropTypes) => {
   const classes = useAppStyles()
   const {translate: tr} = useI18n()
-  const icon = ICONS[type] && <Grid item>{ICONS[type]}</Grid>
+  const icon = ICONS[type] && (
+    <Grid item className={classes.icon}>
+      {ICONS[type]}
+    </Grid>
+  )
   return (
     <Paper elevation={0} className={cn(classes[type], classes.wrapper, className)}>
-      <Grid container direction="row" justify="center" alignItems="center" spacing={4}>
+      <Grid container direction="row" justify="center" alignItems="center">
         {icon}
         <Grid item className="flex-grow-1">
           <Grid
