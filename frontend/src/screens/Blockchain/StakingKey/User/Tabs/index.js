@@ -1,5 +1,6 @@
 import React from 'react'
 import {defineMessages} from 'react-intl'
+import {Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {LiteTab, LiteTabs, LoadingInProgress} from '@/components/visual'
 import {LoadingError} from '@/components/common'
@@ -43,10 +44,20 @@ const TABS_CONTENT = {
   ),
 }
 
-const useStyles = makeStyles(({spacing}) => ({
-  tabs: {
-    marginTop: spacing(4),
-    marginBottom: spacing(4),
+const useStyles = makeStyles((theme) => ({
+  headerWrapper: {
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    flexDirection: 'column',
+    [theme.breakpoints.up('md')]: {
+      flexDirection: 'row',
+    },
+  },
+  headerPagination: {
+    marginTop: theme.spacing(2),
+    [theme.breakpoints.up('md')]: {
+      marginTop: 0,
+    },
   },
 }))
 
@@ -58,30 +69,38 @@ const StakingKeyTabs = ({stakingKey, pagination, tabState}) => {
 
   return (
     <React.Fragment>
-      <LiteTabs className={classes.tabs} value={currentTabIndex} onChange={setTabByEventIndex}>
-        <LiteTab label={tr(messages.delegatedPoolInfoTabName)} />
-        <LiteTab
-          label={
-            <React.Fragment>
-              {tr(messages.historyTabName, {
-                count: stakingKey.currentStakepool.timeActive.epochs,
-              })}{' '}
-            </React.Fragment>
-          }
-        />
-        <LiteTab
-          label={
-            <React.Fragment>
-              {tr(messages.transactionsTabName, {
-                count: stakingKey.currentStakepool.transactions.length,
-              })}
-            </React.Fragment>
-          }
-        />
-      </LiteTabs>
-      {pagination}
+      <Grid container className={classes.headerWrapper}>
+        <Grid item>
+          <LiteTabs value={currentTabIndex} onChange={setTabByEventIndex}>
+            <LiteTab label={tr(messages.delegatedPoolInfoTabName)} />
+            <LiteTab
+              label={
+                <React.Fragment>
+                  {tr(messages.historyTabName, {
+                    count: stakingKey.currentStakepool.timeActive.epochs,
+                  })}{' '}
+                </React.Fragment>
+              }
+            />
+            <LiteTab
+              label={
+                <React.Fragment>
+                  {tr(messages.transactionsTabName, {
+                    count: stakingKey.currentStakepool.transactions.length,
+                  })}
+                </React.Fragment>
+              }
+            />
+          </LiteTabs>
+        </Grid>
+        <Grid item className={classes.headerPagination}>
+          {pagination}
+        </Grid>
+      </Grid>
       <TabContent stakingKey={stakingKey} />
-      {pagination}
+      <Grid container justify="flex-end">
+        <Grid item>{pagination}</Grid>
+      </Grid>
     </React.Fragment>
   )
 }

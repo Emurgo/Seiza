@@ -42,9 +42,6 @@ const messages = defineMessages({
 })
 
 const useStyles = makeStyles(({spacing}) => ({
-  tabsWrapper: {
-    marginTop: spacing(2),
-  },
   resetTextTransform: {
     textTransform: 'none',
   },
@@ -240,21 +237,19 @@ const UserStakingKey = () => {
             iconRenderer={<img alt="" src={CertificateActionIcon} />}
             showCopyIcon={false}
           />
-          <div className={classes.tabsWrapper}>
-            <Tabs
-              stakingKey={stakingKey}
-              tabState={tabState}
-              pagination={
-                pagination && (
-                  <Pagination
-                    pageCount={getPageCount(totalCount, ROWS_PER_PAGE)}
-                    page={pagination.page}
-                    onChangePage={pagination.onChangePage}
-                  />
-                )
-              }
-            />
-          </div>
+          <Tabs
+            stakingKey={stakingKey}
+            tabState={tabState}
+            pagination={
+              pagination && (
+                <Pagination
+                  pageCount={getPageCount(totalCount, ROWS_PER_PAGE)}
+                  page={pagination.page}
+                  onChangePage={pagination.onChangePage}
+                />
+              )
+            }
+          />
         </React.Fragment>
       )}
     </SimpleLayout>
