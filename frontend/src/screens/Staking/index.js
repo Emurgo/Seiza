@@ -8,6 +8,7 @@ import useReactRouter from 'use-react-router'
 
 import * as urlUtils from '@/helpers/url'
 import {routeTo} from '@/helpers/routes'
+import {MobileOnly, DesktopOnly} from '@/components/visual'
 import {
   StakingContextProvider,
   useSetListScreenStorageFromQuery,
@@ -30,13 +31,17 @@ const useStyles = makeStyles((theme) => {
   // Note: we use `width` instead of `flex: 0 0 width` as it is causing spaces at the bottom of div
   const sidebarWidth = 450
   return {
+    mainWrapper: {
+      maxWidth: '100%',
+      // Note: dont set other 'overflow' than 'visible', will disable sticky navigation
+    },
     layoutWrapper: {
       display: 'flex',
       width: '100%',
     },
     sidebarWrapper: {
       width: sidebarWidth,
-      paddingRight: theme.spacing.unit * 3,
+      paddingRight: theme.spacing(3),
     },
     fullWidthWrapper: {
       width: `calc(100% - ${sidebarWidth}px)`,
@@ -45,6 +50,7 @@ const useStyles = makeStyles((theme) => {
       display: 'flex',
       flex: 1,
       justifyContent: 'flex-start',
+      minWidth: 0, // needed for proper ellipsize in children components with flex
       [theme.breakpoints.up('xl')]: {
         justifyContent: 'center',
       },
@@ -52,6 +58,7 @@ const useStyles = makeStyles((theme) => {
     centeredItem: {
       maxWidth: ({maxWidth}) => maxWidth,
       width: '100%',
+      padding: `${theme.spacing(6)}px ${theme.spacing(2)}px`,
     },
     rightSideWrapper: {
       width: 0,
@@ -70,6 +77,9 @@ const synchronizedScreenFactory = (Screen, useSetScreenStorageFromQuery) => () =
   } = useReactRouter()
   const {setScreenStorageFromQuery, getScreenUrlQuery} = useSetScreenStorageFromQuery()
   const {autoSync, setAutosync} = useAutoSyncContext()
+
+  // Note: we currently use localStorage and sessionStorage which is not available on server
+  if (!process.browser) return <Screen />
 
   const storageQuery = getScreenUrlQuery()
 
@@ -91,6 +101,66 @@ const synchronizedScreenFactory = (Screen, useSetScreenStorageFromQuery) => () =
   }, [urlQuery, storageQuery, setScreenStorageFromQuery, autoSync, setAutosync])
 
   return urlQuery || !storageQuery ? <Screen /> : <Redirect exact to={`${path}${storageQuery}`} />
+}
+
+type CenteredLayoutProps = {
+  children: React.Node,
+  maxWidth?: string,
+}
+
+const MobileLayout = ({children}) => (
+  <Grid item xs={12}>
+    {children}
+  </Grid>
+)
+
+const CenteredLayout = ({children, maxWidth = DEFAULT_MAX_WIDTH}: CenteredLayoutProps) => {
+  // Note: using custom classes instead of Grid as we need to specify
+  // also `flex-basis` and `flex-shrink`
+  const classes = useStyles({maxWidth})
+
+  return (
+    <React.Fragment>
+      <MobileOnly>
+        <MobileLayout>{children}</MobileLayout>
+      </MobileOnly>
+
+      <DesktopOnly>
+        <div className={classes.layoutWrapper}>
+          <div className={classes.sidebarWrapper}>
+            <SideMenu />
+          </div>
+          <div className={classes.centerWrapper}>
+            <div className={classes.centeredItem}>{children}</div>
+          </div>
+          <div className={classes.rightSideWrapper} />
+        </div>
+      </DesktopOnly>
+    </React.Fragment>
+  )
+}
+
+const FullWidthLayout = ({children}) => {
+  // Note: using custom classes instead of Grid as we need to specify
+  // also `flex-basis` and `flex-shrink`
+  const classes = useStyles()
+
+  return (
+    <React.Fragment>
+      <MobileOnly>
+        <MobileLayout>{children}</MobileLayout>
+      </MobileOnly>
+
+      <DesktopOnly>
+        <div className={classes.layoutWrapper}>
+          <div className={classes.sidebarWrapper}>
+            <SideMenu />
+          </div>
+          <div className={classes.fullWidthWrapper}>{children}</div>
+        </div>
+      </DesktopOnly>
+    </React.Fragment>
+  )
 }
 
 const LayoutedStakePoolList = () => (
@@ -155,42 +225,6 @@ const PeopleQuerySynchronizer = synchronizedScreenFactory(
   useSetBasicScreenStorageFromQuery
 )
 
-type CenteredLayoutProps = {
-  children: React.Node,
-  maxWidth?: string,
-}
-
-const CenteredLayout = ({children, maxWidth = DEFAULT_MAX_WIDTH}: CenteredLayoutProps) => {
-  // Note: using custom classes instead of Grid as we need to specify
-  // also `flex-basis` and `flex-shrink`
-  const classes = useStyles({maxWidth})
-  return (
-    <div className={classes.layoutWrapper}>
-      <div className={classes.sidebarWrapper}>
-        <SideMenu />
-      </div>
-      <div className={classes.centerWrapper}>
-        <div className={classes.centeredItem}>{children}</div>
-      </div>
-      <div className={classes.rightSideWrapper} />
-    </div>
-  )
-}
-
-const FullWidthLayout = ({children}) => {
-  // Note: using custom classes instead of Grid as we need to specify
-  // also `flex-basis` and `flex-shrink`
-  const classes = useStyles()
-  return (
-    <div className={classes.layoutWrapper}>
-      <div className={classes.sidebarWrapper}>
-        <SideMenu />
-      </div>
-      <div className={classes.fullWidthWrapper}>{children}</div>
-    </div>
-  )
-}
-
 // Note: This cannot be a component because Switch doesn't like non-route components as children
 // and behaves unexpectedly in such cases
 const renderRouteDef = (path, component) =>
@@ -198,29 +232,37 @@ const renderRouteDef = (path, component) =>
 
 export default () => {
   const {autoSync} = useAutoSyncContext()
-  const stakingRoutes = routeTo.staking
+  const classes = useStyles()
+  const stakingRoutes = routeTo.stakingCenter
   return (
     <StakingContextProvider autoSync={autoSync}>
       <Grid container direction="column">
-        <StakePoolHeader />
+        <DesktopOnly>
+          <StakePoolHeader />
+        </DesktopOnly>
+        <MobileOnly>
+          <SideMenu />
+        </MobileOnly>
 
-        <Switch>
-          {/* Default redirect */}
-          {stakingRoutes.poolList() && (
-            <Redirect exact from={stakingRoutes.home()} to={stakingRoutes.poolList()} />
-          )}
+        <div className={classes.mainWrapper}>
+          <Switch>
+            {/* Default redirect */}
+            {stakingRoutes.poolList() && (
+              <Redirect exact from={stakingRoutes.home()} to={stakingRoutes.poolList()} />
+            )}
 
-          {/* Routes */}
-          {renderRouteDef(stakingRoutes.poolList(), PoolListQuerySynchronizer)}
-          {renderRouteDef(stakingRoutes.poolComparison(), PoolComparisonQuerySynchronizer)}
-          {renderRouteDef(stakingRoutes.history(), HistoryQuerySynchronizer)}
-          {renderRouteDef(stakingRoutes.charts(), ChartsQuerySynchronizer)}
-          {renderRouteDef(stakingRoutes.location(), LocationQuerySynchronizer)}
-          {renderRouteDef(stakingRoutes.people(), PeopleQuerySynchronizer)}
+            {/* Routes */}
+            {renderRouteDef(stakingRoutes.poolList(), PoolListQuerySynchronizer)}
+            {renderRouteDef(stakingRoutes.poolComparison(), PoolComparisonQuerySynchronizer)}
+            {renderRouteDef(stakingRoutes.history(), HistoryQuerySynchronizer)}
+            {renderRouteDef(stakingRoutes.charts(), ChartsQuerySynchronizer)}
+            {renderRouteDef(stakingRoutes.location(), LocationQuerySynchronizer)}
+            {renderRouteDef(stakingRoutes.people(), PeopleQuerySynchronizer)}
 
-          {/* Fallback */}
-          <Route component={StakingPageNotFound} />
-        </Switch>
+            {/* Fallback */}
+            <Route component={StakingPageNotFound} />
+          </Switch>
+        </div>
       </Grid>
     </StakingContextProvider>
   )

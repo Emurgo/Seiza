@@ -5,7 +5,8 @@ import {compose} from 'redux'
 import {graphql} from 'react-apollo'
 import moment from 'moment-timezone'
 
-import {LoadingInProgress, DebugApolloError} from '@/components/visual'
+import {LoadingInProgress} from '@/components/visual'
+import {DebugApolloError} from '@/components/common'
 
 import {withI18n} from '@/i18n/helpers'
 

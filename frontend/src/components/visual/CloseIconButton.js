@@ -1,7 +1,7 @@
 // @flow
 import React from 'react'
 import cn from 'classnames'
-import {ReactComponent as Close} from '@/assets/icons/close.svg'
+import {ReactComponent as Close} from '@/static/assets/icons/close.svg'
 import {makeStyles} from '@material-ui/styles'
 import {IconButton} from '@material-ui/core'
 

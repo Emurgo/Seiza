@@ -7,14 +7,14 @@ import {mergeStylesheets} from '@/helpers/styles'
 
 const useStyles = makeStyles(({palette, typography, spacing}) => ({
   tooltip: {
-    backgroundColor: palette.background.paper,
+    backgroundColor: palette.background.tooltip,
     color: palette.text.primary,
     // TODO: once shadows branch is merged, use createShadow function
     boxShadow: `0px 10px 20px 0px ${fade(palette.primary.main, 0.08)}`,
     borderRadius: '30px',
-    padding: spacing.unit,
-    paddingLeft: spacing.unit * 3,
-    paddingRight: spacing.unit * 3,
+    padding: spacing(1),
+    paddingLeft: spacing(3),
+    paddingRight: spacing(3),
   },
 }))
 

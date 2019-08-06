@@ -6,12 +6,13 @@ import {Grid, Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {defineMessages, FormattedMessage} from 'react-intl'
 
-import {Card, Link, ContentSpacing, Button} from '@/components/visual'
+import {Card, ContentSpacing, Button} from '@/components/visual'
+import {Link} from '@/components/common'
 import {routeTo} from '@/helpers/routes'
 import {useI18n} from '@/i18n/helpers'
-import {useCookiesContext} from '@/components/context/CookiesContext'
-import cookiesIcon from '@/assets/icons/cookies.svg'
-import {isCrawler} from '@/helpers/userAgent'
+import {useAcceptCookies} from '@/components/context/acceptCookies'
+import {useUserAgent} from '@/components/context/userAgent'
+import cookiesIcon from '@/static/assets/icons/cookies.svg'
 
 const messages = defineMessages({
   header: 'We use cookies!',
@@ -27,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     maxWidth: 300,
     position: 'fixed',
-    zIndex: 1,
+    zIndex: 20,
     bottom: 0,
     right: 0,
     [theme.breakpoints.up('sm')]: {
@@ -44,17 +45,10 @@ const useStyles = makeStyles((theme) => ({
   header: {
     textAlign: 'center',
     fontWeight: 600,
-    marginBottom: theme.spacing.unit,
+    marginBottom: theme.spacing(1),
     [theme.breakpoints.up('md')]: {
       textAlign: 'left',
     },
-  },
-  leave: {
-    opacity: 1,
-  },
-  leaveActive: {
-    opacity: 0,
-    transition: 'opacity 1000ms',
   },
   accept: {
     'color': theme.palette.primary.main,
@@ -65,12 +59,72 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
+const useTransitionStyles = makeStyles((theme) => ({
+  leave: {
+    opacity: 1,
+  },
+  leaveActive: {
+    opacity: 0,
+    transition: 'opacity 1000ms',
+  },
+}))
+
 const CookiesBanner = () => {
   const classes = useStyles()
   const {translate: tr} = useI18n()
-  const {cookiesAccepted, acceptCookies} = useCookiesContext()
+  const {acceptCookies} = useAcceptCookies()
 
   return (
+    <Card className={classes.card}>
+      <ContentSpacing top={0.6} bottom={0.6} left={0.6} right={0.6}>
+        <Grid container alignItems="center" spacing={4}>
+          <Grid item xs={12} md={2}>
+            <Grid container justify="center">
+              <img src={cookiesIcon} alt="" />
+            </Grid>
+          </Grid>
+          <Grid item xs={12} md={7}>
+            <Grid container direction="column">
+              <Typography variant="overline" className={classes.header}>
+                {tr(messages.header)}
+              </Typography>
+              <Typography>
+                <FormattedMessage
+                  // $FlowFixMe (flow does not know about `id`)
+                  id={messages.cookieBannerText.id}
+                  values={{
+                    accept: (
+                      <span className={classes.accept} onClick={acceptCookies}>
+                        {tr(messages.accept)}
+                      </span>
+                    ),
+                    privacyLink: <Link to={routeTo.privacy()}>{tr(messages.privacyLink)}</Link>,
+                    break: <br />,
+                  }}
+                />
+              </Typography>
+            </Grid>
+          </Grid>
+          <Grid item xs={12} md={3}>
+            <Grid container justify="center">
+              <Button onClick={acceptCookies}>{tr(messages.confirm)}</Button>
+            </Grid>
+          </Grid>
+        </Grid>
+      </ContentSpacing>
+    </Card>
+  )
+}
+
+const CookiesBannerWrapper = () => {
+  const {cookiesAccepted} = useAcceptCookies()
+  const {isCrawler} = useUserAgent()
+  const classes = useTransitionStyles()
+
+  const shouldShowBanner = !cookiesAccepted && !isCrawler
+
+  return (
+    /* No need to render this for crawlers/clients which don't run javascript*/
     <ReactCSSTransitionGroup
       transitionName={{
         leave: classes.leave,
@@ -81,50 +135,9 @@ const CookiesBanner = () => {
       transitionAppear={false}
       transitionEnter={false}
     >
-      {!cookiesAccepted && !isCrawler && (
-        <Card className={classes.card}>
-          <ContentSpacing top={0.6} bottom={0.6} left={0.6} right={0.6}>
-            <Grid container alignItems="center" spacing={16}>
-              <Grid item xs={12} md={2}>
-                <Grid container justify="center">
-                  <img src={cookiesIcon} alt="" />
-                </Grid>
-              </Grid>
-              <Grid item xs={12} md={7}>
-                <Grid container direction="column">
-                  <Typography variant="overline" className={classes.header}>
-                    {tr(messages.header)}
-                  </Typography>
-                  <Typography>
-                    <FormattedMessage
-                      // $FlowFixMe (flow does not know about `id`)
-                      id={messages.cookieBannerText.id}
-                      values={{
-                        accept: (
-                          <span className={classes.accept} onClick={acceptCookies}>
-                            {tr(messages.accept)}
-                          </span>
-                        ),
-                        privacyLink: <Link to={routeTo.privacy()}>{tr(messages.privacyLink)}</Link>,
-                        break: <br />,
-                      }}
-                    />
-                  </Typography>
-                </Grid>
-              </Grid>
-              <Grid item xs={12} md={3}>
-                <Grid container justify="center">
-                  <Button onClick={acceptCookies} color="primary">
-                    {tr(messages.confirm)}
-                  </Button>
-                </Grid>
-              </Grid>
-            </Grid>
-          </ContentSpacing>
-        </Card>
-      )}
+      {shouldShowBanner && <CookiesBanner />}
     </ReactCSSTransitionGroup>
   )
 }
 
-export default CookiesBanner
+export default CookiesBannerWrapper

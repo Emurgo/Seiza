@@ -1,16 +1,13 @@
 import React from 'react'
 import {defineMessages} from 'react-intl'
-import {Card} from '@material-ui/core'
-import WithTabState from '@/components/headless/tabState'
-import {Tab, Tabs} from '@/components/visual'
+import {makeStyles} from '@material-ui/styles'
+import useTabState from '@/components/hooks/useTabState'
+import {LiteTabs, LiteTab, LoadingInProgress} from '@/components/visual'
 import {useI18n} from '@/i18n/helpers'
-import HistoryTab from '../../shared/Tabs/HistoryTab'
-import TransactionsTab from '../../shared/Tabs/TransactionsTab'
-
-// Note: We have "currentColor" inside of these svg files
-// which magically uses current inherited CSS color
-import {ReactComponent as HistoryIcon} from '@/assets/icons/stakepool-history.svg'
-import {ReactComponent as TransactionsIcon} from '@/assets/icons/transactions.svg'
+import HistoryTab from '../../common/History'
+import TransactionsTab from '../../common/TransactionsTab'
+import {LoadingError} from '@/components/common'
+import {useLoadStakepoolHistory} from '../dataLoaders'
 
 const messages = defineMessages({
   historyTabName: 'History ({count, plural, =0 {# epochs} one {# epoch} other {# epochs}})',
@@ -25,50 +22,62 @@ const TAB_NAMES = {
 const TABS = {
   ORDER: [TAB_NAMES.HISTORY, TAB_NAMES.TRANSACTIONS],
   RENDER_CONTENT: {
-    [TAB_NAMES.HISTORY]: ({stakePool}) => <HistoryTab history={stakePool.history} />,
-    [TAB_NAMES.TRANSACTIONS]: ({stakePool}) => (
-      <TransactionsTab transactions={stakePool.transactions} />
+    [TAB_NAMES.HISTORY]: ({stakepool}) => {
+      const {error, loading, data: stakepoolHistory} = useLoadStakepoolHistory(stakepool.hash)
+      return error ? (
+        <LoadingError error={error} />
+      ) : loading ? (
+        <LoadingInProgress />
+      ) : (
+        <HistoryTab history={stakepoolHistory} />
+      )
+    },
+    [TAB_NAMES.TRANSACTIONS]: ({stakepool}) => (
+      <TransactionsTab transactions={stakepool.transactions} />
     ),
   },
 }
 
-const StakingPoolTabs = ({stakePool}) => {
-  const {translate: tr} = useI18n()
+const useStyles = makeStyles(({spacing}) => ({
+  tabsWrapper: {
+    marginTop: spacing(4),
+    marginBottom: spacing(4),
+  },
+}))
 
+const StakepoolTabs = ({stakepool}) => {
+  const classes = useStyles()
+  const {translate: tr} = useI18n()
+  const {setTabByEventIndex, currentTabIndex, currentTab} = useTabState(TABS.ORDER)
+
+  const TabContent = TABS.RENDER_CONTENT[currentTab]
   return (
-    <WithTabState tabNames={TABS.ORDER}>
-      {({setTab, currentTab, currentTabName}) => {
-        const TabContent = TABS.RENDER_CONTENT[currentTabName]
-        return (
-          <Card>
-            <Tabs value={currentTab} onChange={setTab}>
-              <Tab
-                icon={<HistoryIcon />}
-                label={
-                  <React.Fragment>
-                    {tr(messages.historyTabName, {
-                      count: stakePool.timeActive.epochs,
-                    })}{' '}
-                  </React.Fragment>
-                }
-              />
-              <Tab
-                icon={<TransactionsIcon />}
-                label={
-                  <React.Fragment>
-                    {tr(messages.transactionsTabName, {
-                      count: stakePool.transactions.length,
-                    })}
-                  </React.Fragment>
-                }
-              />
-            </Tabs>
-            <TabContent stakePool={stakePool} />
-          </Card>
-        )
-      }}
-    </WithTabState>
+    <div>
+      <div className={classes.tabsWrapper}>
+        <LiteTabs value={currentTabIndex} onChange={setTabByEventIndex}>
+          <LiteTab
+            label={
+              <React.Fragment>
+                {tr(messages.historyTabName, {
+                  count: stakepool.timeActive.epochs,
+                })}{' '}
+              </React.Fragment>
+            }
+          />
+          <LiteTab
+            label={
+              <React.Fragment>
+                {tr(messages.transactionsTabName, {
+                  count: stakepool.transactions.length,
+                })}
+              </React.Fragment>
+            }
+          />
+        </LiteTabs>
+      </div>
+      <TabContent stakepool={stakepool} />
+    </div>
   )
 }
 
-export default StakingPoolTabs
+export default StakepoolTabs

@@ -2,23 +2,20 @@
 
 import * as React from 'react'
 import gql from 'graphql-tag'
-import {Grid} from '@material-ui/core'
 import {defineMessages} from 'react-intl'
 import {useQuery} from 'react-apollo-hooks'
 
-import {
-  KeyValueCard,
-  SimpleLayout,
-  LoadingOverlay,
-  ErrorOverlay,
-  Overlay,
-  AdaValue,
-  LoadingError,
-} from '@/components/visual'
+import InfoCard from './InfoCard'
+import Layout from './Layout'
+
+import {SimpleLayout} from '@/components/visual'
+import {AdaValue, LoadingError} from '@/components/common'
 import {useI18n} from '@/i18n/helpers'
 import {useCurrentEpoch} from './common'
 
-// TODO: icons
+import {ReactComponent as EpochIcon} from '@/static/assets/icons/epoch.svg'
+import {ReactComponent as FromGenesisIcon} from '@/static/assets/icons/from-genesis.svg'
+
 // TODO: how often are snapshots created? Do we want to periodically load `Current snapshot`?
 
 const messages = defineMessages({
@@ -41,19 +38,14 @@ const perEpochInfoMessages = defineMessages({
 })
 
 const cardHeaders = defineMessages({
-  total: 'Total',
-  currentSnapshot: 'Current snapshot',
-  previousSnapshot: 'Previous snapshot',
-  nextSnapshot: 'Next snapshot',
+  total: 'Total:',
+  currentSnapshot: 'Current snapshot:',
+  previousSnapshot: 'Previous snapshot:',
+  nextSnapshot: 'Next snapshot:',
   fromGenesis: 'From genesis',
   usedInEpoch: 'Used in epoch {epoch}',
   willBeUsedInEpoch: 'Will be used in epoch {epoch}',
 })
-
-type Field = {|
-  label: string,
-  getValue: Function,
-|}
 
 const getAllTimeFields = ({translate, formatInt}) => [
   {
@@ -93,41 +85,6 @@ const getPerEpochFields = ({translate, formatInt}) => [
   },
 ]
 
-const Row = ({children}: {children: React.Node}) => (
-  <Grid container direction="row" justify="space-around" spacing={24}>
-    {children}
-  </Grid>
-)
-
-type InfoCardProps = {|
-  data: Object, // TODO: get graphql type
-  fields: Array<Field>,
-  cardLabel: string,
-  cardValue: string,
-  loading: boolean,
-  error: any,
-|}
-
-const InfoCard = ({data, fields, cardLabel, cardValue, loading, error}: InfoCardProps) => {
-  const items = fields.map((fieldDesc) => ({
-    label: fieldDesc.label,
-    value: data && fieldDesc.getValue(data),
-  }))
-
-  return (
-    <Overlay.Wrapper className="h-100">
-      <KeyValueCard
-        className="h-100"
-        header={<KeyValueCard.Header label={cardLabel} value={cardValue} />}
-      >
-        <KeyValueCard.Body items={items} />
-        <LoadingOverlay loading={loading} />
-        <ErrorOverlay error={!loading && error} />
-      </KeyValueCard>
-    </Overlay.Wrapper>
-  )
-}
-
 const AllTimeCard = () => {
   const formatters = useI18n()
   const {error, loading, data} = useQuery(
@@ -147,6 +104,7 @@ const AllTimeCard = () => {
       data={data && data.allTimeStakingSummary}
       cardValue={formatters.translate(cardHeaders.fromGenesis)}
       cardLabel={formatters.translate(cardHeaders.total)}
+      icon={<FromGenesisIcon />}
       {...{loading, error}}
     />
   )
@@ -186,6 +144,7 @@ const PerEpochCard = ({cardLabel, cardValue, epoch}: PerEpochCardProps) => {
   return (
     <InfoCard
       fields={getPerEpochFields(formatters)}
+      icon={<EpochIcon />}
       {...{cardLabel, cardValue, error, loading, data}}
     />
   )
@@ -204,13 +163,14 @@ export default () => {
     )
   }
 
+  const {Section, Row, Item} = Layout
   return (
-    <SimpleLayout title={tr(messages.header)} maxWidth="1200px">
+    <Section title={tr(messages.header)}>
       <Row>
-        <Grid item xs={6}>
+        <Item>
           <AllTimeCard />
-        </Grid>
-        <Grid item xs={6}>
+        </Item>
+        <Item>
           {/* For now not solving case when there is no `previousEpoch`. Possibly
               we will show only `N/A` values. Depends on server implementation. */}
           <PerEpochCard
@@ -225,10 +185,10 @@ export default () => {
             cardLabel={tr(cardHeaders.previousSnapshot)}
             epoch={currentEpoch !== null ? currentEpoch - 1 : null}
           />
-        </Grid>
+        </Item>
       </Row>
       <Row>
-        <Grid item xs={6}>
+        <Item>
           <PerEpochCard
             cardValue={tr(cardHeaders.usedInEpoch, {
               epoch: currentEpoch != null ? currentEpoch : '',
@@ -236,8 +196,8 @@ export default () => {
             cardLabel={tr(cardHeaders.currentSnapshot)}
             epoch={currentEpoch != null ? currentEpoch : null}
           />
-        </Grid>
-        <Grid item xs={6}>
+        </Item>
+        <Item>
           <PerEpochCard
             cardValue={tr(cardHeaders.willBeUsedInEpoch, {
               epoch: currentEpoch != null ? currentEpoch + 1 : '',
@@ -245,8 +205,8 @@ export default () => {
             cardLabel={tr(cardHeaders.nextSnapshot)}
             epoch={currentEpoch !== null ? currentEpoch + 1 : null}
           />
-        </Grid>
+        </Item>
       </Row>
-    </SimpleLayout>
+    </Section>
   )
 }

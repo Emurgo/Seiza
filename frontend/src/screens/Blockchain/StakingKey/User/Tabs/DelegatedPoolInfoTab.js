@@ -1,11 +1,13 @@
 import React from 'react'
 import {defineMessages} from 'react-intl'
 import {Typography} from '@material-ui/core'
-import {SummaryCard, AdaValue} from '@/components/visual'
+
 import {useI18n} from '@/i18n/helpers'
+import {SummaryCard, Card, ContentSpacing} from '@/components/visual'
+import {AdaValue, PoolEntityContent, Link} from '@/components/common'
+import {routeTo} from '@/helpers/routes'
 
 const delegatedPoolMessages = defineMessages({
-  stakePool: 'Stake Pool',
   stakePoolPosition: 'Stake Pool Position',
   marginDiff: 'Stake Pool Margin Difference with Top #1',
   costDiff: 'Stake Pool Cost Difference with Top #1',
@@ -15,18 +17,16 @@ const delegatedPoolMessages = defineMessages({
   epochsValue: '{count, plural, =0 {# epochs} one {# epoch} other {# epochs}}',
 })
 
-const DelegatedPoolInfoTab = ({stakePool, epochsInCurrentStakePool}) => {
+const DelegatedPoolInfoTab = ({stakePool, epochsInCurrentStakepool}) => {
   const {translate, formatInt, formatPercent} = useI18n()
   const {Row, Label, Value} = SummaryCard
 
   return (
-    <SummaryCard>
-      <Row>
-        <Label>{translate(delegatedPoolMessages.stakePool)}</Label>
-        <Value>
-          {stakePool.name} {stakePool.hash}
-        </Value>
-      </Row>
+    <Card>
+      <ContentSpacing bottom={0.75} top={0.75}>
+        <PoolEntityContent name={stakePool.name} hash={stakePool.hash} />
+      </ContentSpacing>
+
       <Row>
         <Label>{translate(delegatedPoolMessages.stakePoolPosition)}</Label>
         <Value>#{formatInt(stakePool.topPoolComparison.position)}</Value>
@@ -59,7 +59,9 @@ const DelegatedPoolInfoTab = ({stakePool, epochsInCurrentStakePool}) => {
             {stakePool.topPoolComparison.topPool.name}
           </Typography>
           <Typography variant="body1" align="right">
-            {stakePool.topPoolComparison.topPool.hash}
+            <Link monospace to={routeTo.stakepool(stakePool.topPoolComparison.topPool.hash)}>
+              {stakePool.topPoolComparison.topPool.hash}
+            </Link>
           </Typography>
         </Value>
       </Row>
@@ -67,11 +69,11 @@ const DelegatedPoolInfoTab = ({stakePool, epochsInCurrentStakePool}) => {
         <Label>{translate(delegatedPoolMessages.epochsLabel)}</Label>
         <Value>
           {translate(delegatedPoolMessages.epochsValue, {
-            count: formatInt(epochsInCurrentStakePool),
+            count: formatInt(epochsInCurrentStakepool),
           })}
         </Value>
       </Row>
-    </SummaryCard>
+    </Card>
   )
 }
 

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.6 (67491) - http://www.bohemiancoding.com/sketch -->
+    <title>icon/action-delegation</title>
+    <desc>Created with Sketch.</desc>
+    <g id="icon/action-delegation" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="icon/people-copy-9">
+            <g id="icon/people">
+                <rect id="Rectangle" fill-opacity="0" fill="#FFFFFF" x="0" y="0" width="24" height="24"></rect>
+                <path d="M15.9016017,9 L15.9016017,5.5 C15.9016017,4.3954305 15.0061712,3.5 13.9016017,3.5 L5.76471969,3.5 C4.66015019,3.5 3.76471969,4.3954305 3.76471969,5.5 L3.76471969,18.75 C3.76471969,19.8545695 4.66015019,20.75 5.76471969,20.75 L9,20.75" id="Path-3" stroke="#8791AD" stroke-width="1.4"></path>
+            </g>
+            <path d="M15,22 C11.6862915,22 9,19.3137085 9,16 C9,12.6862915 11.6862915,10 15,10 C18.3137085,10 21,12.6862915 21,16 C21,19.3137085 18.3137085,22 15,22 Z M14.988064,20.8184025 C17.6114166,20.8184025 19.738064,18.691755 19.738064,16.0684025 C19.738064,13.4450499 17.6114166,11.3184025 14.988064,11.3184025 C12.3647115,11.3184025 10.238064,13.4450499 10.238064,16.0684025 C10.238064,18.691755 12.3647115,20.8184025 14.988064,20.8184025 Z" id="Oval-Copy" fill="#8791AD" fill-rule="nonzero"></path>
+            <polyline id="Path-3" stroke="#8791AD" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" points="12.730209 15.4894004 14.728668 17.9345226 17.652445 13.9345226"></polyline>
+            <path d="M6.9859371,6.89849166 L12.9859371,6.89849166" id="Path-6-Copy-4" stroke="#8791AD" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"></path>
+            <path d="M6.9859371,9.89849166 L10.6508271,9.89849166" id="Path-6-Copy-5" stroke="#8791AD" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"></path>
+        </g>
+    </g>
+</svg>

@@ -5,28 +5,22 @@ import useReactRouter from 'use-react-router'
 import {defineMessages} from 'react-intl'
 import idx from 'idx'
 import gql from 'graphql-tag'
-import {extractError} from '@/helpers/errors'
 
+import {extractError} from '@/helpers/errors'
+import env from '@/config'
 import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
-import {
-  SummaryCard,
-  SimpleLayout,
-  LoadingInProgress,
-  LoadingError,
-  EntityIdCard,
-  AdaValue,
-  Link,
-  Overlay,
-  LoadingOverlay,
-} from '@/components/visual'
+import {SummaryCard, SimpleLayout, LoadingInProgress, Overlay} from '@/components/visual'
+import {AdaValue, LoadingError, LoadingOverlay, EntityIdCard, Link} from '@/components/common'
 import AddressesBreakdown from '@/components/common/AddressesBreakdown'
 import AssuranceChip from '@/components/common/AssuranceChip'
-import AdaIcon from '@/assets/icons/transaction-id.svg'
+import AdaIcon from '@/static/assets/icons/transaction-id.svg'
 
 import {ASSURANCE_LEVELS_VALUES, APOLLO_CACHE_OPTIONS} from '@/constants'
 import {useI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
-import {useAnalytics} from '@/helpers/googleAnalytics'
+import {useAnalytics} from '@/components/context/googleAnalytics'
+import CertificateActions from './CertificateActions'
+import MOCKED_CERT_ACTIONS from '@/screens/Blockchain/Certificates/mockedActions'
 
 const messages = defineMessages({
   header: 'Transaction',
@@ -43,9 +37,9 @@ const messages = defineMessages({
 
 type AssuranceEnum = 'LOW' | 'MEDIUM' | 'HIGH'
 const assuranceFromConfirmations = (cnt: number): AssuranceEnum => {
-  if (cnt <= ASSURANCE_LEVELS_VALUES.LOW) {
+  if (cnt < ASSURANCE_LEVELS_VALUES.LOW) {
     return 'LOW'
-  } else if (cnt <= ASSURANCE_LEVELS_VALUES.MEDIUM) {
+  } else if (cnt < ASSURANCE_LEVELS_VALUES.MEDIUM) {
     return 'MEDIUM'
   } else {
     return 'HIGH'
@@ -185,7 +179,7 @@ const TransactionScreen = () => {
         <EntityIdCard
           label={translate(messages.transactionId)}
           value={txHash}
-          iconRenderer={<img alt="" src={AdaIcon} width={40} height={40} />}
+          iconRenderer={<img alt="" src={AdaIcon} />}
         />
         {error ? (
           <LoadingError error={error} />
@@ -193,6 +187,7 @@ const TransactionScreen = () => {
           <React.Fragment>
             <TransactionSummary loading={loading} transaction={transactionData} />
             {loading ? <LoadingInProgress /> : <AddressesBreakdown tx={transactionData} />}
+            {env.showStakingData && <CertificateActions certificateActions={MOCKED_CERT_ACTIONS} />}
           </React.Fragment>
         )}
       </SimpleLayout>

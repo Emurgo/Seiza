@@ -8,18 +8,17 @@ import {Typography, Grid, Hidden} from '@material-ui/core'
 
 import {
   ExpandableCardContent,
+  ExpandableCardFooter,
   Divider,
   EllipsizeMiddle,
   ContentSpacing,
-  AdaValue,
-  Link,
   Card,
 } from '@/components/visual'
 import WithModalState from '@/components/headless/modalState'
 import {useIsMobile} from '@/components/hooks/useBreakpoints'
 import {useI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
-import CopyToClipboard from '@/components/common/CopyToClipboard'
+import {AdaValue, Link, CopyToClipboard} from '@/components/common'
 
 import type {Transaction} from '@/__generated__/schema.flow'
 
@@ -73,10 +72,10 @@ const Header = ({transaction}) => {
           <HeaderContent
             caption={
               <React.Fragment>
-                <Typography variant="body1" inline color="textSecondary">
+                <Typography variant="body1" inline color="textSecondary" component="span">
                   {tr(messages.from)}
                 </Typography>{' '}
-                <Typography variant="body1" inline color="textPrimary">
+                <Typography variant="body1" inline color="textPrimary" component="span">
                   {tr(messages.addressCount, {count: transaction.inputs.length})}
                 </Typography>
               </React.Fragment>
@@ -97,10 +96,10 @@ const Header = ({transaction}) => {
           <HeaderContent
             caption={
               <React.Fragment>
-                <Typography variant="body1" inline color="textSecondary">
+                <Typography variant="body1" inline color="textSecondary" component="span">
                   {tr(messages.to)}
                 </Typography>{' '}
-                <Typography variant="body1" inline color="textPrimary">
+                <Typography variant="body1" inline color="textPrimary" component="span">
                   {tr(messages.addressCount, {count: transaction.outputs.length})}
                 </Typography>
               </React.Fragment>
@@ -153,7 +152,7 @@ const BreakdownList = ({transaction, targetAddress}) => {
   const commonClasses = useCommonStyles()
 
   const hasTargetAddress = useCallback(
-    (inputOrOutput) => targetAddress && inputOrOutput.address58 === targetAddress,
+    (inputOrOutput) => (targetAddress ? inputOrOutput.address58 === targetAddress : false),
     [targetAddress]
   )
   const timestamp = idx(transaction, (_) => _.block.timeIssued)
@@ -248,16 +247,15 @@ const AddressHash = ({address58, isLink, hasHighlight}) => {
 
 const useBreakdownItemStyles = makeStyles((theme) => ({
   rowSpacing: {
-    marginTop: theme.spacing.unit * 1.5,
-    marginBottom: theme.spacing.unit * 1.5,
+    marginTop: theme.spacing(1.5),
+    marginBottom: theme.spacing(1.5),
   },
   copy: {
-    marginLeft: theme.spacing.unit,
+    marginLeft: theme.spacing(1),
   },
 }))
 
 const IMG_DIMENSIONS = {width: 20, height: 20}
-
 const BreakdownItem = (props) => {
   const {valuePrefix, target, hasHighlight, isLink, timestamp, showDivider} = props
   const {address58, amount} = target
@@ -284,7 +282,13 @@ const BreakdownItem = (props) => {
         </Grid>
         <Grid item xs={12} sm={6}>
           <Grid container justify="flex-end" direction="row">
-            <AdaValue value={amount} showSign={valuePrefix} showCurrency timestamp={timestamp} />
+            <AdaValue
+              value={amount}
+              showSign={valuePrefix}
+              showCurrency
+              timestamp={timestamp}
+              colorful={hasHighlight}
+            />
           </Grid>
         </Grid>
       </Grid>
@@ -309,7 +313,12 @@ export const AddressesBreakdownContent = ({tx, targetAddress}: Props) => {
           renderExpandedArea={() => (
             <BreakdownList transaction={tx} targetAddress={targetAddress} />
           )}
-          footer={isOpen ? tr(messages.hideAll) : tr(messages.seeAll)}
+          renderFooter={(expanded) => (
+            <ExpandableCardFooter
+              label={expanded ? tr(messages.hideAll) : tr(messages.seeAll)}
+              expanded={expanded}
+            />
+          )}
         />
       )}
     </WithModalState>

@@ -1,19 +1,19 @@
 // @flow
 
-import * as React from 'react'
-import gql from 'graphql-tag'
-import {useQuery} from 'react-apollo-hooks'
+import React, {useMemo, useCallback} from 'react'
 import {defineMessages} from 'react-intl'
-import {makeStyles} from '@material-ui/styles'
 
-import {Typography} from '@material-ui/core'
 import {useI18n} from '@/i18n/helpers'
-import {useSelectedPoolsContext} from '../context/selectedPools'
-import {LoadingInProgress, ComparisonMatrix, LoadingError, AdaValue} from '@/components/visual'
+import {AdaValue, ComparisonMatrix} from '@/components/common'
 import {
   FadeoutFieldWithTooltip,
   EllipsizedLinkFieldWithTooltip,
-} from '@/components/visual/ComparisonMatrix'
+} from '@/components/common/ComparisonMatrix/fields'
+
+import {WithEnsureStakePoolsLoaded} from '../utils'
+import {useLoadSelectedPools} from './dataLoaders'
+
+import {useIsMobile} from '@/components/hooks/useBreakpoints'
 
 const messages = defineMessages({
   stakePools: 'Stake pools',
@@ -106,6 +106,11 @@ const categoryTwoConfig = [
   },
 ]
 
+const DescriptionField = ({text, height}) => {
+  const isMobile = useIsMobile()
+  return isMobile ? text : <FadeoutFieldWithTooltip {...{text, height}} />
+}
+
 // TODO: proper fields that make sense (now just taken from design)
 const categoryThreeConfig = [
   {
@@ -123,94 +128,38 @@ const categoryThreeConfig = [
   {
     i18nLabel: categoryThreeMessages.description,
     render: (stakePool, formatters) => {
-      return <FadeoutFieldWithTooltip text={stakePool.description} height={132} />
+      return <DescriptionField text={stakePool.description} height={132} />
     },
     height: 132, // used to sync height with label field
   },
 ]
 
-const useStyles = makeStyles((theme) => ({
-  noPools: {
-    padding: theme.spacing.unit * 2,
-  },
-  loading: {
-    marginTop: '100px',
-  },
-  error: {
-    marginTop: theme.spacing.unit * 2,
-    marginLeft: theme.spacing.unit * 2,
-  },
-}))
-
 const ComparisonMatrixScreen = () => {
-  const classes = useStyles()
   const {translate: tr} = useI18n()
-  const {selectedPools: poolHashes} = useSelectedPoolsContext()
+  const {error, loading, data} = useLoadSelectedPools()
 
-  const {error, loading, data} = useQuery(
-    gql`
-      query($poolHashes: [String!]!) {
-        stakePools(poolHashes: $poolHashes) {
-          poolHash
-          name
-          createdAt
-          description
-          website
-          summary {
-            revenue
-            performance
-            adaStaked
-            rewards
-            keysDelegating
-            fullness
-            margins
-            ownerPledge {
-              actual
-              declared
-            }
-          }
-        }
-      }
-    `,
-    {
-      variables: {poolHashes},
-    }
+  const categoryConfigs = useMemo(
+    () => [
+      {categoryLabel: tr(messages.categoryOneLabel), config: categoryOneConfig},
+      {categoryLabel: tr(messages.categoryTwoLabel), config: categoryTwoConfig},
+      {categoryLabel: tr(messages.categoryThreeLabel), config: categoryThreeConfig},
+    ],
+    [tr]
   )
 
-  if (loading && !data.stakePools) {
-    // Note: this can hardly be cented right using FullWidth layout
-    return (
-      <div className={classes.loading}>
-        <LoadingInProgress />
-      </div>
-    )
-  }
-
-  if (error) {
-    return (
-      <div className={classes.error}>
-        <LoadingError error={error} />
-      </div>
-    )
-  }
-
-  const stakePools = data.stakePools || []
-
-  if (!loading && !stakePools.length) {
-    return <Typography className={classes.noPools}>{tr(messages.noData)}</Typography>
-  }
+  const getIdentifier = useCallback((data) => data.poolHash, [])
 
   return (
-    <ComparisonMatrix
-      title={tr(messages.stakePools)}
-      categoryConfigs={[
-        {categoryLabel: tr(messages.categoryOneLabel), config: categoryOneConfig},
-        {categoryLabel: tr(messages.categoryTwoLabel), config: categoryTwoConfig},
-        {categoryLabel: tr(messages.categoryThreeLabel), config: categoryThreeConfig},
-      ]}
-      data={stakePools}
-      getIdentifier={(data) => data.poolHash}
-    />
+    <WithEnsureStakePoolsLoaded {...{loading, error, data}}>
+      {({data: stakePools}) => (
+        <ComparisonMatrix
+          title={tr(messages.stakePools)}
+          categoryConfigs={categoryConfigs}
+          data={stakePools}
+          getIdentifier={getIdentifier}
+        />
+      )}
+    </WithEnsureStakePoolsLoaded>
   )
 }
 

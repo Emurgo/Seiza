@@ -6,7 +6,7 @@ import {fade} from '@material-ui/core/styles/colorManipulator'
 
 const useContentStyles = makeStyles((theme) => ({
   overlayContent: {
-    padding: theme.spacing.unit * 3,
+    padding: theme.spacing(3),
     position: 'absolute',
     top: 0,
     bottom: 0,
@@ -19,11 +19,11 @@ const useContentStyles = makeStyles((theme) => ({
   },
 }))
 
-const useWrapperStyles = makeStyles({
+const useWrapperStyles = makeStyles(() => ({
   overlayWrapper: {
     position: 'relative',
   },
-})
+}))
 
 type ContentProps = {
   background?: string,

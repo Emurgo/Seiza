@@ -7,14 +7,30 @@ import {
   FormLabel,
   Select as SelectMUI,
   MenuItem,
+  ListItemText,
+  Checkbox,
 } from '@material-ui/core'
+import {ArrowDropDown} from '@material-ui/icons'
+
+const StyledArrowDropDownIcon = withStyles(({palette}) => ({
+  root: {
+    color: palette.contentUnfocus,
+  },
+}))(ArrowDropDown)
 
 const StyledSelect = withStyles({
   select: {
     paddingTop: '10px',
     paddingBottom: '10px',
+    paddingRight: '32px',
   },
 })(SelectMUI)
+
+const StyledMenuItem = withStyles(({palette}) => ({
+  selected: {
+    backgroundColor: `${palette.unobtrusiveContentHighlight} !important`,
+  },
+}))(MenuItem)
 
 const styles = (theme) => ({
   label: {
@@ -22,7 +38,7 @@ const styles = (theme) => ({
     textTransform: 'uppercase',
   },
   formControl: {
-    margin: theme.spacing.unit,
+    margin: theme.spacing(1),
   },
 })
 
@@ -34,8 +50,44 @@ const NoBorderInput = withStyles({
   },
 })(OutlinedInput)
 
-const Select = ({classes, value, onChange, options, label, className, hasBorder = true}) => {
-  const InputComponent = hasBorder ? OutlinedInput : NoBorderInput
+const StyledOutlinedInput = withStyles(({palette}) => ({
+  root: {
+    'height': '100%',
+    // See https://github.com/mui-org/material-ui/issues/13347#issuecomment-435790274
+    // for the source of this abomination
+    '&:hover:not($disabled):not($focused):not($error) $notchedOutline': {
+      borderColor: `${palette.contentFocus} !important`,
+    },
+  },
+  notchedOutline: {
+    borderColor: `${palette.contentUnfocus} !important`,
+  },
+  // Following two classes need to be here so that root's pseudoselector
+  // won't complain
+  disabled: {},
+  error: {},
+  focused: {
+    'backgroundColor': `${palette.unobtrusiveContentHighlight} !important`,
+    '&>fieldset': {
+      borderWidth: '1px !important',
+      borderColor: `${palette.contentFocus} !important`,
+    },
+  },
+}))(OutlinedInput)
+
+const Select = ({
+  classes,
+  value,
+  onChange,
+  options,
+  label,
+  className,
+  renderValue,
+  hasBorder = true,
+  multiple = false,
+}) => {
+  const InputComponent = hasBorder ? StyledOutlinedInput : NoBorderInput
+
   return (
     <FormControl variant="outlined" className={classnames(classes.formControl, className)}>
       {label && (
@@ -43,12 +95,26 @@ const Select = ({classes, value, onChange, options, label, className, hasBorder 
           {label}
         </FormLabel>
       )}
-      <StyledSelect value={value} onChange={onChange} input={<InputComponent labelWidth={0} />}>
-        {options.map(({value, label}) => (
-          <MenuItem key={value} value={value}>
-            {label}
-          </MenuItem>
-        ))}
+      <StyledSelect
+        multiple={multiple}
+        value={value}
+        onChange={onChange}
+        input={<InputComponent labelWidth={0} />}
+        IconComponent={StyledArrowDropDownIcon}
+        renderValue={renderValue}
+      >
+        {multiple
+          ? options.map(({label, value: currentValue}) => (
+            <MenuItem key={currentValue} value={currentValue}>
+              <Checkbox checked={value.indexOf(currentValue) > -1} />
+              <ListItemText primary={label} />
+            </MenuItem>
+          ))
+          : options.map(({label, value: currentValue}) => (
+            <StyledMenuItem key={currentValue} value={currentValue}>
+              {label}
+            </StyledMenuItem>
+          ))}
       </StyledSelect>
     </FormControl>
   )

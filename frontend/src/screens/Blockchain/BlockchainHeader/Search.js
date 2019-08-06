@@ -12,12 +12,13 @@ import {makeStyles} from '@material-ui/styles'
 import {Typography, Portal} from '@material-ui/core'
 
 import {useI18n} from '@/i18n/helpers'
-import {Searchbar, LoadingError, Alert} from '@/components/visual'
-import {useSearchbarRefContext} from '@/components/context/SearchbarRef'
+import {Searchbar, Alert} from '@/components/visual'
+import {LoadingError} from '@/components/common'
+import {useSearchbarRef} from '../context/searchbarRef'
 
 import {routeTo} from '@/helpers/routes'
 import * as urlHelpers from '@/helpers/url'
-import {useAnalytics} from '@/helpers/googleAnalytics'
+import {useAnalytics} from '@/components/context/googleAnalytics'
 import {APOLLO_CACHE_OPTIONS} from '@/constants'
 
 const text = defineMessages({
@@ -99,15 +100,15 @@ const useStyles = makeStyles((theme) => ({
     position: 'relative',
   },
   alert: {
-    marginTop: theme.spacing.unit * 1.5,
+    marginTop: theme.spacing(1.5),
     position: 'absolute',
     width: '100%',
     zIndex: 1,
   },
   helpText: {
-    marginLeft: theme.spacing.unit * 4,
-    marginRight: theme.spacing.unit * 4,
-    marginTop: theme.spacing.unit * 2,
+    marginLeft: theme.spacing(4),
+    marginRight: theme.spacing(4),
+    marginTop: theme.spacing(2),
   },
   helpTextHidden: {
     visibility: 'hidden',
@@ -141,6 +142,7 @@ export const SearchHelpText = ({className}: SearchHelpTextProps) => {
       color="textSecondary"
       className={cn(classes.helpText, className)}
       align="center"
+      component="div"
     >
       {tr(text.helpText)}
     </Typography>
@@ -181,7 +183,7 @@ const Search = ({isMobile = false}: SearchProps) => {
         search: urlHelpers.stringify({redirectTo}),
       })
     }
-  })
+  }, [searchResult, history, analytics, location.pathname])
 
   const onChange = useCallback(
     (value) => {
@@ -209,7 +211,7 @@ const Search = ({isMobile = false}: SearchProps) => {
 
   const showAlert = searchQuery && !error && !loading && !searchResult
 
-  const searchbarRef = useSearchbarRefContext()
+  const searchbarRef = useSearchbarRef()
 
   const {isFocused: isSearchbarFocused, onFocus, onBlur} = useTextfieldFocus(false)
 

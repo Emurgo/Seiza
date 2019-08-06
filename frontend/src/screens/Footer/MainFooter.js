@@ -8,18 +8,18 @@ import {makeStyles} from '@material-ui/styles'
 import {darken} from '@material-ui/core/styles/colorManipulator'
 
 import {useI18n} from '@/i18n/helpers'
-import {useAnalytics} from '@/helpers/googleAnalytics'
+import {useAnalytics} from '@/components/context/googleAnalytics'
 import {ExternalLink, Tooltip} from '@/components/visual'
-import logo from '@/assets/icons/logo-seiza-white.svg'
-import {useSubscribeContext} from '@/components/context/SubscribeContext'
+import logo from '@/static/assets/icons/logo-seiza-white.svg'
+import {useSubscribe} from './context/subscribe'
 
-import fbIcon from '@/assets/icons/social/fb.svg'
-import linkedInIcon from '@/assets/icons/social/linkedin.svg'
-import mediumIcon from '@/assets/icons/social/medium.svg'
-import redditIcon from '@/assets/icons/social/reddit.svg'
-import twitterEmurgoIcon from '@/assets/icons/social/twitter-emurgo.svg'
-import twitterSeizaIcon from '@/assets/icons/social/twitter-seiza.svg'
-import youtubeIcon from '@/assets/icons/social/youtube.svg'
+import fbIcon from '@/static/assets/icons/social/fb.svg'
+import linkedInIcon from '@/static/assets/icons/social/linkedin.svg'
+import mediumIcon from '@/static/assets/icons/social/medium.svg'
+import redditIcon from '@/static/assets/icons/social/reddit.svg'
+import twitterEmurgoIcon from '@/static/assets/icons/social/twitter-emurgo.svg'
+import twitterSeizaIcon from '@/static/assets/icons/social/twitter-seiza.svg'
+import youtubeIcon from '@/static/assets/icons/social/youtube.svg'
 
 const messages = defineMessages({
   copyright: 'All rights reserved',
@@ -42,11 +42,11 @@ const SOCIAL_LINKS = {
 const useMainFooterStyles = makeStyles(({spacing, palette, typography, breakpoints}) => ({
   socialIconWrapper: {
     marginLeft: 0,
-    marginRight: spacing.unit * 2.5,
-    marginTop: spacing.unit,
+    marginRight: spacing(2.5),
+    marginTop: spacing(1),
 
     [breakpoints.up('md')]: {
-      marginLeft: spacing.unit * 1.7,
+      marginLeft: spacing(1.7),
       marginRight: 0,
       marginTop: 0,
     },
@@ -59,7 +59,7 @@ const useMainFooterStyles = makeStyles(({spacing, palette, typography, breakpoin
     'listStyleType': 'none',
     'padding': 0,
     'margin': 0,
-    'marginBottom': spacing.unit,
+    'marginBottom': spacing(1),
     'display': 'flex',
     'justifyContent': 'space-between',
     'flexDirection': 'column',
@@ -67,8 +67,8 @@ const useMainFooterStyles = makeStyles(({spacing, palette, typography, breakpoin
       flexDirection: 'row',
     },
     '& > *': {
-      marginTop: spacing.unit * 1.2,
-      marginRight: spacing.unit * 2,
+      marginTop: spacing(1.2),
+      marginRight: spacing(2),
     },
     '& > :last-child': {
       marginRight: 0,
@@ -76,7 +76,7 @@ const useMainFooterStyles = makeStyles(({spacing, palette, typography, breakpoin
     [breakpoints.up('md')]: {
       'marginTop': 0,
       '& > *': {
-        marginRight: spacing.unit * 4,
+        marginRight: spacing(4),
       },
       '& > :last-child': {
         marginRight: 0,
@@ -84,9 +84,9 @@ const useMainFooterStyles = makeStyles(({spacing, palette, typography, breakpoin
     },
   },
   navigationWrapper: {
-    marginTop: spacing.unit * 2,
+    marginTop: spacing(2),
     [breakpoints.up('sm')]: {
-      marginTop: spacing.unit * 2,
+      marginTop: spacing(2),
     },
     [breakpoints.up('md')]: {
       marginTop: 0,
@@ -94,7 +94,7 @@ const useMainFooterStyles = makeStyles(({spacing, palette, typography, breakpoin
   },
   wrapper: {
     backgroundColor: palette.footer.background,
-    padding: `${spacing.unit * 2}px ${spacing.unit * 1.5}px`,
+    padding: `${spacing(2)}px ${spacing(1.5)}px`,
   },
   innerWrapper: {
     justifyContent: 'space-between',
@@ -102,7 +102,7 @@ const useMainFooterStyles = makeStyles(({spacing, palette, typography, breakpoin
     margin: 'auto',
     flexDirection: 'column',
     alignItems: 'flex-start',
-    paddingLeft: spacing.unit * 3,
+    paddingLeft: spacing(3),
 
     [breakpoints.up('md')]: {
       flexDirection: 'row',
@@ -129,8 +129,8 @@ const useMainFooterStyles = makeStyles(({spacing, palette, typography, breakpoin
     cursor: 'pointer',
     height: '100%',
     fontSize: typography.fontSize * 0.7,
-    marginTop: spacing.unit * 0.5,
-    marginBottom: spacing.unit * 0.5,
+    marginTop: spacing(0.5),
+    marginBottom: spacing(0.5),
     [breakpoints.up('sm')]: {
       marginTop: 0,
       marginBottom: 0,
@@ -170,7 +170,7 @@ const DisabledLink = ({label, disabledText}) => {
   return (
     <Tooltip title={disabledText}>
       {/* Tooltip is not shown without this wrapper */}
-      <div className="d-flex">
+      <div>
         <Typography variant="caption" className={classes.disabled}>
           {label}
         </Typography>
@@ -185,7 +185,7 @@ type Props = {
 }
 
 const MainFooter = ({navItems}: Props) => {
-  const {showSubscribe, hidden} = useSubscribeContext()
+  const {showSubscribe, hidden} = useSubscribe()
   const classes = useMainFooterStyles()
   const {translate: tr} = useI18n()
 
@@ -214,7 +214,7 @@ const MainFooter = ({navItems}: Props) => {
               <ul className={classes.nav}>
                 {navItems.map(({link, label, disabledText}) => (
                   <li key={label}>
-                    {disabledText ? (
+                    {!link ? (
                       <DisabledLink {...{label, disabledText}} />
                     ) : (
                       <Link className={classes.link} to={link}>
