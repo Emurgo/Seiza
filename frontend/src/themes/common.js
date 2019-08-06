@@ -31,6 +31,9 @@ const FF = {
   monospace: ['Roboto Mono', 'Roboto Mono Self', 'Monaco', 'monospace'],
 }
 
+const DEFAULT_SPACING = 8 // 8 because that's material-ui default theme.spacing(1)
+const CONTENT_SPACING = 4 * DEFAULT_SPACING
+
 const common = {
   typography: {
     useNextVariants: true,
@@ -98,6 +101,7 @@ const common = {
       }),
   },
   shadows: ['none', ...defaultShadowsDefs.map((px) => createShadow('#412596', px))],
+  getContentSpacing: (factor = 1) => factor * CONTENT_SPACING,
   overrides: {
     MuiOutlinedInput: {
       root: {

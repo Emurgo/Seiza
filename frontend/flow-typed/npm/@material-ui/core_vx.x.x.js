@@ -1932,6 +1932,7 @@ declare module '@material-ui/core/styles/createMuiTheme' {
     overrides?: Object,
     palette: Palette,
     shadows: Shadows,
+    getContentSpacing: Function,
     shape: Shape,
     spacing: Spacing,
     transitions: Transitions,
