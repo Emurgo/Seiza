@@ -6,13 +6,17 @@ import useReactRouter from 'use-react-router'
 import {makeStyles} from '@material-ui/styles'
 
 import {SummaryCard, SimpleLayout, LoadingInProgress} from '@/components/visual'
-import {AdaValue, LoadingError, EntityIdCard, Link} from '@/components/common'
+import {AdaValue, LoadingError, EntityIdCard, Link, Pagination} from '@/components/common'
+import {useManageQueryValue} from '@/components/hooks/useManageQueryValue'
+import useTabState from '@/components/hooks/useTabState'
+import {toIntOrNull, getPageCount} from '@/helpers/utils'
 import {routeTo} from '@/helpers/routes'
 import {useI18n} from '@/i18n/helpers'
+import {ObjectValues} from '@/helpers/flow'
 import AdaIcon from '@/static/assets/icons/transaction-id.svg'
 import CertificateActionIcon from '@/static/assets/icons/reward-address.svg'
 import RewardAddressIcon from '@/static/assets/icons/certificate.svg'
-import Tabs from './Tabs'
+import Tabs, {TAB_NAMES} from './Tabs'
 import {useLoadStakingKeyData} from './dataLoaders'
 
 const messages = defineMessages({
@@ -38,9 +42,6 @@ const messages = defineMessages({
 })
 
 const useStyles = makeStyles(({spacing}) => ({
-  tabsWrapper: {
-    marginTop: spacing(2),
-  },
   resetTextTransform: {
     textTransform: 'none',
   },
@@ -81,12 +82,44 @@ const CurrentStatus = () => {
   }
 }
 
-const UserStakingKey = () => {
+const usePaginations = () => {
+  const [historyPage, onHistoryPageChange] = useManageQueryValue('history-page', 1, toIntOrNull)
+  const [transactionsPage, onTransactionsPageChange] = useManageQueryValue(
+    'txs-page',
+    1,
+    toIntOrNull
+  )
+
+  return {
+    [TAB_NAMES.HISTORY]: {page: historyPage, onChangePage: onHistoryPageChange},
+    [TAB_NAMES.TRANSACTIONS]: {page: transactionsPage, onChangePage: onTransactionsPageChange},
+  }
+}
+
+const useManageTabs = () => {
+  const tabNames = ObjectValues(TAB_NAMES)
+  const [currentTab, setTab] = useManageQueryValue('tab', tabNames[0])
+  const tabState = useTabState(tabNames, null, currentTab, setTab)
+  const paginations = usePaginations()
+  return {
+    pagination: paginations[currentTab],
+    tabState,
+    currentTab,
+    setTab,
+  }
+}
+
+const ROWS_PER_PAGE = 10
+
+const StakingKey = () => {
   const classes = useStyles()
   const {translate, formatTimestamp, formatInt} = useI18n()
   const {match} = useReactRouter()
   // TODO: handle error and loading once we have real data
   const {error, loading, data: stakingKey} = useLoadStakingKeyData(match.params.stakingKey)
+  const {pagination, tabState} = useManageTabs()
+  const totalCount = 1 // TODO: handle totalCount once we have real data
+
   const {Row, Label, Value} = SummaryCard
 
   return (
@@ -204,13 +237,23 @@ const UserStakingKey = () => {
             iconRenderer={<img alt="" src={CertificateActionIcon} />}
             showCopyIcon={false}
           />
-          <div className={classes.tabsWrapper}>
-            <Tabs stakingKey={stakingKey} />
-          </div>
+          <Tabs
+            stakingKey={stakingKey}
+            tabState={tabState}
+            pagination={
+              pagination && (
+                <Pagination
+                  pageCount={getPageCount(totalCount, ROWS_PER_PAGE)}
+                  page={pagination.page}
+                  onChangePage={pagination.onChangePage}
+                />
+              )
+            }
+          />
         </React.Fragment>
       )}
     </SimpleLayout>
   )
 }
 
-export default UserStakingKey
+export default StakingKey
