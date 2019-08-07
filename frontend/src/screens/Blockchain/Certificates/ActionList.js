@@ -1,10 +1,11 @@
 import React from 'react'
+import cn from 'classnames'
 import {defineMessages, FormattedMessage} from 'react-intl'
 import {Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
 import {AdaValue, Link} from '@/components/common'
-import {SummaryCard, Divider} from '@/components/visual'
+import {SummaryCard, Divider, ExpansionPanel, DesktopOnly, MobileOnly} from '@/components/visual'
 import {useI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
 import CertificateActionIcon from './ActionIcon'
@@ -91,7 +92,27 @@ const messages = defineMessages({
   refund: 'Refund:',
 })
 
-const useStyles = makeStyles(({spacing}) => ({
+const useStyles = makeStyles((theme) => ({
+  expansionPanel: {
+    '&:hover': {
+      boxShadow: 'none',
+      border: '0',
+    },
+    'boxShadow': 'none',
+    'border': '0',
+  },
+  expansionPanelDetails: {
+    marginTop: theme.getContentSpacing(0.5),
+    marginBottom: theme.getContentSpacing(0.5),
+  },
+  horizontalSpacings: {
+    marginLeft: theme.getContentSpacing(0.5),
+    marginRight: theme.getContentSpacing(0.5),
+    [theme.breakpoints.up('sm')]: {
+      marginLeft: theme.getContentSpacing(),
+      marginRight: theme.getContentSpacing(),
+    },
+  },
   wrapper: {
     width: '100%',
   },
@@ -99,7 +120,7 @@ const useStyles = makeStyles(({spacing}) => ({
     verticalAlign: 'bottom',
   },
   contentLeftSpacing: {
-    paddingLeft: spacing(1),
+    paddingLeft: theme.spacing(1),
   },
 }))
 
@@ -110,7 +131,7 @@ const Value = SummaryCard.Value
 const IconLabel = ({certType, children}) => {
   const classes = useStyles()
   return (
-    <Label>
+    <React.Fragment>
       <CertificateActionIcon type={certType} />
       <Typography
         color="textPrimary"
@@ -119,7 +140,43 @@ const IconLabel = ({certType, children}) => {
       >
         {children}
       </Typography>
-    </Label>
+    </React.Fragment>
+  )
+}
+
+const MobileAction = ({action, label, value}) => {
+  const classes = useStyles()
+  return (
+    <ExpansionPanel
+      className={classes.expansionPanel}
+      summary={<IconLabel certType={action.type}>{label}</IconLabel>}
+    >
+      <div className={cn(classes.expansionPanelDetails, classes.horizontalSpacings)}>
+        <ul>
+          {value.map((val, index) => (
+            <li key={index}>{val}</li>
+          ))}
+        </ul>
+      </div>
+      <Divider className={classes.horizontalSpacings} light />
+    </ExpansionPanel>
+  )
+}
+
+const DesktopAction = ({action, label, value}) => {
+  return (
+    <Row>
+      <Label>
+        <IconLabel certType={action.type}>{label}</IconLabel>
+      </Label>
+      <Value>
+        {value
+          .filter((x) => !!x)
+          .map((val, index) => (
+            <React.Fragment key={index}>{val} </React.Fragment>
+          ))}
+      </Value>
+    </Row>
   )
 }
 
@@ -143,220 +200,195 @@ const StakingKeyLink = ({stakingKey}) => {
   return <Link to={routeTo.stakingKey(stakingKey)}>{stakingKey}</Link>
 }
 
-const PoolUpdateRelatedMessages = ({
+const poolExistsMessage = ({poolExists, i18n}) => {
+  const {translate: tr} = i18n
+  return poolExists ? tr(messages.poolExists) : tr(messages.poolNotExists)
+}
+
+const poolUpdateRelatedMessages = ({
   wasRetiringDuringUpdate,
   poolExists,
   isInRetirement,
   retirementTxHash,
+  i18n,
 }) => {
-  const {translate: tr} = useI18n()
-  return (
-    <React.Fragment>
-      {wasRetiringDuringUpdate && (
-        <React.Fragment>{tr(messages.poolUpdate__poolWasRetiring)} </React.Fragment>
-      )}
-
-      <PoolCurrentlyExistsMessage poolExists={poolExists} />
-
-      {isInRetirement && (
-        <React.Fragment>
-          {' '}
-          {fmtdMsg(messages.poolUpdate__retirementAnnouncement.id, {
-            txHash: <TxHashLink txHash={retirementTxHash} />,
-          })}
-        </React.Fragment>
-      )}
-    </React.Fragment>
-  )
+  const {translate: tr} = i18n
+  return [
+    wasRetiringDuringUpdate && tr(messages.poolUpdate__poolWasRetiring),
+    poolExistsMessage({poolExists, i18n}),
+    isInRetirement &&
+      fmtdMsg(messages.poolUpdate__retirementAnnouncement.id, {
+        txHash: <TxHashLink txHash={retirementTxHash} />,
+      }),
+  ]
 }
 
-const KeyRegistration = ({action}) => {
-  const {translate: tr} = useI18n()
+const keyRegistration = ({action, i18n}) => {
+  const {translate: tr} = i18n
   const {stakingKey, previousDeregistrationTx, nextDeregistrationTx} = action
-  return (
-    <Row>
-      <IconLabel certType={action.type}>{tr(messages.registration__label)}</IconLabel>
-      <Value>
-        <Typography variant="body1" color="textSecondary">
-          {fmtdMsg(messages.registration__value.id, {
-            stakingKey: <StakingKeyLink stakingKey={stakingKey} />,
-          })}{' '}
-          {previousDeregistrationTx && (
-            <React.Fragment>
-              {fmtdMsg(messages.registration__previousDeregistration.id, {
-                txHash: <TxHashLink txHash={previousDeregistrationTx.txHash} />,
-              })}{' '}
-            </React.Fragment>
-          )}
-          {nextDeregistrationTx &&
-            fmtdMsg(messages.registration__nextDeregistration.id, {
-              txHash: <TxHashLink txHash={nextDeregistrationTx.txHash} />,
-            })}
-        </Typography>
-      </Value>
-    </Row>
-  )
+  return {
+    label: tr(messages.registration__label),
+    value: [
+      fmtdMsg(messages.registration__value.id, {
+        stakingKey: <StakingKeyLink stakingKey={stakingKey} />,
+      }),
+      previousDeregistrationTx &&
+        fmtdMsg(messages.registration__previousDeregistration.id, {
+          txHash: <TxHashLink txHash={previousDeregistrationTx.txHash} />,
+        }),
+      nextDeregistrationTx &&
+        fmtdMsg(messages.registration__nextDeregistration.id, {
+          txHash: <TxHashLink txHash={nextDeregistrationTx.txHash} />,
+        }),
+    ],
+  }
 }
 
-const KeyDeregistration = ({action}) => {
-  const {translate: tr} = useI18n()
+const keyDeregistration = ({action, i18n}) => {
+  const {translate: tr} = i18n
   const {previousRegistrationTx, nextRegistrationTx, stakingKey} = action
-  return (
-    <Row>
-      <IconLabel certType={action.type}>{tr(messages.deregistration__label)}</IconLabel>
-      <Value>
-        <Typography variant="body1" color="textSecondary">
-          {fmtdMsg(messages.deregistration__value.id, {
-            stakingKey: <Link to={routeTo.stakingKey(stakingKey)}>{stakingKey}</Link>,
-          })}
-        </Typography>
-        {previousRegistrationTx && (
-          <React.Fragment>
-            {fmtdMsg(messages.deregistration__previousRegistration.id, {
-              txHash: <TxHashLink txHash={previousRegistrationTx.txHash} />,
-            })}{' '}
-          </React.Fragment>
-        )}
-        {nextRegistrationTx &&
-          fmtdMsg(messages.deregistration__nextRegistration.id, {
-            txHash: <TxHashLink txHash={nextRegistrationTx.txHash} />,
-          })}
-      </Value>
-    </Row>
-  )
+  return {
+    label: tr(messages.deregistration__label),
+    value: [
+      fmtdMsg(messages.deregistration__value.id, {
+        stakingKey: <Link to={routeTo.stakingKey(stakingKey)}>{stakingKey}</Link>,
+      }),
+      previousRegistrationTx &&
+        fmtdMsg(messages.deregistration__previousRegistration.id, {
+          txHash: <TxHashLink txHash={previousRegistrationTx.txHash} />,
+        }),
+      nextRegistrationTx &&
+        fmtdMsg(messages.deregistration__nextRegistration.id, {
+          txHash: <TxHashLink txHash={nextRegistrationTx.txHash} />,
+        }),
+    ],
+  }
 }
 
-const KeyRewardReception = ({action}) => {
-  const {translate: tr, formatPercent} = useI18n()
+const keyRewardReception = ({action, i18n}) => {
+  const {translate: tr, formatPercent} = i18n
   const {stakingKey, reward, poolHash, performance, maxReward} = action
 
-  return (
-    <Row>
-      <IconLabel certType={action.type}>{tr(messages.rewardPaid__label)}</IconLabel>
-      <Value>
-        {fmtdMsg(messages.rewardPaid__value.id, {
-          amount: <AdaValue showCurrency value={reward} />,
-          stakingKey: <StakingKeyLink stakingKey={stakingKey} />,
-          poolHash: <PoolHashLink poolHash={poolHash} />,
-        })}{' '}
-        {fmtdMsg(messages.rewardPaid__poolMisperformance.id, {
-          poolHash: <PoolHashLink poolHash={poolHash} />,
-          percent: formatPercent(1 - performance),
-        })}{' '}
-        {fmtdMsg(messages.rewardPaid__maximumReward.id, {
-          amount: <AdaValue showCurrency value={maxReward} />,
-        })}
-      </Value>
-    </Row>
-  )
-}
-const KeyRegistrationAsPoolOwner = ({action}) => {
-  const {translate: tr} = useI18n()
-  const {
-    stakingKey,
-    poolHash,
-    wasRetiringDuringUpdate,
-    poolExists,
-    isInRetirement,
-    retirementTxHash,
-  } = action
-  return (
-    <Row>
-      <IconLabel certType={action.type}>{tr(messages.keyRegisteredAsPoolOwner__label)}</IconLabel>
-      <Value>
-        {fmtdMsg(messages.keyRegisteredAsPoolOwner__value.id, {
-          stakingKey: <StakingKeyLink stakingKey={stakingKey} />,
-          poolHash: <PoolHashLink poolHash={poolHash} />,
-        })}
-        <PoolUpdateRelatedMessages
-          {...{wasRetiringDuringUpdate, poolExists, isInRetirement, retirementTxHash}}
-        />
-      </Value>
-    </Row>
-  )
-}
-const KeyDeregistrationAsPoolOwner = ({action}) => {
-  const {translate: tr} = useI18n()
-  const {
-    stakingKey,
-    poolHash,
-    wasRetiringDuringUpdate,
-    poolExists,
-    isInRetirement,
-    retirementTxHash,
-  } = action
-  return (
-    <Row>
-      <IconLabel certType={action.type}>{tr(messages.keyDeregisteredAsPoolOwner__label)}</IconLabel>
-      <Value>
-        {fmtdMsg(messages.keyDeregisteredAsPoolOwner__value.id, {
-          stakingKey: <StakingKeyLink stakingKey={stakingKey} />,
-          poolHash: <PoolHashLink poolHash={poolHash} />,
-        })}{' '}
-        <PoolUpdateRelatedMessages
-          {...{wasRetiringDuringUpdate, poolExists, isInRetirement, retirementTxHash}}
-        />
-      </Value>
-    </Row>
-  )
-}
-const KeyRegistrationAsPoolRewardTarget = ({action}) => {
-  const {translate: tr} = useI18n()
-  const {stakingKey, poolHash, prevRewardTarget, currentRewardTarget} = action
-  return (
-    <Row>
-      <IconLabel certType={action.type}>
-        {tr(messages.keyRegisteredAsPoolRewardTarget__label)}
-      </IconLabel>
-      <Value>
-        {fmtdMsg(messages.keyRegisteredAsPoolRewardTarget__value.id, {
-          stakingKey: <StakingKeyLink stakingKey={stakingKey} />,
-          poolHash: <PoolHashLink poolHash={poolHash} />,
-        })}{' '}
-        {prevRewardTarget && (
-          <React.Fragment>
-            {fmtdMsg(messages.keyRegisteredAsPoolRewardTarget__previousRewardTarget.id, {
-              stakingKey: <StakingKeyLink stakingKey={prevRewardTarget} />,
-            })}{' '}
-          </React.Fragment>
-        )}
-        {fmtdMsg(messages.keyRegisteredAsPoolRewardTarget__currentRewardTarget.id, {
-          stakingKey: <StakingKeyLink stakingKey={currentRewardTarget} />,
-        })}
-      </Value>
-    </Row>
-  )
-}
-const KeyDeregistrationAsPoolRewardTarget = ({action}) => {
-  const {translate: tr} = useI18n()
-  const {stakingKey, poolHash, prevRewardTarget, currentRewardTarget} = action
-  return (
-    <Row>
-      <IconLabel certType={action.type}>
-        {tr(messages.keyDeregisteredAsPoolRewardTarget__label)}
-      </IconLabel>
-      <Value>
-        {fmtdMsg(messages.keyDeregisteredAsPoolRewardTarget__value.id, {
-          stakingKey: <StakingKeyLink stakingKey={stakingKey} />,
-          poolHash: <PoolHashLink poolHash={poolHash} />,
-        })}{' '}
-        {prevRewardTarget && (
-          <React.Fragment>
-            {fmtdMsg(messages.keyRegisteredAsPoolRewardTarget__previousRewardTarget.id, {
-              stakingKey: <StakingKeyLink stakingKey={prevRewardTarget} />,
-            })}{' '}
-          </React.Fragment>
-        )}
-        {fmtdMsg(messages.keyRegisteredAsPoolRewardTarget__currentRewardTarget.id, {
-          stakingKey: <StakingKeyLink stakingKey={currentRewardTarget} />,
-        })}
-      </Value>
-    </Row>
-  )
+  return {
+    label: tr(messages.rewardPaid__label),
+    value: [
+      fmtdMsg(messages.rewardPaid__value.id, {
+        amount: <AdaValue showCurrency value={reward} />,
+        stakingKey: <StakingKeyLink stakingKey={stakingKey} />,
+        poolHash: <PoolHashLink poolHash={poolHash} />,
+      }),
+      fmtdMsg(messages.rewardPaid__poolMisperformance.id, {
+        poolHash: <PoolHashLink poolHash={poolHash} />,
+        percent: formatPercent(1 - performance),
+      }),
+      fmtdMsg(messages.rewardPaid__maximumReward.id, {
+        amount: <AdaValue showCurrency value={maxReward} />,
+      }),
+    ],
+  }
 }
 
-const KeyDelegation = ({action}) => {
-  const {translate: tr} = useI18n()
+const keyRegistrationAsPoolOwner = ({action, i18n}) => {
+  const {translate: tr} = i18n
+  const {
+    stakingKey,
+    poolHash,
+    wasRetiringDuringUpdate,
+    poolExists,
+    isInRetirement,
+    retirementTxHash,
+  } = action
+  return {
+    label: tr(messages.keyRegisteredAsPoolOwner__label),
+    value: [
+      fmtdMsg(messages.keyRegisteredAsPoolOwner__value.id, {
+        stakingKey: <StakingKeyLink stakingKey={stakingKey} />,
+        poolHash: <PoolHashLink poolHash={poolHash} />,
+      }),
+      ...poolUpdateRelatedMessages({
+        wasRetiringDuringUpdate,
+        poolExists,
+        isInRetirement,
+        retirementTxHash,
+        i18n,
+      }),
+    ],
+  }
+}
+
+const keyDeregistrationAsPoolOwner = ({action, i18n}) => {
+  const {translate: tr} = i18n
+  const {
+    stakingKey,
+    poolHash,
+    wasRetiringDuringUpdate,
+    poolExists,
+    isInRetirement,
+    retirementTxHash,
+  } = action
+
+  return {
+    label: tr(messages.keyDeregisteredAsPoolOwner__label),
+    value: [
+      fmtdMsg(messages.keyDeregisteredAsPoolOwner__value.id, {
+        stakingKey: <StakingKeyLink stakingKey={stakingKey} />,
+        poolHash: <PoolHashLink poolHash={poolHash} />,
+      }),
+      ...poolUpdateRelatedMessages({
+        wasRetiringDuringUpdate,
+        poolExists,
+        isInRetirement,
+        retirementTxHash,
+        i18n,
+      }),
+    ],
+  }
+}
+
+const keyRegistrationAsPoolRewardTarget = ({action, i18n}) => {
+  const {translate: tr} = i18n
+  const {stakingKey, poolHash, prevRewardTarget, currentRewardTarget} = action
+  return {
+    label: tr(messages.keyRegisteredAsPoolRewardTarget__label),
+    value: [
+      fmtdMsg(messages.keyRegisteredAsPoolRewardTarget__value.id, {
+        stakingKey: <StakingKeyLink stakingKey={stakingKey} />,
+        poolHash: <PoolHashLink poolHash={poolHash} />,
+      }),
+      prevRewardTarget &&
+        fmtdMsg(messages.keyRegisteredAsPoolRewardTarget__previousRewardTarget.id, {
+          stakingKey: <StakingKeyLink stakingKey={prevRewardTarget} />,
+        }),
+      fmtdMsg(messages.keyRegisteredAsPoolRewardTarget__currentRewardTarget.id, {
+        stakingKey: <StakingKeyLink stakingKey={currentRewardTarget} />,
+      }),
+    ],
+  }
+}
+
+const keyDeregistrationAsPoolRewardTarget = ({action, i18n}) => {
+  const {translate: tr} = i18n
+  const {stakingKey, poolHash, prevRewardTarget, currentRewardTarget} = action
+  return {
+    label: tr(messages.keyDeregisteredAsPoolRewardTarget__label),
+    value: [
+      fmtdMsg(messages.keyDeregisteredAsPoolRewardTarget__value.id, {
+        stakingKey: <StakingKeyLink stakingKey={stakingKey} />,
+        poolHash: <PoolHashLink poolHash={poolHash} />,
+      }),
+      prevRewardTarget &&
+        fmtdMsg(messages.keyRegisteredAsPoolRewardTarget__previousRewardTarget.id, {
+          stakingKey: <StakingKeyLink stakingKey={prevRewardTarget} />,
+        }),
+      fmtdMsg(messages.keyRegisteredAsPoolRewardTarget__currentRewardTarget.id, {
+        stakingKey: <StakingKeyLink stakingKey={currentRewardTarget} />,
+      }),
+    ],
+  }
+}
+
+const keyDelegation = ({action, i18n}) => {
+  const {translate: tr} = i18n
   const {
     stakingKey,
     stakingKeyExists,
@@ -368,102 +400,80 @@ const KeyDelegation = ({action}) => {
     currentDelegationBalance,
     currentPoolHashDelegatedTo,
   } = action
-  return (
-    <Row>
-      <IconLabel certType={action.type}>{tr(messages.keyDelegation__label)}</IconLabel>
-      <Value>
-        {tr(stakingKeyExists ? messages.keyExists : messages.keyNotExists)}{' '}
-        {previousDelegatedToTxHash && (
-          <React.Fragment>
-            {fmtdMsg(messages.keyDelegation__previouslyReplacedAtTx.id, {
-              txHash: <TxHashLink txHash={txHash} />,
-              stakingKey: <StakingKeyLink stakingKey={stakingKey} />,
-              poolHash: <PoolHashLink poolHash={poolHash} />,
-            })}{' '}
-          </React.Fragment>
-        )}
-        {previousDelegatedToTxHash && (
-          <React.Fragment>
-            {fmtdMsg(messages.keyDelegation__nextReplacedAtTx.id, {
-              txHash: <TxHashLink txHash={nextDelegatedToTxHash} />,
-            })}{' '}
-          </React.Fragment>
-        )}
-        {fmtdMsg(messages.keyDelegation__delegationBalance.id, {
-          balance: <AdaValue showCurrency value={delegationBalance} />,
-        })}{' '}
-        {fmtdMsg(messages.keyDelegation__currentDelegationBalance.id, {
-          balance: <AdaValue showCurrency value={currentDelegationBalance} />,
-        })}{' '}
-        {fmtdMsg(messages.keyDelegation__currentDelegation.id, {
-          poolHash: <PoolHashLink poolHash={currentPoolHashDelegatedTo} />,
-        })}
-      </Value>
-    </Row>
-  )
+  return {
+    label: tr(messages.keyDelegation__label),
+    value: [
+      tr(stakingKeyExists ? messages.keyExists : messages.keyNotExists),
+      previousDelegatedToTxHash &&
+        fmtdMsg(messages.keyDelegation__previouslyReplacedAtTx.id, {
+          txHash: <TxHashLink txHash={txHash} />,
+          stakingKey: <StakingKeyLink stakingKey={stakingKey} />,
+          poolHash: <PoolHashLink poolHash={poolHash} />,
+        }),
+      previousDelegatedToTxHash &&
+        fmtdMsg(messages.keyDelegation__nextReplacedAtTx.id, {
+          txHash: <TxHashLink txHash={nextDelegatedToTxHash} />,
+        }),
+      fmtdMsg(messages.keyDelegation__delegationBalance.id, {
+        balance: <AdaValue showCurrency value={delegationBalance} />,
+      }),
+
+      fmtdMsg(messages.keyDelegation__currentDelegationBalance.id, {
+        balance: <AdaValue showCurrency value={currentDelegationBalance} />,
+      }),
+
+      fmtdMsg(messages.keyDelegation__currentDelegation.id, {
+        poolHash: <PoolHashLink poolHash={currentPoolHashDelegatedTo} />,
+      }),
+    ],
+  }
 }
 
-const PoolCurrentlyExistsMessage = ({poolExists}) => {
-  const {translate: tr} = useI18n()
-  return poolExists ? tr(messages.poolExists) : tr(messages.poolNotExists)
-}
-
-const PoolCreation = ({action}) => {
-  const {translate: tr} = useI18n()
+const poolCreation = ({action, i18n}) => {
+  const {translate: tr} = i18n
   const {poolHash} = action
-  return (
-    <React.Fragment>
-      <Row>
-        <IconLabel certType={action.type}>{tr(messages.poolCreation__label)}</IconLabel>
-        <Value>
-          {fmtdMsg(messages.poolCreation__value.id, {
-            poolHash: <PoolHashLink poolHash={poolHash} />,
-          })}
-        </Value>
-      </Row>
-      <Row>
-        <Label>Info about the pool</Label>
-        <Value>TBD</Value>
-      </Row>
-    </React.Fragment>
-  )
+  return {
+    label: tr(messages.poolCreation__label),
+    value: [
+      fmtdMsg(messages.poolCreation__value.id, {
+        poolHash: <PoolHashLink poolHash={poolHash} />,
+      }),
+      'Info about the pool... TBD',
+    ],
+  }
 }
-const PoolUpdate = ({action}) => {
+
+const poolUpdate = ({action, i18n}) => {
   const {poolHash, wasRetiringDuringUpdate, poolExists, isInRetirement, retirementTxHash} = action
-  const {translate: tr} = useI18n()
-  return (
-    <React.Fragment>
-      <Row>
-        <IconLabel certType={action.type}>{tr(messages.poolUpdate__label)}</IconLabel>
-        <Value>
-          {fmtdMsg(messages.poolUpdate__value.id, {
-            poolHash: <PoolHashLink poolHash={poolHash} />,
-          })}{' '}
-          <PoolUpdateRelatedMessages
-            {...{wasRetiringDuringUpdate, poolExists, isInRetirement, retirementTxHash}}
-          />
-        </Value>
-      </Row>
-      <Row>
-        <Label>Info about the pool</Label>
-        <Value>TBD</Value>
-      </Row>
-    </React.Fragment>
-  )
+  const {translate: tr} = i18n
+  return {
+    label: tr(messages.poolUpdate__label),
+    value: [
+      fmtdMsg(messages.poolUpdate__value.id, {
+        poolHash: <PoolHashLink poolHash={poolHash} />,
+      }),
+      ...poolUpdateRelatedMessages({
+        wasRetiringDuringUpdate,
+        poolExists,
+        isInRetirement,
+        retirementTxHash,
+        i18n,
+      }),
+      'Info about the pool... TBD',
+    ],
+  }
 }
 
-const PoolDeletion = ({action}) => {
-  const {translate: tr} = useI18n()
-  return (
-    <Row>
-      <IconLabel certType={action.type}>{tr(messages.poolDeletion__label)}</IconLabel>
-      <Value>{tr(messages.poolDeletion__value)}</Value>
-    </Row>
-  )
+const poolDeletion = ({action, i18n}) => {
+  const {translate: tr} = i18n
+  return {
+    label: tr(messages.poolDeletion__label),
+    value: [tr(messages.poolDeletion__value)],
+  }
 }
 
-const PoolRetirement = ({action}) => {
-  const {translate: tr} = useI18n()
+const poolRetirement = ({action, i18n}) => {
+  const {translate: tr} = i18n
   const {
     poolExists,
     retiring,
@@ -473,54 +483,43 @@ const PoolRetirement = ({action}) => {
     previousUpdatedAtTxHash,
     nextUpdatedAtTxHash,
   } = action
-  return (
-    <Row>
-      <IconLabel certType={action.type}>{tr(messages.poolRetiring__label)}</IconLabel>
-      <Value>
-        <Typography variant="body1">
-          {fmtdMsg(messages.poolRetirement__value.id, {
-            poolHash: <PoolHashLink poolHash={poolHash} />,
-            epoch,
-          })}{' '}
-          <PoolCurrentlyExistsMessage poolExists={poolExists} />{' '}
-          {retiring && <React.Fragment>{tr(messages.poolRetiring)} </React.Fragment>}
-          {fmtdMsg(messages.poolCreatedAtTxHash.id, {
-            txHash: <TxHashLink txHash={createdAtTxHash} />,
-          })}{' '}
-          {previousUpdatedAtTxHash && (
-            <React.Fragment>
-              {fmtdMsg(messages.poolPreviousUpdatedAtTxHash.id, {
-                txHash: <TxHashLink txHash={previousUpdatedAtTxHash} />,
-              })}{' '}
-            </React.Fragment>
-          )}
-          {nextUpdatedAtTxHash && (
-            <React.Fragment>
-              {fmtdMsg(messages.poolNextUpdatedAtTxHash.id, {
-                txHash: <TxHashLink txHash={nextUpdatedAtTxHash} />,
-              })}{' '}
-            </React.Fragment>
-          )}
-        </Typography>
-      </Value>
-    </Row>
-  )
+  return {
+    label: tr(messages.poolRetiring__label),
+    value: [
+      fmtdMsg(messages.poolRetirement__value.id, {
+        poolHash: <PoolHashLink poolHash={poolHash} />,
+        epoch,
+      }),
+      poolExistsMessage({poolExists, i18n}),
+      retiring && tr(messages.poolRetiring),
+      fmtdMsg(messages.poolCreatedAtTxHash.id, {
+        txHash: <TxHashLink txHash={createdAtTxHash} />,
+      }),
+      previousUpdatedAtTxHash &&
+        fmtdMsg(messages.poolPreviousUpdatedAtTxHash.id, {
+          txHash: <TxHashLink txHash={previousUpdatedAtTxHash} />,
+        }),
+      nextUpdatedAtTxHash &&
+        fmtdMsg(messages.poolNextUpdatedAtTxHash.id, {
+          txHash: <TxHashLink txHash={nextUpdatedAtTxHash} />,
+        }),
+    ],
+  }
 }
 
-const PoolRetirementCancellation = ({action}) => {
-  const {translate: tr} = useI18n()
+const poolRetirementCancellation = ({action, i18n}) => {
   const {poolHash, epochNumber} = action
-  return (
-    <Row>
-      <IconLabel certType={action.type}>{tr(messages.poolRetirementCancellation__label)}</IconLabel>
-      <Value>
-        {fmtdMsg(messages.poolRetirementCancellation__value.id, {
-          poolHash: <PoolHashLink poolHash={poolHash} />,
-          epochNumber,
-        })}{' '}
-      </Value>
-    </Row>
-  )
+  const {translate: tr} = i18n
+
+  return {
+    label: tr(messages.poolRetirementCancellation__label),
+    value: [
+      fmtdMsg(messages.poolRetirementCancellation__value.id, {
+        poolHash: <PoolHashLink poolHash={poolHash} />,
+        epochNumber,
+      }),
+    ],
+  }
 }
 
 const AdditionalRowLabel = ({children}) => (
@@ -570,34 +569,41 @@ const TransactionRow = ({tx}) => {
   )
 }
 
-const CERT_TYPE_TO_COMPONENT = {
-  [CERT_ACTIONS_TYPES.KEY_REGISTRATION]: KeyRegistration,
-  [CERT_ACTIONS_TYPES.KEY_DEREGISTRATION]: KeyDeregistration,
-  [CERT_ACTIONS_TYPES.KEY_REWARD_RECEIPT]: KeyRewardReception,
-  [CERT_ACTIONS_TYPES.KEY_REGISTRATION_AS_POOL_OWNER]: KeyRegistrationAsPoolOwner,
-  [CERT_ACTIONS_TYPES.KEY_DEREGISTRATION_AS_POOL_OWNER]: KeyDeregistrationAsPoolOwner,
-  [CERT_ACTIONS_TYPES.KEY_REGISTRATION_AS_POOL_REWARD_TARGET]: KeyRegistrationAsPoolRewardTarget,
+const GET_RENDER_CONTENT = {
+  [CERT_ACTIONS_TYPES.KEY_REGISTRATION]: keyRegistration,
+  [CERT_ACTIONS_TYPES.KEY_DEREGISTRATION]: keyDeregistration,
+  [CERT_ACTIONS_TYPES.KEY_REWARD_RECEIPT]: keyRewardReception,
+  [CERT_ACTIONS_TYPES.KEY_REGISTRATION_AS_POOL_OWNER]: keyRegistrationAsPoolOwner,
+  [CERT_ACTIONS_TYPES.KEY_DEREGISTRATION_AS_POOL_OWNER]: keyDeregistrationAsPoolOwner,
+  [CERT_ACTIONS_TYPES.KEY_REGISTRATION_AS_POOL_REWARD_TARGET]: keyRegistrationAsPoolRewardTarget,
   // next line has 102 characters, for unknown reason it doesn't pretty-print correctly
   // eslint-disable-next-line max-len
-  [CERT_ACTIONS_TYPES.KEY_DEREGISTRATION_AS_POOL_REWARD_TARGET]: KeyDeregistrationAsPoolRewardTarget,
-  [CERT_ACTIONS_TYPES.KEY_DELEGATION]: KeyDelegation,
-  [CERT_ACTIONS_TYPES.POOL_CREATION]: PoolCreation,
-  [CERT_ACTIONS_TYPES.POOL_UPDATE]: PoolUpdate,
-  [CERT_ACTIONS_TYPES.POOL_DELETION]: PoolDeletion,
-  [CERT_ACTIONS_TYPES.POOL_RETIREMENT_CANCELLATION]: PoolRetirementCancellation,
-  [CERT_ACTIONS_TYPES.POOL_RETIREMENT]: PoolRetirement,
+  [CERT_ACTIONS_TYPES.KEY_DEREGISTRATION_AS_POOL_REWARD_TARGET]: keyDeregistrationAsPoolRewardTarget,
+  [CERT_ACTIONS_TYPES.KEY_DELEGATION]: keyDelegation,
+  [CERT_ACTIONS_TYPES.POOL_CREATION]: poolCreation,
+  [CERT_ACTIONS_TYPES.POOL_UPDATE]: poolUpdate,
+  [CERT_ACTIONS_TYPES.POOL_DELETION]: poolDeletion,
+  [CERT_ACTIONS_TYPES.POOL_RETIREMENT_CANCELLATION]: poolRetirementCancellation,
+  [CERT_ACTIONS_TYPES.POOL_RETIREMENT]: poolRetirement,
 }
 
 const ActionList = ({actions, showTxHash}) => {
   const classes = useStyles()
+  const i18n = useI18n()
   return (
     <div className={classes.wrapper}>
       {actions.map((action, index) => {
-        const Action = CERT_TYPE_TO_COMPONENT[action.type]
+        const {label, value} = GET_RENDER_CONTENT[action.type]({action, i18n})
         return (
           <React.Fragment key={index}>
             <Divider />
-            <Action action={action} />
+            {/* Any way to avoid DesktopOnly and MobileOnly? */}
+            <DesktopOnly>
+              <DesktopAction {...{action, label, value}} />
+            </DesktopOnly>
+            <MobileOnly>
+              <MobileAction {...{action, label, value}} />
+            </MobileOnly>
             {action.deposit && <DepositRow value={action.deposit} />}
             {action.refund && <RefundRow value={action.refund} />}
             {showTxHash && <TransactionRow tx={action.tx} />}
