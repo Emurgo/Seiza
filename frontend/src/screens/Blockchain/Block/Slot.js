@@ -99,10 +99,10 @@ const SlotMetadata = ({slot, epoch, slotData}) => {
 
   const title = tr(metadata.screenTitle, {slot, epoch})
 
-  const desc = tr(metadata.metaDescription, {
+  const description = tr(metadata.metaDescription, {
     slot,
     epoch,
-    date: formatTimestamp(idx(slotData, (_) => _.timeIssued), {tz: 'UTC'}),
+    date: formatTimestamp(idx(slotData, (_) => _.timeIssued), {tz: formatTimestamp.TZ_UTC}),
   })
 
   const keywords = tr(metadata.keywords, {
@@ -111,7 +111,7 @@ const SlotMetadata = ({slot, epoch, slotData}) => {
     commonKeywords: tr(seoMessages.keywords),
   })
 
-  return <MetadataOverrides title={title} description={desc} keywords={keywords} />
+  return <MetadataOverrides {...{title, description, keywords}} />
 }
 
 const validateParam = (param: string) => isInteger(param) && parseInt(param, 10) >= 0

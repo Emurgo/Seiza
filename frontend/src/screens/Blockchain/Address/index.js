@@ -170,7 +170,7 @@ const AddressMetadata = ({address58, addressSummary}) => {
 
   const title = tr(metadata.screenTitle, {address58})
 
-  const desc = tr(metadata.metaDescription, {
+  const description = tr(metadata.metaDescription, {
     address58,
     txCount: formatInt(idx(addressSummary, (_) => _.transactionsCount)),
     balance: formatAda(idx(addressSummary, (_) => _.balance)),
@@ -181,7 +181,7 @@ const AddressMetadata = ({address58, addressSummary}) => {
     commonKeywords: tr(seoMessages.keywords),
   })
 
-  return <MetadataOverrides title={title} description={desc} keywords={keywords} />
+  return <MetadataOverrides {...{title, description, keywords}} />
 }
 
 const AddressIconWithModal = ({address58}) => {

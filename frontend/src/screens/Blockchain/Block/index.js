@@ -37,9 +37,9 @@ const blockSummaryLabels = defineMessages({
 })
 
 const metadata = defineMessages({
-  screenTitle: 'Cardano Block {blockHash}  | Seiza',
+  screenTitle: 'Cardano Block {blockHash} | Seiza',
   metaDescription:
-    'Cardano Block {blockHash} / Cardano Slot {slot} in Epoch {epoch}. Total ADA Sent: {totalAdaSent}. Timestamp:  {date}',
+    'Cardano Block {blockHash} / Cardano Slot {slot} in Epoch {epoch}. Total ADA Sent: {totalAdaSent}. Timestamp: {date}',
   keywords:
     'Cardano Block {blockHash}, Slot {slot} in Epoch {epoch}, Block {slot} in Epoch {epoch}, Epoch {epoch}, Cardano Block, {commonKeywords}',
 })
@@ -229,11 +229,11 @@ const BlockMetadata = ({blockHash, blockData}) => {
 
   const title = tr(metadata.screenTitle, {blockHash})
 
-  const desc = tr(metadata.metaDescription, {
+  const description = tr(metadata.metaDescription, {
     blockHash,
     epoch: formatInt(idx(blockData, (_) => _.epoch)),
     slot: formatInt(idx(blockData, (_) => _.slot)),
-    date: formatTimestamp(idx(blockData, (_) => _.timeIssued), {tz: 'UTC'}),
+    date: formatTimestamp(idx(blockData, (_) => _.timeIssued), {tz: formatTimestamp.TZ_UTC}),
     totalAdaSent: formatAda(idx(blockData, (_) => _.totalSent)),
   })
 
@@ -245,7 +245,7 @@ const BlockMetadata = ({blockHash, blockData}) => {
     commonKeywords: tr(seoMessages.keywords),
   })
 
-  return <MetadataOverrides title={title} description={desc} keywords={keywords} />
+  return <MetadataOverrides {...{title, description, keywords}} />
 }
 
 const BlockScreen = () => {

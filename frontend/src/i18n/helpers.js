@@ -225,6 +225,7 @@ export const getIntlFormatters = (intl: any): Formatters => {
   formatTimestamp.FMT_SHORT_DATE = 'L'
   formatTimestamp.FMT_MONTH_NUMERAL = 'L LTS'
   formatTimestamp.FMT_STANDARD = STANDARD_READABLE_FORMAT
+  formatTimestamp.TZ_UTC = 'UTC'
 
   return {
     translate,

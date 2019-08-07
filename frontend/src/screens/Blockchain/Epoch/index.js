@@ -337,13 +337,13 @@ const EpochMetadata = ({epochNumber, epochData}) => {
 
   const title = tr(metadata.screenTitle, {epochNumber})
 
-  const desc = tr(metadata.metaDescription, {
+  const description = tr(metadata.metaDescription, {
     epochNumber: formatInt(epochNumber),
     startTime: formatTimestamp(idx(epochData, (_) => _.startTime), {
-      tz: 'UTC',
+      tz: formatTimestamp.TZ_UTC,
     }),
     endTime: formatTimestamp(idx(epochData, (_) => _.endTime), {
-      tz: 'UTC',
+      tz: formatTimestamp.TZ_UTC,
     }),
     txCount: formatInt(idx(epochData, (_) => _.summary.transactionCount)),
   })
@@ -353,7 +353,7 @@ const EpochMetadata = ({epochNumber, epochData}) => {
     commonKeywords: tr(seoMessages.keywords),
   })
 
-  return <MetadataOverrides title={title} description={desc} keywords={keywords} />
+  return <MetadataOverrides {...{title, description, keywords}} />
 }
 
 const EpochScreen = () => {

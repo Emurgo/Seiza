@@ -174,9 +174,9 @@ const TransactionMetadata = ({txHash, txData}) => {
 
   const title = tr(metadata.screenTitle, {txHash})
 
-  const desc = tr(metadata.metaDescription, {
+  const description = tr(metadata.metaDescription, {
     txHash,
-    date: formatTimestamp(idx(txData, (_) => _.block.timeIssued), {tz: 'UTC'}),
+    date: formatTimestamp(idx(txData, (_) => _.block.timeIssued), {tz: formatTimestamp.TZ_UTC}),
     totalAdaSent: formatAda(idx(txData, (_) => _.totalInput)),
   })
 
@@ -185,7 +185,7 @@ const TransactionMetadata = ({txHash, txData}) => {
     commonKeywords: tr(seoMessages.keywords),
   })
 
-  return <MetadataOverrides title={title} description={desc} keywords={keywords} />
+  return <MetadataOverrides {...{title, description, keywords}} />
 }
 
 const TransactionScreen = () => {
