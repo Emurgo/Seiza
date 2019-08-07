@@ -152,13 +152,14 @@ export const getIntlFormatters = (intl: any): Formatters => {
 
   type FormatTimestampOptions = {
     format: string,
+    tz: string,
   }
 
   const _formatTimestamp = (x, options: FormatTimestampOptions) => {
     const desiredFormat = options.format || STANDARD_READABLE_FORMAT
     const ts = moment(x)
       .locale(intl.locale)
-      .tz(moment.tz.guess())
+      .tz(options.tz || moment.tz.guess())
     if (!ts.isValid) throw new Error('bad timestamp')
     return ts.format(desiredFormat)
   }
@@ -224,6 +225,7 @@ export const getIntlFormatters = (intl: any): Formatters => {
   formatTimestamp.FMT_SHORT_DATE = 'L'
   formatTimestamp.FMT_MONTH_NUMERAL = 'L LTS'
   formatTimestamp.FMT_STANDARD = STANDARD_READABLE_FORMAT
+  formatTimestamp.TZ_UTC = 'UTC'
 
   return {
     translate,

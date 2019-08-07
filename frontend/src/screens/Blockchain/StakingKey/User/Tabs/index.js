@@ -6,7 +6,7 @@ import {LoadingError, TabsPaginationLayout} from '@/components/common'
 import {useI18n} from '@/i18n/helpers'
 import DelegatedPoolInfoTab from './DelegatedPoolInfoTab'
 import HistoryTab from '../../common/History'
-import TransactionsTab from '../../common/TransactionsTab'
+import Transactions from '../../common/Transactions'
 import {useLoadStakingKeyHistory} from '../dataLoaders'
 
 const messages = defineMessages({
@@ -39,7 +39,7 @@ const TABS_CONTENT = {
     )
   },
   [TAB_NAMES.TRANSACTIONS]: ({stakingKey}) => (
-    <TransactionsTab transactions={stakingKey.currentStakepool.transactions} />
+    <Transactions transactions={stakingKey.currentStakepool.transactions} />
   ),
 }
 

@@ -6,6 +6,7 @@ import {IconButton} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import idx from 'idx'
 
+import {MetadataOverrides, seoMessages} from '@/pages/_meta'
 import {useI18n} from '@/i18n/helpers'
 import {useAnalytics} from '@/components/context/googleAnalytics'
 import {toIntOrNull, getPageCount} from '@/helpers/utils'
@@ -38,6 +39,13 @@ const summaryMessages = defineMessages({
   balance: 'Address Balance',
   totalAdaReceived: 'Total received ADA',
   totalAdaSent: 'Total sent ADA',
+})
+
+const metadata = defineMessages({
+  screenTitle: 'Cardano Address {address58} | Seiza',
+  metaDescription:
+    'Cardano Address: {address58}. Total transactions: {txCount}. Address Balance: {balance}.',
+  keywords: 'Cardano Address {address58}, Cardano Address, {commonKeywords}',
 })
 
 const Row = ({label, value}) => {
@@ -157,6 +165,51 @@ const useManageTabs = (address58) => {
   }
 }
 
+const AddressMetadata = ({address58, addressSummary}) => {
+  const {translate: tr, formatAda, formatInt} = useI18n()
+
+  const title = tr(metadata.screenTitle, {address58})
+
+  const description = tr(metadata.metaDescription, {
+    address58,
+    txCount: formatInt(idx(addressSummary, (_) => _.transactionsCount)),
+    balance: formatAda(idx(addressSummary, (_) => _.balance)),
+  })
+
+  const keywords = tr(metadata.keywords, {
+    address58,
+    commonKeywords: tr(seoMessages.keywords),
+  })
+
+  return <MetadataOverrides {...{title, description, keywords}} />
+}
+
+const AddressIconWithModal = ({address58}) => {
+  const {translate: tr} = useI18n()
+  const classes = useStyles()
+  return (
+    <WithModalState>
+      {({isOpen, openModal, closeModal}) => (
+        <React.Fragment>
+          <Tooltip title={tr(messages.showQRCode)} enterTouchDelay={100}>
+            <IconButton className={classes.alignIconButton} onClick={openModal} color="primary">
+              <img alt="show qr code" src={qrCodeIcon} />
+            </IconButton>
+          </Tooltip>
+          <QRDialog
+            qrCodeValue={address58}
+            description={
+              <EntityCardContent label={tr(messages.qrCodeDialogEntityLabel)} value={address58} />
+            }
+            isOpen={isOpen}
+            onClose={closeModal}
+          />
+        </React.Fragment>
+      )}
+    </WithModalState>
+  )
+}
+
 const AddressScreen = () => {
   const {
     match: {
@@ -190,37 +243,11 @@ const AddressScreen = () => {
   return (
     <div ref={scrollToRef}>
       <SimpleLayout title={tr(messages.title)}>
+        <AddressMetadata address58={address58} addressSummary={addressSummary} />
         <EntityIdCard
           label={tr(summaryMessages.address)}
           value={address58}
-          iconRenderer={
-            <WithModalState>
-              {({isOpen, openModal, closeModal}) => (
-                <React.Fragment>
-                  <Tooltip title={tr(messages.showQRCode)} enterTouchDelay={100}>
-                    <IconButton
-                      className={classes.alignIconButton}
-                      onClick={openModal}
-                      color="primary"
-                    >
-                      <img alt="show qr code" src={qrCodeIcon} />
-                    </IconButton>
-                  </Tooltip>
-                  <QRDialog
-                    qrCodeValue={address58}
-                    description={
-                      <EntityCardContent
-                        label={tr(messages.qrCodeDialogEntityLabel)}
-                        value={address58}
-                      />
-                    }
-                    isOpen={isOpen}
-                    onClose={closeModal}
-                  />
-                </React.Fragment>
-              )}
-            </WithModalState>
-          }
+          iconRenderer={<AddressIconWithModal address58={address58} />}
         />
         {error ? (
           <LoadingError error={error} />

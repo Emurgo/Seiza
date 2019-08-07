@@ -6,6 +6,7 @@ import {defineMessages} from 'react-intl'
 import idx from 'idx'
 import gql from 'graphql-tag'
 
+import {MetadataOverrides, seoMessages} from '@/pages/_meta'
 import {extractError} from '@/helpers/errors'
 import env from '@/config'
 import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
@@ -33,6 +34,12 @@ const messages = defineMessages({
   date: 'Date:',
   fees: 'Transaction Fees:',
   notAvailable: 'N/A',
+})
+
+const metadata = defineMessages({
+  screenTitle: 'Cardano Transaction {txHash}  | Seiza',
+  metaDescription: 'Cardano Transaction: {txHash}. Total ADA Sent: {totalAdaSent}. Date: {date}',
+  keywords: 'Transaction {txHash}, Cardano Transactions, {commonKeywords}',
 })
 
 type AssuranceEnum = 'LOW' | 'MEDIUM' | 'HIGH'
@@ -162,6 +169,25 @@ const useScreenParams = () => {
   return {txHash}
 }
 
+const TransactionMetadata = ({txHash, txData}) => {
+  const {translate: tr, formatTimestamp, formatAda} = useI18n()
+
+  const title = tr(metadata.screenTitle, {txHash})
+
+  const description = tr(metadata.metaDescription, {
+    txHash,
+    date: formatTimestamp(idx(txData, (_) => _.block.timeIssued), {tz: formatTimestamp.TZ_UTC}),
+    totalAdaSent: formatAda(idx(txData, (_) => _.totalInput)),
+  })
+
+  const keywords = tr(metadata.keywords, {
+    txHash,
+    commonKeywords: tr(seoMessages.keywords),
+  })
+
+  return <MetadataOverrides {...{title, description, keywords}} />
+}
+
 const TransactionScreen = () => {
   const {txHash} = useScreenParams()
   const {loading, transactionData, error} = useTransactionData(txHash)
@@ -176,6 +202,7 @@ const TransactionScreen = () => {
   return (
     <div ref={scrollToRef}>
       <SimpleLayout title={translate(messages.header)}>
+        <TransactionMetadata txHash={txHash} txData={transactionData} />
         <EntityIdCard
           label={translate(messages.transactionId)}
           value={txHash}

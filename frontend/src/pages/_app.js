@@ -259,9 +259,6 @@ class MyApp extends App {
             ...this.getHackedCookieHandlers(cookiesProps),
           }}
         >
-          <TwitterMetadata />
-          <FacebookMetadata />
-          <CrawlerMetadata />
           <ApolloProviders client={apolloClient}>
             <ThemeProvider>
               <MuiProviders>
@@ -269,6 +266,9 @@ class MyApp extends App {
                   <Intl>
                     <InjectHookIntlContext>
                       <UserAgentProvider userAgent={userAgent}>
+                        <TwitterMetadata />
+                        <FacebookMetadata />
+                        <CrawlerMetadata />
                         <Component {...pageProps} routerCtx={routerCtx} />
                       </UserAgentProvider>
                     </InjectHookIntlContext>
