@@ -3,7 +3,7 @@ import {defineMessages, FormattedMessage} from 'react-intl'
 import {makeStyles} from '@material-ui/styles'
 
 import {ExpandableCard, ExpandableCardFooter, ContentSpacing} from '@/components/visual'
-import {Pagination, EntityCardContent, Link} from '@/components/common'
+import {EntityCardContent, Link} from '@/components/common'
 import useToggle from '@/components/hooks/useToggle'
 import {useI18n} from '@/i18n/helpers'
 import CertificateActionList from '@/screens/Blockchain/Certificates/ActionList'
@@ -11,13 +11,6 @@ import {routeTo} from '@/helpers/routes'
 import CertificateActionsSummary from '@/screens/Blockchain/Certificates/ActionsSummary'
 import TwoColumnRow from './TwoColumnRow'
 import EmphasizedMessage from './EmphasizedMessage'
-
-const useStyles = makeStyles((theme) => ({
-  paginationWrapper: {
-    marginTop: theme.spacing(6),
-    marginBottom: theme.spacing(6),
-  },
-}))
 
 const transactionMessages = defineMessages({
   transactionEntity: 'Transaction',
@@ -113,16 +106,7 @@ const TransactionCard = ({tx}) => {
 }
 
 const TransactionsTab = ({transactions}) => {
-  const classes = useStyles()
-  return (
-    <React.Fragment>
-      {transactions && transactions.map((tx) => <TransactionCard key={tx.txHash} tx={tx} />)}
-      {/* TODO: Pagination on right side */}
-      <div className={classes.paginationWrapper}>
-        <Pagination pageCount={1} page={1} onChangePage={() => null} />
-      </div>
-    </React.Fragment>
-  )
+  return transactions && transactions.map((tx) => <TransactionCard key={tx.txHash} tx={tx} />)
 }
 
 export default TransactionsTab
