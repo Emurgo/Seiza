@@ -1,12 +1,12 @@
 import React from 'react'
 import {defineMessages} from 'react-intl'
 import {makeStyles} from '@material-ui/styles'
-import useTabState from '@/components/hooks/useTabState'
+import {Grid} from '@material-ui/core'
 import {LiteTabs, LiteTab, LoadingInProgress} from '@/components/visual'
 import {useI18n} from '@/i18n/helpers'
 import HistoryTab from '../../common/History'
 import TransactionsTab from '../../common/TransactionsTab'
-import {LoadingError} from '@/components/common'
+import {LoadingError, TabsPaginationLayout} from '@/components/common'
 import {useLoadStakepoolHistory} from '../dataLoaders'
 
 const messages = defineMessages({
@@ -14,69 +14,66 @@ const messages = defineMessages({
   transactionsTabName: 'Transactions ({count})',
 })
 
-const TAB_NAMES = {
+export const TAB_NAMES = {
   HISTORY: 'HISTORY',
   TRANSACTIONS: 'TRANSACTIONS',
 }
 
-const TABS = {
-  ORDER: [TAB_NAMES.HISTORY, TAB_NAMES.TRANSACTIONS],
-  RENDER_CONTENT: {
-    [TAB_NAMES.HISTORY]: ({stakepool}) => {
-      const {error, loading, data: stakepoolHistory} = useLoadStakepoolHistory(stakepool.hash)
-      return error ? (
-        <LoadingError error={error} />
-      ) : loading ? (
-        <LoadingInProgress />
-      ) : (
-        <HistoryTab history={stakepoolHistory} />
-      )
-    },
-    [TAB_NAMES.TRANSACTIONS]: ({stakepool}) => (
-      <TransactionsTab transactions={stakepool.transactions} />
-    ),
+const TABS_CONTENT = {
+  [TAB_NAMES.HISTORY]: ({stakepool}) => {
+    const {error, loading, data: stakepoolHistory} = useLoadStakepoolHistory(stakepool.hash)
+    return error ? (
+      <LoadingError error={error} />
+    ) : loading ? (
+      <LoadingInProgress />
+    ) : (
+      <HistoryTab history={stakepoolHistory} />
+    )
   },
+  [TAB_NAMES.TRANSACTIONS]: ({stakepool}) => (
+    <TransactionsTab transactions={stakepool.transactions} />
+  ),
 }
 
-const useStyles = makeStyles(({spacing}) => ({
-  tabsWrapper: {
-    marginTop: spacing(4),
-    marginBottom: spacing(4),
-  },
-}))
-
-const StakepoolTabs = ({stakepool}) => {
-  const classes = useStyles()
+const StakepoolTabs = ({stakepool, pagination, tabState}) => {
+  // const classes = useStyles()
   const {translate: tr} = useI18n()
-  const {setTabByEventIndex, currentTabIndex, currentTab} = useTabState(TABS.ORDER)
+  const {setTabByEventIndex, currentTabIndex, currentTab} = tabState
+  const TabContent = TABS_CONTENT[currentTab]
 
-  const TabContent = TABS.RENDER_CONTENT[currentTab]
   return (
-    <div>
-      <div className={classes.tabsWrapper}>
-        <LiteTabs value={currentTabIndex} onChange={setTabByEventIndex}>
-          <LiteTab
-            label={
-              <React.Fragment>
-                {tr(messages.historyTabName, {
-                  count: stakepool.timeActive.epochs,
-                })}{' '}
-              </React.Fragment>
-            }
-          />
-          <LiteTab
-            label={
-              <React.Fragment>
-                {tr(messages.transactionsTabName, {
-                  count: stakepool.transactions.length,
-                })}
-              </React.Fragment>
-            }
-          />
-        </LiteTabs>
-      </div>
+    <React.Fragment>
+      <TabsPaginationLayout
+        tabs={
+          <LiteTabs value={currentTabIndex} onChange={setTabByEventIndex}>
+            <LiteTab
+              label={
+                <React.Fragment>
+                  {tr(messages.historyTabName, {
+                    count: stakepool.timeActive.epochs,
+                  })}{' '}
+                </React.Fragment>
+              }
+            />
+            <LiteTab
+              label={
+                <React.Fragment>
+                  {tr(messages.transactionsTabName, {
+                    count: stakepool.transactions.length,
+                  })}
+                </React.Fragment>
+              }
+            />
+          </LiteTabs>
+        }
+        pagination={pagination}
+      />
+
       <TabContent stakepool={stakepool} />
-    </div>
+      <Grid container justify="flex-end">
+        <Grid item>{pagination}</Grid>
+      </Grid>
+    </React.Fragment>
   )
 }
 

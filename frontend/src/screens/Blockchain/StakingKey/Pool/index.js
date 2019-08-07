@@ -4,6 +4,10 @@ import {defineMessages, FormattedMessage} from 'react-intl'
 import useReactRouter from 'use-react-router'
 import {Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
+import {ObjectValues} from '@/helpers/flow'
+import {useManageQueryValue} from '@/components/hooks/useManageQueryValue'
+import useTabState from '@/components/hooks/useTabState'
+import {toIntOrNull, getPageCount} from '@/helpers/utils'
 
 import {
   SummaryCard,
@@ -18,6 +22,7 @@ import {
   EntityIdCard,
   Link,
   ResponsiveCircularProgressBar,
+  Pagination,
 } from '@/components/common'
 import {useI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
@@ -25,7 +30,7 @@ import AdaIcon from '@/static/assets/icons/transaction-id.svg'
 import CertificateActionIcon from '@/static/assets/icons/reward-address.svg'
 import RewardAddressIcon from '@/static/assets/icons/certificate.svg'
 import {useLoadStakepoolData} from './dataLoaders'
-import Tabs from './Tabs'
+import Tabs, {TAB_NAMES} from './Tabs'
 
 const useStyles = makeStyles((theme) => ({
   smallAdaText: {
@@ -69,12 +74,41 @@ const FromTop1Message = ({value}) => (
   <FormattedMessage id={messages.fromTop1.id} values={{value}} />
 )
 
+const usePaginations = () => {
+  const [historyPage, onHistoryPageChange] = useManageQueryValue('history-page', 1, toIntOrNull)
+  const [transactionsPage, onTransactionsPageChange] = useManageQueryValue(
+    'txs-page',
+    1,
+    toIntOrNull
+  )
+
+  return {
+    [TAB_NAMES.HISTORY]: {page: historyPage, onChangePage: onHistoryPageChange},
+    [TAB_NAMES.TRANSACTIONS]: {page: transactionsPage, onChangePage: onTransactionsPageChange},
+  }
+}
+
+const useManageTabs = () => {
+  const tabNames = ObjectValues(TAB_NAMES)
+  const [currentTab, setTab] = useManageQueryValue('tab', tabNames[0])
+  const tabState = useTabState(tabNames, null, currentTab, setTab)
+  const paginations = usePaginations()
+  return {
+    pagination: paginations[currentTab],
+    tabState,
+  }
+}
+
+const ROWS_PER_PAGE = 10
+
 const Stakepool = () => {
   const classes = useStyles()
   const {Row, Label, Value} = SummaryCard
-  const {translate, formatPercent, formatInt, formatTimestamp, formatAda} = useI18n()
+  const {translate: tr, formatPercent, formatInt, formatTimestamp, formatAda} = useI18n()
   const {match} = useReactRouter()
   const {data: stakepool, loading, error} = useLoadStakepoolData(match.params.poolHash)
+  const {pagination, tabState} = useManageTabs()
+  const totalCount = 1 // TODO: handle totalCount once we have real data
 
   return (
     <SimpleLayout title={stakepool.name}>
@@ -84,56 +118,56 @@ const Stakepool = () => {
         <LoadingInProgress />
       ) : (
         <React.Fragment>
-          <Alert type="warning" message={translate(messages.poolRetiredWarning)} />
+          <Alert type="warning" message={tr(messages.poolRetiredWarning)} />
 
           <EntityIdCard
-            label={translate(messages.stakepoolHash)}
+            label={tr(messages.stakepoolHash)}
             value={stakepool.hash}
             iconRenderer={<img alt="" src={AdaIcon} />}
             badge={
               <ResponsiveCircularProgressBar
-                label={translate(messages.entityBadge)}
+                label={tr(messages.entityBadge)}
                 value={stakepool.revenue}
               />
             }
           />
           <SummaryCard>
             <Row>
-              <Label>{translate(messages.stakingPoolName)}</Label>
+              <Label>{tr(messages.stakingPoolName)}</Label>
               <Value>{stakepool.name}</Value>
             </Row>
             <Row>
-              <Label>{translate(messages.validationCharacters)}</Label>
+              <Label>{tr(messages.validationCharacters)}</Label>
               <Value>{stakepool.validationCharacters}</Value>
             </Row>
             <Row>
-              <Label>{translate(messages.creationDate)}</Label>
+              <Label>{tr(messages.creationDate)}</Label>
               <Value>{formatTimestamp(stakepool.createdAt)}</Value>
             </Row>
             <Row>
-              <Label>{translate(messages.webpage)}</Label>
+              <Label>{tr(messages.webpage)}</Label>
               <Value>
                 <ExternalLink to={stakepool.webpage}>{stakepool.webpage}</ExternalLink>
               </Value>
             </Row>
             <Row>
-              <Label>{translate(messages.pledge)}</Label>
+              <Label>{tr(messages.pledge)}</Label>
               <Value>
                 <AdaValue value={stakepool.pledge} showCurrency />
               </Value>
             </Row>
             <Row>
-              <Label>{translate(messages.totalStakedAda)}</Label>
+              <Label>{tr(messages.totalStakedAda)}</Label>
               <Value>
                 <AdaValue value={stakepool.totalAdaStaked} showCurrency />
               </Value>
             </Row>
             <Row>
-              <Label>{translate(messages.performance)}</Label>
+              <Label>{tr(messages.performance)}</Label>
               <Value>{formatPercent(stakepool.performance)}</Value>
             </Row>
             <Row>
-              <Label>{translate(messages.totalRewards)}</Label>
+              <Label>{tr(messages.totalRewards)}</Label>
               <Value>
                 <Typography variant="body1" align="right">
                   <AdaValue value={stakepool.totalRewards.amount} showCurrency />
@@ -154,21 +188,21 @@ const Stakepool = () => {
               </Value>
             </Row>
             <Row>
-              <Label>{translate(messages.totalActiveEpochs)}</Label>
+              <Label>{tr(messages.totalActiveEpochs)}</Label>
               <Value>
-                {translate(messages.epochs, {count: stakepool.timeActive.epochs})}{' '}
-                {translate(messages.days, {count: stakepool.timeActive.days})}
+                {tr(messages.epochs, {count: stakepool.timeActive.epochs})}{' '}
+                {tr(messages.days, {count: stakepool.timeActive.days})}
               </Value>
             </Row>
             <Row>
-              <Label>{translate(messages.stakersCount)}</Label>
+              <Label>{tr(messages.stakersCount)}</Label>
               <Value>
                 {formatInt(stakepool.stakersCount)}{' '}
-                {translate(messages.stakers, {count: stakepool.stakersCount})}
+                {tr(messages.stakers, {count: stakepool.stakersCount})}
               </Value>
             </Row>
             <Row>
-              <Label>{translate(messages.margin)}</Label>
+              <Label>{tr(messages.margin)}</Label>
               <Value>
                 <Typography variant="body1" align="right">
                   {formatPercent(stakepool.currentMargin.margin)}{' '}
@@ -179,13 +213,12 @@ const Stakepool = () => {
                   />
                 </Typography>
                 <Typography variant="caption" color="textSecondary" align="right">
-                  {translate(messages.lastUpdate)}{' '}
-                  {formatTimestamp(stakepool.currentMargin.updatedAt)}
+                  {tr(messages.lastUpdate)} {formatTimestamp(stakepool.currentMargin.updatedAt)}
                 </Typography>
               </Value>
             </Row>
             <Row>
-              <Label>{translate(messages.cost)}</Label>
+              <Label>{tr(messages.cost)}</Label>
               <Value>
                 <Typography variant="body1" align="right">
                   <AdaValue value={stakepool.currentCost.cost} showCurrency />
@@ -200,13 +233,12 @@ const Stakepool = () => {
                   />
                 </Typography>
                 <Typography variant="caption" color="textSecondary" align="right">
-                  {translate(messages.lastUpdate)}{' '}
-                  {formatTimestamp(stakepool.currentCost.updatedAt)}
+                  {tr(messages.lastUpdate)} {formatTimestamp(stakepool.currentCost.updatedAt)}
                 </Typography>
               </Value>
             </Row>
             <Row>
-              <Label>{translate(messages.fullness)}</Label>
+              <Label>{tr(messages.fullness)}</Label>
               <Value>
                 {formatPercent(stakepool.fullness)}{' '}
                 <FromTop1Message
@@ -217,7 +249,7 @@ const Stakepool = () => {
               </Value>
             </Row>
             <Row>
-              <Label>{translate(messages.revenue)}</Label>
+              <Label>{tr(messages.revenue)}</Label>
               <Value>
                 {formatPercent(stakepool.revenue)}{' '}
                 <FromTop1Message
@@ -228,12 +260,12 @@ const Stakepool = () => {
               </Value>
             </Row>
             <Row>
-              <Label>{translate(messages.description)}</Label>
+              <Label>{tr(messages.description)}</Label>
               <Value>{stakepool.description}</Value>
             </Row>
           </SummaryCard>
           <EntityIdCard
-            label={translate(messages.rewardAddress)}
+            label={tr(messages.rewardAddress)}
             value={
               <Link monospace to={routeTo.address(stakepool.rewardsAddress)}>
                 {stakepool.rewardsAddress}
@@ -242,11 +274,23 @@ const Stakepool = () => {
             iconRenderer={<img alt="" src={RewardAddressIcon} />}
           />
           <EntityIdCard
-            label={translate(messages.stakePoolCertificate)}
+            label={tr(messages.stakePoolCertificate)}
             value={stakepool.stakePoolCertificate}
             iconRenderer={<img alt="" src={CertificateActionIcon} />}
           />
-          <Tabs stakepool={stakepool} />
+          <Tabs
+            stakepool={stakepool}
+            tabState={tabState}
+            pagination={
+              pagination && (
+                <Pagination
+                  pageCount={getPageCount(totalCount, ROWS_PER_PAGE)}
+                  page={pagination.page}
+                  onChangePage={pagination.onChangePage}
+                />
+              )
+            }
+          />
         </React.Fragment>
       )}
     </SimpleLayout>
