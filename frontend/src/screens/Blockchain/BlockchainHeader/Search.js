@@ -14,12 +14,13 @@ import {Typography, Portal} from '@material-ui/core'
 import {useI18n} from '@/i18n/helpers'
 import {Searchbar, Alert} from '@/components/visual'
 import {LoadingError} from '@/components/common'
-import {useSearchbarRefContext} from '@/components/context/SearchbarRef'
+import {useSearchbarRef} from '../context/searchbarRef'
 
 import {routeTo} from '@/helpers/routes'
 import * as urlHelpers from '@/helpers/url'
-import {useAnalytics} from '@/helpers/googleAnalytics'
+import {useAnalytics} from '@/components/context/googleAnalytics'
 import {APOLLO_CACHE_OPTIONS} from '@/constants'
+import {getDefaultSpacing} from '@/components/visual/ContentSpacing'
 
 const text = defineMessages({
   searchPlaceholder: 'Search addresses, transactions, epochs & slots on the Cardano network',
@@ -104,6 +105,9 @@ const useStyles = makeStyles((theme) => ({
     position: 'absolute',
     width: '100%',
     zIndex: 1,
+    padding: getDefaultSpacing(theme) * 0.5,
+    paddingTop: getDefaultSpacing(theme) * 0.25,
+    paddingBottom: getDefaultSpacing(theme) * 0.25,
   },
   helpText: {
     marginLeft: theme.spacing(4),
@@ -211,7 +215,7 @@ const Search = ({isMobile = false}: SearchProps) => {
 
   const showAlert = searchQuery && !error && !loading && !searchResult
 
-  const searchbarRef = useSearchbarRefContext()
+  const searchbarRef = useSearchbarRef()
 
   const {isFocused: isSearchbarFocused, onFocus, onBlur} = useTextfieldFocus(false)
 

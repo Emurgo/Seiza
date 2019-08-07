@@ -5,14 +5,15 @@ import '@/utils.css'
 import '@/polyfills'
 
 import React, {useMemo, useState, useEffect} from 'react'
-import {IntlProvider, addLocaleData} from 'react-intl'
-import {ThemeProvider} from '@material-ui/styles'
+import {IntlProvider as ReactIntlProvider, addLocaleData} from 'react-intl'
+import {ThemeProvider as MuiThemeProvider} from '@material-ui/styles'
 
 import App, {Container} from 'next/app'
 import Head from 'next/head'
 
 import {ApolloProvider} from 'react-apollo'
 import {ApolloProvider as ApolloHooksProvider} from 'react-apollo-hooks'
+import {parseCookies, setCookie, destroyCookie} from 'nookies'
 
 import withApolloClient from '../lib/with-apollo-client'
 import {InjectHookIntlContext} from '@/i18n/helpers'
@@ -20,14 +21,24 @@ import {InjectHookIntlContext} from '@/i18n/helpers'
 import CssBaseline from '@material-ui/core/CssBaseline'
 
 import config from '@/config'
-import {ThemeContextProvider, useTheme} from '@/components/context/theme'
-import {CookiesProvider} from '@/components/context/CookiesProvider'
-import {THEME_DEFINITIONS} from '@/components/themes'
-import {IntlContextProvider, useLocale} from '@/components/context/intl'
+import {ThemeProvider, useTheme} from '@/components/context/theme'
+import {CookiesProvider} from '@/components/context/cookies'
+import {
+  IntlProvider,
+  useLocale,
+  getValidatedLocale,
+  DEFAULT_LOCALE,
+  LOCALE_KEY,
+} from '@/components/context/intl'
+import {UserAgentProvider} from '@/components/context/userAgent'
+
+import {THEME_DEFINITIONS, THEMES} from '@/themes'
 import translations from '@/i18n/locales'
+import {DefaultErrorScreen} from '@/components/common/DefaultErrorBoundary'
+import * as urlUtils from '@/helpers/url'
+import * as storageUtils from '@/helpers/storage'
 
 import {CrawlerMetadata, TwitterMetadata, FacebookMetadata} from './_meta'
-import {parseCookies, setCookie, destroyCookie} from 'nookies'
 
 // Note: see https://medium.com/@shalkam/create-react-app-i18n-the-easy-way-b05536c594cb
 // for more info
@@ -72,7 +83,7 @@ const MuiProviders = ({children}) => {
   }, [])
 
   return (
-    <ThemeProvider theme={theme}>
+    <MuiThemeProvider theme={theme}>
       {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
       <CssBaseline />
       <Head>
@@ -80,18 +91,25 @@ const MuiProviders = ({children}) => {
         <meta name="theme-color" content={theme.palette.primary.main} />
       </Head>
       {children}
-    </ThemeProvider>
+    </MuiThemeProvider>
   )
 }
 // ***** END TAKEN FROM: https://github.com/mui-org/material-ui/blob/master/examples/nextjs/pages/_app.js
 
 const Intl = ({children}) => {
-  const {locale} = useLocale() || 'en'
+  const {locale} = useLocale()
   return (
-    <IntlProvider locale={locale} messages={translations[locale]}>
+    <ReactIntlProvider locale={locale} messages={translations[locale]}>
       {children}
-    </IntlProvider>
+    </ReactIntlProvider>
   )
+}
+
+// Note: for staking section `path` was set to `/staking`, but for some
+// reason it did not happen for other pathnames
+const getSetCookieArgs = (key, value, options = {}) => {
+  const defaultOptions = {path: '/'}
+  return [key, value, {...defaultOptions, ...options}]
 }
 
 const getCookiesProps = (ctx) => {
@@ -100,8 +118,8 @@ const getCookiesProps = (ctx) => {
 
   // Note: this function is returned only when rendered server-side as it is not
   // seriazable
-  const _setCookie = (name, value, options = {}) => {
-    setCookie(ctx, name, value, options)
+  const _setCookie = (...args) => {
+    setCookie(ctx, ...getSetCookieArgs(...args))
   }
 
   const _destroyCookie = (name) => {
@@ -109,6 +127,29 @@ const getCookiesProps = (ctx) => {
   }
 
   return {cookies, setCookie: _setCookie, destroyCookie: _destroyCookie}
+}
+
+// NOTE!!!
+// It would be nice if we did all this logic inside IntlProvider but there are some issues:
+// 1. To access url/change in convenient way, we need need IntlProvider defined after Router
+// 2. Settings language cookie:
+//  a) We can not call setCookie in `useEffect` as it will only run on client, so we would not
+//      see desired language in initial load
+//  b) We could force `useCookieState` to replace saved state with initial value,
+//     but that requires some hack or extra param
+// TODO: consider placing IntlProvider under Router and putting that code to IntlProvider
+const handleLocaleParam = (ctx, cookiesProps) => {
+  const localeParam = ctx.req.query.locale
+  if (localeParam) {
+    const origUrlQuery = urlUtils.stringify(ctx.req.query)
+    const newUrlQuery = urlUtils.replaceQueryParam(origUrlQuery, LOCALE_KEY, null)
+    cookiesProps.setCookie(
+      LOCALE_KEY,
+      storageUtils.toStorageFormat(getValidatedLocale(localeParam))
+    )
+    ctx.res.writeHead(302, {Location: `${ctx.req.path}${newUrlQuery ? `?${newUrlQuery}` : ''}`})
+    ctx.res.end()
+  }
 }
 
 class MyApp extends App {
@@ -121,10 +162,16 @@ class MyApp extends App {
         pageProps = await Component.getInitialProps(ctx)
       }
 
+      const cookiesProps = getCookiesProps(ctx)
+
+      // Note: this can set cookie and redirect
+      handleLocaleParam(ctx, cookiesProps)
+
       // what is returned here, gets injected into __NEXT_DATA__
       return {
         pageProps,
-        cookiesProps: getCookiesProps(ctx),
+        cookiesProps,
+        userAgent: ctx.req ? ctx.req.headers['user-agent'] : navigator.userAgent,
       }
       // ***** BEGIN INSPIRED BY: https://github.com/zeit/next.js/blob/master/examples/with-sentry/pages/_app.js
     } catch (error) {
@@ -157,7 +204,8 @@ class MyApp extends App {
   // setCookie and destroyCookie (functions in general) can be passed from `getInitialProps`
   // only on server. On client we use "browser" version where we do not need `ctx`.
   getHackedCookieHandlers(cookiesProps) {
-    const _setCookie = (...args) => {
+    const _setCookie = (key, value, options) => {
+      const args = getSetCookieArgs(key, value, options)
       if (!process.browser) {
         cookiesProps.setCookie(...args)
       } else {
@@ -177,7 +225,31 @@ class MyApp extends App {
   }
 
   render() {
-    const {Component, pageProps, routerCtx, apolloClient, cookiesProps} = this.props
+    const {
+      Component,
+      pageProps,
+      routerCtx,
+      apolloClient,
+      cookiesProps,
+      hasError,
+      userAgent,
+    } = this.props
+
+    if (hasError) {
+      // Note: we dont have (may not have) cookies in this case,
+      // so we default language and theme.
+      // Note: we relly that we will not get another error inside those wrappers,
+      // (TODO: consider no dependencies error screen)
+      return (
+        <MuiThemeProvider theme={THEME_DEFINITIONS[THEMES._default]}>
+          <ReactIntlProvider locale={DEFAULT_LOCALE} messages={translations[DEFAULT_LOCALE]}>
+            <InjectHookIntlContext>
+              <DefaultErrorScreen />
+            </InjectHookIntlContext>
+          </ReactIntlProvider>
+        </MuiThemeProvider>
+      )
+    }
 
     return (
       <Container>
@@ -187,21 +259,23 @@ class MyApp extends App {
             ...this.getHackedCookieHandlers(cookiesProps),
           }}
         >
-          <TwitterMetadata />
-          <FacebookMetadata />
-          <CrawlerMetadata />
           <ApolloProviders client={apolloClient}>
-            <ThemeContextProvider>
+            <ThemeProvider>
               <MuiProviders>
-                <IntlContextProvider>
+                <IntlProvider>
                   <Intl>
                     <InjectHookIntlContext>
-                      <Component {...pageProps} routerCtx={routerCtx} />
+                      <UserAgentProvider userAgent={userAgent}>
+                        <TwitterMetadata />
+                        <FacebookMetadata />
+                        <CrawlerMetadata />
+                        <Component {...pageProps} routerCtx={routerCtx} />
+                      </UserAgentProvider>
                     </InjectHookIntlContext>
                   </Intl>
-                </IntlContextProvider>
+                </IntlProvider>
               </MuiProviders>
-            </ThemeContextProvider>
+            </ThemeProvider>
           </ApolloProviders>
         </CookiesProvider>
       </Container>

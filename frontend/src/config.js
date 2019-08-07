@@ -34,6 +34,7 @@ const env = {
   REACT_APP_FEATURE_ENABLE_SPANISH: process.env.REACT_APP_FEATURE_ENABLE_SPANISH,
   REACT_SHOW_STAKE_POOLS_LIST_DATA: process.env.REACT_SHOW_STAKE_POOLS_LIST_DATA,
   REACT_APP_ENABLE_ENV_OVERRIDES: process.env.REACT_APP_ENABLE_ENV_OVERRIDES,
+  REACT_APP_WATCH_RENDER_PERFORMANCE: process.env.REACT_APP_WATCH_RENDER_PERFORMANCE,
 }
 
 export const origEnv = {...env}
@@ -51,6 +52,7 @@ export const OVERRIDABLE_ENV = [
 
   'REACT_APP_FEATURE_ENABLE_RUSSIAN',
   'REACT_APP_FEATURE_ENABLE_SPANISH',
+  'REACT_APP_WATCH_RENDER_PERFORMANCE',
 ]
 
 const envOverridesEnabled = env.REACT_APP_ENABLE_ENV_OVERRIDES === 'true'
@@ -98,4 +100,6 @@ export default {
   featureEnableThemes: env.REACT_APP_FEATURE_ENABLE_THEMES === 'true',
   featureEnableRussian: env.REACT_APP_FEATURE_ENABLE_RUSSIAN === 'true',
   featureEnableSpanish: env.REACT_APP_FEATURE_ENABLE_SPANISH === 'true',
+
+  watchRenderPerformance: env.REACT_APP_WATCH_RENDER_PERFORMANCE === 'true',
 }

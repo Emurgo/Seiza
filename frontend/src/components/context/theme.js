@@ -4,9 +4,7 @@ import React, {useContext} from 'react'
 
 import {useCookieState} from '@/components/hooks/useStorageState'
 
-import {THEMES} from '../themes'
-
-// TODO: consider to unify file names in "context" folder
+import {THEMES} from '@/themes'
 
 type ContextType = {
   setTheme: Function,
@@ -19,7 +17,7 @@ type Props = {|
   children: React$Node,
 |}
 
-export const ThemeContextProvider = ({children}: Props) => {
+export const ThemeProvider = ({children}: Props) => {
   const [currentTheme, setTheme] = useCookieState<string>('theme', THEMES._default)
 
   return (

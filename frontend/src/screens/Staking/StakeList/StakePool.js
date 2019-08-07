@@ -1,24 +1,30 @@
 // @flow
-
 import React, {useCallback} from 'react'
 import cn from 'classnames'
-import {Grid, Typography, IconButton} from '@material-ui/core'
+import {Grid, Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
-import {AddCircle as AddPoolIcon, RemoveCircle as RemovePoolIcon} from '@material-ui/icons'
 
 import {
   ExpandableCard,
   ExpandableCardFooter,
   Button,
-  CircularProgressBar,
-  VisualHash,
+  MobileOnly,
+  DesktopOnly,
 } from '@/components/visual'
-import {AdaValue} from '@/components/common'
+import {
+  AdaValue,
+  PoolEntityContent,
+  ResponsiveCircularProgressBar,
+  HelpTooltip,
+} from '@/components/common'
 import WithModalState from '@/components/headless/modalState'
 import {useI18n} from '@/i18n/helpers'
 import {useSelectedPoolsContext} from '../context/selectedPools'
 import {useIsMobile, useIsBreakpointDown} from '@/components/hooks/useBreakpoints'
+import {ReactComponent as AddPoolIcon} from '@/static/assets/icons/staking-simulator/add-stakepool.svg'
+import {ReactComponent as RemovePoolIcon} from '@/static/assets/icons/close.svg'
+import epochIcon from '@/static/assets/icons/epoch.svg'
 
 const messages = defineMessages({
   revenue: 'Revenue',
@@ -34,6 +40,16 @@ const messages = defineMessages({
   showDetails: 'Show details',
   addPool: 'Add',
   removePool: 'Remove',
+  // Note(bigamasta): If needed to be reused on Stake pools screens,
+  // we can create something like helpers/helpMessages.js
+  performanceHelpText: 'TODO: Performance Help Text',
+  fullnessHelpText: 'TODO: Fullness Help Text',
+  marginsHelpText: 'TODO: Margins Help Text',
+  createdAtHelpText: 'TODO: CreatedAt Help Text',
+  pledgeHelpText: 'TODO: Pledge Help Text',
+  stakeHelpText: 'TODO: Stake Help Text',
+  ageLabel: 'Age:',
+  ageValue: '{epochCount, plural, =0 {# epochs} one {# epoch} other {# epochs}}',
 })
 
 const useHeaderStyles = makeStyles(({palette, spacing, breakpoints}) => ({
@@ -44,15 +60,15 @@ const useHeaderStyles = makeStyles(({palette, spacing, breakpoints}) => ({
       padding: spacing(3),
     },
   },
-  dot: {
-    marginTop: '7px',
-  },
-  info: {
-    paddingLeft: spacing(1),
-    paddingRight: spacing(1),
-  },
   button: {
     width: '120px',
+  },
+  mobileButton: {
+    borderRadius: '50%',
+    width: 48,
+    minWidth: 48,
+    height: 48,
+    padding: 0,
   },
   flexEllipsize: {
     // needed for proper ellipsize in children components with flex
@@ -89,42 +105,72 @@ const useContentStyles = makeStyles(({palette, spacing, breakpoints}) => ({
   },
   revenueWrapper: {
     minWidth: 90,
+    marginRight: spacing(2),
     display: 'flex',
     alignItems: 'center',
+  },
+  ageWrapper: {
+    'paddingTop': spacing(1),
+    '& > *': {
+      paddingRight: spacing(1),
+    },
   },
 }))
 
 const AddPoolButton = ({onClick, label}) => {
   const classes = useHeaderStyles()
-  const isMobile = useIsMobile()
 
-  return isMobile ? (
-    <IconButton onClick={onClick}>
-      <AddPoolIcon color="primary" fontSize="large" />
-    </IconButton>
-  ) : (
-    <Button rounded primaryGradient onClick={onClick} className={classes.button}>
-      {label}
-    </Button>
+  return (
+    <React.Fragment>
+      <MobileOnly>
+        <Button
+          rounded
+          gradient
+          variant="contained"
+          gradientDegree={45}
+          onClick={onClick}
+          className={classes.mobileButton}
+        >
+          <AddPoolIcon />
+        </Button>
+      </MobileOnly>
+
+      <DesktopOnly>
+        <Button rounded gradient variant="contained" onClick={onClick} className={classes.button}>
+          {label}
+        </Button>
+      </DesktopOnly>
+    </React.Fragment>
   )
 }
 
 const RemovePoolButton = ({onClick, label}) => {
   const classes = useHeaderStyles()
-  const isMobile = useIsMobile()
 
-  return isMobile ? (
-    <IconButton onClick={onClick}>
-      <RemovePoolIcon color="disabled" fontSize="large" />
-    </IconButton>
-  ) : (
-    <Button rounded secondaryGradient onClick={onClick} className={classes.button}>
-      {label}
-    </Button>
+  return (
+    <React.Fragment>
+      <MobileOnly>
+        <Button
+          rounded
+          gradient
+          gradientDegree={45}
+          variant="outlined"
+          onClick={onClick}
+          className={classes.mobileButton}
+        >
+          <RemovePoolIcon />
+        </Button>
+      </MobileOnly>
+
+      <DesktopOnly>
+        <Button rounded gradient variant="outlined" onClick={onClick} className={classes.button}>
+          {label}
+        </Button>
+      </DesktopOnly>
+    </React.Fragment>
   )
 }
 
-// TODO: add copy to clipboard for hash
 const Header = ({name, hash}) => {
   const classes = useHeaderStyles()
   const {translate} = useI18n()
@@ -133,7 +179,6 @@ const Header = ({name, hash}) => {
 
   const onAddPool = useCallback(() => addPool(hash), [addPool, hash])
   const onRemovePool = useCallback(() => removePool(hash), [removePool, hash])
-  const isMobile = useIsMobile()
 
   return (
     <Grid
@@ -144,17 +189,7 @@ const Header = ({name, hash}) => {
       className={classes.wrapper}
     >
       <Grid item className={classes.flexEllipsize}>
-        <div className="d-flex">
-          <div className={classes.dot}>
-            <VisualHash value={hash} size={isMobile ? 36 : 48} />
-          </div>
-          <div className={cn(classes.info, classes.flexEllipsize, 'flex-grow-1')}>
-            <Typography noWrap variant="h6">
-              {name}
-            </Typography>
-            <Typography noWrap>{hash}</Typography>
-          </div>
-        </div>
+        <PoolEntityContent name={name} hash={hash} />
       </Grid>
       <Grid item>
         {selected ? (
@@ -173,8 +208,8 @@ const DataGrid = ({items, leftSpan, rightSpan, alignRight = false}) => {
   return (
     // Note: when setting direction to `column` there is strange height misallignment
     <Grid container direction="row" className={classes.verticalBlock}>
-      {items.map(({label, value}) => (
-        <Grid item key={label} xs={12}>
+      {items.map(({label, value}, index) => (
+        <Grid item key={index} xs={12}>
           <Grid container direction="row">
             <Grid xs={leftSpan} item className={classes.rowItem}>
               <Typography className={classes.label}>{label}</Typography>
@@ -194,7 +229,7 @@ const DataGrid = ({items, leftSpan, rightSpan, alignRight = false}) => {
 }
 
 const Content = ({data}) => {
-  const {translate, formatPercent, formatTimestamp} = useI18n()
+  const {translate: tr, formatPercent, formatTimestamp} = useI18n()
   const classes = useContentStyles()
   const isMobile = useIsMobile()
   const isDownLg = useIsBreakpointDown('lg')
@@ -202,7 +237,7 @@ const Content = ({data}) => {
     <div className={classes.innerWrapper}>
       {!isMobile && (
         <div className={classes.revenueWrapper}>
-          <CircularProgressBar label={translate(messages.revenue)} value={0.25} />
+          <ResponsiveCircularProgressBar label={tr(messages.revenue)} value={0.25} />
         </div>
       )}
       <Grid container>
@@ -213,15 +248,27 @@ const Content = ({data}) => {
             rightSpan={isDownLg ? 6 : 3}
             items={[
               {
-                label: translate(messages.performance),
+                label: (
+                  <HelpTooltip text={tr(messages.performanceHelpText)}>
+                    {tr(messages.performance)}
+                  </HelpTooltip>
+                ),
                 value: <Typography>{formatPercent(data.performance)}</Typography>,
               },
               {
-                label: translate(messages.fullness),
+                label: (
+                  <HelpTooltip text={tr(messages.fullnessHelpText)}>
+                    {tr(messages.fullness)}
+                  </HelpTooltip>
+                ),
                 value: <Typography>{formatPercent(data.fullness)}</Typography>,
               },
               {
-                label: translate(messages.margins),
+                label: (
+                  <HelpTooltip text={tr(messages.marginsHelpText)}>
+                    {tr(messages.margins)}
+                  </HelpTooltip>
+                ),
                 value: <Typography>{formatPercent(data.margins)}</Typography>,
               },
             ]}
@@ -235,7 +282,11 @@ const Content = ({data}) => {
             rightSpan={6}
             items={[
               {
-                label: translate(messages.createdAt),
+                label: (
+                  <HelpTooltip text={tr(messages.createdAtHelpText)}>
+                    {tr(messages.createdAt)}
+                  </HelpTooltip>
+                ),
                 value: (
                   <Typography>
                     {formatTimestamp(data.createdAt, {format: formatTimestamp.FMT_MONTH_NUMERAL})}
@@ -243,11 +294,17 @@ const Content = ({data}) => {
                 ),
               },
               {
-                label: translate(messages.pledge),
+                label: (
+                  <HelpTooltip text={tr(messages.pledgeHelpText)}>
+                    {tr(messages.pledge)}
+                  </HelpTooltip>
+                ),
                 value: <AdaValue value={data.pledge} />,
               },
               {
-                label: translate(messages.stake),
+                label: (
+                  <HelpTooltip text={tr(messages.stakeHelpText)}>{tr(messages.stake)}</HelpTooltip>
+                ),
                 value: <AdaValue value={data.stake} />,
               },
             ]}
@@ -285,7 +342,7 @@ const MobilePoolFooter = ({expanded}) => {
   const label = tr(expanded ? messages.hideDetails : messages.showDetails)
   return (
     <Grid container alignContent="center" wrap="nowrap" className={classes.wrapper}>
-      <CircularProgressBar label={tr(messages.revenue)} value={0.25} />
+      <ResponsiveCircularProgressBar label={tr(messages.revenue)} value={0.25} />
       <div className={classes.defaultFooterWrapper}>
         <ExpandableCardFooter {...{label, expanded}} />
       </div>
@@ -309,11 +366,34 @@ const MobileStakePool = ({isOpen, toggle, data}) => {
   )
 }
 
+type AgeProps = {|
+  +epochCount: number,
+|}
+
+const Age = ({epochCount}: AgeProps) => {
+  const {translate: tr} = useI18n()
+  const classes = useContentStyles()
+  return (
+    <Grid container alignItems="center" className={classes.ageWrapper}>
+      <img alt="" src={epochIcon} />
+      <Typography component="span" variant="overline" color="textSecondary">
+        {tr(messages.ageLabel)}
+      </Typography>
+      <Typography component="span" variant="overline">
+        {tr(messages.ageValue, {epochCount})}
+      </Typography>
+    </Grid>
+  )
+}
+
 const DesktopStakePool = ({isOpen, toggle, data}) => {
   const classes = useContentStyles()
 
   const renderExpandedArea = () => (
-    <Typography className={classes.extraContent}>{data.description}</Typography>
+    <div className={classes.extraContent}>
+      <Typography>{data.description}</Typography>
+      <Age epochCount={data.age} />
+    </div>
   )
 
   const renderHeader = () => (

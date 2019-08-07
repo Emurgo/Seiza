@@ -1,9 +1,15 @@
 // @flow
-import {getUserStakingKey} from '../mockedData'
+import {getStakingKey, getStakingKeyHistory} from '../mockedData'
 
 // TODO: get data from backend
 export const useLoadStakingKeyData = (stakingKeyHash: string) => ({
   error: false,
   loading: false,
-  data: getUserStakingKey(stakingKeyHash),
+  data: getStakingKey(stakingKeyHash),
+})
+
+export const useLoadStakingKeyHistory = (stakingKeyHash: string) => ({
+  error: false,
+  loading: false,
+  data: getStakingKeyHistory(stakingKeyHash),
 })

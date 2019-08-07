@@ -58,7 +58,8 @@ const NavigationButtons = ({
       <Grid item className={classes.navigationButtonWrapper}>
         <Button
           rounded
-          secondaryGradient
+          gradient
+          variant="outlined"
           className={cn(classes.prevButton, classes.navigationButton)}
           disabled={!hasPrev}
           /* Link requires `to` prop even if disabled */
@@ -74,7 +75,8 @@ const NavigationButtons = ({
       <Grid item className={classes.navigationButtonWrapper}>
         <Button
           rounded
-          secondaryGradient
+          gradient
+          variant="outlined"
           className={cn(classes.nextButton, classes.navigationButton)}
           disabled={!hasNext}
           /* Link requires `to` prop even if disabled */

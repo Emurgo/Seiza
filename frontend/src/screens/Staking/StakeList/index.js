@@ -2,7 +2,7 @@
 
 import React, {useMemo} from 'react'
 import classnames from 'classnames'
-import {Typography, Grid, createStyles} from '@material-ui/core'
+import {Typography, Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
 
@@ -20,37 +20,35 @@ const messages = defineMessages({
   noResults: 'No matching results for the given query.',
 })
 
-const useStyles = makeStyles((theme) =>
-  createStyles({
-    rowWrapper: {
-      padding: '15px 30px',
-      width: '100%',
+const useStyles = makeStyles((theme) => ({
+  rowWrapper: {
+    padding: '15px 30px',
+    width: '100%',
+  },
+  wrapper: {
+    [theme.breakpoints.up('xl')]: {
+      alignItems: 'center',
     },
-    wrapper: {
-      [theme.breakpoints.up('xl')]: {
-        alignItems: 'center',
-      },
-    },
-    loadMore: {
-      marginTop: '30px',
-      marginBottom: '50px',
-      minWidth: '120px',
-      paddingLeft: theme.spacing(3),
-      paddingRight: theme.spacing(3),
-      paddingTop: theme.spacing(1),
-      paddingBottom: theme.spacing(1),
-    },
-    loadMoreWrapper: {
-      width: '100%',
-    },
-    sortByBar: {
-      marginTop: '20px',
-      marginBottom: '-15px',
-    },
-    lastItemSpace: {
-      padding: theme.spacing(5),
-    },
-  })
+  },
+  loadMore: {
+    marginTop: theme.spacing(4),
+    marginBottom: theme.spacing(6),
+    // TODO: use this padding as standard for all buttons
+    // Do that after #803 is merged
+    paddingLeft: theme.spacing(7),
+    paddingRight: theme.spacing(7),
+  },
+  loadMoreWrapper: {
+    width: '100%',
+  },
+  sortByBar: {
+    marginTop: '20px',
+    marginBottom: '-15px',
+  },
+  lastItemSpace: {
+    padding: theme.spacing(5),
+  },
+})
 )
 
 const StakeList = ({onLoadMore, stakePools, hasMore, loading}) => {
@@ -69,7 +67,13 @@ const StakeList = ({onLoadMore, stakePools, hasMore, loading}) => {
       {hasMore ? (
         <Grid item className={classes.loadMoreWrapper}>
           <Grid container justify="center" direction="row">
-            <Button className={classes.loadMore} primaryGradient rounded onClick={onLoadMore}>
+            <Button
+              variant="contained"
+              rounded
+              gradient
+              className={classes.loadMore}
+              onClick={onLoadMore}
+            >
               {tr(messages.loadMore)}
             </Button>
           </Grid>
@@ -87,6 +91,7 @@ const stakePoolFacade = (data) => ({
   name: data.name,
   description: data.description,
   createdAt: data.createdAt,
+  age: data.age,
   fullness: data.summary.fullness,
   margins: data.summary.margins,
   performance: data.summary.performance,

@@ -5,7 +5,6 @@ import _ from 'lodash'
 const BLOCKCHAIN_ROUTE = '/blockchain'
 const STAKING_CENTER_ROUTE = '/staking'
 const STAKING_POOLS_LIST_ROUTE = '/staking-pools'
-const STAKING_KEY_ROUTE = `${BLOCKCHAIN_ROUTE}/staking-key`
 
 // Note(ppershing)
 // Do not return null here as it breaks flow at many places.
@@ -49,17 +48,13 @@ export const routeTo = {
     slot: (epoch: string, slot: string) => `${BLOCKCHAIN_ROUTE}/epoch/${epoch}/slot/${slot}`,
     address: (address58: string) => `${BLOCKCHAIN_ROUTE}/address/${address58}`,
     stakepool: (poolHash: string) => `${BLOCKCHAIN_ROUTE}/stakepool/${poolHash}`,
+    stakingKey: (stakingKey: string) =>
+      enableIf(HAVE_STAKING_CENTER, `${BLOCKCHAIN_ROUTE}/staking-key/${stakingKey}`),
     epoch: (epochNumber: number) =>
       enableIf(epochNumber != null, `${BLOCKCHAIN_ROUTE}/epoch/${epochNumber}`),
     searchResults: () => `${BLOCKCHAIN_ROUTE}/search-result`,
   }),
   more: () => enableIf(HAVE_MORE, '/more'),
-  stakingKey: enableSectionIf(HAVE_STAKING_CENTER, {
-    home: (stakingKey: string) => `${STAKING_KEY_ROUTE}/${stakingKey}`,
-    user: (stakingKey: string) => `${STAKING_KEY_ROUTE}/${stakingKey}/user`,
-    // FIXME: how is this different from blockchain/stakepool?
-    stakePool: (stakingKey: string) => `${STAKING_KEY_ROUTE}/${stakingKey}/pool`,
-  }),
   stakingCenter: enableSectionIf(HAVE_STAKING_CENTER, {
     home: () => STAKING_CENTER_ROUTE,
     poolList: () => `${STAKING_CENTER_ROUTE}/list`,

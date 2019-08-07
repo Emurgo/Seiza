@@ -1,79 +1,83 @@
 // @flow
 
 import React from 'react'
-import {compose} from 'redux'
-import {Grid, Typography, createStyles, withStyles} from '@material-ui/core'
+import {Grid, Typography} from '@material-ui/core'
+import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
-import ReactMarkdown from 'react-markdown'
 
-import {Card} from '@/components/visual'
-import iconEpoch from '@/static/assets/icons/metrics-epoch.svg'
-import {withI18n} from '@/i18n/helpers'
+import {useI18n} from '@/i18n/helpers'
+import {HeaderCard, HeaderCardContainer} from '@/components/common'
+
+import searchForStakepoolIcon from '@/static/assets/icons/staking-simulator/search-for-stakepool.svg'
+import downloadOrShareIcon from '@/static/assets/icons/staking-simulator/download-or-share.svg'
+import compareIcon from '@/static/assets/icons/staking-simulator/compare.svg'
 
 const messages = defineMessages({
-  header: 'Explore Stake Pools',
-  card1: '## Search\nfor stake pool you like',
-  card2: '## Download or share\nyour results in just a click',
-  card3: '## Compare\nstake pool details',
+  header: 'Staking Center Simulator',
+  card1Title: 'Search',
+  card1Value: 'for stake pool you like',
+  card2Title: 'Download or share',
+  card2Value: 'your results in just a click',
+  card3Title: 'Compare',
+  card3Value: 'stake pool details',
 })
 
-const styles = ({palette, spacing}) =>
-  createStyles({
-    wrapper: {
-      height: '250px',
-      background: palette.gradient,
-    },
-    card: {
-      width: '270px',
-      marginLeft: '30px',
-      marginRight: '30px',
-      padding: spacing(1),
-    },
-    cardIcon: {
-      paddingRight: spacing(1),
-    },
-  })
+const useStyles = makeStyles(({palette, spacing}) => ({
+  wrapper: {
+    height: '250px',
+    background: palette.gradient,
+  },
+  card: {
+    width: '270px',
+    marginLeft: '30px',
+    marginRight: '30px',
+    padding: spacing(1),
+  },
+  cardIcon: {
+    paddingRight: spacing(1),
+  },
+}))
 
-const cardRenderers = {
-  paragraph: ({children}) => <Typography variant="body1">{children}</Typography>,
-  heading: ({children, level}) => (
-    <Typography variant="h4">
-      <strong>{children}</strong>
-    </Typography>
-  ),
+const Header = () => {
+  const classes = useStyles()
+  const {translate: tr} = useI18n()
+  return (
+    <Grid
+      container
+      className={classes.wrapper}
+      direction="column"
+      justify="space-evenly"
+      alignItems="center"
+    >
+      <Typography variant="h1">{tr(messages.header)}</Typography>
+      <Grid container direction="row" justify="center" alignItems="center">
+        <HeaderCardContainer>
+          <HeaderCard
+            smallPrimaryText
+            secondaryText={tr(messages.card1Value)}
+            primaryText={tr(messages.card1Title)}
+            icon={<img alt="" src={searchForStakepoolIcon} />}
+          />
+        </HeaderCardContainer>
+        <HeaderCardContainer>
+          <HeaderCard
+            smallPrimaryText
+            secondaryText={tr(messages.card2Value)}
+            primaryText={tr(messages.card2Title)}
+            icon={<img alt="" src={downloadOrShareIcon} />}
+          />
+        </HeaderCardContainer>
+        <HeaderCardContainer>
+          <HeaderCard
+            smallPrimaryText
+            secondaryText={tr(messages.card3Value)}
+            primaryText={tr(messages.card3Title)}
+            icon={<img alt="" src={compareIcon} />}
+          />
+        </HeaderCardContainer>
+      </Grid>
+    </Grid>
+  )
 }
 
-const StakePoolCard = withStyles(styles)(({classes, value, iconSrc}) => (
-  <Card classes={{root: classes.card}}>
-    <Grid container direction="row" alignItems="center" wrap="nowrap">
-      <Grid item className={classes.cardIcon}>
-        <img alt="" src={iconSrc} />
-      </Grid>
-      <Grid item>
-        <ReactMarkdown source={value} renderers={cardRenderers} />
-      </Grid>
-    </Grid>
-  </Card>
-))
-
-const Header = ({classes, i18n: {translate}}) => (
-  <Grid
-    container
-    className={classes.wrapper}
-    direction="column"
-    justify="space-evenly"
-    alignItems="center"
-  >
-    <Typography variant="h1">{translate(messages.header)}</Typography>
-    <Grid container direction="row" justify="center" alignItems="center">
-      <StakePoolCard value={translate(messages.card1)} iconSrc={iconEpoch} />
-      <StakePoolCard value={translate(messages.card2)} iconSrc={iconEpoch} />
-      <StakePoolCard value={translate(messages.card3)} iconSrc={iconEpoch} />
-    </Grid>
-  </Grid>
-)
-
-export default compose(
-  withI18n,
-  withStyles(styles)
-)(Header)
+export default Header

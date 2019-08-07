@@ -68,7 +68,7 @@ const Owner = ({stakingKey, pledge}) => {
   return (
     <Grid key={stakingKey} container justify="space-between" wrap="nowrap">
       <Typography variant="body1" className={classes.stakeKeyLink} noWrap>
-        <Link to={routeTo.stakingKey.user(stakingKey)}>{stakingKey}</Link>
+        <Link to={routeTo.stakingKey(stakingKey)}>{stakingKey}</Link>
       </Typography>
       <div>
         <AdaValue value={pledge} showCurrency />

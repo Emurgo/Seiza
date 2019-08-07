@@ -8,7 +8,7 @@ import useReactRouter from 'use-react-router'
 
 import * as urlUtils from '@/helpers/url'
 import {routeTo} from '@/helpers/routes'
-import {useIsMobile} from '@/components/hooks/useBreakpoints'
+import {MobileOnly, DesktopOnly} from '@/components/visual'
 import {
   StakingContextProvider,
   useSetListScreenStorageFromQuery,
@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => {
   return {
     mainWrapper: {
       maxWidth: '100%',
-      overflow: 'auto',
+      // Note: dont set other 'overflow' than 'visible', will disable sticky navigation
     },
     layoutWrapper: {
       display: 'flex',
@@ -78,6 +78,9 @@ const synchronizedScreenFactory = (Screen, useSetScreenStorageFromQuery) => () =
   const {setScreenStorageFromQuery, getScreenUrlQuery} = useSetScreenStorageFromQuery()
   const {autoSync, setAutosync} = useAutoSyncContext()
 
+  // Note: we currently use localStorage and sessionStorage which is not available on server
+  if (!process.browser) return <Screen />
+
   const storageQuery = getScreenUrlQuery()
 
   React.useEffect(() => {
@@ -115,20 +118,25 @@ const CenteredLayout = ({children, maxWidth = DEFAULT_MAX_WIDTH}: CenteredLayout
   // Note: using custom classes instead of Grid as we need to specify
   // also `flex-basis` and `flex-shrink`
   const classes = useStyles({maxWidth})
-  const isMobile = useIsMobile()
-
-  if (isMobile) return <MobileLayout>{children}</MobileLayout>
 
   return (
-    <div className={classes.layoutWrapper}>
-      <div className={classes.sidebarWrapper}>
-        <SideMenu />
-      </div>
-      <div className={classes.centerWrapper}>
-        <div className={classes.centeredItem}>{children}</div>
-      </div>
-      <div className={classes.rightSideWrapper} />
-    </div>
+    <React.Fragment>
+      <MobileOnly>
+        <MobileLayout>{children}</MobileLayout>
+      </MobileOnly>
+
+      <DesktopOnly>
+        <div className={classes.layoutWrapper}>
+          <div className={classes.sidebarWrapper}>
+            <SideMenu />
+          </div>
+          <div className={classes.centerWrapper}>
+            <div className={classes.centeredItem}>{children}</div>
+          </div>
+          <div className={classes.rightSideWrapper} />
+        </div>
+      </DesktopOnly>
+    </React.Fragment>
   )
 }
 
@@ -136,17 +144,22 @@ const FullWidthLayout = ({children}) => {
   // Note: using custom classes instead of Grid as we need to specify
   // also `flex-basis` and `flex-shrink`
   const classes = useStyles()
-  const isMobile = useIsMobile()
-
-  if (isMobile) return <MobileLayout>{children}</MobileLayout>
 
   return (
-    <div className={classes.layoutWrapper}>
-      <div className={classes.sidebarWrapper}>
-        <SideMenu />
-      </div>
-      <div className={classes.fullWidthWrapper}>{children}</div>
-    </div>
+    <React.Fragment>
+      <MobileOnly>
+        <MobileLayout>{children}</MobileLayout>
+      </MobileOnly>
+
+      <DesktopOnly>
+        <div className={classes.layoutWrapper}>
+          <div className={classes.sidebarWrapper}>
+            <SideMenu />
+          </div>
+          <div className={classes.fullWidthWrapper}>{children}</div>
+        </div>
+      </DesktopOnly>
+    </React.Fragment>
   )
 }
 
@@ -219,14 +232,17 @@ const renderRouteDef = (path, component) =>
 
 export default () => {
   const {autoSync} = useAutoSyncContext()
-  const isMobile = useIsMobile()
   const classes = useStyles()
   const stakingRoutes = routeTo.stakingCenter
   return (
     <StakingContextProvider autoSync={autoSync}>
       <Grid container direction="column">
-        {!isMobile && <StakePoolHeader />}
-        {isMobile && <SideMenu />}
+        <DesktopOnly>
+          <StakePoolHeader />
+        </DesktopOnly>
+        <MobileOnly>
+          <SideMenu />
+        </MobileOnly>
 
         <div className={classes.mainWrapper}>
           <Switch>

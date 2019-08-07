@@ -8,11 +8,17 @@ import BigNumber from 'bignumber.js'
 // import type {Transaction} from '@/__generated__/schema.flow'
 
 import {LoadingInProgress, SummaryCard, LiteTabs, LiteTab, Card} from '@/components/visual'
-import {AdaValue, LoadingError, EntityCardContent, Link} from '@/components/common'
+import {
+  AdaValue,
+  LoadingError,
+  EntityCardContent,
+  Link,
+  TabsPaginationLayout,
+} from '@/components/common'
 import {getDefaultSpacing} from '@/components/visual/ContentSpacing'
 import {useI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
-import {TabsProvider as Tabs, TabItem as Tab, useTabContext} from '@/components/context/TabContext'
+import {TabsProvider as Tabs, TabItem as Tab, useTabContext} from '@/components/common/Tabs'
 import {AddressesBreakdownContent} from '@/components/common/AddressesBreakdown'
 import {FILTER_TYPES} from './constants'
 
@@ -36,21 +42,6 @@ const useStyles = makeStyles((theme) => ({
   leftSide: {
     [theme.breakpoints.up('md')]: {
       borderRight: `1px solid ${theme.palette.contentUnfocus}`,
-    },
-  },
-  headerWrapper: {
-    // TODO: change to mobile first
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    [theme.breakpoints.down('sm')]: {
-      flexDirection: 'column',
-    },
-  },
-  headerPagination: {
-    marginTop: 0,
-    [theme.breakpoints.down('sm')]: {
-      marginTop: theme.spacing(2),
     },
   },
   balanceDiff: {
@@ -184,7 +175,6 @@ const TransactionList = ({transactions = [], targetAddress}) => {
 }
 
 const TabsHeader = ({pagination, changeFilterType}) => {
-  const classes = useStyles()
   const {translate: tr} = useI18n()
   const {currentTabIndex, setTabByEventIndex} = useTabContext()
   const useClickHandler = (type) => useCallback(() => changeFilterType(type), [type])
@@ -200,18 +190,16 @@ const TabsHeader = ({pagination, changeFilterType}) => {
   ]
 
   return (
-    <Grid container className={classes.headerWrapper}>
-      <Grid item>
+    <TabsPaginationLayout
+      tabs={
         <LiteTabs value={currentTabIndex} onChange={setTabByEventIndex}>
           {tabs.map(({id, label, onClick}) => (
             <LiteTab key={id} label={label} onClick={onClick} />
           ))}
         </LiteTabs>
-      </Grid>
-      <Grid item className={classes.headerPagination}>
-        {pagination}
-      </Grid>
-    </Grid>
+      }
+      pagination={pagination}
+    />
   )
 }
 

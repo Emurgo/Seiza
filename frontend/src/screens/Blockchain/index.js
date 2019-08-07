@@ -10,7 +10,8 @@ import Epoch from './Epoch'
 import Block from './Block'
 import PagedBlocks from './PagedBlocks'
 import StakePool from './StakePool'
-import StakingKey from './StakingKey'
+// TODO: refactor Staking key folders
+import StakingKey from './StakingKey/User'
 import Slot from './Block/Slot'
 import NotFound from './NotFound'
 import SearchResults from './SearchResults'
@@ -28,10 +29,8 @@ export default (props) => (
       {renderRouteDef({path: routeTo.address(':address58'), component: Address})}
       {renderRouteDef({path: routeTo.epoch(':epoch'), component: Epoch})}
       {renderRouteDef({path: routeTo.searchResults(), component: SearchResults})}
-
       {renderRouteDef({path: routeTo.stakepool(':poolHash'), component: StakePool})}
-      {/* TODO: should staking key be here? See notes in routeTo */}
-      {renderRouteDef({path: routeTo.stakingKey.home(':stakingKey'), component: StakingKey})}
+      {renderRouteDef({path: routeTo.stakingKey(':stakingKey'), component: StakingKey})}
       <Route component={NotFound} />
     </Switch>
   </React.Fragment>

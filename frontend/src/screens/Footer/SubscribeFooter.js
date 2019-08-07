@@ -20,13 +20,13 @@ import {fade} from '@material-ui/core/styles/colorManipulator'
 
 import {useI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
-import {useAnalytics} from '@/helpers/googleAnalytics'
+import {useAnalytics} from '@/components/context/googleAnalytics'
 import {Button, CloseIconButton} from '@/components/visual'
 import {LoadingOverlay, Link as CustomLink} from '@/components/common'
 import alertIcon from '@/static/assets/icons/alert.svg'
 import subscribedIcon from '@/static/assets/icons/subscribed.svg'
 import {ReactComponent as Rocket} from '@/static/assets/icons/emoji/rocket.svg'
-import {useSubscribeContext} from '@/components/context/SubscribeContext'
+import {useSubscribe} from './context/subscribe'
 
 const messages = defineMessages({
   copyright: 'All rights reserved',
@@ -82,7 +82,6 @@ const useOutlinedInputStyles = makeStyles((theme) => ({
   },
   notchedOutline: {
     borderRadius: '35px',
-    // TODO: get from theme
     borderColor: `${fade(theme.palette.primary.main, 0.4)} !important`,
   },
   // Following two classes need to be here so that root's pseudoselector
@@ -286,7 +285,7 @@ const SubscribeFooter = () => {
   const classes = useSubscribeFooterStyles()
   const {translate: tr} = useI18n()
   const [email, setEmail] = useState('')
-  const {hidden, hideSubscribe} = useSubscribeContext()
+  const {hidden, hideSubscribe} = useSubscribe()
   const {uiState, setError, setInit, setSuccess, setLoading, errorMessage} = useUIState('init')
   const analytics = useAnalytics()
 
@@ -458,7 +457,8 @@ const SubscribeFooter = () => {
                       <Grid item className={classes.textfieldButtonSpacing}>
                         <Button
                           rounded
-                          primaryGradient
+                          gradient
+                          variant="contained"
                           className={cn(classes.subscribe)}
                           type="submit"
                           onClick={validateAndSubscribe}

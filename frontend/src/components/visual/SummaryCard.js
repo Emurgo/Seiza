@@ -20,8 +20,12 @@ const useRowStyles = makeStyles((theme) => ({
     '&:after': {
       content: '""',
       display: 'block',
-      marginLeft: getDefaultSpacing(theme),
-      marginRight: getDefaultSpacing(theme),
+      marginLeft: getDefaultSpacing(theme) / 2,
+      marginRight: getDefaultSpacing(theme) / 2,
+      [theme.breakpoints.up('sm')]: {
+        marginLeft: getDefaultSpacing(theme),
+        marginRight: getDefaultSpacing(theme),
+      },
       border: `0.5px solid ${theme.palette.unobtrusiveContentHighlight}`,
     },
     '&:last-child:after': {
@@ -29,10 +33,16 @@ const useRowStyles = makeStyles((theme) => ({
     },
   },
   listRow: {
-    paddingTop: theme.spacing(2.5),
-    paddingBottom: theme.spacing(2.5),
-    paddingLeft: getDefaultSpacing(theme),
-    paddingRight: getDefaultSpacing(theme),
+    paddingTop: theme.spacing(1.25),
+    paddingBottom: theme.spacing(1.25),
+    paddingLeft: getDefaultSpacing(theme) / 2,
+    paddingRight: getDefaultSpacing(theme) / 2,
+    [theme.breakpoints.up('sm')]: {
+      paddingTop: theme.spacing(2.5),
+      paddingBottom: theme.spacing(2.5),
+      paddingLeft: getDefaultSpacing(theme),
+      paddingRight: getDefaultSpacing(theme),
+    },
   },
   clickableRow: {
     'transition': theme.hover.transitionOut(['box-shadow']),
@@ -76,7 +86,6 @@ const Row = ({children, onClick, className, hideSeparator = false, showLastSepar
         container
         direction="row"
         justify="space-between"
-        alignItems="center"
         onClick={onClick}
         className={cn(classes.listRow, className, clickable && classes.clickableRow)}
       >
@@ -86,7 +95,7 @@ const Row = ({children, onClick, className, hideSeparator = false, showLastSepar
   )
 }
 const Label = ({children}) => (
-  <Grid item xs={12} sm={4}>
+  <Grid item xs={4}>
     <Typography variant="body1" color="textSecondary">
       {children}
     </Typography>
@@ -98,16 +107,13 @@ const useValueStyles = makeStyles((theme) => ({
     /* Responsive layout tricks */
     width: '100%',
     textAlign: 'right',
-    [theme.breakpoints.down('xs')]: {
-      textAlign: 'left',
-    },
   },
 }))
 
 const Value = ({children}) => {
   const classes = useValueStyles()
   return (
-    <Grid container item xs={12} sm={8}>
+    <Grid container justify="flex-end" item xs={8}>
       <Typography variant="body1" component="span" className={classes.value}>
         {children}
       </Typography>

@@ -3,8 +3,7 @@
 import React, {useCallback} from 'react'
 import cn from 'classnames'
 import useReactRouter from 'use-react-router'
-import {Typography, Grid} from '@material-ui/core'
-import {Search, LocationOn, BarChart, History, Compare, People} from '@material-ui/icons'
+import {Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
 import {fade} from '@material-ui/core/styles/colorManipulator'
@@ -12,10 +11,16 @@ import {fade} from '@material-ui/core/styles/colorManipulator'
 import NavLink from '@/components/common/NavLink'
 import {routeTo} from '@/helpers/routes'
 import {useI18n} from '@/i18n/helpers'
-import {useIsMobile} from '@/components/hooks/useBreakpoints'
-
-import {LiteTabs, LiteTab} from '@/components/visual'
+import {LiteTabs, LiteTab, MobileOnly, DesktopOnly} from '@/components/visual'
 import useTabState from '@/components/hooks/useTabState'
+import {NavbarLink} from '@/components/common/Navbar'
+
+import {ReactComponent as ListIcon} from '@/static/assets/icons/staking-simulator/list.svg'
+import {ReactComponent as ComparisonMatrixIcon} from '@/static/assets/icons/staking-simulator/comparison-matrix.svg'
+import {ReactComponent as HistoryIcon} from '@/static/assets/icons/staking-simulator/history.svg'
+import {ReactComponent as ChartsIcon} from '@/static/assets/icons/staking-simulator/charts.svg'
+import {ReactComponent as LocationIcon} from '@/static/assets/icons/staking-simulator/location.svg'
+import {ReactComponent as PeopleIcon} from '@/static/assets/icons/staking-simulator/people.svg'
 
 const navigationMessages = defineMessages({
   list: 'Stake pools list',
@@ -34,8 +39,12 @@ const useMenuItemStyles = makeStyles(({palette, spacing}) => {
       'padding': '35px 40px 35px 60px',
       'textTransform': 'uppercase',
       '&:hover': {
-        background: palette.background.paperContrast,
-        boxShadow: shadow,
+        'background': palette.background.paperContrast,
+        'boxShadow': shadow,
+        '& > *': {
+          // This makes hover style the same as active, do we want that?
+          color: palette.primary.main,
+        },
       },
       'borderBottom': `1px solid ${palette.unobtrusiveContentHighlight}`,
     },
@@ -44,8 +53,8 @@ const useMenuItemStyles = makeStyles(({palette, spacing}) => {
       color: palette.primary.main,
       boxShadow: shadow,
     },
-    icon: {
-      paddingRight: spacing(2),
+    menuItemText: {
+      paddingLeft: spacing(2),
     },
   }
 })
@@ -59,12 +68,11 @@ const MenuItem = ({active, label, icon}) => {
       alignItems="center"
       className={cn(classes.link, active && classes.active)}
     >
-      <Grid item className={classes.icon}>
-        {icon}
-      </Grid>
-      <Grid item>
-        <Typography>{label}</Typography>
-      </Grid>
+      {icon}
+
+      <NavbarLink className={classes.menuItemText} isActive={active}>
+        {label}
+      </NavbarLink>
     </Grid>
   )
 }
@@ -77,12 +85,14 @@ const useNavigationBarStyles = makeStyles((theme) => ({
   // Note: parent can't have `overflow: hidden` and must span full height
   navBar: {
     top: 0,
+    position: 'sticky',
   },
   mobileNavBar: {
-    top: 74, // TODO: change, keep in sync with main navigation bar height
+    position: 'sticky',
+    top: 67, // TODO: figure out how to keep in sync with main navigation bar height
     background: theme.palette.background.paper,
-    zIndex: 1,
-    paddingTop: theme.spacing(3),
+    zIndex: 10,
+    paddingTop: theme.spacing(1),
     paddingLeft: theme.spacing(3),
     maxWidth: '100%',
   },
@@ -99,37 +109,37 @@ const navItems: NavItems = [
   {
     link: routeTo.stakingCenter.poolList(),
     i18nLabel: navigationMessages.list,
-    icon: <Search color="inherit" />,
+    icon: <ListIcon color="inherit" />,
     id: 'POOL_LIST',
   },
   {
     link: routeTo.stakingCenter.poolComparison(),
     i18nLabel: navigationMessages.comparison,
-    icon: <Compare color="inherit" />,
+    icon: <ComparisonMatrixIcon color="inherit" />,
     id: 'COMPARISON_MATRIX',
   },
   {
     link: routeTo.stakingCenter.history(),
     i18nLabel: navigationMessages.history,
-    icon: <History color="inherit" />,
+    icon: <HistoryIcon color="inherit" />,
     id: 'HISTORY',
   },
   {
     link: routeTo.stakingCenter.charts(),
     i18nLabel: navigationMessages.charts,
-    icon: <BarChart color="inherit" />,
+    icon: <ChartsIcon color="inherit" />,
     id: 'CHARTS',
   },
   {
     link: routeTo.stakingCenter.location(),
     i18nLabel: navigationMessages.location,
-    icon: <LocationOn color="inherit" />,
+    icon: <LocationIcon color="inherit" />,
     id: 'LOCATION',
   },
   {
     link: routeTo.stakingCenter.people(),
     i18nLabel: navigationMessages.people,
-    icon: <People color="inherit" />,
+    icon: <PeopleIcon color="inherit" />,
     id: 'PEOPLE',
   },
 ]
@@ -161,7 +171,7 @@ const TabsHeader = () => {
   )
 
   return (
-    <LiteTabs defaultBottomOffset value={currentTabIndex} onChange={onChange}>
+    <LiteTabs value={currentTabIndex} onChange={onChange}>
       {tabs.map(({id, label}) => (
         <LiteTab key={id} label={label} />
       ))}
@@ -173,7 +183,7 @@ const MobileNavigation = () => {
   const classes = useNavigationBarStyles()
 
   return (
-    <div className={cn(classes.mobileNavBar, 'sticky')}>
+    <div className={classes.mobileNavBar}>
       <TabsHeader />
     </div>
   )
@@ -184,7 +194,7 @@ const DesktopNavigation = () => {
   const {translate: tr} = useI18n()
 
   return (
-    <div className={cn(classes.navBar, 'sticky')}>
+    <div className={classes.navBar}>
       {navItems.map(
         ({link, i18nLabel, icon}) =>
           link && (
@@ -197,9 +207,15 @@ const DesktopNavigation = () => {
   )
 }
 
-const NavigationBar = () => {
-  const isMobile = useIsMobile()
-  return isMobile ? <MobileNavigation /> : <DesktopNavigation />
-}
+const NavigationBar = () => (
+  <React.Fragment>
+    <MobileOnly>
+      <MobileNavigation />
+    </MobileOnly>
+    <DesktopOnly className="h-100">
+      <DesktopNavigation />
+    </DesktopOnly>
+  </React.Fragment>
+)
 
 export default NavigationBar

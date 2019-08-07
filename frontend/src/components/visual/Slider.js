@@ -3,7 +3,7 @@
 import React from 'react'
 import classnames from 'classnames'
 import {Range, Handle} from 'rc-slider'
-import {withStyles, FormControl, FormLabel, withTheme, createStyles} from '@material-ui/core'
+import {withStyles, FormControl, FormLabel, withTheme} from '@material-ui/core'
 import {darken, lighten} from '@material-ui/core/styles/colorManipulator'
 import {withStateHandlers, withHandlers} from 'recompose'
 import {compose} from 'redux'
@@ -13,24 +13,23 @@ import 'rc-tooltip/assets/bootstrap.css'
 
 const PADDING = 5
 
-const styles = (theme) =>
-  createStyles({
-    label: {
-      paddingBottom: PADDING,
-      textTransform: 'uppercase',
-    },
-    formControl: {
-      margin: theme.spacing(1),
-      width: '100%',
-    },
-    handle: {
-      border: `1px solid ${darken(theme.palette.background.default, 0.05)}`,
-      color: theme.palette.secondary.main,
-    },
-    rangeWrapper: {
-      paddingTop: '25px',
-    },
-  })
+const styles = (theme) => ({
+  label: {
+    paddingBottom: PADDING,
+    textTransform: 'uppercase',
+  },
+  formControl: {
+    margin: theme.spacing(1),
+    width: '100%',
+  },
+  handle: {
+    border: `1px solid ${darken(theme.palette.background.default, 0.05)}`,
+    color: theme.palette.secondary.main,
+  },
+  rangeWrapper: {
+    paddingTop: '25px',
+  },
+})
 
 const getRailStyle = (theme) => ({
   backgroundColor: lighten(theme.palette.secondary.light, 0.9),

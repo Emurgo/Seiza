@@ -13,7 +13,7 @@ import {useManageQueryValue} from '@/components/hooks/useManageQueryValue'
 import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
 import {toIntOrNull, getPageCount} from '@/helpers/utils'
 import BlocksTable, {ALL_COLUMNS} from './BlocksTable'
-import {useAnalytics} from '@/helpers/googleAnalytics'
+import {useAnalytics} from '@/components/context/googleAnalytics'
 import {getPageAndBoundaryFromCursor} from './util'
 
 const AUTOUPDATE_REFRESH_INTERVAL = 20 * 1000
@@ -35,7 +35,9 @@ const AutoUpdateSwitch = ({checked, onChange}) => {
   return (
     <Grid container direction="row" justify="flex-start" alignItems="center">
       <Grid item>
-        <Typography className={classes.text}>{translate(messages.refreshState)}&nbsp;</Typography>
+        <Typography className={classes.text} color="textSecondary">
+          {translate(messages.refreshState)}&nbsp;
+        </Typography>
       </Grid>
       <Grid item>
         <Switch color="primary" checked={checked} onChange={onChange} />

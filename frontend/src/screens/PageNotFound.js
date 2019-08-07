@@ -4,7 +4,7 @@ import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
 
 import {useI18n} from '@/i18n/helpers'
-import {useAnalytics} from '@/helpers/googleAnalytics'
+import {useAnalytics} from '@/components/context/googleAnalytics'
 import errorImage from '@/static/assets/error-screen.svg'
 
 const messages = defineMessages({

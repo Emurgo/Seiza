@@ -1,6 +1,7 @@
 // @flow
 
 import React from 'react'
+import cn from 'classnames'
 import {makeStyles} from '@material-ui/styles'
 import {darken, fade} from '@material-ui/core/styles/colorManipulator'
 
@@ -16,6 +17,7 @@ type ScrollOverlayWrapperProps = {|
   upBackground: string,
   downBackground: string,
   borderRadius: number,
+  className?: string,
 |}
 
 export const ScrollOverlayWrapper = ({
@@ -23,10 +25,11 @@ export const ScrollOverlayWrapper = ({
   upBackground,
   downBackground,
   borderRadius,
+  className,
 }: ScrollOverlayWrapperProps) => {
   const classes = useScrollOverlayStyles()
   return (
-    <div className={classes.wrapper}>
+    <div className={cn(classes.wrapper, className)}>
       <ScrollOverlay direction="left" {...{upBackground, downBackground, borderRadius}} />
       <ScrollOverlay direction="right" {...{upBackground, downBackground, borderRadius}} />
       {children}

@@ -16,6 +16,7 @@ export const useLoadSelectedPools = () => {
           poolHash
           name
           createdAt
+          age
           description
           website
           summary {

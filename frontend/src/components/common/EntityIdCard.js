@@ -6,17 +6,29 @@ import {fade} from '@material-ui/core/styles/colorManipulator'
 import {makeStyles} from '@material-ui/styles'
 import cn from 'classnames'
 
-import {Card, ContentSpacing} from '@/components/visual'
-import CopyToClipboard from '@/components/common/CopyToClipboard'
+import {Card} from '@/components/visual'
+import {CopyToClipboard} from '@/components/common'
+import {useIsMobile} from '@/components/hooks/useBreakpoints'
+import {getDefaultSpacing} from '@/components/visual/ContentSpacing'
+
+const useEntityCardShellStyles = makeStyles((theme) => ({
+  card: {
+    paddingTop: getDefaultSpacing(theme) * 0.25,
+    paddingBottom: getDefaultSpacing(theme) * 0.25,
+    paddingLeft: getDefaultSpacing(theme) * 0.5,
+    paddingRight: getDefaultSpacing(theme) * 0.5,
+    [theme.breakpoints.up('md')]: {
+      paddingTop: getDefaultSpacing(theme) * 0.75,
+      paddingBottom: getDefaultSpacing(theme) * 0.75,
+      paddingLeft: getDefaultSpacing(theme),
+      paddingRight: getDefaultSpacing(theme),
+    },
+  },
+}))
 
 export const EntityCardShell = ({children}) => {
-  return (
-    <Card>
-      <ContentSpacing bottom={0.75} top={0.75}>
-        {children}
-      </ContentSpacing>
-    </Card>
-  )
+  const classes = useEntityCardShellStyles()
+  return <Card className={classes.card}>{children}</Card>
 }
 
 const EntityIdCard = (props) => {
@@ -27,60 +39,69 @@ const EntityIdCard = (props) => {
   )
 }
 
-const useContentStyles = makeStyles((theme) => ({
-  wrapper: {
-    cursor: 'initial',
-    overflow: 'hidden',
-    paddingTop: ({showCopyIcon}) => (showCopyIcon ? '12px' : 'initial'), // same value as in valueContainer's paddingBottom
-  },
-  valueContainer: {
-    width: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    paddingRight: ({showCopyIcon}) => (showCopyIcon ? '48px' : 'initial'), // width of copy to clipboard icon
-    paddingBottom: ({showCopyIcon}) => (showCopyIcon ? '12px' : 'initial'), // because icon background hover would be cut :/
-    position: 'relative',
-  },
-  copyToClipboard: {
-    position: 'absolute',
-    top: -8,
-    right: 0,
-  },
-  label: {
-    // Needed so that `value` and `label` are aligned in case of animation
-    marginLeft: theme.spacing(2 / 3),
-  },
-  value: {
-    overflow: 'hidden',
-    padding: theme.spacing(2 / 3),
-  },
-  correctureWrapper: {
-    display: 'flex',
-    overflow: 'hidden',
-  },
-  epochAppear: {
-    borderRadius: 10,
-    backgroundColor: fade(theme.palette.secondary.main, 0.1),
-  },
-  epochAppearActive: {
-    transition: 'background-color 2s ease',
-    backgroundColor: theme.palette.background.paper,
-  },
-  monospace: theme.typography._monospace,
-  cardContent: {
-    display: 'flex',
-    alignItems: 'center',
-    paddingRight: theme.spacing(2),
-    overflow: 'hidden',
-    flex: 1,
-  },
-  autoWidth: {
-    width: 'auto',
-  },
-  iconAlign: {
-    paddingRight: theme.spacing(2),
-  },
-}))
+const COPY_ICON_SPACING_CORRECTURE = 12
+
+const useContentStyles = makeStyles((theme) => {
+  const animationSpacing = theme.spacing(2 / 3)
+  return {
+    wrapper: {
+      cursor: 'initial',
+      overflow: 'hidden',
+      paddingTop: COPY_ICON_SPACING_CORRECTURE,
+    },
+    valueContainer: {
+      width: '100%',
+      display: 'flex',
+      alignItems: 'center',
+      paddingRight: ({showCopyIcon}) => (showCopyIcon ? '48px' : 'initial'), // width of copy to clipboard icon
+      paddingBottom: COPY_ICON_SPACING_CORRECTURE, // because icon background hover would be cut :/
+      position: 'relative',
+    },
+    copyToClipboard: {
+      position: 'absolute',
+      top: -8,
+      right: 0,
+    },
+    label: {
+      // Needed so that `value` and `label` are aligned in case of animation
+      marginLeft: animationSpacing,
+    },
+    value: {
+      overflow: 'hidden',
+      padding: animationSpacing,
+    },
+    correctureWrapper: {
+      display: 'flex',
+      overflow: 'hidden',
+    },
+    epochAppear: {
+      borderRadius: 10,
+      backgroundColor: fade(theme.palette.secondary.main, 0.1),
+    },
+    epochAppearActive: {
+      transition: 'background-color 2s ease',
+      backgroundColor: theme.palette.background.paper,
+    },
+    monospace: theme.typography._monospace,
+    cardContent: {
+      display: 'flex',
+      alignItems: 'center',
+      [theme.breakpoints.up('md')]: {
+        paddingRight: theme.spacing(2),
+      },
+      overflow: 'hidden',
+      flex: 1,
+    },
+    autoWidth: {
+      width: 'auto',
+    },
+    iconAlign: {
+      // to have correct spacing around icon, we need to
+      // remove spacing that's there because of animation
+      paddingRight: theme.spacing(2) - animationSpacing,
+    },
+  }
+})
 
 // Note: User is unable to select whole text at once
 // due to cutting the text into different HTML elements
@@ -96,7 +117,8 @@ export const EntityCardContent = ({
   ellipsizeValue = true,
   monospaceValue = true,
 }) => {
-  const classes = useContentStyles({showCopyIcon})
+  const isMobile = useIsMobile()
+  const classes = useContentStyles({showCopyIcon, isMobile})
 
   return (
     <div className="d-flex">
@@ -107,15 +129,17 @@ export const EntityCardContent = ({
           alignItems="center"
           className={cn(classes.autoWidth, classes.iconAlign)}
         >
-          <Grid item>{iconRenderer}</Grid>
+          {iconRenderer}
         </Grid>
       )}
       <div className={classes.cardContent}>
         <div className={classes.correctureWrapper}>
           <div ref={innerRef} className={classes.wrapper}>
-            <Typography variant="overline" color="textSecondary" className={classes.label}>
-              {label}
-            </Typography>
+            {label && (
+              <Typography variant="overline" color="textSecondary" className={classes.label}>
+                {label}
+              </Typography>
+            )}
 
             <Grid item className={classes.valueContainer}>
               <ReactCSSTransitionGroup

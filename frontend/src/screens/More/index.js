@@ -8,6 +8,7 @@ import {Link} from '@/components/common'
 import MarketHistory from './MarketData'
 import {routeTo} from '@/helpers/routes'
 import {useI18n} from '@/i18n/helpers'
+import {NON_BOOTSTRAP_POOL_HASH} from '@/screens/Blockchain/StakePool'
 
 const messages = defineMessages({
   stakingKeyScreens: 'Staking Key screens',
@@ -30,17 +31,11 @@ const More = () => {
     <SimpleLayout title="Market data i18n">
       <Typography variant="h4">{tr(messages.stakingKeyScreens)}</Typography>
       <Link
-        to={routeTo.stakingKey.user(
-          'c4ca4238a0b923820dcc509a6f75849bc81e728d9d4c2f636f067f89cc14862c'
-        )}
+        to={routeTo.stakingKey('c4ca4238a0b923820dcc509a6f75849bc81e728d9d4c2f636f067f89cc14862c')}
       >
         {tr(messages.userStakingKeyScreen)}
       </Link>
-      <Link
-        to={routeTo.stakingKey.stakePool(
-          'eccbc87e4b5ce2fe28308fd9f2a7baf3a87ff679a2f3e71d9181a67b7542122c'
-        )}
-      >
+      <Link to={routeTo.stakepool(NON_BOOTSTRAP_POOL_HASH)}>
         {tr(messages.stakePoolProfileScreen)}
       </Link>
       <div className={classes.graphWrapper}>

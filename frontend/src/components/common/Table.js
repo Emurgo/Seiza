@@ -15,9 +15,8 @@ import {defineMessages} from 'react-intl'
 import cn from 'classnames'
 import {fade} from '@material-ui/core/styles/colorManipulator'
 
-import {Card, KeyValueCard, Overlay} from '@/components/visual'
+import {Card, KeyValueCard, Overlay, MobileOnly, DesktopOnly} from '@/components/visual'
 import {useI18n} from '@/i18n/helpers'
-import {useIsMobile} from '@/components/hooks/useBreakpoints'
 import {LoadingOverlay, ErrorOverlay} from '@/components/common'
 
 export const ROW_TYPE = {
@@ -29,14 +28,21 @@ const messages = defineMessages({
   noData: 'No data to show.',
 })
 
-const useTableStyles = makeStyles(({hover, palette}) => ({
+const useTableStyles = makeStyles(({hover, palette, breakpoints}) => ({
   wrapperRoot: {
     width: '100%',
     overflowX: 'auto',
   },
   row: {
-    '&:nth-child(odd)': {
-      backgroundColor: fade(palette.primary.main, 0.03),
+    [breakpoints.down('sm')]: {
+      '&:nth-child(even)': {
+        backgroundColor: fade(palette.primary.main, 0.03),
+      },
+    },
+    [breakpoints.up('md')]: {
+      '&:nth-child(odd)': {
+        backgroundColor: fade(palette.primary.main, 0.03),
+      },
     },
   },
   hoverableRow: {
@@ -277,7 +283,6 @@ const TableWrapper = ({loading, error, children}: any) => {
 const Table = (props: TableProps) => {
   const {translate: tr} = useI18n()
   const _noDataText = tr(messages.noData)
-  const isMobile = useIsMobile()
 
   const noDataRenderer = () =>
     !props.loading && (
@@ -286,11 +291,14 @@ const Table = (props: TableProps) => {
       </Grid>
     )
 
-  const TableImpl = isMobile ? MobileTable : DesktopTable
-
   return (
     <TableWrapper loading={props.loading} error={props.error}>
-      <TableImpl {...props} noDataRenderer={noDataRenderer} />
+      <MobileOnly>
+        <MobileTable {...props} noDataRenderer={noDataRenderer} />
+      </MobileOnly>
+      <DesktopOnly>
+        <DesktopTable {...props} noDataRenderer={noDataRenderer} />
+      </DesktopOnly>
     </TableWrapper>
   )
 }

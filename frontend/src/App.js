@@ -1,6 +1,5 @@
 // @flow
 
-import cn from 'classnames'
 import React from 'react'
 import {BrowserRouter, StaticRouter, Route, Switch, Redirect} from 'react-router-dom'
 import {CssBaseline, Grid} from '@material-ui/core'
@@ -10,6 +9,7 @@ import {defineMessages} from 'react-intl'
 import {routeTo, combinedBlockchainPath} from './helpers/routes'
 import Footer from './screens/Footer'
 import {useI18n} from '@/i18n/helpers'
+import {setupWhyDidYouRender} from '@/helpers/performance'
 import {AutoSyncProvider} from './screens/Staking/context/autoSync'
 
 import Terms from './screens/Legal/Terms'
@@ -22,14 +22,21 @@ import StakingPools from './screens/StakingPools'
 import More from './screens/More'
 import PageNotFound from './screens/PageNotFound'
 import CookiesBanner from '@/components/common/CookiesBanner'
+import UnsupportedBrowserBanner from '@/components/common/UnsupportedBrowserBanner'
+
 import DefaultErrorBoundary from '@/components/common/DefaultErrorBoundary'
-import {SubscribeProvider} from '@/components/context/SubscribeContext'
-import {AcceptCookiesProvider} from '@/components/context/AcceptCookiesContext'
-import {AnalyticsProvider} from '@/helpers/googleAnalytics' // TODO move to context?
+import {AcceptCookiesProvider} from '@/components/context/acceptCookies'
+import {AnalyticsProvider} from '@/components/context/googleAnalytics'
+import {RefProviders} from '@/components/context/refs'
 import {CurrencyProvider} from '@/components/hooks/useCurrency'
-import {SearchbarRefProvider} from '@/components/context/SearchbarRef'
 import EnvOverrides from './screens/EnvOverrides'
 import TopBar from './TopBar'
+
+import config from '@/config'
+
+if (!config.isProduction && config.watchRenderPerformance) {
+  setupWhyDidYouRender()
+}
 
 const navigationMessages = defineMessages({
   home: 'Home',
@@ -53,10 +60,10 @@ const useAppStyles = makeStyles((theme) => ({
   },
   navHeaderWrapper: {
     top: 0,
-    zIndex: 2,
+    zIndex: 30,
+    position: 'sticky',
     [theme.breakpoints.up('md')]: {
-      position: 'static',
-      zIndex: 0,
+      position: 'relative',
     },
   },
 }))
@@ -99,11 +106,9 @@ const Providers = ({children}) => (
     {/* Note: must be defined after AcceptCookiesProvider */}
     <AnalyticsProvider>
       <CurrencyProvider>
-        <SubscribeProvider>
-          <AutoSyncProvider>
-            <SearchbarRefProvider>{children}</SearchbarRefProvider>
-          </AutoSyncProvider>
-        </SubscribeProvider>
+        <AutoSyncProvider>
+          <RefProviders>{children}</RefProviders>
+        </AutoSyncProvider>
       </CurrencyProvider>
     </AnalyticsProvider>
   </AcceptCookiesProvider>
@@ -117,9 +122,10 @@ const AppLayout = () => {
 
   return (
     <Grid container direction="column" className={classes.mainWrapper} wrap="nowrap">
+      <UnsupportedBrowserBanner />
       <CookiesBanner />
 
-      <Grid item className={cn(classes.navHeaderWrapper, 'sticky')}>
+      <Grid item className={classes.navHeaderWrapper}>
         <CssBaseline />
         <TopBar navItems={getTranslatedNavItems(translate)} />
       </Grid>
