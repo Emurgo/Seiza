@@ -4,7 +4,7 @@ import idx from 'idx'
 import {useQuery} from 'react-apollo-hooks'
 
 import {useSelectedPoolsContext} from '../context/selectedPools'
-import {getStakepoolHistory} from '@/screens/Blockchain/StakingKey/mockedData'
+import {getStakepoolHistory} from '@/screens/Blockchain/common/mockedStakingData'
 
 // TOOD: Dont we already have hook/dataProvider that we can reuse
 // current epoch from?

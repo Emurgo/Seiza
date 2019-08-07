@@ -1,5 +1,5 @@
 // @flow
-import {getStakepool, getStakepoolHistory} from '../mockedData'
+import {getStakepool, getStakepoolHistory} from '@/screens/Blockchain/common/mockedStakingData'
 
 // TODO: get data from backend
 export const useLoadStakepoolData = (stakepoolHash: string) => ({

@@ -1,5 +1,5 @@
 // @flow
-import {getStakingKey, getStakingKeyHistory} from '../mockedData'
+import {getStakingKey, getStakingKeyHistory} from '@/screens/Blockchain/common/mockedStakingData'
 
 // TODO: get data from backend
 export const useLoadStakingKeyData = (stakingKeyHash: string) => ({
