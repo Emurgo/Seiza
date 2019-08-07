@@ -11,6 +11,7 @@ import {defineMessages} from 'react-intl'
 import {SummaryCard, SimpleLayout, LoadingDots, LoadingInProgress} from '@/components/visual'
 import {AdaValue, LoadingError, EntityIdCard, Link} from '@/components/common'
 
+import {MetadataOverrides, seoMessages} from '@/pages/_meta'
 import blockIcon from '@/static/assets/icons/metrics-blocks.svg'
 import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
 import {useAnalytics} from '@/components/context/googleAnalytics'
@@ -33,6 +34,14 @@ const blockSummaryLabels = defineMessages({
   blockHeight: 'Block Height',
   totalFees: 'Total Fees',
   totalSent: 'Total ADA Sent',
+})
+
+const metadata = defineMessages({
+  screenTitle: 'Cardano Block {blockHash} | Seiza',
+  metaDescription:
+    'Cardano Block {blockHash} / Cardano Slot {slot} in Epoch {epoch}. Total ADA Sent: {totalAdaSent}. Timestamp: {date}',
+  keywords:
+    'Cardano Block {blockHash}, Slot {slot} in Epoch {epoch}, Block {slot} in Epoch {epoch}, Epoch {epoch}, Cardano Block, {commonKeywords}',
 })
 
 const useStyles = makeStyles((theme) => ({
@@ -215,6 +224,30 @@ const TransactionList = ({transactions, loading, timestamp}) => {
   )
 }
 
+const BlockMetadata = ({blockHash, blockData}) => {
+  const {translate: tr, formatTimestamp, formatInt, formatAda} = useI18n()
+
+  const title = tr(metadata.screenTitle, {blockHash})
+
+  const description = tr(metadata.metaDescription, {
+    blockHash,
+    epoch: formatInt(idx(blockData, (_) => _.epoch)),
+    slot: formatInt(idx(blockData, (_) => _.slot)),
+    date: formatTimestamp(idx(blockData, (_) => _.timeIssued), {tz: formatTimestamp.TZ_UTC}),
+    totalAdaSent: formatAda(idx(blockData, (_) => _.totalSent)),
+  })
+
+  const keywords = tr(metadata.keywords, {
+    blockHash,
+    // Note: here we better not include commas in numbers as keywords are comma-separated
+    slot: idx(blockData, (_) => _.slot),
+    epoch: idx(blockData, (_) => _.epoch),
+    commonKeywords: tr(seoMessages.keywords),
+  })
+
+  return <MetadataOverrides {...{title, description, keywords}} />
+}
+
 const BlockScreen = () => {
   const {
     match: {
@@ -233,6 +266,7 @@ const BlockScreen = () => {
   return (
     <div ref={scrollToRef}>
       <SimpleLayout title={translate(blockMessages.title)}>
+        <BlockMetadata blockHash={blockHash} blockData={blockData} />
         <SlotNavigation slot={blockData} />
         <EntityIdCard
           label={translate(blockMessages.blockHash)}
