@@ -1,7 +1,7 @@
 // @flow
 import * as React from 'react'
 
-import {ArrowDropDown, ArrowRight} from '@material-ui/icons'
+import {ArrowDropDown, ArrowDropUp} from '@material-ui/icons'
 
 import Button from './Button'
 
@@ -14,7 +14,7 @@ export default ({open, children, ...restProps}: Props) => {
   return (
     <Button {...restProps}>
       {children}
-      {open ? <ArrowRight /> : <ArrowDropDown />}
+      {open ? <ArrowDropUp /> : <ArrowDropDown />}
     </Button>
   )
 }

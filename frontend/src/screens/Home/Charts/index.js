@@ -12,19 +12,12 @@ import {makeStyles} from '@material-ui/styles'
 
 import {useI18n} from '@/i18n/helpers'
 import {ObjectValues} from '@/helpers/flow'
-import {useAnalytics} from '@/helpers/googleAnalytics'
-import {
-  SimpleLayout,
-  LiteTabs,
-  LiteTab,
-  Card,
-  LoadingInProgress,
-  LoadingError,
-  Alert,
-} from '@/components/visual'
+import {useAnalytics} from '@/components/context/googleAnalytics'
+import {SimpleLayout, LiteTabs, LiteTab, Card, LoadingInProgress, Alert} from '@/components/visual'
+import {LoadingError} from '@/components/common'
 import useTabState from '@/components/hooks/useTabState'
 import {useCurrentBreakpoint} from '@/components/hooks/useBreakpoints'
-import {TabsProvider as Tabs, TabItem as Tab, useTabContext} from '@/components/context/TabContext'
+import {TabsProvider as Tabs, TabItem as Tab, useTabContext} from '@/components/common/Tabs'
 import BarChart from './BarChart'
 import {useCurrentEpoch} from '../common'
 
@@ -74,7 +67,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'flex-end',
   },
   layout: {
-    paddingBottom: theme.spacing.unit * 2.5,
+    paddingBottom: theme.spacing(2.5),
   },
 }))
 

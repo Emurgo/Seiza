@@ -1,5 +1,5 @@
 import React from 'react'
-import classnames from 'classnames'
+import cn from 'classnames'
 import {Route, Link} from 'react-router-dom'
 
 // TODO: make this reuseable and also use for main navigation
@@ -13,7 +13,7 @@ export default ({to, children, className, activeClassName, ...rest}) => {
       children={({location, match}) => {
         const isActive = !!match
         return (
-          <Link {...rest} className={classnames(className, isActive && activeClassName)} to={to}>
+          <Link {...rest} className={cn(className, isActive && activeClassName)} to={to}>
             {typeof children === 'function' ? children(isActive) : children}
           </Link>
         )

@@ -53,7 +53,7 @@ const useStyles = makeStyles((theme) => {
       fill: fade(baseColor, 0.4),
     },
     'tooltip': {
-      padding: theme.spacing.unit,
+      padding: theme.spacing(1),
     },
     'tooltipContainer': {
       flexDirection: 'column',
@@ -206,7 +206,7 @@ export default ({
             offset={-5}
             value={yLabel}
             position="insideLeft"
-            style={{textAnchor: 'middle'}}
+            style={{textAnchor: 'middle', fill: textColor}}
           />
         )}
       </YAxis>

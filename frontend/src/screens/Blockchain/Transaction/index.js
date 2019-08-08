@@ -5,28 +5,23 @@ import useReactRouter from 'use-react-router'
 import {defineMessages} from 'react-intl'
 import idx from 'idx'
 import gql from 'graphql-tag'
-import {extractError} from '@/helpers/errors'
 
+import {MetadataOverrides, seoMessages} from '@/pages/_meta'
+import {extractError} from '@/helpers/errors'
+import env from '@/config'
 import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
-import {
-  SummaryCard,
-  SimpleLayout,
-  LoadingInProgress,
-  LoadingError,
-  EntityIdCard,
-  AdaValue,
-  Link,
-  Overlay,
-  LoadingOverlay,
-} from '@/components/visual'
+import {SummaryCard, SimpleLayout, LoadingInProgress, Overlay} from '@/components/visual'
+import {AdaValue, LoadingError, LoadingOverlay, EntityIdCard, Link} from '@/components/common'
 import AddressesBreakdown from '@/components/common/AddressesBreakdown'
 import AssuranceChip from '@/components/common/AssuranceChip'
-import AdaIcon from '@/assets/icons/transaction-id.svg'
+import AdaIcon from '@/static/assets/icons/transaction-id.svg'
 
 import {ASSURANCE_LEVELS_VALUES, APOLLO_CACHE_OPTIONS} from '@/constants'
 import {useI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
-import {useAnalytics} from '@/helpers/googleAnalytics'
+import {useAnalytics} from '@/components/context/googleAnalytics'
+import CertificateActions from './CertificateActions'
+import MOCKED_CERT_ACTIONS from '@/screens/Blockchain/Certificates/mockedActions'
 
 const messages = defineMessages({
   header: 'Transaction',
@@ -41,11 +36,17 @@ const messages = defineMessages({
   notAvailable: 'N/A',
 })
 
+const metadata = defineMessages({
+  screenTitle: 'Cardano Transaction {txHash}  | Seiza',
+  metaDescription: 'Cardano Transaction: {txHash}. Total ADA Sent: {totalAdaSent}. Date: {date}',
+  keywords: 'Transaction {txHash}, Cardano Transactions, {commonKeywords}',
+})
+
 type AssuranceEnum = 'LOW' | 'MEDIUM' | 'HIGH'
 const assuranceFromConfirmations = (cnt: number): AssuranceEnum => {
-  if (cnt <= ASSURANCE_LEVELS_VALUES.LOW) {
+  if (cnt < ASSURANCE_LEVELS_VALUES.LOW) {
     return 'LOW'
-  } else if (cnt <= ASSURANCE_LEVELS_VALUES.MEDIUM) {
+  } else if (cnt < ASSURANCE_LEVELS_VALUES.MEDIUM) {
     return 'MEDIUM'
   } else {
     return 'HIGH'
@@ -168,6 +169,25 @@ const useScreenParams = () => {
   return {txHash}
 }
 
+const TransactionMetadata = ({txHash, txData}) => {
+  const {translate: tr, formatTimestamp, formatAda} = useI18n()
+
+  const title = tr(metadata.screenTitle, {txHash})
+
+  const description = tr(metadata.metaDescription, {
+    txHash,
+    date: formatTimestamp(idx(txData, (_) => _.block.timeIssued), {tz: formatTimestamp.TZ_UTC}),
+    totalAdaSent: formatAda(idx(txData, (_) => _.totalInput)),
+  })
+
+  const keywords = tr(metadata.keywords, {
+    txHash,
+    commonKeywords: tr(seoMessages.keywords),
+  })
+
+  return <MetadataOverrides {...{title, description, keywords}} />
+}
+
 const TransactionScreen = () => {
   const {txHash} = useScreenParams()
   const {loading, transactionData, error} = useTransactionData(txHash)
@@ -182,10 +202,11 @@ const TransactionScreen = () => {
   return (
     <div ref={scrollToRef}>
       <SimpleLayout title={translate(messages.header)}>
+        <TransactionMetadata txHash={txHash} txData={transactionData} />
         <EntityIdCard
           label={translate(messages.transactionId)}
           value={txHash}
-          iconRenderer={<img alt="" src={AdaIcon} width={40} height={40} />}
+          iconRenderer={<img alt="" src={AdaIcon} />}
         />
         {error ? (
           <LoadingError error={error} />
@@ -193,6 +214,7 @@ const TransactionScreen = () => {
           <React.Fragment>
             <TransactionSummary loading={loading} transaction={transactionData} />
             {loading ? <LoadingInProgress /> : <AddressesBreakdown tx={transactionData} />}
+            {env.showStakingData && <CertificateActions certificateActions={MOCKED_CERT_ACTIONS} />}
           </React.Fragment>
         )}
       </SimpleLayout>

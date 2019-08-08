@@ -8,20 +8,13 @@ import idx from 'idx'
 import gql from 'graphql-tag'
 import {defineMessages} from 'react-intl'
 
-import {
-  EntityIdCard,
-  SummaryCard,
-  SimpleLayout,
-  LoadingDots,
-  LoadingInProgress,
-  LoadingError,
-  AdaValue,
-  Link,
-} from '@/components/visual'
+import {SummaryCard, SimpleLayout, LoadingDots, LoadingInProgress} from '@/components/visual'
+import {AdaValue, LoadingError, EntityIdCard, Link} from '@/components/common'
 
-import blockIcon from '@/assets/icons/metrics-blocks.svg'
+import {MetadataOverrides, seoMessages} from '@/pages/_meta'
+import blockIcon from '@/static/assets/icons/metrics-blocks.svg'
 import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
-import {useAnalytics} from '@/helpers/googleAnalytics'
+import {useAnalytics} from '@/components/context/googleAnalytics'
 
 import TransactionCard from '@/components/common/TransactionCard'
 
@@ -36,16 +29,25 @@ const blockSummaryLabels = defineMessages({
   epoch: 'Epoch',
   slot: 'Slot',
   issuedAt: 'Timestamp',
+  blockLeader: 'Block leader',
   transactionsCount: 'Transactions',
   blockHeight: 'Block Height',
   totalFees: 'Total Fees',
   totalSent: 'Total ADA Sent',
 })
 
+const metadata = defineMessages({
+  screenTitle: 'Cardano Block {blockHash} | Seiza',
+  metaDescription:
+    'Cardano Block {blockHash} / Cardano Slot {slot} in Epoch {epoch}. Total ADA Sent: {totalAdaSent}. Timestamp: {date}',
+  keywords:
+    'Cardano Block {blockHash}, Slot {slot} in Epoch {epoch}, Block {slot} in Epoch {epoch}, Epoch {epoch}, Cardano Block, {commonKeywords}',
+})
+
 const useStyles = makeStyles((theme) => ({
   transactionList: {
     '& > :not(:first-child)': {
-      marginTop: theme.spacing.unit * 1.25,
+      marginTop: theme.spacing(1.25),
     },
   },
 }))
@@ -69,6 +71,8 @@ const BlockSummaryCard = ({blockData, loading}) => {
     slot: idx(blockData, (_) => _.slot),
     blockHash: idx(blockData, (_) => _.blockHash),
     issuedAt: idx(blockData, (_) => _.timeIssued),
+    blockLeaderHash: idx(blockData, (_) => _.blockLeader.poolHash),
+    blockLeaderName: idx(blockData, (_) => _.blockLeader.name),
     txCount: idx(blockData, (_) => _.transactionsCount),
     blockHeight: idx(blockData, (_) => _.blockHeight),
     totalSent: idx(blockData, (_) => _.totalSent),
@@ -85,6 +89,11 @@ const BlockSummaryCard = ({blockData, loading}) => {
       ),
     slot: formatInt(__.slot, {defaultValue: NA}), // no link, because it would be link to this page
     issuedAt: formatTimestamp(__.issuedAt, {defaultValue: NA}),
+    blockLeader: __.blockLeaderHash ? (
+      <Link to={routeTo.stakepool(__.blockLeaderHash)}>{__.blockLeaderName}</Link>
+    ) : (
+      NA
+    ),
     txCount: formatInt(__.txCount, {defaultValue: NA}),
     blockHeight: formatInt(__.blockHeight, {defaultValue: NA}),
     totalSent: <AdaValue value={__.totalSent} noValue={NA} showCurrency timestamp={__.issuedAt} />,
@@ -96,6 +105,7 @@ const BlockSummaryCard = ({blockData, loading}) => {
       <Item label={label.epoch}>{data.epoch}</Item>
       <Item label={label.slot}>{data.slot}</Item>
       <Item label={label.issuedAt}>{data.issuedAt}</Item>
+      <Item label={label.blockLeader}>{data.blockLeader}</Item>
       <Item label={label.transactionsCount}>{data.txCount}</Item>
       <Item label={label.blockHeight}>{data.blockHeight}</Item>
       <Item label={label.totalFees}>{data.totalFees}</Item>
@@ -214,6 +224,30 @@ const TransactionList = ({transactions, loading, timestamp}) => {
   )
 }
 
+const BlockMetadata = ({blockHash, blockData}) => {
+  const {translate: tr, formatTimestamp, formatInt, formatAda} = useI18n()
+
+  const title = tr(metadata.screenTitle, {blockHash})
+
+  const description = tr(metadata.metaDescription, {
+    blockHash,
+    epoch: formatInt(idx(blockData, (_) => _.epoch)),
+    slot: formatInt(idx(blockData, (_) => _.slot)),
+    date: formatTimestamp(idx(blockData, (_) => _.timeIssued), {tz: formatTimestamp.TZ_UTC}),
+    totalAdaSent: formatAda(idx(blockData, (_) => _.totalSent)),
+  })
+
+  const keywords = tr(metadata.keywords, {
+    blockHash,
+    // Note: here we better not include commas in numbers as keywords are comma-separated
+    slot: idx(blockData, (_) => _.slot),
+    epoch: idx(blockData, (_) => _.epoch),
+    commonKeywords: tr(seoMessages.keywords),
+  })
+
+  return <MetadataOverrides {...{title, description, keywords}} />
+}
+
 const BlockScreen = () => {
   const {
     match: {
@@ -232,11 +266,12 @@ const BlockScreen = () => {
   return (
     <div ref={scrollToRef}>
       <SimpleLayout title={translate(blockMessages.title)}>
+        <BlockMetadata blockHash={blockHash} blockData={blockData} />
         <SlotNavigation slot={blockData} />
         <EntityIdCard
           label={translate(blockMessages.blockHash)}
           value={blockHash}
-          iconRenderer={<img alt="" src={blockIcon} width={40} height={40} />}
+          iconRenderer={<img alt="" src={blockIcon} />}
         />
         {error ? (
           <LoadingError error={error} />

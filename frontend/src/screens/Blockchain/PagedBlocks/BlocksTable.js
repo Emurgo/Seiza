@@ -4,19 +4,20 @@ import {defineMessages} from 'react-intl'
 import {Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
-import Table, {ROW_TYPE} from '@/components/visual/Table'
-import {AdaValue, Link, Tooltip} from '@/components/visual'
+import {Tooltip} from '@/components/visual'
+import Table, {ROW_TYPE} from '@/components/common/Table'
+import {AdaValue, Link} from '@/components/common'
 import {useI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
 
-import {ReactComponent as EpochIcon} from '@/assets/icons/epoch.svg'
-import {ReactComponent as SlotIcon} from '@/assets/icons/slot.svg'
-import {ReactComponent as TimeIcon} from '@/assets/icons/time.svg'
-import {ReactComponent as SlotLeaderIcon} from '@/assets/icons/slot-leader.svg'
-import {ReactComponent as TransactionsIcon} from '@/assets/icons/transactions.svg'
-import {ReactComponent as TotalSentIcon} from '@/assets/icons/total-sent.svg'
-import {ReactComponent as FeeIcon} from '@/assets/icons/fee.svg'
-import {ReactComponent as SizeIcon} from '@/assets/icons/size.svg'
+import {ReactComponent as EpochIcon} from '@/static/assets/icons/epoch.svg'
+import {ReactComponent as SlotIcon} from '@/static/assets/icons/slot.svg'
+import {ReactComponent as TimeIcon} from '@/static/assets/icons/time.svg'
+import {ReactComponent as SlotLeaderIcon} from '@/static/assets/icons/slot-leader.svg'
+import {ReactComponent as TransactionsIcon} from '@/static/assets/icons/transactions.svg'
+import {ReactComponent as TotalSentIcon} from '@/static/assets/icons/total-sent.svg'
+import {ReactComponent as FeeIcon} from '@/static/assets/icons/fee.svg'
+import {ReactComponent as SizeIcon} from '@/static/assets/icons/size.svg'
 import type {Block} from '@/__generated__/schema.flow'
 
 // TODO?: aria-label messages
@@ -54,7 +55,7 @@ const useTHStyles = makeStyles((theme) => ({
     alignItems: 'center',
   },
   icon: {
-    marginRight: theme.spacing.unit * 0.5,
+    marginRight: theme.spacing(0.5),
     display: 'inline-block',
     height: '100%',
     verticalAlign: 'middle',
@@ -94,6 +95,15 @@ type Props = {
   pageBoundary: number | null,
 }
 
+const Shorthand = ({shorthand, full}) =>
+  shorthand !== full ? (
+    <Tooltip title={full} placement="top">
+      <span style={{borderBottom: '1px dotted gray'}}>{shorthand}</span>
+    </Tooltip>
+  ) : (
+    full
+  )
+
 const BlocksTable = ({blocks, columns, loading, error, nextPageNumber, pageBoundary}: Props) => {
   const {formatInt, formatTimestamp, translate: tr} = useI18n()
 
@@ -117,11 +127,7 @@ const BlocksTable = ({blocks, columns, loading, error, nextPageNumber, pageBound
         icon: SlotIcon,
         label: tr(tableMessages.slot),
       },
-      cell: (block) => (
-        <Link key={1} to={routeTo.block(block.blockHash)}>
-          {formatInt(block.slot)}
-        </Link>
-      ),
+      cell: (block) => <Link to={routeTo.block(block.blockHash)}>{formatInt(block.slot)}</Link>,
       align: 'left',
     },
     [TIME]: {
@@ -129,7 +135,9 @@ const BlocksTable = ({blocks, columns, loading, error, nextPageNumber, pageBound
         icon: TimeIcon,
         label: tr(tableMessages.time),
       },
-      cell: (block) => formatTimestamp(block.timeIssued),
+      cell: (block) => (
+        <Link to={routeTo.block(block.blockHash)}>{formatTimestamp(block.timeIssued)}</Link>
+      ),
       align: 'left',
     },
     [SLOT_LEADER]: {
@@ -148,9 +156,7 @@ const BlocksTable = ({blocks, columns, loading, error, nextPageNumber, pageBound
       header: {
         icon: TransactionsIcon,
         label: (
-          <Tooltip title={tr(tableMessages.transactions)} placement="top">
-            <span style={{borderBottom: '1px dotted gray'}}>{tr(tableMessages.txs)}</span>
-          </Tooltip>
+          <Shorthand shorthand={tr(tableMessages.txs)} full={tr(tableMessages.transactions)} />
         ),
       },
       cell: (block) => formatInt(block.transactionsCount),

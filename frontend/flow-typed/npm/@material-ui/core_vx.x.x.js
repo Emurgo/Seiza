@@ -498,7 +498,9 @@ declare module '@material-ui/core/withMobileDialog/withMobileDialog' {
     breakpoint: Breakpoint,
   }) => <Props: {}, WrappedComponent: React$ComponentType<Props>>(
     Component: WrappedComponent
-  ) => React$ComponentType<$Diff<React$ElementConfig<$Supertype<WrappedComponent>>, WithMobileDialog>>
+  ) => React$ComponentType<
+    $Diff<React$ElementConfig<$Supertype<WrappedComponent>>, WithMobileDialog>
+  >
 }
 
 declare module '@material-ui/core/Dialog' {
@@ -581,7 +583,8 @@ declare module '@material-ui/core/SwipeableDrawer/SwipeableDrawer' {
   import typeof Drawer from '@material-ui/core/Drawer/Drawer'
   import type {TransitionDuration} from '@material-ui/core/internal/transition'
 
-  declare module.exports: ComponentType<{
+  declare module.exports: ComponentType<
+    {
       disableBackdropTransition: boolean,
       disableDiscovery: boolean,
       disableSwipeToOpen: boolean,
@@ -590,7 +593,8 @@ declare module '@material-ui/core/SwipeableDrawer/SwipeableDrawer' {
       open?: boolean,
       swipeAreaWidth: number,
       transitionDuration?: TransitionDuration,
-    } & Drawer>
+    } & Drawer
+  >
 }
 
 declare module '@material-ui/core/SwipeableDrawer' {
@@ -779,7 +783,7 @@ declare module '@material-ui/core/Grid/Grid' {
     | 'space-between'
     | 'space-around'
     | 'space-evenly'
-  declare type Spacing = 0 | 8 | 16 | 24 | 32 | 40
+  declare type Spacing = 0 | 1 | 2 | 3 | 4 | 5 | 6
   declare type Wrap = 'nowrap' | 'wrap' | 'wrap-reverse'
   declare type GridProps = {
     children?: Node,
@@ -1129,7 +1133,9 @@ declare module '@material-ui/core/ListItemIcon' {
 }
 
 declare module '@material-ui/core/ListItemSecondaryAction' {
-  declare export default $Exports<'@material-ui/core/ListItemSecondaryAction/ListItemSecondaryAction'>
+  declare export default $Exports<
+    '@material-ui/core/ListItemSecondaryAction/ListItemSecondaryAction'
+  >
 }
 
 declare module '@material-ui/core/ListItemText' {
@@ -1848,10 +1854,12 @@ declare module '@material-ui/core/styles/createBreakpoints' {
     only: (key: Breakpoint) => string,
     width: (key: Breakpoint) => number,
   }
-  declare export type BreakpointsOptions = $Shape<{
+  declare export type BreakpointsOptions = $Shape<
+    {
       unit: string,
       step: number,
-    } & Breakpoints>
+    } & Breakpoints
+  >
 
   declare module.exports: {
     keys: Array<Breakpoint>,
@@ -1924,6 +1932,7 @@ declare module '@material-ui/core/styles/createMuiTheme' {
     overrides?: Object,
     palette: Palette,
     shadows: Shadows,
+    getContentSpacing: Function,
     shape: Shape,
     spacing: Spacing,
     transitions: Transitions,
@@ -2100,10 +2109,12 @@ declare module '@material-ui/core/styles/createTypography' {
   declare export type Typography = {[style: TextStyle]: $Shape<TypographyStyle>} & FontStyle &
     TypographyUtils
 
-  declare export type TypographyOptions = $Shape<{
+  declare export type TypographyOptions = $Shape<
+    {
       [style: TextStyle]: $Shape<TypographyStyle>,
       useNextVariants: boolean,
-    } & FontStyle>
+    } & FontStyle
+  >
 
   declare module.exports: (
     palette: Palette,
@@ -2144,9 +2155,7 @@ declare module '@material-ui/core/styles/shape' {
 }
 
 declare module '@material-ui/core/styles/spacing' {
-  declare export type Spacing = {
-    unit: number,
-  }
+  declare export type Spacing = (number) => number
 
   declare export type SpacingOptions = $Shape<Spacing>
 
@@ -2265,7 +2274,7 @@ declare module '@material-ui/core/styles/withTheme' {
     innerRef: void | (Ref<any> | {current: ElementRef<any> | null}),
   }
 
-  declare module.exports: () => <Props: {}, WrappedComponent: ComponentType<Props>>(
+  declare module.exports: <Props: {}, WrappedComponent: ComponentType<Props>>(
     Component: WrappedComponent
   ) => ComponentType<$Diff<ElementConfig<$Supertype<WrappedComponent>>, WithThemeHOC>>
 }
@@ -3032,7 +3041,9 @@ declare module '@material-ui/core/BottomNavigation/index.js' {
   declare module.exports: $Exports<'@material-ui/core/BottomNavigation'>
 }
 declare module '@material-ui/core/BottomNavigationAction/BottomNavigationAction.js' {
-  declare module.exports: $Exports<'@material-ui/core/BottomNavigationAction/BottomNavigationAction'>
+  declare module.exports: $Exports<
+    '@material-ui/core/BottomNavigationAction/BottomNavigationAction'
+  >
 }
 declare module '@material-ui/core/BottomNavigationAction/index.js' {
   declare module.exports: $Exports<'@material-ui/core/BottomNavigation'>
@@ -3368,7 +3379,9 @@ declare module '@material-ui/core/ListItemIcon/index.js' {
   declare module.exports: $Exports<'@material-ui/core/ListItemIcon'>
 }
 declare module '@material-ui/core/ListItemSecondaryAction/ListItemSecondaryAction.js' {
-  declare module.exports: $Exports<'@material-ui/core/ListItemSecondaryAction/ListItemSecondaryAction'>
+  declare module.exports: $Exports<
+    '@material-ui/core/ListItemSecondaryAction/ListItemSecondaryAction'
+  >
 }
 declare module '@material-ui/core/ListItemSecondaryAction/index.js' {
   declare module.exports: $Exports<'@material-ui/core/ListItemSecondaryAction'>
@@ -3783,9 +3796,13 @@ declare module '@material-ui/core' {
   declare export var AppBar: $Exports<'@material-ui/core/AppBar/AppBar'>
   declare export var Avatar: $Exports<'@material-ui/core/Avatar/Avatar'>
   declare export var Badge: $Exports<'@material-ui/core/Badge/Badge'>
-  declare export var BottomNavigationAction: $Exports<'@material-ui/core/BottomNavigationAction/BottomNavigationAction'>
+  declare export var BottomNavigationAction: $Exports<
+    '@material-ui/core/BottomNavigationAction/BottomNavigationAction'
+  >
 
-  declare export var BottomNavigation: $Exports<'@material-ui/core/BottomNavigation/BottomNavigation'>
+  declare export var BottomNavigation: $Exports<
+    '@material-ui/core/BottomNavigation/BottomNavigation'
+  >
   declare export var Button: $Exports<'@material-ui/core/Button/Button'>
   declare export var ButtonBase: $Exports<'@material-ui/core/ButtonBase/ButtonBase'>
   declare export var Card: $Exports<'@material-ui/core/Card/Card'>
@@ -3795,27 +3812,41 @@ declare module '@material-ui/core' {
   declare export var CardMedia: $Exports<'@material-ui/core/CardMedia/CardMedia'>
   declare export var Checkbox: $Exports<'@material-ui/core/Checkbox/Checkbox'>
   declare export var Chip: $Exports<'@material-ui/core/Chip/Chip'>
-  declare export var ClickAwayListener: $Exports<'@material-ui/core/ClickAwayListener/ClickAwayListener'>
+  declare export var ClickAwayListener: $Exports<
+    '@material-ui/core/ClickAwayListener/ClickAwayListener'
+  >
   declare export var CssBaseline: $Exports<'@material-ui/core/CssBaseline/CssBaseline'>
 
   declare export var Dialog: $Exports<'@material-ui/core/Dialog/Dialog'>
   declare export var DialogActions: $Exports<'@material-ui/core/DialogActions/DialogActions'>
   declare export var DialogContent: $Exports<'@material-ui/core/DialogContent/DialogContent'>
-  declare export var DialogContentText: $Exports<'@material-ui/core/DialogContentText/DialogContentText'>
+  declare export var DialogContentText: $Exports<
+    '@material-ui/core/DialogContentText/DialogContentText'
+  >
   declare export var DialogTitle: $Exports<'@material-ui/core/DialogTitle/DialogTitle'>
-  declare export var withMobileDialog: $Exports<'@material-ui/core/withMobileDialog/withMobileDialog'>
+  declare export var withMobileDialog: $Exports<
+    '@material-ui/core/withMobileDialog/withMobileDialog'
+  >
   declare export var Divider: $Exports<'@material-ui/core/Divider/Divider'>
   declare export var Drawer: $Exports<'@material-ui/core/Drawer/Drawer'>
   declare export var ExpansionPanel: $Exports<'@material-ui/core/ExpansionPanel/ExpansionPanel'>
-  declare export var ExpansionPanelActions: $Exports<'@material-ui/core/ExpansionPanelActions/ExpansionPanelActions'>
-  declare export var ExpansionPanelDetails: $Exports<'@material-ui/core/ExpansionPanelDetails/ExpansionPanelDetails'>
-  declare export var ExpansionPanelSummary: $Exports<'@material-ui/core/ExpansionPanelSummary/ExpansionPanelSummary'>
+  declare export var ExpansionPanelActions: $Exports<
+    '@material-ui/core/ExpansionPanelActions/ExpansionPanelActions'
+  >
+  declare export var ExpansionPanelDetails: $Exports<
+    '@material-ui/core/ExpansionPanelDetails/ExpansionPanelDetails'
+  >
+  declare export var ExpansionPanelSummary: $Exports<
+    '@material-ui/core/ExpansionPanelSummary/ExpansionPanelSummary'
+  >
 
   declare export var FormControl: $Exports<'@material-ui/core/FormControl/FormControl'>
   declare export var FormGroup: $Exports<'@material-ui/core/FormGroup/FormGroup'>
   declare export var FormLabel: $Exports<'@material-ui/core/FormLabel/FormLabel'>
   declare export var FormHelperText: $Exports<'@material-ui/core/FormHelperText/FormHelperText'>
-  declare export var FormControlLabel: $Exports<'@material-ui/core/FormControlLabel/FormControlLabel'>
+  declare export var FormControlLabel: $Exports<
+    '@material-ui/core/FormControlLabel/FormControlLabel'
+  >
   declare export var Hidden: $Exports<'@material-ui/core/Hidden/Hidden'>
   declare export var Icon: $Exports<'@material-ui/core/Icon/Icon'>
   declare export var IconButton: $Exports<'@material-ui/core/IconButton/IconButton'>
@@ -3830,7 +3861,9 @@ declare module '@material-ui/core' {
   declare export var ListItem: $Exports<'@material-ui/core/ListItem/ListItem'>
   declare export var ListItemAvatar: $Exports<'@material-ui/core/ListItemAvatar/ListItemAvatar'>
   declare export var ListItemIcon: $Exports<'@material-ui/core/ListItemIcon/ListItemIcon'>
-  declare export var ListItemSecondaryAction: $Exports<'@material-ui/core/ListItemSecondaryAction/ListItemSecondaryAction'>
+  declare export var ListItemSecondaryAction: $Exports<
+    '@material-ui/core/ListItemSecondaryAction/ListItemSecondaryAction'
+  >
   declare export var ListItemText: $Exports<'@material-ui/core/ListItemText/ListItemText'>
   declare export var ListSubheader: $Exports<'@material-ui/core/ListSubheader/ListSubheader'>
   declare export var Menu: $Exports<'@material-ui/core/Menu/Menu'>
@@ -3844,7 +3877,9 @@ declare module '@material-ui/core' {
   declare export var Paper: $Exports<'@material-ui/core/Paper/Paper'>
   declare export var Popover: $Exports<'@material-ui/core/Popover/Popover'>
   declare export var Portal: $Exports<'@material-ui/core/Portal/Portal'>
-  declare export var CircularProgress: $Exports<'@material-ui/core/CircularProgress/CircularProgress'>
+  declare export var CircularProgress: $Exports<
+    '@material-ui/core/CircularProgress/CircularProgress'
+  >
   declare export var LinearProgress: $Exports<'@material-ui/core/LinearProgress/LinearProgress'>
   declare export var Radio: $Exports<'@material-ui/core/Radio/Radio'>
   declare export var RadioGroup: $Exports<'@material-ui/core/RadioGroup/RadioGroup'>

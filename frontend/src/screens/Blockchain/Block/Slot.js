@@ -8,8 +8,10 @@ import {defineMessages} from 'react-intl'
 import {useQuery} from 'react-apollo-hooks'
 import gql from 'graphql-tag'
 
+import {MetadataOverrides, seoMessages} from '@/pages/_meta'
 import NotFound from '../NotFound'
-import {SimpleLayout, SummaryCard, LoadingDots, LoadingError} from '@/components/visual'
+import {SimpleLayout, SummaryCard, LoadingDots} from '@/components/visual'
+import {LoadingError} from '@/components/common'
 import {useI18n} from '@/i18n/helpers'
 import {isInteger} from '@/helpers/validators'
 import {routeTo} from '@/helpers/routes'
@@ -20,6 +22,12 @@ const messages = defineMessages({
   title: 'Slot',
   emptySlotTitle: 'Ooups this slot is empty',
   NA: 'N/A',
+})
+
+const metadata = defineMessages({
+  screenTitle: 'Cardano Slot {slot} in Epoch {epoch} | Seiza',
+  metaDescription: 'Cardano Slot {slot} in Epoch {epoch}. Date: {date}',
+  keywords: 'Slot {slot} in Epoch {epoch}, Epoch {epoch}, Cardano Slot, {commonKeywords}',
 })
 
 const slotSummaryLabels = defineMessages({
@@ -84,6 +92,28 @@ const useSlotData = (epoch: number, slot: number) => {
   return {loading, error: extractError(error, ['slot']), slotData: data.slot}
 }
 
+// FIXME: this needs testing once slots work again!
+// http://localhost:3000/blockchain/epoch/133/slot/11387
+const SlotMetadata = ({slot, epoch, slotData}) => {
+  const {translate: tr, formatTimestamp} = useI18n()
+
+  const title = tr(metadata.screenTitle, {slot, epoch})
+
+  const description = tr(metadata.metaDescription, {
+    slot,
+    epoch,
+    date: formatTimestamp(idx(slotData, (_) => _.timeIssued), {tz: formatTimestamp.TZ_UTC}),
+  })
+
+  const keywords = tr(metadata.keywords, {
+    slot,
+    epoch,
+    commonKeywords: tr(seoMessages.keywords),
+  })
+
+  return <MetadataOverrides {...{title, description, keywords}} />
+}
+
 const validateParam = (param: string) => isInteger(param) && parseInt(param, 10) >= 0
 
 const EmptySlot = () => {
@@ -106,6 +136,7 @@ const EmptySlot = () => {
 
   return (
     <SimpleLayout title={tr(isEmpty ? messages.emptySlotTitle : messages.title)}>
+      <SlotMetadata slot={slot} epoch={epoch} slotData={slotData} />
       <SlotNavigation slot={slotData} />
       {error ? <LoadingError error={error} /> : <SlotSummaryCard {...{loading, slotData}} />}
     </SimpleLayout>

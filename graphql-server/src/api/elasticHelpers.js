@@ -197,19 +197,36 @@ export class Query {
   _type: string
   _filter: Array<any>
   _sort: Array<any>
+  _source: ?Array<string>
 
-  constructor(type: string, _filter: Array<any> = [], _sort: Array<any> = []) {
+  constructor(
+    type: string,
+    _filter: Array<any> = [],
+    _sort: Array<any> = [],
+    // _source is Elastic's "_source" field selection
+    _source: ?Array<string> = null
+  ) {
     this._type = type
     this._filter = _filter
     this._sort = _sort
+    this._source = _source
+  }
+
+  pickFields = (...fields: Array<string>) => {
+    return new Query(this._type, this._filter, this._sort, fields)
   }
 
   filter = (condition: any) => {
-    return new Query(this._type, [...this._filter, condition], this._sort)
+    return new Query(this._type, [...this._filter, condition], this._sort, this._source)
   }
 
   sortBy = (field: string, order: SortDirection, additionalData: Object) => {
-    return new Query(this._type, this._filter, [...this._sort, [field, order, additionalData]])
+    return new Query(
+      this._type,
+      this._filter,
+      [...this._sort, [field, order, additionalData]],
+      this._source
+    )
   }
 
   get _query(): any {

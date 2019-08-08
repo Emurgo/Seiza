@@ -1,28 +1,34 @@
 // @flow
 import React from 'react'
+import cn from 'classnames'
 import {Link} from 'react-router-dom'
 import {Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {Button} from '@/components/visual'
-import {ReactComponent as NextIcon} from '@/assets/icons/next-epoch.svg'
-import {ReactComponent as PreviousIcon} from '@/assets/icons/previous-epoch.svg'
+import {ReactComponent as NextIcon} from '@/static/assets/icons/next-epoch.svg'
+import {ReactComponent as PreviousIcon} from '@/static/assets/icons/previous-epoch.svg'
 
 const useStyles = makeStyles((theme) => ({
+  wrapper: {
+    maxWidth: 600,
+    alignSelf: 'center',
+  },
+  navigationButtonWrapper: {
+    display: 'flex',
+    flex: 1,
+  },
   navigationButton: {
-    width: '250px',
-    margin: '0 30px',
-    position: 'relative',
+    display: 'flex',
+    flex: 1,
+    justifyContent: 'space-between',
   },
-  prevIcon: {
-    position: 'absolute',
-    left: 15,
+  prevButton: {
+    marginRight: theme.spacing(1),
   },
-  nextIcon: {
-    position: 'absolute',
-    right: 15,
+  nextButton: {
+    marginLeft: theme.spacing(1),
   },
 }))
-
 type Props = {|
   hasPrev: boolean,
   linkPrev: ?string,
@@ -31,6 +37,10 @@ type Props = {|
   linkNext: ?string,
   nextMessage: string,
 |}
+
+// to fix layout of arrow on the side and text in the center of the container
+// 24px - width of arrow icon
+const PhantomPlaceholder = () => <span style={{width: 24}} />
 
 const NavigationButtons = ({
   goPrev,
@@ -44,33 +54,38 @@ const NavigationButtons = ({
   const classes = useStyles()
 
   return (
-    <Grid container direction="row" justify="center" spacing={16}>
-      <Grid item>
+    <Grid container direction="row" justify="center" className={classes.wrapper}>
+      <Grid item className={classes.navigationButtonWrapper}>
         <Button
           rounded
-          secondary
-          className={classes.navigationButton}
+          gradient
+          variant="outlined"
+          className={cn(classes.prevButton, classes.navigationButton)}
           disabled={!hasPrev}
           /* Link requires `to` prop even if disabled */
           to={linkPrev || ''}
           component={Link}
         >
-          <PreviousIcon className={classes.prevIcon} />
+          <PreviousIcon />
           {prevMessage}
+          <PhantomPlaceholder />
         </Button>
       </Grid>
-      <Grid item>
+
+      <Grid item className={classes.navigationButtonWrapper}>
         <Button
           rounded
-          secondary
-          className={classes.navigationButton}
+          gradient
+          variant="outlined"
+          className={cn(classes.nextButton, classes.navigationButton)}
           disabled={!hasNext}
           /* Link requires `to` prop even if disabled */
           to={linkNext || ''}
           component={Link}
         >
+          <PhantomPlaceholder />
           {nextMessage}
-          <NextIcon className={classes.nextIcon} />
+          <NextIcon />
         </Button>
       </Grid>
     </Grid>

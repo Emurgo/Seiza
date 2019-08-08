@@ -37,12 +37,12 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const ExpansionPanel = (props) => {
-  const {classes: customClasses = {}, summary, children, ...restProps} = props
+  const {classes: customClasses = {}, className, summary, children, ...restProps} = props
   const classes = useStyles()
   const summaryClasses = useExpansionSummaryStyles()
   const detailsClasses = useExpansionDetailsStyles()
   return (
-    <Card>
+    <Card className={className}>
       <MuiExpansionPanel classes={mergeStylesheets(classes, customClasses)} {...restProps}>
         <MuiExpansionPanelSummary
           classes={summaryClasses}

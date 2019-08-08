@@ -6,26 +6,44 @@ import {Card, ContentSpacing} from '@/components/visual'
 
 import {makeStyles} from '@material-ui/styles'
 import type {Node} from 'react'
+import {getDefaultSpacing} from '@/components/visual/ContentSpacing'
 
-const useHeaderStyles = makeStyles(({spacing, palette, breakpoints}) => ({
+const useHeaderStyles = makeStyles((theme) => ({
   wrapper: {
-    backgroundColor: palette.unobtrusiveContentHighlight,
-    minHeight: '60px',
+    display: 'flex',
+    minHeight: 60,
+    backgroundColor: theme.palette.unobtrusiveContentHighlight,
+    paddingLeft: getDefaultSpacing(theme) * 1.5,
+    paddingRight: getDefaultSpacing(theme) * 1.5,
+    paddingTop: getDefaultSpacing(theme) * 0.25,
+    paddingBottom: getDefaultSpacing(theme) * 0.25,
+    [theme.breakpoints.down('xs')]: {
+      paddingLeft: getDefaultSpacing(theme) * 0.75,
+      paddingRight: getDefaultSpacing(theme) * 0.75,
+    },
   },
   leftOffset: {
-    paddingLeft: spacing.unit,
-  },
-  compactOnMobile: {
-    [breakpoints.down('xs')]: {
-      paddingLeft: spacing.unit * 3,
-      paddingRight: spacing.unit * 3,
-    },
+    paddingLeft: theme.spacing(1),
   },
 }))
 
-const useBodyStyles = makeStyles(({spacing, palette, breakpoints}) => ({
+const useBodyStyles = makeStyles((theme) => ({
+  wrapper: {
+    marginLeft: getDefaultSpacing(theme) * 1.5,
+    marginRight: getDefaultSpacing(theme) * 1.5,
+    [theme.breakpoints.down('xs')]: {
+      marginLeft: getDefaultSpacing(theme) * 0.75,
+      marginRight: getDefaultSpacing(theme) * 0.75,
+    },
+  },
   rowWrapper: {
-    borderBottom: `1px solid ${palette.unobtrusiveContentHighlight}`,
+    borderBottom: `1px solid ${theme.palette.unobtrusiveContentHighlight}`,
+    paddingTop: getDefaultSpacing(theme) * 0.5,
+    paddingBottom: getDefaultSpacing(theme) * 0.5,
+    [theme.breakpoints.down('xs')]: {
+      paddingTop: getDefaultSpacing(theme) * 0.25,
+      paddingBottom: getDefaultSpacing(theme) * 0.25,
+    },
   },
   lastRow: {
     borderBottom: 'none',
@@ -34,12 +52,6 @@ const useBodyStyles = makeStyles(({spacing, palette, breakpoints}) => ({
     /* Responsive layout tricks */
     width: '100%',
     textAlign: 'right',
-  },
-  compactOnMobile: {
-    [breakpoints.down('xs')]: {
-      marginLeft: spacing.unit * 3,
-      marginRight: spacing.unit * 3,
-    },
   },
 }))
 
@@ -75,23 +87,15 @@ const Header = ({icon, label, value}: HeaderProps) => {
   const classes = useHeaderStyles()
   return (
     <div className={classes.wrapper}>
-      <ContentSpacing
-        left={1.5}
-        right={1.5}
-        top={0.3}
-        bottom={0.3}
-        className={classes.compactOnMobile}
-      >
-        <Grid container alignItems="center" className={classes.wrapper} direction="row">
-          {icon}
-          <Typography className={classes.leftOffset} variant="overline" color="textSecondary">
-            {label}
-          </Typography>
-          <Typography className={classes.leftOffset} variant="overline">
-            {value}
-          </Typography>
-        </Grid>
-      </ContentSpacing>
+      <Grid container alignItems="center" direction="row">
+        {icon}
+        <Typography className={classes.leftOffset} variant="overline" color="textSecondary">
+          {label}
+        </Typography>
+        <Typography className={classes.leftOffset} variant="overline">
+          {value}
+        </Typography>
+      </Grid>
     </div>
   )
 }
@@ -107,24 +111,9 @@ type BodyProps = {|
 const RowSpacing = ({children, isLast = false}) => {
   const classes = useBodyStyles()
   return (
-    <ContentSpacing
-      type="margin"
-      top={0}
-      bottom={0}
-      left={1.5}
-      right={1.5}
-      className={classes.compactOnMobile}
-    >
-      <ContentSpacing
-        top={0.5}
-        bottom={0.5}
-        left={0}
-        right={0}
-        className={cn(classes.rowWrapper, isLast && classes.lastRow)}
-      >
-        {children}
-      </ContentSpacing>
-    </ContentSpacing>
+    <div className={classes.wrapper}>
+      <div className={cn(classes.rowWrapper, isLast && classes.lastRow)}>{children}</div>
+    </div>
   )
 }
 

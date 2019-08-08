@@ -27,6 +27,19 @@ type BootstrapEraStakePool {
   description: String
   summary: StakePoolSummary
   createdAt: Timestamp!
+  age: Int!
+  website: URL!
+}
+
+# TODO: Unify later, for now only used so we can test new "Staking list" section, without
+# modifying current endpoints
+type MockedStakePool {
+  poolHash: ID!
+  name: String
+  description: String
+  summary: StakePoolSummary
+  createdAt: Timestamp!
+  age: Int!
   website: URL!
 }
 
@@ -61,5 +74,8 @@ type Query {
   stakePoolList(epochNumber: Int): BootstrapEraStakePool!
   pagedStakePoolList(cursor: String, pageSize: Int, searchOptions: StakePoolSearchOptions!): PagedStakePoolsResult!
   stakePool(poolHash: String!, epochNumber: Int): BootstrapEraStakePool,
-  stakePools(poolHashes: [String!]!, epochNumber: Int): [BootstrapEraStakePool]
+  stakePools(poolHashes: [String!]!, epochNumber: Int): [BootstrapEraStakePool],
+  # TODO: Unify later, for now only used so we can test new "Staking list" section, without
+  # modifying current endpoints
+  mockedStakePools: [MockedStakePool!]!,
 }

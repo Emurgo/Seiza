@@ -4,16 +4,16 @@ import {defineMessages} from 'react-intl'
 import {Switch, Typography, Grid, Hidden} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
-import Pagination from '@/components/visual/Pagination'
+import {Pagination} from '@/components/common'
 import {SimpleLayout} from '@/components/visual'
 import {GET_PAGED_BLOCKS} from '@/api/queries'
 import {useI18n} from '@/i18n/helpers'
-import {useQueryNotBuggedForBlocks} from '@/components/hooks/useQueryNotBugged'
+import {useQueryNotBugged} from '@/components/hooks/useQueryNotBugged'
 import {useManageQueryValue} from '@/components/hooks/useManageQueryValue'
 import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
-import {toIntOrNull} from '@/helpers/utils'
+import {toIntOrNull, getPageCount} from '@/helpers/utils'
 import BlocksTable, {ALL_COLUMNS} from './BlocksTable'
-import {useAnalytics} from '@/helpers/googleAnalytics'
+import {useAnalytics} from '@/components/context/googleAnalytics'
 import {getPageAndBoundaryFromCursor} from './util'
 
 const AUTOUPDATE_REFRESH_INTERVAL = 20 * 1000
@@ -35,7 +35,9 @@ const AutoUpdateSwitch = ({checked, onChange}) => {
   return (
     <Grid container direction="row" justify="flex-start" alignItems="center">
       <Grid item>
-        <Typography className={classes.text}>{translate(messages.refreshState)}&nbsp;</Typography>
+        <Typography className={classes.text} color="textSecondary">
+          {translate(messages.refreshState)}&nbsp;
+        </Typography>
       </Grid>
       <Grid item>
         <Switch color="primary" checked={checked} onChange={onChange} />
@@ -53,10 +55,10 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   bottomPagination: {
-    marginTop: theme.spacing.unit * 3,
+    marginTop: theme.spacing(3),
   },
   upperPagination: {
-    marginTop: theme.spacing.unit * 2.5,
+    marginTop: theme.spacing(2.5),
     [theme.breakpoints.up('sm')]: {
       marginTop: 0,
     },
@@ -64,13 +66,10 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const useLoadData = (cursor, autoUpdate) => {
-  const {error, loading, data, startPolling, stopPolling} = useQueryNotBuggedForBlocks(
-    GET_PAGED_BLOCKS,
-    {
-      variables: {cursor},
-      notifyOnNetworkStatusChange: true,
-    }
-  )
+  const {error, loading, data, startPolling, stopPolling} = useQueryNotBugged(GET_PAGED_BLOCKS, {
+    variables: {cursor},
+    notifyOnNetworkStatusChange: true,
+  })
 
   autoUpdate ? startPolling(AUTOUPDATE_REFRESH_INTERVAL) : stopPolling()
 
@@ -99,7 +98,7 @@ const usePagedBlocks = () => {
 
   useEffect(() => {
     if (dataTotalCount > totalCount) setTotalCount(dataTotalCount)
-  })
+  }, [totalCount, dataTotalCount])
 
   const effectivePage = page == null ? Math.ceil(totalCount / rowsPerPage) : page
 
@@ -151,8 +150,7 @@ const PagedBlocks = () => {
 
   const pagination = (
     <Pagination
-      count={totalCount}
-      rowsPerPage={rowsPerPage}
+      pageCount={getPageCount(totalCount, rowsPerPage)}
       page={effectivePage}
       onChangePage={setPage}
       reverseDirection

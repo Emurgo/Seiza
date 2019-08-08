@@ -6,12 +6,11 @@ import {IconButton} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import idx from 'idx'
 
-import {GET_ADDRESS_BY_ADDRESS58, GET_TXS_BY_ADDRESS} from '@/api/queries'
+import {MetadataOverrides, seoMessages} from '@/pages/_meta'
 import {useI18n} from '@/i18n/helpers'
-import {useAnalytics} from '@/helpers/googleAnalytics'
-import {toIntOrNull} from '@/helpers/utils'
+import {useAnalytics} from '@/components/context/googleAnalytics'
+import {toIntOrNull, getPageCount} from '@/helpers/utils'
 import {ObjectValues} from '@/helpers/flow'
-import {useQueryNotBugged} from '@/components/hooks/useQueryNotBugged'
 
 import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
 import useTabState from '@/components/hooks/useTabState'
@@ -19,24 +18,19 @@ import {useManageQueryValue} from '@/components/hooks/useManageQueryValue'
 import WithModalState from '@/components/headless/modalState'
 import PagedTransactions from './PagedTransactions'
 import QRDialog from './QRDialog'
+import {SimpleLayout, LoadingDots, SummaryCard, Tooltip, EntityHeading} from '@/components/visual'
 import {
-  EntityIdCard,
-  SimpleLayout,
-  LoadingDots,
-  LoadingError,
-  SummaryCard,
-  EntityCardContent,
   AdaValue,
-  Tooltip,
-  EntityHeading,
+  LoadingError,
+  EntityIdCard,
+  EntityCardContent,
   Pagination,
-} from '@/components/visual'
+} from '@/components/common'
 
-import addressIcon from '@/assets/icons/qrcode.svg'
-import {extractError} from '@/helpers/errors'
+import qrCodeIcon from '@/static/assets/icons/qrcode.svg'
 
 import {FILTER_TYPES} from './constants'
-import {APOLLO_CACHE_OPTIONS} from '@/constants'
+import {useLoadAddressTransactions, useLoadAddressSummary} from './dataLoaders'
 
 const summaryMessages = defineMessages({
   NA: 'N/A',
@@ -45,6 +39,13 @@ const summaryMessages = defineMessages({
   balance: 'Address Balance',
   totalAdaReceived: 'Total received ADA',
   totalAdaSent: 'Total sent ADA',
+})
+
+const metadata = defineMessages({
+  screenTitle: 'Cardano Address {address58} | Seiza',
+  metaDescription:
+    'Cardano Address: {address58}. Total transactions: {txCount}. Address Balance: {balance}.',
+  keywords: 'Cardano Address {address58}, Cardano Address, {commonKeywords}',
 })
 
 const Row = ({label, value}) => {
@@ -94,8 +95,8 @@ const messages = defineMessages({
 
 const useStyles = makeStyles((theme) => ({
   headingWrapper: {
-    marginBottom: theme.spacing.unit * 6,
-    marginTop: theme.spacing.unit * 6,
+    marginBottom: theme.spacing(6),
+    marginTop: theme.spacing(6),
     display: 'flex',
     justifyContent: 'center',
   },
@@ -106,36 +107,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const useAddressSummary = (address58) => {
-  const {loading, data, error} = useQueryNotBugged(GET_ADDRESS_BY_ADDRESS58, {
-    variables: {address58},
-    fetchPolicy: APOLLO_CACHE_OPTIONS.CACHE_AND_NETWORK,
-  })
-
-  // TODO: how to extract error properly???
-  return {loading, error: extractError(error, ['address']) || error, addressSummary: data.address}
-}
-
-const useTransactions = (address58, filterType, cursor) => {
-  const {loading, data, error} = useQueryNotBugged(GET_TXS_BY_ADDRESS, {
-    variables: {address58, filterType, cursor},
-    fetchPolicy: APOLLO_CACHE_OPTIONS.CACHE_AND_NETWORK,
-  })
-
-  // TODO: how to extract error properly???
-  return {
-    loading,
-    error: extractError(error, ['address']) || error,
-    transactions: idx(data, (_) => _.address.transactions),
-  }
-}
-
 const usePaginations = () => {
-  const [tabOnePage, onTabOnePageChange] = useManageQueryValue(FILTER_TYPES.ALL, null, toIntOrNull)
-  const [tabTwoPage, onTabTwoPageChange] = useManageQueryValue(FILTER_TYPES.SENT, null, toIntOrNull)
+  const [tabOnePage, onTabOnePageChange] = useManageQueryValue(FILTER_TYPES.ALL, 1, toIntOrNull)
+  const [tabTwoPage, onTabTwoPageChange] = useManageQueryValue(FILTER_TYPES.SENT, 1, toIntOrNull)
   const [tabThreePage, onTabThreePageChange] = useManageQueryValue(
     FILTER_TYPES.RECEIVED,
-    null,
+    1,
     toIntOrNull
   )
 
@@ -156,7 +133,7 @@ const useTransactionsData = (address58, paginations) => {
   // all/sent/received tabs.
 
   const useTransactionsHelper = (filterType) =>
-    useTransactions(
+    useLoadAddressTransactions(
       address58,
       filterType,
       paginations[filterType].page != null ? cursorFromPage(paginations[filterType].page) : null
@@ -188,6 +165,51 @@ const useManageTabs = (address58) => {
   }
 }
 
+const AddressMetadata = ({address58, addressSummary}) => {
+  const {translate: tr, formatAda, formatInt} = useI18n()
+
+  const title = tr(metadata.screenTitle, {address58})
+
+  const description = tr(metadata.metaDescription, {
+    address58,
+    txCount: formatInt(idx(addressSummary, (_) => _.transactionsCount)),
+    balance: formatAda(idx(addressSummary, (_) => _.balance)),
+  })
+
+  const keywords = tr(metadata.keywords, {
+    address58,
+    commonKeywords: tr(seoMessages.keywords),
+  })
+
+  return <MetadataOverrides {...{title, description, keywords}} />
+}
+
+const AddressIconWithModal = ({address58}) => {
+  const {translate: tr} = useI18n()
+  const classes = useStyles()
+  return (
+    <WithModalState>
+      {({isOpen, openModal, closeModal}) => (
+        <React.Fragment>
+          <Tooltip title={tr(messages.showQRCode)} enterTouchDelay={100}>
+            <IconButton className={classes.alignIconButton} onClick={openModal} color="primary">
+              <img alt="show qr code" src={qrCodeIcon} />
+            </IconButton>
+          </Tooltip>
+          <QRDialog
+            qrCodeValue={address58}
+            description={
+              <EntityCardContent label={tr(messages.qrCodeDialogEntityLabel)} value={address58} />
+            }
+            isOpen={isOpen}
+            onClose={closeModal}
+          />
+        </React.Fragment>
+      )}
+    </WithModalState>
+  )
+}
+
 const AddressScreen = () => {
   const {
     match: {
@@ -196,7 +218,7 @@ const AddressScreen = () => {
   } = useReactRouter()
   const {pagination, transactionsData, tabState, currentTab, setTab} = useManageTabs(address58)
 
-  const {loading, error, addressSummary} = useAddressSummary(address58)
+  const {loading, error, addressSummary} = useLoadAddressSummary(address58)
 
   const {page, onChangePage} = pagination
   const {
@@ -221,37 +243,11 @@ const AddressScreen = () => {
   return (
     <div ref={scrollToRef}>
       <SimpleLayout title={tr(messages.title)}>
+        <AddressMetadata address58={address58} addressSummary={addressSummary} />
         <EntityIdCard
           label={tr(summaryMessages.address)}
           value={address58}
-          iconRenderer={
-            <WithModalState>
-              {({isOpen, openModal, closeModal}) => (
-                <React.Fragment>
-                  <Tooltip title={tr(messages.showQRCode)} enterTouchDelay={100}>
-                    <IconButton
-                      className={classes.alignIconButton}
-                      onClick={openModal}
-                      color="primary"
-                    >
-                      <img alt="show qr code" src={addressIcon} />
-                    </IconButton>
-                  </Tooltip>
-                  <QRDialog
-                    qrCodeValue={address58}
-                    description={
-                      <EntityCardContent
-                        label={tr(messages.qrCodeDialogEntityLabel)}
-                        value={address58}
-                      />
-                    }
-                    isOpen={isOpen}
-                    onClose={closeModal}
-                  />
-                </React.Fragment>
-              )}
-            </WithModalState>
-          }
+          iconRenderer={<AddressIconWithModal address58={address58} />}
         />
         {error ? (
           <LoadingError error={error} />
@@ -278,8 +274,7 @@ const AddressScreen = () => {
               changeFilterType={setTab}
               pagination={
                 <Pagination
-                  count={totalCount}
-                  rowsPerPage={ROWS_PER_PAGE}
+                  pageCount={getPageCount(totalCount, ROWS_PER_PAGE)}
                   page={page}
                   onChangePage={onChangePage}
                 />

@@ -16,16 +16,18 @@ import {
   OutlinedInput,
 } from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
+import {fade} from '@material-ui/core/styles/colorManipulator'
 
 import {useI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
-import {useAnalytics} from '@/helpers/googleAnalytics'
-import {Button, CloseIconButton, LoadingOverlay, Link as CustomLink} from '@/components/visual'
-import alertIcon from '@/assets/icons/alert.svg'
-import subscribedIcon from '@/assets/icons/subscribed.svg'
-import {useSubscribeContext} from '@/components/context/SubscribeContext'
+import {useAnalytics} from '@/components/context/googleAnalytics'
+import {Button, CloseIconButton} from '@/components/visual'
+import {LoadingOverlay, Link as CustomLink} from '@/components/common'
+import alertIcon from '@/static/assets/icons/alert.svg'
+import subscribedIcon from '@/static/assets/icons/subscribed.svg'
+import {ReactComponent as Rocket} from '@/static/assets/icons/emoji/rocket.svg'
+import {useSubscribe} from './context/subscribe'
 
-import {ReactComponent as Rocket} from '@/assets/icons/emoji/rocket.svg'
 const messages = defineMessages({
   copyright: 'All rights reserved',
   subscribeToNewsletter: 'Subscribe to newsletter',
@@ -71,13 +73,21 @@ const useRoundedInputStyles = makeStyles((theme) => {
 
 const useOutlinedInputStyles = makeStyles((theme) => ({
   root: {
-    height: '100%',
+    'height': '100%',
+    // See https://github.com/mui-org/material-ui/issues/13347#issuecomment-435790274
+    // for the source of this abomination
+    '&:hover:not($disabled):not($focused):not($error) $notchedOutline': {
+      borderColor: `${theme.palette.primary.main} !important`,
+    },
   },
   notchedOutline: {
     borderRadius: '35px',
-    // TODO: get from theme
-    borderColor: '#A38DDF !important',
+    borderColor: `${fade(theme.palette.primary.main, 0.4)} !important`,
   },
+  // Following two classes need to be here so that root's pseudoselector
+  // won't complain
+  disabled: {},
+  error: {},
   focused: {
     '&>fieldset': {
       borderWidth: '1px !important',
@@ -152,8 +162,8 @@ const useSubscribeFooterStyles = makeStyles(({palette, spacing, breakpoints, typ
   'wrapper': {
     height: LARGEST_FOOTER_HEIGHT,
     overflow: 'hidden',
-    padding: spacing.unit * 2,
-    paddingTop: spacing.unit * 4, // to countermeasure error label
+    padding: spacing(2),
+    paddingTop: spacing(4), // to countermeasure error label
     background: palette.gradient,
     position: 'relative',
     [breakpoints.up('sm')]: {
@@ -164,8 +174,8 @@ const useSubscribeFooterStyles = makeStyles(({palette, spacing, breakpoints, typ
     },
   },
   'subscribe': {
-    marginLeft: spacing.unit * 1.3,
-    marginRight: spacing.unit * 1.3,
+    marginLeft: spacing(1.3),
+    marginRight: spacing(1.3),
     width: '200px',
     [breakpoints.up('sm')]: {
       marginTop: 0,
@@ -177,14 +187,14 @@ const useSubscribeFooterStyles = makeStyles(({palette, spacing, breakpoints, typ
     height: 49, // 49 is height of subscribe button
   },
   'textfieldButtonSpacing': {
-    padding: spacing.unit,
+    padding: spacing(1),
   },
   'row': {
-    padding: spacing.unit,
+    padding: spacing(1),
   },
   'subscribeHeadlineWrapper': {
-    paddingTop: spacing.unit * 1.5,
-    paddingBottom: spacing.unit * 1.5,
+    paddingTop: spacing(1.5),
+    paddingBottom: spacing(1.5),
   },
   'success': {
     fontWeight: 'bold',
@@ -225,9 +235,6 @@ const useSubscribeFooterStyles = makeStyles(({palette, spacing, breakpoints, typ
   'enterSubscribe': {}, // must be defined anyway
   'enterSubscribeActive': {
     animation: 'footer-enter 2000ms',
-  },
-  'subscribeInfo': {
-    fontSize: typography.fontSize * 0.8,
   },
   'rocket': {
     marginBottom: -4,
@@ -278,7 +285,7 @@ const SubscribeFooter = () => {
   const classes = useSubscribeFooterStyles()
   const {translate: tr} = useI18n()
   const [email, setEmail] = useState('')
-  const {hidden, hideSubscribe} = useSubscribeContext()
+  const {hidden, hideSubscribe} = useSubscribe()
   const {uiState, setError, setInit, setSuccess, setLoading, errorMessage} = useUIState('init')
   const analytics = useAnalytics()
 
@@ -421,7 +428,7 @@ const SubscribeFooter = () => {
                 </Grid>
 
                 <Grid item className={classes.row}>
-                  <Typography className={classes.subscribeInfo}>
+                  <Typography variant="caption">
                     <FormattedMessage
                       // $FlowFixMe
                       id={messages.subscribeInfo.id}
@@ -451,6 +458,7 @@ const SubscribeFooter = () => {
                         <Button
                           rounded
                           gradient
+                          variant="contained"
                           className={cn(classes.subscribe)}
                           type="submit"
                           onClick={validateAndSubscribe}
@@ -466,11 +474,9 @@ const SubscribeFooter = () => {
           </ReactCSSTransitionGroup>
 
           {uiState !== 'loading' && (
-            <CloseIconButton
-              aria-label="Hide-subscribe-footer"
-              className={classes.hide}
-              onClick={onHide}
-            />
+            <div className={classes.hide}>
+              <CloseIconButton aria-label="Hide-subscribe-footer" onClick={onHide} />
+            </div>
           )}
           <LoadingOverlay loading={uiState === 'loading'} />
         </Grid>

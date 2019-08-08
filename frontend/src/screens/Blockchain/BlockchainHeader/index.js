@@ -1,41 +1,45 @@
 // @flow
 import React from 'react'
-import {Typography, createStyles, withStyles, Grid, Hidden} from '@material-ui/core'
+import {Typography, Grid, Hidden} from '@material-ui/core'
+import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
-import {compose} from 'redux'
+
+import {SearchbarRefProvider, useSearchbarRef} from '../context/searchbarRef'
+import {useUserAgent} from '@/components/context/userAgent'
 
 import OverviewMetrics from './OverviewMetrics'
 import Search from './Search'
-import {withI18n} from '@/i18n/helpers'
-import {isCrawler} from '@/helpers/userAgent'
-import {useSearchbarRefContext} from '@/components/context/SearchbarRef'
+import {useI18n} from '@/i18n/helpers'
 
 const messages = defineMessages({
   header: 'Ada Blockchain Explorer',
 })
 
-const styles = ({palette, spacing}) =>
-  createStyles({
-    wrapper: {
-      background: palette.gradient,
+const useStyles = makeStyles(({palette, spacing}) => ({
+  wrapper: {
+    background: palette.gradient,
+  },
+  metricsWrapper: {
+    marginTop: spacing(5),
+    marginBottom: spacing(5),
+  },
+  searchWrapper: {
+    'marginLeft': 'auto',
+    'marginRight': 'auto',
+    'marginBottom': spacing(6.5),
+    '& > *': {
+      marginTop: spacing(1.25),
+      marginBottom: spacing(1.25),
     },
-    metricsWrapper: {
-      marginTop: spacing.unit * 5,
-      marginBottom: spacing.unit * 5,
-    },
-    searchWrapper: {
-      'marginLeft': 'auto',
-      'marginRight': 'auto',
-      'marginBottom': spacing.unit * 6.5,
-      '& > *': {
-        marginTop: spacing.unit * 1.25,
-        marginBottom: spacing.unit * 1.25,
-      },
-    },
-  })
+  },
+}))
 
-const BlockchainHeader = ({classes, i18n: {translate}}) => {
-  const searchbarRef = useSearchbarRefContext()
+const BlockchainHeader = () => {
+  const classes = useStyles()
+  const {translate: tr} = useI18n()
+  const searchbarRef = useSearchbarRef()
+  const {isCrawler} = useUserAgent()
+
   return (
     <div className={classes.wrapper}>
       <Grid
@@ -62,7 +66,7 @@ const BlockchainHeader = ({classes, i18n: {translate}}) => {
         <Grid item xs={10} md={8} lg={6} className="w-100">
           <Grid container direction="column" alignItems="stretch" className={classes.searchWrapper}>
             <Typography variant="h1" align="center">
-              {translate(messages.header)}
+              {tr(messages.header)}
             </Typography>
             <Hidden smDown>{!isCrawler && <Search />}</Hidden>
           </Grid>
@@ -72,7 +76,8 @@ const BlockchainHeader = ({classes, i18n: {translate}}) => {
   )
 }
 
-export default compose(
-  withI18n,
-  withStyles(styles)
-)(BlockchainHeader)
+export default () => (
+  <SearchbarRefProvider>
+    <BlockchainHeader />
+  </SearchbarRefProvider>
+)

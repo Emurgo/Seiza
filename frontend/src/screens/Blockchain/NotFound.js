@@ -4,7 +4,7 @@ import React from 'react'
 import {makeStyles} from '@material-ui/styles'
 
 import PageNotFound from '../PageNotFound'
-import {useAnalytics} from '@/helpers/googleAnalytics'
+import {useAnalytics} from '@/components/context/googleAnalytics'
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {

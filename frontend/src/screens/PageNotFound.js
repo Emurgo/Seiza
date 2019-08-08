@@ -4,8 +4,8 @@ import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
 
 import {useI18n} from '@/i18n/helpers'
-import {useAnalytics} from '@/helpers/googleAnalytics'
-import errorImage from '@/assets/error-screen.svg'
+import {useAnalytics} from '@/components/context/googleAnalytics'
+import errorImage from '@/static/assets/error-screen.svg'
 
 const messages = defineMessages({
   notFoundHeader: 'We are sorry!',
@@ -15,10 +15,10 @@ const messages = defineMessages({
 const useStyles = makeStyles((theme) => ({
   wrapper: {
     height: '100%',
-    padding: theme.spacing.unit * 6,
+    padding: theme.spacing(6),
   },
   message: {
-    marginBottom: theme.spacing.unit * 3,
+    marginBottom: theme.spacing(3),
   },
   image: {
     maxWidth: '100%',

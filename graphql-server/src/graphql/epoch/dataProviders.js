@@ -1,8 +1,7 @@
 // @flow
 import moment from 'moment'
-import {facadeTransaction} from '../transaction/dataProviders'
 import type {Elastic} from '../../api/elastic'
-import {parseAdaValue, slotCount, getEstimatedSlotTimestamp} from '../utils'
+import {parseAdaValue, SLOT_COUNT, getEstimatedSlotTimestamp} from '../utils'
 import {validate} from '../../utils/validation'
 import E from '../../api/elasticHelpers'
 
@@ -41,7 +40,7 @@ const mockedEpoch = (epochNumber: number): Epoch => {
     endTime: moment(endTs * 1000),
     summary: {
       _epochNumber: epochNumber,
-      slotCount,
+      slotCount: SLOT_COUNT,
       totalAdaStaked: '123456',
       stakingRewards: '123456',
       delegatingStakingKeysCount: 123456,
@@ -103,11 +102,10 @@ export const fetchTotalAdaSupply = async ({elastic, E}: Context, epochNumber: nu
     .filter(E.lte('epoch', epochNumber))
     .sortBy('epoch', 'desc')
     .sortBy('tx_ordinal', 'desc')
+    .pickFields('supply_after_this_tx')
     .getFirstHit()
 
-  const lastTx = facadeTransaction(hit._source)
-
-  return lastTx.supplyAfter
+  return parseAdaValue(hit._source.supply_after_this_tx)
 }
 
 export const fetchTotalFees = async (

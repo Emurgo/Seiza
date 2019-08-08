@@ -6,8 +6,8 @@ import {withI18n} from '@/i18n/helpers'
 import WithCopyToClipboard from '../headless/copyToClipboard'
 import {Tooltip} from '@/components/visual'
 
-import copyIcon from '@/assets/icons/copy.svg'
-import copiedIcon from '@/assets/icons/copied.svg'
+import copyIcon from '@/static/assets/icons/copy.svg'
+import copiedIcon from '@/static/assets/icons/copied.svg'
 import {makeStyles} from '@material-ui/styles'
 
 const messages = defineMessages({
@@ -21,6 +21,8 @@ const useTooltipStyles = makeStyles(() => ({
     top: '-10px !important',
   },
 }))
+
+/* TODO: [Next] icon dimensions */
 
 const _CopyToClipboard = ({
   value,

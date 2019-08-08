@@ -216,21 +216,23 @@ const getElastic = (logger: Function) => {
     return hits.total
   }
 
-  const _getFirstHit = async (type: string, query: any, sort: any) => {
+  const _getFirstHit = async (type: string, query: any, sort: any, _source: any) => {
     const {hits} = await _search(type, {
       query,
       sort,
       size: 1,
+      ...(_source ? {_source} : {}),
     })
 
     assert(hits.total >= 1, 'Expected at least a single result')
     return hits.hits[0]
   }
 
-  const _getSingleHit = async (type: string, query: any) => {
+  const _getSingleHit = async (type: string, query: any, _source: any) => {
     const {hits} = await _search(type, {
       query,
       size: 1,
+      ...(_source ? {_source} : {}),
     })
 
     assert(hits.total <= 1, 'Too many hits')
@@ -254,9 +256,11 @@ const getElastic = (logger: Function) => {
 
     sortBy = (...args: any) => new SearchUsingQuery(this.q.sortBy(...args))
 
+    pickFields = (...args: any) => new SearchUsingQuery(this.q.pickFields(...args))
+
     getSingleHit = () => {
       assert(this.q._sort.length === 0, 'Cannot have sortBy in this query')
-      return _getSingleHit(this.q._type, this.q._query)
+      return _getSingleHit(this.q._type, this.q._query, this.q._source)
     }
 
     getCount = () => {
@@ -266,7 +270,7 @@ const getElastic = (logger: Function) => {
 
     getFirstHit = () => {
       assert(this.q._sort.length > 0, 'Must have sortBy')
-      return _getFirstHit(this.q._type, this.q._query, E.orderBy(this.q._sort))
+      return _getFirstHit(this.q._type, this.q._query, E.orderBy(this.q._sort), this.q._source)
     }
 
     getHits = async (pageSize: number) => {
@@ -275,6 +279,7 @@ const getElastic = (logger: Function) => {
         query: this.q._query,
         size: pageSize,
         sort: E.orderBy(this.q._sort),
+        ...(this.q._source ? {_source: this.q._source} : {}),
       })
       assert(hits.hits.length <= pageSize)
       return hits

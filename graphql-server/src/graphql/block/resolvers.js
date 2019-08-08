@@ -4,7 +4,6 @@ import E from '../../api/elasticHelpers'
 import {validate} from '../../utils/validation'
 
 const PAGE_SIZE = 10
-const EMPTY_RESULT = {cursor: null, data: []}
 
 const currentBlocks = E.q('slot')
   .filter(E.onlyActiveFork())
@@ -53,15 +52,23 @@ export const pagedBlocksInEpochResolver = async (parent, args, context) => {
   const {elastic, E} = context
 
   // Note: this is a workaround
-  const {total: previousEpochs, hits: previousEnd} = await elastic
+  const {total: previousEpochsBlockCnt, hits: previousEpochsBlocksTail} = await elastic
     .q(currentBlocks)
     .filter(E.lt('epoch', epoch))
     .sortBy('height', 'desc')
     .getHits(1)
 
   if (epoch > 0) {
-    assert(previousEnd.length > 0)
-    assert(previousEnd[0]._source.height === previousEpochs)
+    validate(
+      previousEpochsBlocksTail.length > 0,
+      'Epoch >1 should have at least one previous block',
+      {epoch, previousEpochsBlockCnt, previousEpochsBlocksTail}
+    )
+    validate(
+      previousEpochsBlocksTail[0]._source.height === previousEpochsBlockCnt,
+      'Inconsistent block height',
+      {epoch, previousEpochsBlockCnt, previousEpochsBlocksTail}
+    )
   }
 
   const totalCount = await elastic
@@ -72,7 +79,7 @@ export const pagedBlocksInEpochResolver = async (parent, args, context) => {
   const hits = await elastic
     .q(currentBlocks)
     .filter(E.eq('epoch', epoch))
-    .filter(cursor && E.lte('height', cursor + previousEpochs))
+    .filter(cursor && E.lte('height', cursor + previousEpochsBlockCnt))
     .sortBy('height', 'desc')
     .getHits(PAGE_SIZE)
 
@@ -83,10 +90,17 @@ export const pagedBlocksInEpochResolver = async (parent, args, context) => {
   const blockData = hits.hits.map((h) => facadeElasticBlock(h._source))
 
   // When we query epoch that did not start yet
-  if (!blockData.length) return EMPTY_RESULT
+  if (!blockData.length) {
+    return {
+      cursor: null,
+      hasMore: false,
+      blocks: [],
+      totalCount,
+    }
+  }
 
   const startHeight = blockData[0].height
-  const nextCursor = startHeight - PAGE_SIZE - previousEpochs
+  const nextCursor = startHeight - PAGE_SIZE - previousEpochsBlockCnt
 
   return {
     cursor: nextCursor > 0 ? nextCursor : null,
