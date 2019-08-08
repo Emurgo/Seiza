@@ -164,7 +164,7 @@
   "screens.Blockchain.Certificates.ActionList.poolCreation__label": "Pool created",
   "screens.Blockchain.Certificates.ActionList.poolCreation__value": "Pool {poolHash} created.",
   "screens.Blockchain.Certificates.ActionList.poolDeletion__label": "Pool deleted",
-  "screens.Blockchain.Certificates.ActionList.poolDeletion__value": "<TODO: Eveything we knew about the pool>",
+  "screens.Blockchain.Certificates.ActionList.poolDeletion__value": "Pending rewards moved to reward pool for epoch {epoch}",
   "screens.Blockchain.Certificates.ActionList.poolExists": "Pool exists to this day.",
   "screens.Blockchain.Certificates.ActionList.poolHash": "Pool {hash}{space}",
   "screens.Blockchain.Certificates.ActionList.poolNextUpdatedAt": "Pool was later updated at {timestamp}.",

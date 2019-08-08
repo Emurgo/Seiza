@@ -141,6 +141,7 @@ export const MOCKED_POOL_UPDATE_ACTION = {
 }
 export const MOCKED_POOL_DELETION_ACTION = {
   type: CERT_ACTIONS_TYPES.POOL_DELETION,
+  rewardsEpoch: 161,
   tx: {
     txHash: '0x64245523',
   },

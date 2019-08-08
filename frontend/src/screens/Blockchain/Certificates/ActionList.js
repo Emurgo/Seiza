@@ -45,7 +45,7 @@ const messages = defineMessages({
   poolUpdate__pledgeChanged: 'Pledge changed ({value})',
 
   poolDeletion__label: 'Pool deleted',
-  poolDeletion__value: '<TODO: Eveything we knew about the pool>',
+  poolDeletion__value: 'Pending rewards moved to reward pool for epoch {epoch}',
 
   keyDelegation__label: 'Key delegating',
   keyDelegation__value: 'Key {stakingKey} started delegating to {poolHash} at {txHash}.',
@@ -528,7 +528,7 @@ const FormattedPledge = ({value, showSign = 'always'}) => (
   <AdaValue showSign={showSign} showCurrency value={value} />
 )
 
-const UPDATED_PROP = {
+const POOL_UPDATE_UPDATED_PROP = {
   COST: ({value}) =>
     fmtdMsg(messages.poolUpdate__costChanged.id, {
       value: <FormattedCost value={value} />,
@@ -567,7 +567,7 @@ const poolUpdate = ({action, i18n}) => {
         i18n,
       }),
       ...updatedProperties.map(({type, value}, index) => {
-        const UpdatedProp = UPDATED_PROP[type]
+        const UpdatedProp = POOL_UPDATE_UPDATED_PROP[type]
         return <UpdatedProp key={index} value={value} />
       }),
     ],
@@ -576,9 +576,14 @@ const poolUpdate = ({action, i18n}) => {
 
 const poolDeletion = ({action, i18n}) => {
   const {translate: tr} = i18n
+  const {rewardsEpoch} = action
   return {
     label: tr(messages.poolDeletion__label),
-    value: [tr(messages.poolDeletion__value)],
+    value: [
+      fmtdMsg(messages.poolDeletion__value.id, {
+        epoch: <Link to={routeTo.epoch(rewardsEpoch)}>{rewardsEpoch}</Link>,
+      }),
+    ],
   }
 }
 
