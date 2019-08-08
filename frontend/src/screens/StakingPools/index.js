@@ -33,8 +33,17 @@ const ROWS_PER_PAGE = 20
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {
-    paddingRight: 90,
-    paddingLeft: 90,
+    paddingRight: 100,
+    paddingLeft: 100,
+    marginBottom: 0,
+  },
+  resetAll: {
+    marginBottom: theme.spacing(1),
+    paddingTop: theme.spacing(0.9),
+    paddingBottom: theme.spacing(0.9),
+  },
+  fieldsSelect: {
+    marginLeft: 0,
   },
 }))
 
@@ -113,7 +122,7 @@ const StakingPools = ({setPage, page, stakepools}) => {
 
   return (
     <React.Fragment>
-      <Grid container justify="space-between" className={classes.wrapper}>
+      <Grid container justify="space-between" className={classes.wrapper} alignItems="flex-end">
         <Grid item>
           <Grid container alignItems="flex-end">
             <Select
@@ -123,8 +132,14 @@ const StakingPools = ({setPage, page, stakepools}) => {
               options={selectOptions}
               label={tr(messages.manageColumns)}
               renderValue={renderSelectValue}
+              className={classes.fieldsSelect}
             />
-            <Button disabled={filtersDisabled} onClick={resetFilters}>
+            <Button
+              variant="outlined"
+              className={classes.resetAll}
+              disabled={filtersDisabled}
+              onClick={resetFilters}
+            >
               {tr(messages.resetAllFilters)}
             </Button>
           </Grid>
