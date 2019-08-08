@@ -1,7 +1,8 @@
 // @flow
 
-import React, {useState, useCallback, useContext} from 'react'
+import React, {useCallback, useContext} from 'react'
 
+import {useManageQueryValue} from '@/components/hooks/useManageQueryValue'
 import {fieldsConfig} from './fieldsConfig'
 
 type ContextType = {
@@ -16,12 +17,22 @@ export const ORDER = {
   DESC: 'desc',
 }
 
+const encode = (val) => `${val.order === ORDER.DESC ? '-' : ''}${val.field}`
+const decode = (str) => ({
+  order: str[0] === '-' ? ORDER.DESC : ORDER.ASC,
+  field: str.substring(1),
+})
+
 const _useSortOptions = (onChange) => {
-  const [sortOptions, setSortOptions] = useState({field: fieldsConfig[0].field, order: ORDER.DESC})
+  const [sortOptions, setSortOptions] = useManageQueryValue(
+    'sort',
+    encode({field: fieldsConfig[0].field, order: ORDER.DESC}),
+    decode
+  )
 
   const _setSortBy = useCallback(
     (field) => {
-      setSortOptions({
+      const newSortOptions = encode({
         field,
         order:
           sortOptions.field === field
@@ -30,8 +41,9 @@ const _useSortOptions = (onChange) => {
               : ORDER.DESC
             : ORDER.DESC,
       })
+      setSortOptions(newSortOptions)
     },
-    [sortOptions.order, sortOptions.field]
+    [setSortOptions, sortOptions.field, sortOptions.order]
   )
 
   const setSortBy = useCallback(
