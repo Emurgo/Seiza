@@ -40,6 +40,9 @@ const messages = defineMessages({
   poolUpdate__value: 'Pool {poolHash} updated.',
   poolUpdate__poolWasRetiring: 'Pool was retiring before this action.',
   poolUpdate__retirementAnnouncement: 'Pool announced retirement at {txHash}.',
+  poolUpdate__marginChanged: 'Margin changed ({value})',
+  poolUpdate__costChanged: 'Cost changed ({value})',
+  poolUpdate__pledgeChanged: 'Pledge changed ({value})',
 
   poolDeletion__label: 'Pool deleted',
   poolDeletion__value: '<TODO: Eveything we knew about the pool>',
@@ -485,10 +488,16 @@ const poolCreationMessage = ({action, i18n}) => {
     tr(poolCreationMessages.vrfKey, {vrfKey, space}),
     tr(poolCreationMessages.hotKey, {hotKey, space}),
     tr(poolCreationMessages.coldKey, {coldKey, space}),
-    fmtdMsg(poolCreationMessages.cost.id, {cost: <AdaValue showCurrency value={cost} />, space}),
-    tr(poolCreationMessages.margin, {margin: formatPercent(margin), space}),
+    fmtdMsg(poolCreationMessages.cost.id, {
+      cost: <FormattedCost showSign="auto" value={cost} />,
+      space,
+    }),
+    fmtdMsg(poolCreationMessages.margin.id, {
+      margin: <FormattedMargin showSign="auto" value={margin} />,
+      space,
+    }),
     fmtdMsg(poolCreationMessages.pledge.id, {
-      pledge: <AdaValue showCurrency value={pledge} />,
+      pledge: <FormattedPledge showSign="auto" value={pledge} />,
       space,
     }),
   ]
@@ -508,8 +517,41 @@ const poolCreation = ({action, i18n}) => {
   }
 }
 
+const FormattedCost = ({value, showSign = 'always'}) => (
+  <AdaValue showSign={showSign} showCurrency value={value} />
+)
+const FormattedMargin = ({value, showSign = 'always'}) => {
+  const {formatPercent} = useI18n()
+  return formatPercent(value)
+}
+const FormattedPledge = ({value, showSign = 'always'}) => (
+  <AdaValue showSign={showSign} showCurrency value={value} />
+)
+
+const UPDATED_PROP = {
+  COST: ({value}) =>
+    fmtdMsg(messages.poolUpdate__costChanged.id, {
+      value: <FormattedCost value={value} />,
+    }),
+  MARGIN: ({value}) =>
+    fmtdMsg(messages.poolUpdate__marginChanged.id, {
+      value: <FormattedMargin value={value} />,
+    }),
+  PLEDGE: ({value}) =>
+    fmtdMsg(messages.poolUpdate__pledgeChanged.id, {
+      value: <FormattedPledge value={value} />,
+    }),
+}
+
 const poolUpdate = ({action, i18n}) => {
-  const {poolHash, wasRetiringDuringUpdate, poolExists, isInRetirement, retirementTxHash} = action
+  const {
+    poolHash,
+    wasRetiringDuringUpdate,
+    poolExists,
+    isInRetirement,
+    retirementTxHash,
+    updatedProperties,
+  } = action
   const {translate: tr} = i18n
   return {
     label: tr(messages.poolUpdate__label),
@@ -523,6 +565,10 @@ const poolUpdate = ({action, i18n}) => {
         isInRetirement,
         retirementTxHash,
         i18n,
+      }),
+      ...updatedProperties.map(({type, value}, index) => {
+        const UpdatedProp = UPDATED_PROP[type]
+        return <UpdatedProp key={index} value={value} />
       }),
     ],
   }

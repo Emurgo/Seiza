@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import {CERT_ACTIONS_TYPES} from './actionTypes'
 
 export const MOCKED_KEY_REGISTRATION_ACTION = {
@@ -120,6 +121,7 @@ export const MOCKED_POOL_CREATION_ACTION = {
     'd61e92e242e02815391dd8f1e40216bbfe7502b21cb8af4329470f16',
   ],
 }
+
 export const MOCKED_POOL_UPDATE_ACTION = {
   type: CERT_ACTIONS_TYPES.POOL_UPDATE,
   poolHash: '0x014571',
@@ -128,7 +130,11 @@ export const MOCKED_POOL_UPDATE_ACTION = {
   retirementTxHash: '0x213132',
   lastRetirement: '2019-02-13T10:58:31.000Z',
   poolExists: true,
-
+  updatedProperties: [
+    {type: 'MARGIN', value: -0.02},
+    {type: 'COST', value: 41254560},
+    {type: 'PLEDGE', value: 123958381},
+  ],
   tx: {
     txHash: '0x64245523',
   },
