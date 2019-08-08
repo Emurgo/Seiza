@@ -1,11 +1,19 @@
 import React from 'react'
 import cn from 'classnames'
+import _ from 'lodash'
 import {defineMessages, FormattedMessage} from 'react-intl'
 import {Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
 import {AdaValue, Link} from '@/components/common'
-import {SummaryCard, Divider, ExpansionPanel, DesktopOnly, MobileOnly} from '@/components/visual'
+import {
+  SummaryCard,
+  Divider,
+  ExpansionPanel,
+  DesktopOnly,
+  MobileOnly,
+  ExternalLink,
+} from '@/components/visual'
 import {useI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
 import CertificateActionIcon from './ActionIcon'
@@ -429,34 +437,61 @@ const keyDelegation = ({action, i18n}) => {
   }
 }
 
-const poolInfoMessages = defineMessages({
-  poolHash: 'Pool {hash}',
-  webpage: 'has home website {webpage}',
-  owners: 'has owners: {ownersStakingKeys}',
-  vrfKey: 'has public VRF key = {vrfKey}',
-  hotKey: 'has public hot key = {hotKey}',
-  coldKey: 'has public cold key = {coldKey}',
-  cost: 'has cost of {cost}',
-  margin: 'has margin of {margin}',
-  pledge: 'has pledge of {pledge}',
+// Why space at the end doesn't work?:(
+// https://github.com/formatjs/react-intl/issues/408
+const poolCreationMessages = defineMessages({
+  poolHash: 'Pool {hash}{space}',
+  webpage: 'has website {webpage},{space}',
+  owners: 'has owners {owners},{space}',
+  vrfKey: 'has public VRF key {vrfKey},{space}',
+  hotKey: 'has public hot key {hotKey},{space}',
+  coldKey: 'has public cold key = {coldKey},{space}',
+  cost: 'has cost of {cost},{space}',
+  margin: 'has margin of {margin},{space}',
+  pledge: 'has pledge of {pledge}.',
 })
 
-const poolInfo = ({action, i18n}) => {
-  const {translate: tr} = i18n
+const space = ' '
+
+const poolCreationMessage = ({action, i18n}) => {
+  const {translate: tr, formatPercent} = i18n
   const {hash, stakepoolOwners, stakepool} = action
   const {cost, margin, pledge, webpage, vrfKey, hotKey, coldKey} = stakepool
   return [
-    tr(poolInfoMessages.poolHash, {hash}),
-    tr(poolInfoMessages.webpage, {webpage}),
-    tr(poolInfoMessages.owners, {ownersStakingKeys: stakepoolOwners.join(', ')}),
-    tr(poolInfoMessages.vrfKey, {vrfKey}),
-    tr(poolInfoMessages.hotKey, {hotKey}),
-    tr(poolInfoMessages.coldKey, {coldKey}),
-    // TODO: format
-    tr(poolInfoMessages.cost, {cost}), // number in ADA
-    tr(poolInfoMessages.margin, {margin}), // %
-    tr(poolInfoMessages.pledge, {pledge}), // number in ADA
-  ].join(', ')
+    tr(poolCreationMessages.poolHash, {hash, space}),
+    fmtdMsg(poolCreationMessages.webpage.id, {
+      webpage: <ExternalLink to={webpage}>{webpage}</ExternalLink>,
+      space,
+    }),
+    fmtdMsg(poolCreationMessages.owners.id, {
+      owners: (
+        <React.Fragment key={1}>
+          {stakepoolOwners.map((owner, index) => (
+            <React.Fragment key={index}>
+              {stakepoolOwners.length - 1 !== index ? (
+                <React.Fragment>
+                  <StakingKeyLink stakingKey={owner} />
+                  {', '}
+                </React.Fragment>
+              ) : (
+                <StakingKeyLink stakingKey={owner} />
+              )}
+            </React.Fragment>
+          ))}
+        </React.Fragment>
+      ),
+      space,
+    }),
+    tr(poolCreationMessages.vrfKey, {vrfKey, space}),
+    tr(poolCreationMessages.hotKey, {hotKey, space}),
+    tr(poolCreationMessages.coldKey, {coldKey, space}),
+    fmtdMsg(poolCreationMessages.cost.id, {cost: <AdaValue showCurrency value={cost} />, space}),
+    tr(poolCreationMessages.margin, {margin: formatPercent(margin), space}),
+    fmtdMsg(poolCreationMessages.pledge.id, {
+      pledge: <AdaValue showCurrency value={pledge} />,
+      space,
+    }),
+  ]
 }
 
 const poolCreation = ({action, i18n}) => {
@@ -468,7 +503,7 @@ const poolCreation = ({action, i18n}) => {
       fmtdMsg(messages.poolCreation__value.id, {
         poolHash: <PoolHashLink poolHash={poolHash} />,
       }),
-      poolInfo({action, i18n}),
+      <span key={1}>{poolCreationMessage({action, i18n})}</span>,
     ],
   }
 }

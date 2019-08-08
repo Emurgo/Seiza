@@ -105,6 +105,8 @@ export const MOCKED_POOL_CREATION_ACTION = {
     txHash: '0x64245523',
   },
   stakepool: {
+    // Note(bigamasta): just some data here copied from stakepool mock
+    // we cannot use getStakepool here, because of circular dependency
     vrfKey: 'b331e5415ba39a345b2d3585c1c1b069372ed5d7dfa0ca4c651fdd47',
     hotKey: '9b13a30404e4093f2ca99d1db60deddd17b41e6723ef9dbc4deffe2f',
     coldKey: 'c1ae631a6f9c1d4198a595beb92be18f28e5bcfa780712cfdf891757',
@@ -126,6 +128,7 @@ export const MOCKED_POOL_UPDATE_ACTION = {
   retirementTxHash: '0x213132',
   lastRetirement: '2019-02-13T10:58:31.000Z',
   poolExists: true,
+
   tx: {
     txHash: '0x64245523',
   },
