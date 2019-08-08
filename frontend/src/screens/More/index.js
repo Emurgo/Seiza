@@ -8,7 +8,7 @@ import {Link} from '@/components/common'
 import MarketHistory from './MarketData'
 import {routeTo} from '@/helpers/routes'
 import {useI18n} from '@/i18n/helpers'
-import {NON_BOOTSTRAP_POOL_HASH} from '@/screens/Blockchain/StakePool'
+import {NON_BOOTSTRAP_POOL_HASH} from '@/screens/Blockchain/Stakepool'
 
 const messages = defineMessages({
   stakingKeyScreens: 'Staking Key screens',

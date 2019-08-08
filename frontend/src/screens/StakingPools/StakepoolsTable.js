@@ -158,7 +158,6 @@ type Props = {|
 |}
 
 const StakepoolsTable = ({data, headers, noColumnsMsg}: Props) => {
-  const columnsCount = data.length ? data[0].values.length : 0
   const theme = useTheme()
   const classes = useStyles()
   const scrollRef = React.useRef(null)
@@ -171,7 +170,7 @@ const StakepoolsTable = ({data, headers, noColumnsMsg}: Props) => {
     SCROLL_SPEED
   )
 
-  if (columnsCount === 0) {
+  if (headers.values.length === 0) {
     return (
       <Typography variant="overline" className={classes.noColumns}>
         {noColumnsMsg}

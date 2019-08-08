@@ -7,7 +7,7 @@ import {makeStyles} from '@material-ui/styles'
 import {getPageCount} from '@/helpers/utils'
 import {Pagination} from '@/components/common'
 
-import {HistoryMultiplePools} from '@/screens/Blockchain/StakingKey/common/History'
+import {HistoryMultiplePools} from '@/screens/Blockchain/common/History'
 
 import {WithEnsureStakePoolsLoaded, WithEnsureDataLoaded} from '../utils'
 import {useLoadCurrentEpoch, useLoadPoolsHistory, useLoadSelectedPoolsData} from './dataLoaders'
