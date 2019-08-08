@@ -112,6 +112,7 @@ export default compose(
     onAfterChange,
     onFocusOn,
     theme,
+    step,
   }) => {
     const handle = getHandle(classes.handle, tipFormatter)
     return (
@@ -131,7 +132,7 @@ export default compose(
             trackStyle={[getTrackStyle(theme), getTrackStyle(theme)]}
             handleStyle={[getHandleStyle(theme), getHandleStyle(theme)]}
             railStyle={getRailStyle(theme)}
-            {...{min, max, value, handle, onAfterChange}}
+            {...{min, max, value, handle, onAfterChange, step}}
           />
         </div>
       </FormControl>
