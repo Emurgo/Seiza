@@ -1,6 +1,5 @@
 import React from 'react'
 import cn from 'classnames'
-import _ from 'lodash'
 import {defineMessages, FormattedMessage} from 'react-intl'
 import {Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
@@ -440,31 +439,24 @@ const keyDelegation = ({action, i18n}) => {
   }
 }
 
-// Why space at the end doesn't work?:(
-// https://github.com/formatjs/react-intl/issues/408
 const poolCreationMessages = defineMessages({
-  poolHash: 'Pool {hash}{space}',
-  webpage: 'has website {webpage},{space}',
-  owners: 'has owners {owners},{space}',
-  vrfKey: 'has public VRF key {vrfKey},{space}',
-  hotKey: 'has public hot key {hotKey},{space}',
-  coldKey: 'has public cold key = {coldKey},{space}',
-  cost: 'has cost of {cost},{space}',
-  margin: 'has margin of {margin},{space}',
-  pledge: 'has pledge of {pledge}.',
+  webpage: 'Pool has website {webpage}',
+  owners: 'has owners {owners}',
+  vrfKey: 'has public VRF key {vrfKey}',
+  hotKey: 'has public hot key {hotKey}',
+  coldKey: 'has public cold key {coldKey}',
+  cost: 'has cost of {cost}',
+  margin: 'has margin of {margin}',
+  pledge: 'has pledge of {pledge}',
 })
 
-const space = ' '
-
 const poolCreationMessage = ({action, i18n}) => {
-  const {translate: tr, formatPercent} = i18n
-  const {hash, stakepoolOwners, stakepool} = action
+  const {translate: tr} = i18n
+  const {stakepoolOwners, stakepool} = action
   const {cost, margin, pledge, webpage, vrfKey, hotKey, coldKey} = stakepool
   return [
-    tr(poolCreationMessages.poolHash, {hash, space}),
     fmtdMsg(poolCreationMessages.webpage.id, {
       webpage: <ExternalLink to={webpage}>{webpage}</ExternalLink>,
-      space,
     }),
     fmtdMsg(poolCreationMessages.owners.id, {
       owners: (
@@ -483,22 +475,18 @@ const poolCreationMessage = ({action, i18n}) => {
           ))}
         </React.Fragment>
       ),
-      space,
     }),
-    tr(poolCreationMessages.vrfKey, {vrfKey, space}),
-    tr(poolCreationMessages.hotKey, {hotKey, space}),
-    tr(poolCreationMessages.coldKey, {coldKey, space}),
+    tr(poolCreationMessages.vrfKey, {vrfKey}),
+    tr(poolCreationMessages.hotKey, {hotKey}),
+    tr(poolCreationMessages.coldKey, {coldKey}),
     fmtdMsg(poolCreationMessages.cost.id, {
       cost: <FormattedCost showSign="auto" value={cost} />,
-      space,
     }),
     fmtdMsg(poolCreationMessages.margin.id, {
       margin: <FormattedMargin showSign="auto" value={margin} />,
-      space,
     }),
     fmtdMsg(poolCreationMessages.pledge.id, {
       pledge: <FormattedPledge showSign="auto" value={pledge} />,
-      space,
     }),
   ]
 }
@@ -512,7 +500,14 @@ const poolCreation = ({action, i18n}) => {
       fmtdMsg(messages.poolCreation__value.id, {
         poolHash: <PoolHashLink poolHash={poolHash} />,
       }),
-      <span key={1}>{poolCreationMessage({action, i18n})}</span>,
+      <span key={1}>
+        {poolCreationMessage({action, i18n}).map((msg, index, msgArray) => (
+          <React.Fragment key={index}>
+            {msg}
+            {index === msgArray.length - 1 ? '.' : ', '}
+          </React.Fragment>
+        ))}
+      </span>,
     ],
   }
 }

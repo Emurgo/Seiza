@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import {CERT_ACTIONS_TYPES} from './actionTypes'
 
 export const MOCKED_KEY_REGISTRATION_ACTION = {

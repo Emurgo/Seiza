@@ -166,7 +166,6 @@
   "screens.Blockchain.Certificates.ActionList.poolDeletion__label": "Pool deleted",
   "screens.Blockchain.Certificates.ActionList.poolDeletion__value": "<TODO: Eveything we knew about the pool>",
   "screens.Blockchain.Certificates.ActionList.poolExists": "Pool exists to this day.",
-  "screens.Blockchain.Certificates.ActionList.poolHash": "",
   "screens.Blockchain.Certificates.ActionList.poolNextUpdatedAt": "Pool was later updated at {timestamp}.",
   "screens.Blockchain.Certificates.ActionList.poolNextUpdatedAtTxHash": "Pool was later updated at {txHash}.",
   "screens.Blockchain.Certificates.ActionList.poolNotExists": "Pool currently doesn't exist.",
