@@ -104,6 +104,19 @@ export const MOCKED_POOL_CREATION_ACTION = {
   tx: {
     txHash: '0x64245523',
   },
+  stakepool: {
+    vrfKey: 'b331e5415ba39a345b2d3585c1c1b069372ed5d7dfa0ca4c651fdd47',
+    hotKey: '9b13a30404e4093f2ca99d1db60deddd17b41e6723ef9dbc4deffe2f',
+    coldKey: 'c1ae631a6f9c1d4198a595beb92be18f28e5bcfa780712cfdf891757',
+    webpage: 'https://www.warrenbuffettstakepool.com',
+    pledge: '10000003723742',
+    margin: 0.08,
+    cost: '500000000',
+  },
+  stakepoolOwners: [
+    '6e3d7c58ec9dae7689e7febd25708b69d3c0ae3dcd81e2923f7efe5c',
+    'd61e92e242e02815391dd8f1e40216bbfe7502b21cb8af4329470f16',
+  ],
 }
 export const MOCKED_POOL_UPDATE_ACTION = {
   type: CERT_ACTIONS_TYPES.POOL_UPDATE,

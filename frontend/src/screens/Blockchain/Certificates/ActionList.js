@@ -429,6 +429,36 @@ const keyDelegation = ({action, i18n}) => {
   }
 }
 
+const poolInfoMessages = defineMessages({
+  poolHash: 'Pool {hash}',
+  webpage: 'has home website {webpage}',
+  owners: 'has owners: {ownersStakingKeys}',
+  vrfKey: 'has public VRF key = {vrfKey}',
+  hotKey: 'has public hot key = {hotKey}',
+  coldKey: 'has public cold key = {coldKey}',
+  cost: 'has cost of {cost}',
+  margin: 'has margin of {margin}',
+  pledge: 'has pledge of {pledge}',
+})
+
+const poolInfo = ({action, i18n}) => {
+  const {translate: tr} = i18n
+  const {hash, stakepoolOwners, stakepool} = action
+  const {cost, margin, pledge, webpage, vrfKey, hotKey, coldKey} = stakepool
+  return [
+    tr(poolInfoMessages.poolHash, {hash}),
+    tr(poolInfoMessages.webpage, {webpage}),
+    tr(poolInfoMessages.owners, {ownersStakingKeys: stakepoolOwners.join(', ')}),
+    tr(poolInfoMessages.vrfKey, {vrfKey}),
+    tr(poolInfoMessages.hotKey, {hotKey}),
+    tr(poolInfoMessages.coldKey, {coldKey}),
+    // TODO: format
+    tr(poolInfoMessages.cost, {cost}), // number in ADA
+    tr(poolInfoMessages.margin, {margin}), // %
+    tr(poolInfoMessages.pledge, {pledge}), // number in ADA
+  ].join(', ')
+}
+
 const poolCreation = ({action, i18n}) => {
   const {translate: tr} = i18n
   const {poolHash} = action
@@ -438,7 +468,7 @@ const poolCreation = ({action, i18n}) => {
       fmtdMsg(messages.poolCreation__value.id, {
         poolHash: <PoolHashLink poolHash={poolHash} />,
       }),
-      'Info about the pool... TBD',
+      poolInfo({action, i18n}),
     ],
   }
 }
@@ -459,7 +489,6 @@ const poolUpdate = ({action, i18n}) => {
         retirementTxHash,
         i18n,
       }),
-      'Info about the pool... TBD',
     ],
   }
 }

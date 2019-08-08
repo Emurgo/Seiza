@@ -35,6 +35,9 @@ const MOCKED_POOL_ACTIONS = [
 
 const generateStakepool = (stakepoolHash) => ({
   hash: stakepoolHash,
+  vrfKey: 'b331e5415ba39a345b2d3585c1c1b069372ed5d7dfa0ca4c651fdd47',
+  hotKey: '9b13a30404e4093f2ca99d1db60deddd17b41e6723ef9dbc4deffe2f',
+  coldKey: 'c1ae631a6f9c1d4198a595beb92be18f28e5bcfa780712cfdf891757',
   name: 'Warren Buffett and Friend’s Stake Pool',
   validationCharacters: 'c0fe2f75',
   createdAt: '2019-02-13T10:58:31.000Z',
