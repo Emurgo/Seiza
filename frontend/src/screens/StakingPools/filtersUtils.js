@@ -1,8 +1,9 @@
 // @flow
 
 import _ from 'lodash'
-import React, {useState, useCallback, useContext, useMemo} from 'react'
+import React, {useCallback, useContext, useMemo} from 'react'
 
+import {useManageQueryValue} from '@/components/hooks/useManageQueryValue'
 import {rangeFields, fieldsConfigMap, fieldsConfig} from './fieldsConfig'
 
 import type {SliderRange} from './types'
@@ -10,6 +11,7 @@ import type {SliderRange} from './types'
 type Filter = {
   // TODO: how to make this flow friendly as range/text/other filters may store
   // different value types and properties?
+  // TODO: move "range" under "options/config" in next PR
   value: any,
   range?: SliderRange,
 }
@@ -23,7 +25,7 @@ type ContextType = {
 
 export const Context = React.createContext<ContextType>({})
 
-const getDefaultFiltersState = (ranges) =>
+const getInitialFiltersState = (ranges) =>
   fieldsConfig
     // $FlowFixMe
     .filter((c) => c.filter)
@@ -39,18 +41,44 @@ const getDefaultFiltersState = (ranges) =>
       {}
     )
 
+const mergeInitialStateWithUrl = (urlState, initialState) =>
+  _.mapValues(initialState, (filter, key) => ({
+    ...filter,
+    value: urlState[key] || initialState[key].value,
+  }))
+
+const encode = (filters) => {
+  if (!filters) return ''
+
+  const stateToEncode = _(filters)
+    .pickBy((filter) => filter.value)
+    .mapValues((filter) => filter.value)
+    .value()
+
+  return _.isEmpty(stateToEncode) ? '' : JSON.stringify(stateToEncode)
+}
+
+const decode = (str) => (str ? JSON.parse(str) : {})
+
 const _useFilters = (ranges) => {
-  const defaultState = useMemo(() => getDefaultFiltersState(ranges), [ranges])
-  const [filters, setFilters] = useState(defaultState)
+  const initialState = useMemo(() => getInitialFiltersState(ranges), [ranges])
+
+  const [filtersUrlState, setFiltersUrlState] = useManageQueryValue('filters', encode(), decode)
+
+  const filters = useMemo(() => mergeInitialStateWithUrl(filtersUrlState, initialState), [
+    initialState,
+    filtersUrlState,
+  ])
 
   const setFilter = useCallback(
     (filterName, value) => {
-      setFilters({...filters, [filterName]: {...filters[filterName], value}})
+      const newState = {...filters, [filterName]: {...filters[filterName], value}}
+      setFiltersUrlState(encode(newState))
     },
-    [filters]
+    [filters, setFiltersUrlState]
   )
 
-  const resetFilters = useCallback(() => setFilters(defaultState), [defaultState])
+  const resetFilters = useCallback(() => setFiltersUrlState(encode()), [setFiltersUrlState])
 
   const resetFilter = useCallback((filterName) => setFilter(filterName, null), [setFilter])
 
