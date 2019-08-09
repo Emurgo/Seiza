@@ -15,6 +15,7 @@ import {
   LoadingOverlay,
   EntityCardContent,
   EntityCardShell,
+  TabsPaginationLayout,
 } from '@/components/common'
 import useTabState from '@/components/hooks/useTabState'
 import {useI18n} from '@/i18n/helpers'
@@ -388,10 +389,16 @@ const EpochScreen = () => {
             <EpochSummaryCard epoch={epochData} loading={loading} />
             {config.showStakingData ? (
               <React.Fragment>
-                <LiteTabs value={currentTabIndex} onChange={setTabByEventIndex}>
-                  <LiteTab label={tr(messages.blocksTab)} />
-                  <LiteTab label={tr(messages.stakingPoolsTab)} />
-                </LiteTabs>
+                <TabsPaginationLayout
+                  tabs={
+                    <LiteTabs value={currentTabIndex} onChange={setTabByEventIndex}>
+                      <LiteTab label={tr(messages.blocksTab)} />
+                      <LiteTab label={tr(messages.stakingPoolsTab)} />
+                    </LiteTabs>
+                  }
+                  pagination={null}
+                />
+
                 <TabContent epochNumber={epochNumber} />
               </React.Fragment>
             ) : (
