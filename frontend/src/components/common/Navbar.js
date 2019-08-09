@@ -40,6 +40,9 @@ const useStyles = makeStyles(({palette, spacing}) => ({
       height: '1px',
     },
   },
+  disabledEvents: {
+    pointerEvents: 'none',
+  },
 }))
 
 const useDisabledLinkStyles = makeStyles(({palette}) => ({
@@ -151,6 +154,7 @@ const WithSublinks = ({children, sublinks}) => {
       placement="bottom"
       interactive
       title={<Sublinks sublinks={sublinks} />}
+      disableFocusListener
     >
       <div className={classes.tooltipChildren}>{children}</div>
     </PopoverMenu>
@@ -183,7 +187,11 @@ const NavMenuItem = ({
     <WithSublinks sublinks={sublinks}>
       <Link
         getIsActive={getIsActive}
-        className={cn(classes.link, isMobile && classes.mobileLink)}
+        className={cn(
+          classes.link,
+          isMobile && classes.mobileLink,
+          sublinks && classes.disabledEvents
+        )}
         to={link}
       >
         {(isActive) => (
