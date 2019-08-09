@@ -18,8 +18,8 @@ const useHeaderStyles = makeStyles((theme) => ({
     paddingTop: getDefaultSpacing(theme) * 0.25,
     paddingBottom: getDefaultSpacing(theme) * 0.25,
     [theme.breakpoints.down('xs')]: {
-      paddingLeft: getDefaultSpacing(theme) * 0.75,
-      paddingRight: getDefaultSpacing(theme) * 0.75,
+      paddingLeft: getDefaultSpacing(theme) * 0.5,
+      paddingRight: getDefaultSpacing(theme) * 0.5,
     },
   },
   leftOffset: {
@@ -32,8 +32,8 @@ const useBodyStyles = makeStyles((theme) => ({
     marginLeft: getDefaultSpacing(theme) * 1.5,
     marginRight: getDefaultSpacing(theme) * 1.5,
     [theme.breakpoints.down('xs')]: {
-      marginLeft: getDefaultSpacing(theme) * 0.75,
-      marginRight: getDefaultSpacing(theme) * 0.75,
+      marginLeft: getDefaultSpacing(theme) * 0.5,
+      marginRight: getDefaultSpacing(theme) * 0.5,
     },
   },
   rowWrapper: {
