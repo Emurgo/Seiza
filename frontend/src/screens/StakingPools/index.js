@@ -91,7 +91,13 @@ const useGetSortedPools = (stakepools) => {
   return sortedPools
 }
 
-const StakingPools = ({setPage, page, stakepools}) => {
+type StakingPoolsProps = {|
+  setPage: Function,
+  page: number,
+  stakepools: Array<{}>, // TODO: get type for stakepool once we have proper schema
+|}
+
+export const StakingPools = ({setPage, page, stakepools}: StakingPoolsProps) => {
   const classes = useStyles()
   const {translate: tr} = useI18n()
 
