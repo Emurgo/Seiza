@@ -80,6 +80,7 @@ const theme = _.merge({}, common, {
     contentFocus: '#6F7290',
     contentUnfocus: '#BFC5D2',
     unobtrusiveContentHighlight: '#F4F6FC',
+    contentDividerWeak: '#E6EAF1', // TODO: change color for this theme
     disabled: 'rgba(146, 185, 252, 0.05)',
     adaValue: {
       positive: '#5FDBC1',

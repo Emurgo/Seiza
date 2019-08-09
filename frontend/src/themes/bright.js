@@ -80,6 +80,8 @@ const theme = _.merge({}, common, {
     contentFocus: '#6F7290',
     contentUnfocus: '#BFC5D2',
     unobtrusiveContentHighlight: '#F4F6FC',
+    // Better name for this color?
+    contentDividerWeak: '#E6EAF1',
     disabled: 'rgba(146, 185, 252, 0.05)',
     adaValue: {
       positive: '#5FDBC1',
