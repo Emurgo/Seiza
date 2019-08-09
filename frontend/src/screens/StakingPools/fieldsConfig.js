@@ -6,7 +6,7 @@ import {defineMessages} from 'react-intl'
 
 import {AdaValue} from '@/components/common'
 import {ItemIdentifier} from '@/components/common/ComparisonMatrix/utils'
-import {PercentageSlider, TextFilter} from './Filters'
+import {PercentageSlider, AdaSlider, IntegerSlider, TextFilter} from './Filters'
 import {rTo2Decimals} from './helpers'
 
 import type {SliderRange, RangeFilterConfig, TextFilterConfig} from './types'
@@ -59,10 +59,13 @@ const isRangeFilterActive = (filterConfig: RangeFilterConfig) => {
 
 const isTextFilterActive = (filterConfig: TextFilterConfig) => filterConfig.value
 
-const isInPercentRange = (data: number, value: SliderRange) => {
-  const r = rTo2Decimals
+const getIsInRangeFunction = (round = (v) => v) => (data: number, value: SliderRange) => {
+  const r = round
   return r(data) >= r(value[0]) && r(data) <= r(value[1])
 }
+
+const isInPercentRange = getIsInRangeFunction(rTo2Decimals)
+const isInRange = getIsInRangeFunction()
 
 const matchTextFilter = (data: string, value: ?string) => {
   // Note: we may want some "fuzzy" approach here
@@ -76,6 +79,27 @@ const percentageFieldFilterConfig = {
   dataMatchFilter: isInPercentRange,
 }
 
+const adaFieldFilterConfig = {
+  Component: AdaSlider,
+  type: FILTER_TYPES.range,
+  isFilterActive: isRangeFilterActive,
+  dataMatchFilter: isInRange,
+}
+
+const integerFieldFilterConfig = {
+  Component: IntegerSlider,
+  type: FILTER_TYPES.range,
+  isFilterActive: isRangeFilterActive,
+  dataMatchFilter: isInRange,
+}
+
+const textFieldFilterConfig = {
+  Component: TextFilter,
+  type: FILTER_TYPES.text,
+  isFilterActive: isTextFilterActive,
+  dataMatchFilter: matchTextFilter,
+}
+
 export const fieldsConfig: Array<Config> = [
   {
     field: 'name',
@@ -83,12 +107,7 @@ export const fieldsConfig: Array<Config> = [
     getValue: ({data}: GetValueParams) => (
       <ItemIdentifier title={data.name} identifier={data.poolHash} />
     ),
-    filter: {
-      Component: TextFilter,
-      type: FILTER_TYPES.text,
-      isFilterActive: isTextFilterActive,
-      dataMatchFilter: matchTextFilter,
-    },
+    filter: textFieldFilterConfig,
   },
   {
     field: 'adaStaked',
@@ -96,6 +115,7 @@ export const fieldsConfig: Array<Config> = [
     getValue: ({data, NA}: GetValueParams) => (
       <AdaValue value={data.adaStaked} noValue={NA} showCurrency />
     ),
+    filter: adaFieldFilterConfig,
   },
   {
     field: 'fullness',
@@ -121,11 +141,13 @@ export const fieldsConfig: Array<Config> = [
     getValue: ({data, NA}: GetValueParams) => (
       <AdaValue value={data.rewards} noValue={NA} showCurrency />
     ),
+    filter: adaFieldFilterConfig,
   },
   {
     field: 'keysDelegating',
     getLabel: ({tr}: GetLabelParams) => tr(fieldsMessages.keysDelegating),
     getValue: ({data, NA, formatInt}: GetValueParams) => formatInt(data.keysDelegating),
+    filter: integerFieldFilterConfig,
   },
   {
     field: 'createdAt',
@@ -136,6 +158,7 @@ export const fieldsConfig: Array<Config> = [
     field: 'stakersCount',
     getLabel: ({tr}: GetLabelParams) => tr(fieldsMessages.stakersCount),
     getValue: ({data, NA, formatInt}: GetValueParams) => formatInt(data.stakersCount),
+    filter: integerFieldFilterConfig,
   },
 ]
 
