@@ -1,4 +1,5 @@
 import React from 'react'
+import {useEffect} from 'react'
 import {Grid, Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
@@ -27,7 +28,7 @@ const SubscribeThanks = () => {
   const classes = useStyles()
   const {translate: tr} = useI18n()
   const {hideSubscribe} = useSubscribeContext()
-  hideSubscribe()
+  useEffect(hideSubscribe, [])
 
   const analytics = useAnalytics()
   analytics.useTrackPageVisitEvent('ActiveCampaign')
