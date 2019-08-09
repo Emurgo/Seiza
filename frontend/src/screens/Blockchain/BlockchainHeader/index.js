@@ -4,7 +4,7 @@ import {Typography, Grid, Hidden} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
 
-import {useSearchbarRef} from '../context/searchbarRef'
+import {useSearchbarRef} from '@/components/context/searchbarRef'
 import {useUserAgent} from '@/components/context/userAgent'
 
 import OverviewMetrics from './OverviewMetrics'
@@ -76,4 +76,4 @@ const BlockchainHeader = () => {
   )
 }
 
-export default () => <BlockchainHeader />
+export default BlockchainHeader
