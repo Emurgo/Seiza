@@ -27,6 +27,7 @@ import BlockchainHeader from './screens/Blockchain/BlockchainHeader'
 import Staking from './screens/Staking'
 import More from './screens/More'
 import PageNotFound from './screens/PageNotFound'
+import SubscribeThanks from './screens/SubscribeThanks'
 import LanguageSelect from '@/components/common/LanguageSelect'
 import ThemeSelect from '@/components/common/ThemeSelect'
 import CookiesBanner from '@/components/common/CookiesBanner'
@@ -209,6 +210,7 @@ const AppLayout = () => {
               {config.showStakingData && <Route path={routeTo.more()} component={More} />}
               <Route exact path={routeTo.termsOfUse()} component={Terms} />
               <Route exact path={routeTo.privacy()} component={Privacy} />
+              <Route exact path={routeTo.subscribeThanks()} component={SubscribeThanks} />
               <Route component={PageNotFound} />
             </Switch>
           </Grid>

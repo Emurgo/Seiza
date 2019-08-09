@@ -30,4 +30,5 @@ export const routeTo = {
   termsOfUse: () => '/terms',
   privacy: () => '/privacy',
   subscribe: () => '/subscribe',
+  subscribeThanks: () => '/subscribe-thanks',
 }
