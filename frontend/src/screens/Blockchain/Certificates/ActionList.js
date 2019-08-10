@@ -18,7 +18,6 @@ import {routeTo} from '@/helpers/routes'
 import CertificateActionIcon from './ActionIcon'
 import {CERT_ACTIONS_TYPES} from './actionTypes'
 
-// TODO: still or again
 const messages = defineMessages({
   registration__label: 'Key registered',
   registration__value: '{stakingKey} is registered.',
@@ -478,15 +477,15 @@ const poolCreationAdditionalRows = ({action, i18n}) => {
     },
     {
       label: tr(poolCreationMessages.costLabel),
-      value: <FormattedCost showSign="auto" value={cost} />,
+      value: <FormattedCost value={cost} />,
     },
     {
       label: tr(poolCreationMessages.marginLabel),
-      value: <FormattedMargin showSign="auto" value={margin} />,
+      value: <FormattedMargin value={margin} />,
     },
     {
       label: tr(poolCreationMessages.pledgeLabel),
-      value: <FormattedPledge showSign="auto" value={pledge} />,
+      value: <FormattedPledge value={pledge} />,
     },
   ]
 }
@@ -505,14 +504,14 @@ const poolCreation = ({action, i18n}) => {
   }
 }
 
-const FormattedCost = ({value, showSign = 'always'}) => (
+const FormattedCost = ({value, showSign}) => (
   <AdaValue showSign={showSign} showCurrency value={value} />
 )
-const FormattedMargin = ({value, showSign = 'always'}) => {
+const FormattedMargin = ({value, showSign}) => {
   const {formatPercent} = useI18n()
   return formatPercent(value)
 }
-const FormattedPledge = ({value, showSign = 'always'}) => (
+const FormattedPledge = ({value, showSign}) => (
   <AdaValue showSign={showSign} showCurrency value={value} />
 )
 
@@ -520,20 +519,38 @@ const poolUpdateMessages = defineMessages({
   costChange: 'Cost changed:',
   marginChange: 'Margin changed:',
   pledgeChange: 'Pledge changed:',
+  genericValue: '{value} (was {prevValue})',
 })
 
+const genericUpdatedPropValueMsg = ({value, prevValue}) => {
+  return fmtdMsg(poolUpdateMessages.genericValue.id, {
+    value,
+    prevValue,
+  })
+}
+
+// TODO: remove diff if not needed
 const POOL_UPDATE_UPDATED_PROP_ROW = {
-  COST: ({value, i18n: {translate: tr}}) => ({
+  COST: ({prevValue, value, diff, i18n: {translate: tr}}) => ({
     label: tr(poolUpdateMessages.costChange),
-    value: <FormattedCost value={value} />,
+    value: genericUpdatedPropValueMsg({
+      value: <FormattedCost value={value} />,
+      prevValue: <FormattedCost value={prevValue} />,
+    }),
   }),
-  MARGIN: ({value, i18n: {translate: tr}}) => ({
+  MARGIN: ({prevValue, value, diff, i18n: {translate: tr}}) => ({
     label: tr(poolUpdateMessages.marginChange),
-    value: <FormattedMargin value={value} />,
+    value: genericUpdatedPropValueMsg({
+      value: <FormattedMargin value={value} />,
+      prevValue: <FormattedMargin value={prevValue} />,
+    }),
   }),
-  PLEDGE: ({value, i18n: {translate: tr}}) => ({
+  PLEDGE: ({prevValue, value, diff, i18n: {translate: tr}}) => ({
     label: tr(poolUpdateMessages.pledgeChange),
-    value: <FormattedPledge value={value} />,
+    value: genericUpdatedPropValueMsg({
+      value: <FormattedPledge value={value} />,
+      prevValue: <FormattedPledge value={prevValue} />,
+    }),
   }),
 }
 
@@ -561,8 +578,8 @@ const poolUpdate = ({action, i18n}) => {
         i18n,
       }),
     ],
-    additionalRows: updatedProperties.map(({type, value}, index) =>
-      POOL_UPDATE_UPDATED_PROP_ROW[type]({value, i18n})
+    additionalRows: updatedProperties.map(({type, prevValue, value, diff}, index) =>
+      POOL_UPDATE_UPDATED_PROP_ROW[type]({i18n, prevValue, value, diff})
     ),
   }
 }

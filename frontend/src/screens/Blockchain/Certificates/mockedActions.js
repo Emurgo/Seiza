@@ -130,9 +130,10 @@ export const MOCKED_POOL_UPDATE_ACTION = {
   lastRetirement: '2019-02-13T10:58:31.000Z',
   poolExists: true,
   updatedProperties: [
-    {type: 'MARGIN', value: -0.02},
-    {type: 'COST', value: 41254560},
-    {type: 'PLEDGE', value: 123958381},
+    // TODO: remove diff if not needed
+    {type: 'MARGIN', prevValue: 0.12, value: 0.1, diff: -0.02},
+    {type: 'COST', prevValue: 214434551, value: 255689111, diff: 41254560},
+    {type: 'PLEDGE', prevValue: 697276019, value: 821234400, diff: 123958381},
   ],
   tx: {
     txHash: '0x64245523',
