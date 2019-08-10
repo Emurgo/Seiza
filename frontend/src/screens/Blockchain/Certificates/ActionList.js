@@ -687,7 +687,7 @@ const GET_RENDER_CONTENT = {
 const AdditionalRows = ({rows}) => {
   return rows.map(({label, value}, index) => {
     return (
-      <Row hideSeparator key={index}>
+      <Row key={index}>
         <AdditionalRowLabel>{label}</AdditionalRowLabel>
         <Value>{value}</Value>
       </Row>
@@ -704,7 +704,7 @@ const ActionList = ({actions, showTxHash}) => {
     <div className={classes.wrapper}>
       {actions.map((action, index) => {
         const {label, value, additionalRows} = GET_RENDER_CONTENT[action.type]({action, i18n})
-        const additonalRowsFinal = [
+        const additionalRowsFinal = [
           ...(additionalRows || []),
           action.deposit && depositRow({value: action.deposit, i18n}),
           action.refund && refundRow({value: action.refund, i18n}),
@@ -721,7 +721,7 @@ const ActionList = ({actions, showTxHash}) => {
               <MobileAction {...{action, label, value}} />
             </MobileOnly>
 
-            {additionalRows && <AdditionalRows rows={additonalRowsFinal} />}
+            {additionalRowsFinal && <AdditionalRows rows={additionalRowsFinal} />}
           </React.Fragment>
         )
       })}
