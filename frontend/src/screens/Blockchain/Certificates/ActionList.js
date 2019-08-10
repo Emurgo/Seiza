@@ -440,54 +440,57 @@ const keyDelegation = ({action, i18n}) => {
 }
 
 const poolCreationMessages = defineMessages({
-  webpage: 'Pool has website {webpage}',
-  owners: 'has owners {owners}',
-  vrfKey: 'has public VRF key {vrfKey}',
-  hotKey: 'has public hot key {hotKey}',
-  coldKey: 'has public cold key {coldKey}',
-  cost: 'has cost of {cost}',
-  margin: 'has margin of {margin}',
-  pledge: 'has pledge of {pledge}',
+  webpageLabel: 'Webpage:',
+  ownersLabel: 'Owners:',
+  vrfKeyLabel: 'VRF Key:',
+  hotKeyLabel: 'Hot Key:',
+  coldKeyLabel: 'Cold Key:',
+  costLabel: 'Cost:',
+  marginLabel: 'Margin:',
+  pledgeLabel: 'Pledge:',
 })
 
-const poolCreationMessage = ({action, i18n}) => {
+const poolCreationAdditionalRows = ({action, i18n}) => {
   const {translate: tr} = i18n
   const {stakepoolOwners, stakepool} = action
   const {cost, margin, pledge, webpage, vrfKey, hotKey, coldKey} = stakepool
   return [
-    fmtdMsg(poolCreationMessages.webpage.id, {
-      webpage: <ExternalLink to={webpage}>{webpage}</ExternalLink>,
-    }),
-    fmtdMsg(poolCreationMessages.owners.id, {
-      owners: (
-        <React.Fragment key={1}>
-          {stakepoolOwners.map((owner, index) => (
-            <React.Fragment key={index}>
-              {stakepoolOwners.length - 1 !== index ? (
-                <React.Fragment>
-                  <StakingKeyLink stakingKey={owner} />
-                  {', '}
-                </React.Fragment>
-              ) : (
-                <StakingKeyLink stakingKey={owner} />
-              )}
-            </React.Fragment>
-          ))}
-        </React.Fragment>
-      ),
-    }),
-    tr(poolCreationMessages.vrfKey, {vrfKey}),
-    tr(poolCreationMessages.hotKey, {hotKey}),
-    tr(poolCreationMessages.coldKey, {coldKey}),
-    fmtdMsg(poolCreationMessages.cost.id, {
-      cost: <FormattedCost showSign="auto" value={cost} />,
-    }),
-    fmtdMsg(poolCreationMessages.margin.id, {
-      margin: <FormattedMargin showSign="auto" value={margin} />,
-    }),
-    fmtdMsg(poolCreationMessages.pledge.id, {
-      pledge: <FormattedPledge showSign="auto" value={pledge} />,
-    }),
+    {
+      label: tr(poolCreationMessages.webpageLabel),
+      value: <ExternalLink to={webpage}>{webpage}</ExternalLink>,
+    },
+    {
+      label: tr(poolCreationMessages.ownersLabel),
+      value: stakepoolOwners.map((owner, index) => (
+        <div key={index}>
+          <StakingKeyLink stakingKey={owner} />
+        </div>
+      )),
+    },
+    {
+      label: tr(poolCreationMessages.vrfKeyLabel),
+      value: vrfKey,
+    },
+    {
+      label: tr(poolCreationMessages.hotKeyLabel),
+      value: hotKey,
+    },
+    {
+      label: tr(poolCreationMessages.coldKeyLabel),
+      value: coldKey,
+    },
+    {
+      label: tr(poolCreationMessages.costLabel),
+      value: <FormattedCost showSign="auto" value={cost} />,
+    },
+    {
+      label: tr(poolCreationMessages.marginLabel),
+      value: <FormattedMargin showSign="auto" value={margin} />,
+    },
+    {
+      label: tr(poolCreationMessages.pledgeLabel),
+      value: <FormattedPledge showSign="auto" value={pledge} />,
+    },
   ]
 }
 
@@ -500,15 +503,8 @@ const poolCreation = ({action, i18n}) => {
       fmtdMsg(messages.poolCreation__value.id, {
         poolHash: <PoolHashLink poolHash={poolHash} />,
       }),
-      <span key={1}>
-        {poolCreationMessage({action, i18n}).map((msg, index, msgArray) => (
-          <React.Fragment key={index}>
-            {msg}
-            {index === msgArray.length - 1 ? '.' : ', '}
-          </React.Fragment>
-        ))}
-      </span>,
     ],
+    additionalRows: poolCreationAdditionalRows({action, i18n}),
   }
 }
 
@@ -697,13 +693,24 @@ const GET_RENDER_CONTENT = {
   [CERT_ACTIONS_TYPES.POOL_RETIREMENT]: poolRetirement,
 }
 
+const AdditionalRows = ({rows}) => {
+  return rows.map(({label, value}, index) => {
+    return (
+      <Row hideSeparator key={index}>
+        <AdditionalRowLabel>{label}</AdditionalRowLabel>
+        <Value>{value}</Value>
+      </Row>
+    )
+  })
+}
+
 const ActionList = ({actions, showTxHash}) => {
   const classes = useStyles()
   const i18n = useI18n()
   return (
     <div className={classes.wrapper}>
       {actions.map((action, index) => {
-        const {label, value} = GET_RENDER_CONTENT[action.type]({action, i18n})
+        const {label, value, additionalRows} = GET_RENDER_CONTENT[action.type]({action, i18n})
         return (
           <React.Fragment key={index}>
             <Divider />
@@ -714,6 +721,7 @@ const ActionList = ({actions, showTxHash}) => {
             <MobileOnly>
               <MobileAction {...{action, label, value}} />
             </MobileOnly>
+            {additionalRows && <AdditionalRows rows={additionalRows} />}
             {action.deposit && <DepositRow value={action.deposit} />}
             {action.refund && <RefundRow value={action.refund} />}
             {showTxHash && <TransactionRow tx={action.tx} />}
