@@ -634,45 +634,36 @@ const AdditionalRowLabel = ({children}) => (
   </Typography>
 )
 
-const DepositRow = ({value}) => {
-  const {translate: tr} = useI18n()
-  return (
-    <Row hideSeparator>
-      <AdditionalRowLabel>{tr(messages.deposit)}</AdditionalRowLabel>
-      <Value>
-        <AdaValue showCurrency value={value} />
-      </Value>
-    </Row>
-  )
+const depositRow = ({value, i18n}) => {
+  const {translate: tr} = i18n
+  return {
+    label: tr(messages.deposit),
+    value: <AdaValue showCurrency value={value} />,
+  }
+}
+const refundRow = ({value, i18n}) => {
+  const {translate: tr} = i18n
+  return {
+    label: tr(messages.refund),
+    value: <AdaValue showCurrency value={value} />,
+  }
 }
 
-const RefundRow = ({value}) => {
-  const {translate: tr} = useI18n()
-  return (
-    <Row hideSeparator>
-      <AdditionalRowLabel>{tr(messages.refund)}</AdditionalRowLabel>
-      <Value>
-        <AdaValue showCurrency value={value} />
-      </Value>
-    </Row>
-  )
-}
-
-const TransactionRow = ({tx}) => {
-  const {translate: tr, formatTimestamp} = useI18n()
-  return (
-    <Row hideSeparator>
-      <AdditionalRowLabel>{tr(messages.txHash)}</AdditionalRowLabel>
-      <Value>
+const transactionRow = ({tx, i18n}) => {
+  const {translate: tr, formatTimestamp} = i18n
+  return {
+    label: tr(messages.txHash),
+    value: (
+      <React.Fragment>
         <Typography variant="body1" align="right">
           <TxHashLink txHash={tx.txHash} />
         </Typography>
         <Typography variant="caption" color="textSecondary" align="right">
           {formatTimestamp(tx.timestamp)}
         </Typography>
-      </Value>
-    </Row>
-  )
+      </React.Fragment>
+    ),
+  }
 }
 
 const GET_RENDER_CONTENT = {
@@ -704,6 +695,8 @@ const AdditionalRows = ({rows}) => {
   })
 }
 
+const iden = (v) => v
+
 const ActionList = ({actions, showTxHash}) => {
   const classes = useStyles()
   const i18n = useI18n()
@@ -711,6 +704,12 @@ const ActionList = ({actions, showTxHash}) => {
     <div className={classes.wrapper}>
       {actions.map((action, index) => {
         const {label, value, additionalRows} = GET_RENDER_CONTENT[action.type]({action, i18n})
+        const additonalRowsFinal = [
+          ...(additionalRows || []),
+          action.deposit && depositRow({value: action.deposit, i18n}),
+          action.refund && refundRow({value: action.refund, i18n}),
+          showTxHash && transactionRow({tx: action.tx, i18n}),
+        ].filter(iden)
         return (
           <React.Fragment key={index}>
             <Divider />
@@ -721,10 +720,8 @@ const ActionList = ({actions, showTxHash}) => {
             <MobileOnly>
               <MobileAction {...{action, label, value}} />
             </MobileOnly>
-            {additionalRows && <AdditionalRows rows={additionalRows} />}
-            {action.deposit && <DepositRow value={action.deposit} />}
-            {action.refund && <RefundRow value={action.refund} />}
-            {showTxHash && <TransactionRow tx={action.tx} />}
+
+            {additionalRows && <AdditionalRows rows={additonalRowsFinal} />}
           </React.Fragment>
         )
       })}
