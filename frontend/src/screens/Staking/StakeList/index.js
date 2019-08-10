@@ -9,7 +9,6 @@ import {defineMessages} from 'react-intl'
 import {useI18n} from '@/i18n/helpers'
 import {Button, Overlay, LoadingInProgress} from '@/components/visual'
 import {LoadingError, LoadingOverlay} from '@/components/common'
-import StakePool from './StakePool'
 import SearchAndFilterBar from './SearchAndFilterBar'
 import SortByBar from './SortByBar'
 
@@ -48,10 +47,9 @@ const useStyles = makeStyles((theme) => ({
   lastItemSpace: {
     padding: theme.spacing(5),
   },
-})
-)
+}))
 
-const StakeList = ({onLoadMore, stakePools, hasMore, loading}) => {
+const StakeList = ({onLoadMore, stakePools, hasMore, loading, StakepoolCard}) => {
   const {translate: tr} = useI18n()
   const classes = useStyles()
 
@@ -61,7 +59,7 @@ const StakeList = ({onLoadMore, stakePools, hasMore, loading}) => {
     <Overlay.Wrapper className="w-100">
       {stakePools.map((pool) => (
         <Grid item key={pool.hash} className={classes.rowWrapper}>
-          <StakePool data={pool} />
+          <StakepoolCard data={pool} />
         </Grid>
       ))}
       {hasMore ? (
@@ -98,9 +96,11 @@ const stakePoolFacade = (data) => ({
   // TODO: distinguish between `declared` and `actual` pledge?
   pledge: data.summary.ownerPledge.declared,
   stake: data.summary.adaStaked,
+  cost: data.summary.cost,
+  rewards: data.summary.rewards,
 })
 
-const StakeListWrapper = () => {
+const StakeListWrapper = ({StakepoolCard}: {StakepoolCard: React$ComponentType<any>}) => {
   const {translate: tr} = useI18n()
   const classes = useStyles()
 
@@ -146,7 +146,10 @@ const StakeListWrapper = () => {
             <LoadingError error={error} />
           </Grid>
         ) : (
-          <StakeList {...{loading, stakePools, onLoadMore, hasMore}} />
+          <StakeList
+            StakepoolCard={StakepoolCard}
+            {...{loading, stakePools, onLoadMore, hasMore}}
+          />
         )}
       </Grid>
     </React.Fragment>

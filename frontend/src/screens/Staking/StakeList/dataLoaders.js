@@ -37,6 +37,8 @@ export const useLoadPagedStakePoolList = () => {
             createdAt
             age
             summary {
+              rewards
+              cost
               adaStaked
               fullness
               margins
