@@ -6,7 +6,6 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import {makeStyles} from '@material-ui/styles'
 
 import {Card} from '@/components/visual'
-import {getDefaultSpacing} from '@/components/visual/ContentSpacing'
 import {mergeStylesheets} from '@/helpers/styles'
 
 const useExpansionDetailsStyles = makeStyles((theme) => ({
@@ -22,11 +21,12 @@ const useExpansionSummaryStyles = makeStyles((theme) => ({
     padding: 0,
     marginTop: 0,
     marginBottom: 0,
-    marginLeft: getDefaultSpacing(theme),
-    marginRight: getDefaultSpacing(theme),
-  },
-  expandIcon: {
-    right: '-16px',
+    marginLeft: theme.getContentSpacing(0.5),
+    marginRight: theme.getContentSpacing(0.5),
+    [theme.breakpoints.up('sm')]: {
+      marginLeft: theme.getContentSpacing(),
+      marginRight: theme.getContentSpacing(),
+    },
   },
 }))
 

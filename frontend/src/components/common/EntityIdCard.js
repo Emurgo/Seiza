@@ -48,6 +48,8 @@ const useContentStyles = makeStyles((theme) => {
       cursor: 'initial',
       overflow: 'hidden',
       paddingTop: COPY_ICON_SPACING_CORRECTURE,
+      // remove spacing that's added because of animation when no icon is rendered
+      marginLeft: ({iconRenderer}) => (!iconRenderer ? -animationSpacing : 'initial'),
     },
     valueContainer: {
       width: '100%',
@@ -118,7 +120,7 @@ export const EntityCardContent = ({
   monospaceValue = true,
 }) => {
   const isMobile = useIsMobile()
-  const classes = useContentStyles({showCopyIcon, isMobile})
+  const classes = useContentStyles({showCopyIcon, isMobile, iconRenderer})
 
   return (
     <div className="d-flex">
