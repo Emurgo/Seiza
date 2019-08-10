@@ -39,9 +39,6 @@ const messages = defineMessages({
   poolUpdate__value: 'Pool {poolHash} updated.',
   poolUpdate__poolWasRetiring: 'Pool was retiring before this action.',
   poolUpdate__retirementAnnouncement: 'Pool announced retirement at {txHash}.',
-  poolUpdate__marginChanged: 'Margin changed ({value})',
-  poolUpdate__costChanged: 'Cost changed ({value})',
-  poolUpdate__pledgeChanged: 'Pledge changed ({value})',
 
   poolDeletion__label: 'Pool deleted',
   poolDeletion__value: 'Pending rewards moved to reward pool for epoch {epoch}',
@@ -519,19 +516,25 @@ const FormattedPledge = ({value, showSign = 'always'}) => (
   <AdaValue showSign={showSign} showCurrency value={value} />
 )
 
-const POOL_UPDATE_UPDATED_PROP = {
-  COST: ({value}) =>
-    fmtdMsg(messages.poolUpdate__costChanged.id, {
-      value: <FormattedCost value={value} />,
-    }),
-  MARGIN: ({value}) =>
-    fmtdMsg(messages.poolUpdate__marginChanged.id, {
-      value: <FormattedMargin value={value} />,
-    }),
-  PLEDGE: ({value}) =>
-    fmtdMsg(messages.poolUpdate__pledgeChanged.id, {
-      value: <FormattedPledge value={value} />,
-    }),
+const poolUpdateMessages = defineMessages({
+  costChange: 'Cost changed:',
+  marginChange: 'Margin changed:',
+  pledgeChange: 'Pledge changed:',
+})
+
+const POOL_UPDATE_UPDATED_PROP_ROW = {
+  COST: ({value, i18n: {translate: tr}}) => ({
+    label: tr(poolUpdateMessages.costChange),
+    value: <FormattedCost value={value} />,
+  }),
+  MARGIN: ({value, i18n: {translate: tr}}) => ({
+    label: tr(poolUpdateMessages.marginChange),
+    value: <FormattedMargin value={value} />,
+  }),
+  PLEDGE: ({value, i18n: {translate: tr}}) => ({
+    label: tr(poolUpdateMessages.pledgeChange),
+    value: <FormattedPledge value={value} />,
+  }),
 }
 
 const poolUpdate = ({action, i18n}) => {
@@ -557,11 +560,10 @@ const poolUpdate = ({action, i18n}) => {
         retirementTxHash,
         i18n,
       }),
-      ...updatedProperties.map(({type, value}, index) => {
-        const UpdatedProp = POOL_UPDATE_UPDATED_PROP[type]
-        return <UpdatedProp key={index} value={value} />
-      }),
     ],
+    additionalRows: updatedProperties.map(({type, value}, index) =>
+      POOL_UPDATE_UPDATED_PROP_ROW[type]({value, i18n})
+    ),
   }
 }
 
@@ -704,7 +706,7 @@ const ActionList = ({actions, showTxHash}) => {
     <div className={classes.wrapper}>
       {actions.map((action, index) => {
         const {label, value, additionalRows} = GET_RENDER_CONTENT[action.type]({action, i18n})
-        const additionalRowsFinal = [
+        const allAdditionalRows = [
           ...(additionalRows || []),
           action.deposit && depositRow({value: action.deposit, i18n}),
           action.refund && refundRow({value: action.refund, i18n}),
@@ -721,7 +723,7 @@ const ActionList = ({actions, showTxHash}) => {
               <MobileAction {...{action, label, value}} />
             </MobileOnly>
 
-            {additionalRowsFinal && <AdditionalRows rows={additionalRowsFinal} />}
+            {allAdditionalRows && <AdditionalRows rows={allAdditionalRows} />}
           </React.Fragment>
         )
       })}
