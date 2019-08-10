@@ -30,6 +30,7 @@ import DefaultErrorBoundary from '@/components/common/DefaultErrorBoundary'
 import {AcceptCookiesProvider} from '@/components/context/acceptCookies'
 import {AnalyticsProvider} from '@/components/context/googleAnalytics'
 import {RefProviders} from '@/components/context/refs'
+import {SearchbarRefProvider} from '@/components/context/searchbarRef'
 import {CurrencyProvider} from '@/components/hooks/useCurrency'
 import EnvOverrides from './screens/EnvOverrides'
 import TopBar from './TopBar'
@@ -124,7 +125,9 @@ const Providers = ({children}) => (
     <AnalyticsProvider>
       <CurrencyProvider>
         <AutoSyncProvider>
-          <RefProviders>{children}</RefProviders>
+          <RefProviders>
+            <SearchbarRefProvider>{children}</SearchbarRefProvider>
+          </RefProviders>
         </AutoSyncProvider>
       </CurrencyProvider>
     </AnalyticsProvider>
