@@ -20,7 +20,7 @@ export const ORDER = {
 const encode = (val) => `${val.order === ORDER.DESC ? '-' : ''}${val.field}`
 const decode = (str) => ({
   order: str[0] === '-' ? ORDER.DESC : ORDER.ASC,
-  field: str.substring(1),
+  field: str[0] === '-' ? str.substring(1) : str,
 })
 
 const _useSortOptions = (onChange) => {
