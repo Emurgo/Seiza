@@ -48,7 +48,7 @@ const mergeInitialStateWithUrl = (urlState, initialState) =>
   }))
 
 const encode = (filters) => {
-  if (!filters) return ''
+  if (!filters) return null
 
   const stateToEncode = _(filters)
     .pickBy((filter) => filter.value)
@@ -56,7 +56,7 @@ const encode = (filters) => {
     .map((filter, key) => `${key}${FILTER_KEY_VALUE_DIVIDER}${filter}`)
     .value()
 
-  return _.isEmpty(stateToEncode) ? '' : stateToEncode
+  return _.isEmpty(stateToEncode) ? null : stateToEncode
 }
 
 const decode = (arr) => {
