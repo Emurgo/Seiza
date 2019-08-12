@@ -4,7 +4,7 @@ import _ from 'lodash'
 import React, {useCallback, useContext, useMemo} from 'react'
 
 import {useManageQueryValue} from '@/components/hooks/useManageQueryValue'
-import {rangeFields, fieldsConfigMap, fieldsConfig} from './fieldsConfig'
+import {rangeFields, fieldsConfigMap, fieldsConfig, FILTER_KEY_VALUE_DIVIDER} from './fieldsConfig'
 
 import type {SliderRange} from './types'
 
@@ -52,13 +52,24 @@ const encode = (filters) => {
 
   const stateToEncode = _(filters)
     .pickBy((filter) => filter.value)
-    .mapValues((filter) => filter.value)
+    .mapValues((filter, field) => fieldsConfigMap[field].filter.encodeValue(filter.value))
+    .map((filter, key) => `${key}${FILTER_KEY_VALUE_DIVIDER}${filter}`)
     .value()
 
-  return _.isEmpty(stateToEncode) ? '' : JSON.stringify(stateToEncode)
+  return _.isEmpty(stateToEncode) ? '' : stateToEncode
 }
 
-const decode = (str) => (str ? JSON.parse(str) : {})
+const decode = (arr) => {
+  if (!arr) return {}
+
+  return arr.reduce((res, item) => {
+    const [key, value] = item.split(FILTER_KEY_VALUE_DIVIDER)
+    return {
+      ...res,
+      [key]: fieldsConfigMap[key].filter.decodeValue(value),
+    }
+  }, {})
+}
 
 const _useFilters = (ranges) => {
   const initialState = useMemo(() => getInitialFiltersState(ranges), [ranges])
