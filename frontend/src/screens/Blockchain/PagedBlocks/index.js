@@ -4,7 +4,7 @@ import {defineMessages} from 'react-intl'
 import {Switch, Typography, Grid, Hidden} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
-import {Pagination} from '@/components/common'
+import {Pagination, MobilePaginationDivider} from '@/components/common'
 import {SimpleLayout} from '@/components/visual'
 import {GET_PAGED_BLOCKS} from '@/api/queries'
 import {useI18n} from '@/i18n/helpers'
@@ -15,6 +15,7 @@ import {toIntOrNull, getPageCount} from '@/helpers/utils'
 import BlocksTable, {ALL_COLUMNS} from './BlocksTable'
 import {useAnalytics} from '@/components/context/googleAnalytics'
 import {getPageAndBoundaryFromCursor} from './util'
+import {useIsMobile} from '@/components/hooks/useBreakpoints'
 
 const AUTOUPDATE_REFRESH_INTERVAL = 20 * 1000
 
@@ -59,6 +60,7 @@ const useStyles = makeStyles((theme) => ({
   },
   upperPagination: {
     marginTop: theme.spacing(2.5),
+    width: '100%',
     [theme.breakpoints.up('sm')]: {
       marginTop: 0,
     },
@@ -132,6 +134,7 @@ const PagedBlocks = () => {
   const classes = useStyles()
   const {translate} = useI18n()
   const analytics = useAnalytics()
+  const isMobile = useIsMobile()
   analytics.useTrackPageVisitEvent('blocks')
 
   const {
@@ -163,10 +166,11 @@ const PagedBlocks = () => {
     <div ref={scrollToRef}>
       <SimpleLayout title={translate(messages.header)}>
         <Grid className={classes.wrapper} container alignItems="center" justify="space-between">
-          <Grid item>
+          <Grid item xs={12} md={6}>
             <AutoUpdateSwitch checked={autoUpdate} onChange={onChangeAutoUpdate} />
           </Grid>
-          <Grid item className={classes.upperPagination}>
+          <Grid item xs={12} md={6} className={classes.upperPagination}>
+            {isMobile && <MobilePaginationDivider />}
             {pagination}
           </Grid>
         </Grid>

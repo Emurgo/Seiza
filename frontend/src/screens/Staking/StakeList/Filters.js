@@ -24,17 +24,17 @@ const useStyles = makeStyles((theme) => ({
     background: theme.palette.background.paper,
   },
   // We need these corrections because both select
-  // and slider have formControl below them which
-  // adds its own margins
+  // has formControl below which adds its own margins
   select: {
     width: `calc(100% - ${theme.spacing(2)}px)`,
     paddingLeft: theme.spacing(1),
     paddingRight: theme.spacing(1),
   },
   slider: {
-    width: `calc(100% - ${theme.spacing(1)}px)`,
-    paddingLeft: theme.spacing(1),
-    paddingRight: theme.spacing(1),
+    width: `calc(100% - ${theme.spacing(2)}px)`,
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(2),
+    margin: theme.spacing(1),
   },
 }))
 
@@ -81,18 +81,16 @@ const Filters = () => {
             />
           </Grid>
           <Grid item xs={12} sm={4}>
-            <div className={classes.slider}>
-              <Slider
-                min={RANGE_START}
-                max={RANGE_END}
-                tipFormatter={tipFormatter}
-                value={performance}
-                label={tr(messages.performance)}
-                className={classes.slider}
-                onChange={setPerformance}
-                onDragEnd={onDragEnd}
-              />
-            </div>
+            <Slider
+              min={RANGE_START}
+              max={RANGE_END}
+              tipFormatter={tipFormatter}
+              value={performance}
+              label={tr(messages.performance)}
+              className={classes.slider}
+              onChange={setPerformance}
+              onDragEnd={onDragEnd}
+            />
           </Grid>
         </Grid>
       </ContentSpacing>

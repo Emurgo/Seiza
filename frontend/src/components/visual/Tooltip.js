@@ -24,7 +24,7 @@ const Tooltip = ({classes: customClasses, enterTouchDelay = 0, ...props}) => {
   return (
     <MuiTooltip
       enterTouchDelay={enterTouchDelay}
-      classes={mergeStylesheets(classes, customClasses)}
+      classes={mergeStylesheets(customClasses, classes)}
       {...props}
     />
   )

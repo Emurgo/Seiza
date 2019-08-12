@@ -1,35 +1,50 @@
 // @flow
-import {useMemo, useState, useCallback} from 'react'
+import {useMemo, useCallback} from 'react'
 import {defineMessages} from 'react-intl'
 
 import {useI18n} from '@/i18n/helpers'
+import {useManageQueryValue} from '@/components/hooks/useManageQueryValue'
 
-import {fieldsConfig} from './fieldsConfig'
+import {nonTitleFieldsConfig} from './fieldsConfig'
 
 const messages = defineMessages({
   showAll: 'Show all',
   fieldsCount: 'Show {count, plural, =0 {# columns} one {# column} other {# columns}}',
 })
 
-const defaultFieldsValues = fieldsConfig.map<string>(({field}) => field)
+const defaultFieldsValues = nonTitleFieldsConfig.map<string>(({field}) => field)
+
+// Note: not using ',' as browser encodes it using % that we wish to get rid of
+// Make sure we do not use '_' inside field names
+const QUERY_DIVIDER = '_'
+
+const decode = (str) => str.split(QUERY_DIVIDER)
+const encode = (arr) => arr.join(QUERY_DIVIDER)
 
 export const useSelectedFieldsProps = () => {
   const {translate: tr} = useI18n()
   const selectOptions = useMemo(
     () =>
-      fieldsConfig.map<{label: string, value: string}>((conf) => ({
+      nonTitleFieldsConfig.map<{label: string, value: string}>((conf) => ({
         label: conf.getLabel({tr}),
         value: conf.field,
       })),
     [tr]
   )
 
-  // TODO: store in cookie that is set only for `staking-pools` url
-  const [selectedFields, setSelectedFields] = useState(defaultFieldsValues)
+  const [selectedFields, setSelectedFields] = useManageQueryValue(
+    'fields',
+    encode(defaultFieldsValues),
+    decode
+  )
 
-  const onSelectedFieldsChange = useCallback((e: any) => setSelectedFields(e.target.value), [
-    setSelectedFields,
-  ])
+  const onSelectedFieldsChange = useCallback(
+    (e: any) => {
+      const newSelectedFieldsValue = encode(e.target.value)
+      setSelectedFields(newSelectedFieldsValue)
+    },
+    [setSelectedFields]
+  )
 
   const renderSelectValue = useCallback(
     (selected: Array<string>) => {

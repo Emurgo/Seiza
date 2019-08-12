@@ -19,7 +19,6 @@ const styles = (theme) => ({
     textTransform: 'uppercase',
   },
   formControl: {
-    margin: theme.spacing(1),
     width: '100%',
   },
   handle: {
@@ -66,7 +65,13 @@ const getHandle = (className, tipFormatter) => (props) => {
     <div key={index}>
       {dragging && (
         <div
-          style={{...handleStyle, width, left: `calc(${props.offset}% - ${width / 2}px)`}}
+          style={{
+            ...handleStyle,
+            width,
+            left: `calc(${props.offset}% - ${width / 2}px)`,
+            fontSize: 16,
+            textAlign: 'center',
+          }}
           className={className}
         >
           {_value}

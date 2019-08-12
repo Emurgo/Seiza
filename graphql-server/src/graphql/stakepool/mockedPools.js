@@ -6,7 +6,9 @@ const BOOTSTRAP_TS = 1506203091 * 1000
 
 const genFloatInRange = (from, to) => from + Math.random() * (to - from)
 
-const genIntInRange = (from, to) => Math.floor(from, to)
+const genIntInRange = (from, to) => Math.floor(genFloatInRange(from, to))
+
+const ADA_DECIMALS = 1000000
 
 const generatePool = (index) => ({
   poolHash: uuidv1(),
@@ -15,10 +17,10 @@ const generatePool = (index) => ({
   createdAt: moment(BOOTSTRAP_TS + Math.floor(Math.random() * 1000000000)),
   website: 'https://www.cardano.org/en/home/',
   summary: {
-    adaStaked: `${141313510 + genIntInRange(0, 10000)}`,
+    adaStaked: `${genIntInRange(0, 100000000 * ADA_DECIMALS)}`,
     keysDelegating: 100 + genIntInRange(0, 100),
     performance: 0.71 + genFloatInRange(-0.3, 0.2),
-    rewards: `${51355347 + genIntInRange(0, 10000)}`,
+    rewards: `${genIntInRange(0, 100000 * ADA_DECIMALS)}`,
     fullness: 0.6 + genFloatInRange(-0.3, 0.2),
     margins: 0.3 + genFloatInRange(-0.1, 0.1),
     revenue: 0.82 + genFloatInRange(-0.1, 0.1),
