@@ -257,6 +257,15 @@ export const NavbarLink = ({
   )
 }
 
+const MobileMenuItem = ({label, link, onClose, disabledText}) => {
+  const classes = useStyles()
+  return (
+    <MenuItem key={label} disabled={!link} onClick={onClose} className={classes.menuItem}>
+      <NavMenuItem {...{disabledText, link, label}} isMobile />
+    </MenuItem>
+  )
+}
+
 export const MobileNavMenuItems = ({
   onClose,
   items,
@@ -265,15 +274,21 @@ export const MobileNavMenuItems = ({
   onClose: () => any,
   items: Array<NavItem>,
   currentPathname: string,
-}) => {
-  const classes = useStyles()
-  return (
-    <MenuList>
-      {items.map(({link, label, disabledText, getIsActive}) => (
-        <MenuItem key={label} disabled={!link} onClick={onClose} className={classes.menuItem}>
-          <NavMenuItem {...{disabledText, link, label, getIsActive}} isMobile />
-        </MenuItem>
-      ))}
-    </MenuList>
-  )
-}
+}) => (
+  <MenuList>
+    {items.map(({link, label, disabledText, sublinks}) =>
+      sublinks ? (
+        sublinks.map(({link: sublinkLink, label: sublinkLabel}) => (
+          <MobileMenuItem
+            key={sublinkLabel}
+            link={sublinkLink}
+            label={sublinkLabel}
+            {...{onClose, disabledText}}
+          />
+        ))
+      ) : (
+        <MobileMenuItem key={label} {...{label, link, onClose, disabledText}} />
+      )
+    )}
+  </MenuList>
+)
