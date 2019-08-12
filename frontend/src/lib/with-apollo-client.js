@@ -5,6 +5,7 @@ import Head from 'next/head'
 import {getDataFromTree} from 'react-apollo'
 import {getMarkupFromTree} from 'react-apollo-hooks'
 import {renderToString} from 'react-dom/server'
+import {ServerStyleSheets} from '@material-ui/styles'
 
 // router sets ctx.url after <Redirect>
 const shouldRedirect = (routerCtx) => routerCtx.url
@@ -39,7 +40,9 @@ export default (App) => {
           // routerCtx might be mutated during render!
           const routerCtx = {location: req.originalUrl}
 
-          const renderedApp = (
+          const sheets = new ServerStyleSheets()
+
+          const renderedApp = sheets.collect(
             <App
               {...appProps}
               Component={Component}
