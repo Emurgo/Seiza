@@ -22,8 +22,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
+const useTooltipStyles = makeStyles((theme) => ({
+  tooltip: {
+    maxWidth: '100%',
+  },
+}))
+
 const GeneralFilter = ({field, label}) => {
   const classes = useStyles()
+  const tooltipClasses = useTooltipStyles()
   const conf = fieldsConfigMap[field]
   const {Component, isFilterActive} = conf.filter
   const {filters, setFilter, resetFilter} = useFilters()
@@ -36,7 +43,8 @@ const GeneralFilter = ({field, label}) => {
 
   return (
     <Tooltip
-      title={<Component {...{filterConfig, label, onChange, onReset}} />}
+      title={<Component {...{filterConfig, label, onChange, onReset, filterActive}} />}
+      classes={tooltipClasses}
       placement="top"
       interactive
       // Needed otherwise tooltip disappears after interaction

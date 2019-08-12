@@ -5,7 +5,7 @@ import {makeStyles} from '@material-ui/styles'
 import _ from 'lodash'
 import assert from 'assert'
 
-import {Pagination} from '@/components/common'
+import {Pagination, MobilePaginationDivider} from '@/components/common'
 import {GET_PAGED_BLOCKS_IN_EPOCH} from '@/api/queries'
 import {useI18n} from '@/i18n/helpers'
 import {useQueryNotBugged} from '@/components/hooks/useQueryNotBugged'
@@ -14,6 +14,7 @@ import {useManageQueryValue} from '@/components/hooks/useManageQueryValue'
 import {toIntOrNull, getPageCount} from '@/helpers/utils'
 import BlocksTable, {COLUMNS_MAP} from '../PagedBlocks/BlocksTable'
 import {getPageAndBoundaryFromCursor} from '../PagedBlocks/util'
+import {useIsMobile} from '@/components/hooks/useBreakpoints'
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {
@@ -35,6 +36,12 @@ const useStyles = makeStyles((theme) => ({
   },
   bottomPagination: {
     marginTop: theme.spacing(3),
+  },
+  paginationWrapper: {
+    width: '100%',
+    [theme.breakpoints.up('md')]: {
+      width: 'auto',
+    },
   },
 }))
 
@@ -138,6 +145,7 @@ const useEpochBlockData = (epochNumber) => {
 const Blocks = ({blocksCount, epochNumber}) => {
   const classes = useStyles()
   const {translate: tr, formatInt} = useI18n()
+  const isMobile = useIsMobile()
 
   const {
     totalCount,
@@ -169,7 +177,10 @@ const Blocks = ({blocksCount, epochNumber}) => {
       </Grid>
       <Grid item>
         <Grid container className={classes.wrapper}>
-          <Grid item>{pagination}</Grid>
+          <Grid item className={classes.paginationWrapper}>
+            {isMobile && <MobilePaginationDivider />}
+            {pagination}
+          </Grid>
         </Grid>
       </Grid>
       <BlocksTable {...{blocks, columns, loading, error, nextPageNumber, pageBoundary}} />

@@ -64,6 +64,7 @@ export const routeTo = {
     location: () => `${STAKING_CENTER_ROUTE}/location`,
     people: () => `${STAKING_CENTER_ROUTE}/people`,
   }),
+  stakingCenterSimple: () => enableIf(HAVE_STAKING_CENTER, '/staking-simple'),
   stakingPoolsList: () => enableIf(HAVE_STAKE_POOLS_LIST, STAKING_POOLS_LIST_ROUTE),
   // todo: refactor under legal key
   ...enableSectionIf(HAVE_LEGAL, {

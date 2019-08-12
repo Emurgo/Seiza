@@ -14,7 +14,7 @@ import {Typography, Portal} from '@material-ui/core'
 import {useI18n} from '@/i18n/helpers'
 import {Searchbar, Alert} from '@/components/visual'
 import {LoadingError} from '@/components/common'
-import {useSearchbarRef} from '../context/searchbarRef'
+import {useSearchbarRef} from '@/components/context/searchbarRef'
 
 import {routeTo} from '@/helpers/routes'
 import * as urlHelpers from '@/helpers/url'

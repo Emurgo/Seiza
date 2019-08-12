@@ -5,6 +5,7 @@ import {BrowserRouter, StaticRouter, Route, Switch, Redirect} from 'react-router
 import {CssBaseline, Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
+import {matchPath} from 'react-router'
 
 import {routeTo, combinedBlockchainPath} from './helpers/routes'
 import Footer from './screens/Footer'
@@ -18,6 +19,7 @@ import Home from './screens/Home'
 import Blockchain from './screens/Blockchain'
 import BlockchainHeader from './screens/Blockchain/BlockchainHeader'
 import Staking from './screens/Staking'
+import StakingSimple from './screens/Staking/StakingSimple'
 import StakingPools from './screens/StakingPools'
 import More from './screens/More'
 import PageNotFound from './screens/PageNotFound'
@@ -28,6 +30,7 @@ import DefaultErrorBoundary from '@/components/common/DefaultErrorBoundary'
 import {AcceptCookiesProvider} from '@/components/context/acceptCookies'
 import {AnalyticsProvider} from '@/components/context/googleAnalytics'
 import {RefProviders} from '@/components/context/refs'
+import {SearchbarRefProvider} from '@/components/context/searchbarRef'
 import {CurrencyProvider} from '@/components/hooks/useCurrency'
 import EnvOverrides from './screens/EnvOverrides'
 import TopBar from './TopBar'
@@ -47,6 +50,8 @@ const navigationMessages = defineMessages({
   termsOfUse: 'Terms of use',
   privacy: 'Privacy',
   disabledText: 'Coming soon',
+  simpleStaking: 'Simple staking simulator',
+  advancedStaking: 'Advanced staking simulator',
 })
 
 const useAppStyles = makeStyles((theme) => ({
@@ -78,6 +83,19 @@ const getTranslatedNavItems = (translate) =>
       link: routeTo.stakingCenter.home(),
       label: translate(navigationMessages.staking),
       disabledText: translate(navigationMessages.disabledText),
+      getIsActive: ({location, match}) => {
+        return !!match || matchPath(location.pathname, routeTo.stakingCenterSimple())
+      },
+      sublinks: [
+        {
+          link: routeTo.stakingCenterSimple(),
+          label: translate(navigationMessages.simpleStaking),
+        },
+        {
+          link: routeTo.stakingCenter.home(),
+          label: translate(navigationMessages.advancedStaking),
+        },
+      ],
     },
     {
       link: routeTo.stakingPoolsList(),
@@ -107,7 +125,9 @@ const Providers = ({children}) => (
     <AnalyticsProvider>
       <CurrencyProvider>
         <AutoSyncProvider>
-          <RefProviders>{children}</RefProviders>
+          <RefProviders>
+            <SearchbarRefProvider>{children}</SearchbarRefProvider>
+          </RefProviders>
         </AutoSyncProvider>
       </CurrencyProvider>
     </AnalyticsProvider>
@@ -145,6 +165,7 @@ const AppLayout = () => {
                 </Route>
               )}
               {renderRouteDef({path: routeTo.stakingCenter.home(), component: Staking})}
+              {renderRouteDef({path: routeTo.stakingCenterSimple(), component: StakingSimple})}
               {renderRouteDef({path: routeTo.stakingPoolsList(), component: StakingPools})}
               {renderRouteDef({exact: true, path: routeTo.more(), component: More})}
               {renderRouteDef({exact: true, path: routeTo.termsOfUse(), component: Terms})}

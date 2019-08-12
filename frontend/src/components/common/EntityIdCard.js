@@ -136,7 +136,12 @@ export const EntityCardContent = ({
         <div className={classes.correctureWrapper}>
           <div ref={innerRef} className={classes.wrapper}>
             {label && (
-              <Typography variant="overline" color="textSecondary" className={classes.label}>
+              <Typography
+                component="div"
+                variant="overline"
+                color="textSecondary"
+                className={classes.label}
+              >
                 {label}
               </Typography>
             )}

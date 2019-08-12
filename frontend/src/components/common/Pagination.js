@@ -13,6 +13,7 @@ import {isInRange, isInteger} from '@/helpers/validators'
 import {useI18n} from '@/i18n/helpers'
 import {useStateWithChangingDefault} from '@/components/hooks/useStateWithChangingDefault'
 import {useIsMobile} from '@/components/hooks/useBreakpoints'
+import {Divider} from '@/components/visual'
 
 // Note!!!: pages are numbered from 1 so that urls are consistent with the rest of UI
 
@@ -61,6 +62,10 @@ const useStyles = makeStyles(({palette, typography, breakpoints, spacing}) => ({
     [breakpoints.up('md')]: {
       paddingLeft: spacing(2.5),
     },
+  },
+  mobileDivider: {
+    marginBottom: spacing(2),
+    backgroundColor: palette.contentDividerWeak,
   },
 }))
 
@@ -138,6 +143,12 @@ type InnerProps = {|
   onChangePage: Function,
   reverseDirection?: boolean,
 |}
+
+export const MobilePaginationDivider = () => {
+  const classes = useStyles()
+
+  return <Divider className={classes.mobileDivider} />
+}
 
 const Pagination = ({page, reverseDirection, pageCount, onChangePage}: InnerProps) => {
   const classes = useStyles()
