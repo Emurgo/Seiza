@@ -5,6 +5,7 @@ import * as React from 'react'
 import {defineMessages} from 'react-intl'
 
 import {AdaValue} from '@/components/common'
+import {Tooltip} from '@/components/visual'
 import {ItemIdentifier} from '@/components/common/ComparisonMatrix/utils'
 import {PercentageSlider, AdaSlider, IntegerSlider, TextFilter} from './Filters'
 import {rTo2Decimals} from './helpers'
@@ -115,12 +116,18 @@ const textFieldFilterConfig = {
   ...textEncodeObj,
 }
 
+const nameTooltipWrapperStyles = {overflow: 'hidden'}
+
 export const fieldsConfig: Array<Config> = [
   {
     field: 'name',
     getLabel: ({tr}: GetLabelParams) => tr(fieldsMessages.name),
     getValue: ({data}: GetValueParams) => (
-      <ItemIdentifier title={data.name} identifier={data.poolHash} />
+      <Tooltip interactive placement="top" title={data.name}>
+        <div style={nameTooltipWrapperStyles}>
+          <ItemIdentifier title={data.name} identifier={data.poolHash} />
+        </div>
+      </Tooltip>
     ),
     filter: textFieldFilterConfig,
   },
