@@ -1,46 +1,102 @@
 // @flow
-import assert from 'assert'
-import {parseAdaValue, annotateNotFoundError, validate, runConsistencyCheck} from '../utils'
+import assert from "assert";
+import { parseAdaValue } from "../utils";
+import { validate } from "../../utils/validation";
+import { isAddress } from "../../utils/cardano";
 
-export const fetchAddress = async ({elastic, E}: any, address58: string) => {
-  assert(address58)
+import { ApolloError } from "apollo-server";
 
-  const hit = await elastic
-    .q('address')
-    .filter(E.matchPhrase('_id', address58))
-    .getSingleHit()
-    .catch(annotateNotFoundError({entity: 'Address'}))
+const fetchIoTotalValue = async (
+  { elastic, E },
+  address58,
+  type: "input" | "output"
+) => {
+  return await elastic
+    .q("txio")
+    .filter(E.onlyActiveFork())
+    .filter(E.matchPhrase("address", address58))
+    .filter(E.matchPhrase("type", type))
+    .getAggregations({
+      sum: E.agg.sumAda("value")
+    })
+    .then(({ sum }) => parseAdaValue(sum));
+};
 
-  const ioTotalValue = (address58, type) =>
-    elastic
-      .q('txio')
-      .filter(E.matchPhrase('address', address58))
-      .filter(E.matchPhrase('type', type))
-      .getAggregations({
-        sum: E.agg.sumAda('value'),
+const fetchTxCount = async ({ elastic, E, runConsistencyCheck }, address58) => {
+  const txCount = await elastic
+    .q("tx")
+    .filter(E.onlyActiveFork())
+    .filter(
+      E.nested("addresses", {
+        query: E.filter([E.match("addresses.address", address58)])
       })
-      .then(({sum}) => parseAdaValue(sum))
-
-  const totalAdaSent = ioTotalValue(address58, 'output')
-  const totalAdaReceived = ioTotalValue(address58, 'input')
-
-  const balance = parseAdaValue(hit._source.balance)
+    )
+    .getCount();
 
   await runConsistencyCheck(async () => {
-    const [s, r] = await Promise.all([totalAdaSent, totalAdaReceived])
+    const hits = await elastic
+      .q("address")
+      .pickFields("tx_num")
+      .filter(E.matchPhrase("_id", address58))
+      .getHits(1);
 
-    validate(s.minus(r).eq(balance), 'Inconsistency in address balance', {
-      txios_sent: s,
-      txios_received: r,
-      address_balance: balance,
-    })
-  })
+    const cnt = hits.hits.length ? hits.hits[0]._source.tx_num : 0;
+
+    validate(cnt === txCount, "Address tx_num inconsistency", {
+      address58,
+      via_address: cnt,
+      via_txs: txCount
+    });
+  });
+
+  return txCount;
+};
+
+export const fetchAddress = async (context: any, address58: string) => {
+  const { elastic, E, runConsistencyCheck } = context;
+  assert(address58);
+  if (!isAddress(address58)) {
+    throw new ApolloError("Not an address", "NOT_FOUND", { address58 });
+  }
+
+  // Note: input/output seems reversed but it is correct :-)
+  // Tx output with address A: A.balance += value
+  // Tx input with address A: A.balance -= value
+  // TODO(ppershing): move these to separate resolvers
+  const [totalAdaSent, totalAdaReceived, transactionsCount] = await Promise.all(
+    [
+      fetchIoTotalValue(context, address58, "input"),
+      fetchIoTotalValue(context, address58, "output"),
+      fetchTxCount(context, address58)
+    ]
+  );
+
+  const balance = totalAdaReceived.minus(totalAdaSent);
+
+  await runConsistencyCheck(async () => {
+    const hits = await elastic
+      .q("address")
+      .pickFields("balance")
+      .filter(E.matchPhrase("_id", address58))
+      .getHits(1);
+
+    const balanceViaAddress = hits.hits.length
+      ? parseAdaValue(hits.hits[0]._source.balance)
+      : 0;
+
+    validate(balance.eq(balanceViaAddress), "Address.balance inconsistency", {
+      address58,
+      sent_viaTxio: totalAdaSent,
+      received_viaTxio: totalAdaReceived,
+      balanceViaAddress
+    });
+  });
 
   return {
     address58,
-    transactionsCount: hit._source.tx_num,
+    transactionsCount,
     balance,
     totalAdaSent,
-    totalAdaReceived,
-  }
-}
+    totalAdaReceived
+  };
+};

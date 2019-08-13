@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.6 (67491) - http://www.bohemiancoding.com/sketch -->
+    <title>Russian Language</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <circle id="path-1" cx="8" cy="8" r="8"></circle>
+    </defs>
+    <g id="icon/russian-language" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="russian" transform="translate(2.000000, 2.000000)">
+            <circle id="Oval-Copy-15" stroke="#BFC5D2" stroke-width="0.5" cx="10" cy="10" r="9"></circle>
+            <g id="if_210_Ensign_Flag_Nation_russia_2634398-Copy-Clipped" transform="translate(2.000000, 2.000000)">
+                <mask id="mask-2" fill="white">
+                    <use xlink:href="#path-1"></use>
+                </mask>
+                <g id="path-1"></g>
+                <g id="if_210_Ensign_Flag_Nation_russia_2634398-Copy" mask="url(#mask-2)">
+                    <g transform="translate(-7.000000, -1.000000)" id="Rectangle">
+                        <g>
+                            <polygon id="Path" fill="#F4F4F4" points="0 0 29 0 29 7 0 7"></polygon>
+                            <polygon id="Path" fill="#324095" points="0 7 29 7 29 14 0 14"></polygon>
+                            <polygon id="Path" fill="#D81F26" points="0 12 29 12 29 19 0 19"></polygon>
+                        </g>
+                    </g>
+                </g>
+                <circle id="Oval-Copy-16" stroke-opacity="0.1" stroke="#4D20C0" stroke-width="0.5" mask="url(#mask-2)" cx="8" cy="8" r="8"></circle>
+            </g>
+        </g>
+        <rect id="Rectangle" opacity="0" x="0" y="0" width="24" height="24"></rect>
+    </g>
+</svg>

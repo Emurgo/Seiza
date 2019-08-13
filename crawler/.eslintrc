@@ -1,0 +1,21 @@
+{
+  "extends": ["vacuumlabs"],
+  "env": {
+    "es6": true,
+    "node": true,
+    "browser": false,
+    "jest": false
+  },
+  "rules": {
+    "semi": [2, "never"],
+    "no-unexpected-multiline": 2,
+    "no-duplicate-imports": 0,
+    "import/no-duplicates": "error",
+    "camelcase": 0
+  },
+  "settings": {
+    "react": {
+      "version": "999.999.999"
+    }
+  }
+}

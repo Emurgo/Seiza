@@ -5,20 +5,19 @@ import {Grid, Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
 
-import {AdaValue, VisualHash, Link} from '@/components/visual'
+import {VisualHash} from '@/components/visual'
+import {AdaValue, Link, EntityCardContent} from '@/components/common'
 import {routeTo} from '@/helpers/routes'
 import {useI18n} from '@/i18n/helpers'
 
 const messages = defineMessages({
   owner: 'Owner',
-  pledge: 'Pledge',
 })
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {
     'background': theme.palette.background.paper,
     'borderRadius': '0 0 5px 5px',
-
     '& > *': {
       borderBottom: `1px solid ${theme.palette.unobtrusiveContentHighlight}`,
     },
@@ -27,61 +26,50 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   row: {
-    padding: theme.spacing.unit * 3,
+    padding: theme.spacing(3),
   },
   owners: {
     '& > *': {
       borderBottom: `1px solid ${theme.palette.unobtrusiveContentHighlight}`,
-      paddingTop: theme.spacing.unit * 3,
-      paddingBottom: theme.spacing.unit * 3,
+      paddingTop: theme.spacing(1),
+      paddingBottom: theme.spacing(1),
     },
     '& > :last-child': {
       borderBottom: 'none',
     },
     '& > :first-child': {
-      paddingTop: theme.spacing.unit,
+      paddingTop: theme.spacing(1),
     },
   },
   ownersWrapper: {
-    paddingTop: theme.spacing.unit * 3,
-  },
-  visualHashWrapper: {
-    paddingRight: theme.spacing.unit,
+    paddingTop: theme.spacing(3),
   },
   stakeKeyLink: {
     color: theme.palette.primary.main,
     fontWeight: '600',
+    maxWidth: 300,
+    minWidth: 50,
   },
 }))
 
 const RowHeader = ({poolHash, poolName}) => {
-  const classes = useStyles()
   return (
-    <Grid container>
-      <Grid item className={classes.visualHashWrapper}>
-        <VisualHash value={poolHash} size={37} />
-      </Grid>
-      <Grid item>
-        <Grid container direction="column">
-          <Typography variant="overline">{poolName}</Typography>
-          <Link to={routeTo.stakepool(poolHash)}>
-            <Typography variant="caption">{poolHash}</Typography>
-          </Link>
-        </Grid>
-      </Grid>
-    </Grid>
+    <EntityCardContent
+      label={poolName}
+      value={poolHash}
+      showCopyIcon={false}
+      iconRenderer={<VisualHash value={poolHash} size={48} />}
+    />
   )
 }
 
 const Owner = ({stakingKey, pledge}) => {
   const classes = useStyles()
   return (
-    <Grid key={stakingKey} container justify="space-between">
-      <Link to={routeTo.stakingKey.user(stakingKey)}>
-        <Typography variant="body1" className={classes.stakeKeyLink}>
-          {stakingKey}
-        </Typography>
-      </Link>
+    <Grid key={stakingKey} container justify="space-between" wrap="nowrap">
+      <Typography variant="body1" className={classes.stakeKeyLink} noWrap>
+        <Link to={routeTo.stakingKey(stakingKey)}>{stakingKey}</Link>
+      </Typography>
       <div>
         <AdaValue value={pledge} showCurrency />
       </div>
@@ -96,9 +84,10 @@ const Row = ({poolData}) => {
     <div className={classes.row}>
       <RowHeader poolHash={poolData.poolHash} poolName={poolData.name} />
       <div className={classes.ownersWrapper}>
-        <Grid container justify="space-between">
-          <Typography variant="overline">{tr(messages.owner)}</Typography>
-          <Typography variant="overline">{tr(messages.pledge)}</Typography>
+        <Grid container>
+          <Typography variant="overline" color="textSecondary">
+            {tr(messages.owner)}
+          </Typography>
         </Grid>
         <div className={classes.owners}>
           {poolData.owners.map(({stakingKey, pledge}) => (

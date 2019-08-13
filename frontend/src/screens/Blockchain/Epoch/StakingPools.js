@@ -1,76 +1,50 @@
-import React from 'react'
-import {defineMessages} from 'react-intl'
-import {graphql} from 'react-apollo'
-import gql from 'graphql-tag'
-import {compose} from 'redux'
-import idx from 'idx'
-import {withI18n} from '@/i18n/helpers'
-import {routeTo} from '@/helpers/routes'
-import {LoadingInProgress, DebugApolloError, AdaValue, Link} from '@/components/visual'
-import Table from '@/components/visual/Table'
+// @flow
 
-const GET_STAKE_POOLS_IN_EPOCH = gql`
-  query($epochNumber: Int!) {
-    stakePoolList(epochNumber: $epochNumber) {
-      poolHash
-      name
-      summary {
-        performance
-        adaStaked
-        rewards
-        keysDelegating
-      }
-    }
-  }
-`
+import React, {useCallback} from 'react'
+import {defineMessages} from 'react-intl'
+
+import {LoadingInProgress, SimpleLayout} from '@/components/visual'
+import {LoadingError} from '@/components/common'
+import {useManageQueryValue} from '@/components/hooks/useManageQueryValue'
+import {toIntOrNull} from '@/helpers/utils'
+import {useI18n} from '@/i18n/helpers'
+
+// TODO: load custom pools here, temporarily reused
+import {useLoadStakepools} from '@/screens/StakingPools/dataLoaders'
+import {FiltersProvider} from '@/screens/StakingPools/filtersUtils'
+import {SortOptionsProvider} from '@/screens/StakingPools/sortUtils'
+import {StakingPools} from '@/screens/StakingPools'
 
 const messages = defineMessages({
-  name: 'Name',
-  performance: 'Performance',
-  adaStaked: 'ADA Staked',
-  rewards: 'Rewards Received',
-  keysDelegating: 'Keys Delegating',
+  screenTitle: 'Stake pools',
 })
 
-const StakingPools = ({i18n, stakePoolsData}) => {
-  const {translate, formatPercent, formatInt} = i18n
-  const {loading, error, stakePoolList} = stakePoolsData
+export default () => {
+  const {translate: tr} = useI18n()
 
-  const headerData = [
-    translate(messages.name),
-    translate(messages.performance),
-    translate(messages.adaStaked),
-    translate(messages.rewards),
-    translate(messages.keysDelegating),
-  ]
+  const {stakepools, loading, error} = useLoadStakepools()
+  const [page, setPage] = useManageQueryValue('stake-pools-page', 1, toIntOrNull)
 
-  const bodyData = idx(stakePoolList, (poolList) =>
-    poolList.map((pool, index) => [
-      <Link key={1} to={routeTo.stakepool(idx(pool, (_) => _.poolHash))}>
-        {idx(pool, (_) => _.name)}
-      </Link>,
-      formatPercent(idx(pool, (_) => _.summary.performance)),
-      <AdaValue key={index} value={idx(pool, (_) => _.summary.adaStaked)} />,
-      <AdaValue key={index} value={idx(pool, (_) => _.summary.rewards)} />,
-      formatInt(idx(pool, (_) => _.summary.keysDelegating)),
-    ])
-  )
+  // TODO: try to reuse this function and Providers from 'StakingPools' folder,
+  // but wait till requirements are specified
+  // Note: we also reset page when sortBy changes
+  const onSortByChange = useCallback(() => setPage(1), [setPage])
 
-  return loading ? (
-    <LoadingInProgress />
-  ) : error ? (
-    <DebugApolloError error={error} />
-  ) : (
-    <Table bodyData={bodyData} headerData={headerData} />
+  return (
+    <SimpleLayout title={tr(messages.screenTitle)}>
+      {error || loading ? (
+        error ? (
+          <LoadingError error={error} />
+        ) : (
+          <LoadingInProgress />
+        )
+      ) : (
+        <SortOptionsProvider onChange={onSortByChange}>
+          <FiltersProvider allPools={stakepools}>
+            <StakingPools {...{page, setPage, stakepools}} />
+          </FiltersProvider>
+        </SortOptionsProvider>
+      )}
+    </SimpleLayout>
   )
 }
-
-export default compose(
-  withI18n,
-  graphql(GET_STAKE_POOLS_IN_EPOCH, {
-    name: 'stakePoolsData',
-    options: ({epochNumber}) => ({
-      variables: {epochNumber},
-    }),
-  })
-)(StakingPools)

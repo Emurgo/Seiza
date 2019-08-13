@@ -4,23 +4,21 @@ import {defineMessages} from 'react-intl'
 import idx from 'idx'
 import {Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
+import BigNumber from 'bignumber.js'
 // import type {Transaction} from '@/__generated__/schema.flow'
 
+import {LoadingInProgress, SummaryCard, LiteTabs, LiteTab, Card} from '@/components/visual'
 import {
-  LoadingInProgress,
+  AdaValue,
   LoadingError,
   EntityCardContent,
-  SummaryCard,
-  AdaValue,
   Link,
-  LiteTabs,
-  LiteTab,
-  Card,
-} from '@/components/visual'
+  TabsPaginationLayout,
+} from '@/components/common'
 import {getDefaultSpacing} from '@/components/visual/ContentSpacing'
 import {useI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
-import {TabsProvider as Tabs, TabItem as Tab, useTabContext} from '@/components/context/TabContext'
+import {TabsProvider as Tabs, TabItem as Tab, useTabContext} from '@/components/common/Tabs'
 import {AddressesBreakdownContent} from '@/components/common/AddressesBreakdown'
 import {FILTER_TYPES} from './constants'
 
@@ -42,24 +40,35 @@ const useStyles = makeStyles((theme) => ({
     borderBottom: `1px solid ${theme.palette.unobtrusiveContentHighlight}`,
   },
   leftSide: {
-    borderRight: `1px solid ${theme.palette.contentUnfocus}`,
-  },
-  headerWrapper: {
-    // TODO: change to mobile first
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    [theme.breakpoints.down('sm')]: {
-      flexDirection: 'column',
+    [theme.breakpoints.up('md')]: {
+      borderRight: `1px solid ${theme.palette.contentUnfocus}`,
     },
   },
-  headerPagination: {
-    marginTop: 0,
-    [theme.breakpoints.down('sm')]: {
-      marginTop: theme.spacing.unit * 2,
+  balanceDiff: {
+    // really such weird spacing
+    paddingBottom: theme.spacing(1.5 + 2 / 3),
+    verticalAlign: 'bottom',
+    [theme.breakpoints.up('md')]: {
+      textAlign: 'right',
     },
   },
 }))
+
+const calculateTxAddressBalanceDiff = (tx, targetAddress) => {
+  const {inputs, outputs} = tx
+
+  const _sum = (arr) => {
+    return arr.reduce((acc, amount) => acc.plus(new BigNumber(amount, 10)), new BigNumber(0))
+  }
+
+  const isRelevantIO = ({address58}) => address58 === targetAddress
+  const ioToAmount = ({amount}) => amount
+
+  // Note: incoming/outgoing is reversed from the perspective of an address vs tx!
+  const sumOutgoing = _sum(inputs.filter(isRelevantIO).map(ioToAmount))
+  const sumIncoming = _sum(outputs.filter(isRelevantIO).map(ioToAmount))
+  return sumIncoming.minus(sumOutgoing)
+}
 
 const TransactionCard = ({transaction: tx, targetAddress}) => {
   const {translate: tr, formatInt, formatTimestamp} = useI18n()
@@ -74,11 +83,14 @@ const TransactionCard = ({transaction: tx, targetAddress}) => {
     epoch: idx(tx, (_) => _.block.epoch),
     slot: idx(tx, (_) => _.block.slot),
     creationDate: idx(tx, (_) => _.block.timeIssued),
+    balanceDiff: tx ? calculateTxAddressBalanceDiff(tx, targetAddress) : null,
   }
 
   const __ = {
-    amount: <AdaValue showCurrency value={data.amount} noValue={NA} />,
-    fees: <AdaValue showCurrency value={data.fees} noValue={NA} />,
+    amount: (
+      <AdaValue showCurrency value={data.amount} noValue={NA} timestamp={data.creationDate} />
+    ),
+    fees: <AdaValue showCurrency value={data.fees} noValue={NA} timestamp={data.creationDate} />,
     epoch:
       data.epoch != null ? (
         // $FlowFixMe flow does not understand idx precondition
@@ -94,16 +106,25 @@ const TransactionCard = ({transaction: tx, targetAddress}) => {
         NA
       ),
     creationDate: formatTimestamp(data.creationDate, {defaultValue: NA}),
+    balanceDiff: <AdaValue showCurrency value={data.balanceDiff} colorful showSign="always" />,
   }
 
   return (
     <Card>
       <div className={classes.txCard}>
-        <EntityCardContent
-          label={tr(messages.transactionEntity)}
-          value={<Link to={routeTo.transaction(tx.txHash)}>{tx.txHash}</Link>}
-          rawValue={tx.txHash}
-        />
+        <Grid container>
+          <Grid item xs={12} md={8} alignItems="center">
+            <EntityCardContent
+              label={tr(messages.transactionEntity)}
+              value={<Link to={routeTo.transaction(tx.txHash)}>{tx.txHash}</Link>}
+              rawValue={tx.txHash}
+            />
+          </Grid>
+          <Grid item xs={12} md={4} container direction="column">
+            <span className="flex-grow-1" />
+            <span className={classes.balanceDiff}>{__.balanceDiff}</span>
+          </Grid>
+        </Grid>
       </div>
       <Grid container direction="row">
         <Grid item xs={12} sm={12} md={6} className={classes.leftSide}>
@@ -154,7 +175,6 @@ const TransactionList = ({transactions = [], targetAddress}) => {
 }
 
 const TabsHeader = ({pagination, changeFilterType}) => {
-  const classes = useStyles()
   const {translate: tr} = useI18n()
   const {currentTabIndex, setTabByEventIndex} = useTabContext()
   const useClickHandler = (type) => useCallback(() => changeFilterType(type), [type])
@@ -170,18 +190,16 @@ const TabsHeader = ({pagination, changeFilterType}) => {
   ]
 
   return (
-    <Grid container className={classes.headerWrapper}>
-      <Grid item>
+    <TabsPaginationLayout
+      tabs={
         <LiteTabs value={currentTabIndex} onChange={setTabByEventIndex}>
           {tabs.map(({id, label, onClick}) => (
             <LiteTab key={id} label={label} onClick={onClick} />
           ))}
         </LiteTabs>
-      </Grid>
-      <Grid item className={classes.headerPagination}>
-        {pagination}
-      </Grid>
-    </Grid>
+      }
+      pagination={pagination}
+    />
   )
 }
 

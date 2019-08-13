@@ -2,21 +2,44 @@
 import React from 'react'
 import gql from 'graphql-tag'
 import idx from 'idx'
-import {injectIntl, defineMessages} from 'react-intl'
-import {compose} from 'redux'
-
-import {Grid, createStyles, withStyles} from '@material-ui/core'
+import {defineMessages} from 'react-intl'
+import {Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
-import {MetricsCard, LoadingDots} from '@/components/visual'
-import {getIntlFormatters} from '@/i18n/helpers'
-import {routeTo} from '@/helpers/routes'
+import {useQuery} from 'react-apollo-hooks'
 import {Link} from 'react-router-dom'
 
+import {LoadingDots} from '@/components/visual'
+import {useI18n} from '@/i18n/helpers'
+import {HeaderCard, HeaderCardContainer as MetricsCardContainer} from '@/components/common'
+import {routeTo} from '@/helpers/routes'
 import config from '@/config'
 import useCurrency, {CURRENCIES} from '@/components/hooks/useCurrency'
-import {useQuery} from 'react-apollo-hooks'
 import useNavigateTo from '@/components/hooks/useNavigateTo'
-import {useAnalytics} from '@/helpers/googleAnalytics'
+import {useAnalytics} from '@/components/context/googleAnalytics'
+
+import epochIcon from '@/static/assets/icons/metrics-epoch.svg'
+import blocksIcon from '@/static/assets/icons/metrics-blocks.svg'
+import decentralizationIcon from '@/static/assets/icons/metrics-decentralization.svg'
+import priceIcon from '@/static/assets/icons/metrics-currency.svg'
+import poolsIcon from '@/static/assets/icons/metrics-stakepools.svg'
+
+const PRELOAD_FONT_WEIGHT = 300
+
+const usePreloadStyles = makeStyles((theme) => ({
+  preload: {
+    fontWeight: PRELOAD_FONT_WEIGHT,
+    width: 0,
+    height: 0,
+    opacity: 0,
+  },
+}))
+
+// Note: not using <link preload /> so that we do not forget to load new font if we change it
+// Note: consider adding to common folder if used more than once
+const PreloadFont = () => {
+  const classes = usePreloadStyles()
+  return <span className={classes.preload}>This text is not visible, and just preloads font</span>
+}
 
 const text = defineMessages({
   not_available: 'N/A',
@@ -29,31 +52,15 @@ const text = defineMessages({
   searchPlaceholder: 'Search addresses, epochs & slots on the Cardano network',
 })
 
-const styles = (theme) =>
-  createStyles({
-    card: {
-      minWidth: '85px',
-      [theme.breakpoints.up('md')]: {
-        minWidth: '200px',
-      },
-      minHeight: '75px',
+const useStyles = makeStyles((theme) => ({
+  card: {
+    minWidth: '85px',
+    [theme.breakpoints.up('md')]: {
+      minWidth: '200px',
     },
-    cardDimensions: {
-      marginRight: theme.spacing.unit * 0.5,
-      marginLeft: theme.spacing.unit * 0.5,
-      [theme.breakpoints.up('sm')]: {
-        marginRight: theme.spacing.unit * 1.5,
-        marginLeft: theme.spacing.unit * 1.5,
-      },
-    },
-  })
-
-const GridItem = withStyles(styles)(({children, classes}) => (
-  <Grid item className={classes.cardDimensions}>
-    {children}
-  </Grid>
-))
-
+    minHeight: '75px',
+  },
+}))
 const OVERVIEW_METRICS_QUERY = gql`
   query($currency: CurrencyEnum!) {
     currentStatus {
@@ -85,7 +92,11 @@ const PriceItem = ({currency}) => {
   )
 }
 
-const MetricWithLink = ({to, ...props}) => {
+const MetricsCard = ({value, metric, ...props}) => (
+  <HeaderCard primaryText={value} secondaryText={metric} {...props} />
+)
+
+const MetricsCardWithLink = ({to, ...props}) => {
   const handler = useNavigateTo(to)
 
   return to ? (
@@ -95,7 +106,8 @@ const MetricWithLink = ({to, ...props}) => {
   )
 }
 
-const OverviewMetrics = ({intl, data, classes}) => {
+const OverviewMetrics = () => {
+  const classes = useStyles()
   const [currency, setCurrency] = useCurrency()
   const {
     data: {currentStatus: status},
@@ -107,7 +119,7 @@ const OverviewMetrics = ({intl, data, classes}) => {
       currency,
     },
   })
-  const {translate, formatInt, formatPercent, formatFiat} = getIntlFormatters(intl)
+  const {translate, formatInt, formatPercent, formatFiat} = useI18n()
 
   const NA = loading ? <LoadingDots /> : translate(error ? text.error : text.not_available)
 
@@ -120,15 +132,15 @@ const OverviewMetrics = ({intl, data, classes}) => {
   const epochLink = status && routeTo.epoch(status.latestBlock.epoch)
   const blockLink = routeTo.blockchain()
   const marketDataLink = routeTo.more()
-  const stakePoolsLink = routeTo.staking.home()
+  const stakePoolsLink = routeTo.stakingCenter.home()
 
   const analytics = useAnalytics()
 
   const commonMarketDataProps = {
     className: classes.card,
-    icon: 'price',
-    metric: translate(text.priceLabel),
-    value: price,
+    icon: <img alt="" src={priceIcon} />,
+    secondaryText: translate(text.priceLabel),
+    primaryText: price,
     options: [
       {
         label: <PriceItem currency="USD" />,
@@ -156,56 +168,54 @@ const OverviewMetrics = ({intl, data, classes}) => {
 
   return (
     <Grid container justify="center" wrap="wrap" direction="row">
-      <Grid item className={classes.cardDimensions}>
-        <MetricWithLink
+      <PreloadFont />
+      <MetricsCardContainer>
+        <MetricsCardWithLink
           className={classes.card}
-          icon="epoch"
-          metric={translate(text.epochLabel)}
+          icon={<img alt="" src={epochIcon} />}
           value={epochNumber}
+          metric={translate(text.epochLabel)}
           to={epochLink}
         />
-      </Grid>
-      <GridItem>
-        <MetricWithLink
+      </MetricsCardContainer>
+      <MetricsCardContainer>
+        <MetricsCardWithLink
           className={classes.card}
-          icon="blocks"
-          metric={translate(text.slotsLabel)}
+          icon={<img alt="" src={blocksIcon} />}
           value={blockCount}
+          metric={translate(text.slotsLabel)}
           to={blockLink}
         />
-      </GridItem>
+      </MetricsCardContainer>
       {config.showStakingData && (
-        <GridItem>
+        <MetricsCardContainer>
           <MetricsCard
             className={classes.card}
-            icon="decentralization"
-            metric={translate(text.decentralizationLabel)}
+            icon={<img alt="" src={decentralizationIcon} />}
             value={decentralization}
+            metric={translate(text.decentralizationLabel)}
           />
-        </GridItem>
+        </MetricsCardContainer>
       )}
-      <GridItem>
-        <MetricWithLink
+      <MetricsCardContainer>
+        <MetricsCardWithLink
           {...commonMarketDataProps}
           to={config.showStakingData ? marketDataLink : null}
         />
-      </GridItem>
+      </MetricsCardContainer>
       {config.showStakingData && (
-        <GridItem>
-          <MetricWithLink
+        <MetricsCardContainer>
+          <MetricsCardWithLink
             className={classes.card}
-            icon="pools"
-            metric={translate(text.poolsLabel)}
+            icon={<img alt="" src={poolsIcon} />}
             value={pools}
+            metric={translate(text.poolsLabel)}
             to={stakePoolsLink}
           />
-        </GridItem>
+        </MetricsCardContainer>
       )}
     </Grid>
   )
 }
 
-export default compose(
-  injectIntl,
-  withStyles(styles)
-)(OverviewMetrics)
+export default OverviewMetrics

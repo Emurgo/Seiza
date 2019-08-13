@@ -10,3 +10,8 @@ export const ASSURANCE_LEVELS = {
 }
 
 export const ASSURANCE_LEVELS_VALUES = ASSURANCE_LEVELS.NORMAL
+
+export const APOLLO_CACHE_OPTIONS = {
+  CACHE_AND_NETWORK: 'cache-and-network',
+  NO_CACHE: 'no-cache',
+}

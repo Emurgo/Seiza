@@ -9,12 +9,18 @@ import useReactRouter from 'use-react-router'
 import {useQuery} from 'react-apollo-hooks'
 import {defineMessages} from 'react-intl'
 import {makeStyles} from '@material-ui/styles'
-import {Typography} from '@material-ui/core'
+import {Typography, Portal} from '@material-ui/core'
 
 import {useI18n} from '@/i18n/helpers'
-import {Searchbar, LoadingError, Alert} from '@/components/visual'
+import {Searchbar, Alert} from '@/components/visual'
+import {LoadingError} from '@/components/common'
+import {useSearchbarRef} from '@/components/context/searchbarRef'
+
 import {routeTo} from '@/helpers/routes'
-import {useAnalytics} from '@/helpers/googleAnalytics'
+import * as urlHelpers from '@/helpers/url'
+import {useAnalytics} from '@/components/context/googleAnalytics'
+import {APOLLO_CACHE_OPTIONS} from '@/constants'
+import {getDefaultSpacing} from '@/components/visual/ContentSpacing'
 
 const text = defineMessages({
   searchPlaceholder: 'Search addresses, transactions, epochs & slots on the Cardano network',
@@ -23,7 +29,7 @@ const text = defineMessages({
 })
 
 const useSearchData = (searchQuery, skip) => {
-  const {error, loading, data} = useQuery(
+  const {error, loading, data, refetch} = useQuery(
     gql`
       query($searchQuery: String!) {
         blockChainSearch(query: $searchQuery) {
@@ -49,13 +55,16 @@ const useSearchData = (searchQuery, skip) => {
     `,
     {
       variables: {searchQuery},
+      fetchPolicy: APOLLO_CACHE_OPTIONS.NO_CACHE,
       skip,
+      // So that we get `loading` after `refetch` is called
+      notifyOnNetworkStatusChange: true,
     }
   )
 
   const matchedItems = idx(data, (_) => _.blockChainSearch.items) || []
   assert(matchedItems.length <= 1)
-  return {error, loading, searchResult: matchedItems.length ? matchedItems[0] : null}
+  return {error, loading, refetch, searchResult: matchedItems.length ? matchedItems[0] : null}
 }
 
 const getRedirectUrl = (analytics, searchResult) => {
@@ -92,15 +101,18 @@ const useStyles = makeStyles((theme) => ({
     position: 'relative',
   },
   alert: {
-    marginTop: theme.spacing.unit * 1.5,
+    marginTop: theme.spacing(1.5),
     position: 'absolute',
     width: '100%',
     zIndex: 1,
+    padding: getDefaultSpacing(theme) * 0.5,
+    paddingTop: getDefaultSpacing(theme) * 0.25,
+    paddingBottom: getDefaultSpacing(theme) * 0.25,
   },
   helpText: {
-    marginLeft: theme.spacing.unit * 4,
-    marginRight: theme.spacing.unit * 4,
-    marginTop: theme.spacing.unit * 2,
+    marginLeft: theme.spacing(4),
+    marginRight: theme.spacing(4),
+    marginTop: theme.spacing(2),
   },
   helpTextHidden: {
     visibility: 'hidden',
@@ -134,6 +146,7 @@ export const SearchHelpText = ({className}: SearchHelpTextProps) => {
       color="textSecondary"
       className={cn(classes.helpText, className)}
       align="center"
+      component="div"
     >
       {tr(text.helpText)}
     </Typography>
@@ -144,9 +157,16 @@ type SearchProps = {|
   isMobile?: boolean,
 |}
 
+const useTextfieldFocus = (defaultValue: boolean) => {
+  const [isFocused, setIsFocused] = useState(defaultValue)
+  const onFocus = useCallback(() => setIsFocused(true), [setIsFocused])
+  const onBlur = useCallback(() => setIsFocused(false), [setIsFocused])
+  return {isFocused, onFocus, onBlur}
+}
+
 const Search = ({isMobile = false}: SearchProps) => {
   const {translate: tr} = useI18n()
-  const {history} = useReactRouter()
+  const {location, history} = useReactRouter()
   const classes = useStyles()
   const analytics = useAnalytics()
 
@@ -155,14 +175,19 @@ const Search = ({isMobile = false}: SearchProps) => {
   const [searchText, setSearchText] = useState('')
 
   const skip = !searchQuery
-  const {error, loading, searchResult} = useSearchData(searchQuery, skip)
+  const {error, loading, refetch, searchResult} = useSearchData(searchQuery, skip)
 
   useEffect(() => {
     if (searchResult) {
       setSearchQuery('')
-      history.push(getRedirectUrl(analytics, searchResult))
+      const redirectTo = getRedirectUrl(analytics, searchResult)
+      const action = redirectTo !== location.pathname ? history.push : history.replace
+      action({
+        pathname: routeTo.searchResults(),
+        search: urlHelpers.stringify({redirectTo}),
+      })
     }
-  })
+  }, [searchResult, history, analytics, location.pathname])
 
   const onChange = useCallback(
     (value) => {
@@ -177,17 +202,27 @@ const Search = ({isMobile = false}: SearchProps) => {
       const trimmed = value.trim()
       setSearchQuery(trimmed)
       setSearchText(trimmed)
+
+      // We want to re-run search even for same query when user submits again
+      // useQuery ignores that case even with fetchPolicy: no-cache,
+      // probably because of possible infinite-rerender loop
+      trimmed === searchQuery && refetch()
     },
-    [setSearchQuery, setSearchText]
+    [setSearchQuery, setSearchText, searchQuery, refetch]
   )
 
   const onAlertClose = useCallback(() => setSearchQuery(''), [setSearchQuery])
 
   const showAlert = searchQuery && !error && !loading && !searchResult
 
+  const searchbarRef = useSearchbarRef()
+
+  const {isFocused: isSearchbarFocused, onFocus, onBlur} = useTextfieldFocus(false)
+
   return (
     <div className={classes.wrapper}>
       <Searchbar
+        inputProps={{onFocus, onBlur}}
         placeholder={tr(text.searchPlaceholder)}
         value={searchText}
         onChange={onChange}
@@ -222,7 +257,15 @@ const Search = ({isMobile = false}: SearchProps) => {
           />
         )}
       </ReactCSSTransitionGroup>
-      {!isMobile && <SearchHelpText className={showAlert ? classes.helpTextHidden : ''} />}
+      {isMobile ? (
+        <Portal container={searchbarRef.current}>
+          <SearchHelpText
+            className={!isSearchbarFocused || showAlert ? classes.helpTextHidden : ''}
+          />
+        </Portal>
+      ) : (
+        <SearchHelpText className={showAlert ? classes.helpTextHidden : ''} />
+      )}
     </div>
   )
 }

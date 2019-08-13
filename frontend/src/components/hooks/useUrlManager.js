@@ -17,16 +17,25 @@ export const useUrlManager = () => {
         // location.search from useReactRouter is sometimes empty here, for an unknown reason,
         // thus not reflecting the latest URL state
         // and resulting in overwriting the URL changed by other useUrlManager hooks
-        search: urlUtils.replaceQueryParam(window.location.search, key, value),
+        search: urlUtils.replaceQueryParam(
+          process.browser ? window.location.search : history.location.search,
+          key,
+          value
+        ),
       })
     },
     [history]
   )
 
-  const getQueryParam = React.useCallback((paramKey: string, query?: string): any => {
-    const parsed = urlUtils.parse(query || window.location.search)
-    return parsed[paramKey]
-  }, [])
+  const getQueryParam = React.useCallback(
+    (paramKey: string, query?: string): any => {
+      const parsed = urlUtils.parse(
+        query || process.browser ? window.location.search : history.location.search
+      )
+      return parsed[paramKey]
+    },
+    [history.location.search]
+  )
 
   const setQuery = React.useCallback(
     (query: string) => {

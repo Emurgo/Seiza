@@ -5,7 +5,7 @@ import {defineMessages} from 'react-intl'
 import {makeStyles} from '@material-ui/styles'
 
 import {useI18n} from '@/i18n/helpers'
-import {ComparisonMatrix, AdaValue} from '@/components/visual'
+import {AdaValue, ComparisonMatrix} from '@/components/common'
 
 const messages = defineMessages({
   stakePools: 'Stake pools',
@@ -22,16 +22,16 @@ const configMessages = defineMessages({
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {
-    paddingBottom: theme.spacing.unit * 2,
+    paddingBottom: theme.spacing(2),
   },
   loadingWrapper: {
     marginTop: 100,
   },
   error: {
-    padding: theme.spacing.unit * 2,
+    padding: theme.spacing(2),
   },
   noPools: {
-    padding: theme.spacing.unit * 2,
+    padding: theme.spacing(2),
   },
 }))
 

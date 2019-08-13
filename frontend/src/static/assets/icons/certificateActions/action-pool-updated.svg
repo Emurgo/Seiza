@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.6 (67491) - http://www.bohemiancoding.com/sketch -->
+    <title>icon/action-pool-updated</title>
+    <desc>Created with Sketch.</desc>
+    <g id="icon/action-pool-updated" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="icon/reset-settings-copy-3">
+            <rect id="Rectangle" opacity="0" x="0" y="0" width="24" height="24"></rect>
+            <g id="reset" transform="translate(12.000000, 12.000000) scale(-1, 1) rotate(-270.000000) translate(-12.000000, -12.000000) translate(3.000000, 2.000000)" fill="#8791AD" fill-rule="nonzero">
+                <path d="M8.66931576,3.69900173 L8.66931576,5.99775765 L4.55084006,2.95302502 L8.66931576,-0.0916789154 L8.66931576,2.1972585 L9.1787562,2.20299759 C14.272393,2.2603798 18.1953153,6.7502481 17.6133651,11.8672095 C17.1641111,15.8323989 14.0059404,19.0060197 10.0668477,19.4502343 C5.48159621,19.9656764 1.3133018,16.7782145 0.595384203,12.2219325 C0.526131744,11.7812463 0.874933464,11.3787906 1.32418557,11.3787906 C1.68771236,11.3787906 2.00017911,11.6442864 2.05739561,12.0023895 C2.63833653,15.6338358 5.88050776,18.236673 9.54086446,18.0015756 C13.0717254,17.7750961 15.9428737,14.8960887 16.1767043,11.3468433 C16.449257,7.25880519 13.259768,3.77260095 9.19282021,3.70739513 L8.66931576,3.69900173 Z" id="Path"></path>
+            </g>
+        </g>
+    </g>
+</svg>

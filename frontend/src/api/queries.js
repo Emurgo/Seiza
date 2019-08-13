@@ -27,6 +27,7 @@ export const GET_PAGED_BLOCKS = gql`
       }
       cursor
       hasMore
+      totalCount
     }
   }
   ${BLOCK_INFO_FRAGMENT}
@@ -40,49 +41,8 @@ export const GET_PAGED_BLOCKS_IN_EPOCH = gql`
       }
       cursor
       hasMore
+      totalCount
     }
   }
   ${BLOCK_INFO_FRAGMENT}
-`
-
-export const GET_ADDRESS_BY_ADDRESS58 = gql`
-  query($address58: String!) {
-    address(address58: $address58) {
-      address58
-      transactionsCount
-      balance
-      totalAdaSent
-      totalAdaReceived
-    }
-  }
-`
-
-export const GET_TXS_BY_ADDRESS = gql`
-  query($address58: String!, $filterType: AddressTxsFilter!, $cursor: Int) {
-    address(address58: $address58) {
-      transactions(type: $filterType, cursor: $cursor) {
-        totalCount
-        transactions {
-          txHash
-          fees
-          block {
-            blockHash
-            epoch
-            slot
-            timeIssued
-          }
-          totalInput
-          totalOutput
-          inputs {
-            address58
-            amount
-          }
-          outputs {
-            address58
-            amount
-          }
-        }
-      }
-    }
-  }
 `

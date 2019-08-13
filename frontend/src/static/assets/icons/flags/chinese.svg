@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.6 (67491) - http://www.bohemiancoding.com/sketch -->
+    <title>Chinese Language</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <circle id="path-1" cx="10" cy="10" r="8"></circle>
+        <circle id="path-3" cx="8" cy="8" r="8"></circle>
+    </defs>
+    <g id="icon/chinese-language" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g>
+            <g id="chinese" transform="translate(2.000000, 2.000000)">
+                <circle id="Oval-Copy-15" stroke="#BFC5D2" stroke-width="0.5" cx="10" cy="10" r="9"></circle>
+                <mask id="mask-2" fill="white">
+                    <use xlink:href="#path-1"></use>
+                </mask>
+                <g id="path-1"></g>
+                <g id="if_57_Ensign_Flag_Nation_china_2634487-Copy-3-Clipped" mask="url(#mask-2)">
+                    <g transform="translate(2.000000, 2.000000)">
+                        <mask id="mask-4" fill="white">
+                            <use xlink:href="#path-3"></use>
+                        </mask>
+                        <g id="path-1" stroke="none" fill="none"></g>
+                        <g id="if_57_Ensign_Flag_Nation_china_2634487-Copy-3" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" mask="url(#mask-4)">
+                            <polygon id="XMLID_7_" fill="#CB2127" points="0 0 28 0 28 16 0 16"></polygon>
+                            <polygon id="XMLID_6_" fill="#F7DE28" points="2.76492083 6 3.23264312 4.4737516 2 3.5262484 3.52496955 3.52112676 4.00243605 2 4.47503045 3.52112676 6 3.5262484 4.76735688 4.4737516 5.23507917 6 4.00243605 5.05761844"></polygon>
+                            <polygon id="XMLID_5_" fill="#F7DE28" points="7.08965517 6.30201342 7.82068966 6.58389262 8.32413793 6 8.26896552 6.76510067 9 7.05369128 8.23448276 7.24161074 8.17931034 8 7.75862069 7.3557047 7 7.53691275 7.50344828 6.94630872"></polygon>
+                            <polygon id="XMLID_4_" fill="#F7DE28" points="11 3.4527027 10.2380952 3.32432432 9.8707483 4 9.76190476 3.23648649 9 3.10135135 9.69387755 2.76351351 9.58503401 2 10.1292517 2.55405405 10.8231293 2.21621622 10.462585 2.89864865"></polygon>
+                            <polygon id="XMLID_3_" fill="#F7DE28" points="9.38255034 7 9.61744966 6.23943662 9 5.76760563 9.76510067 5.76760563 10 5 10.2348993 5.76760563 11 5.76760563 10.3825503 6.23943662 10.6174497 7 10 6.53521127"></polygon>
+                            <polygon id="XMLID_2_" fill="#F7DE28" points="7.15017065 1.24242424 7.86006826 1.55892256 8.39249147 1 8.29692833 1.76094276 9 2.09090909 8.23549488 2.23905724 8.13993174 3 7.76450512 2.32659933 7 2.47474747 7.52559727 1.90909091"></polygon>
+                        </g>
+                    </g>
+                </g>
+                <circle id="Oval-Copy-16" stroke-opacity="0.1" stroke="#4D20C0" stroke-width="0.5" mask="url(#mask-2)" cx="10" cy="10" r="8"></circle>
+            </g>
+            <rect id="Rectangle" opacity="0" x="0" y="0" width="24" height="24"></rect>
+        </g>
+    </g>
+</svg>

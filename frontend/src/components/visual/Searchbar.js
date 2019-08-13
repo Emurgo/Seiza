@@ -3,43 +3,59 @@ import React from 'react'
 import type {ElementRef} from 'react'
 import {withHandlers} from 'recompose'
 import {compose} from 'redux'
-import {withStyles, createStyles, InputAdornment, TextField} from '@material-ui/core'
+import {withStyles, InputAdornment, TextField} from '@material-ui/core'
 import {Search} from '@material-ui/icons'
 import {Button, LoadingInProgress, CloseIconButton} from '@/components/visual'
+import {fade} from '@material-ui/core/styles/colorManipulator'
 
-const styles = (theme) =>
-  createStyles({
-    textField: {
-      flex: 1,
-      flexBasis: 500,
-      background: theme.palette.background.paper,
-      borderRadius: 5,
+const styles = (theme) => ({
+  textField: {
+    flex: 1,
+    flexBasis: 500,
+    background: theme.palette.background.paper,
+    borderRadius: 5,
+  },
+  input: {
+    '&>fieldset': {
+      borderBottomRightRadius: 0,
+      borderTopRightRadius: 0,
     },
-    input: {
+    '&:hover': {
       '&>fieldset': {
-        borderBottomRightRadius: 0,
-        borderTopRightRadius: 0,
+        borderColor: `${theme.palette.secondary.main} !important`,
       },
     },
-    searchButton: {
-      borderBottomLeftRadius: 0,
-      borderTopLeftRadius: 0,
-      height: 58, // Note: in sync with textField style
-      boxShadow: 'none',
+  },
+  // eslint-disable-next-line
+  // https://github.com/wheredoesyourmindgo/react-mui-mapbox-geocoder/issues/2#issuecomment-478668535
+  focusedInput: {
+    '&>fieldset': {
+      borderWidth: '1px !important',
     },
-    container: {
-      display: 'flex',
-      flex: 1,
+  },
+  searchButton: {
+    borderBottomLeftRadius: 0,
+    borderTopLeftRadius: 0,
+    padding: 0,
+    boxShadow: 'none',
+  },
+  container: {
+    'display': 'flex',
+    'flex': 1,
+    'boxShadow': `0px 10px 20px 0px ${fade(theme.palette.shadowBase, 0.08)}`,
+    '&:hover': {
+      boxShadow: `0px 10px 30px 0px ${fade(theme.palette.shadowBase, 0.12)}`,
     },
-  })
+  },
+})
 
 type ExternalProps = {
   placeholder: string,
   value: string,
   onSearch: (str: string) => any,
-  textFieldProps?: Object,
   onChange: (event: any) => any,
   loading?: boolean,
+  inputProps?: Object,
 }
 
 type Props = {
@@ -69,8 +85,8 @@ class Searchbar extends React.Component<Props> {
       handleOnChangeEvent,
       onSubmit,
       classes,
-      textFieldProps,
       loading,
+      inputProps,
     } = this.props
 
     return (
@@ -83,6 +99,8 @@ class Searchbar extends React.Component<Props> {
           placeholder={placeholder}
           onChange={handleOnChangeEvent}
           inputRef={this.inputRef}
+          inputProps={inputProps}
+          // eslint-disable-next-line react/jsx-no-duplicate-props
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
@@ -94,10 +112,13 @@ class Searchbar extends React.Component<Props> {
               </InputAdornment>
             ),
             className: classes.input,
+            classes: {
+              root: classes.input,
+              focused: classes.focusedInput,
+            },
           }}
-          {...textFieldProps}
         />
-        <Button primary type="submit" variant="contained" className={classes.searchButton}>
+        <Button type="submit" variant="contained" className={classes.searchButton}>
           <Search fontSize="large" />
         </Button>
       </form>

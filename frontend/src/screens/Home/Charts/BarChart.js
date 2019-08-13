@@ -2,12 +2,11 @@
 
 import React, {useState, useEffect} from 'react'
 import {BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell, Label} from 'recharts'
-// $FlowFixMe flow does not know about `useTheme`
 import {makeStyles, useTheme} from '@material-ui/styles'
 import {lighten, fade, darken} from '@material-ui/core/styles/colorManipulator'
 import {Grid, Typography} from '@material-ui/core'
 
-import {useCurrentBreakpoint} from '@/components/hooks/useCurrentBreakpoint'
+import {useCurrentBreakpoint} from '@/components/hooks/useBreakpoints'
 
 import {Card} from '@/components/visual'
 
@@ -16,12 +15,12 @@ const getBarColors = (theme) => [
   lighten(theme.palette.primary.main, 0.2),
 ]
 
-const CHART_MARGIN = {
+const getChartMargin = (isExtraSm) => ({
   top: 20,
-  right: 40,
-  left: 40,
+  right: isExtraSm ? 20 : 40,
+  left: isExtraSm ? 0 : 40,
   bottom: 20,
-}
+})
 
 const useStyles = makeStyles((theme) => {
   const [baseColor, activeColor] = getBarColors(theme)
@@ -54,7 +53,7 @@ const useStyles = makeStyles((theme) => {
       fill: fade(baseColor, 0.4),
     },
     'tooltip': {
-      padding: theme.spacing.unit,
+      padding: theme.spacing(1),
     },
     'tooltipContainer': {
       flexDirection: 'column',
@@ -179,12 +178,17 @@ export default ({
   const textColor = theme.palette.text.primary
 
   const breakpoint = useCurrentBreakpoint()
-  const hideYLabel = breakpoint === 'xs'
+  const isExtraSM = breakpoint === 'xs'
 
+  const chartMargin = getChartMargin(isExtraSM)
+
+  // https://github.com/recharts/recharts/issues/444
+  // onClick={null} fixes iOS touch events
   return (
     <BarChart
+      onClick={null}
       onMouseLeave={() => setActiveBar(null)}
-      margin={CHART_MARGIN}
+      margin={chartMargin}
       {...{width, height, data}}
     >
       <CartesianGrid strokeDasharray="3 3" />
@@ -195,18 +199,19 @@ export default ({
         label={{value: xLabel, fill: textColor, position: 'insideBottom'}}
       />
       {/* // use tickFormatter also for yAxis */}
-      <YAxis width={!hideYLabel ? 100 : 70} dataKey="y" tickFormatter={formatYAxis}>
-        {!hideYLabel && (
+      <YAxis width={!isExtraSM ? 100 : 70} dataKey="y" tickFormatter={formatYAxis}>
+        {!isExtraSM && (
           <Label
             angle={-90}
             offset={-5}
             value={yLabel}
             position="insideLeft"
-            style={{textAnchor: 'middle'}}
+            style={{textAnchor: 'middle', fill: textColor}}
           />
         )}
       </YAxis>
       <Tooltip
+        enterTouchDelay={100}
         isAnimationActive
         // $FlowFixMe recharts pass other props using some `magic`
         cursor={<CustomCursor setActiveBar={setActiveBar} />}

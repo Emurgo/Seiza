@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.6 (67491) - http://www.bohemiancoding.com/sketch -->
+    <title>Japanese Language</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <circle id="path-1" cx="8" cy="8" r="8"></circle>
+        <circle id="path-3" cx="8" cy="8" r="8"></circle>
+    </defs>
+    <g id="Artboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="japanese-language">
+            <rect id="Rectangle" opacity="0" x="0" y="0" width="24" height="24"></rect>
+            <g id="japanese" transform="translate(3.000000, 3.000000)">
+                <path d="M9,18.25 C3.89136606,18.25 -0.25,14.1086339 -0.25,9 C-0.25,3.89136606 3.89136606,-0.25 9,-0.25 C14.1086339,-0.25 18.25,3.89136606 18.25,9 C18.25,14.1086339 14.1086339,18.25 9,18.25 Z M9,17.75 C13.8324916,17.75 17.75,13.8324916 17.75,9 C17.75,4.16750844 13.8324916,0.25 9,0.25 C4.16750844,0.25 0.25,4.16750844 0.25,9 C0.25,13.8324916 4.16750844,17.75 9,17.75 Z" id="Oval-Copy-15" fill="#BFC5D2" fill-rule="nonzero"></path>
+                <g id="if_210_Ensign_Flag_Nation_russia_2634398-Copy-Clipped" transform="translate(1.000000, 1.000000)">
+                    <mask id="mask-2" fill="white">
+                        <use xlink:href="#path-1"></use>
+                    </mask>
+                    <g id="path-5"></g>
+                    <g id="Group" mask="url(#mask-2)">
+                        <g transform="translate(-7.000000, 0.000000)">
+                            <polygon id="Rectangle" fill="#FFFFFF" points="0 0 28 0 28 16 0 16"></polygon>
+                            <path d="M15,4 C17.2098214,4 19,5.79017857 19,8 C19,10.2098214 17.2098214,12 15,12 C12.7901786,12 11,10.2098214 11,8 C11,5.79017857 12.7901786,4 15,4" id="Path" fill="#AD1F23"></path>
+                        </g>
+                    </g>
+                    <g id="Oval-Copy-16-Clipped" mask="url(#mask-2)">
+                        <mask id="mask-4" fill="white">
+                            <use xlink:href="#path-3"></use>
+                        </mask>
+                        <g id="path-1"></g>
+                        <circle id="Oval-Copy-16" stroke-opacity="0.1" stroke="#4D20C0" stroke-width="0.5" mask="url(#mask-4)" cx="8" cy="8" r="8"></circle>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

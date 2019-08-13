@@ -1,8 +1,9 @@
 // @flow
 import React from 'react'
 import _ from 'lodash'
+import {makeStyles, useTheme} from '@material-ui/styles'
+
 import type {ComponentType} from 'react'
-import {makeStyles} from '@material-ui/styles'
 
 const colorNameFromValue = (value: number): string => {
   const COLORS = [
@@ -24,11 +25,9 @@ const getColors = (theme, value: number) => {
 const useStyles = makeStyles((theme) => ({
   background: {
     fill: 'none',
-    stroke: (props) => getColors(theme, props.value).backgroundColor,
   },
   progress: {
     fill: 'none',
-    stroke: (props) => getColors(theme, props.value).color,
   },
   percentText: {
     fontSize: theme.typography.fontSize * 1.25,
@@ -46,39 +45,43 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-type ExternalProps = {
+export type ExternalProps = {|
   +value: number,
   +label: string,
-}
+  +height: number,
+  +width: number,
+  +alignText: 'middle' | 'left' | 'right',
+|}
 
-// Based on https://codepen.io/bbrady/pen/ozrjKE
-const CircularProgressBar: ComponentType<ExternalProps> = ({value, label}) => {
-  const classes = useStyles({value})
-  const size = 75
-  const strokeWidth = 8
+const Circle = ({size, value}) => {
+  const classes = useStyles()
+  const theme = useTheme()
+
+  const progressColor = getColors(theme, value).color
+  const backgroundColor = getColors(theme, value).backgroundColor
+
+  const strokeWidth = 7.5
 
   // SVG centers the stroke width on the radius
   const radius = (size - strokeWidth) / 2
-
-  // Enclose cicle in a circumscribing square
-  const viewBox = `0 0 ${size} ${size}`
 
   // Arc length at 100% coverage is the circle circumference
   const dashArray = radius * Math.PI * 2
 
   // Scale 100% coverage overlay with the actual percent
   const dashOffset = dashArray - dashArray * value
-  const percentText = `${Math.round(value * 100)}%`
   const strokeWidthStr = `${strokeWidth}px`
   return (
-    <svg width={size} height={size} viewBox={viewBox}>
-      {/* background circle */}
+    <React.Fragment>
       <circle
         className={classes.background}
         cx={size / 2}
         cy={size / 2}
         r={radius}
         strokeWidth={strokeWidthStr}
+        style={{
+          stroke: backgroundColor,
+        }}
       />
       {/* foreground arc */}
       <circle
@@ -92,12 +95,34 @@ const CircularProgressBar: ComponentType<ExternalProps> = ({value, label}) => {
         style={{
           strokeDasharray: dashArray,
           strokeDashoffset: dashOffset,
+          stroke: progressColor,
         }}
       />
-      <text className={classes.percentText} x="50%" y="50%" dy="0.1em" textAnchor="middle">
+    </React.Fragment>
+  )
+}
+
+const CircularProgressBar: ComponentType<ExternalProps> = ({
+  value,
+  label,
+  height,
+  width,
+  textAlign,
+}) => {
+  const classes = useStyles()
+
+  // Enclose cicle in a circumscribing square
+  const viewBox = `0 0 ${width} ${height}`
+
+  const percentText = `${Math.round(value * 100)}%`
+
+  return (
+    <svg width={width} height={height} viewBox={viewBox}>
+      <Circle value={value} size={height} />
+      <text className={classes.percentText} x="50%" y="50%" dy="0.1em" textAnchor={textAlign}>
         {percentText}
       </text>
-      <text className={classes.text} x="50%" y="50%" dy="1.5em" textAnchor="middle">
+      <text className={classes.text} x="50%" y="50%" dy="1.5em" textAnchor={textAlign}>
         {label}
       </text>
     </svg>

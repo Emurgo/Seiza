@@ -1,12 +1,12 @@
 // @flow
 
 import React, {useState, useCallback} from 'react'
-import {Grid, Card, CardContent} from '@material-ui/core'
+import {Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
 
 import {useI18n} from '@/i18n/helpers'
-import {Slider, Select} from '@/components/visual'
+import {Slider, Select, Card, ContentSpacing} from '@/components/visual'
 import {useStateWithChangingDefault} from '@/components/hooks/useStateWithChangingDefault'
 import {usePerformanceContext} from '../context/performance'
 
@@ -23,11 +23,18 @@ const useStyles = makeStyles((theme) => ({
   wrapper: {
     background: theme.palette.background.paper,
   },
+  // We need these corrections because both select
+  // has formControl below which adds its own margins
   select: {
-    width: '85%',
+    width: `calc(100% - ${theme.spacing(2)}px)`,
+    paddingLeft: theme.spacing(1),
+    paddingRight: theme.spacing(1),
   },
   slider: {
-    width: '95%',
+    width: `calc(100% - ${theme.spacing(2)}px)`,
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(2),
+    margin: theme.spacing(1),
   },
 }))
 
@@ -53,9 +60,9 @@ const Filters = () => {
   const classes = useStyles()
   return (
     <Card>
-      <CardContent>
+      <ContentSpacing top={0.5} left={0.5} bottom={0.5} right={0.5}>
         <Grid container className={classes.wrapper} direction="row">
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <Select
               value={region}
               label={tr(messages.regions)}
@@ -64,7 +71,7 @@ const Filters = () => {
               options={[{value: 'all', label: tr(messages.allRegions)}]}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <Select
               value={language}
               label={tr(messages.languages)}
@@ -73,22 +80,20 @@ const Filters = () => {
               options={[{value: 'all', label: tr(messages.allLanguages)}]}
             />
           </Grid>
-          <Grid item xs={4}>
-            <div className={classes.slider}>
-              <Slider
-                min={RANGE_START}
-                max={RANGE_END}
-                tipFormatter={tipFormatter}
-                value={performance}
-                label={tr(messages.performance)}
-                className={classes.slider}
-                onChange={setPerformance}
-                onDragEnd={onDragEnd}
-              />
-            </div>
+          <Grid item xs={12} sm={4}>
+            <Slider
+              min={RANGE_START}
+              max={RANGE_END}
+              tipFormatter={tipFormatter}
+              value={performance}
+              label={tr(messages.performance)}
+              className={classes.slider}
+              onChange={setPerformance}
+              onDragEnd={onDragEnd}
+            />
           </Grid>
         </Grid>
-      </CardContent>
+      </ContentSpacing>
     </Card>
   )
 }

@@ -2,7 +2,7 @@
 import React, {useRef} from 'react'
 
 import config from '@/config'
-import {useAnalytics} from '@/helpers/googleAnalytics'
+import {useAnalytics} from '@/components/context/googleAnalytics'
 import GeneralInfo from './GeneralInfo'
 import StakePoolsInfo from './StakePoolsInfo'
 import Charts from './Charts'

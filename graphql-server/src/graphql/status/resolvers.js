@@ -1,59 +1,48 @@
-import {fetchLatestBlock} from '../block/dataProviders'
-import {runConsistencyCheck} from '../utils'
+import { fetchLatestBlock } from "../block/dataProviders";
 
-import moment from 'moment'
+import moment from "moment";
 
-const fetchCurrentPrice = async ({pricingAPI}, currency) => {
-  const result = await pricingAPI.get('price', {
-    fsym: 'ADA',
-    tsyms: currency,
-  })
+const fetchCurrentPrice = async ({ pricingAPI }, currency) => {
+  const result = await pricingAPI.get("price", {
+    fsym: "ADA",
+    tsyms: currency
+  });
 
-  return result[currency]
-}
+  return result[currency];
+};
 
-export const fetchCurrentSyncTime = async (context) => {
-  const {E, elastic} = context
-
-  // Note(ppershing): fetchCurrentSyncTime is a frequent
-  // request and so we perform an error reporting pipeline
-  // health on it
-  await runConsistencyCheck(() => {
-    const SAMPLE_RATE = 100
-    if (Math.random() < 1.0 / SAMPLE_RATE) {
-      throw new Error(
-        `runConsistencyCheck() self check.
-         You should see this error for about 1/${SAMPLE_RATE} requests`
-      )
-    }
-  })
+export const fetchCurrentSyncTime = context => {
+  const { E, elastic } = context;
 
   return elastic
-    .q('slot')
+    .q("slot")
     .filter(E.onlyActiveFork())
     .getAggregations({
-      time: E.agg.max('time'),
+      time: E.agg.max("time")
     })
-    .then(({time}) => moment(time))
-}
+    .then(({ time }) => moment(time));
+};
 
 export const currentStatusResolver = (root, args, context) => {
-  const latestBlockResolver = () => fetchLatestBlock(context)
+  const latestBlockResolver = () => fetchLatestBlock(context);
 
-  const epochNumberResolver = () => latestBlockResolver().then((block) => block.epoch)
+  const epochNumberResolver = () =>
+    latestBlockResolver().then(block => block.epoch);
 
-  const blockCountResolver = () => latestBlockResolver().then((block) => block.slot)
-
-  // TODO: get this info
-  const decentralizationResolver = () => 0
-
-  // TODO: get this info
-  const priceResolver = (args, context) => fetchCurrentPrice(context, args.currency)
+  const blockCountResolver = () =>
+    latestBlockResolver().then(block => block.slot);
 
   // TODO: get this info
-  const stakePoolCountResolver = () => null
+  const decentralizationResolver = () => 0;
 
-  const dataAvailableUpToResolver = () => fetchCurrentSyncTime(context)
+  // TODO: get this info
+  const priceResolver = (args, context) =>
+    fetchCurrentPrice(context, args.currency);
+
+  // TODO: get this info
+  const stakePoolCountResolver = () => null;
+
+  const dataAvailableUpToResolver = () => fetchCurrentSyncTime(context);
 
   return {
     epochNumber: epochNumberResolver,
@@ -63,6 +52,6 @@ export const currentStatusResolver = (root, args, context) => {
     price: priceResolver,
     stakePoolCount: stakePoolCountResolver,
     dataAvailableUpTo: dataAvailableUpToResolver,
-    currentTime: moment(),
-  }
-}
+    currentTime: moment()
+  };
+};

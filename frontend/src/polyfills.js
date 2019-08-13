@@ -1,3 +1,4 @@
-import smoothscroll from 'smoothscroll-polyfill'
+import 'isomorphic-unfetch'
 
-smoothscroll.polyfill()
+import smoothscroll from 'smoothscroll-polyfill'
+process.browser && smoothscroll.polyfill()

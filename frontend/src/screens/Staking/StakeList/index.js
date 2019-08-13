@@ -1,87 +1,64 @@
-import React from 'react'
-import gql from 'graphql-tag'
+// @flow
+
+import React, {useMemo} from 'react'
 import classnames from 'classnames'
-import {compose} from 'redux'
-import {graphql} from 'react-apollo'
-import {Typography, Grid, createStyles} from '@material-ui/core'
+import {Typography, Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
-import {withHandlers, withProps} from 'recompose'
 import {defineMessages} from 'react-intl'
 
 import {useI18n} from '@/i18n/helpers'
-import {Button, Overlay, LoadingInProgress, LoadingOverlay, LoadingError} from '@/components/visual'
+import {Button, Overlay, LoadingInProgress} from '@/components/visual'
+import {LoadingError, LoadingOverlay} from '@/components/common'
 import StakePool from './StakePool'
 import SearchAndFilterBar from './SearchAndFilterBar'
 import SortByBar from './SortByBar'
-import {usePerformanceContext} from '../context/performance'
-import {useSearchTextContext} from '../context/searchText'
-import {useSortByContext} from '../context/sortBy'
 
-const PAGE_SIZE = 3
+import {useLoadPagedStakePoolList} from './dataLoaders'
 
 const messages = defineMessages({
   loadMore: 'Load More',
   noResults: 'No matching results for the given query.',
 })
 
-const useStyles = makeStyles((theme) =>
-  createStyles({
-    rowWrapper: {
-      padding: '15px 30px',
-      width: '100%',
+const useStyles = makeStyles((theme) => ({
+  rowWrapper: {
+    padding: '15px 30px',
+    width: '100%',
+  },
+  wrapper: {
+    [theme.breakpoints.up('xl')]: {
+      alignItems: 'center',
     },
-    wrapper: {
-      [theme.breakpoints.up('xl')]: {
-        alignItems: 'center',
-      },
-    },
-    loadMore: {
-      marginTop: '30px',
-      marginBottom: '50px',
-      minWidth: '120px',
-      paddingLeft: theme.spacing.unit * 3,
-      paddingRight: theme.spacing.unit * 3,
-      paddingTop: theme.spacing.unit,
-      paddingBottom: theme.spacing.unit,
-    },
-    loadMoreWrapper: {
-      width: '100%',
-    },
-    sortByBar: {
-      marginTop: '20px',
-      marginBottom: '-15px',
-    },
-    lastItemSpace: {
-      padding: theme.spacing.unit * 5,
-    },
-  })
-)
+  },
+  loadMore: {
+    marginTop: theme.spacing(4),
+    marginBottom: theme.spacing(6),
+    // TODO: use this padding as standard for all buttons
+    // Do that after #803 is merged
+    paddingLeft: theme.spacing(7),
+    paddingRight: theme.spacing(7),
+  },
+  loadMoreWrapper: {
+    width: '100%',
+  },
+  sortByBar: {
+    marginTop: '20px',
+    marginBottom: '-15px',
+  },
+  lastItemSpace: {
+    padding: theme.spacing(5),
+  },
+}))
 
-const stakePoolFacade = (data) => ({
-  hash: data.poolHash,
-  name: data.name,
-  description: data.description,
-  createdAt: data.createdAt,
-  fullness: data.summary.fullness,
-  margins: data.summary.margins,
-  performance: data.summary.performance,
-  // TODO: distinguish between `declared` and `actual` pledge?
-  pledge: data.summary.ownerPledge.declared,
-  stake: data.summary.adaStaked,
-})
-
-const StakeList = ({onLoadMore, pagedStakePoolList, loading}) => {
+const StakeList = ({onLoadMore, stakePools, hasMore, loading}) => {
   const {translate: tr} = useI18n()
   const classes = useStyles()
 
-  if (loading && !pagedStakePoolList) return <LoadingInProgress />
-
-  const {hasMore} = pagedStakePoolList
-  const stakePoolList = pagedStakePoolList.stakePools.map(stakePoolFacade)
+  if (loading) return <LoadingInProgress />
 
   return (
-    <Overlay.Wrapper>
-      {stakePoolList.map((pool) => (
+    <Overlay.Wrapper className="w-100">
+      {stakePools.map((pool) => (
         <Grid item key={pool.hash} className={classes.rowWrapper}>
           <StakePool data={pool} />
         </Grid>
@@ -89,7 +66,13 @@ const StakeList = ({onLoadMore, pagedStakePoolList, loading}) => {
       {hasMore ? (
         <Grid item className={classes.loadMoreWrapper}>
           <Grid container justify="center" direction="row">
-            <Button className={classes.loadMore} gradient rounded onClick={onLoadMore}>
+            <Button
+              variant="contained"
+              rounded
+              gradient
+              className={classes.loadMore}
+              onClick={onLoadMore}
+            >
               {tr(messages.loadMore)}
             </Button>
           </Grid>
@@ -102,15 +85,40 @@ const StakeList = ({onLoadMore, pagedStakePoolList, loading}) => {
   )
 }
 
-const StakeListWrapper = ({
-  poolsDataProvider: {loading, error, pagedStakePoolList},
-  onLoadMore,
-}) => {
+const stakePoolFacade = (data) => ({
+  hash: data.poolHash,
+  name: data.name,
+  description: data.description,
+  createdAt: data.createdAt,
+  age: data.age,
+  fullness: data.summary.fullness,
+  margins: data.summary.margins,
+  performance: data.summary.performance,
+  // TODO: distinguish between `declared` and `actual` pledge?
+  pledge: data.summary.ownerPledge.declared,
+  stake: data.summary.adaStaked,
+})
+
+const StakeListWrapper = () => {
   const {translate: tr} = useI18n()
   const classes = useStyles()
 
-  const totalCount = loading || error ? 0 : pagedStakePoolList.totalCount
-  const shownPoolsCount = loading || error ? 0 : pagedStakePoolList.stakePools.length
+  const {loading, error, pagedStakePoolList, onLoadMore} = useLoadPagedStakePoolList()
+
+  const notNullPagedData = useMemo(
+    () =>
+      pagedStakePoolList || {
+        totalCount: 0,
+        shownPoolsCount: 0,
+        stakePools: [],
+        hasMore: false,
+      },
+    [pagedStakePoolList]
+  )
+
+  const stakePools = notNullPagedData.stakePools.map(stakePoolFacade)
+  const shownPoolsCount = notNullPagedData.stakePools.length
+  const {hasMore, totalCount} = notNullPagedData
 
   return (
     <React.Fragment>
@@ -137,113 +145,11 @@ const StakeListWrapper = ({
             <LoadingError error={error} />
           </Grid>
         ) : (
-          <StakeList
-            loading={loading}
-            pagedStakePoolList={pagedStakePoolList}
-            onLoadMore={onLoadMore}
-          />
+          <StakeList {...{loading, stakePools, onLoadMore, hasMore}} />
         )}
       </Grid>
     </React.Fragment>
   )
 }
 
-const formatPerformancetoGQL = (performance) => ({
-  from: performance[0] / 100,
-  to: performance[1] / 100,
-})
-
-// TODO: refactor with hooks
-export default compose(
-  withProps(() => {
-    const sortByContext = useSortByContext()
-    const performanceContext = usePerformanceContext()
-    const searchTextContext = useSearchTextContext()
-    return {sortByContext, performanceContext, searchTextContext}
-  }),
-  graphql(
-    gql`
-      query($cursor: String, $pageSize: Int, $searchOptions: StakePoolSearchOptions!) {
-        pagedStakePoolList(cursor: $cursor, pageSize: $pageSize, searchOptions: $searchOptions) {
-          stakePools {
-            poolHash
-            description
-            name
-            createdAt
-            summary {
-              adaStaked
-              fullness
-              margins
-              performance
-              adaStaked
-              ownerPledge {
-                declared
-              }
-            }
-          }
-          cursor
-          hasMore
-          totalCount
-        }
-      }
-    `,
-    {
-      name: 'poolsDataProvider',
-      options: ({
-        sortByContext: {sortBy},
-        cursor,
-        searchTextContext: {searchText},
-        performanceContext: {performance},
-      }) => ({
-        variables: {
-          cursor,
-          pageSize: PAGE_SIZE,
-          searchOptions: {
-            sortBy,
-            searchText,
-            performance: formatPerformancetoGQL(performance),
-          },
-        },
-      }),
-    }
-  ),
-  withHandlers({
-    onLoadMore: ({
-      poolsDataProvider,
-      searchTextContext: {searchText},
-      performanceContext: {performance},
-      sortByContext: {sortBy},
-    }) => () => {
-      const {
-        fetchMore,
-        pagedStakePoolList: {cursor},
-      } = poolsDataProvider
-
-      return fetchMore({
-        variables: {
-          cursor,
-          pageSize: PAGE_SIZE,
-          searchOptions: {
-            sortBy,
-            searchText,
-            performance: formatPerformancetoGQL(performance),
-          },
-        },
-        updateQuery: (prev, {fetchMoreResult, ...rest}) => {
-          if (!fetchMoreResult) return prev
-          // TODO: currently taken from graphql docs, consider doing it nicer
-          return {
-            ...fetchMoreResult,
-            pagedStakePoolList: {
-              ...fetchMoreResult.pagedStakePoolList,
-              stakePools: [
-                ...prev.pagedStakePoolList.stakePools,
-                ...fetchMoreResult.pagedStakePoolList.stakePools,
-              ],
-            },
-          }
-        },
-      })
-    },
-  })
-)(StakeListWrapper)
+export default StakeListWrapper

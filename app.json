@@ -32,6 +32,15 @@
     "REACT_APP_SENTRY_DSN": {
       "required": true
     },
+    "REACT_APP_SHOW_STAKING_DATA": {
+      "required": true
+    },
+    "REACT_APP_ENABLE_ENV_OVERRIDES": {
+      "required": true
+    },
+    "REACT_SHOW_STAKE_POOLS_LIST_DATA": {
+      "required": true
+    },
     "SENTRY_AUTH_TOKEN": {
       "required": true
     },

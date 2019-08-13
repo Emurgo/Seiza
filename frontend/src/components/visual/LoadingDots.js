@@ -3,7 +3,7 @@
 import React from 'react'
 import {makeStyles} from '@material-ui/styles'
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(() => ({
   'dot': {
     'animation': '$loading-dots 1.5s infinite ease-in-out',
     '&:nth-of-type(1)': {
@@ -27,7 +27,7 @@ const useStyles = makeStyles({
       opacity: 0.4,
     },
   },
-})
+}))
 
 type EmptyProps = {||}
 

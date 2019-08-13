@@ -2,9 +2,9 @@
 import React, {useRef, useState} from 'react'
 import {defineMessages} from 'react-intl'
 import {makeStyles} from '@material-ui/styles'
-import {Typography} from '@material-ui/core'
 
-import {ExpansionPanel, EntityCardContent, Link} from '@/components/visual'
+import {ExpansionPanel} from '@/components/visual'
+import {EntityCardContent, Link} from '@/components/common'
 import {useI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
 import useCutClickableArea from '@/components/hooks/useCutClickableArea'
@@ -21,6 +21,9 @@ type ExternalProps = {|
 const useStyles = makeStyles((theme) => ({
   hash: {
     maxWidth: '35vw',
+    overflow: 'hidden',
+    display: 'block',
+    textOverflow: 'ellipsis',
     [theme.breakpoints.up('sm')]: {
       maxWidth: '60vw',
     },
@@ -48,12 +51,14 @@ const TransactionCard = ({txHash, children}: ExternalProps) => {
         <EntityCardContent
           label={tr(messages.transactionId)}
           innerRef={ref}
-          /* Note: using `Typography noWrap` with maxWidth is hack, as for some
-              reason wrapping inside EntityCardId does not work correctly from this component. */
+          /* Note: using span with maxWidth and ellisize is hack, as for some
+            reason wrapping inside EntityCardId does not work correctly from this component.
+            Not using `Typography` as it results in `<p> cannot appear as <p> descendant warning`
+          */
           value={
-            <Typography noWrap className={classes.hash}>
+            <span className={classes.hash}>
               <Link to={routeTo.transaction(txHash)}>{txHash}</Link>
-            </Typography>
+            </span>
           }
           rawValue={txHash}
           ellipsizeValue

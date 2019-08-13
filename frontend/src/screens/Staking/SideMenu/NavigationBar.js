@@ -1,15 +1,26 @@
 // @flow
 
-import React from 'react'
-import classnames from 'classnames'
-import {Typography, Grid} from '@material-ui/core'
-import {Search, LocationOn, BarChart, History, Compare, People} from '@material-ui/icons'
+import React, {useCallback} from 'react'
+import cn from 'classnames'
+import useReactRouter from 'use-react-router'
+import {Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
+import {fade} from '@material-ui/core/styles/colorManipulator'
 
 import NavLink from '@/components/common/NavLink'
 import {routeTo} from '@/helpers/routes'
 import {useI18n} from '@/i18n/helpers'
+import {LiteTabs, LiteTab, MobileOnly, DesktopOnly} from '@/components/visual'
+import useTabState from '@/components/hooks/useTabState'
+import {NavbarLink} from '@/components/common/Navbar'
+
+import {ReactComponent as ListIcon} from '@/static/assets/icons/staking-simulator/list.svg'
+import {ReactComponent as ComparisonMatrixIcon} from '@/static/assets/icons/staking-simulator/comparison-matrix.svg'
+import {ReactComponent as HistoryIcon} from '@/static/assets/icons/staking-simulator/history.svg'
+import {ReactComponent as ChartsIcon} from '@/static/assets/icons/staking-simulator/charts.svg'
+import {ReactComponent as LocationIcon} from '@/static/assets/icons/staking-simulator/location.svg'
+import {ReactComponent as PeopleIcon} from '@/static/assets/icons/staking-simulator/people.svg'
 
 const navigationMessages = defineMessages({
   list: 'Stake pools list',
@@ -20,26 +31,33 @@ const navigationMessages = defineMessages({
   people: 'People',
 })
 
-const useMenuItemStyles = makeStyles(({palette, spacing}) => ({
-  link: {
-    'background': palette.background.paper,
-    'padding': '40px 40px 40px 60px',
-    'textTransform': 'uppercase',
-    '&:hover': {
-      background: palette.background.paperContrast,
+const useMenuItemStyles = makeStyles(({palette, spacing}) => {
+  const shadow = `inset 0px 10px 20px -7px ${fade(palette.shadowBase, 0.12)}`
+  return {
+    link: {
+      'background': palette.background.paper,
+      'padding': '35px 40px 35px 60px',
+      'textTransform': 'uppercase',
+      '&:hover': {
+        'background': palette.background.paperContrast,
+        'boxShadow': shadow,
+        '& > *': {
+          // This makes hover style the same as active, do we want that?
+          color: palette.primary.main,
+        },
+      },
+      'borderBottom': `1px solid ${palette.unobtrusiveContentHighlight}`,
     },
-    'borderBottom': `1px solid ${palette.unobtrusiveContentHighlight}`,
-  },
-  active: {
-    background: palette.background.paperContrast,
-  },
-  activeText: {
-    color: palette.primary.dark,
-  },
-  icon: {
-    paddingRight: spacing.unit * 2,
-  },
-}))
+    active: {
+      background: palette.background.paperContrast,
+      color: palette.primary.main,
+      boxShadow: shadow,
+    },
+    menuItemText: {
+      paddingLeft: spacing(2),
+    },
+  }
+})
 
 const MenuItem = ({active, label, icon}) => {
   const classes = useMenuItemStyles()
@@ -48,14 +66,13 @@ const MenuItem = ({active, label, icon}) => {
       container
       direction="row"
       alignItems="center"
-      className={classnames(classes.link, active && classes.active)}
+      className={cn(classes.link, active && classes.active)}
     >
-      <Grid item className={classes.icon}>
-        {icon}
-      </Grid>
-      <Grid item>
-        <Typography className={classnames(active && classes.activeText)}>{label}</Typography>
-      </Grid>
+      {icon}
+
+      <NavbarLink className={classes.menuItemText} isActive={active}>
+        {label}
+      </NavbarLink>
     </Grid>
   )
 }
@@ -63,60 +80,142 @@ const MenuItem = ({active, label, icon}) => {
 const useNavigationBarStyles = makeStyles((theme) => ({
   href: {
     textDecoration: 'none',
+    color: theme.palette.text.secondary,
   },
   // Note: parent can't have `overflow: hidden` and must span full height
   navBar: {
-    position: 'sticky',
     top: 0,
+    position: 'sticky',
+  },
+  mobileNavBar: {
+    position: 'sticky',
+    top: 67, // TODO: figure out how to keep in sync with main navigation bar height
+    background: theme.palette.background.paper,
+    zIndex: 10,
+    paddingTop: theme.spacing(1),
+    paddingLeft: theme.spacing(3),
+    maxWidth: '100%',
   },
 }))
 
-const navItems = [
+type NavItems = Array<{|
+  link: string,
+  i18nLabel: string,
+  icon: React$Node,
+  id: string,
+|}>
+
+const navItems: NavItems = [
   {
-    link: routeTo.staking.poolList(),
+    link: routeTo.stakingCenter.poolList(),
     i18nLabel: navigationMessages.list,
-    icon: <Search color="primary" />,
+    icon: <ListIcon color="inherit" />,
+    id: 'POOL_LIST',
   },
   {
-    link: routeTo.staking.poolComparison(),
+    link: routeTo.stakingCenter.poolComparison(),
     i18nLabel: navigationMessages.comparison,
-    icon: <Compare color="primary" />,
+    icon: <ComparisonMatrixIcon color="inherit" />,
+    id: 'COMPARISON_MATRIX',
   },
   {
-    link: routeTo.staking.history(),
+    link: routeTo.stakingCenter.history(),
     i18nLabel: navigationMessages.history,
-    icon: <History color="primary" />,
+    icon: <HistoryIcon color="inherit" />,
+    id: 'HISTORY',
   },
   {
-    link: routeTo.staking.charts(),
+    link: routeTo.stakingCenter.charts(),
     i18nLabel: navigationMessages.charts,
-    icon: <BarChart color="primary" />,
+    icon: <ChartsIcon color="inherit" />,
+    id: 'CHARTS',
   },
   {
-    link: routeTo.staking.location(),
+    link: routeTo.stakingCenter.location(),
     i18nLabel: navigationMessages.location,
-    icon: <LocationOn color="primary" />,
+    icon: <LocationIcon color="inherit" />,
+    id: 'LOCATION',
   },
   {
-    link: routeTo.staking.people(),
+    link: routeTo.stakingCenter.people(),
     i18nLabel: navigationMessages.people,
-    icon: <People color="primary" />,
+    icon: <PeopleIcon color="inherit" />,
+    id: 'PEOPLE',
   },
 ]
 
-const NavigationBar = () => {
+const TAB_NAMES = navItems.filter(({link}) => link).map(({id}) => id)
+
+const useTabStateFromUrl = () => {
+  const {location} = useReactRouter()
+  const initialTabName = navItems.find(({link}) => location.pathname === link)
+  const tabState = useTabState(TAB_NAMES, initialTabName && initialTabName.id)
+  return tabState
+}
+
+const TabsHeader = () => {
+  const {translate: tr} = useI18n()
+  const {history, location} = useReactRouter()
+  const {currentTabIndex, setTabByEventIndex} = useTabStateFromUrl()
+
+  const tabs = navItems.map(({i18nLabel, id}) => ({id, label: tr(i18nLabel)}))
+
+  const onChange = useCallback(
+    (...args) => {
+      // TODO: can we do better?
+      const navItem = navItems[args[1]]
+      setTabByEventIndex(...args)
+      location.pathname !== navItem.link && history.push(navItem.link)
+    },
+    [history, location.pathname, setTabByEventIndex]
+  )
+
+  return (
+    <LiteTabs value={currentTabIndex} onChange={onChange}>
+      {tabs.map(({id, label}) => (
+        <LiteTab key={id} label={label} />
+      ))}
+    </LiteTabs>
+  )
+}
+
+const MobileNavigation = () => {
+  const classes = useNavigationBarStyles()
+
+  return (
+    <div className={classes.mobileNavBar}>
+      <TabsHeader />
+    </div>
+  )
+}
+
+const DesktopNavigation = () => {
   const classes = useNavigationBarStyles()
   const {translate: tr} = useI18n()
 
   return (
     <div className={classes.navBar}>
-      {navItems.map(({link, i18nLabel, icon}) => (
-        <NavLink key={link} to={link} className={classes.href}>
-          {(isActive) => <MenuItem active={isActive} label={tr(i18nLabel)} icon={icon} />}
-        </NavLink>
-      ))}
+      {navItems.map(
+        ({link, i18nLabel, icon}) =>
+          link && (
+            <NavLink key={link} to={link} className={classes.href}>
+              {(isActive) => <MenuItem active={isActive} label={tr(i18nLabel)} icon={icon} />}
+            </NavLink>
+          )
+      )}
     </div>
   )
 }
+
+const NavigationBar = () => (
+  <React.Fragment>
+    <MobileOnly>
+      <MobileNavigation />
+    </MobileOnly>
+    <DesktopOnly className="h-100">
+      <DesktopNavigation />
+    </DesktopOnly>
+  </React.Fragment>
+)
 
 export default NavigationBar
