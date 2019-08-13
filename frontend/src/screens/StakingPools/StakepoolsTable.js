@@ -192,14 +192,16 @@ const StakepoolsTable = ({data, headers, noColumnsMsg, scrollRef, scrollNode}: P
   return (
     <div className={classes.wrapper} ref={scrollAreaRef}>
       <DesktopOnly>
-        <ScrollingSideArrow
-          onUp={onMouseUp}
-          onDown={onArrowLeft}
-          direction="left"
-          background={backgroundColor}
-          active={isHoldingLeft}
-          {...{scrollAreaRef, fullScreenScrollRef}}
-        />
+        <div className="h-100">
+          <ScrollingSideArrow
+            onUp={onMouseUp}
+            onDown={onArrowLeft}
+            direction="left"
+            background={backgroundColor}
+            active={isHoldingLeft}
+            {...{scrollAreaRef, fullScreenScrollRef}}
+          />
+        </div>
       </DesktopOnly>
 
       <Card className={cn(classes.innerWrapper, 'w-100')}>
@@ -223,14 +225,16 @@ const StakepoolsTable = ({data, headers, noColumnsMsg, scrollRef, scrollNode}: P
       </Card>
 
       <DesktopOnly>
-        <ScrollingSideArrow
-          onUp={onMouseUp}
-          onDown={onArrowRight}
-          direction="right"
-          background={backgroundColor}
-          active={isHoldingRight}
-          {...{scrollAreaRef, fullScreenScrollRef}}
-        />
+        <div className="h-100">
+          <ScrollingSideArrow
+            onUp={onMouseUp}
+            onDown={onArrowRight}
+            direction="right"
+            background={backgroundColor}
+            active={isHoldingRight}
+            {...{scrollAreaRef, fullScreenScrollRef}}
+          />
+        </div>
       </DesktopOnly>
     </div>
   )
