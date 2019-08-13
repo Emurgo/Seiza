@@ -19,6 +19,7 @@ import {useFilters, useFilteredPools, FiltersProvider} from './filtersUtils'
 import ColumnHeader from './ColumnHeader'
 import {useSortOptions, SortOptionsProvider} from './sortUtils'
 import {useSelectedFieldsProps} from './selectedFieldsUtils'
+import {ScrollableWrapperRefProvider, useScrollableWrapperRef} from './scrollableWrapperUtils'
 
 const messages = defineMessages({
   NA: 'N/A',
@@ -107,7 +108,13 @@ type StakingPoolsProps = {|
   stakepools: Array<{}>, // TODO: get type for stakepool once we have proper schema
 |}
 
-export const StakingPools = ({setPage, page, stakepools}: StakingPoolsProps) => {
+export const StakingPools = (props: StakingPoolsProps) => (
+  <ScrollableWrapperRefProvider>
+    <_StakingPools {...props} />
+  </ScrollableWrapperRefProvider>
+)
+
+const _StakingPools = ({setPage, page, stakepools}: StakingPoolsProps) => {
   const classes = useStyles()
   const {translate: tr} = useI18n()
 
@@ -133,6 +140,8 @@ export const StakingPools = ({setPage, page, stakepools}: StakingPoolsProps) => 
     selectOptions,
     renderSelectValue,
   } = useSelectedFieldsProps()
+
+  const {scrollableWrapperRef, scrollableWrapperNode} = useScrollableWrapperRef()
 
   const {tableData, tableHeaders} = useGetTableData(selectedFields, stakepoolsToShow)
 
@@ -177,6 +186,8 @@ export const StakingPools = ({setPage, page, stakepools}: StakingPoolsProps) => 
         headers={tableHeaders}
         data={tableData}
         noColumnsMsg={tr(messages.noColumns)}
+        scrollRef={scrollableWrapperRef}
+        scrollNode={scrollableWrapperNode}
       />
       {tableData.length === 0 && (
         <div className={classes.wrapper}>

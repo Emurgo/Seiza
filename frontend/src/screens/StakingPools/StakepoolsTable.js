@@ -155,18 +155,19 @@ type Props = {|
     values: Array<React$Node>,
   |},
   noColumnsMsg: string,
+  scrollRef: any,
+  scrollNode: any,
 |}
 
-const StakepoolsTable = ({data, headers, noColumnsMsg}: Props) => {
+const StakepoolsTable = ({data, headers, noColumnsMsg, scrollRef, scrollNode}: Props) => {
   const theme = useTheme()
   const classes = useStyles()
-  const scrollRef = React.useRef(null)
   const scrollAreaRef = React.useRef(null)
 
   const backgroundColor = getBackgroundColor(theme)
 
   const {onArrowLeft, onArrowRight, onMouseUp, isHoldingRight, isHoldingLeft} = useArrowsScrolling(
-    scrollRef.current,
+    scrollNode,
     SCROLL_SPEED
   )
 
