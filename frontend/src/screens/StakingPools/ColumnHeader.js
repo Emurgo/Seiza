@@ -1,6 +1,7 @@
 // @flow
 
-import React, {useCallback, useMemo} from 'react'
+import _ from 'lodash'
+import React, {useCallback, useMemo, useEffect} from 'react'
 import {Typography, Grid, ClickAwayListener} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {ArrowDropDown, ArrowDropUp, FilterList as FilterIcon} from '@material-ui/icons'
@@ -9,6 +10,7 @@ import {Tooltip} from '@/components/visual'
 import {useI18n} from '@/i18n/helpers'
 import useBooleanState from '@/components/hooks/useBooleanState'
 
+import {useScrollableWrapperRef} from './scrollableWrapperUtils'
 import {fieldsConfigMap} from './fieldsConfig'
 import {useFilters} from './filtersUtils'
 import {ORDER, useSortOptions} from './sortUtils'
@@ -34,9 +36,25 @@ const useTooltipStyles = makeStyles((theme) => ({
 
 let tooltipClickedAt = Date.now()
 
+const useCloseTooltipOnScroll = (closeTooltip) => {
+  const {scrollableWrapperNode} = useScrollableWrapperRef()
+  const onScroll = useMemo(() => _.throttle(closeTooltip, 500), [closeTooltip])
+
+  useEffect(() => {
+    if (scrollableWrapperNode) {
+      scrollableWrapperNode.addEventListener('scroll', onScroll)
+      return () => {
+        scrollableWrapperNode.removeEventListener('scroll', onScroll)
+      }
+    }
+    return () => null
+  }, [onScroll, scrollableWrapperNode])
+}
+
 const GeneralFilter = ({field, label}) => {
   const classes = useStyles()
   const tooltipClasses = useTooltipStyles()
+
   const conf = fieldsConfigMap[field]
   const {Component, isFilterActive} = conf.filter
   const {filters, setFilter, resetFilter} = useFilters()
@@ -51,6 +69,8 @@ const GeneralFilter = ({field, label}) => {
   const filterConfig = filters[field]
   const onChange = useCallback((v) => setFilter(field, v), [field, setFilter])
   const onReset = useCallback(() => resetFilter(field), [field, resetFilter])
+
+  useCloseTooltipOnScroll(closeTooltip)
 
   // Note (hack): as Tooltip is rendered in Portal, `onClickAway` is also fired when
   // user clicks into Tooltip and we do not want to close Tooltip then (so we use this
