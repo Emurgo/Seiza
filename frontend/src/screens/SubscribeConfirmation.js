@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const SubscribeThanks = () => {
+const SubscribeConfirmation = () => {
   const classes = useStyles()
   const {translate: tr} = useI18n()
   const {hideSubscribe} = useSubscribeContext()
@@ -51,4 +51,4 @@ const SubscribeThanks = () => {
   )
 }
 
-export default SubscribeThanks
+export default SubscribeConfirmation
