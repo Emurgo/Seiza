@@ -6,7 +6,7 @@ import {makeStyles, useTheme} from '@material-ui/styles'
 import {Grid, Typography} from '@material-ui/core'
 import {darken, fade} from '@material-ui/core/styles/colorManipulator'
 
-import {Card} from '@/components/visual'
+import {Card, DesktopOnly} from '@/components/visual'
 
 import ScrollingSideArrow from '@/components/common/ComparisonMatrix/DesktopComparisonMatrix/ScrollingSideArrow'
 import {ScrollOverlayWrapper} from '@/components/common/ComparisonMatrix/DesktopComparisonMatrix/ScrollOverlay'
@@ -80,6 +80,16 @@ const useStyles = makeStyles((theme) => {
       ...cell,
       height: 54,
       width: '100%',
+      [theme.breakpoints.down('xs')]: {
+        width: 130,
+        minWidth: 0,
+      },
+    },
+    titleHeader: {
+      [theme.breakpoints.down('xs')]: {
+        width: '130px !important', // Needed
+        minWidth: '0px !important', // Needed
+      },
     },
     headerCell: {
       ...cell,
@@ -135,7 +145,7 @@ const Titles = ({headers, data}) => {
   const classes = useStyles()
   return (
     <React.Fragment>
-      <div className={classes.headerCell}>{headers.title}</div>
+      <div className={cn(classes.headerCell, classes.titleHeader)}>{headers.title}</div>
       {data.map(({title}, index) => (
         <div className={classes.titleCell} key={index}>
           {title}
@@ -181,14 +191,16 @@ const StakepoolsTable = ({data, headers, noColumnsMsg, scrollRef, scrollNode}: P
 
   return (
     <div className={classes.wrapper} ref={scrollAreaRef}>
-      <ScrollingSideArrow
-        onUp={onMouseUp}
-        onDown={onArrowLeft}
-        direction="left"
-        background={backgroundColor}
-        active={isHoldingLeft}
-        {...{scrollAreaRef, fullScreenScrollRef}}
-      />
+      <DesktopOnly>
+        <ScrollingSideArrow
+          onUp={onMouseUp}
+          onDown={onArrowLeft}
+          direction="left"
+          background={backgroundColor}
+          active={isHoldingLeft}
+          {...{scrollAreaRef, fullScreenScrollRef}}
+        />
+      </DesktopOnly>
 
       <Card className={cn(classes.innerWrapper, 'w-100')}>
         <div className={classes.titlesWrapper}>
@@ -210,14 +222,16 @@ const StakepoolsTable = ({data, headers, noColumnsMsg, scrollRef, scrollNode}: P
         </ScrollOverlayWrapper>
       </Card>
 
-      <ScrollingSideArrow
-        onUp={onMouseUp}
-        onDown={onArrowRight}
-        direction="right"
-        background={backgroundColor}
-        active={isHoldingRight}
-        {...{scrollAreaRef, fullScreenScrollRef}}
-      />
+      <DesktopOnly>
+        <ScrollingSideArrow
+          onUp={onMouseUp}
+          onDown={onArrowRight}
+          direction="right"
+          background={backgroundColor}
+          active={isHoldingRight}
+          {...{scrollAreaRef, fullScreenScrollRef}}
+        />
+      </DesktopOnly>
     </div>
   )
 }

@@ -36,8 +36,10 @@ const ROWS_PER_PAGE = 20
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {
-    paddingRight: 100,
-    paddingLeft: 100,
+    [theme.breakpoints.up('md')]: {
+      paddingRight: 100,
+      paddingLeft: 100,
+    },
     marginBottom: 0,
   },
   resetAll: {
