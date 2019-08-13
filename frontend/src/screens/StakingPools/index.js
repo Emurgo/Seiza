@@ -2,7 +2,7 @@
 import _ from 'lodash'
 import React, {useMemo, useCallback} from 'react'
 import {defineMessages} from 'react-intl'
-import {Grid} from '@material-ui/core'
+import {Grid, Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
 import {Pagination, LoadingError} from '@/components/common'
@@ -27,6 +27,8 @@ const messages = defineMessages({
   manageColumns: 'Manage columns',
   noColumns: 'Please select some columns.',
   resetAllFilters: 'Reset all filters',
+  noResults: 'No data matching filters',
+  noData: 'No pools to show',
 })
 
 const ROWS_PER_PAGE = 20
@@ -44,6 +46,14 @@ const useStyles = makeStyles((theme) => ({
   },
   fieldsSelect: {
     marginLeft: 0,
+  },
+  resetAllText: {
+    'paddingLeft': theme.spacing(2),
+    'textDecoration': 'underline',
+    'cursor': 'pointer',
+    '&:hover': {
+      color: theme.palette.primary.main,
+    },
   },
 }))
 
@@ -126,6 +136,10 @@ export const StakingPools = ({setPage, page, stakepools}: StakingPoolsProps) => 
 
   const {tableData, tableHeaders} = useGetTableData(selectedFields, stakepoolsToShow)
 
+  if (!stakepools.length) {
+    return <Typography variant="overline">{tr(messages.noData)}</Typography>
+  }
+
   return (
     <React.Fragment>
       <Grid container justify="space-between" className={classes.wrapper} alignItems="flex-end">
@@ -164,6 +178,21 @@ export const StakingPools = ({setPage, page, stakepools}: StakingPoolsProps) => 
         data={tableData}
         noColumnsMsg={tr(messages.noColumns)}
       />
+      {tableData.length === 0 && (
+        <div className={classes.wrapper}>
+          <Typography component="span" variant="overline">
+            {tr(messages.noResults)}
+          </Typography>
+          <Typography
+            component="span"
+            variant="overline"
+            onClick={resetFilters}
+            className={classes.resetAllText}
+          >
+            {tr(messages.resetAllFilters)}
+          </Typography>
+        </div>
+      )}
     </React.Fragment>
   )
 }
