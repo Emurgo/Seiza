@@ -4,9 +4,9 @@ import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
 
 import {useI18n} from '@/i18n/helpers'
-import {useAnalytics} from '@/helpers/googleAnalytics'
-import subscribedImage from '@/assets/icons/subscribed.svg'
-import {useSubscribeContext} from '@/components/context/SubscribeContext'
+import {useAnalytics} from '@/components/context/googleAnalytics'
+import subscribedImage from '@/static/assets/icons/subscribed.svg'
+import {useSubscribeContext} from './Footer/context/subscribe'
 
 const messages = defineMessages({
   subscriptionConfirmedHeader: 'Thank you!',
@@ -16,10 +16,10 @@ const messages = defineMessages({
 const useStyles = makeStyles((theme) => ({
   wrapper: {
     height: '100%',
-    padding: theme.spacing.unit * 6,
+    padding: theme.spacing(6),
   },
   message: {
-    marginBottom: theme.spacing.unit * 3,
+    marginBottom: theme.spacing(3),
   },
 }))
 
