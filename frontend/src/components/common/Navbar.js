@@ -1,5 +1,6 @@
 // @flow
-import React from 'react'
+import React, {useEffect, useRef} from 'react'
+import ReactDOM from 'react-dom'
 import cn from 'classnames'
 
 import {MenuList, MenuItem, Typography} from '@material-ui/core'
@@ -96,6 +97,14 @@ const useSublinksStyles = makeStyles((theme) => ({
     padding: 0,
     minHeight: 0,
   },
+  hackyInput: {
+    width: 0,
+    height: 0,
+    border: 'none',
+    padding: 0,
+    margin: 0,
+    display: 'block',
+  },
 }))
 
 const useTooltipClasses = makeStyles((theme) => ({
@@ -128,8 +137,22 @@ const Sublink = ({children, to}) => {
 
 const Sublinks = ({sublinks}) => {
   const classes = useSublinksStyles()
+  const hackyInputRef = useRef(null)
+
+  useEffect(() => {
+    // We force "focus" on non-visible input so that Tooltip
+    // is hidden immediatelly after some link is clicked
+    const el = hackyInputRef.current
+    if (el) {
+      const node = ReactDOM.findDOMNode(el)
+      // $FlowFixMe
+      node && node.focus()
+    }
+  }, [])
+
   return (
     <Card>
+      <input ref={hackyInputRef} className={classes.hackyInput} />
       <MenuList>
         {sublinks.map(({link, label}) => (
           <MenuItem key={link} className={classes.menuItem}>
@@ -154,7 +177,6 @@ const WithSublinks = ({children, sublinks}) => {
       placement="bottom"
       interactive
       title={<Sublinks sublinks={sublinks} />}
-      disableFocusListener
     >
       <div className={classes.tooltipChildren}>{children}</div>
     </PopoverMenu>
