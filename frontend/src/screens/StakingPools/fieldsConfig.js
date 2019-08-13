@@ -72,11 +72,23 @@ const matchTextFilter = (data: string, value: ?string) => {
   return data.toLowerCase().includes(value ? value.toLocaleLowerCase() : '')
 }
 
+const RANGE_DIVIDER = '-'
+export const FILTER_KEY_VALUE_DIVIDER = '_'
+
+const encodeRange = (rangeObj) => `${rangeObj[0]}${RANGE_DIVIDER}${rangeObj[1]}`
+const decodeRange = (rangeStr) => rangeStr.split(RANGE_DIVIDER)
+const rangeEncodeObj = {encodeValue: encodeRange, decodeValue: decodeRange}
+
+const encodeText = (s) => s
+const decodeText = (s) => s
+const textEncodeObj = {encodeValue: encodeText, decodeValue: decodeText}
+
 const percentageFieldFilterConfig = {
   Component: PercentageSlider,
   type: FILTER_TYPES.range,
   isFilterActive: isRangeFilterActive,
   dataMatchFilter: isInPercentRange,
+  ...rangeEncodeObj,
 }
 
 const adaFieldFilterConfig = {
@@ -84,6 +96,7 @@ const adaFieldFilterConfig = {
   type: FILTER_TYPES.range,
   isFilterActive: isRangeFilterActive,
   dataMatchFilter: isInRange,
+  ...rangeEncodeObj,
 }
 
 const integerFieldFilterConfig = {
@@ -91,6 +104,7 @@ const integerFieldFilterConfig = {
   type: FILTER_TYPES.range,
   isFilterActive: isRangeFilterActive,
   dataMatchFilter: isInRange,
+  ...rangeEncodeObj,
 }
 
 const textFieldFilterConfig = {
@@ -98,6 +112,7 @@ const textFieldFilterConfig = {
   type: FILTER_TYPES.text,
   isFilterActive: isTextFilterActive,
   dataMatchFilter: matchTextFilter,
+  ...textEncodeObj,
 }
 
 export const fieldsConfig: Array<Config> = [
