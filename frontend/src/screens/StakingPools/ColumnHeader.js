@@ -1,6 +1,7 @@
 // @flow
 
 import _ from 'lodash'
+import cn from 'classnames'
 import React, {useCallback, useMemo, useEffect} from 'react'
 import {Typography, Grid, ClickAwayListener} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
@@ -22,6 +23,10 @@ const useStyles = makeStyles((theme) => ({
   filterIcon: {
     marginRight: theme.spacing(0.8),
     paddingLeft: theme.spacing(0.8), // Note: controls icon size
+  },
+  iconColor: {
+    // So that icon inherits proper color
+    color: theme.palette.text.primary,
   },
 }))
 
@@ -98,7 +103,7 @@ const GeneralFilter = ({field, label}) => {
 
   return (
     <ClickAwayListener onClickAway={onClickAway}>
-      <div className="d-flex">
+      <div className={cn(classes.iconColor, 'd-flex')}>
         <Tooltip
           PopperProps={popperProps}
           title={<Component {...{filterConfig, label, onChange, onReset, filterActive}} />}
@@ -149,7 +154,7 @@ const ColumnHeader = ({field}: Props) => {
             {label}
           </Typography>
 
-          <Grid container alignItems="center">
+          <Grid container alignItems="center" className={classes.iconColor}>
             {sortActive ? (
               sortOptions.order === ORDER.DESC ? (
                 <ArrowDropDown />
