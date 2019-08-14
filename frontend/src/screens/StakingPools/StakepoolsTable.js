@@ -127,6 +127,11 @@ const useStyles = makeStyles((theme) => {
     noColumns: {
       paddingLeft: 100,
     },
+    fullWidthCell: {
+      border: 'none',
+      width: '100%',
+      padding: 0,
+    },
   }
 })
 
@@ -139,6 +144,7 @@ const Row = ({data, options}) => {
           {item}
         </TD>
       ))}
+      <TD className={classes.fullWidthCell} />
     </TR>
   )
 }
@@ -163,6 +169,7 @@ const Headers = ({headers}) => {
             {header}
           </TD>
         ))}
+        <TD className={classes.fullWidthCell} />
       </TR>
     </TableHead>
   )
