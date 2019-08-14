@@ -28,6 +28,7 @@ const fullScreenScrollRef = {current: null}
 const getBackgroundColor = (theme) => theme.palette.background.paper
 
 const MOBILE_TITLE_WIDTH = 130
+const HEADER_HEIGHT = 80
 
 const useStyles = makeStyles((theme) => {
   const cell = {
@@ -114,7 +115,7 @@ const useStyles = makeStyles((theme) => {
     },
     headerCell: {
       ...cell,
-      height: 80,
+      height: HEADER_HEIGHT,
       display: 'table-cell',
     },
     dataCell: {
@@ -240,6 +241,7 @@ const StakepoolsTable = ({data, headers, noColumnsMsg, scrollRef, scrollNode, op
           downBackground={darken(backgroundColor, 0.01)}
           borderRadius={BORDER_RADIUS}
           className="w-100"
+          headerHeight={HEADER_HEIGHT}
         >
           <div className={cn(classes.scrollWrapper, 'w-100')} ref={scrollRef}>
             <Grid container direction="column" className="w-100">

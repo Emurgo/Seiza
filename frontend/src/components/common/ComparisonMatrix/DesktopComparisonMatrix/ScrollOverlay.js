@@ -18,6 +18,7 @@ type ScrollOverlayWrapperProps = {|
   downBackground: string,
   borderRadius: number,
   className?: string,
+  headerHeight?: number,
 |}
 
 export const ScrollOverlayWrapper = ({
@@ -26,12 +27,19 @@ export const ScrollOverlayWrapper = ({
   downBackground,
   borderRadius,
   className,
+  headerHeight,
 }: ScrollOverlayWrapperProps) => {
   const classes = useScrollOverlayStyles()
   return (
     <div className={cn(classes.wrapper, className)}>
-      <ScrollOverlay direction="left" {...{upBackground, downBackground, borderRadius}} />
-      <ScrollOverlay direction="right" {...{upBackground, downBackground, borderRadius}} />
+      <ScrollOverlay
+        direction="left"
+        {...{upBackground, downBackground, borderRadius, headerHeight}}
+      />
+      <ScrollOverlay
+        direction="right"
+        {...{upBackground, downBackground, borderRadius, headerHeight}}
+      />
       {children}
     </div>
   )
@@ -50,10 +58,13 @@ const useStyles = makeStyles((theme) => ({
     height: '100%',
     width: 25,
     zIndex: 1,
+    // So that we avoid cases like eg. inactive filters when there
+    // is minor overlay (filter is still visible)
+    pointerEvents: 'none',
     ...(direction === 'left' ? {left: 0} : {right: 0}),
   }),
   up: {
-    height: 60,
+    height: ({headerHeight}) => (headerHeight != null ? headerHeight : 60),
     borderRadius: ({borderRadius}) => borderRadius,
     background: ({direction, upBackground, downBackground}) =>
       `linear-gradient(to ${REVERSED_DIRECTIONS[direction]},
@@ -74,6 +85,7 @@ type ScrollOverlayProps = {|
   upBackground: string,
   downBackground: string,
   borderRadius: number,
+  headerHeight?: number,
 |}
 
 const ScrollOverlay = (props: ScrollOverlayProps) => {
