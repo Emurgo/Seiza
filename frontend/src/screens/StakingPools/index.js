@@ -159,6 +159,14 @@ const _StakingPools = ({setPage, page, stakepools}: StakingPoolsProps) => {
     return <Typography variant="overline">{tr(messages.noData)}</Typography>
   }
 
+  const pagination = (
+    <Pagination
+      pageCount={getPageCount(sortedPools.length, ROWS_PER_PAGE)}
+      page={page}
+      onChangePage={setPage}
+    />
+  )
+
   return (
     <React.Fragment>
       <Grid container justify="space-between" className={classes.wrapper} alignItems="flex-end">
@@ -184,13 +192,7 @@ const _StakingPools = ({setPage, page, stakepools}: StakingPoolsProps) => {
           </Grid>
         </Grid>
 
-        <Grid item>
-          <Pagination
-            pageCount={getPageCount(sortedPools.length, ROWS_PER_PAGE)}
-            page={page}
-            onChangePage={setPage}
-          />
-        </Grid>
+        <Grid item>{pagination}</Grid>
       </Grid>
       <StakepoolsTable
         headers={tableHeaders}
@@ -200,7 +202,7 @@ const _StakingPools = ({setPage, page, stakepools}: StakingPoolsProps) => {
         scrollNode={scrollableWrapperNode}
         options={options}
       />
-      {tableData.length === 0 && (
+      {tableData.length === 0 ? (
         <div className={classes.wrapper}>
           <Typography component="span" variant="overline">
             {tr(messages.noResults)}
@@ -214,6 +216,10 @@ const _StakingPools = ({setPage, page, stakepools}: StakingPoolsProps) => {
             {tr(messages.resetAllFilters)}
           </Typography>
         </div>
+      ) : (
+        <Grid container className={classes.wrapper} justify="flex-end">
+          <Grid item>{pagination}</Grid>
+        </Grid>
       )}
     </React.Fragment>
   )
