@@ -442,6 +442,8 @@
   "screens.More.index.stakePoolProfileScreen": "Stakepool profile screen",
   "screens.More.index.stakingKeyScreens": "Staking Key screens",
   "screens.More.index.userStakingKeyScreen": "User staking key",
+  "screens.SubscribeConfirmation.subscriptionConfirmedHeader": "Thank you!",
+  "screens.SubscribeConfirmation.subscriptionConfirmedMessage": "Your subscription to our newsletter has been confirmed.",
   "screens.PageNotFound.notFound": "The requested url could not be found",
   "screens.PageNotFound.notFoundHeader": "We are sorry!",
   "screens.Staking.ComparisonMatrix.index.actualPledge": "Actual Pledge",
