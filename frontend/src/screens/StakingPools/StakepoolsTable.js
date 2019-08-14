@@ -11,10 +11,11 @@ import {
   TableHead,
   TableRow as TR,
   TableCell as TD,
+  Hidden,
 } from '@material-ui/core'
 import {darken, fade} from '@material-ui/core/styles/colorManipulator'
 
-import {Card, DesktopOnly} from '@/components/visual'
+import {Card} from '@/components/visual'
 
 import ScrollingSideArrow from '@/components/common/ComparisonMatrix/DesktopComparisonMatrix/ScrollingSideArrow'
 import {ScrollOverlayWrapper} from '@/components/common/ComparisonMatrix/DesktopComparisonMatrix/ScrollOverlay'
@@ -218,7 +219,7 @@ const StakepoolsTable = ({data, headers, noColumnsMsg, scrollRef, scrollNode, op
 
   return (
     <div className={classes.wrapper} ref={scrollAreaRef}>
-      <DesktopOnly>
+      <Hidden mdDown implementation="css">
         <div className="h-100">
           <ScrollingSideArrow
             onUp={onMouseUp}
@@ -229,7 +230,7 @@ const StakepoolsTable = ({data, headers, noColumnsMsg, scrollRef, scrollNode, op
             {...{scrollAreaRef, fullScreenScrollRef}}
           />
         </div>
-      </DesktopOnly>
+      </Hidden>
 
       <Card className={cn(classes.innerWrapper, 'w-100')}>
         <div className={classes.titlesWrapper}>
@@ -254,7 +255,7 @@ const StakepoolsTable = ({data, headers, noColumnsMsg, scrollRef, scrollNode, op
         </ScrollOverlayWrapper>
       </Card>
 
-      <DesktopOnly>
+      <Hidden mdDown implementation="css">
         <div className="h-100">
           <ScrollingSideArrow
             onUp={onMouseUp}
@@ -265,7 +266,7 @@ const StakepoolsTable = ({data, headers, noColumnsMsg, scrollRef, scrollNode, op
             {...{scrollAreaRef, fullScreenScrollRef}}
           />
         </div>
-      </DesktopOnly>
+      </Hidden>
     </div>
   )
 }
