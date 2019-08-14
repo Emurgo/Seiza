@@ -4,8 +4,9 @@ import _ from 'lodash'
 import * as React from 'react'
 import {defineMessages} from 'react-intl'
 
-import {AdaValue} from '@/components/common'
+import {AdaValue, Link} from '@/components/common'
 import {Tooltip} from '@/components/visual'
+import {routeTo} from '@/helpers/routes'
 import {ItemIdentifier} from '@/components/common/ComparisonMatrix/utils'
 import {PercentageSlider, AdaSlider, IntegerSlider, TextFilter} from './Filters'
 import {rTo2Decimals} from './helpers'
@@ -124,12 +125,23 @@ const textFieldFilterConfig = {
 
 const nameTooltipWrapperStyles = {overflow: 'hidden'}
 
+const NameTooltip = ({data}) => (
+  <Link to={routeTo.stakepool(data.poolHash)} underline="always">
+    {data.name}
+  </Link>
+)
+
 export const fieldsConfig: Array<Config> = [
   {
     field: 'name',
     getLabel: ({tr}: GetLabelParams) => tr(fieldsMessages.name),
     getValue: ({data}: GetValueParams) => (
-      <Tooltip interactive placement="top" title={data.name}>
+      <Tooltip
+        interactive
+        placement="top"
+        title={<NameTooltip data={data} />}
+        leaveTouchDelay={3000}
+      >
         <div style={nameTooltipWrapperStyles}>
           <ItemIdentifier title={data.name} identifier={data.poolHash} />
         </div>
