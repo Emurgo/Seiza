@@ -128,12 +128,12 @@ const useStyles = makeStyles((theme) => {
   }
 })
 
-const Row = ({data}) => {
+const Row = ({data, options}) => {
   const classes = useStyles()
   return (
     <TR>
       {data.map((item, index) => (
-        <TD align="left" className={classes.dataCell} key={index}>
+        <TD align={options[index].align || 'left'} className={classes.dataCell} key={index}>
           {item}
         </TD>
       ))}
@@ -141,11 +141,11 @@ const Row = ({data}) => {
   )
 }
 
-const Rows = ({data}) => {
+const Rows = ({data, options}) => {
   return (
     <TableBody>
       {data.map(({values}, index) => (
-        <Row data={values} key={index} />
+        <Row data={values} options={options} key={index} />
       ))}
     </TableBody>
   )
@@ -192,9 +192,10 @@ type Props = {|
   noColumnsMsg: string,
   scrollRef: any,
   scrollNode: any,
+  options: Array<{align?: 'right' | 'left'}>,
 |}
 
-const StakepoolsTable = ({data, headers, noColumnsMsg, scrollRef, scrollNode}: Props) => {
+const StakepoolsTable = ({data, headers, noColumnsMsg, scrollRef, scrollNode, options}: Props) => {
   const theme = useTheme()
   const classes = useStyles()
   const scrollAreaRef = React.useRef(null)
@@ -244,7 +245,7 @@ const StakepoolsTable = ({data, headers, noColumnsMsg, scrollRef, scrollNode}: P
             <Grid container direction="column" className="w-100">
               <MuiTable className={classes.table}>
                 <Headers headers={headers.values} />
-                <Rows data={data} />
+                <Rows {...{data, options}} />
               </MuiTable>
             </Grid>
           </div>

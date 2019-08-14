@@ -88,7 +88,15 @@ const useGetTableData = (selectedFields, stakepoolsToShow) => {
     [_fieldsConfig]
   )
 
-  return {tableData, tableHeaders}
+  const options = useMemo(
+    () =>
+      _fieldsConfig.map((field) => ({
+        align: field.align,
+      })),
+    [_fieldsConfig]
+  )
+
+  return {tableData, tableHeaders, options}
 }
 
 const useGetSortedPools = (stakepools) => {
@@ -145,7 +153,7 @@ const _StakingPools = ({setPage, page, stakepools}: StakingPoolsProps) => {
 
   const {scrollableWrapperRef, scrollableWrapperNode} = useScrollableWrapperRef()
 
-  const {tableData, tableHeaders} = useGetTableData(selectedFields, stakepoolsToShow)
+  const {tableData, tableHeaders, options} = useGetTableData(selectedFields, stakepoolsToShow)
 
   if (!stakepools.length) {
     return <Typography variant="overline">{tr(messages.noData)}</Typography>
@@ -190,6 +198,7 @@ const _StakingPools = ({setPage, page, stakepools}: StakingPoolsProps) => {
         noColumnsMsg={tr(messages.noColumns)}
         scrollRef={scrollableWrapperRef}
         scrollNode={scrollableWrapperNode}
+        options={options}
       />
       {tableData.length === 0 && (
         <div className={classes.wrapper}>
