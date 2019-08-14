@@ -1,12 +1,20 @@
 // @flow
 import _ from 'lodash'
+import cn from 'classnames'
 import React, {useMemo, useCallback} from 'react'
 import {defineMessages} from 'react-intl'
 import {Grid, Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
 import {Pagination, LoadingError} from '@/components/common'
-import {SimpleLayout, LoadingInProgress, Select, Button} from '@/components/visual'
+import {
+  SimpleLayout,
+  LoadingInProgress,
+  Select,
+  Button,
+  MobileOnly,
+  DesktopOnly,
+} from '@/components/visual'
 import {useManageQueryValue} from '@/components/hooks/useManageQueryValue'
 import {toIntOrNull, getPageCount} from '@/helpers/utils'
 import {useI18n} from '@/i18n/helpers'
@@ -28,6 +36,7 @@ const messages = defineMessages({
   manageColumns: 'Manage columns',
   noColumns: 'Please select some columns.',
   resetAllFilters: 'Reset all filters',
+  resetAllFiltersMobile: 'Reset filters',
   noResults: 'No data matching filters',
   noData: 'No pools to show',
 })
@@ -36,7 +45,7 @@ const ROWS_PER_PAGE = 20
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {
-    [theme.breakpoints.up('md')]: {
+    [theme.breakpoints.up('lg')]: {
       paddingRight: 100,
       paddingLeft: 100,
     },
@@ -49,6 +58,10 @@ const useStyles = makeStyles((theme) => ({
   },
   fieldsSelect: {
     marginLeft: 0,
+    maxWidth: 160,
+    [theme.breakpoints.up('sm')]: {
+      maxWidth: '100%',
+    },
   },
   resetAllText: {
     'paddingLeft': theme.spacing(2),
@@ -56,6 +69,28 @@ const useStyles = makeStyles((theme) => ({
     'cursor': 'pointer',
     '&:hover': {
       color: theme.palette.primary.main,
+    },
+  },
+  controls: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    [theme.breakpoints.up('md')]: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'flex-end',
+    },
+  },
+  upperPagination: {
+    paddingTop: theme.spacing(1),
+    paddingBottom: theme.spacing(1),
+    [theme.breakpoints.up('md')]: {
+      padding: 0,
+    },
+  },
+  bottomPaginationWrapper: {
+    justifyContent: 'center',
+    [theme.breakpoints.up('md')]: {
+      justifyContent: 'flex-end',
     },
   },
 }))
@@ -169,7 +204,7 @@ const _StakingPools = ({setPage, page, stakepools}: StakingPoolsProps) => {
 
   return (
     <React.Fragment>
-      <Grid container justify="space-between" className={classes.wrapper} alignItems="flex-end">
+      <Grid container className={cn(classes.wrapper, classes.controls)}>
         <Grid item>
           <Grid container alignItems="flex-end">
             <Select
@@ -187,12 +222,15 @@ const _StakingPools = ({setPage, page, stakepools}: StakingPoolsProps) => {
               disabled={filtersDisabled}
               onClick={resetFilters}
             >
-              {tr(messages.resetAllFilters)}
+              <DesktopOnly>{tr(messages.resetAllFilters)}</DesktopOnly>
+              <MobileOnly>{tr(messages.resetAllFiltersMobile)}</MobileOnly>
             </Button>
           </Grid>
         </Grid>
 
-        <Grid item>{pagination}</Grid>
+        <Grid item className={classes.upperPagination}>
+          {pagination}
+        </Grid>
       </Grid>
       <StakepoolsTable
         headers={tableHeaders}
@@ -217,7 +255,7 @@ const _StakingPools = ({setPage, page, stakepools}: StakingPoolsProps) => {
           </Typography>
         </div>
       ) : (
-        <Grid container className={classes.wrapper} justify="flex-end">
+        <Grid container className={cn(classes.wrapper, classes.bottomPaginationWrapper)}>
           <Grid item>{pagination}</Grid>
         </Grid>
       )}
