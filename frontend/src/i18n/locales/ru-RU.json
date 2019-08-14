@@ -442,6 +442,8 @@
   "screens.More.index.stakePoolProfileScreen": "Экран профиля стейк-пула",
   "screens.More.index.stakingKeyScreens": "Экраны ключа стейкинга",
   "screens.More.index.userStakingKeyScreen": "Ключ стейкинга пользователя",
+  "screens.SubscribeConfirmation.subscriptionConfirmedHeader": "Thank you!",
+  "screens.SubscribeConfirmation.subscriptionConfirmedMessage": "Your subscription to our newsletter has been confirmed.",
   "screens.PageNotFound.notFound": "Запрошенный url не удалось найти",
   "screens.PageNotFound.notFoundHeader": "Мы приносим свои извинения!",
   "screens.Staking.ComparisonMatrix.index.actualPledge": "Актуальный залог",
