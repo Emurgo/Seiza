@@ -98,7 +98,7 @@ const GeneralFilter = ({field, label}) => {
 
   return (
     <ClickAwayListener onClickAway={onClickAway}>
-      <div>
+      <div className="d-flex">
         <Tooltip
           PopperProps={popperProps}
           title={<Component {...{filterConfig, label, onChange, onReset, filterActive}} />}
