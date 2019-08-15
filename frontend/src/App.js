@@ -1,6 +1,7 @@
 // @flow
 
 import React from 'react'
+import dynamic from 'next/dynamic'
 import {BrowserRouter, StaticRouter, Route, Switch, Redirect} from 'react-router-dom'
 import {CssBaseline, Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
@@ -13,14 +14,9 @@ import {useI18n} from '@/i18n/helpers'
 import {setupWhyDidYouRender} from '@/helpers/performance'
 import {AutoSyncProvider} from './screens/Staking/context/autoSync'
 
-import Terms from './screens/Legal/Terms'
-import Privacy from './screens/Legal/Privacy'
 import Home from './screens/Home'
 import Blockchain from './screens/Blockchain'
 import BlockchainHeader from './screens/Blockchain/BlockchainHeader'
-import Staking from './screens/Staking'
-import StakingSimple from './screens/Staking/StakingSimple'
-import StakingPools from './screens/StakingPools'
 import More from './screens/More'
 import PageNotFound from './screens/PageNotFound'
 import SubscribeConfirmation from './screens/SubscribeConfirmation'
@@ -36,7 +32,18 @@ import {CurrencyProvider} from '@/components/hooks/useCurrency'
 import EnvOverrides from './screens/EnvOverrides'
 import TopBar from './TopBar'
 
+import {LoadingInProgress} from '@/components/visual'
+
 import config from '@/config'
+
+const lazyLoadingConfig = {loading: LoadingInProgress}
+
+const Staking = dynamic(() => import('./screens/Staking'), lazyLoadingConfig)
+const StakingSimple = dynamic(() => import('./screens/Staking/StakingSimple'), lazyLoadingConfig)
+const StakingPools = dynamic(() => import('./screens/StakingPools'), lazyLoadingConfig)
+
+const Terms = dynamic(() => import('./screens/Legal/Terms'), lazyLoadingConfig)
+const Privacy = dynamic(() => import('./screens/Legal/Privacy'), lazyLoadingConfig)
 
 if (!config.isProduction && config.watchRenderPerformance) {
   setupWhyDidYouRender()

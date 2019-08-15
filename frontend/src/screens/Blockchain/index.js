@@ -1,19 +1,25 @@
 import React from 'react'
+import dynamic from 'next/dynamic'
 import {Switch, Route} from 'react-router-dom'
 
 import {routeTo} from '@/helpers/routes'
 import SyncIssuesBar from '@/components/common/SyncIssuesBar'
 
-import Transaction from './Transaction'
-import Address from './Address'
-import Epoch from './Epoch'
-import Block from './Block'
 import PagedBlocks from './PagedBlocks'
-import StakePool from './Stakepool'
-import StakingKey from './StakingKey'
-import Slot from './Block/Slot'
 import NotFound from './NotFound'
 import SearchResults from './SearchResults'
+
+import {LoadingInProgress} from '@/components/visual'
+
+const lazyLoadingConfig = {loading: LoadingInProgress}
+
+const Epoch = dynamic(() => import('./Epoch'), lazyLoadingConfig)
+const Transaction = dynamic(() => import('././Transaction'), lazyLoadingConfig)
+const Block = dynamic(() => import('./Block'), lazyLoadingConfig)
+const Address = dynamic(() => import('./Address'), lazyLoadingConfig)
+const StakePool = dynamic(() => import('./Stakepool'), lazyLoadingConfig)
+const StakingKey = dynamic(() => import('./StakingKey'), lazyLoadingConfig)
+const Slot = dynamic(() => import('./Block/Slot'), lazyLoadingConfig)
 
 const renderRouteDef = ({path, ...rest}) => (path ? <Route path={path} {...rest} /> : null)
 
