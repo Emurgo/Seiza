@@ -1,15 +1,16 @@
 // @flow
-import React, {useState, useCallback} from 'react'
+import React from 'react'
 import {Switch, Route} from 'react-router-dom'
 import {matchPath} from 'react-router'
 import useReactRouter from 'use-react-router'
 import NoSSR from 'react-no-ssr'
-import {Grid, Grow, Card, Popper, ClickAwayListener, Divider} from '@material-ui/core'
+import {Grid, Divider, SwipeableDrawer} from '@material-ui/core'
+import {MoreVert as MenuIcon} from '@material-ui/icons'
 import {makeStyles} from '@material-ui/styles'
 import {fade} from '@material-ui/core/styles/colorManipulator'
-import ArrowDownIcon from '@material-ui/icons/ArrowDropDown'
 import cn from 'classnames'
 
+import useBooleanState from '@/components/hooks/useBooleanState'
 import {routeTo, combinedBlockchainPath} from './helpers/routes'
 import BlockchainSearch from './screens/Blockchain/BlockchainHeader/Search'
 import {useMobileStakingSettingsRef} from '@/components/context/refs'
@@ -75,63 +76,37 @@ const useMobileMenuStyles = makeStyles(({palette, spacing}) => ({
 
 const MobileMenu = ({items = [], currentPathname}: any) => {
   const classes = useMobileMenuStyles()
-  const [isOpen, setIsOpen] = useState(false)
-  const [anchorEl, setAnchorEl] = useState(null)
-
-  const onClose = useCallback(() => {
-    // Note: this is hack
-    // Without `setTimeout` click event is not "propagated" to Link
-    // TODO: investigate if we can do better
-    setTimeout(() => setIsOpen(false), 500)
-  }, [setIsOpen])
-
-  const onClick = useCallback(
-    (event) => {
-      !anchorEl && setAnchorEl(event.currentTarget)
-      setIsOpen(!isOpen)
-    },
-    [setIsOpen, anchorEl, setAnchorEl, isOpen]
-  )
+  const [isOpen, setIsOpen, setIsClosed] = useBooleanState(false)
 
   /* Note: not using IconButton as its hover does not look good when it wraps both icons,
      and also on mobile that hover will not be visible anyway. */
   return (
-    <ClickAwayListener onClickAway={onClose}>
-      {/* Note: <div> is required by ClickAwayListener as it needs a component
-          that can directly cary a ref */}
-      <div style={{display: 'inline-block'}}>
-        <div className={classes.mobileWrapper} onClick={onClick}>
-          <img src={seizaLogoMobile} alt="logo" />
-          <ArrowDownIcon className={classes.dropdownIcon} />
-        </div>
-        {isOpen && (
-          <Popper
-            open={isOpen}
-            anchorEl={anchorEl}
-            transition
-            placement="bottom-end"
-            className={classes.popper}
-          >
-            {({TransitionProps}) => (
-              <Grow {...TransitionProps}>
-                <Card classes={{root: classes.mobileMenuWrapper}}>
-                  <MobileNavMenuItems
-                    items={items}
-                    onClose={onClose}
-                    currentPathname={currentPathname}
-                  />
-                  <Divider />
-                  <div className={classes.languageWrapper}>
-                    <MobileLanguage />
-                  </div>
-                  {config.featureEnableThemes && <ThemeSelect />}
-                </Card>
-              </Grow>
-            )}
-          </Popper>
-        )}
+    <React.Fragment>
+      <div className={classes.mobileWrapper} onClick={setIsOpen}>
+        <img src={seizaLogoMobile} alt="logo" />
+        <MenuIcon className={classes.dropdownIcon} />
       </div>
-    </ClickAwayListener>
+      {/* $FlowFixMe, flow complains about some Drawer props which are not used in examples */}
+      <SwipeableDrawer
+        open={isOpen}
+        onClose={setIsClosed}
+        disableBackdropTransition
+        disableDiscovery
+      >
+        <div>
+          <MobileNavMenuItems
+            items={items}
+            onClose={setIsClosed}
+            currentPathname={currentPathname}
+          />
+          <Divider />
+          <div className={classes.languageWrapper}>
+            <MobileLanguage />
+          </div>
+          {config.featureEnableThemes && <ThemeSelect />}
+        </div>
+      </SwipeableDrawer>
+    </React.Fragment>
   )
 }
 type TopBarProps = {
