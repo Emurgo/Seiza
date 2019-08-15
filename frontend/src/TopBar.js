@@ -63,7 +63,7 @@ const useMobileMenuStyles = makeStyles(({palette, spacing}) => ({
     padding: spacing(1),
   },
   languageWrapper: {
-    padding: `${spacing(0.75)}px ${spacing(1.5)}px`,
+    padding: `0px ${spacing(1.5)}px`,
   },
   dropdownIcon: {
     color: '#BFC5D2', // TODO: consider adding to theme

@@ -98,15 +98,15 @@ const getTranslatedNavItems = (translate) =>
         },
       ],
     },
-    {
+    /*{
       link: routeTo.stakingPoolsList(),
       label: translate(navigationMessages.stakePools),
       disabledText: translate(navigationMessages.disabledText),
-    },
-    {
+    },*/
+    /*{
       link: routeTo.more(),
       label: translate(navigationMessages.more),
-    },
+    },*/
     // $FlowFixMe
   ].filter((item) => item.link || item.disabledText)
 

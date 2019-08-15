@@ -24,11 +24,12 @@ const useStyles = makeStyles(({palette, spacing}) => ({
   },
   mobileLink: {
     width: '100%',
-    padding: `${spacing(1)}px ${spacing(2)}px`,
+    padding: `0px ${spacing(2)}px`,
   },
   menuItem: {
     padding: 0,
     height: '100%',
+    minHeight: 0,
   },
   underlineActive: {
     '&:after': {
