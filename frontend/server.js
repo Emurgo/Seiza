@@ -3,6 +3,7 @@ const express = require('express')
 const next = require('next')
 require('./src/helpers/errorReporting')
 const Sentry = require('@sentry/node')
+const compression = require('compression')
 
 const port = parseInt(process.env.PORT, 10) || 3000
 const dev = process.env.NODE_ENV !== 'production'
@@ -19,6 +20,7 @@ process.on('uncaughtException', (err) => {
 
 app.prepare().then(() => {
   const server = express()
+  server.use(compression())
 
   // ***** BEGIN TAKEN FROM: https://github.com/zeit/next.js/blob/master/examples/with-sentry/server.js
   // This attaches request information to sentry errors
