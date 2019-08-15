@@ -1,4 +1,5 @@
 // @flow
+import Router from 'next/router'
 import {reportError} from '@/helpers/errorReporting'
 import '@/App.css'
 import '@/utils.css'
@@ -198,6 +199,10 @@ class MyApp extends App {
     if (jssStyles && jssStyles.parentNode) {
       jssStyles.parentNode.removeChild(jssStyles)
     }
+
+    // See: https://github.com/zeit/next.js/issues/5604
+    // Fixes next.js error when clicking browser "back" and going to some url with query param
+    Router.beforePopState(({url, as, options}) => false)
   }
   // ***** END TAKEN FROM: https://github.com/mui-org/material-ui/blob/master/examples/nextjs/pages/_app.js
 
