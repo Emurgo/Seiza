@@ -59,8 +59,12 @@ const addSvgFilesHandling = (config) => {
   return config
 }
 
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.REACT_APP_ANALYZE === 'true',
+})
+
 module.exports = withPlugins(
-  [[withTranspileModules, {transpileModules: ['@react-google-maps/api']}], withCSS, withSourceMaps],
+  [[withTranspileModules, {transpileModules: ['@react-google-maps/api']}], withCSS, withSourceMaps, withBundleAnalyzer],
   {
     webpack: (config, {buildId, dev, isServer, defaultLoaders, webpack}) => {
       // Note: we provide webpack above so you should not `require` it
