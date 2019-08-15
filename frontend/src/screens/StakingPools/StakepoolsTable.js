@@ -29,6 +29,7 @@ const fullScreenScrollRef = {current: null}
 const getBackgroundColor = (theme) => theme.palette.background.paper
 
 const MOBILE_TITLE_WIDTH = 130
+const DESKTOP_TITLE_WIDTH = 180
 const HEADER_HEIGHT = 80
 
 const useStyles = makeStyles((theme) => {
@@ -102,16 +103,18 @@ const useStyles = makeStyles((theme) => {
       display: 'flex',
       height: 54,
       alignItems: 'center',
-      [theme.breakpoints.down('xs')]: {
-        width: MOBILE_TITLE_WIDTH,
+      maxWidth: MOBILE_TITLE_WIDTH,
+      [theme.breakpoints.up('md')]: {
+        maxWidth: DESKTOP_TITLE_WIDTH,
       },
     },
     titleHeader: {
       // to override 'table-cell' when combined with `headerCell` class
       display: 'flex !important',
       alignItems: 'center',
-      [theme.breakpoints.down('xs')]: {
-        width: MOBILE_TITLE_WIDTH,
+      maxWidth: MOBILE_TITLE_WIDTH,
+      [theme.breakpoints.up('md')]: {
+        maxWidth: DESKTOP_TITLE_WIDTH,
       },
     },
     headerCell: {
