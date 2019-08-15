@@ -23,6 +23,7 @@ import StakingSimple from './screens/Staking/StakingSimple'
 import StakingPools from './screens/StakingPools'
 import More from './screens/More'
 import PageNotFound from './screens/PageNotFound'
+import SubscribeConfirmation from './screens/SubscribeConfirmation'
 import CookiesBanner from '@/components/common/CookiesBanner'
 import UnsupportedBrowserBanner from '@/components/common/UnsupportedBrowserBanner'
 
@@ -170,6 +171,11 @@ const AppLayout = () => {
               {renderRouteDef({exact: true, path: routeTo.more(), component: More})}
               {renderRouteDef({exact: true, path: routeTo.termsOfUse(), component: Terms})}
               {renderRouteDef({exact: true, path: routeTo.privacy(), component: Privacy})}
+              {renderRouteDef({
+                exact: true,
+                path: routeTo.subscribeConfirmation(),
+                component: SubscribeConfirmation,
+              })}
               {renderRouteDef({
                 exact: true,
                 path: routeTo.envOverrides(),

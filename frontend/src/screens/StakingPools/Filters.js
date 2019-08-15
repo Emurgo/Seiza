@@ -221,8 +221,8 @@ export const TextFilter = ({filterConfig, onChange, label}: TextFilterProps) => 
       margin="normal"
       onChange={_onChange}
       value={inputValue}
+      type="text"
       helperText={tr(messages.textFilterHint)}
-      autoFocus
     />
   )
 }

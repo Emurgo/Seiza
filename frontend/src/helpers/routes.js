@@ -38,6 +38,7 @@ const enableSectionIf: _Ident = (x, section) => {
 
 export const routeTo = {
   home: () => '/home',
+  subscribeConfirmation: () => '/subscribe-confirmation',
   // staking key is under blockchain!
   // FIXME: how to deal with this in Yoroi where we want staking but don't want
   // blockchain section?

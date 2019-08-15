@@ -4,7 +4,6 @@ import {Typography, Grid} from '@material-ui/core'
 import {fade} from '@material-ui/core/styles/colorManipulator'
 
 import {Card, ContentSpacing} from '@/components/visual'
-import {getDefaultSpacing} from '@/components/visual/ContentSpacing'
 import {makeStyles} from '@material-ui/styles'
 
 const useRowStyles = makeStyles((theme) => ({
@@ -20,11 +19,12 @@ const useRowStyles = makeStyles((theme) => ({
     '&:after': {
       content: '""',
       display: 'block',
-      marginLeft: getDefaultSpacing(theme) / 2,
-      marginRight: getDefaultSpacing(theme) / 2,
+      marginLeft: theme.getContentSpacing(0.5),
+      marginRight: theme.getContentSpacing(0.5),
+      // TODO: rethink the breakpoints, because e.g. entity card breaks at md
       [theme.breakpoints.up('sm')]: {
-        marginLeft: getDefaultSpacing(theme),
-        marginRight: getDefaultSpacing(theme),
+        marginLeft: theme.getContentSpacing(),
+        marginRight: theme.getContentSpacing(),
       },
       border: `0.5px solid ${theme.palette.unobtrusiveContentHighlight}`,
     },
@@ -35,13 +35,13 @@ const useRowStyles = makeStyles((theme) => ({
   listRow: {
     paddingTop: theme.spacing(1.25),
     paddingBottom: theme.spacing(1.25),
-    paddingLeft: getDefaultSpacing(theme) / 2,
-    paddingRight: getDefaultSpacing(theme) / 2,
+    paddingLeft: theme.getContentSpacing(0.5),
+    paddingRight: theme.getContentSpacing(0.5),
     [theme.breakpoints.up('sm')]: {
       paddingTop: theme.spacing(2.5),
       paddingBottom: theme.spacing(2.5),
-      paddingLeft: getDefaultSpacing(theme),
-      paddingRight: getDefaultSpacing(theme),
+      paddingLeft: theme.getContentSpacing(),
+      paddingRight: theme.getContentSpacing(),
     },
   },
   clickableRow: {

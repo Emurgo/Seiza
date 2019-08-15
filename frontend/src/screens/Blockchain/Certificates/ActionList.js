@@ -531,7 +531,7 @@ const AdditionalRowLabel = ({children}) => (
 const DepositRow = ({value}) => {
   const {translate: tr} = useI18n()
   return (
-    <Row hideSeparator>
+    <Row>
       <AdditionalRowLabel>{tr(messages.deposit)}</AdditionalRowLabel>
       <Value>
         <AdaValue showCurrency value={value} />
@@ -543,7 +543,7 @@ const DepositRow = ({value}) => {
 const RefundRow = ({value}) => {
   const {translate: tr} = useI18n()
   return (
-    <Row hideSeparator>
+    <Row>
       <AdditionalRowLabel>{tr(messages.refund)}</AdditionalRowLabel>
       <Value>
         <AdaValue showCurrency value={value} />
@@ -555,7 +555,7 @@ const RefundRow = ({value}) => {
 const TransactionRow = ({tx}) => {
   const {translate: tr, formatTimestamp} = useI18n()
   return (
-    <Row hideSeparator>
+    <Row>
       <AdditionalRowLabel>{tr(messages.txHash)}</AdditionalRowLabel>
       <Value>
         <Typography variant="body1" align="right">
