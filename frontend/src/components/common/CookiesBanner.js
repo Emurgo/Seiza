@@ -1,6 +1,7 @@
 // @flow
 
 import React from 'react'
+import NoSSR from 'react-no-ssr'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 import {Grid, Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
@@ -75,44 +76,46 @@ const CookiesBanner = () => {
   const {acceptCookies} = useAcceptCookies()
 
   return (
-    <Card className={classes.card}>
-      <ContentSpacing top={0.6} bottom={0.6} left={0.6} right={0.6}>
-        <Grid container alignItems="center" spacing={4}>
-          <Grid item xs={12} md={2}>
-            <Grid container justify="center">
-              <img src={cookiesIcon} alt="" />
+    <NoSSR>
+      <Card className={classes.card}>
+        <ContentSpacing top={0.6} bottom={0.6} left={0.6} right={0.6}>
+          <Grid container alignItems="center" spacing={4}>
+            <Grid item xs={12} md={2}>
+              <Grid container justify="center">
+                <img src={cookiesIcon} alt="" />
+              </Grid>
+            </Grid>
+            <Grid item xs={12} md={7}>
+              <Grid container direction="column">
+                <Typography variant="overline" className={classes.header}>
+                  {tr(messages.header)}
+                </Typography>
+                <Typography>
+                  <FormattedMessage
+                    // $FlowFixMe (flow does not know about `id`)
+                    id={messages.cookieBannerText.id}
+                    values={{
+                      accept: (
+                        <span className={classes.accept} onClick={acceptCookies}>
+                          {tr(messages.accept)}
+                        </span>
+                      ),
+                      privacyLink: <Link to={routeTo.privacy()}>{tr(messages.privacyLink)}</Link>,
+                      break: <br />,
+                    }}
+                  />
+                </Typography>
+              </Grid>
+            </Grid>
+            <Grid item xs={12} md={3}>
+              <Grid container justify="center">
+                <Button onClick={acceptCookies}>{tr(messages.confirm)}</Button>
+              </Grid>
             </Grid>
           </Grid>
-          <Grid item xs={12} md={7}>
-            <Grid container direction="column">
-              <Typography variant="overline" className={classes.header}>
-                {tr(messages.header)}
-              </Typography>
-              <Typography>
-                <FormattedMessage
-                  // $FlowFixMe (flow does not know about `id`)
-                  id={messages.cookieBannerText.id}
-                  values={{
-                    accept: (
-                      <span className={classes.accept} onClick={acceptCookies}>
-                        {tr(messages.accept)}
-                      </span>
-                    ),
-                    privacyLink: <Link to={routeTo.privacy()}>{tr(messages.privacyLink)}</Link>,
-                    break: <br />,
-                  }}
-                />
-              </Typography>
-            </Grid>
-          </Grid>
-          <Grid item xs={12} md={3}>
-            <Grid container justify="center">
-              <Button onClick={acceptCookies}>{tr(messages.confirm)}</Button>
-            </Grid>
-          </Grid>
-        </Grid>
-      </ContentSpacing>
-    </Card>
+        </ContentSpacing>
+      </Card>
+    </NoSSR>
   )
 }
 
