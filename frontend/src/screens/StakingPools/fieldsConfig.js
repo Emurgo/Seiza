@@ -84,7 +84,7 @@ const RANGE_DIVIDER = '-'
 export const FILTER_KEY_VALUE_DIVIDER = '_'
 
 const encodeRange = (rangeObj) => `${rangeObj[0]}${RANGE_DIVIDER}${rangeObj[1]}`
-const decodeRange = (rangeStr) => rangeStr.split(RANGE_DIVIDER)
+const decodeRange = (rangeStr) => rangeStr.split(RANGE_DIVIDER).map(Number)
 const rangeEncodeObj = {encodeValue: encodeRange, decodeValue: decodeRange}
 
 const encodeText = (s) => s
