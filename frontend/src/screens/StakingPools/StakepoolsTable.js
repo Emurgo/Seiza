@@ -3,7 +3,16 @@
 import React from 'react'
 import cn from 'classnames'
 import {makeStyles, useTheme} from '@material-ui/styles'
-import {Grid, Typography} from '@material-ui/core'
+import {
+  Grid,
+  Typography,
+  Table as MuiTable,
+  TableBody,
+  TableHead,
+  TableRow as TR,
+  TableCell as TD,
+  Hidden,
+} from '@material-ui/core'
 import {darken, fade} from '@material-ui/core/styles/colorManipulator'
 
 import {Card} from '@/components/visual'
@@ -19,13 +28,25 @@ const fullScreenScrollRef = {current: null}
 
 const getBackgroundColor = (theme) => theme.palette.background.paper
 
+const MOBILE_TITLE_WIDTH = 130
+const DESKTOP_TITLE_WIDTH = 180
+const HEADER_HEIGHT = 80
+
 const useStyles = makeStyles((theme) => {
   const cell = {
-    display: 'flex',
-    alignItems: 'center',
-    minWidth: 200,
-    paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(2),
+    border: 'none',
+    padding: 0,
+    paddingLeft: theme.spacing(1.5),
+    paddingRight: theme.spacing(1.5),
+    [theme.breakpoints.up('md')]: {
+      paddingLeft: theme.spacing(2.5),
+      paddingRight: theme.spacing(2.5),
+    },
+
+    // ellipsize properties
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
   }
 
   return {
@@ -67,8 +88,9 @@ const useStyles = makeStyles((theme) => {
         borderRadius: BORDER_RADIUS,
       },
     },
-    rowsWrapper: {
-      '& > :nth-child(even)': {
+    table: {
+      // Note: setting `backgroundColor` just to 'tr' does not work when scrolling
+      '& tbody > :nth-child(odd) td': {
         backgroundColor: theme.palette.background.default,
       },
     },
@@ -78,56 +100,81 @@ const useStyles = makeStyles((theme) => {
     },
     titleCell: {
       ...cell,
+      display: 'flex',
       height: 54,
-      width: '100%',
+      alignItems: 'center',
+      maxWidth: MOBILE_TITLE_WIDTH,
+      [theme.breakpoints.up('md')]: {
+        maxWidth: DESKTOP_TITLE_WIDTH,
+      },
+    },
+    titleHeader: {
+      // to override 'table-cell' when combined with `headerCell` class
+      display: 'flex !important',
+      alignItems: 'center',
+      maxWidth: MOBILE_TITLE_WIDTH,
+      [theme.breakpoints.up('md')]: {
+        maxWidth: DESKTOP_TITLE_WIDTH,
+      },
     },
     headerCell: {
       ...cell,
-      width: '20%',
-      height: 80,
+      height: HEADER_HEIGHT,
+      display: 'table-cell',
     },
     dataCell: {
       ...cell,
-      width: '20%',
       height: 54,
+      display: 'table-cell',
     },
     noColumns: {
       paddingLeft: 100,
     },
+    fullWidthCell: {
+      border: 'none',
+      width: '100%',
+      padding: 0,
+    },
   }
 })
 
-const Row = ({data}) => {
+const Row = ({data, options}) => {
   const classes = useStyles()
   return (
-    <div className="d-flex">
+    <TR>
       {data.map((item, index) => (
-        <div className={classes.dataCell} key={index}>
+        <TD align={options[index].align || 'left'} className={classes.dataCell} key={index}>
           {item}
-        </div>
+        </TD>
       ))}
-    </div>
+      <TD className={classes.fullWidthCell} />
+    </TR>
   )
 }
 
-const Rows = ({data}) => {
-  return data.map(({values}, index) => (
-    <Grid item key={index}>
-      <Row data={values} />
-    </Grid>
-  ))
+const Rows = ({data, options}) => {
+  return (
+    <TableBody>
+      {data.map(({values}, index) => (
+        <Row data={values} options={options} key={index} />
+      ))}
+    </TableBody>
+  )
 }
 
 const Headers = ({headers}) => {
   const classes = useStyles()
   return (
-    <div className="d-flex">
-      {headers.map((header, index) => (
-        <div className={classes.headerCell} key={index}>
-          {header}
-        </div>
-      ))}
-    </div>
+    <TableHead>
+      <TR>
+        {headers.map((header, index) => (
+          <TD className={classes.headerCell} key={index}>
+            {header}
+          </TD>
+        ))}
+        <TD className={classes.fullWidthCell} />
+      </TR>
+    </TableHead>
   )
 }
 
@@ -135,7 +182,7 @@ const Titles = ({headers, data}) => {
   const classes = useStyles()
   return (
     <React.Fragment>
-      <div className={classes.headerCell}>{headers.title}</div>
+      <div className={cn(classes.headerCell, classes.titleHeader)}>{headers.title}</div>
       {data.map(({title}, index) => (
         <div className={classes.titleCell} key={index}>
           {title}
@@ -155,18 +202,20 @@ type Props = {|
     values: Array<React$Node>,
   |},
   noColumnsMsg: string,
+  scrollRef: any,
+  scrollNode: any,
+  options: Array<{align?: 'right' | 'left'}>,
 |}
 
-const StakepoolsTable = ({data, headers, noColumnsMsg}: Props) => {
+const StakepoolsTable = ({data, headers, noColumnsMsg, scrollRef, scrollNode, options}: Props) => {
   const theme = useTheme()
   const classes = useStyles()
-  const scrollRef = React.useRef(null)
   const scrollAreaRef = React.useRef(null)
 
   const backgroundColor = getBackgroundColor(theme)
 
   const {onArrowLeft, onArrowRight, onMouseUp, isHoldingRight, isHoldingLeft} = useArrowsScrolling(
-    scrollRef.current,
+    scrollNode,
     SCROLL_SPEED
   )
 
@@ -180,14 +229,18 @@ const StakepoolsTable = ({data, headers, noColumnsMsg}: Props) => {
 
   return (
     <div className={classes.wrapper} ref={scrollAreaRef}>
-      <ScrollingSideArrow
-        onUp={onMouseUp}
-        onDown={onArrowLeft}
-        direction="left"
-        background={backgroundColor}
-        active={isHoldingLeft}
-        {...{scrollAreaRef, fullScreenScrollRef}}
-      />
+      <Hidden mdDown implementation="css">
+        <div className="h-100">
+          <ScrollingSideArrow
+            onUp={onMouseUp}
+            onDown={onArrowLeft}
+            direction="left"
+            background={backgroundColor}
+            active={isHoldingLeft}
+            {...{scrollAreaRef, fullScreenScrollRef}}
+          />
+        </div>
+      </Hidden>
 
       <Card className={cn(classes.innerWrapper, 'w-100')}>
         <div className={classes.titlesWrapper}>
@@ -199,24 +252,31 @@ const StakepoolsTable = ({data, headers, noColumnsMsg}: Props) => {
           downBackground={darken(backgroundColor, 0.01)}
           borderRadius={BORDER_RADIUS}
           className="w-100"
+          headerHeight={HEADER_HEIGHT}
         >
           <div className={cn(classes.scrollWrapper, 'w-100')} ref={scrollRef}>
-            <Grid container direction="column" className={cn(classes.rowsWrapper, 'w-100')}>
-              <Headers headers={headers.values} />
-              <Rows data={data} />
+            <Grid container direction="column" className="w-100">
+              <MuiTable className={classes.table}>
+                <Headers headers={headers.values} />
+                <Rows {...{data, options}} />
+              </MuiTable>
             </Grid>
           </div>
         </ScrollOverlayWrapper>
       </Card>
 
-      <ScrollingSideArrow
-        onUp={onMouseUp}
-        onDown={onArrowRight}
-        direction="right"
-        background={backgroundColor}
-        active={isHoldingRight}
-        {...{scrollAreaRef, fullScreenScrollRef}}
-      />
+      <Hidden mdDown implementation="css">
+        <div className="h-100">
+          <ScrollingSideArrow
+            onUp={onMouseUp}
+            onDown={onArrowRight}
+            direction="right"
+            background={backgroundColor}
+            active={isHoldingRight}
+            {...{scrollAreaRef, fullScreenScrollRef}}
+          />
+        </div>
+      </Hidden>
     </div>
   )
 }

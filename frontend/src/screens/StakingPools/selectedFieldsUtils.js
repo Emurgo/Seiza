@@ -41,7 +41,8 @@ export const useSelectedFieldsProps = () => {
   const onSelectedFieldsChange = useCallback(
     (e: any) => {
       const newSelectedFieldsValue = encode(e.target.value)
-      setSelectedFields(newSelectedFieldsValue)
+      // Note: at least one field must be selected
+      newSelectedFieldsValue && setSelectedFields(newSelectedFieldsValue)
     },
     [setSelectedFields]
   )

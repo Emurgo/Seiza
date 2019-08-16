@@ -4,7 +4,9 @@ import _ from 'lodash'
 import * as React from 'react'
 import {defineMessages} from 'react-intl'
 
-import {AdaValue} from '@/components/common'
+import {AdaValue, Link} from '@/components/common'
+import {Tooltip} from '@/components/visual'
+import {routeTo} from '@/helpers/routes'
 import {ItemIdentifier} from '@/components/common/ComparisonMatrix/utils'
 import {PercentageSlider, AdaSlider, IntegerSlider, TextFilter} from './Filters'
 import {rTo2Decimals} from './helpers'
@@ -40,6 +42,11 @@ export const FILTER_TYPES = {
   text: 'TEXT',
 }
 
+const ALIGN = {
+  LEFT: 'left',
+  RIGHT: 'right',
+}
+
 type Config = {
   field: string,
   getLabel: Function,
@@ -50,6 +57,7 @@ type Config = {
     isFilterActive: Function,
     dataMatchFilter: Function,
   },
+  align?: $Values<typeof ALIGN>,
 }
 
 const isRangeFilterActive = (filterConfig: RangeFilterConfig) => {
@@ -72,11 +80,23 @@ const matchTextFilter = (data: string, value: ?string) => {
   return data.toLowerCase().includes(value ? value.toLocaleLowerCase() : '')
 }
 
+const RANGE_DIVIDER = '-'
+export const FILTER_KEY_VALUE_DIVIDER = '_'
+
+const encodeRange = (rangeObj) => `${rangeObj[0]}${RANGE_DIVIDER}${rangeObj[1]}`
+const decodeRange = (rangeStr) => rangeStr.split(RANGE_DIVIDER)
+const rangeEncodeObj = {encodeValue: encodeRange, decodeValue: decodeRange}
+
+const encodeText = (s) => s
+const decodeText = (s) => s
+const textEncodeObj = {encodeValue: encodeText, decodeValue: decodeText}
+
 const percentageFieldFilterConfig = {
   Component: PercentageSlider,
   type: FILTER_TYPES.range,
   isFilterActive: isRangeFilterActive,
   dataMatchFilter: isInPercentRange,
+  ...rangeEncodeObj,
 }
 
 const adaFieldFilterConfig = {
@@ -84,6 +104,7 @@ const adaFieldFilterConfig = {
   type: FILTER_TYPES.range,
   isFilterActive: isRangeFilterActive,
   dataMatchFilter: isInRange,
+  ...rangeEncodeObj,
 }
 
 const integerFieldFilterConfig = {
@@ -91,6 +112,7 @@ const integerFieldFilterConfig = {
   type: FILTER_TYPES.range,
   isFilterActive: isRangeFilterActive,
   dataMatchFilter: isInRange,
+  ...rangeEncodeObj,
 }
 
 const textFieldFilterConfig = {
@@ -98,14 +120,32 @@ const textFieldFilterConfig = {
   type: FILTER_TYPES.text,
   isFilterActive: isTextFilterActive,
   dataMatchFilter: matchTextFilter,
+  ...textEncodeObj,
 }
+
+const nameTooltipWrapperStyles = {overflow: 'hidden'}
+
+const NameTooltip = ({data}) => (
+  <Link to={routeTo.stakepool(data.poolHash)} underline="always">
+    {data.name}
+  </Link>
+)
 
 export const fieldsConfig: Array<Config> = [
   {
     field: 'name',
     getLabel: ({tr}: GetLabelParams) => tr(fieldsMessages.name),
     getValue: ({data}: GetValueParams) => (
-      <ItemIdentifier title={data.name} identifier={data.poolHash} />
+      <Tooltip
+        interactive
+        placement="top"
+        title={<NameTooltip data={data} />}
+        leaveTouchDelay={3000}
+      >
+        <div style={nameTooltipWrapperStyles}>
+          <ItemIdentifier title={data.name} identifier={data.poolHash} />
+        </div>
+      </Tooltip>
     ),
     filter: textFieldFilterConfig,
   },
@@ -116,24 +156,28 @@ export const fieldsConfig: Array<Config> = [
       <AdaValue value={data.adaStaked} noValue={NA} showCurrency />
     ),
     filter: adaFieldFilterConfig,
+    align: ALIGN.RIGHT,
   },
   {
     field: 'fullness',
     getLabel: ({tr}: GetLabelParams) => tr(fieldsMessages.fullness),
     getValue: ({data, formatPercent}: GetValueParams) => formatPercent(data.fullness),
     filter: percentageFieldFilterConfig,
+    align: ALIGN.RIGHT,
   },
   {
     field: 'margins',
     getLabel: ({tr}: GetLabelParams) => tr(fieldsMessages.margins),
     getValue: ({data, formatPercent}: GetValueParams) => formatPercent(data.margins),
     filter: percentageFieldFilterConfig,
+    align: ALIGN.RIGHT,
   },
   {
     field: 'performance',
     getLabel: ({tr}: GetLabelParams) => tr(fieldsMessages.performance),
     getValue: ({data, formatPercent}: GetValueParams) => formatPercent(data.performance),
     filter: percentageFieldFilterConfig,
+    align: ALIGN.RIGHT,
   },
   {
     field: 'rewards',
@@ -142,23 +186,27 @@ export const fieldsConfig: Array<Config> = [
       <AdaValue value={data.rewards} noValue={NA} showCurrency />
     ),
     filter: adaFieldFilterConfig,
+    align: ALIGN.RIGHT,
   },
   {
     field: 'keysDelegating',
     getLabel: ({tr}: GetLabelParams) => tr(fieldsMessages.keysDelegating),
     getValue: ({data, NA, formatInt}: GetValueParams) => formatInt(data.keysDelegating),
     filter: integerFieldFilterConfig,
+    align: ALIGN.RIGHT,
   },
   {
     field: 'createdAt',
     getLabel: ({tr}: GetLabelParams) => tr(fieldsMessages.createdAt),
     getValue: ({data, NA, formatTimestamp}: GetValueParams) => formatTimestamp(data.keysDelegating),
+    align: ALIGN.LEFT,
   },
   {
     field: 'stakersCount',
     getLabel: ({tr}: GetLabelParams) => tr(fieldsMessages.stakersCount),
     getValue: ({data, NA, formatInt}: GetValueParams) => formatInt(data.stakersCount),
     filter: integerFieldFilterConfig,
+    align: ALIGN.RIGHT,
   },
 ]
 

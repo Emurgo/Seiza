@@ -442,6 +442,8 @@
   "screens.More.index.stakePoolProfileScreen": "ステークプールプロファイル画面",
   "screens.More.index.stakingKeyScreens": "ステーキングキー画面",
   "screens.More.index.userStakingKeyScreen": "ユーザーのステーキングキー",
+  "screens.SubscribeConfirmation.subscriptionConfirmedHeader": "Thank you!",
+  "screens.SubscribeConfirmation.subscriptionConfirmedMessage": "Your subscription to our newsletter has been confirmed.",
   "screens.PageNotFound.notFound": "該当のURLが見つかりませんでした\n",
   "screens.PageNotFound.notFoundHeader": "エラー",
   "screens.Staking.ComparisonMatrix.index.actualPledge": "Actual Pledge",
