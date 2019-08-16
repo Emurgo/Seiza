@@ -82,7 +82,6 @@ export function useResetUrlAndStorage() {
   const {_setSelectedPoolsStorageToDefault} = useSelectedPoolsContext()
   const {_setPerformanceStorageToDefault} = usePerformanceContext()
   const {_setSearchTextStorageToDefault} = useSearchTextContext()
-  const {getScreenUrlQuery} = useSetListScreenStorageFromQuery()
 
   // Note: we do not reset "selected pools" intentionally
   // Note: we can not perform url replacement in separate `_reset` functions as
@@ -93,8 +92,7 @@ export function useResetUrlAndStorage() {
     _setSelectedPoolsStorageToDefault()
     _setSearchTextStorageToDefault()
 
-    const query = getScreenUrlQuery()
-    setQuery(query)
+    setQuery('')
   }
 
   return resetUrlAndStorage
