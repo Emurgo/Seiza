@@ -92,6 +92,7 @@ const MobileMenu = ({items = [], currentPathname}: any) => {
         onClose={setIsClosed}
         disableBackdropTransition
         disableDiscovery
+        onOpen={setIsOpen}
       >
         <div>
           <MobileNavMenuItems
