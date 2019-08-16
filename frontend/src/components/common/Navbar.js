@@ -1,12 +1,12 @@
 // @flow
-import React, {useEffect, useRef} from 'react'
-import ReactDOM from 'react-dom'
+import React from 'react'
 import cn from 'classnames'
 
 import {MenuList, MenuItem, Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {fade} from '@material-ui/core/styles/colorManipulator'
 
+import useBooleanState from '@/components/hooks/useBooleanState'
 import {NavTypography, NavLink as Link} from '@/components/common'
 import {Tooltip, Card} from '@/components/visual'
 
@@ -97,14 +97,6 @@ const useSublinksStyles = makeStyles((theme) => ({
     padding: 0,
     minHeight: 0,
   },
-  hackyInput: {
-    width: 0,
-    height: 0,
-    border: 'none',
-    padding: 0,
-    margin: 0,
-    display: 'block',
-  },
 }))
 
 const useTooltipClasses = makeStyles((theme) => ({
@@ -135,27 +127,14 @@ const Sublink = ({children, to}) => {
   )
 }
 
-const Sublinks = ({sublinks}) => {
+const Sublinks = ({sublinks, onClick}) => {
   const classes = useSublinksStyles()
-  const hackyInputRef = useRef(null)
-
-  useEffect(() => {
-    // We force "focus" on non-visible input so that Tooltip
-    // is hidden immediatelly after some link is clicked
-    const el = hackyInputRef.current
-    if (el) {
-      const node = ReactDOM.findDOMNode(el)
-      // $FlowFixMe
-      node && node.focus()
-    }
-  }, [])
 
   return (
     <Card>
-      <input ref={hackyInputRef} className={classes.hackyInput} />
       <MenuList>
         {sublinks.map(({link, label}) => (
-          <MenuItem key={link} className={classes.menuItem}>
+          <MenuItem key={link} className={classes.menuItem} onClick={onClick}>
             <Sublink to={link}>{label}</Sublink>
           </MenuItem>
         ))}
@@ -164,10 +143,10 @@ const Sublinks = ({sublinks}) => {
   )
 }
 
-const WithSublinks = ({children, sublinks}) => {
+const _WithSublinks = ({children, sublinks}) => {
   const classes = useSublinksStyles()
   const tooltipClasses = useTooltipClasses()
-  if (!sublinks) return children
+  const [open, setOpen, setClosed] = useBooleanState(false)
 
   const PopoverMenu = Tooltip
 
@@ -176,12 +155,22 @@ const WithSublinks = ({children, sublinks}) => {
       classes={tooltipClasses}
       placement="bottom"
       interactive
-      title={<Sublinks sublinks={sublinks} />}
+      open={open}
+      leaveDelay={100}
+      onClose={setClosed}
+      PopperProps={{
+        disablePortal: true,
+      }}
+      title={<Sublinks onClick={setClosed} sublinks={sublinks} />}
     >
-      <div className={classes.tooltipChildren}>{children}</div>
+      <div className={classes.tooltipChildren} onMouseEnter={setOpen}>
+        {children}
+      </div>
     </PopoverMenu>
   )
 }
+
+const WithSublinks = (props) => (props.sublinks ? <_WithSublinks {...props} /> : props.children)
 
 type SublinksType = Array<{link: string, label: string}>
 

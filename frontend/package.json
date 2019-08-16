@@ -41,6 +41,7 @@
     "bignumber.js": "^9.0.0",
     "bowser": "^2.5.2",
     "classnames": "^2.2.6",
+    "compression": "^1.7.4",
     "cookie-parser": "^1.4.4",
     "copy-to-clipboard": "^3.2.0",
     "crc-32": "^1.2.0",
