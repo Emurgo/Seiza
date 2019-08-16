@@ -6,6 +6,8 @@ import localStorage from '@/helpers/localStorage'
 import {useCookies} from '@/components/context/cookies'
 import {_getStorage} from '@/helpers/storage'
 
+import {useAcceptCookies} from '@/components/context/acceptCookies'
+
 import type {Storage} from '@/helpers/storage'
 
 export const useStorageState = <T>(
@@ -35,16 +37,19 @@ export const useLocalStorageState = <T>(
 
 export const useCookieState = <T>(
   key: string,
-  initialState: T
+  initialState: T,
+  requireCookiesAccepted: boolean = true
 ): [T, (newState: T) => void | ((state: T) => T)] => {
   const {cookies, setCookie, destroyCookie} = useCookies()
+  const {cookiesAccepted} = useAcceptCookies()
   const _cookieStorage = useMemo(
     () => ({
       getItem: (key) => cookies[key],
-      setItem: (key, value) => setCookie(key, value),
+      setItem: (key, value) =>
+        (!requireCookiesAccepted || cookiesAccepted) && setCookie(key, value),
       removeItem: (key) => destroyCookie(key),
     }),
-    [cookies, setCookie, destroyCookie]
+    [cookies, requireCookiesAccepted, cookiesAccepted, setCookie, destroyCookie]
   )
   const cookieStorage = useMemo(() => _getStorage(_cookieStorage, 'cookie'), [_cookieStorage])
   return useStorageState<T>(cookieStorage, key, initialState)

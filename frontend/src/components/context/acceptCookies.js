@@ -15,7 +15,11 @@ type Props = {|
 |}
 
 export const AcceptCookiesProvider = ({children}: Props) => {
-  const [cookiesAccepted, setCookiesAccepted] = useCookieState<boolean>('acceptCookies', false)
+  const [cookiesAccepted, setCookiesAccepted] = useCookieState<boolean>(
+    'acceptCookies',
+    false,
+    false
+  )
 
   const acceptCookies = useCallback(() => {
     setCookiesAccepted(true)
