@@ -1,9 +1,11 @@
 // @flow
 import React, {useCallback} from 'react'
 import cn from 'classnames'
-import {Grid, Typography} from '@material-ui/core'
+import {Grid, Typography, IconButton, Menu, MenuItem} from '@material-ui/core'
+import {MoreVert} from '@material-ui/icons'
 import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
+import {fade} from '@material-ui/core/styles/colorManipulator'
 
 import {
   ExpandableCard,
@@ -31,9 +33,11 @@ const messages = defineMessages({
   performance: 'Performance:',
   pledge: 'Pledge:',
   margins: 'Margins:',
-  createdAt: 'Creation time:',
+  createdAt: 'Created:',
   fullness: 'Fullness:',
   stake: 'Stake:',
+  cost: 'Cost:',
+  rewards: 'Rewards:',
   hideDesc: 'Hide description',
   showDesc: 'Full description',
   hideDetails: 'Hide details',
@@ -48,6 +52,8 @@ const messages = defineMessages({
   createdAtHelpText: 'TODO: CreatedAt Help Text',
   pledgeHelpText: 'TODO: Pledge Help Text',
   stakeHelpText: 'TODO: Stake Help Text',
+  costHelpText: 'TODO: Cost Help Text',
+  rewardsHelpText: 'TODO: Rewards Help Text',
   ageLabel: 'Age:',
   ageValue: '{epochCount, plural, =0 {# epochs} one {# epoch} other {# epochs}}',
 })
@@ -114,6 +120,10 @@ const useContentStyles = makeStyles(({palette, spacing, breakpoints}) => ({
     '& > *': {
       paddingRight: spacing(1),
     },
+  },
+  rewardsRowWrapper: {
+    position: 'relative',
+    paddingRight: 52, // size of icon button
   },
 }))
 
@@ -228,11 +238,79 @@ const DataGrid = ({items, leftSpan, rightSpan, alignRight = false}) => {
   )
 }
 
+const useRewardClasses = makeStyles(({spacing, palette}) => ({
+  rewardsMoreIcon: {
+    'position': 'absolute',
+    'right': 0,
+    'top': -14,
+    '&:hover': {
+      backgroundColor: fade(palette.primary.main, 0.08),
+    },
+  },
+  menuItemLabel: {
+    marginRight: spacing(2),
+  },
+}))
+
+const RewardsMenuItem = ({onClick, label, value}) => {
+  const classes = useRewardClasses()
+  return (
+    <MenuItem onClick={onClick}>
+      <Grid container justify="space-between">
+        <Typography className={classes.menuItemLabel}>{label}</Typography>
+        <Typography color="textSecondary">{value}</Typography>
+      </Grid>
+    </MenuItem>
+  )
+}
+
+const rewardsMessages = defineMessages({
+  perEpoch: 'per epoch',
+  perYear: 'per year',
+})
+
+const RewardsMenu = () => {
+  // TODO: get data from backend
+  const rewardsPerEpoch = 8567088
+  const rewardsPerYearAbsolute = 86895567088
+  const rewardsPerYearRelative = 0.1
+  const classes = useRewardClasses()
+  const {translate: tr, formatPercent} = useI18n()
+  const [anchorEl, setAnchorEl] = React.useState(null)
+  const handleClick = useCallback((event) => setAnchorEl(event.currentTarget), [setAnchorEl])
+  const handleClose = useCallback(() => setAnchorEl(null), [setAnchorEl])
+  return (
+    <React.Fragment>
+      <IconButton className={classes.rewardsMoreIcon} onClick={handleClick}>
+        <MoreVert color="primary" />
+      </IconButton>
+      <Menu anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
+        <RewardsMenuItem
+          onClick={handleClose}
+          label={<AdaValue showCurrency value={rewardsPerEpoch} />}
+          value={tr(rewardsMessages.perEpoch)}
+        />
+        <RewardsMenuItem
+          onClick={handleClose}
+          label={<AdaValue showCurrency value={rewardsPerYearAbsolute} />}
+          value={tr(rewardsMessages.perYear)}
+        />
+        <RewardsMenuItem
+          onClick={handleClose}
+          label={formatPercent(rewardsPerYearRelative)}
+          value={tr(rewardsMessages.perYear)}
+        />
+      </Menu>
+    </React.Fragment>
+  )
+}
+
 const Content = ({data}) => {
   const {translate: tr, formatPercent, formatTimestamp} = useI18n()
   const classes = useContentStyles()
   const isMobile = useIsMobile()
   const isDownLg = useIsBreakpointDown('lg')
+
   return (
     <div className={classes.innerWrapper}>
       {!isMobile && (
@@ -241,11 +319,11 @@ const Content = ({data}) => {
         </div>
       )}
       <Grid container>
-        <Grid item xs={12} lg={4} xl={5}>
+        <Grid item xs={12} lg={6}>
           <DataGrid
             alignRight={isDownLg}
-            leftSpan={isDownLg ? 6 : 9}
-            rightSpan={isDownLg ? 6 : 3}
+            leftSpan={6}
+            rightSpan={6}
             items={[
               {
                 label: (
@@ -271,16 +349,6 @@ const Content = ({data}) => {
                 ),
                 value: <Typography>{formatPercent(data.margins)}</Typography>,
               },
-            ]}
-          />
-        </Grid>
-
-        <Grid item xs={12} lg={8} xl={7}>
-          <DataGrid
-            alignRight={isDownLg}
-            leftSpan={6}
-            rightSpan={6}
-            items={[
               {
                 label: (
                   <HelpTooltip text={tr(messages.createdAtHelpText)}>
@@ -293,19 +361,48 @@ const Content = ({data}) => {
                   </Typography>
                 ),
               },
+            ]}
+          />
+        </Grid>
+
+        <Grid item xs={12} lg={6}>
+          <DataGrid
+            alignRight={isDownLg}
+            leftSpan={6}
+            rightSpan={6}
+            items={[
+              {
+                label: (
+                  <HelpTooltip text={tr(messages.costHelpText)}>{tr(messages.cost)}</HelpTooltip>
+                ),
+                value: <AdaValue showCurrency value={data.cost} />,
+              },
+              {
+                label: (
+                  <HelpTooltip text={tr(messages.stakeHelpText)}>{tr(messages.stake)}</HelpTooltip>
+                ),
+                value: <AdaValue showCurrency value={data.stake} />,
+              },
               {
                 label: (
                   <HelpTooltip text={tr(messages.pledgeHelpText)}>
                     {tr(messages.pledge)}
                   </HelpTooltip>
                 ),
-                value: <AdaValue value={data.pledge} />,
+                value: <AdaValue showCurrency value={data.pledge} />,
               },
               {
                 label: (
-                  <HelpTooltip text={tr(messages.stakeHelpText)}>{tr(messages.stake)}</HelpTooltip>
+                  <HelpTooltip text={tr(messages.rewardsHelpText)}>
+                    {tr(messages.rewards)}
+                  </HelpTooltip>
                 ),
-                value: <AdaValue value={data.stake} />,
+                value: (
+                  <div className={classes.rewardsRowWrapper}>
+                    <AdaValue showCurrency value={data.rewards} />
+                    <RewardsMenu />
+                  </div>
+                ),
               },
             ]}
           />
@@ -350,7 +447,7 @@ const MobilePoolFooter = ({expanded}) => {
   )
 }
 
-const MobileStakePool = ({isOpen, toggle, data}) => {
+const AdvancedMobileStakepoolCard = ({isOpen, toggle, data}) => {
   const renderExpandedArea = () => <Content data={data} />
   const renderHeader = () => <Header name={data.name} hash={data.hash} />
   const renderFooter = (expanded) => <MobilePoolFooter expanded={expanded} />
@@ -386,7 +483,7 @@ const Age = ({epochCount}: AgeProps) => {
   )
 }
 
-const DesktopStakePool = ({isOpen, toggle, data}) => {
+const AdvancedDesktopStakepoolCard = ({isOpen, toggle, data}) => {
   const classes = useContentStyles()
 
   const renderExpandedArea = () => (
@@ -420,18 +517,18 @@ type Props = {
   data: Object, // TODO: type better
 }
 
-const StakePool = ({data}: Props) => {
+const AdvancedStakepoolCard = ({data}: Props) => {
   const isMobile = useIsMobile()
 
   return (
     <WithModalState>
       {({isOpen, toggle}) => {
         const props = {isOpen, toggle, data}
-        const PoolComponent = isMobile ? MobileStakePool : DesktopStakePool
+        const PoolComponent = isMobile ? AdvancedMobileStakepoolCard : AdvancedDesktopStakepoolCard
         return <PoolComponent {...props} />
       }}
     </WithModalState>
   )
 }
 
-export default StakePool
+export default AdvancedStakepoolCard

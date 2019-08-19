@@ -1,11 +1,11 @@
 // @flow
-
 import React from 'react'
 
 import {makeStyles} from '@material-ui/styles'
 
 import Header from './Header'
 import StakeList from '../StakeList'
+import StakepoolCard from './StakepoolCard'
 import {StakingContextProvider} from '../context'
 
 const useStyles = makeStyles((theme) => ({
@@ -23,7 +23,6 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 // TODO: decide how links to that screen should look like (mobile)
-// TODO: use different stake pool cards with StakeList
 export default () => {
   const classes = useStyles()
   return (
@@ -32,7 +31,7 @@ export default () => {
       <StakingContextProvider autoSync={false}>
         <div className={classes.centerWrapper}>
           <div className={classes.centeredItem}>
-            <StakeList />
+            <StakeList StakepoolCard={StakepoolCard} />
           </div>
         </div>
       </StakingContextProvider>

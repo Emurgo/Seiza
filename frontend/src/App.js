@@ -18,7 +18,7 @@ import Privacy from './screens/Legal/Privacy'
 import Home from './screens/Home'
 import Blockchain from './screens/Blockchain'
 import BlockchainHeader from './screens/Blockchain/BlockchainHeader'
-import Staking from './screens/Staking'
+import StakingAdvanced from './screens/Staking/StakingAdvanced'
 import StakingSimple from './screens/Staking/StakingSimple'
 import StakingPools from './screens/StakingPools'
 import More from './screens/More'
@@ -165,7 +165,7 @@ const AppLayout = () => {
                   )}
                 </Route>
               )}
-              {renderRouteDef({path: routeTo.stakingCenter.home(), component: Staking})}
+              {renderRouteDef({path: routeTo.stakingCenter.home(), component: StakingAdvanced})}
               {renderRouteDef({path: routeTo.stakingCenterSimple(), component: StakingSimple})}
               {renderRouteDef({path: routeTo.stakingPoolsList(), component: StakingPools})}
               {renderRouteDef({exact: true, path: routeTo.more(), component: More})}

@@ -13,17 +13,18 @@ import {
   StakingContextProvider,
   useSetListScreenStorageFromQuery,
   useSetBasicScreenStorageFromQuery,
-} from './context'
-import {useAutoSyncContext} from './context/autoSync'
-import SideMenu from './SideMenu'
-import StakePoolListScreen from './StakeList'
-import ComparisonMatrixScreen from './ComparisonMatrix'
-import PeopleScreen from './People'
+} from '../context'
+import {useAutoSyncContext} from '../context/autoSync'
+import SideMenu from '../SideMenu'
+import StakeListScreen from '../StakeList'
+import StakepoolCard from './StakepoolCard'
+import ComparisonMatrixScreen from '../ComparisonMatrix'
+import PeopleScreen from '../People'
 import StakePoolHeader from './Header'
-import PageNotFound from '../PageNotFound'
-import LocationMapScreen from './LocationMap'
-import HistoryScreen from './History'
-import ChartsScreen from './Charts'
+import PageNotFound from '@/screens/PageNotFound'
+import LocationMapScreen from '../LocationMap'
+import HistoryScreen from '../History'
+import ChartsScreen from '../Charts'
 
 const DEFAULT_MAX_WIDTH = '1000px'
 
@@ -165,7 +166,7 @@ const FullWidthLayout = ({children}) => {
 
 const LayoutedStakePoolList = () => (
   <CenteredLayout>
-    <StakePoolListScreen />
+    <StakeListScreen StakepoolCard={StakepoolCard} />
   </CenteredLayout>
 )
 const LayoutedComparisonMatrix = () => (

@@ -11,6 +11,7 @@ type StakePoolSummary {
   adaStaked: AdaAmount
   rewards: AdaAmount
   keysDelegating: Int
+  cost: AdaAmount
   fullness: Float
   margins: Float
   pledge: AdaAmount
