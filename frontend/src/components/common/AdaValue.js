@@ -156,6 +156,7 @@ type Props = {|
   +showSign?: ShowSign,
   +colorful?: boolean,
   +timestamp?: any,
+  +disableFiatTooltip?: boolean,
 |}
 
 const usePlusStyles = makeStyles(({palette}) => ({
@@ -240,6 +241,7 @@ const AdaValue = ({
   showSign = 'auto',
   colorful = false,
   timestamp,
+  disableFiatTooltip = false,
 }: Props) => {
   const {formatAdaSplit} = useI18n()
 
@@ -257,38 +259,44 @@ const AdaValue = ({
 
   const {integral, fractional} = formatAdaSplit(value, {showSign})
 
-  return (
+  const _adaValue = (
+    <span className={classes.noWrapWhiteSpace}>
+      <Typography
+        variant="body1"
+        component="span"
+        className={cn(adaValueClasses.integral, fontClasses.thick)}
+      >
+        {integral}
+      </Typography>
+      <Typography
+        variant="caption"
+        color="textSecondary"
+        component="span"
+        className={cn(adaValueClasses.fractional, fontClasses.thin)}
+      >
+        {fractional}
+      </Typography>
+      {showCurrency && (
+        <Typography
+          variant="body1"
+          component="span"
+          className={cn(adaValueClasses.adaSymbol, fontClasses.thick)}
+        >
+          &nbsp;ADA
+        </Typography>
+      )}
+    </span>
+  )
+
+  return disableFiatTooltip ? (
+    _adaValue
+  ) : (
     <Tooltip
       enterDelay={250}
       title={<AdaFiatTooltip value={value} timestamp={timestamp} />}
       placement="top"
     >
-      <span className={classes.noWrapWhiteSpace}>
-        <Typography
-          variant="body1"
-          component="span"
-          className={cn(adaValueClasses.integral, fontClasses.thick)}
-        >
-          {integral}
-        </Typography>
-        <Typography
-          variant="caption"
-          color="textSecondary"
-          component="span"
-          className={cn(adaValueClasses.fractional, fontClasses.thin)}
-        >
-          {fractional}
-        </Typography>
-        {showCurrency && (
-          <Typography
-            variant="body1"
-            component="span"
-            className={cn(adaValueClasses.adaSymbol, fontClasses.thick)}
-          >
-            &nbsp;ADA
-          </Typography>
-        )}
-      </span>
+      {_adaValue}
     </Tooltip>
   )
 }

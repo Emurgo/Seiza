@@ -25,6 +25,7 @@ import PageNotFound from '@/screens/PageNotFound'
 import LocationMapScreen from '../LocationMap'
 import HistoryScreen from '../History'
 import ChartsScreen from '../Charts'
+import {EstimatedRewardsModeProvider} from './estimatedRewardsModeUtils'
 
 const DEFAULT_MAX_WIDTH = '1000px'
 
@@ -237,34 +238,36 @@ export default () => {
   const stakingRoutes = routeTo.stakingCenter
   return (
     <StakingContextProvider autoSync={autoSync}>
-      <Grid container direction="column">
-        <DesktopOnly>
-          <StakePoolHeader />
-        </DesktopOnly>
-        <MobileOnly>
-          <SideMenu />
-        </MobileOnly>
+      <EstimatedRewardsModeProvider>
+        <Grid container direction="column">
+          <DesktopOnly>
+            <StakePoolHeader />
+          </DesktopOnly>
+          <MobileOnly>
+            <SideMenu />
+          </MobileOnly>
 
-        <div className={classes.mainWrapper}>
-          <Switch>
-            {/* Default redirect */}
-            {stakingRoutes.poolList() && (
-              <Redirect exact from={stakingRoutes.home()} to={stakingRoutes.poolList()} />
-            )}
+          <div className={classes.mainWrapper}>
+            <Switch>
+              {/* Default redirect */}
+              {stakingRoutes.poolList() && (
+                <Redirect exact from={stakingRoutes.home()} to={stakingRoutes.poolList()} />
+              )}
 
-            {/* Routes */}
-            {renderRouteDef(stakingRoutes.poolList(), PoolListQuerySynchronizer)}
-            {renderRouteDef(stakingRoutes.poolComparison(), PoolComparisonQuerySynchronizer)}
-            {renderRouteDef(stakingRoutes.history(), HistoryQuerySynchronizer)}
-            {renderRouteDef(stakingRoutes.charts(), ChartsQuerySynchronizer)}
-            {renderRouteDef(stakingRoutes.location(), LocationQuerySynchronizer)}
-            {renderRouteDef(stakingRoutes.people(), PeopleQuerySynchronizer)}
+              {/* Routes */}
+              {renderRouteDef(stakingRoutes.poolList(), PoolListQuerySynchronizer)}
+              {renderRouteDef(stakingRoutes.poolComparison(), PoolComparisonQuerySynchronizer)}
+              {renderRouteDef(stakingRoutes.history(), HistoryQuerySynchronizer)}
+              {renderRouteDef(stakingRoutes.charts(), ChartsQuerySynchronizer)}
+              {renderRouteDef(stakingRoutes.location(), LocationQuerySynchronizer)}
+              {renderRouteDef(stakingRoutes.people(), PeopleQuerySynchronizer)}
 
-            {/* Fallback */}
-            <Route component={StakingPageNotFound} />
-          </Switch>
-        </div>
-      </Grid>
+              {/* Fallback */}
+              <Route component={StakingPageNotFound} />
+            </Switch>
+          </div>
+        </Grid>
+      </EstimatedRewardsModeProvider>
     </StakingContextProvider>
   )
 }

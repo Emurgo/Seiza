@@ -97,7 +97,7 @@ const stakePoolFacade = (data) => ({
   pledge: data.summary.ownerPledge.declared,
   stake: data.summary.adaStaked,
   cost: data.summary.cost,
-  rewards: data.summary.rewards,
+  estimatedRewards: data.summary.estimatedRewards,
 })
 
 const StakeListWrapper = ({StakepoolCard}: {StakepoolCard: React$ComponentType<any>}) => {

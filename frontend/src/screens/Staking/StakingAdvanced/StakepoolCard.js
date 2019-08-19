@@ -1,5 +1,5 @@
 // @flow
-import React, {useCallback} from 'react'
+import React, {useCallback, useMemo} from 'react'
 import cn from 'classnames'
 import {Grid, Typography, IconButton, Menu, MenuItem} from '@material-ui/core'
 import {MoreVert} from '@material-ui/icons'
@@ -13,6 +13,7 @@ import {
   Button,
   MobileOnly,
   DesktopOnly,
+  Tooltip,
 } from '@/components/visual'
 import {
   AdaValue,
@@ -20,6 +21,7 @@ import {
   ResponsiveCircularProgressBar,
   HelpTooltip,
 } from '@/components/common'
+import {useUserAdaContext} from '../context/userAda'
 import WithModalState from '@/components/headless/modalState'
 import {useI18n} from '@/i18n/helpers'
 import {useSelectedPoolsContext} from '../context/selectedPools'
@@ -27,6 +29,8 @@ import {useIsMobile, useIsBreakpointDown} from '@/components/hooks/useBreakpoint
 import {ReactComponent as AddPoolIcon} from '@/static/assets/icons/staking-simulator/add-stakepool.svg'
 import {ReactComponent as RemovePoolIcon} from '@/static/assets/icons/close.svg'
 import epochIcon from '@/static/assets/icons/epoch.svg'
+
+import {ESTIMATED_REWARDS_MODES, useEstimatedRewardsMode} from './estimatedRewardsModeUtils'
 
 const messages = defineMessages({
   revenue: 'Revenue',
@@ -252,10 +256,10 @@ const useRewardClasses = makeStyles(({spacing, palette}) => ({
   },
 }))
 
-const RewardsMenuItem = ({onClick, label, value}) => {
-  const classes = useRewardClasses()
+const _RewardsMenuItem = ({onClick, label, value, isActive}) => {
+  const classes = useRewardClasses({isActive})
   return (
-    <MenuItem onClick={onClick}>
+    <MenuItem selected={isActive} onClick={onClick}>
       <Grid container justify="space-between">
         <Typography className={classes.menuItemLabel}>{label}</Typography>
         <Typography color="textSecondary">{value}</Typography>
@@ -264,45 +268,115 @@ const RewardsMenuItem = ({onClick, label, value}) => {
   )
 }
 
+// Note: using class because children of <Menu /> must be able to hold 'ref'
+// TODO: Try to solve with `forwardRef`
+class RewardsMenuItem extends React.Component<any> {
+  render() {
+    return <_RewardsMenuItem {...this.props} />
+  }
+}
+
 const rewardsMessages = defineMessages({
   perEpoch: 'per epoch',
   perYear: 'per year',
+  estimatedRewardsTooltip:
+    'To enable other modes, please enter your ADA into the input besides Search',
 })
 
-const RewardsMenu = () => {
-  // TODO: get data from backend
-  const rewardsPerEpoch = 8567088
-  const rewardsPerYearAbsolute = 86895567088
-  const rewardsPerYearRelative = 0.1
+const RewardsMenu = ({estimatedRewards}) => {
   const classes = useRewardClasses()
   const {translate: tr, formatPercent} = useI18n()
+  const {userAda} = useUserAdaContext()
+  const {estimatedRewardsMode, setEstimatedRewardsMode} = useEstimatedRewardsMode()
+
   const [anchorEl, setAnchorEl] = React.useState(null)
-  const handleClick = useCallback((event) => setAnchorEl(event.currentTarget), [setAnchorEl])
+  const handleClick = useCallback(
+    (event) => {
+      userAda && setAnchorEl(event.currentTarget)
+    },
+    [userAda]
+  )
   const handleClose = useCallback(() => setAnchorEl(null), [setAnchorEl])
+
+  const _getOnClickHandler = useCallback(
+    (mode) => () => {
+      handleClose()
+      setEstimatedRewardsMode(mode)
+    },
+    [handleClose, setEstimatedRewardsMode]
+  )
+
+  const onEpochModeClick = useMemo(() => _getOnClickHandler(ESTIMATED_REWARDS_MODES.EPOCH), [
+    _getOnClickHandler,
+  ])
+  const onYearModeClick = useMemo(() => _getOnClickHandler(ESTIMATED_REWARDS_MODES.YEAR), [
+    _getOnClickHandler,
+  ])
+  const onPercentageModeClick = useMemo(
+    () => _getOnClickHandler(ESTIMATED_REWARDS_MODES.PERCENTAGE),
+    [_getOnClickHandler]
+  )
+
   return (
     <React.Fragment>
-      <IconButton className={classes.rewardsMoreIcon} onClick={handleClick}>
-        <MoreVert color="primary" />
-      </IconButton>
-      <Menu anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
+      <Tooltip
+        placement="bottom"
+        title={tr(rewardsMessages.estimatedRewardsTooltip)}
+        disableHoverListener={!!userAda}
+        disableTouchListener={!!userAda}
+      >
+        <div>
+          <IconButton
+            className={classes.rewardsMoreIcon}
+            onClick={handleClick}
+            disableRipple={!userAda}
+          >
+            <MoreVert color="primary" />
+          </IconButton>
+        </div>
+      </Tooltip>
+      <Menu anchorEl={anchorEl} keepMounted open={!!anchorEl} onClose={handleClose}>
         <RewardsMenuItem
-          onClick={handleClose}
-          label={<AdaValue showCurrency value={rewardsPerEpoch} />}
+          onClick={onEpochModeClick}
+          isActive={estimatedRewardsMode === ESTIMATED_REWARDS_MODES.EPOCH}
+          label={<AdaValue showCurrency value={estimatedRewards.perEpoch.ada} disableFiatTooltip />}
           value={tr(rewardsMessages.perEpoch)}
         />
         <RewardsMenuItem
-          onClick={handleClose}
-          label={<AdaValue showCurrency value={rewardsPerYearAbsolute} />}
+          onClick={onYearModeClick}
+          isActive={estimatedRewardsMode === ESTIMATED_REWARDS_MODES.YEAR}
+          label={<AdaValue showCurrency value={estimatedRewards.perYear.ada} disableFiatTooltip />}
           value={tr(rewardsMessages.perYear)}
         />
         <RewardsMenuItem
-          onClick={handleClose}
-          label={formatPercent(rewardsPerYearRelative)}
+          onClick={onPercentageModeClick}
+          isActive={estimatedRewardsMode === ESTIMATED_REWARDS_MODES.PERCENTAGE}
+          label={formatPercent(estimatedRewards.perYear.percentage)}
           value={tr(rewardsMessages.perYear)}
         />
       </Menu>
     </React.Fragment>
   )
+}
+
+const EstimatedRewards = ({estimatedRewards}) => {
+  const {formatPercent} = useI18n()
+  const {userAda} = useUserAdaContext()
+  const {estimatedRewardsMode} = useEstimatedRewardsMode()
+
+  if (!userAda || estimatedRewardsMode === ESTIMATED_REWARDS_MODES.PERCENTAGE) {
+    return <Typography>{formatPercent(estimatedRewards.perYear.percentage)}</Typography>
+  }
+
+  if (estimatedRewardsMode === ESTIMATED_REWARDS_MODES.EPOCH) {
+    return <AdaValue showCurrency value={estimatedRewards.perEpoch.ada} />
+  }
+
+  if (estimatedRewardsMode === ESTIMATED_REWARDS_MODES.YEAR) {
+    return <AdaValue showCurrency value={estimatedRewards.perYear.ada} />
+  }
+
+  return null
 }
 
 const Content = ({data}) => {
@@ -399,8 +473,8 @@ const Content = ({data}) => {
                 ),
                 value: (
                   <div className={classes.rewardsRowWrapper}>
-                    <AdaValue showCurrency value={data.rewards} />
-                    <RewardsMenu />
+                    <EstimatedRewards estimatedRewards={data.estimatedRewards} />
+                    <RewardsMenu estimatedRewards={data.estimatedRewards} />
                   </div>
                 ),
               },
