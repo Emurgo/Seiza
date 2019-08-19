@@ -13,6 +13,7 @@ import {
   Button,
   MobileOnly,
   DesktopOnly,
+  Tooltip,
 } from '@/components/visual'
 import {
   AdaValue,
@@ -20,6 +21,8 @@ import {
   ResponsiveCircularProgressBar,
   HelpTooltip,
 } from '@/components/common'
+import {useUserAdaContext} from '../context/userAda'
+import {useCookieState} from '@/components/hooks/useStorageState'
 import WithModalState from '@/components/headless/modalState'
 import {useI18n} from '@/i18n/helpers'
 import {useSelectedPoolsContext} from '../context/selectedPools'
@@ -252,10 +255,10 @@ const useRewardClasses = makeStyles(({spacing, palette}) => ({
   },
 }))
 
-const RewardsMenuItem = ({onClick, label, value}) => {
-  const classes = useRewardClasses()
+const _RewardsMenuItem = ({onClick, label, value, isActive}) => {
+  const classes = useRewardClasses({isActive})
   return (
-    <MenuItem onClick={onClick}>
+    <MenuItem selected={isActive} onClick={onClick}>
       <Grid container justify="space-between">
         <Typography className={classes.menuItemLabel}>{label}</Typography>
         <Typography color="textSecondary">{value}</Typography>
@@ -264,40 +267,90 @@ const RewardsMenuItem = ({onClick, label, value}) => {
   )
 }
 
+// Note: using class because children of <Menu /> must be able to hold 'ref'
+class RewardsMenuItem extends React.Component {
+  render() {
+    return <_RewardsMenuItem {...this.props} />
+  }
+}
+
 const rewardsMessages = defineMessages({
   perEpoch: 'per epoch',
   perYear: 'per year',
+  estimatedRewardsTooltip:
+    'To enable other modes, please enter your ADA into the input besides Search',
 })
 
-const RewardsMenu = () => {
-  // TODO: get data from backend
-  const rewardsPerEpoch = 8567088
-  const rewardsPerYearAbsolute = 86895567088
-  const rewardsPerYearRelative = 0.1
+const ESTIMATED_ADA_MODES = {
+  PERCENTAGE: 'percentage',
+  EPOCH: 'epoch',
+  YEAR: 'year',
+}
+
+const RewardsMenu = ({onChange, estimatedRewards, estimatedAdaMode}) => {
   const classes = useRewardClasses()
   const {translate: tr, formatPercent} = useI18n()
+  const {userAda} = useUserAdaContext()
+
   const [anchorEl, setAnchorEl] = React.useState(null)
-  const handleClick = useCallback((event) => setAnchorEl(event.currentTarget), [setAnchorEl])
+  const handleClick = useCallback(
+    (event) => {
+      userAda && setAnchorEl(event.currentTarget)
+    },
+    [userAda]
+  )
   const handleClose = useCallback(() => setAnchorEl(null), [setAnchorEl])
+
+  const onEpochModeClick = useCallback(() => {
+    handleClose()
+    onChange(ESTIMATED_ADA_MODES.EPOCH)
+  }, [handleClose, onChange])
+
+  const onYearModeClick = useCallback(() => {
+    handleClose()
+    onChange(ESTIMATED_ADA_MODES.YEAR)
+  }, [handleClose, onChange])
+
+  const onPercentageModeClick = useCallback(() => {
+    handleClose()
+    onChange(ESTIMATED_ADA_MODES.PERCENTAGE)
+  }, [handleClose, onChange])
+
   return (
     <React.Fragment>
-      <IconButton className={classes.rewardsMoreIcon} onClick={handleClick}>
-        <MoreVert color="primary" />
-      </IconButton>
-      <Menu anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
+      <Tooltip
+        placement="bottom"
+        title={tr(rewardsMessages.estimatedRewardsTooltip)}
+        disableHoverListener={!!userAda}
+        disableTouchListener={!!userAda}
+      >
+        <div>
+          <IconButton
+            className={classes.rewardsMoreIcon}
+            onClick={handleClick}
+            disableRipple={!userAda}
+          >
+            <MoreVert color="primary" />
+          </IconButton>
+        </div>
+      </Tooltip>
+      <Menu anchorEl={anchorEl} keepMounted open={!!anchorEl} onClose={handleClose}>
         <RewardsMenuItem
-          onClick={handleClose}
-          label={<AdaValue showCurrency value={rewardsPerEpoch} />}
+          onClick={onEpochModeClick}
+          isActive={estimatedAdaMode === ESTIMATED_ADA_MODES.EPOCH}
+          label={<AdaValue showCurrency value={estimatedRewards.perEpoch.ada} disableFiatTooltip />}
           value={tr(rewardsMessages.perEpoch)}
         />
         <RewardsMenuItem
-          onClick={handleClose}
-          label={<AdaValue showCurrency value={rewardsPerYearAbsolute} />}
+          onClick={onYearModeClick}
+          isActive={estimatedAdaMode === ESTIMATED_ADA_MODES.YEAR}
+          label={<AdaValue showCurrency value={estimatedRewards.perYear.ada} disableFiatTooltip />}
           value={tr(rewardsMessages.perYear)}
         />
         <RewardsMenuItem
-          onClick={handleClose}
-          label={formatPercent(rewardsPerYearRelative)}
+          onClick={onPercentageModeClick}
+          isActive={estimatedAdaMode === ESTIMATED_ADA_MODES.PERCENTAGE}
+          label={formatPercent(estimatedRewards.perYear.percentage)}
           value={tr(rewardsMessages.perYear)}
         />
       </Menu>
@@ -305,11 +358,36 @@ const RewardsMenu = () => {
   )
 }
 
+const EstimatedRewards = ({estimatedRewards, estimatedAdaMode}) => {
+  const {formatPercent} = useI18n()
+  const {userAda} = useUserAdaContext()
+
+  if (!userAda || estimatedAdaMode === ESTIMATED_ADA_MODES.PERCENTAGE) {
+    return <Typography>{formatPercent(estimatedRewards.perYear.percentage)}</Typography>
+  }
+
+  if (estimatedAdaMode === ESTIMATED_ADA_MODES.EPOCH) {
+    return <AdaValue showCurrency value={estimatedRewards.perEpoch.ada} />
+  }
+
+  if (estimatedAdaMode === ESTIMATED_ADA_MODES.YEAR) {
+    return <AdaValue showCurrency value={estimatedRewards.perYear.ada} />
+  }
+
+  return null
+}
+
 const Content = ({data}) => {
   const {translate: tr, formatPercent, formatTimestamp} = useI18n()
   const classes = useContentStyles()
   const isMobile = useIsMobile()
   const isDownLg = useIsBreakpointDown('lg')
+
+  // TODO: decide whether to store in cookies or in url
+  const [estimatedAdaMode, setEstimatedAdaMode] = useCookieState(
+    'rewards-mode',
+    ESTIMATED_ADA_MODES.YEAR
+  )
 
   return (
     <div className={classes.innerWrapper}>
@@ -399,8 +477,15 @@ const Content = ({data}) => {
                 ),
                 value: (
                   <div className={classes.rewardsRowWrapper}>
-                    <AdaValue showCurrency value={data.rewards} />
-                    <RewardsMenu />
+                    <EstimatedRewards
+                      estimatedAdaMode={estimatedAdaMode}
+                      estimatedRewards={data.estimatedRewards}
+                    />
+                    <RewardsMenu
+                      estimatedAdaMode={estimatedAdaMode}
+                      estimatedRewards={data.estimatedRewards}
+                      onChange={setEstimatedAdaMode}
+                    />
                   </div>
                 ),
               },

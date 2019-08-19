@@ -35,6 +35,21 @@ const generatePool = (index) => ({
 
 export const MOCKED_STAKEPOOLS = _.range(0, 1000).map((i) => generatePool(i))
 
+const mockedEstimatedRewards = {
+  perYear: {
+    percentage: 0.8232323,
+    ada: '432543',
+  },
+  perMonth: {
+    percentage: 0.2132323,
+    ada: '4321',
+  },
+  perEpoch: {
+    percentage: 0.1232323,
+    ada: '432',
+  },
+}
+
 const _BOOTSTRAP_POOLS = [
   {
     poolHash: 'af2800c124e599d6dec188a75f8bfde397ebb778163a18240371f2d1',
@@ -47,6 +62,7 @@ const _BOOTSTRAP_POOLS = [
       keysDelegating: 100,
       performance: 0.71,
       rewards: '51355347',
+      estimatedRewards: mockedEstimatedRewards,
       cost: '41345547',
       fullness: 0.6,
       margins: 0.3,
@@ -69,6 +85,7 @@ const _BOOTSTRAP_POOLS = [
       keysDelegating: 99,
       performance: 0.72,
       rewards: '51355346',
+      estimatedRewards: mockedEstimatedRewards,
       cost: '41345546',
       fullness: 0.67,
       margins: 0.31,
@@ -91,6 +108,7 @@ const _BOOTSTRAP_POOLS = [
       keysDelegating: 98,
       performance: 0.73,
       rewards: '51355345',
+      estimatedRewards: mockedEstimatedRewards,
       cost: '41345545',
       fullness: 0.66,
       margins: 0.32,
@@ -113,6 +131,7 @@ const _BOOTSTRAP_POOLS = [
       keysDelegating: 97,
       performance: 0.74,
       rewards: '51355344',
+      estimatedRewards: mockedEstimatedRewards,
       cost: '41345544',
       fullness: 0.65,
       margins: 0.33,
@@ -135,6 +154,7 @@ const _BOOTSTRAP_POOLS = [
       keysDelegating: 96,
       performance: 0.75,
       rewards: '51355343',
+      estimatedRewards: mockedEstimatedRewards,
       cost: '41345543',
       fullness: 0.64,
       margins: 0.34,
@@ -157,6 +177,7 @@ const _BOOTSTRAP_POOLS = [
       keysDelegating: 95,
       performance: 0.76,
       rewards: '51355342',
+      estimatedRewards: mockedEstimatedRewards,
       cost: '41345542',
       fullness: 0.63,
       margins: 0.35,
@@ -179,6 +200,7 @@ const _BOOTSTRAP_POOLS = [
       keysDelegating: 94,
       performance: 0.77,
       rewards: '51355341',
+      estimatedRewards: mockedEstimatedRewards,
       cost: '41345541',
       fullness: 0.62,
       margins: 0.36,

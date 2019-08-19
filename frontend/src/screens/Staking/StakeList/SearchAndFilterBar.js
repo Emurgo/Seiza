@@ -1,18 +1,21 @@
 // @flow
+import _ from 'lodash'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
-import React, {useCallback, useState} from 'react'
+import React, {useCallback, useState, useMemo} from 'react'
 import {defineMessages} from 'react-intl'
 import {Grid, Collapse} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
 import {useI18n} from '@/i18n/helpers'
-import {Searchbar, ToggleButton, Button} from '@/components/visual'
+import {Searchbar, ToggleButton, Button, SearchBarTextField} from '@/components/visual'
 import {useStateWithChangingDefault} from '@/components/hooks/useStateWithChangingDefault'
 import {useIsMobile} from '@/components/hooks/useBreakpoints'
+import {isInteger} from '@/helpers/validators'
 
 import Filters from './Filters'
 import {useSearchTextContext} from '../context/searchText'
 import {usePerformanceContext} from '../context/performance'
+import {useUserAdaContext} from '../context/userAda'
 
 import {ReactComponent as CloseFilters} from '@/static/assets/icons/close-filter.svg'
 import {ReactComponent as OpenFilters} from '@/static/assets/icons/filter.svg'
@@ -20,6 +23,7 @@ import {ReactComponent as OpenFilters} from '@/static/assets/icons/filter.svg'
 const messages = defineMessages({
   searchPlaceholder: 'Search for a Stake Pool by name',
   filters: 'Filters',
+  userAdaToStake: 'Your ADA to stake',
 })
 
 // TODO: margin/padding theme unit
@@ -33,6 +37,10 @@ const useStyles = makeStyles((theme) => ({
   },
   filtersWrapper: {
     marginTop: '20px',
+  },
+  userAdaInput: {
+    maxWidth: 250,
+    paddingRight: theme.spacing(2),
   },
 }))
 
@@ -68,6 +76,50 @@ const Search = () => {
       onChange={setSearchText}
       onSearch={onSearch}
     />
+  )
+}
+
+const UserAdaInput = () => {
+  const classes = useStyles()
+  const {translate: tr} = useI18n()
+  const {userAda, setUserAda} = useUserAdaContext()
+  const [currentUserAda, setCurrentUserAda] = useStateWithChangingDefault(userAda)
+
+  const debouncedOnChange = useMemo(() => _.debounce(setUserAda, 1000), [setUserAda])
+
+  const onChange = useCallback(
+    (e: any) => {
+      // TODO: flow event
+      const newValue = e.target.value
+      if ((isInteger(newValue) && newValue > 0) || newValue === '') {
+        debouncedOnChange(newValue)
+        setCurrentUserAda(newValue)
+      }
+    },
+    [debouncedOnChange, setCurrentUserAda]
+  )
+
+  const onSubmit = useCallback(
+    (e) => {
+      e.preventDefault()
+      setUserAda(currentUserAda)
+    },
+    [currentUserAda, setUserAda]
+  )
+
+  const onReset = useCallback(() => setUserAda(''), [setUserAda])
+
+  return (
+    <form onSubmit={onSubmit}>
+      <SearchBarTextField
+        value={currentUserAda}
+        onChange={onChange}
+        placeholder={tr(messages.userAdaToStake)}
+        className={classes.userAdaInput}
+        onReset={onReset}
+        rounded
+      />
+    </form>
   )
 }
 
@@ -140,6 +192,7 @@ export default () => {
     <Grid container direction="column" justify="space-between" className={classes.wrapper}>
       <Grid item>
         <Grid container justify="space-between">
+          <UserAdaInput />
           <div className={classes.searchWrapper}>
             <Search />
           </div>
