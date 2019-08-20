@@ -139,9 +139,17 @@ const useGetSortedPools = (stakepools) => {
   const filteredPools = useFilteredPools(stakepools, filters)
 
   const {sortOptions} = useSortOptions()
+
+  const {getSortableFunction} = fieldsConfigMap[sortOptions.field]
+
+  const getItem = useCallback((d) => d[sortOptions.field], [sortOptions.field])
+
   const sortedPools = useMemo(
-    () => _.orderBy(filteredPools, (d) => d[sortOptions.field], [sortOptions.order]),
-    [filteredPools, sortOptions.field, sortOptions.order]
+    () =>
+      getSortableFunction
+        ? filteredPools.sort(getSortableFunction(sortOptions.order, getItem))
+        : _.orderBy(filteredPools, getItem, [sortOptions.order]),
+    [filteredPools, getItem, getSortableFunction, sortOptions.order]
   )
 
   return sortedPools

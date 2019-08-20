@@ -3,6 +3,7 @@
 import _ from 'lodash'
 import * as React from 'react'
 import {defineMessages} from 'react-intl'
+import BigNumber from 'bignumber.js'
 
 import {AdaValue, Link} from '@/components/common'
 import {Tooltip} from '@/components/visual'
@@ -58,6 +59,7 @@ type Config = {
     dataMatchFilter: Function,
   },
   align?: $Values<typeof ALIGN>,
+  getSortableFunction?: (order: 'asc' | 'desc', getItem: Function) => Function,
 }
 
 const isRangeFilterActive = (filterConfig: RangeFilterConfig) => {
@@ -123,6 +125,15 @@ const textFieldFilterConfig = {
   ...textEncodeObj,
 }
 
+const getSortableAdaValueFunction = (order: 'asc' | 'desc', getItem) => (x, y) => {
+  const _x = new BigNumber(getItem(x))
+  const _y = new BigNumber(getItem(y))
+
+  const o = (v) => (order === 'asc' ? v * -1 : v)
+
+  return _x.isGreaterThan(_y) ? o(1) : _x.isLessThan(_y) ? o(-1) : 0
+}
+
 const nameTooltipWrapperStyles = {overflow: 'hidden'}
 
 const NameTooltip = ({data}) => (
@@ -157,6 +168,7 @@ export const fieldsConfig: Array<Config> = [
     ),
     filter: adaFieldFilterConfig,
     align: ALIGN.RIGHT,
+    getSortableFunction: getSortableAdaValueFunction,
   },
   {
     field: 'fullness',
@@ -187,6 +199,7 @@ export const fieldsConfig: Array<Config> = [
     ),
     filter: adaFieldFilterConfig,
     align: ALIGN.RIGHT,
+    getSortableFunction: getSortableAdaValueFunction,
   },
   {
     field: 'keysDelegating',
