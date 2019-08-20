@@ -179,7 +179,7 @@ const DesktopAction = ({action, label, value}) => {
         {value
           .filter((x) => !!x)
           .map((val, index) => (
-            <React.Fragment key={index}>{val} </React.Fragment>
+            <div key={index}>{val}</div>
           ))}
       </Value>
     </Row>
