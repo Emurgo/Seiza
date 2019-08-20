@@ -3,6 +3,7 @@ import React from 'react'
 import cn from 'classnames'
 
 import {MenuList, MenuItem, Typography} from '@material-ui/core'
+
 import {makeStyles} from '@material-ui/styles'
 import {fade} from '@material-ui/core/styles/colorManipulator'
 
@@ -84,7 +85,8 @@ const useNavbarLinkStyles = makeStyles(({palette}) => ({
 
 const useSublinksStyles = makeStyles((theme) => ({
   tooltipChildren: {
-    display: 'inline-block',
+    display: 'inline-flex',
+    alignItems: 'center',
   },
   linkText: {
     color: theme.palette.text.secondary,
@@ -209,6 +211,7 @@ const NavMenuItem = ({
           <NavbarLink
             isActive={isActive}
             className={!isMobile && isActive ? classes.underlineActive : ''}
+            hasArrow={!!sublinks}
           >
             {label}
           </NavbarLink>
@@ -252,16 +255,19 @@ export const NavbarLink = ({
   isActive,
   children,
   className,
+  hasArrow,
 }: {
   isActive?: boolean,
   children: any,
   className?: string,
+  hasArrow?: boolean,
 }) => {
   const classes = useNavbarLinkStyles()
   return (
     <NavTypography
       className={cn(classes.link, isActive && classes.active, className)}
       variant="body1"
+      hasArrow={hasArrow}
     >
       {children}
     </NavTypography>
