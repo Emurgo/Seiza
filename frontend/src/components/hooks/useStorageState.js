@@ -21,7 +21,11 @@ export const useStorageState = <T>(
   // setState(value) vs setState((state) => ...)
   // and type it properly.
   // Also useEffect might be proper place to do side-effect action
-  useEffect(() => storage.setItem(key, state), [key, state, storage])
+  useEffect(() => {
+    if (storage.getItem(key) !== state) {
+      storage.setItem(key, state)
+    }
+  }, [key, state, storage])
 
   return [state, setState]
 }
