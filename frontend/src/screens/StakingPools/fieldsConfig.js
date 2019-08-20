@@ -46,6 +46,7 @@ export const FILTER_TYPES = {
 const ALIGN = {
   LEFT: 'left',
   RIGHT: 'right',
+  CENTER: 'center',
 }
 
 type Config = {
@@ -175,21 +176,21 @@ export const fieldsConfig: Array<Config> = [
     getLabel: ({tr}: GetLabelParams) => tr(fieldsMessages.fullness),
     getValue: ({data, formatPercent}: GetValueParams) => formatPercent(data.fullness),
     filter: percentageFieldFilterConfig,
-    align: ALIGN.RIGHT,
+    align: ALIGN.CENTER,
   },
   {
     field: 'margins',
     getLabel: ({tr}: GetLabelParams) => tr(fieldsMessages.margins),
     getValue: ({data, formatPercent}: GetValueParams) => formatPercent(data.margins),
     filter: percentageFieldFilterConfig,
-    align: ALIGN.RIGHT,
+    align: ALIGN.CENTER,
   },
   {
     field: 'performance',
     getLabel: ({tr}: GetLabelParams) => tr(fieldsMessages.performance),
     getValue: ({data, formatPercent}: GetValueParams) => formatPercent(data.performance),
     filter: percentageFieldFilterConfig,
-    align: ALIGN.RIGHT,
+    align: ALIGN.CENTER,
   },
   {
     field: 'rewards',
