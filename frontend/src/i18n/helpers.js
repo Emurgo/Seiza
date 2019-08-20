@@ -1,7 +1,7 @@
 // @flow
 import BigNumber from 'bignumber.js'
 import moment from 'moment-timezone'
-import {injectIntl} from 'react-intl'
+import {injectIntl, FormattedMessage} from 'react-intl'
 import React, {useContext} from 'react'
 import {compose} from 'redux'
 import _ from 'lodash'
@@ -24,6 +24,16 @@ const defaultNumberFmt = {
 BigNumber.config({
   FORMAT: defaultNumberFmt,
 })
+
+export const formatMsgById = (id: string, values?: Object) => {
+  return (
+    <FormattedMessage
+      // $FlowFixMe
+      id={id}
+      values={values}
+    />
+  )
+}
 
 const STANDARD_READABLE_FORMAT = 'LL LTS z'
 
@@ -229,6 +239,7 @@ export const getIntlFormatters = (intl: any): Formatters => {
 
   return {
     translate,
+    formatMsgById,
     formatNumber,
     formatInt,
     formatPercent,

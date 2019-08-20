@@ -147,7 +147,9 @@ const Stakepool = () => {
             <Row>
               <Label>{tr(messages.webpage)}</Label>
               <Value>
-                <ExternalLink to={stakepool.webpage}>{stakepool.webpage}</ExternalLink>
+                <ExternalLink to={stakepool.webpage}>
+                  <Typography noWrap>{stakepool.webpage}</Typography>
+                </ExternalLink>
               </Value>
             </Row>
             <Row>
