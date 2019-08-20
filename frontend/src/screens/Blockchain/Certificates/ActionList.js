@@ -12,7 +12,10 @@ import {
   DesktopOnly,
   MobileOnly,
   ExternalLink,
+  ExpandableCardContent,
+  ExpandableCardFooter,
 } from '@/components/visual'
+import WithModalState from '@/components/headless/modalState'
 import {useI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
 import CertificateActionIcon from './ActionIcon'
@@ -119,6 +122,17 @@ const useStyles = makeStyles((theme) => ({
       marginRight: theme.getContentSpacing(),
     },
   },
+  expandableCardContent: {
+    width: '300px',
+    margin: '0 0 0 auto',
+  },
+  // desktopExpansionPanelUl: {
+  //   listStyleType: 'none',
+  // },
+  // desktopExpansionPanelSummary: {
+  //   border: 'none',
+
+  // },
   wrapper: {
     width: '100%',
   },
@@ -170,17 +184,57 @@ const MobileAction = ({action, label, value}) => {
 }
 
 const DesktopAction = ({action, label, value}) => {
+  const classes = useStyles()
+  value = value.filter((x) => !!x)
+
   return (
     <Row>
       <Label>
         <IconLabel certType={action.type}>{label}</IconLabel>
       </Label>
       <Value>
-        {value
+        {value.length > 1 ? (
+          <WithModalState>
+            {({isOpen, toggle}) => (
+              <ExpandableCardContent
+                className={classes.expandableCardContent}
+                expanded={isOpen}
+                onChange={toggle}
+                renderHeader={() => value[0]}
+                renderExpandedArea={() =>
+                  value.slice(1).map((val, index) => <div key={index}>{val}</div>)
+                }
+                renderFooter={(expanded) => (
+                  <ExpandableCardFooter
+                    label={expanded ? 'Show less' : 'Show more'}
+                    expanded={expanded}
+                  />
+                )}
+              />
+            )}
+          </WithModalState>
+        ) : (
+          value
+        )}
+        {/* {value
           .filter((x) => !!x)
           .map((val, index) => (
             <div key={index}>{val}</div>
-          ))}
+          ))} */}
+        {/* <ExpansionPanel
+          className={classes.expansionPanel}
+          summary={'Show more'}
+          summaryClasses={classes.desktopExpansionPanelSummary}
+        >
+          <div className={cn(classes.expansionPanelDetails, classes.horizontalSpacings)}>
+            <ul className={classes.desktopExpansionPanelUl}>
+              {value.map((val, index) => (
+                <li key={index}>{val}</li>
+              ))}
+            </ul>
+          </div>
+          <Divider className={classes.horizontalSpacings} light />
+        </ExpansionPanel> */}
       </Value>
     </Row>
   )
