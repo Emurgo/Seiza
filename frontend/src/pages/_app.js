@@ -23,7 +23,7 @@ import CssBaseline from '@material-ui/core/CssBaseline'
 
 import config from '@/config'
 import {ThemeProvider, useTheme} from '@/components/context/theme'
-import {CookiesProvider} from '@/components/context/cookies'
+import {CookiesStorageProvider} from '@/components/context/cookies'
 import {
   IntlProvider,
   useLocale,
@@ -266,7 +266,7 @@ class MyApp extends App {
 
     return (
       <Container>
-        <CookiesProvider {...this.getHackedCookieHandlers(cookiesProps)}>
+        <CookiesStorageProvider {...this.getHackedCookieHandlers(cookiesProps)}>
           <ApolloProviders client={apolloClient}>
             <ThemeProvider>
               <MuiProviders>
@@ -285,7 +285,7 @@ class MyApp extends App {
               </MuiProviders>
             </ThemeProvider>
           </ApolloProviders>
-        </CookiesProvider>
+        </CookiesStorageProvider>
       </Container>
     )
   }
