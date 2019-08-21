@@ -22,6 +22,7 @@ const useStyles = makeStyles((theme) => ({
   filterIcon: {
     marginRight: theme.spacing(0.8),
     paddingLeft: theme.spacing(0.8), // Note: controls icon size
+    cursor: 'pointer',
   },
 }))
 
