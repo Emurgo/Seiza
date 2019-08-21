@@ -4,7 +4,8 @@ import React from 'react'
 import {makeStyles} from '@material-ui/styles'
 
 import Header from './Header'
-import StakeList from '../StakeList'
+import {StakeListLayout} from '../StakeList'
+import {Search} from '../StakeList/SearchAndFilterBar'
 import StakepoolCard from './StakepoolCard'
 import {StakingContextProvider} from '../context'
 
@@ -31,7 +32,7 @@ export default () => {
       <StakingContextProvider autoSync={false}>
         <div className={classes.centerWrapper}>
           <div className={classes.centeredItem}>
-            <StakeList StakepoolCard={StakepoolCard} />
+            <StakeListLayout StakepoolCard={StakepoolCard} TopBar={Search} />
           </div>
         </div>
       </StakingContextProvider>
