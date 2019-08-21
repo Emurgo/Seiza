@@ -169,10 +169,10 @@ const Stakepool = () => {
             <Row>
               <Label>{tr(messages.totalRewards)}</Label>
               <Value>
-                <Typography variant="body1" align="right">
+                <Typography variant="body1">
                   <AdaValue value={stakepool.totalRewards.amount} showCurrency />
                 </Typography>
-                <Typography variant="caption" color="textSecondary" align="right">
+                <Typography variant="caption" color="textSecondary">
                   <FormattedMessage
                     // $FlowFixMe
                     id={messages.estimatedMissed.id}
@@ -204,7 +204,7 @@ const Stakepool = () => {
             <Row>
               <Label>{tr(messages.margin)}</Label>
               <Value>
-                <Typography variant="body1" align="right">
+                <Typography variant="body1">
                   {formatPercent(stakepool.currentMargin.margin)}{' '}
                   <FromTop1Message
                     value={formatPercent(stakepool.topPoolComparison.margin, {
@@ -212,7 +212,7 @@ const Stakepool = () => {
                     })}
                   />
                 </Typography>
-                <Typography variant="caption" color="textSecondary" align="right">
+                <Typography variant="caption" color="textSecondary">
                   {tr(messages.lastUpdate)} {formatTimestamp(stakepool.currentMargin.updatedAt)}
                 </Typography>
               </Value>
@@ -220,7 +220,7 @@ const Stakepool = () => {
             <Row>
               <Label>{tr(messages.cost)}</Label>
               <Value>
-                <Typography variant="body1" align="right">
+                <Typography variant="body1">
                   <AdaValue value={stakepool.currentCost.cost} showCurrency />
                   <FromTop1Message
                     value={
@@ -232,7 +232,7 @@ const Stakepool = () => {
                     }
                   />
                 </Typography>
-                <Typography variant="caption" color="textSecondary" align="right">
+                <Typography variant="caption" color="textSecondary">
                   {tr(messages.lastUpdate)} {formatTimestamp(stakepool.currentCost.updatedAt)}
                 </Typography>
               </Value>

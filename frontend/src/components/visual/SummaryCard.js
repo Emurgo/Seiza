@@ -95,7 +95,7 @@ const Row = ({children, onClick, className, hideSeparator = false, showLastSepar
   )
 }
 const Label = ({children}) => (
-  <Grid item xs={4}>
+  <Grid item xs={12} sm={4}>
     <Typography variant="body1" color="textSecondary">
       {children}
     </Typography>
@@ -106,14 +106,17 @@ const useValueStyles = makeStyles((theme) => ({
   value: {
     /* Responsive layout tricks */
     width: '100%',
-    textAlign: 'right',
+    textAlign: 'left',
+    [theme.breakpoints.up('sm')]: {
+      textAlign: 'right',
+    },
   },
 }))
 
 const Value = ({children}) => {
   const classes = useValueStyles()
   return (
-    <Grid container justify="flex-end" item xs={8}>
+    <Grid container justify="flex-end" item xs={12} sm={8}>
       <Typography variant="body1" component="span" className={classes.value}>
         {children}
       </Typography>

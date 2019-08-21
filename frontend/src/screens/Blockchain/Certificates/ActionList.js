@@ -558,10 +558,10 @@ const TransactionRow = ({tx}) => {
     <Row>
       <AdditionalRowLabel>{tr(messages.txHash)}</AdditionalRowLabel>
       <Value>
-        <Typography variant="body1" align="right">
+        <Typography variant="body1">
           <TxHashLink txHash={tx.txHash} />
         </Typography>
-        <Typography variant="caption" color="textSecondary" align="right">
+        <Typography variant="caption" color="textSecondary">
           {formatTimestamp(tx.timestamp)}
         </Typography>
       </Value>
