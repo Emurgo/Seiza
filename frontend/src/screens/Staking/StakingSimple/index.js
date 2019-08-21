@@ -1,8 +1,9 @@
 // @flow
-import React from 'react'
+import React, {useRef} from 'react'
 
 import {makeStyles} from '@material-ui/styles'
 
+import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
 import Header from './Header'
 import {StakeListLayout} from '../StakeList'
 import {Search} from '../StakeList/SearchAndFilterBar'
@@ -23,19 +24,24 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-// TODO: decide how links to that screen should look like (mobile)
 export default () => {
   const classes = useStyles()
+  const scrollToRef = useRef(null)
+
+  useScrollFromBottom(scrollToRef, true)
+
   return (
     <React.Fragment>
       <Header />
-      <StakingContextProvider autoSync={false}>
-        <div className={classes.centerWrapper}>
-          <div className={classes.centeredItem}>
-            <StakeListLayout StakepoolCard={StakepoolCard} TopBar={Search} />
+      <div ref={scrollToRef}>
+        <StakingContextProvider autoSync={false}>
+          <div className={classes.centerWrapper}>
+            <div className={classes.centeredItem}>
+              <StakeListLayout StakepoolCard={StakepoolCard} TopBar={Search} />
+            </div>
           </div>
-        </div>
-      </StakingContextProvider>
+        </StakingContextProvider>
+      </div>
     </React.Fragment>
   )
 }
