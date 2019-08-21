@@ -19,6 +19,8 @@ const STAKING_POOLS_LIST_ROUTE = '/staking-pools'
 
 const HAVE_BLOCKCHAIN = true
 const HAVE_STAKING_CENTER = config.showStakingData
+const HAVE_STAKING_CENTER_LOCATION = config.showStakingLocationData
+const HAVE_STAKING_CENTER_CHARTS = config.showStakingChartsData
 const HAVE_STAKE_POOLS_LIST = config.showStakePoolsListData
 const HAVE_LEGAL = true
 const HAVE_MORE = config.showStakingData
@@ -61,8 +63,8 @@ export const routeTo = {
     poolList: () => `${STAKING_CENTER_ROUTE}/list`,
     poolComparison: () => `${STAKING_CENTER_ROUTE}/comparison`,
     history: () => `${STAKING_CENTER_ROUTE}/history`,
-    charts: () => `${STAKING_CENTER_ROUTE}/charts`,
-    location: () => `${STAKING_CENTER_ROUTE}/location`,
+    charts: () => enableIf(HAVE_STAKING_CENTER_CHARTS, `${STAKING_CENTER_ROUTE}/charts`),
+    location: () => enableIf(HAVE_STAKING_CENTER_LOCATION, `${STAKING_CENTER_ROUTE}/location`),
     people: () => `${STAKING_CENTER_ROUTE}/people`,
   }),
   stakingCenterSimple: () => enableIf(HAVE_STAKING_CENTER, '/staking-simple'),
