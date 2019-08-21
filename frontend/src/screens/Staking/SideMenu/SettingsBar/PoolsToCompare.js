@@ -17,17 +17,22 @@ const messages = defineMessages({
   noPools: 'You have no pools to compare yet',
 })
 
-const CustomAvatar = withStyles({
+const CustomAvatar = withStyles(({spacing, palette}) => ({
   root: {
-    background: 'transparent',
+    background: palette.background.paper,
+    marginLeft: `${spacing(0.5)}px !important`,
+    marginRight: spacing(0.5),
   },
-})(Avatar)
+}))(Avatar)
 
 const CustomChip = withStyles(({palette, spacing}) => ({
   root: {
-    background: fade(palette.secondary.main, 0.2),
+    background: fade(palette.secondary.main, 0.1),
     border: 'none',
-    color: palette.text.primary,
+    color: '#1F1351',
+    height: 'auto',
+    borderRadius: 1000,
+    padding: spacing(0.5),
   },
   label: {
     maxWidth: '300px',
@@ -90,6 +95,10 @@ const useStyles = makeStyles(({spacing}) => {
       marginBottom: spacing(1),
       marginTop: spacing(1),
     },
+    clearIcon: {
+      color: '#8791ad',
+      marginLeft: spacing(1),
+    },
   }
 })
 
@@ -107,7 +116,7 @@ const StakePoolItem = ({label, onDelete, hash}) => {
         label={label}
         onClick={() => null}
         onDelete={onDelete}
-        deleteIcon={<Clear />}
+        deleteIcon={<Clear className={classes.clearIcon} />}
         variant="outlined"
         color="primary"
       />
