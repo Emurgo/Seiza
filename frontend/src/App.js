@@ -91,10 +91,12 @@ const getTranslatedNavItems = (translate) =>
         {
           link: routeTo.stakingCenterSimple(),
           label: translate(navigationMessages.simpleStaking),
+          disabledText: translate(navigationMessages.disabledText),
         },
         {
           link: routeTo.stakingCenter.home(),
           label: translate(navigationMessages.advancedStaking),
+          disabledText: translate(navigationMessages.disabledText),
         },
       ],
     },
