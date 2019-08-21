@@ -8,6 +8,7 @@ import {StakeListLayout} from '../StakeList'
 import {Search} from '../StakeList/SearchAndFilterBar'
 import StakepoolCard from './StakepoolCard'
 import {StakingContextProvider} from '../context'
+import {CARD_WIDTH} from '../StakeList/stakepoolCardUtils'
 
 const useStyles = makeStyles((theme) => ({
   centerWrapper: {
@@ -17,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
     minWidth: 0, // needed for proper ellipsize in children components with flex
   },
   centeredItem: {
-    maxWidth: 1000,
+    maxWidth: CARD_WIDTH,
     width: '100%',
     padding: `${theme.spacing(6)}px ${theme.spacing(2)}px`,
   },

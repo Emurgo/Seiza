@@ -26,9 +26,10 @@ import PageNotFound from '@/screens/PageNotFound'
 import LocationMapScreen from '../LocationMap'
 import HistoryScreen from '../History'
 import ChartsScreen from '../Charts'
-import {EstimatedRewardsModeProvider} from './estimatedRewardsModeUtils'
+import {CARD_WIDTH} from '../StakeList/stakepoolCardUtils'
+import {EstimatedRewardsModeProvider} from '../StakeList/estimatedRewardsModeUtils'
 
-const DEFAULT_MAX_WIDTH = '1000px'
+const DEFAULT_MAX_WIDTH = CARD_WIDTH
 
 const useStyles = makeStyles((theme) => {
   // Note: we use `width` instead of `flex: 0 0 width` as it is causing spaces at the bottom of div
