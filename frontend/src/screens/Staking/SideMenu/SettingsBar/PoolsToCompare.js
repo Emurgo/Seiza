@@ -17,17 +17,25 @@ const messages = defineMessages({
   noPools: 'You have no pools to compare yet',
 })
 
-const CustomAvatar = withStyles({
+const CustomAvatar = withStyles(({spacing, palette}) => ({
   root: {
-    background: 'transparent',
+    background: palette.background.paper,
+    marginLeft: `${spacing(0.5)}px !important`,
+    marginRight: spacing(0.5),
+    // Needed, because on heroku styles are applied in different order
+    width: `${spacing(4)}px !important`,
+    height: `${spacing(4)}px !important`,
   },
-})(Avatar)
+}))(Avatar)
 
 const CustomChip = withStyles(({palette, spacing}) => ({
   root: {
-    background: fade(palette.secondary.main, 0.2),
+    background: fade(palette.primary.main, 0.1),
     border: 'none',
     color: palette.text.primary,
+    height: 'auto',
+    borderRadius: 1000,
+    padding: spacing(0.5),
   },
   label: {
     maxWidth: '300px',
@@ -42,7 +50,7 @@ const CustomChip = withStyles(({palette, spacing}) => ({
   },
 }))(Chip)
 
-const useStyles = makeStyles(({spacing}) => {
+const useStyles = makeStyles(({spacing, palette}) => {
   const poolMargin = 4
   const poolHeight = 32 + poolMargin * 2
   const poolTransitionShift = 350
@@ -90,6 +98,10 @@ const useStyles = makeStyles(({spacing}) => {
       marginBottom: spacing(1),
       marginTop: spacing(1),
     },
+    clearIcon: {
+      color: palette.text.secondary,
+      marginLeft: spacing(1),
+    },
   }
 })
 
@@ -107,7 +119,7 @@ const StakePoolItem = ({label, onDelete, hash}) => {
         label={label}
         onClick={() => null}
         onDelete={onDelete}
-        deleteIcon={<Clear />}
+        deleteIcon={<Clear className={classes.clearIcon} />}
         variant="outlined"
         color="primary"
       />
