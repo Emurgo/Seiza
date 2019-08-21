@@ -52,7 +52,7 @@ const useToggleFilters = () => {
   return [showFilters, onToggleShowFilters]
 }
 
-const Search = () => {
+export const Search = () => {
   const searchTextContext = useSearchTextContext()
   const [searchText, setSearchText] = useStateWithChangingDefault(searchTextContext.searchText)
 
@@ -132,7 +132,7 @@ const FiltersButton = ({open, onClick}) => {
   )
 }
 
-export default () => {
+export const SearchAndFilterBar = () => {
   const classes = useStyles()
   const [showFilters, onToggleShowFilters] = useToggleFilters()
 

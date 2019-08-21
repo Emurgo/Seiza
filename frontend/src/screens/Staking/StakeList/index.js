@@ -9,7 +9,6 @@ import {defineMessages} from 'react-intl'
 import {useI18n} from '@/i18n/helpers'
 import {Button, Overlay, LoadingInProgress} from '@/components/visual'
 import {LoadingError, LoadingOverlay} from '@/components/common'
-import SearchAndFilterBar from './SearchAndFilterBar'
 import SortByBar from './SortByBar'
 
 import {useLoadPagedStakePoolList} from './dataLoaders'
@@ -100,10 +99,7 @@ const stakePoolFacade = (data) => ({
   rewards: data.summary.rewards,
 })
 
-const StakeListWrapper = ({StakepoolCard}: {StakepoolCard: React$ComponentType<any>}) => {
-  const {translate: tr} = useI18n()
-  const classes = useStyles()
-
+const useGetStakeListData = () => {
   const {loading, error, pagedStakePoolList, onLoadMore} = useLoadPagedStakePoolList()
 
   const notNullPagedData = useMemo(
@@ -120,12 +116,34 @@ const StakeListWrapper = ({StakepoolCard}: {StakepoolCard: React$ComponentType<a
   const stakePools = notNullPagedData.stakePools.map(stakePoolFacade)
   const shownPoolsCount = notNullPagedData.stakePools.length
   const {hasMore, totalCount} = notNullPagedData
+  return {hasMore, totalCount, shownPoolsCount, stakePools, loading, error, onLoadMore}
+}
+
+export const StakeListLayout = ({
+  StakepoolCard,
+  TopBar,
+}: {
+  StakepoolCard: React$ComponentType<any>,
+  TopBar: React$ComponentType<any>,
+}) => {
+  const {translate: tr} = useI18n()
+  const classes = useStyles()
+
+  const {
+    hasMore,
+    totalCount,
+    shownPoolsCount,
+    stakePools,
+    loading,
+    error,
+    onLoadMore,
+  } = useGetStakeListData()
 
   return (
     <React.Fragment>
       <Grid container direction="column" alignItems="flex-start" className={classes.wrapper}>
         <Grid item className={classes.rowWrapper}>
-          <SearchAndFilterBar />
+          <TopBar />
         </Grid>
         {loading || error || totalCount > 0 ? (
           <Grid item className={classnames(classes.rowWrapper, classes.sortByBar)}>
@@ -155,5 +173,3 @@ const StakeListWrapper = ({StakepoolCard}: {StakepoolCard: React$ComponentType<a
     </React.Fragment>
   )
 }
-
-export default StakeListWrapper
