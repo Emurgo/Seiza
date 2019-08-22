@@ -77,6 +77,7 @@ const useFooterStyles = makeStyles((theme) => ({
 type ExpandableCardFooterProps = {
   expanded: boolean,
   label: string,
+  iconClassName?: string,
 }
 
 type ExpandableCardPT = {
@@ -89,7 +90,11 @@ type ExpandableCardPT = {
   footerClasses?: Object,
 }
 
-export const ExpandableCardFooter = ({expanded, label}: ExpandableCardFooterProps) => {
+export const ExpandableCardFooter = ({
+  expanded,
+  label,
+  iconClassName,
+}: ExpandableCardFooterProps) => {
   const classes = useStyles()
   const footerClasses = useFooterStyles()
 
@@ -101,7 +106,7 @@ export const ExpandableCardFooter = ({expanded, label}: ExpandableCardFooterProp
         </Typography>
       </Grid>
       <Grid item>
-        <IconButton color="primary">
+        <IconButton color="primary" className={cn(iconClassName)}>
           <ExpandMoreIcon className={cn(classes.icon, expanded && classes.iconExpanded)} />
         </IconButton>
       </Grid>

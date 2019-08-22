@@ -17,14 +17,12 @@ import {useI18n} from '@/i18n/helpers'
 import epochIcon from '@/static/assets/icons/epoch.svg'
 
 import {useUserAdaContext} from '../context/userAda'
-import {DataGrid, getStakepoolCardFields} from '../StakeList/stakepoolCardUtils'
+import {DataGrid, getStakepoolCardFields, MobilePoolFooter} from '../StakeList/stakepoolCardUtils'
 
 const messages = defineMessages({
   revenue: 'Revenue',
   hideDesc: 'Hide description',
   showDesc: 'Full description',
-  hideDetails: 'Hide details',
-  showDetails: 'Show details',
   addPool: 'Add',
   removePool: 'Remove',
   estimatedRewards: 'Estimated Ada Rewards (Month):',
@@ -181,39 +179,11 @@ const Content = ({data}) => {
   )
 }
 
-const usePoolFooterStyles = makeStyles((theme) => ({
-  wrapper: {
-    position: 'relative',
-    paddingTop: theme.spacing(1.5),
-    paddingBottom: theme.spacing(1.5),
-  },
-  defaultFooterWrapper: {
-    position: 'absolute',
-    right: 0,
-    bottom: 0,
-  },
-}))
-
 const DesktopPoolFooter = ({expanded}) => {
   const {translate: tr} = useI18n()
 
   const label = tr(expanded ? messages.hideDesc : messages.showDesc)
   return <ExpandableCardFooter {...{label, expanded}} />
-}
-
-const MobilePoolFooter = ({expanded}) => {
-  const {translate: tr} = useI18n()
-  const classes = usePoolFooterStyles()
-
-  const label = tr(expanded ? messages.hideDetails : messages.showDetails)
-  return (
-    <Grid container alignContent="center" wrap="nowrap" className={classes.wrapper}>
-      <ResponsiveCircularProgressBar label={tr(messages.revenue)} value={0.25} />
-      <div className={classes.defaultFooterWrapper}>
-        <ExpandableCardFooter {...{label, expanded}} />
-      </div>
-    </Grid>
-  )
 }
 
 const SimpleMobileStakepoolCard = ({isOpen, toggle, data}) => {

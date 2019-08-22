@@ -1,12 +1,13 @@
 // @flow
 import _ from 'lodash'
 import React from 'react'
-import {Typography, Hidden} from '@material-ui/core'
+import {Typography, Hidden, Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
 
-import {AdaValue, HelpTooltip} from '@/components/common'
-import {Tooltip} from '@/components/visual'
+import {AdaValue, HelpTooltip, ResponsiveCircularProgressBar} from '@/components/common'
+import {ExpandableCardFooter, Tooltip} from '@/components/visual'
+import {useI18n} from '@/i18n/helpers'
 import EstimatedRewardsValue from './EstimatedRewards'
 import type {Formatters} from '@/i18n/helpers'
 import type {EstimatedRewardsType} from './EstimatedRewards'
@@ -30,6 +31,12 @@ const messages = defineMessages({
   createdAtHelpText: 'TODO: CreatedAt Help Text',
   stakeHelpText: 'TODO: Stake Help Text',
   rewardsHelpText: 'TODO: Rewards Help Text',
+})
+
+const footerMessages = defineMessages({
+  revenue: 'Revenue',
+  hideDetails: 'Hide details',
+  showDetails: 'Show details',
 })
 
 const useStyles = makeStyles((theme) => ({
@@ -234,3 +241,45 @@ export const getStakepoolCardFields = ({
     ),
   },
 })
+
+const usePoolFooterStyles = makeStyles((theme) => ({
+  wrapper: {
+    position: 'relative',
+    paddingTop: theme.spacing(1.5),
+    paddingBottom: theme.spacing(1.5),
+  },
+  mobileFooterIcon: {
+    padding: theme.spacing(0.7),
+  },
+}))
+
+export const MobilePoolFooter = ({expanded}: {expanded: boolean}) => {
+  const {translate: tr} = useI18n()
+  const classes = usePoolFooterStyles()
+  const label = tr(expanded ? footerMessages.hideDetails : footerMessages.showDetails)
+
+  return (
+    <Grid
+      container
+      alignItems="center"
+      justify="space-between"
+      wrap="nowrap"
+      className={classes.wrapper}
+    >
+      <ResponsiveCircularProgressBar label={tr(footerMessages.revenue)} value={0.25} />
+      {/* Yes this <div> is needed */}
+      <div>
+        <Hidden smUp>
+          <ExpandableCardFooter
+            expanded={expanded}
+            label=""
+            iconClassName={classes.mobileFooterIcon}
+          />
+        </Hidden>
+        <Hidden xsDown>
+          <ExpandableCardFooter expanded={expanded} label={label} />
+        </Hidden>
+      </div>
+    </Grid>
+  )
+}
