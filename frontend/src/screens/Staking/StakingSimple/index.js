@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
   centeredItem: {
     maxWidth: CARD_WIDTH,
     width: '100%',
-    padding: `${theme.spacing(6)}px ${theme.spacing(2)}px`,
+    padding: `${theme.spacing(6)}px 0px`,
   },
 }))
 
