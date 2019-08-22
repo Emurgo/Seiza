@@ -88,6 +88,7 @@
   "devDependencies": {
     "@babel/core": "^7.4.5",
     "@babel/preset-react": "^7.0.0",
+    "@next/bundle-analyzer": "^9.0.3",
     "babel-core": "^7.0.0-bridge.0",
     "babel-plugin-react-intl-auto": "^1.7.0",
     "babel-preset-react-app": "^9.0.0",
