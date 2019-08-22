@@ -6,6 +6,7 @@ import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
 
 import {AdaValue, HelpTooltip} from '@/components/common'
+import {Tooltip} from '@/components/visual'
 import EstimatedRewardsValue from './EstimatedRewards'
 import type {Formatters} from '@/i18n/helpers'
 import type {EstimatedRewardsType} from './EstimatedRewards'
@@ -208,10 +209,16 @@ export const getStakepoolCardFields = ({
       <HelpTooltip text={tr(messages.createdAtHelpText)}>{tr(messages.createdAt)}</HelpTooltip>
     ),
     value: (
-      <Typography>
-        {/* Tooltip for date will come in another PR */}
-        {formatTimestamp(data.createdAt, {format: formatTimestamp.FMT_SHORT_DATE})}
-      </Typography>
+      <Tooltip
+        title={formatTimestamp(data.createdAt, {
+          format: formatTimestamp.FMT_MONTH_NUMERAL,
+        })}
+        placement="bottom-start"
+      >
+        <Typography>
+          {formatTimestamp(data.createdAt, {format: formatTimestamp.FMT_SHORT_DATE})}
+        </Typography>
+      </Tooltip>
     ),
   },
   stake: {
