@@ -7,6 +7,7 @@ import {SelectedPoolsProvider, useSelectedPoolsContext} from './selectedPools'
 import {SortByProvider, useSortByContext} from './sortBy'
 import {SearchTextProvider, useSearchTextContext} from './searchText'
 import {PerformanceProvider, usePerformanceContext} from './performance'
+import {UserAdaProvider, useUserAdaContext} from './userAda'
 
 import {useUrlManager} from '@/components/hooks/useUrlManager'
 
@@ -19,7 +20,9 @@ export const StakingContextProvider = ({children, autoSync}: ProviderProps) => (
   <SelectedPoolsProvider autoSync={autoSync}>
     <SortByProvider autoSync={autoSync}>
       <SearchTextProvider autoSync={autoSync}>
-        <PerformanceProvider autoSync={autoSync}>{children}</PerformanceProvider>
+        <PerformanceProvider autoSync={autoSync}>
+          <UserAdaProvider autoSync={autoSync}>{children}</UserAdaProvider>
+        </PerformanceProvider>
       </SearchTextProvider>
     </SortByProvider>
   </SelectedPoolsProvider>
@@ -33,18 +36,21 @@ export function useSetListScreenStorageFromQuery() {
     _setSelectedPoolsStorageFromQuery,
     _selectedPoolsStorageToQuery,
   } = useSelectedPoolsContext()
+  const {_setUserAdaStorageFromQuery, _userAdaStorageToQuery} = useUserAdaContext()
 
   const getScreenUrlQuery = () => {
     const selectedPoolsQuery = _selectedPoolsStorageToQuery()
     const sortByQuery = _sortByStorageToQuery()
     const searchTextQuery = _searchTextStorageToQuery()
     const performanceQuery = _performanceStorageToQuery()
+    const userAdaQuery = _userAdaStorageToQuery()
 
     return urlUtils.joinQueryStrings([
       selectedPoolsQuery,
       sortByQuery,
       searchTextQuery,
       performanceQuery,
+      userAdaQuery,
     ])
   }
 
@@ -53,6 +59,7 @@ export function useSetListScreenStorageFromQuery() {
     _setSortByStorageFromQuery(query)
     _setSearchTextStorageFromQuery(query)
     _setPerformanceStorageFromQuery(query)
+    _setUserAdaStorageFromQuery(query)
   }
 
   return {setScreenStorageFromQuery, getScreenUrlQuery}
@@ -82,6 +89,7 @@ export function useResetUrlAndStorage() {
   const {_setSelectedPoolsStorageToDefault} = useSelectedPoolsContext()
   const {_setPerformanceStorageToDefault} = usePerformanceContext()
   const {_setSearchTextStorageToDefault} = useSearchTextContext()
+  const {_setUserAdaStorageToDefault} = useUserAdaContext()
 
   // Note: we do not reset "selected pools" intentionally
   // Note: we can not perform url replacement in separate `_reset` functions as
@@ -91,6 +99,7 @@ export function useResetUrlAndStorage() {
     _setSortByStorageToDefault()
     _setSelectedPoolsStorageToDefault()
     _setSearchTextStorageToDefault()
+    _setUserAdaStorageToDefault()
 
     setQuery('')
   }

@@ -1,44 +1,18 @@
 // @flow
-import React from 'react'
-import type {ElementRef} from 'react'
-import {withHandlers} from 'recompose'
-import {compose} from 'redux'
-import {withStyles, InputAdornment, TextField} from '@material-ui/core'
+import React, {useCallback} from 'react'
+import cn from 'classnames'
+import {InputAdornment, TextField} from '@material-ui/core'
+import {makeStyles} from '@material-ui/styles'
 import {Search} from '@material-ui/icons'
-import {Button, LoadingInProgress, CloseIconButton} from '@/components/visual'
 import {fade} from '@material-ui/core/styles/colorManipulator'
 
-const styles = (theme) => ({
-  textField: {
-    flex: 1,
-    flexBasis: 500,
-    background: theme.palette.background.paper,
-    borderRadius: 5,
-  },
-  input: {
-    '&>fieldset': {
-      borderBottomRightRadius: 0,
-      borderTopRightRadius: 0,
-    },
-    '&:hover': {
-      '&>fieldset': {
-        borderColor: `${theme.palette.secondary.main} !important`,
-      },
-    },
-  },
-  // eslint-disable-next-line
-    // https://github.com/wheredoesyourmindgo/react-mui-mapbox-geocoder/issues/2#issuecomment-478668535
-  focusedInput: {
-    '&>fieldset': {
-      borderWidth: '1px !important',
-    },
-  },
-  searchButton: {
-    borderBottomLeftRadius: 0,
-    borderTopLeftRadius: 0,
-    padding: 0,
-    boxShadow: 'none',
-  },
+import {Button, LoadingInProgress, CloseIconButton} from '@/components/visual'
+
+import type {ElementRef} from 'react'
+
+const BORDER_RADIUS = 5
+
+const useStyles = makeStyles((theme) => ({
   container: {
     'display': 'flex',
     'flex': 1,
@@ -47,7 +21,40 @@ const styles = (theme) => ({
       boxShadow: `0px 10px 30px 0px ${fade(theme.palette.shadowBase, 0.12)}`,
     },
   },
-})
+  searchButton: {
+    borderBottomLeftRadius: ({rounded}) => (rounded ? BORDER_RADIUS : 0),
+    borderTopLeftRadius: ({rounded}) => (rounded ? BORDER_RADIUS : 0),
+    padding: 0,
+    boxShadow: 'none',
+  },
+}))
+
+const useTextFieldStyles = makeStyles((theme) => ({
+  textField: {
+    flex: 1,
+    flexBasis: 500,
+    background: theme.palette.background.paper,
+    borderRadius: BORDER_RADIUS,
+  },
+  input: {
+    '&>fieldset': {
+      borderBottomRightRadius: ({rounded}) => (rounded ? BORDER_RADIUS : 0),
+      borderTopRightRadius: ({rounded}) => (rounded ? BORDER_RADIUS : 0),
+    },
+    '&:hover': {
+      '&>fieldset': {
+        borderColor: `${theme.palette.secondary.main} !important`,
+      },
+    },
+  },
+  // eslint-disable-next-line
+  // https://github.com/wheredoesyourmindgo/react-mui-mapbox-geocoder/issues/2#issuecomment-478668535
+  focusedInput: {
+    '&>fieldset': {
+      borderWidth: '1px !important',
+    },
+  },
+}))
 
 type ExternalProps = {
   placeholder: string,
@@ -60,21 +67,38 @@ type ExternalProps = {
 
 type Props = {
   ...$Exact<ExternalProps>,
-  handleOnChangeEvent: (event: any) => any,
   onSubmit: (event: Object) => any,
+  onReset: Function,
   classes: Object,
 }
 
-class Searchbar extends React.Component<Props> {
+type SearchbarTextFieldExternalProps = {
+  placeholder: string,
+  value: string,
+  onChange: (event: any) => any,
+  onReset: Function,
+  loading?: boolean,
+  inputProps?: Object,
+  className?: string,
+  rounded?: boolean,
+}
+
+type SearchbarTextFieldProps = {
+  ...$Exact<SearchbarTextFieldExternalProps>,
+  classes: any,
+}
+
+// TODO: use hooks
+class _SearchbarTextField extends React.Component<SearchbarTextFieldProps> {
   inputRef: {current: null | ElementRef<'input'>}
 
-  constructor(props) {
+  constructor(props: SearchbarTextFieldProps) {
     super(props)
     this.inputRef = React.createRef()
   }
 
   clearInput = () => {
-    this.props.onChange('')
+    this.props.onReset()
     this.inputRef.current && this.inputRef.current.focus()
   }
 
@@ -82,57 +106,90 @@ class Searchbar extends React.Component<Props> {
     const {
       placeholder,
       value,
-      handleOnChangeEvent,
-      onSubmit,
+      onChange,
       classes,
       loading,
       inputProps,
+      className,
+      onReset,
     } = this.props
 
     return (
-      <form className={classes.container} onSubmit={onSubmit}>
-        <TextField
-          type="text"
-          className={classes.textField}
-          variant="outlined"
-          value={value}
-          placeholder={placeholder}
-          onChange={handleOnChangeEvent}
-          inputRef={this.inputRef}
-          inputProps={inputProps}
-          // eslint-disable-next-line react/jsx-no-duplicate-props
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                {loading ? (
-                  <LoadingInProgress size={30} />
-                ) : (
-                  <CloseIconButton aria-label="Clear-search" onClick={this.clearInput} />
-                )}
-              </InputAdornment>
-            ),
-            className: classes.input,
-            classes: {
-              root: classes.input,
-              focused: classes.focusedInput,
-            },
-          }}
-        />
-        <Button type="submit" variant="contained" className={classes.searchButton}>
-          <Search fontSize="large" />
-        </Button>
-      </form>
+      <TextField
+        type="text"
+        className={cn(classes.textField, className)}
+        variant="outlined"
+        value={value}
+        placeholder={placeholder}
+        onChange={onChange}
+        inputRef={this.inputRef}
+        inputProps={inputProps}
+        // eslint-disable-next-line react/jsx-no-duplicate-props
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              {loading ? (
+                <LoadingInProgress size={30} />
+              ) : onReset ? (
+                <CloseIconButton aria-label="Clear-search" onClick={this.clearInput} />
+              ) : null}
+            </InputAdornment>
+          ),
+          className: classes.input,
+          classes: {
+            root: classes.input,
+            focused: classes.focusedInput,
+          },
+        }}
+      />
     )
   }
 }
 
-export default (compose(
-  withHandlers({
-    onSubmit: ({onSearch, value}) => (event) => {
+export const SearchbarTextField = ({rounded, ...props}: SearchbarTextFieldExternalProps) => {
+  const classes = useTextFieldStyles({rounded})
+  return <_SearchbarTextField {...props} classes={classes} />
+}
+
+const Searchbar = ({
+  placeholder,
+  value,
+  onChange,
+  onSubmit,
+  classes,
+  loading,
+  inputProps,
+  onReset,
+}: Props) => (
+  <form className={classes.container} onSubmit={onSubmit}>
+    <SearchbarTextField {...{value, placeholder, onReset, loading, inputProps, onChange}} />
+    <Button type="submit" variant="contained" className={classes.searchButton}>
+      <Search fontSize="large" />
+    </Button>
+  </form>
+)
+
+export default ({onSearch, value, onChange, ...restProps}: ExternalProps) => {
+  const onSubmit = useCallback(
+    (event) => {
       event.preventDefault()
+      // TODO: consider renaming onSearch into onSubmit
       onSearch(value)
     },
-    handleOnChangeEvent: ({onChange}) => (event) => onChange(event.target.value),
-  }),
-  withStyles(styles)
-)(Searchbar): React$ComponentType<ExternalProps>)
+    [onSearch, value]
+  )
+
+  const handleOnChangeEvent = useCallback((event) => onChange(event.target.value), [onChange])
+
+  // TODO: refactor in some PR, so that `onReset` is always passed from outside
+  const onReset = useCallback(() => onSearch(''), [onSearch])
+
+  const classes = useStyles()
+
+  return (
+    <Searchbar
+      {...{classes, onReset, onSubmit, value, onSearch, ...restProps}}
+      onChange={handleOnChangeEvent}
+    />
+  )
+}

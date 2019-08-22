@@ -4,12 +4,14 @@ import {Grid, Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
 
-import {ExpandableCard, ExpandableCardFooter} from '@/components/visual'
+import {ExpandableCard, ExpandableCardFooter, Tooltip} from '@/components/visual'
 import {PoolEntityContent, ResponsiveCircularProgressBar, AdaValue} from '@/components/common'
 import WithModalState from '@/components/headless/modalState'
 import {useI18n} from '@/i18n/helpers'
 import {useIsMobile} from '@/components/hooks/useBreakpoints'
 import epochIcon from '@/static/assets/icons/epoch.svg'
+
+import {useUserAdaContext} from '../context/userAda'
 
 const messages = defineMessages({
   revenue: 'Revenue',
@@ -22,6 +24,8 @@ const messages = defineMessages({
   estimatedRewards: 'Estimated Ada Rewards (Month):',
   ageLabel: 'Age:',
   ageValue: '{epochCount, plural, =0 {# epochs} one {# epoch} other {# epochs}}',
+  estimatedRewardsTooltip:
+    'To also show estimate in ADA, please enter your ADA amount into the field besides Search field',
 })
 
 const useHeaderStyles = makeStyles(({palette, spacing, breakpoints}) => ({
@@ -38,6 +42,9 @@ const useHeaderStyles = makeStyles(({palette, spacing, breakpoints}) => ({
   },
   estimatedRewardsLabel: {
     textTransform: 'uppercase',
+  },
+  offsetPercentageRewards: {
+    paddingLeft: spacing(1),
   },
 }))
 
@@ -82,18 +89,36 @@ const useContentStyles = makeStyles(({palette, spacing, breakpoints}) => ({
   },
 }))
 
-const EstimatedRewards = ({value}) => {
-  const {translate: tr} = useI18n()
+const EstimatedRewards = ({estimatedRewards}) => {
   const classes = useHeaderStyles()
+  const {translate: tr, formatPercent} = useI18n()
+  const {userAda} = useUserAdaContext()
+
+  const percentageRewards = formatPercent(estimatedRewards.perMonth.percentage)
+
   return (
-    <React.Fragment>
-      <Typography color="textSecondary" className={classes.estimatedRewardsLabel}>
-        {tr(messages.estimatedRewards)}
-      </Typography>
-      <Typography>
-        <AdaValue showCurrency value={value} />
-      </Typography>
-    </React.Fragment>
+    <Tooltip
+      placement="bottom"
+      title={tr(messages.estimatedRewardsTooltip)}
+      disableHoverListener={!!userAda}
+      disableTouchListener={!!userAda}
+    >
+      <div>
+        <Typography color="textSecondary" className={classes.estimatedRewardsLabel}>
+          {tr(messages.estimatedRewards)}
+        </Typography>
+        {userAda ? (
+          <div className="d-flex">
+            <AdaValue showCurrency value={estimatedRewards.perMonth.ada} />
+            <Typography className={classes.offsetPercentageRewards}>
+              ({percentageRewards})
+            </Typography>
+          </div>
+        ) : (
+          <Typography>{percentageRewards}</Typography>
+        )}
+      </div>
+    </Tooltip>
   )
 }
 
@@ -115,7 +140,7 @@ const Header = ({name, hash, estimatedRewards}) => {
       {!isMobile && (
         <Grid item xs={6}>
           <Grid container direction="column" alignItems="flex-end">
-            <EstimatedRewards value={estimatedRewards} />
+            <EstimatedRewards estimatedRewards={estimatedRewards} />
           </Grid>
         </Grid>
       )}
@@ -135,7 +160,7 @@ const Content = ({data}) => {
           <ResponsiveCircularProgressBar label={tr(messages.revenue)} value={0.25} />
         </div>
       )}
-      {isMobile && <EstimatedRewards value={data.rewards} />}
+      {isMobile && <EstimatedRewards estimatedRewards={data.estimatedRewards} />}
     </div>
   )
 }
@@ -178,7 +203,7 @@ const MobilePoolFooter = ({expanded}) => {
 const SimpleMobileStakepoolCard = ({isOpen, toggle, data}) => {
   const renderExpandedArea = () => <Content data={data} />
   const renderHeader = () => (
-    <Header name={data.name} hash={data.hash} estimatedRewards={data.rewards} />
+    <Header name={data.name} hash={data.hash} estimatedRewards={data.estimatedRewards} />
   )
   const renderFooter = (expanded) => <MobilePoolFooter expanded={expanded} />
 
@@ -225,7 +250,7 @@ const SimpleDesktopStakepoolCard = ({isOpen, toggle, data}) => {
 
   const renderHeader = () => (
     <React.Fragment>
-      <Header name={data.name} hash={data.hash} estimatedRewards={data.rewards} />
+      <Header name={data.name} hash={data.hash} estimatedRewards={data.estimatedRewards} />
       <Content data={data} />
     </React.Fragment>
   )
