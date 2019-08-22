@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import React, {useMemo} from 'react'
 import {Grid, Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
@@ -12,6 +12,7 @@ import {useIsMobile} from '@/components/hooks/useBreakpoints'
 import epochIcon from '@/static/assets/icons/epoch.svg'
 
 import {useUserAdaContext} from '../context/userAda'
+import {DataGrid, getStakepoolCardFields} from '../StakeList/stakepoolCardUtils'
 
 const messages = defineMessages({
   revenue: 'Revenue',
@@ -148,11 +149,16 @@ const Header = ({name, hash, estimatedRewards}) => {
   )
 }
 
-// TODO: what exact content should be here?
 const Content = ({data}) => {
-  const {translate: tr} = useI18n()
+  const formatters = useI18n()
+  const {translate: tr} = formatters
   const classes = useContentStyles()
   const isMobile = useIsMobile()
+
+  const fields = useMemo(() => getStakepoolCardFields({formatters, data}), [formatters, data])
+  const leftSideItems = useMemo(() => [fields.performance, fields.margins], [fields])
+  const rightSideItems = useMemo(() => [fields.cost, fields.pledge], [fields])
+
   return (
     <div className={classes.innerWrapper}>
       {!isMobile && (
@@ -160,6 +166,7 @@ const Content = ({data}) => {
           <ResponsiveCircularProgressBar label={tr(messages.revenue)} value={0.25} />
         </div>
       )}
+      <DataGrid {...{rightSideItems, leftSideItems}} />
       {isMobile && <EstimatedRewards estimatedRewards={data.estimatedRewards} />}
     </div>
   )

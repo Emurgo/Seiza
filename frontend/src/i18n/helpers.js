@@ -112,7 +112,7 @@ type Msg =
     }
   | string
 
-type Formatters = {
+export type Formatters = {
   translate: (msg: Msg, args?: any) => string,
   formatNumber: (x: ?number, options?: any) => string,
   formatInt: (x: ?number, options?: any) => string,
