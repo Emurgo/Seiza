@@ -4,11 +4,16 @@ import {Grid, Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
 
-import {ExpandableCard, ExpandableCardFooter, Tooltip} from '@/components/visual'
+import {
+  ExpandableCard,
+  ExpandableCardFooter,
+  Tooltip,
+  DesktopOnly,
+  MobileOnly,
+} from '@/components/visual'
 import {PoolEntityContent, ResponsiveCircularProgressBar, AdaValue} from '@/components/common'
 import WithModalState from '@/components/headless/modalState'
 import {useI18n} from '@/i18n/helpers'
-import {useIsMobile} from '@/components/hooks/useBreakpoints'
 import epochIcon from '@/static/assets/icons/epoch.svg'
 
 import {useUserAdaContext} from '../context/userAda'
@@ -46,6 +51,12 @@ const useHeaderStyles = makeStyles(({palette, spacing, breakpoints}) => ({
   },
   offsetPercentageRewards: {
     paddingLeft: spacing(1),
+  },
+  headerRewards: {
+    display: 'none',
+    [breakpoints.up('md')]: {
+      display: 'initial',
+    },
   },
 }))
 
@@ -125,7 +136,6 @@ const EstimatedRewards = ({estimatedRewards}) => {
 
 const Header = ({name, hash, estimatedRewards}) => {
   const classes = useHeaderStyles()
-  const isMobile = useIsMobile()
 
   return (
     <Grid
@@ -135,16 +145,14 @@ const Header = ({name, hash, estimatedRewards}) => {
       alignItems="center"
       className={classes.wrapper}
     >
-      <Grid item xs={isMobile ? 12 : 6} className={classes.flexEllipsize}>
+      <Grid item xs={12} md={6} className={classes.flexEllipsize}>
         <PoolEntityContent name={name} hash={hash} />
       </Grid>
-      {!isMobile && (
-        <Grid item xs={6}>
-          <Grid container direction="column" alignItems="flex-end">
-            <EstimatedRewards estimatedRewards={estimatedRewards} />
-          </Grid>
+      <Grid item md={6} className={classes.headerRewards}>
+        <Grid container direction="column" alignItems="flex-end">
+          <EstimatedRewards estimatedRewards={estimatedRewards} />
         </Grid>
-      )}
+      </Grid>
     </Grid>
   )
 }
@@ -153,7 +161,6 @@ const Content = ({data}) => {
   const formatters = useI18n()
   const {translate: tr} = formatters
   const classes = useContentStyles()
-  const isMobile = useIsMobile()
 
   const fields = useMemo(() => getStakepoolCardFields({formatters, data}), [formatters, data])
   const leftSideItems = useMemo(() => [fields.performance, fields.margins], [fields])
@@ -161,13 +168,15 @@ const Content = ({data}) => {
 
   return (
     <div className={classes.innerWrapper}>
-      {!isMobile && (
+      <DesktopOnly>
         <div className={classes.revenueWrapper}>
           <ResponsiveCircularProgressBar label={tr(messages.revenue)} value={0.25} />
         </div>
-      )}
+      </DesktopOnly>
       <DataGrid {...{rightSideItems, leftSideItems}} />
-      {isMobile && <EstimatedRewards estimatedRewards={data.estimatedRewards} />}
+      <MobileOnly>
+        <EstimatedRewards estimatedRewards={data.estimatedRewards} />
+      </MobileOnly>
     </div>
   )
 }
@@ -279,18 +288,22 @@ type Props = {
   data: Object, // TODO: type better
 }
 
-const SimpleStakepoolCard = ({data}: Props) => {
-  const isMobile = useIsMobile()
-
-  return (
-    <WithModalState>
-      {({isOpen, toggle}) => {
-        const props = {isOpen, toggle, data}
-        const PoolComponent = isMobile ? SimpleMobileStakepoolCard : SimpleDesktopStakepoolCard
-        return <PoolComponent {...props} />
-      }}
-    </WithModalState>
-  )
-}
+const SimpleStakepoolCard = ({data}: Props) => (
+  <WithModalState>
+    {({isOpen, toggle}) => {
+      const props = {isOpen, toggle, data}
+      return (
+        <React.Fragment>
+          <MobileOnly>
+            <SimpleMobileStakepoolCard {...props} />
+          </MobileOnly>
+          <DesktopOnly>
+            <SimpleDesktopStakepoolCard {...props} />
+          </DesktopOnly>
+        </React.Fragment>
+      )
+    }}
+  </WithModalState>
+)
 
 export default SimpleStakepoolCard
