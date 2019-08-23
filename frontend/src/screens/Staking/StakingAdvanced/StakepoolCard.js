@@ -15,7 +15,6 @@ import {PoolEntityContent, ResponsiveCircularProgressBar} from '@/components/com
 import WithModalState from '@/components/headless/modalState'
 import {useI18n} from '@/i18n/helpers'
 import {useSelectedPoolsContext} from '../context/selectedPools'
-import {useIsMobile} from '@/components/hooks/useBreakpoints'
 import {ReactComponent as AddPoolIcon} from '@/static/assets/icons/staking-simulator/add-stakepool.svg'
 import {ReactComponent as RemovePoolIcon} from '@/static/assets/icons/close.svg'
 import epochIcon from '@/static/assets/icons/epoch.svg'
@@ -186,7 +185,6 @@ const Content = ({data}) => {
   const formatters = useI18n()
   const {translate: tr} = formatters
   const classes = useContentStyles()
-  const isMobile = useIsMobile()
 
   const fields = useMemo(() => getStakepoolCardFields({formatters, data}), [formatters, data])
   const leftSideItems = useMemo(
@@ -200,11 +198,11 @@ const Content = ({data}) => {
 
   return (
     <div className={classes.innerWrapper}>
-      {!isMobile && (
+      <DesktopOnly>
         <div className={classes.revenueWrapper}>
           <ResponsiveCircularProgressBar label={tr(messages.revenue)} value={0.25} />
         </div>
-      )}
+      </DesktopOnly>
       <DataGrid {...{leftSideItems, rightSideItems}} />
     </div>
   )
@@ -315,18 +313,22 @@ type Props = {
   data: Object, // TODO: type better
 }
 
-const AdvancedStakepoolCard = ({data}: Props) => {
-  const isMobile = useIsMobile()
-
-  return (
-    <WithModalState>
-      {({isOpen, toggle}) => {
-        const props = {isOpen, toggle, data}
-        const PoolComponent = isMobile ? AdvancedMobileStakepoolCard : AdvancedDesktopStakepoolCard
-        return <PoolComponent {...props} />
-      }}
-    </WithModalState>
-  )
-}
+const AdvancedStakepoolCard = ({data}: Props) => (
+  <WithModalState>
+    {({isOpen, toggle}) => {
+      const props = {isOpen, toggle, data}
+      return (
+        <React.Fragment>
+          <MobileOnly>
+            <AdvancedMobileStakepoolCard {...props} />
+          </MobileOnly>
+          <DesktopOnly>
+            <AdvancedDesktopStakepoolCard {...props} />
+          </DesktopOnly>
+        </React.Fragment>
+      )
+    }}
+  </WithModalState>
+)
 
 export default AdvancedStakepoolCard
