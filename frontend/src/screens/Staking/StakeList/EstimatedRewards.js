@@ -1,6 +1,6 @@
 // @flow
 import React, {useCallback, useMemo} from 'react'
-import {Grid, Typography, IconButton, Menu, MenuItem} from '@material-ui/core'
+import {Grid, Typography, IconButton, Menu, MenuItem, Hidden} from '@material-ui/core'
 import {ArrowDropDown as RewardsIcon} from '@material-ui/icons'
 import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
@@ -173,8 +173,14 @@ export default ({estimatedRewards}: Props) => {
   const classes = useClasses()
   return (
     <div className={classes.rewardsRowWrapper}>
-      <EstimatedRewards estimatedRewards={estimatedRewards} />
-      <RewardsMenu estimatedRewards={estimatedRewards} />
+      <Hidden mdDown>
+        <EstimatedRewards estimatedRewards={estimatedRewards} />
+        <RewardsMenu estimatedRewards={estimatedRewards} />
+      </Hidden>
+      <Hidden lgUp>
+        <RewardsMenu estimatedRewards={estimatedRewards} />
+        <EstimatedRewards estimatedRewards={estimatedRewards} />
+      </Hidden>
     </div>
   )
 }
