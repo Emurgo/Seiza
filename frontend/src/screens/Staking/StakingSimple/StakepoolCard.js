@@ -168,7 +168,7 @@ const Content = ({data}) => {
 
   return (
     <div className={classes.innerWrapper}>
-      <DesktopOnly>
+      <DesktopOnly className="d-flex">
         <div className={classes.revenueWrapper}>
           <ResponsiveCircularProgressBar label={tr(messages.revenue)} value={0.25} />
         </div>
