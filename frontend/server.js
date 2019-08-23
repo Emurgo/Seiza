@@ -7,6 +7,7 @@ const compression = require('compression')
 
 const port = parseInt(process.env.PORT, 10) || 3000
 const dev = process.env.NODE_ENV !== 'production'
+const SITEMAP_ROOT = process.env.SITEMAP_ROOT
 // project location (where pages/ directory lives) is ./src
 const app = next({dev, dir: './src'})
 
@@ -20,11 +21,20 @@ process.on('uncaughtException', (err) => {
 
 app.prepare().then(() => {
   const server = express()
+
+  // https://stackoverflow.com/questions/15119760/what-is-the-smartest-way-to-handle-robots-txt-in-express
+  // TODO: not sure whether it is worth to consider sophisticated approach
+  server.get('/robots.txt', (req, res) => {
+    res.type('text/plain')
+    res.send(`Sitemap: ${SITEMAP_ROOT}/sitemap.xml`)
+  })
+
   server.use(compression())
 
   // ***** BEGIN TAKEN FROM: https://github.com/zeit/next.js/blob/master/examples/with-sentry/server.js
   // This attaches request information to sentry errors
   server.use(Sentry.Handlers.requestHandler())
+
   server.get('*', (req, res) => {
     return app.render(req, res, '/', req.query)
   })
