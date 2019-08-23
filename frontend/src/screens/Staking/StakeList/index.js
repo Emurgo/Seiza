@@ -20,7 +20,10 @@ const messages = defineMessages({
 
 const useStyles = makeStyles((theme) => ({
   rowWrapper: {
-    padding: '15px 30px',
+    padding: `${theme.spacing(1.6)}px ${theme.spacing(1)}px`,
+    [theme.breakpoints.up('sm')]: {
+      padding: `${theme.spacing(1.6)}px ${theme.spacing(3)}px`,
+    },
     width: '100%',
   },
   wrapper: {
