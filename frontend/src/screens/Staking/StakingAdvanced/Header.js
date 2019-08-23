@@ -6,7 +6,7 @@ import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
 
 import {useI18n} from '@/i18n/helpers'
-import {HeaderCard, HeaderCardContainer} from '@/components/common'
+import {HeaderCard, HeaderCardContainer, ScrollableCardsWrapper} from '@/components/common'
 
 import searchForStakepoolIcon from '@/static/assets/icons/staking-simulator/search-for-stakepool.svg'
 import downloadOrShareIcon from '@/static/assets/icons/staking-simulator/download-or-share.svg'
@@ -50,32 +50,34 @@ const Header = () => {
       alignItems="center"
     >
       <Typography variant="h1">{tr(messages.header)}</Typography>
-      <Grid container direction="row" justify="center" alignItems="center">
-        <HeaderCardContainer>
-          <HeaderCard
-            smallPrimaryText
-            secondaryText={tr(messages.card1Value)}
-            primaryText={tr(messages.card1Title)}
-            icon={<img alt="" src={searchForStakepoolIcon} />}
-          />
-        </HeaderCardContainer>
-        <HeaderCardContainer>
-          <HeaderCard
-            smallPrimaryText
-            secondaryText={tr(messages.card2Value)}
-            primaryText={tr(messages.card2Title)}
-            icon={<img alt="" src={downloadOrShareIcon} />}
-          />
-        </HeaderCardContainer>
-        <HeaderCardContainer>
-          <HeaderCard
-            smallPrimaryText
-            secondaryText={tr(messages.card3Value)}
-            primaryText={tr(messages.card3Title)}
-            icon={<img alt="" src={compareIcon} />}
-          />
-        </HeaderCardContainer>
-      </Grid>
+      <ScrollableCardsWrapper>
+        <Grid container direction="row" justify="center" alignItems="center" wrap="nowrap">
+          <HeaderCardContainer>
+            <HeaderCard
+              smallPrimaryText
+              secondaryText={tr(messages.card1Value)}
+              primaryText={tr(messages.card1Title)}
+              icon={<img alt="" src={searchForStakepoolIcon} />}
+            />
+          </HeaderCardContainer>
+          <HeaderCardContainer>
+            <HeaderCard
+              smallPrimaryText
+              secondaryText={tr(messages.card2Value)}
+              primaryText={tr(messages.card2Title)}
+              icon={<img alt="" src={downloadOrShareIcon} />}
+            />
+          </HeaderCardContainer>
+          <HeaderCardContainer>
+            <HeaderCard
+              smallPrimaryText
+              secondaryText={tr(messages.card3Value)}
+              primaryText={tr(messages.card3Title)}
+              icon={<img alt="" src={compareIcon} />}
+            />
+          </HeaderCardContainer>
+        </Grid>
+      </ScrollableCardsWrapper>
     </Grid>
   )
 }
