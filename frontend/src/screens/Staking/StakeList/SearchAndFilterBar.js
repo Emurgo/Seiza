@@ -153,7 +153,10 @@ const useFiltersButtonClasses = makeStyles((theme) => ({
     position: 'relative',
   },
   icon: {
-    verticalAlign: 'middle',
+    // Note: without position: absolute causes bugs in animation
+    position: 'absolute',
+    bottom: 19,
+    right: 21,
   },
 }))
 
