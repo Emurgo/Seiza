@@ -17,7 +17,7 @@ import {
 import {useAutoSyncContext} from '../context/autoSync'
 import SideMenu from '../SideMenu'
 import {StakeListLayout} from '../StakeList'
-import {SearchAndFilterBar} from '../StakeList/SearchAndFilterBar'
+import {AdvancedStakingTopBar} from '../StakeList/SearchAndFilterBar'
 import StakepoolCard from './StakepoolCard'
 import ComparisonMatrixScreen from '../ComparisonMatrix'
 import PeopleScreen from '../People'
@@ -169,7 +169,7 @@ const FullWidthLayout = ({children}) => {
 
 const LayoutedStakePoolList = () => (
   <CenteredLayout>
-    <StakeListLayout StakepoolCard={StakepoolCard} TopBar={SearchAndFilterBar} />
+    <StakeListLayout StakepoolCard={StakepoolCard} TopBar={AdvancedStakingTopBar} />
   </CenteredLayout>
 )
 const LayoutedComparisonMatrix = () => (

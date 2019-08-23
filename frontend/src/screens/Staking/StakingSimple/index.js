@@ -6,7 +6,7 @@ import {makeStyles} from '@material-ui/styles'
 import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
 import Header from './Header'
 import {StakeListLayout} from '../StakeList'
-import {Search} from '../StakeList/SearchAndFilterBar'
+import {SimpleStakingTopBar} from '../StakeList/SearchAndFilterBar'
 import StakepoolCard from './StakepoolCard'
 import {StakingContextProvider} from '../context'
 import {CARD_WIDTH} from '../StakeList/stakepoolCardUtils'
@@ -38,7 +38,7 @@ export default () => {
         <StakingContextProvider autoSync={false}>
           <div className={classes.centerWrapper}>
             <div className={classes.centeredItem}>
-              <StakeListLayout StakepoolCard={StakepoolCard} TopBar={Search} />
+              <StakeListLayout StakepoolCard={StakepoolCard} TopBar={SimpleStakingTopBar} />
             </div>
           </div>
         </StakingContextProvider>

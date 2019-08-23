@@ -68,7 +68,7 @@ const useToggleFilters = () => {
   return [showFilters, onToggleShowFilters]
 }
 
-export const Search = () => {
+const Search = () => {
   const searchTextContext = useSearchTextContext()
   const [searchText, setSearchText] = useStateWithChangingDefault(searchTextContext.searchText)
 
@@ -192,12 +192,10 @@ const FiltersButton = ({open, onClick}) => {
   )
 }
 
-export const SearchAndFilterBar = () => {
+const CommonTopBarLayout = ({rightSideElem}: {rightSideElem?: React$Node}) => {
   const classes = useStyles()
-  const [showFilters, onToggleShowFilters] = useToggleFilters()
-
   return (
-    <Grid container direction="column" justify="space-between" className={classes.wrapper}>
+    <React.Fragment>
       <Hidden lgUp implementation="css">
         <Grid item>
           <div className={classes.topSearchWrapper}>
@@ -209,7 +207,7 @@ export const SearchAndFilterBar = () => {
             <div className={classes.userAdaWrapper}>
               <UserAdaInput />
             </div>
-            <FiltersButton open={showFilters} onClick={onToggleShowFilters} />
+            {rightSideElem}
           </Grid>
         </Grid>
       </Hidden>
@@ -222,10 +220,33 @@ export const SearchAndFilterBar = () => {
             <div className={cn(classes.searchWrapper, 'flex-grow-1')}>
               <Search />
             </div>
-            <FiltersButton open={showFilters} onClick={onToggleShowFilters} />
+            {rightSideElem}
           </Grid>
         </Grid>
       </Hidden>
+    </React.Fragment>
+  )
+}
+
+export const SimpleStakingTopBar = () => {
+  const classes = useStyles()
+
+  return (
+    <Grid container direction="column" justify="space-between" className={classes.wrapper}>
+      <CommonTopBarLayout />
+    </Grid>
+  )
+}
+
+export const AdvancedStakingTopBar = () => {
+  const classes = useStyles()
+  const [showFilters, onToggleShowFilters] = useToggleFilters()
+
+  return (
+    <Grid container direction="column" justify="space-between" className={classes.wrapper}>
+      <CommonTopBarLayout
+        rightSideElem={<FiltersButton open={showFilters} onClick={onToggleShowFilters} />}
+      />
       <Collapse in={showFilters}>
         <Grid item className={classes.filtersWrapper}>
           <Filters />
