@@ -245,7 +245,7 @@ export default () => {
           <DesktopOnly>
             <StakePoolHeader />
           </DesktopOnly>
-          <MobileOnly>
+          <MobileOnly className="w-100">
             <SideMenu />
           </MobileOnly>
 
