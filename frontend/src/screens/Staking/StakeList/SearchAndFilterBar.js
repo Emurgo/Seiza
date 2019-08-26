@@ -247,7 +247,7 @@ export const AdvancedStakingTopBar = () => {
       <CommonTopBarLayout
         rightSideElem={<FiltersButton open={showFilters} onClick={onToggleShowFilters} />}
       />
-      <Collapse in={showFilters}>
+      <Collapse in>
         <Grid item className={classes.filtersWrapper}>
           <Filters />
         </Grid>
