@@ -40,6 +40,11 @@ const useStyles = makeStyles((theme) => ({
     paddingRight: theme.spacing(2),
     margin: theme.spacing(1),
   },
+  equalResultWrapper: {
+    display: 'flex',
+    marginBottom: theme.spacing(1),
+    marginTop: theme.spacing(1),
+  },
 }))
 
 const RANGE_START = 0
@@ -102,7 +107,7 @@ const Filters = () => {
               options={[{value: 'all', label: tr(messages.allLanguages)}]}
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={6} className={classes.equalResultWrapper}>
             <EqualResult />
           </Grid>
           <Grid item xs={12} sm={6}>
