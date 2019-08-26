@@ -10,6 +10,7 @@ import {
   Button,
   MobileOnly,
   DesktopOnly,
+  Tooltip,
 } from '@/components/visual'
 import {PoolEntityContent, ResponsiveCircularProgressBar} from '@/components/common'
 import WithModalState from '@/components/headless/modalState'
@@ -33,6 +34,7 @@ const messages = defineMessages({
   // we can create something like helpers/helpMessages.js
   ageLabel: 'Age:',
   ageValue: '{epochCount, plural, =0 {# epochs} one {# epoch} other {# epochs}}',
+  disabledButton: 'You have reached maximum limit of stakepools',
 })
 
 const useHeaderStyles = makeStyles(({palette, spacing, breakpoints}) => ({
@@ -96,7 +98,7 @@ const useContentStyles = makeStyles(({palette, spacing, breakpoints}) => ({
   },
 }))
 
-const AddPoolButton = ({onClick, label}) => {
+const AddPoolButton = ({onClick, label, disabled}) => {
   const classes = useHeaderStyles()
 
   return (
@@ -106,6 +108,7 @@ const AddPoolButton = ({onClick, label}) => {
           rounded
           gradient
           variant="contained"
+          disabled={disabled}
           gradientDegree={45}
           onClick={onClick}
           className={classes.mobileButton}
@@ -115,7 +118,14 @@ const AddPoolButton = ({onClick, label}) => {
       </MobileOnly>
 
       <DesktopOnly>
-        <Button rounded gradient variant="contained" onClick={onClick} className={classes.button}>
+        <Button
+          rounded
+          gradient
+          variant="contained"
+          disabled={disabled}
+          onClick={onClick}
+          className={classes.button}
+        >
           {label}
         </Button>
       </DesktopOnly>
@@ -152,8 +162,8 @@ const RemovePoolButton = ({onClick, label}) => {
 
 const Header = ({name, hash}) => {
   const classes = useHeaderStyles()
-  const {translate} = useI18n()
-  const {addPool, removePool, selectedPools} = useSelectedPoolsContext()
+  const {translate: tr} = useI18n()
+  const {addPool, removePool, selectedPools, isListFull} = useSelectedPoolsContext()
   const selected = selectedPools.includes(hash)
 
   const onAddPool = useCallback(() => addPool(hash), [addPool, hash])
@@ -172,9 +182,22 @@ const Header = ({name, hash}) => {
       </Grid>
       <Grid item>
         {selected ? (
-          <RemovePoolButton onClick={onRemovePool} label={translate(messages.removePool)} />
+          <RemovePoolButton onClick={onRemovePool} label={tr(messages.removePool)} />
         ) : (
-          <AddPoolButton onClick={onAddPool} label={translate(messages.addPool)} />
+          <Tooltip
+            title={tr(messages.disabledButton)}
+            placement="bottom"
+            disableHoverListener={!isListFull}
+            disableTouchListener={!isListFull}
+          >
+            <div>
+              <AddPoolButton
+                disabled={isListFull}
+                onClick={onAddPool}
+                label={tr(messages.addPool)}
+              />
+            </div>
+          </Tooltip>
         )}
       </Grid>
     </Grid>
