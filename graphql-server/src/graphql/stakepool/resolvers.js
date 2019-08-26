@@ -34,8 +34,13 @@ const getPoolsData = (api) =>
     summary: fetchBootstrapEraPoolSummary(api, pool.poolHash),
   }))
 
-const filterData = (data, searchText, performance) => {
-  const _filtered = searchText ? data.filter((pool) => pool.name.includes(searchText)) : data
+const basicSearchFilter = (textToMatch) => (pool) => pool.name.includes(textToMatch)
+const exactSearchFilter = (textToMatch) => (pool) => pool.name === textToMatch
+
+const filterData = (data, searchText, exactMatch, performance) => {
+  const _filtered = searchText
+    ? data.filter(exactMatch ? exactSearchFilter(searchText) : basicSearchFilter(searchText))
+    : data
   return performance
     ? _filtered.filter((pool) =>
       inRange(pool.summary.performance, performance.from, performance.to)
@@ -45,9 +50,9 @@ const filterData = (data, searchText, performance) => {
 
 const sortData = (data, sortBy) => _.orderBy(data, (d) => d.summary[sortBy], 'desc')
 
-const getFilteredAndSortedPoolsData = (api, sortBy, searchText, performance) => {
+const getFilteredAndSortedPoolsData = (api, sortBy, searchText, exactMatch, performance) => {
   const data = getPoolsData(api)
-  const filteredData = filterData(data, searchText, performance)
+  const filteredData = filterData(data, searchText, exactMatch, performance)
   return sortData(filteredData, sortBy)
 }
 
@@ -57,8 +62,8 @@ export const pagedStakePoolListResolver = (
   pageSize = DEFAULT_PAGE_SIZE,
   searchOptions
 ) => {
-  const {sortBy, searchText, performance} = searchOptions
-  const data = getFilteredAndSortedPoolsData(api, sortBy, searchText, performance)
+  const {sortBy, searchText, exactMatch, performance} = searchOptions
+  const data = getFilteredAndSortedPoolsData(api, sortBy, searchText, exactMatch, performance)
 
   if (!data.length) return NO_RESULTS
 

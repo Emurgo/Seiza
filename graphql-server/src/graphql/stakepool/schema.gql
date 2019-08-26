@@ -80,6 +80,7 @@ input PerformanceInterval {
 input StakePoolSearchOptions {
   sortBy: StakePoolSortByEnum!
   searchText: String
+  exactMatch: Boolean
   performance: PerformanceInterval
 }
 

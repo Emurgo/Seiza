@@ -15,9 +15,12 @@ const formatPerformancetoGQL = (performance) => ({
   to: performance[1] / 100,
 })
 
+const useFiltersContext = () => ({exactMatch: false})
+
 export const useLoadPagedStakePoolList = () => {
   const {sortBy} = useSortByContext()
   const {performance} = usePerformanceContext()
+  const {exactMatch} = useFiltersContext()
   const {searchText} = useSearchTextContext()
   const cursor = null
 
@@ -75,6 +78,7 @@ export const useLoadPagedStakePoolList = () => {
         searchOptions: {
           sortBy,
           searchText,
+          exactMatch,
           performance: formatPerformancetoGQL(performance),
         },
       },
