@@ -27,9 +27,9 @@ const CustomAvatar = withStyles(({spacing, palette}) => ({
 
 const CustomChip = withStyles(({palette, spacing}) => ({
   root: {
-    background: fade(palette.secondary.main, 0.1),
+    background: fade(palette.primary.main, 0.1),
     border: 'none',
-    color: '#1F1351',
+    color: palette.text.primary,
     height: 'auto',
     borderRadius: 1000,
     padding: spacing(0.5),
@@ -47,7 +47,7 @@ const CustomChip = withStyles(({palette, spacing}) => ({
   },
 }))(Chip)
 
-const useStyles = makeStyles(({spacing}) => {
+const useStyles = makeStyles(({spacing, palette}) => {
   const poolMargin = 4
   const poolHeight = 32 + poolMargin * 2
   const poolTransitionShift = 350
@@ -96,7 +96,7 @@ const useStyles = makeStyles(({spacing}) => {
       marginTop: spacing(1),
     },
     clearIcon: {
-      color: '#8791ad',
+      color: palette.text.secondary,
       marginLeft: spacing(1),
     },
   }
