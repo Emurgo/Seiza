@@ -75,7 +75,9 @@ class MyDocument extends Document {
           <meta name="google" content="notranslate" />
           <link href="/static/assets/css/loadFonts.css" rel="stylesheet" />
           <link rel="shortcut icon" href="/static/favicon.ico" />
-          <script src="https://polyfill.io/v3/polyfill.js?features=es6,es7,es2017" />
+          {process.browser && (
+            <script src="https://polyfill.io/v3/polyfill.js?features=es6,es7,es2017" />
+          )}
         </Head>
         <body className="notranslate">
           <noscript>You need to enable JavaScript to run this app.</noscript>
