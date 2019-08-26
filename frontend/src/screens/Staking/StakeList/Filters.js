@@ -9,8 +9,8 @@ import {useI18n} from '@/i18n/helpers'
 import {Slider, Select, Card, ContentSpacing} from '@/components/visual'
 import {HelpTooltip} from '@/components/common'
 import {useStateWithChangingDefault} from '@/components/hooks/useStateWithChangingDefault'
-import useModalState from '@/components/hooks/useModalState'
 import {usePerformanceContext} from '../context/performance'
+import {useExactMatchContext} from '../context/exactMatch'
 
 const messages = defineMessages({
   allLanguages: 'All',
@@ -54,10 +54,10 @@ const tipFormatter = (value) => `${value}%`
 
 const EqualResult = () => {
   const {translate: tr} = useI18n()
-  const {isOpen, toggle} = useModalState()
+  const {exactMatch, toggleExactMatch} = useExactMatchContext()
   return (
     <FormControlLabel
-      control={<Switch color="primary" checked={isOpen} onChange={toggle} />}
+      control={<Switch color="primary" checked={!!exactMatch} onChange={toggleExactMatch} />}
       label={
         <HelpTooltip text={tr(messages.equalResultHelpText)}>
           <Typography color="textSecondary" className="uppercase">

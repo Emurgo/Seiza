@@ -6,6 +6,7 @@ import {useQuery} from 'react-apollo-hooks'
 
 import {usePerformanceContext} from '../context/performance'
 import {useSearchTextContext} from '../context/searchText'
+import {useExactMatchContext} from '../context/exactMatch'
 import {useSortByContext} from '../context/sortBy'
 
 const PAGE_SIZE = 3
@@ -15,12 +16,10 @@ const formatPerformancetoGQL = (performance) => ({
   to: performance[1] / 100,
 })
 
-const useFiltersContext = () => ({exactMatch: false})
-
 export const useLoadPagedStakePoolList = () => {
   const {sortBy} = useSortByContext()
   const {performance} = usePerformanceContext()
-  const {exactMatch} = useFiltersContext()
+  const {exactMatch} = useExactMatchContext()
   const {searchText} = useSearchTextContext()
   const cursor = null
 
