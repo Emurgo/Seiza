@@ -7,6 +7,7 @@ import {defineMessages} from 'react-intl'
 
 import {useI18n} from '@/i18n/helpers'
 import {Slider, Select, Card, ContentSpacing} from '@/components/visual'
+import {HelpTooltip} from '@/components/common'
 import {useStateWithChangingDefault} from '@/components/hooks/useStateWithChangingDefault'
 import useModalState from '@/components/hooks/useModalState'
 import {usePerformanceContext} from '../context/performance'
@@ -18,6 +19,7 @@ const messages = defineMessages({
   allRegions: 'All',
   performance: 'Performance:',
   equalResult: 'Equal Result:',
+  equalResultHelpText: 'TODO: equal result help text',
 })
 
 // TODO: margin/padding theme unit
@@ -52,9 +54,11 @@ const EqualResult = () => {
     <FormControlLabel
       control={<Switch color="primary" checked={isOpen} onChange={toggle} />}
       label={
-        <Typography color="textSecondary" className="uppercase">
-          {tr(messages.equalResult)}
-        </Typography>
+        <HelpTooltip text={tr(messages.equalResultHelpText)}>
+          <Typography color="textSecondary" className="uppercase">
+            {tr(messages.equalResult)}
+          </Typography>
+        </HelpTooltip>
       }
       labelPlacement="start"
     />
