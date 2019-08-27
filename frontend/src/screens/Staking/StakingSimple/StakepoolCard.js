@@ -27,7 +27,7 @@ const messages = defineMessages({
   showDetails: 'Show details',
   addPool: 'Add',
   removePool: 'Remove',
-  estimatedRewards: 'Estimated Ada Rewards (Month):',
+  estimatedRewards: 'Rewards (Month):',
   ageLabel: 'Age:',
   ageValue: '{epochCount, plural, =0 {# epochs} one {# epoch} other {# epochs}}',
   estimatedRewardsTooltip:
@@ -77,6 +77,7 @@ const useContentStyles = makeStyles(({palette, spacing, breakpoints}) => ({
     padding: spacing(3),
     justifyContent: 'space-between',
     flexDirection: 'column',
+    alignItems: 'center',
     [breakpoints.up('lg')]: {
       flexDirection: 'row',
     },
@@ -163,8 +164,8 @@ const Content = ({data}) => {
   const classes = useContentStyles()
 
   const fields = useMemo(() => getStakepoolCardFields({formatters, data}), [formatters, data])
-  const leftSideItems = useMemo(() => [fields.performance, fields.margins], [fields])
-  const rightSideItems = useMemo(() => [fields.cost, fields.pledge], [fields])
+  const leftSideItems = useMemo(() => [fields.stake], [fields])
+  const rightSideItems = useMemo(() => [fields.cost], [fields])
 
   return (
     <div className={classes.innerWrapper}>
