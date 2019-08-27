@@ -1,7 +1,7 @@
 // @flow
 import React, {useCallback, useMemo} from 'react'
 import {Grid, Typography, IconButton, Menu, MenuItem, Hidden} from '@material-ui/core'
-import {ArrowDropDown as RewardsIcon} from '@material-ui/icons'
+import {MoreVert as RewardsIcon} from '@material-ui/icons'
 import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
 import {fade} from '@material-ui/core/styles/colorManipulator'
