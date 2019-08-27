@@ -5,7 +5,7 @@ import '@/App.css'
 import '@/utils.css'
 import '@/polyfills'
 
-import React, {useMemo, useState, useEffect} from 'react'
+import React from 'react'
 import {IntlProvider as ReactIntlProvider, addLocaleData} from 'react-intl'
 import {ThemeProvider as MuiThemeProvider} from '@material-ui/styles'
 
@@ -65,23 +65,7 @@ const ApolloProviders = ({children, client}) => {
 // ***** BEGIN TAKEN FROM: https://github.com/mui-org/material-ui/blob/master/examples/nextjs/pages/_app.js
 const MuiProviders = ({children}) => {
   const {currentTheme} = useTheme()
-
-  const [forceClientReload, setForceClientReload] = useState(false)
-  const theme = useMemo(() => {
-    // Note(ppershing): prettier-eslint tends to remove forceClientReload if not stated here
-    // eslint-disable-next-line
-    forceClientReload
-    return {
-      // Warning(ppershing): This forces re-load of theme on client which is good
-      // bacause otherwise we are left with inconsistent state after hydration
-      // and react is unwilling to fix it for us
-      ...THEME_DEFINITIONS[currentTheme],
-    }
-  }, [currentTheme, forceClientReload])
-
-  useEffect(() => {
-    setForceClientReload(true)
-  }, [])
+  const theme = THEME_DEFINITIONS[currentTheme]
 
   return (
     <MuiThemeProvider theme={theme}>
