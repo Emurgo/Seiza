@@ -20,6 +20,7 @@ const useStyles = makeStyles(({palette, spacing}) => ({
     background: palette.gradient,
   },
   metricsWrapper: {
+    width: '100%',
     marginTop: spacing(5),
     marginBottom: spacing(5),
   },
