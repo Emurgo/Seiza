@@ -8,6 +8,7 @@ import {SortByProvider, useSortByContext} from './sortBy'
 import {SearchTextProvider, useSearchTextContext} from './searchText'
 import {PerformanceProvider, usePerformanceContext} from './performance'
 import {UserAdaProvider, useUserAdaContext} from './userAda'
+import {ExactMatchProvider} from './exactMatch'
 
 import {useUrlManager} from '@/components/hooks/useUrlManager'
 
@@ -20,9 +21,11 @@ export const StakingContextProvider = ({children, autoSync}: ProviderProps) => (
   <SelectedPoolsProvider autoSync={autoSync}>
     <SortByProvider autoSync={autoSync}>
       <SearchTextProvider autoSync={autoSync}>
-        <PerformanceProvider autoSync={autoSync}>
-          <UserAdaProvider autoSync={autoSync}>{children}</UserAdaProvider>
-        </PerformanceProvider>
+        <ExactMatchProvider>
+          <PerformanceProvider autoSync={autoSync}>
+            <UserAdaProvider autoSync={autoSync}>{children}</UserAdaProvider>
+          </PerformanceProvider>
+        </ExactMatchProvider>
       </SearchTextProvider>
     </SortByProvider>
   </SelectedPoolsProvider>
