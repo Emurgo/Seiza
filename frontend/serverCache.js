@@ -19,12 +19,15 @@ const dev = process.env.NODE_ENV !== 'production'
 // eslint-disable-next-line
 const debugLogger = (...args) => dev ? console.log(...args) : null
 
+const commonRouteKey = (c) => `__currency:${c.currency}__locale:${c.locale}__theme:${c.theme}`
+
 const routeToKey = {
-  '/home': (c) => `/home:__currency:${c.currency}__locale:${c.locale}__theme:${c.theme}`,
+  '/home': (c) => `/home:${commonRouteKey(c)}`,
+  '/blockchain': (c) => `/blockchain:${commonRouteKey(c)}`,
 }
 
 const render = async (req, res, {getData, route}) => {
-  const cacheKey = routeToKey[route](req.cookies)
+  const cacheKey = routeToKey[route] && routeToKey[route](req.cookies)
   let data = cache.get(cacheKey)
   if (data) {
     debugLogger(`Serving ${route} from cache with key ${cacheKey}`)
@@ -32,7 +35,11 @@ const render = async (req, res, {getData, route}) => {
   } else {
     debugLogger(`No cache for route ${route} with key ${cacheKey}`)
     data = await getData()
-    cache.set(cacheKey, data)
+    if (cacheKey) {
+      cache.set(cacheKey, data)
+    } else {
+      debugLogger(`No cache key for ${route}`)
+    }
     return res.send(data)
   }
 }
