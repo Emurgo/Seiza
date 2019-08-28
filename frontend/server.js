@@ -19,6 +19,24 @@ process.on('uncaughtException', (err) => {
   Sentry.captureException(err)
 })
 
+const fixCssCache = (server) => {
+  // https://github.com/zeit/next-plugins/issues/243
+  // This should be fixed in next.js v9, however there are other babel issues in nextjs v9,
+  // so update when nextjs v9 is finally fixed
+  if (!dev) {
+    server.get(
+      /^\/_next\/static\/css\//,
+      (_, res, nextHandler) => {
+        res.setHeader(
+          'Cache-Control',
+          'public, max-age=31536000, immutable',
+        )
+        nextHandler()
+      },
+    )
+  }
+}
+
 app.prepare().then(() => {
   const server = express()
 
@@ -28,6 +46,8 @@ app.prepare().then(() => {
     res.type('text/plain')
     res.send(`Sitemap: ${SITEMAP_ROOT}/sitemap.xml`)
   })
+
+  fixCssCache(server)
 
   server.use(compression())
 
