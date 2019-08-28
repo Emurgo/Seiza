@@ -9,7 +9,7 @@ import type {ProviderProps} from './utils'
 const STORAGE_KEY = 'selectedPools'
 const DEFAULT_VALUE = []
 
-const MAX_POOLS_SELECTED = 10
+const MAX_POOLS_SELECTED = 5
 
 type ContextType = {
   selectedPools: Array<string>,
