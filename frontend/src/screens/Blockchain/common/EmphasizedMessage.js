@@ -2,15 +2,24 @@
 import React from 'react'
 import {makeStyles} from '@material-ui/styles'
 
-import {ContentSpacing} from '@/components/visual'
 import emphasisIcon from '@/static/assets/icons/emphasis.svg'
 
-const useStyles = makeStyles(({palette, spacing}) => ({
+const useStyles = makeStyles(({palette, spacing, getContentSpacing, breakpoints}) => ({
   wrapper: {
     backgroundColor: palette.emphasis.background,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
+    paddingTop: spacing(1.25),
+    paddingBottom: spacing(1.25),
+    paddingLeft: getContentSpacing(0.5),
+    paddingRight: getContentSpacing(0.5),
+    [breakpoints.up('sm')]: {
+      paddingTop: spacing(2.5),
+      paddingBottom: spacing(2.5),
+      paddingLeft: getContentSpacing(),
+      paddingRight: getContentSpacing(),
+    },
   },
   image: {
     marginRight: spacing(2),
@@ -24,10 +33,10 @@ type Props = {
 const EmphasizedMessage = ({children}: Props) => {
   const classes = useStyles()
   return (
-    <ContentSpacing top={0.75} bottom={0.75} className={classes.wrapper}>
+    <div className={classes.wrapper}>
       <img alt="" src={emphasisIcon} className={classes.image} />
       {children}
-    </ContentSpacing>
+    </div>
   )
 }
 
