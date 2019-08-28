@@ -19,6 +19,7 @@ const certActionsToIcons = (actions = []) =>
 const useStyles = makeStyles(({spacing}) => ({
   wrapper: {
     marginRight: spacing(3),
+    display: 'inline-flex',
   },
   label: {
     paddingLeft: spacing(1),
@@ -33,10 +34,10 @@ const ActionsSummary = ({actions = []}) => {
   return (
     <div>
       {_.zip(icons, certificatesMessages).map(([icon, certMessage], index) => (
-        <span key={index} className={classes.wrapper}>
+        <div key={index} className={classes.wrapper}>
           {icon}
           <span className={classes.label}>{certMessage}</span>
-        </span>
+        </div>
       ))}
     </div>
   )
