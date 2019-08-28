@@ -8,8 +8,8 @@ import {darken, lighten} from '@material-ui/core/styles/colorManipulator'
 import {withStateHandlers, withHandlers} from 'recompose'
 import {compose} from 'redux'
 
-import 'rc-slider/assets/index.css'
-import 'rc-tooltip/assets/bootstrap.css'
+import dynamic from 'next/dynamic'
+const SliderStyles = dynamic(() => import('./SliderStyles'))
 
 const PADDING = 5
 
@@ -121,26 +121,29 @@ export default compose(
   }) => {
     const handle = getHandle(classes.handle, tipFormatter)
     return (
-      <FormControl className={classnames(classes.formControl, className)}>
-        {label && (
-          <FormLabel focused={focused} className={classes.label} component="legend">
-            <span>
-              {label}
-              &nbsp; {tipFormatter(value[0])}&nbsp;-&nbsp;{tipFormatter(value[1])}
-            </span>
-          </FormLabel>
-        )}
-        <div className={classes.rangeWrapper}>
-          <Range
-            onBeforeChange={onFocusOn}
-            onChange={onChange}
-            trackStyle={[getTrackStyle(theme), getTrackStyle(theme)]}
-            handleStyle={[getHandleStyle(theme), getHandleStyle(theme)]}
-            railStyle={getRailStyle(theme)}
-            {...{min, max, value, handle, onAfterChange, step}}
-          />
-        </div>
-      </FormControl>
+      <React.Fragment>
+        <SliderStyles />
+        <FormControl className={classnames(classes.formControl, className)}>
+          {label && (
+            <FormLabel focused={focused} className={classes.label} component="legend">
+              <span>
+                {label}
+                {tipFormatter(value[0])}&nbsp;-&nbsp;{tipFormatter(value[1])}
+              </span>
+            </FormLabel>
+          )}
+          <div className={classes.rangeWrapper}>
+            <Range
+              onBeforeChange={onFocusOn}
+              onChange={onChange}
+              trackStyle={[getTrackStyle(theme), getTrackStyle(theme)]}
+              handleStyle={[getHandleStyle(theme), getHandleStyle(theme)]}
+              railStyle={getRailStyle(theme)}
+              {...{min, max, value, handle, onAfterChange, step}}
+            />
+          </div>
+        </FormControl>
+      </React.Fragment>
     )
   }
 )
