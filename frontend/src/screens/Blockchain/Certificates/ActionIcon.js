@@ -8,6 +8,7 @@ import type {CertificateType} from './actionTypes'
 import keyDeregisteredIcon from '@/static/assets/icons/certificateActions/action-key-deregistered.svg'
 import keyRegisteredIcon from '@/static/assets/icons/certificateActions/action-key-registered.svg'
 import poolRetiringIcon from '@/static/assets/icons/certificateActions/action-pool-retiring.svg'
+import poolRetirementCanceledIcon from '@/static/assets/icons/certificateActions/action-pool-retirement-canceled.svg'
 import poolCreatedIcon from '@/static/assets/icons/certificateActions/action-pool-created.svg'
 import delegationIcon from '@/static/assets/icons/certificateActions/action-delegation.svg'
 import poolUpdatedIcon from '@/static/assets/icons/certificateActions/action-pool-updated.svg'
@@ -52,7 +53,9 @@ const ActionIcon = ({type}: Props) => {
     [CERT_ACTIONS_TYPES.POOL_RETIREMENT]: (
       <img className={classes.img} alt="" src={poolRetiringIcon} />
     ),
-    [CERT_ACTIONS_TYPES.POOL_RETIREMENT_CANCELLATION]: '<Icon>', // TODO: add icon
+    [CERT_ACTIONS_TYPES.POOL_RETIREMENT_CANCELLATION]: (
+      <img className={classes.img} alt="" src={poolRetirementCanceledIcon} />
+    ),
   }
   return TO_ICON[type]
 }

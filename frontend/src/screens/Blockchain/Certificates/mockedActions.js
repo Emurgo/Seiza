@@ -104,7 +104,29 @@ export const MOCKED_POOL_CREATION_ACTION = {
   tx: {
     txHash: 'f706e734af341162221bd5cafba01a9687a37e59fb428198f64fa381ed',
   },
+  stakepool: {
+    // Note(bigamasta): just some data here copied from stakepool mock
+    // we cannot use getStakepool here, because of circular dependency
+    name: "Warren Buffet's stakepool",
+    vrfKey: 'b331e5415ba39a345b2d3585c1c1b069372ed5d7dfa0ca4c651fdd47',
+    hotKey: '9b13a30404e4093f2ca99d1db60deddd17b41e6723ef9dbc4deffe2f',
+    coldKey: 'c1ae631a6f9c1d4198a595beb92be18f28e5bcfa780712cfdf891757',
+    webpage: 'https://www.warrenbuffettstakepool.com',
+    pledge: '10000003723742',
+    margin: 0.08,
+    cost: '500000000',
+  },
+  stakepoolOwners: [
+    '6e3d7c58ec9dae7689e7febd25708b69d3c0ae3dcd81e2923f7efe5c',
+    'd61e92e242e02815391dd8f1e40216bbfe7502b21cb8af4329470f16',
+    '9025fa372e54d36c2e82e475a5fe7c48f22a418f3f8be0a33739c07902',
+    'b7df67c0a6be87133bc93d579dfb34f9c77b270b82d14163089cef50e7',
+    'c5d734892fd06c793c401a3d7c53a1fe3a92b3dbbdc635f91e8f10a200',
+    '08c91602468fb20545b11ecac797e728465c05799579a8dd0e42c3d4de',
+    'eb9ba369f4ab7a4a55a52af34cd7a3c986686a52a18dbc1957b493e122',
+  ],
 }
+
 export const MOCKED_POOL_UPDATE_ACTION = {
   type: CERT_ACTIONS_TYPES.POOL_UPDATE,
   poolHash: '4e769bd7263bd2efcc0acddb94d4bbe33f20fc373caa79ed8678e1f5cc',
@@ -113,12 +135,43 @@ export const MOCKED_POOL_UPDATE_ACTION = {
   retirementTxHash: 'bd000196883d006c757209280e881bbdd83a98c8f1bb082e33bd5e80d1',
   lastRetirement: '2019-02-13T10:58:31.000Z',
   poolExists: true,
+  updatedProperties: [
+    {type: 'MARGIN', prevValue: 0.12, value: 0.1},
+    {type: 'COST', prevValue: 214434551, value: 255689111},
+    {type: 'PLEDGE', prevValue: 697276019, value: 821234400},
+    {
+      type: 'OWNERS',
+      prevValue: [
+        '6e3d7c58ec9dae7689e7febd25708b69d3c0ae3dcd81e2923f7efe5c',
+        'd61e92e242e02815391dd8f1e40216bbfe7502b21cb8af4329470f16',
+        '9025fa372e54d36c2e82e475a5fe7c48f22a418f3f8be0a33739c07902',
+        'b7df67c0a6be87133bc93d579dfb34f9c77b270b82d14163089cef50e7',
+        'c5d734892fd06c793c401a3d7c53a1fe3a92b3dbbdc635f91e8f10a200',
+        '08c91602468fb20545b11ecac797e728465c05799579a8dd0e42c3d4de',
+        'eb9ba369f4ab7a4a55a52af34cd7a3c986686a52a18dbc1957b493e122',
+      ],
+      value: [
+        'b7df67c0a6be87133bc93d579dfb34f9c77b270b82d14163089cef50e7',
+        'c5d734892fd06c793c401a3d7c53a1fe3a92b3dbbdc635f91e8f10a200',
+        '08c91602468fb20545b11ecac797e728465c05799579a8dd0e42c3d4de',
+        'eb9ba369f4ab7a4a55a52af34cd7a3c986686a52a18dbc1957b493e122',
+        'ce5a8d07a2db1663a0e5915b9c5f07607b4bc48de91931d4dafe065806',
+        '78308198fe9cd409924e49b221f342c822664942e79a6f2d6df141922f',
+        '20caa4c93afdd592641ea29f34d07961304de8f77ada75b9cde40efcc9',
+        'a7caa6d4765fe3731295f1581e1359b0a563440082070e5f4c5f84164b',
+        '5e25611416a5dfdcc007d79d1a92a825af708fddc6b55a9b1e5d10ded1',
+        '536b4a57de1e7fe72aa947d91391264b09f1358b009489d22f5892fdf3',
+        '1daefc4484bf3ce26848cd15b224622cb155805c268fc40ddaef22d0b1',
+      ],
+    },
+  ],
   tx: {
     txHash: '11d9e1434718f8828f8b1e326cacba3f386fcfb29734552864b73a12fd',
   },
 }
 export const MOCKED_POOL_DELETION_ACTION = {
   type: CERT_ACTIONS_TYPES.POOL_DELETION,
+  rewardsEpoch: 161,
   tx: {
     txHash: 'b6e76d4c14afe3bf44b06e38b8c2e7e25da59be3445b449f51c13831cb',
   },

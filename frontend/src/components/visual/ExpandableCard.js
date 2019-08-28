@@ -13,6 +13,7 @@ import {
 } from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
+import {mergeStylesheets} from '@/helpers/styles'
 import {Card} from '@/components/visual'
 
 const useStyles = makeStyles((theme) => ({
@@ -31,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const useExpansionPanelClasses = makeStyles((theme) => ({
+const useExpansionPanelStyles = makeStyles((theme) => ({
   root: {
     'display': 'flex',
     'flexDirection': 'column',
@@ -45,7 +46,7 @@ const useExpansionPanelClasses = makeStyles((theme) => ({
   },
 }))
 
-const useSummaryClasses = makeStyles((theme) => ({
+const useSummaryStyles = makeStyles((theme) => ({
   root: {
     margin: '0 !important',
     minHeight: 'auto !important',
@@ -57,7 +58,7 @@ const useSummaryClasses = makeStyles((theme) => ({
   },
 }))
 
-const useDetailsClasses = makeStyles((theme) => ({
+const useDetailsStyles = makeStyles((theme) => ({
   root: {
     padding: 0,
     display: 'flex',
@@ -65,7 +66,7 @@ const useDetailsClasses = makeStyles((theme) => ({
   },
 }))
 
-const useFooterClasses = makeStyles((theme) => ({
+const useFooterStyles = makeStyles((theme) => ({
   root: {
     textTransform: 'uppercase',
     color: theme.palette.primary.main,
@@ -85,11 +86,12 @@ type ExpandableCardPT = {
   renderHeader: () => Node,
   renderFooter: (expanded: boolean) => Node,
   className?: string,
+  footerClasses?: Object,
 }
 
 export const ExpandableCardFooter = ({expanded, label}: ExpandableCardFooterProps) => {
   const classes = useStyles()
-  const footerClasses = useFooterClasses()
+  const footerClasses = useFooterStyles()
 
   return (
     <Grid container justify="center" alignItems="center" direction="row">
@@ -108,13 +110,21 @@ export const ExpandableCardFooter = ({expanded, label}: ExpandableCardFooterProp
 }
 
 export const ExpandableCardContent = (props: ExpandableCardPT) => {
-  const {expanded, onChange, renderExpandedArea, renderHeader, renderFooter, className} = props
+  const {
+    expanded,
+    onChange,
+    renderExpandedArea,
+    renderHeader,
+    renderFooter,
+    footerClasses,
+    className,
+  } = props
 
   const classes = useStyles()
 
-  const expansionPanelClasses = useExpansionPanelClasses()
-  const summaryClasses = useSummaryClasses()
-  const detailsClasses = useDetailsClasses()
+  const expansionPanelClasses = useExpansionPanelStyles()
+  const summaryClasses = useSummaryStyles()
+  const detailsClasses = useDetailsStyles()
 
   return (
     <Grid container className={className} direction="row">
@@ -126,7 +136,7 @@ export const ExpandableCardContent = (props: ExpandableCardPT) => {
         </Grid>
         <Grid item xs={12}>
           <ExpansionPanel classes={expansionPanelClasses} onChange={onChange} expanded={expanded}>
-            <ExpansionPanelSummary classes={summaryClasses}>
+            <ExpansionPanelSummary classes={mergeStylesheets(summaryClasses, footerClasses)}>
               {renderFooter(props.expanded)}
             </ExpansionPanelSummary>
             <ExpansionPanelDetails classes={detailsClasses}>
