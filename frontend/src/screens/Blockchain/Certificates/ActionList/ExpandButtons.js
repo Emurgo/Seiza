@@ -3,7 +3,7 @@ import cn from 'classnames'
 import {defineMessages} from 'react-intl'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import {makeStyles} from '@material-ui/styles'
-import {Typography} from '@material-ui/core'
+import {Typography, IconButton} from '@material-ui/core'
 
 import {useI18n} from '@/i18n/helpers'
 import {Button} from '@/components/visual'
@@ -27,7 +27,16 @@ const useExpandButtonStyles = makeStyles(() => ({
   },
 }))
 
-const ExpandButton = ({onClick, expanded}) => {
+export const ExpandIconButton = ({onClick, expanded}) => {
+  const classes = useExpandButtonStyles()
+  return (
+    <IconButton color="primary" onClick={onClick} className={classes.expandButton}>
+      <ExpandMoreIcon className={cn(classes.icon, expanded && classes.iconExpanded)} />
+    </IconButton>
+  )
+}
+
+export const ShowMoreButton = ({onClick, expanded}) => {
   const {translate: tr} = useI18n()
   const classes = useExpandButtonStyles()
   return (
@@ -39,5 +48,3 @@ const ExpandButton = ({onClick, expanded}) => {
     </Button>
   )
 }
-
-export default ExpandButton

@@ -4,7 +4,7 @@ import {makeStyles} from '@material-ui/styles'
 import {ExpandableCardContent, SummaryCard} from '@/components/visual'
 import useModalState from '@/components/hooks/useModalState'
 import {CertIconWithLabel} from './utils'
-import ExpandButton from './ExpandButton'
+import {ShowMoreButton} from './ExpandButtons'
 
 const {Row, Label, Value} = SummaryCard
 
@@ -43,7 +43,7 @@ const DesktopAction = ({action, label, values}) => {
           footerClasses={footerClasses}
         />
         {values.length > DEFAULT_VALUES_COUNT_SHOWN && (
-          <ExpandButton expanded={isOpen} onClick={toggle} />
+          <ShowMoreButton expanded={isOpen} onClick={toggle} />
         )}
       </Value>
     </Row>
