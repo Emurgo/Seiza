@@ -36,6 +36,8 @@ import {CurrencyProvider} from '@/components/hooks/useCurrency'
 import EnvOverrides from './screens/EnvOverrides'
 import TopBar from './TopBar'
 
+import {useGlobalStyles} from './globalStyles'
+
 import config from '@/config'
 
 if (!config.isProduction && config.watchRenderPerformance) {
@@ -140,6 +142,7 @@ const Providers = ({children}) => (
 const renderRouteDef = ({path, ...rest}) => (path ? <Route path={path} {...rest} /> : null)
 
 const AppLayout = () => {
+  useGlobalStyles()
   const classes = useAppStyles()
   const {translate} = useI18n()
 
