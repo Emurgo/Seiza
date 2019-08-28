@@ -1,8 +1,8 @@
 // @flow
 
-import React from 'react'
+import React, {useMemo} from 'react'
 import {BrowserRouter, StaticRouter, Route, Switch, Redirect} from 'react-router-dom'
-import {CssBaseline, Grid} from '@material-ui/core'
+import {Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
 import {matchPath} from 'react-router'
@@ -146,14 +146,15 @@ const AppLayout = () => {
   const classes = useAppStyles()
   const {translate} = useI18n()
 
+  const translatedNavItems = useMemo(() => getTranslatedFooterNavItems(translate), [translate])
+
   return (
     <Grid container direction="column" className={classes.mainWrapper} wrap="nowrap">
       <UnsupportedBrowserBanner />
       <CookiesBanner />
 
       <Grid item className={classes.navHeaderWrapper}>
-        <CssBaseline />
-        <TopBar navItems={getTranslatedNavItems(translate)} />
+        <TopBar navItems={translatedNavItems} />
       </Grid>
       <DefaultErrorBoundary>
         <React.Fragment>
@@ -190,7 +191,7 @@ const AppLayout = () => {
             </Switch>
           </Grid>
           <Grid item>
-            <Footer navItems={getTranslatedFooterNavItems(translate)} />
+            <Footer navItems={translatedNavItems} />
           </Grid>
         </React.Fragment>
       </DefaultErrorBoundary>

@@ -1,12 +1,12 @@
 // @flow
-import React from 'react'
+import React, {useMemo} from 'react'
 import {Switch, Route} from 'react-router-dom'
 import {matchPath} from 'react-router'
 import useReactRouter from 'use-react-router'
 import NoSSR from 'react-no-ssr'
 import {Grid, Divider, SwipeableDrawer} from '@material-ui/core'
 import {MoreVert as MenuIcon} from '@material-ui/icons'
-import {makeStyles} from '@material-ui/styles'
+import {makeStyles, useTheme} from '@material-ui/styles'
 import {fade} from '@material-ui/core/styles/colorManipulator'
 import cn from 'classnames'
 
@@ -27,16 +27,15 @@ import seizaLogoMobile from '@/static/assets/icons/seiza-symbol.svg'
 import type {NavItem} from '@/components/common/Navbar'
 
 const useTopBarStyles = makeStyles((theme) => ({
-  topBar: ({addShadow}) => ({
+  topBar: {
     position: 'relative',
     background: theme.palette.background.paper,
-    boxShadow: addShadow ? `0px 5px 25px ${fade(theme.palette.shadowBase, 0.12)}` : 'none',
     padding: theme.spacing(1),
     [theme.breakpoints.up('sm')]: {
       padding: `${theme.spacing(1)}px ${theme.spacing(5)}px`,
     },
     justifyContent: 'space-between',
-  }),
+  },
   mobileSearch: {
     flex: 1,
     marginLeft: 0,
@@ -118,11 +117,15 @@ const TopBar = ({navItems}: TopBarProps) => {
   const {
     location: {pathname},
   } = useReactRouter()
+  const theme = useTheme()
+
   // Note: for stakingCenter there is next navigation below topBar which should not be affected
   // by shadow. It can not set higher z-index because when scrolling much it would overlap main
   // navigation what is not desired.
   const addShadow = !matchPath(pathname, routeTo.stakingCenter.home())
-  const classes = useTopBarStyles({addShadow})
+  const boxShadow = addShadow ? `0px 5px 25px ${fade(theme.palette.shadowBase, 0.12)}` : 'none'
+  const inlineStyles = useMemo(() => ({boxShadow}), [boxShadow])
+  const classes = useTopBarStyles()
   const {callbackRef: mobileStakingSettingsRef} = useMobileStakingSettingsRef()
 
   return (
@@ -134,6 +137,7 @@ const TopBar = ({navItems}: TopBarProps) => {
           justify="space-between"
           alignItems="center"
           className={classes.topBar}
+          style={inlineStyles}
         >
           <Grid item>
             <Link to={routeTo.home()}>

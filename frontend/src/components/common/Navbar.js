@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import React, {useMemo} from 'react'
 import cn from 'classnames'
 
 import {MenuList, MenuItem, Typography} from '@material-ui/core'
@@ -151,6 +151,17 @@ const _WithSublinks = ({children, sublinks}) => {
   const [open, setOpen, setClosed] = useBooleanState(false)
 
   const PopoverMenu = Tooltip
+  const PopperProps = useMemo(
+    () => ({
+      disablePortal: true,
+    }),
+    []
+  )
+
+  const title = useMemo(() => <Sublinks onClick={setClosed} sublinks={sublinks} />, [
+    setClosed,
+    sublinks,
+  ])
 
   return (
     <PopoverMenu
@@ -160,10 +171,8 @@ const _WithSublinks = ({children, sublinks}) => {
       open={open}
       leaveDelay={100}
       onClose={setClosed}
-      PopperProps={{
-        disablePortal: true,
-      }}
-      title={<Sublinks onClick={setClosed} sublinks={sublinks} />}
+      PopperProps={PopperProps}
+      title={title}
     >
       <div className={classes.tooltipChildren} onMouseEnter={setOpen}>
         {children}
