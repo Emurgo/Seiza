@@ -1,8 +1,6 @@
 // @flow
 import Router from 'next/router'
 import {reportError} from '@/helpers/errorReporting'
-import '@/App.css'
-import '@/utils.css'
 import '@/polyfills'
 
 import React from 'react'
