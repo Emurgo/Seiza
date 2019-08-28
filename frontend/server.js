@@ -64,10 +64,11 @@ app.prepare().then(() => {
     return res.redirect(301, '/')
   })
 
-  server.get('/home', (req, res) => {
+  server.get(['/home', '/blockchain'], (req, res) => {
     return serverCache.render(req, res, {
       getData: () => app.renderToHTML(req, res, '/', req.query),
-      route: '/home'}
+      route: req.url,
+    }
     )
   })
 
