@@ -5,6 +5,7 @@
 import React from 'react'
 import Document, {Html, Main, NextScript, Head} from 'next/document'
 import {ServerStyleSheets} from '@material-ui/styles'
+import config from '@/config'
 
 class MyDocument extends Document {
   static async getInitialProps(ctx) {
@@ -73,6 +74,7 @@ class MyDocument extends Document {
           />
           {/* We remove auto translate as it causes React apps to fail */}
           <meta name="google" content="notranslate" />
+          <link rel="preconnect" href={config.graphQLServerUrl} />
           <link href="/static/assets/css/loadFonts.css" rel="stylesheet" />
           <link rel="shortcut icon" href="/static/favicon.ico" />
           {process.browser && (
