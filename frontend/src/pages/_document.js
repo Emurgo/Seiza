@@ -75,7 +75,7 @@ class MyDocument extends Document {
           {/* We remove auto translate as it causes React apps to fail */}
           <meta name="google" content="notranslate" />
           <link rel="preconnect" href={config.graphQLServerUrl} />
-          <link href="/static/assets/css/loadFonts.css" rel="prefetch" as="style" />
+          <link href="/static/assets/css/loadFonts.css" rel="stylesheet" />
           <link rel="shortcut icon" href="/static/favicon.ico" />
           {process.browser && (
             <script src="https://polyfill.io/v3/polyfill.js?features=es6,es7,es2017" />
