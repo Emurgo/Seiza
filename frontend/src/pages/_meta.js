@@ -7,9 +7,9 @@ import {useI18n} from '@/i18n/helpers'
 export const seoMessages = defineMessages({
   title: 'Seiza - Cardano Blockchain Explorer for ADA',
   desc:
-    'Seiza is an easy to use webpage to find and verify information in the Cardano blockchain. This blockchain explorer allows you to search for epochs, slots, transactions and addresses.',
-  shortDesc: 'Explore and search for Cardano epochs, blocks, transactions and addresses',
-  keywords: 'Cardano, Ada, Explorer, Emurgo, Shelley, Goguen, Block Explorer',
+    'Seiza is an easy to use Ada Explorer to find and verify information in the Cardano blockchain. This blockchain explorer allows you to search for epochs, slots, transactions and addresses.',
+  shortDesc: 'Ada Explorer. Explore and search for Cardano epochs, blocks, transactions and addresses',
+  keywords: 'Cardano, Ada, Ada Explorer, Cardano Explorer, Emurgo, Shelley, Goguen, Block Explorer',
 })
 
 // TODO: make dynamic (note: this needs to be absolute URL)
