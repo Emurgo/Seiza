@@ -4,7 +4,7 @@ import _ from 'lodash'
 import CRC32 from 'crc-32'
 import React, {useCallback, useState} from 'react'
 import useReactRouter from 'use-react-router'
-import moment from 'moment-timezone'
+import dayjs from '@/dayjs'
 import {defineMessages} from 'react-intl'
 
 import {
@@ -88,7 +88,7 @@ const exportPoolsToJson = (poolsData) => {
   const data = {
     type: 'seiza-pool-export:1',
     // ISO 8601 which relative to UTC
-    export_time: moment().format(),
+    export_time: dayjs().format(),
     pools: poolsData,
   }
 

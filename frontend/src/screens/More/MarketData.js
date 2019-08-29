@@ -3,7 +3,7 @@ import {ResponsiveLine} from '@nivo/line'
 import gql from 'graphql-tag'
 import {compose} from 'redux'
 import {graphql} from 'react-apollo'
-import moment from 'moment-timezone'
+import dayjs from '@/dayjs'
 
 import {LoadingInProgress} from '@/components/visual'
 import {DebugApolloError} from '@/components/common'
@@ -96,7 +96,7 @@ const _MarketHistory = ({i18n, data}) => {
   const renderTooltip = (slice) => (
     <div style={{color: '#bbb'}}>
       <div>
-        {i18n.formatTimestamp(moment(slice.id), {format: i18n.formatTimestamp.FMT_SHORT_DATE})}
+        {i18n.formatTimestamp(dayjs(slice.id), {format: i18n.formatTimestamp.FMT_SHORT_DATE})}
       </div>
       {slice.data.map((d) => (
         <div

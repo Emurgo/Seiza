@@ -1,14 +1,11 @@
 // @flow
 import BigNumber from 'bignumber.js'
-import moment from 'moment-timezone'
+import dayjs from '@/dayjs'
 import {injectIntl, FormattedMessage} from 'react-intl'
 import React, {useContext} from 'react'
 import {compose} from 'redux'
 import _ from 'lodash'
 import assert from 'assert'
-
-import 'moment/locale/ja'
-import 'moment/locale/ru'
 
 const defaultNumberFmt = {
   prefix: '',
@@ -34,6 +31,9 @@ export const formatMsgById = (id: string, values?: Object) => {
     />
   )
 }
+
+// https://momentjscom.readthedocs.io/en/latest/moment-timezone/01-using-timezones/06-guessing-user-timezone/
+const CURRENT_TIMEZONE = Intl.DateTimeFormat().resolvedOptions().timeZone
 
 const STANDARD_READABLE_FORMAT = 'LL LTS z'
 
@@ -167,16 +167,16 @@ export const getIntlFormatters = (intl: any): Formatters => {
 
   const _formatTimestamp = (x, options: FormatTimestampOptions) => {
     const desiredFormat = options.format || STANDARD_READABLE_FORMAT
-    const ts = moment(x)
-      .locale(intl.locale)
-      .tz(options.tz || moment.tz.guess())
+    const timeZone = options.tz || CURRENT_TIMEZONE
+    const ts = dayjs(x).locale(intl.locale)
     if (!ts.isValid) throw new Error('bad timestamp')
-    return ts.format(desiredFormat)
+
+    return ts.format(desiredFormat, {timeZone})
   }
 
   // TODO: consider creating new format for moment
   const _formatTimestampToUtcDayAndMonth = (timestamp, options = {}) => {
-    const utcDate = moment.utc(timestamp).toDate()
+    const utcDate = dayjs.utc(timestamp).toDate()
     return utcDate.toLocaleDateString(intl.locale, {month: '2-digit', day: '2-digit'})
   }
 
