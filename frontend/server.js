@@ -55,10 +55,8 @@ app.prepare().then(() => {
   // This attaches request information to sentry errors
   server.use(Sentry.Handlers.requestHandler())
 
-  // Note: performance boost, also consider other redirects and making
-  // this nicer (share routes somehow?)
-  server.get('/', (req, res) => {
-    return res.redirect(301, '/home')
+  server.get('/home', (req, res) => {
+    return res.redirect(301, '/')
   })
 
   server.get('*', (req, res) => {

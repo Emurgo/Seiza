@@ -2,7 +2,7 @@
 
 import React from 'react'
 import dynamic from 'next/dynamic'
-import {BrowserRouter, StaticRouter, Route, Switch, Redirect} from 'react-router-dom'
+import {BrowserRouter, StaticRouter, Route, Switch} from 'react-router-dom'
 import {CssBaseline, Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
@@ -84,7 +84,13 @@ const useAppStyles = makeStyles((theme) => ({
 // and due it is mostly temporary feature
 const getTranslatedNavItems = (translate) =>
   [
-    {link: routeTo.home(), label: translate(navigationMessages.home)},
+    {
+      link: routeTo.home(),
+      label: translate(navigationMessages.home),
+      getIsActive: ({location, match}) => {
+        return location.pathname === routeTo.home()
+      },
+    },
     {link: routeTo.blockchain(), label: translate(navigationMessages.blockchain)},
     {
       link: routeTo.stakingCenter.home(),
@@ -163,8 +169,6 @@ const AppLayout = () => {
         <React.Fragment>
           <Grid item className={classes.contentWrapper}>
             <Switch>
-              <Redirect exact from="/" to={routeTo.home()} />
-
               {combinedBlockchainPath && (
                 <Route path={combinedBlockchainPath}>
                   <BlockchainHeader />
