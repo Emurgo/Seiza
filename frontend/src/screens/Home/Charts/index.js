@@ -1,7 +1,7 @@
 // @flow
 
 import idx from 'idx'
-import Measure from 'react-measure'
+import NoSSR from 'react-no-ssr'
 import gql from 'graphql-tag'
 import {useQuery} from 'react-apollo-hooks'
 import dayjs from '@/dayjs'
@@ -68,6 +68,9 @@ const useStyles = makeStyles((theme) => ({
   },
   layout: {
     paddingBottom: theme.spacing(2.5),
+  },
+  chartWrapper: {
+    height: 400,
   },
 }))
 
@@ -185,7 +188,7 @@ const Chart = ({seriesType, xAxisProps, currentEpoch, ...restProps}) => {
     from: dayjs
       .utc()
       .startOf('day')
-      .subtract(X_AXIS_WINDOW.DAY + 300, 'days') // TODO: remove `300` when backend is fixed
+      .subtract(X_AXIS_WINDOW.DAY, 'days')
       .toISOString(),
   }
 
@@ -211,31 +214,29 @@ const Chart = ({seriesType, xAxisProps, currentEpoch, ...restProps}) => {
       <Alert type="warning" title={tr(messages.noDataTitle)} message={tr(messages.noDataMsg)} />
     )
   }
-  return <BarChart data={_data} {...restProps} />
+  // Charts needs absolute dimensions and it is hard to get them on server
+  return (
+    <NoSSR onSSR={<LoadingInProgress />}>
+      {loading ? <LoadingInProgress /> : <BarChart data={_data} {...restProps} />}
+    </NoSSR>
+  )
 }
 
-const ChartTab = ({loading, error, xAxisProps, commonChartProps, ...restProps}) => {
+const ChartTab = ({error, xAxisProps, commonChartProps, ...restProps}) => {
+  const classes = useStyles()
   return (
     <Card>
       <XAxisSwitch {...xAxisProps} />
-      <Grid
-        container
-        alignItems="center"
-        justify="center"
-        style={{width: commonChartProps.width, height: commonChartProps.height}}
-      >
-        {loading && <LoadingInProgress />}
-        {!loading && error && <LoadingError error={error} />}
-        {!loading && !error && <Chart {...{xAxisProps, ...commonChartProps, ...restProps}} />}
+      <Grid container alignItems="center" justify="center" className={classes.chartWrapper}>
+        {error ? (
+          <LoadingError error={error} />
+        ) : (
+          <Chart {...{xAxisProps, ...commonChartProps, ...restProps}} />
+        )}
       </Grid>
     </Card>
   )
 }
-
-const getChartDimensions = (dimensions) => ({
-  width: dimensions.width,
-  height: 400,
-})
 
 const Charts = () => {
   const classes = useStyles()
@@ -247,9 +248,8 @@ const Charts = () => {
   } = useI18n()
   const analytics = useAnalytics()
   const [xAxis, setXAxis] = useState(X_AXIS.DAY)
-  const [dimensions, setDimensions] = useState({width: -1, height: -1})
 
-  const {error, loading, currentEpoch} = useCurrentEpoch()
+  const {error, currentEpoch} = useCurrentEpoch()
 
   const tabNames = ObjectValues(TAB_NAMES)
   const tabState = useTabState(tabNames)
@@ -272,7 +272,6 @@ const Charts = () => {
     formatX: xAxis === X_AXIS.DAY ? formatTimestampToUtcDayAndMonth : identity,
     barSize: xAxis === X_AXIS.DAY ? 14 : 20,
     lastTooltipText: tr(messages.lastTooltipText),
-    ...getChartDimensions(dimensions),
   }
 
   const xAxisProps = {
@@ -282,56 +281,45 @@ const Charts = () => {
 
   return (
     <SimpleLayout title={tr(messages.header)} maxWidth="1200px" className={classes.layout}>
-      <Measure
-        bounds
-        onResize={(contentRect) => {
-          setDimensions(contentRect.bounds)
-        }}
-      >
-        {({measureRef}) => (
-          <div ref={measureRef}>
-            <Tabs {...tabState}>
-              <TabsHeader />
+      <Tabs {...tabState}>
+        <TabsHeader />
 
-              <Tab name={TAB_NAMES.TOTAL_ADA_SENT}>
-                <ChartTab
-                  seriesType="totalAdaTransferred"
-                  yLabel={tr(yLabels.adaSent)}
-                  formatYTooltip={formatAdaYTooltip}
-                  formatYAxis={formatAdaYAxis}
-                  commonChartProps={commonChartProps}
-                  xAxisProps={xAxisProps}
-                  {...{loading, error, currentEpoch}}
-                />
-              </Tab>
+        <Tab name={TAB_NAMES.TOTAL_ADA_SENT}>
+          <ChartTab
+            seriesType="totalAdaTransferred"
+            yLabel={tr(yLabels.adaSent)}
+            formatYTooltip={formatAdaYTooltip}
+            formatYAxis={formatAdaYAxis}
+            commonChartProps={commonChartProps}
+            xAxisProps={xAxisProps}
+            {...{error, currentEpoch}}
+          />
+        </Tab>
 
-              <Tab name={TAB_NAMES.TRANSACTIONS_COUNT}>
-                <ChartTab
-                  seriesType="txCount"
-                  yLabel={tr(yLabels.txCount)}
-                  formatYAxis={identity}
-                  formatYTooltip={identity}
-                  commonChartProps={commonChartProps}
-                  xAxisProps={xAxisProps}
-                  {...{loading, error, currentEpoch}}
-                />
-              </Tab>
+        <Tab name={TAB_NAMES.TRANSACTIONS_COUNT}>
+          <ChartTab
+            seriesType="txCount"
+            yLabel={tr(yLabels.txCount)}
+            formatYAxis={identity}
+            formatYTooltip={identity}
+            commonChartProps={commonChartProps}
+            xAxisProps={xAxisProps}
+            {...{error, currentEpoch}}
+          />
+        </Tab>
 
-              <Tab name={TAB_NAMES.TOTAL_UTXO}>
-                <ChartTab
-                  seriesType="totalUtxoCreated"
-                  yLabel={tr(yLabels.utxo)}
-                  formatYAxis={identity}
-                  formatYTooltip={identity}
-                  commonChartProps={commonChartProps}
-                  xAxisProps={xAxisProps}
-                  {...{loading, error, currentEpoch}}
-                />
-              </Tab>
-            </Tabs>
-          </div>
-        )}
-      </Measure>
+        <Tab name={TAB_NAMES.TOTAL_UTXO}>
+          <ChartTab
+            seriesType="totalUtxoCreated"
+            yLabel={tr(yLabels.utxo)}
+            formatYAxis={identity}
+            formatYTooltip={identity}
+            commonChartProps={commonChartProps}
+            xAxisProps={xAxisProps}
+            {...{error, currentEpoch}}
+          />
+        </Tab>
+      </Tabs>
     </SimpleLayout>
   )
 }

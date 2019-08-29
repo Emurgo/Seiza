@@ -1,7 +1,17 @@
 // @flow
 
 import React, {useState, useEffect} from 'react'
-import {BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell, Label} from 'recharts'
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Cell,
+  Label,
+  ResponsiveContainer,
+} from 'recharts'
 import {makeStyles, useTheme} from '@material-ui/styles'
 import {lighten, fade, darken} from '@material-ui/core/styles/colorManipulator'
 import {Grid, Typography} from '@material-ui/core'
@@ -149,8 +159,6 @@ type BarChartProps = {|
   data: Array<Object>,
   xLabel: string,
   yLabel: string,
-  width: number,
-  height: number,
   formatX: Function,
   formatYAxis: Function,
   formatYTooltip: Function,
@@ -163,8 +171,6 @@ export default ({
   data,
   xLabel,
   yLabel,
-  width,
-  height,
   formatX,
   formatYAxis,
   formatYTooltip,
@@ -185,54 +191,56 @@ export default ({
   // https://github.com/recharts/recharts/issues/444
   // onClick={null} fixes iOS touch events
   return (
-    <BarChart
-      onClick={null}
-      onMouseLeave={() => setActiveBar(null)}
-      margin={chartMargin}
-      {...{width, height, data}}
-    >
-      <CartesianGrid strokeDasharray="3 3" />
-      <XAxis
-        dataKey="x"
-        height={50}
-        tickFormatter={formatX}
-        label={{value: xLabel, fill: textColor, position: 'insideBottom'}}
-      />
-      {/* // use tickFormatter also for yAxis */}
-      <YAxis width={!isExtraSM ? 100 : 70} dataKey="y" tickFormatter={formatYAxis}>
-        {!isExtraSM && (
-          <Label
-            angle={-90}
-            offset={-5}
-            value={yLabel}
-            position="insideLeft"
-            style={{textAnchor: 'middle', fill: textColor}}
-          />
-        )}
-      </YAxis>
-      <Tooltip
-        enterTouchDelay={100}
-        isAnimationActive
-        // $FlowFixMe recharts pass other props using some `magic`
-        cursor={<CustomCursor setActiveBar={setActiveBar} />}
-        content={
-          // $FlowFixMe recharts pass other props using some `magic`
-          <CustomTooltip
-            {...{xLabel, yLabel, formatX, formatYTooltip, lastTooltipText}}
-            lastItem={data[data.length - 1]}
-          />
-        }
-      />
-      <Bar
-        barSize={barSize}
-        dataKey="y"
-        shape={<CustomBar activeBar={activeBar} itemsCount={data.length} />}
-        label={false}
+    <ResponsiveContainer width="100%" height="100%">
+      <BarChart
+        onClick={null}
+        onMouseLeave={() => setActiveBar(null)}
+        margin={chartMargin}
+        {...{data}}
       >
-        {data.map((entry, index) => (
-          <Cell key={entry.x} fill={entry.x === activeBar ? activeLabelColor : labelColor} />
-        ))}
-      </Bar>
-    </BarChart>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis
+          dataKey="x"
+          height={50}
+          tickFormatter={formatX}
+          label={{value: xLabel, fill: textColor, position: 'insideBottom'}}
+        />
+        {/* // use tickFormatter also for yAxis */}
+        <YAxis width={!isExtraSM ? 100 : 70} dataKey="y" tickFormatter={formatYAxis}>
+          {!isExtraSM && (
+            <Label
+              angle={-90}
+              offset={-5}
+              value={yLabel}
+              position="insideLeft"
+              style={{textAnchor: 'middle', fill: textColor}}
+            />
+          )}
+        </YAxis>
+        <Tooltip
+          enterTouchDelay={100}
+          isAnimationActive
+          // $FlowFixMe recharts pass other props using some `magic`
+          cursor={<CustomCursor setActiveBar={setActiveBar} />}
+          content={
+            // $FlowFixMe recharts pass other props using some `magic`
+            <CustomTooltip
+              {...{xLabel, yLabel, formatX, formatYTooltip, lastTooltipText}}
+              lastItem={data[data.length - 1]}
+            />
+          }
+        />
+        <Bar
+          barSize={barSize}
+          dataKey="y"
+          shape={<CustomBar activeBar={activeBar} itemsCount={data.length} />}
+          label={false}
+        >
+          {data.map((entry, index) => (
+            <Cell key={entry.x} fill={entry.x === activeBar ? activeLabelColor : labelColor} />
+          ))}
+        </Bar>
+      </BarChart>
+    </ResponsiveContainer>
   )
 }
