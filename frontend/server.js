@@ -64,16 +64,15 @@ app.prepare().then(() => {
     return res.redirect(301, '/')
   })
 
-  server.get(['/home', '/blockchain'], (req, res) => {
-    return serverCache.render(req, res, {
-      getData: () => app.renderToHTML(req, res, '/', req.query),
-      route: req.url,
-    }
-    )
-  })
-
   server.get('*', (req, res) => {
-    return app.render(req, res, '/', req.query)
+    if (req.url.startsWith('/static') || req.url.startsWith('/_next')) {
+      return app.render(req, res, '/', req.query)
+    } else {
+      return serverCache.render(req, res, {
+        getData: () => app.renderToHTML(req, res, '/', req.query),
+        route: req.url,
+      })
+    }
   })
   // This handles errors if they are thrown before reaching the app
   server.use(Sentry.Handlers.errorHandler())

@@ -9,7 +9,7 @@ const options = {
     // 1 char in JS should be 2 bytes
     return n.length
   },
-  maxAge: 1000 * 60 * 60 * 24, // 1d
+  maxAge: 1000 * 20, // 20s
 }
 
 const cache = new LRU(options)
@@ -19,15 +19,10 @@ const dev = process.env.NODE_ENV !== 'production'
 // eslint-disable-next-line
 const debugLogger = (...args) => dev ? console.log(...args) : null
 
-const commonRouteKey = (c) => `__currency:${c.currency}__locale:${c.locale}__theme:${c.theme}`
-
-const routeToKey = {
-  '/home': (c) => `/home:${commonRouteKey(c)}`,
-  '/blockchain': (c) => `/blockchain:${commonRouteKey(c)}`,
-}
+const routeToKey = (route, c) => `${route}__currency:${c.currency}__locale:${c.locale}__theme:${c.theme}`
 
 const render = async (req, res, {getData, route}) => {
-  const cacheKey = routeToKey[route] && routeToKey[route](req.cookies)
+  const cacheKey = routeToKey(route, req.cookies)
   let data = cache.get(cacheKey)
   if (data) {
     debugLogger(`Serving ${route} from cache with key ${cacheKey}`)
