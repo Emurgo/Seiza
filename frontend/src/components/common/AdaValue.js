@@ -1,6 +1,6 @@
 //@flow
 import React from 'react'
-import moment from 'moment-timezone'
+import dayjs from '@/dayjs'
 import gql from 'graphql-tag'
 import cn from 'classnames'
 import idx from 'idx'
@@ -52,7 +52,7 @@ const useHistoricalPrice = (currency, timestamp, shouldFetch) => {
     {
       variables: {
         currency,
-        timestamp: moment(timestamp)
+        timestamp: dayjs(timestamp)
           .utc()
           .startOf('day')
           .toISOString(),
@@ -101,11 +101,11 @@ const AdaFiatTooltip = ({value, timestamp}) => {
 
   // Note: we need to compare UTC start of days as server gives us
   // UTC-day averages
-  const isHistoricalTimestamp = moment(timestamp)
+  const isHistoricalTimestamp = dayjs(timestamp)
     .utc()
     .startOf('day')
     .isBefore(
-      moment()
+      dayjs()
         .utc()
         .startOf('day')
     )
