@@ -33,5 +33,8 @@ export const useGlobalStyles: any = makeStyles({
     '.w-100': {
       width: '100%',
     },
+    '.w-auto': {
+      width: 'auto',
+    },
   },
 })
