@@ -1,6 +1,7 @@
 // @flow
 
 import React from 'react'
+import dynamic from 'next/dynamic'
 import {BrowserRouter, StaticRouter, Route, Switch, Redirect} from 'react-router-dom'
 import {CssBaseline, Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
@@ -21,7 +22,6 @@ import BlockchainHeader from './screens/Blockchain/BlockchainHeader'
 import StakingAdvanced from './screens/Staking/StakingAdvanced'
 import StakingSimple from './screens/Staking/StakingSimple'
 import StakingPools from './screens/StakingPools'
-import More from './screens/More'
 import PageNotFound from './screens/PageNotFound'
 import SubscribeConfirmation from './screens/SubscribeConfirmation'
 import CookiesBanner from '@/components/common/CookiesBanner'
@@ -39,6 +39,10 @@ import TopBar from './TopBar'
 import {useGlobalStyles} from './globalStyles'
 
 import config from '@/config'
+
+// Quick workaround to avoid adding 'nivo' package to main bundle as
+// "More" page is by default not used
+const More = dynamic(() => import('./screens/More'))
 
 if (!config.isProduction && config.watchRenderPerformance) {
   setupWhyDidYouRender()
