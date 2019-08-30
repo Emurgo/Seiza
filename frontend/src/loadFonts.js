@@ -1,4 +1,5 @@
-/* TODO: [Next] load fonts with next-fonts? */
+// @flow
+export default `
 @font-face {
   font-family: "Roboto Self";
   font-style: normal;
@@ -203,3 +204,4 @@
       format("woff"),
     local("Roboto Mono Bold Italic"), local("RobotoMono-BoldItalic");
 }
+`
