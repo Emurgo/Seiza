@@ -24,16 +24,10 @@ const fixCssCache = (server) => {
   // This should be fixed in next.js v9, however there are other babel issues in nextjs v9,
   // so update when nextjs v9 is finally fixed
   if (!dev) {
-    server.get(
-      /^\/_next\/static\/css\//,
-      (_, res, nextHandler) => {
-        res.setHeader(
-          'Cache-Control',
-          'public, max-age=31536000, immutable',
-        )
-        nextHandler()
-      },
-    )
+    server.get(/^\/_next\/static\/css\//, (_, res, nextHandler) => {
+      res.setHeader('Cache-Control', 'public, max-age=31536000, immutable')
+      nextHandler()
+    })
   }
 }
 
@@ -50,6 +44,14 @@ app.prepare().then(() => {
   fixCssCache(server)
 
   server.use(compression())
+
+  // https://github.com/zeit/next.js/issues/1791
+  server.use(
+    '/static',
+    express.static(`${__dirname}/src/static`, {
+      maxAge: '365d',
+    })
+  )
 
   // ***** BEGIN TAKEN FROM: https://github.com/zeit/next.js/blob/master/examples/with-sentry/server.js
   // This attaches request information to sentry errors
