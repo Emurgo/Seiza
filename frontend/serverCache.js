@@ -1,6 +1,6 @@
 const LRU = require('lru-cache')
 
-const MAX_CACHE_SIZE = 30 * 1024 * 1024 // 30MB
+const MAX_CACHE_SIZE = 150 * 1024 * 1024 // 150MB
 
 const options = {
   max: MAX_CACHE_SIZE,
@@ -9,7 +9,7 @@ const options = {
     // 1 char in JS should be 2 bytes
     return n.length
   },
-  maxAge: 1000 * 20, // 20s
+  maxAge: 1000 * 60 * 60 * 24 * 30, // 1 month
 }
 
 const cache = new LRU(options)
