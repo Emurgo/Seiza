@@ -49,7 +49,7 @@ app.prepare().then(() => {
   server.use(
     '/static',
     express.static(`${__dirname}/src/static`, {
-      maxAge: '365d',
+      maxAge: '1d',
     })
   )
 
