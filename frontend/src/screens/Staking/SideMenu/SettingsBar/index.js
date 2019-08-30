@@ -66,6 +66,7 @@ const MobileSettingsButton = ({onClick, value}) => {
 // TODO: use spacing(...) from theme
 const getSidePaddings = (theme) => ({paddingRight: 40, paddingLeft: 60})
 const getTopBottomPaddings = (theme) => ({paddingTop: 20, paddingBottom: 20})
+const getMobilePaddings = (theme) => `${theme.spacing(1)}px ${theme.spacing(2)}px`
 const useStyles = makeStyles((theme) => ({
   wrapper: {
     ...getTopBottomPaddings(theme),
@@ -78,15 +79,27 @@ const useStyles = makeStyles((theme) => ({
     ...getSidePaddings(theme),
     ...getTopBottomPaddings(theme),
   },
+  mobileAutoSaveBar: {
+    padding: getMobilePaddings(theme),
+    borderBottom: `1px solid ${theme.palette.unobtrusiveContentHighlight}`,
+  },
   resetButton: {
     ...getSidePaddings(theme),
     paddingTop: theme.spacing(3),
     paddingBottom: theme.spacing(3),
   },
+  mobileResetButton: {
+    padding: getMobilePaddings(theme),
+    borderBottom: `1px solid ${theme.palette.unobtrusiveContentHighlight}`,
+  },
+  mobilePools: {
+    padding: getMobilePaddings(theme),
+  },
   title: {
     textTransform: 'uppercase',
   },
   modalContent: {
+    padding: 0,
     borderTop: `1px solid ${theme.palette.unobtrusiveContentHighlight}`,
     borderBottom: `1px solid ${theme.palette.unobtrusiveContentHighlight}`,
   },
@@ -142,8 +155,11 @@ const MobileSettingsBar = ({selectedPools, error}: Props) => {
               </Grid>
             </DialogTitle>
             <DialogContent className={classes.modalContent}>
-              <ResetButton />
-              <PoolsToCompare selectedPools={selectedPools} />
+              <AutoSaveBar className={classes.mobileAutoSaveBar} />
+              <ResetButton className={classes.mobileResetButton} />
+              <div className={classes.mobilePools}>
+                <PoolsToCompare selectedPools={selectedPools} />
+              </div>
             </DialogContent>
             <DialogActions>
               <ActionsBar selectedPools={selectedPools} />
