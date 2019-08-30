@@ -131,6 +131,11 @@ const useStyles = makeStyles((theme) => ({
     opacity: 0,
     transition: 'opacity 500ms',
   },
+  mobileHelpText: {
+    height: '35px',
+    // Hack: So that the header height does not increase
+    marginBottom: '-35px',
+  },
 }))
 
 type SearchHelpTextProps = {|
@@ -215,7 +220,7 @@ const Search = ({isMobile = false}: SearchProps) => {
 
   const showAlert = searchQuery && !error && !loading && !searchResult
 
-  const searchbarRef = useSearchbarRef()
+  const searchBarRef = useSearchbarRef()
 
   const {isFocused: isSearchbarFocused, onFocus, onBlur} = useTextfieldFocus(false)
 
@@ -258,9 +263,12 @@ const Search = ({isMobile = false}: SearchProps) => {
         )}
       </ReactCSSTransitionGroup>
       {isMobile ? (
-        <Portal container={searchbarRef.current}>
+        <Portal container={searchBarRef.htmlNode}>
           <SearchHelpText
-            className={!isSearchbarFocused || showAlert ? classes.helpTextHidden : ''}
+            className={cn(
+              classes.mobileHelpText,
+              !isSearchbarFocused || showAlert ? classes.helpTextHidden : ''
+            )}
           />
         </Portal>
       ) : (
