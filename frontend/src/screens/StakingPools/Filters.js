@@ -37,6 +37,7 @@ type FilterSliderProps = {
 const useStyles = makeStyles((theme) => ({
   wrapper: {
     minWidth: (props) => props.minWidth || 200,
+    position: 'relative',
   },
   adaSlider: {
     paddingLeft: `${theme.spacing(4)}px !important`, // Needed
@@ -55,6 +56,11 @@ const useStyles = makeStyles((theme) => ({
     '&:hover': {
       color: theme.palette.primary.main,
     },
+  },
+  resetText: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
   },
 }))
 
@@ -199,8 +205,15 @@ type TextFilterProps = {
   filterConfig: {value: ?string},
 } & FilterProps
 
-export const TextFilter = ({filterConfig, onChange, label}: TextFilterProps) => {
+export const TextFilter = ({
+  filterConfig,
+  onChange,
+  label,
+  onReset,
+  filterActive,
+}: TextFilterProps) => {
   const {translate: tr} = useI18n()
+  const classes = useStyles()
   const {value} = filterConfig
   const [inputValue, onInputChange] = useStateWithChangingDefault(value || '')
 
@@ -216,13 +229,24 @@ export const TextFilter = ({filterConfig, onChange, label}: TextFilterProps) => 
   )
 
   return (
-    <TextField
-      label={label}
-      margin="normal"
-      onChange={_onChange}
-      value={inputValue}
-      type="text"
-      helperText={tr(messages.textFilterHint)}
-    />
+    <div className={classes.wrapper}>
+      {filterActive && (
+        <Typography
+          className={cn(classes.reset, classes.resetText)}
+          variant="caption"
+          onClick={onReset}
+        >
+          {tr(messages.reset)}
+        </Typography>
+      )}
+      <TextField
+        label={label}
+        margin="normal"
+        onChange={_onChange}
+        value={inputValue}
+        type="text"
+        helperText={tr(messages.textFilterHint)}
+      />
+    </div>
   )
 }
