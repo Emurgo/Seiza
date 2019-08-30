@@ -1,6 +1,5 @@
 // @flow
-import React, {useCallback} from 'react'
-import cn from 'classnames'
+import React, {useCallback, useMemo} from 'react'
 import {Grid, Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
@@ -11,45 +10,29 @@ import {
   Button,
   MobileOnly,
   DesktopOnly,
+  Tooltip,
 } from '@/components/visual'
-import {
-  AdaValue,
-  PoolEntityContent,
-  ResponsiveCircularProgressBar,
-  HelpTooltip,
-} from '@/components/common'
+import {PoolEntityContent, ResponsiveCircularProgressBar} from '@/components/common'
 import WithModalState from '@/components/headless/modalState'
 import {useI18n} from '@/i18n/helpers'
 import {useSelectedPoolsContext} from '../context/selectedPools'
-import {useIsMobile, useIsBreakpointDown} from '@/components/hooks/useBreakpoints'
 import {ReactComponent as AddPoolIcon} from '@/static/assets/icons/staking-simulator/add-stakepool.svg'
 import {ReactComponent as RemovePoolIcon} from '@/static/assets/icons/close.svg'
 import epochIcon from '@/static/assets/icons/epoch.svg'
 
+import {DataGrid, getStakepoolCardFields, MobilePoolFooter} from '../StakeList/stakepoolCardUtils'
+
 const messages = defineMessages({
   revenue: 'Revenue',
-  performance: 'Performance:',
-  pledge: 'Pledge:',
-  margins: 'Margins:',
-  createdAt: 'Creation time:',
-  fullness: 'Fullness:',
-  stake: 'Stake:',
   hideDesc: 'Hide description',
   showDesc: 'Full description',
-  hideDetails: 'Hide details',
-  showDetails: 'Show details',
   addPool: 'Add',
   removePool: 'Remove',
   // Note(bigamasta): If needed to be reused on Stake pools screens,
   // we can create something like helpers/helpMessages.js
-  performanceHelpText: 'TODO: Performance Help Text',
-  fullnessHelpText: 'TODO: Fullness Help Text',
-  marginsHelpText: 'TODO: Margins Help Text',
-  createdAtHelpText: 'TODO: CreatedAt Help Text',
-  pledgeHelpText: 'TODO: Pledge Help Text',
-  stakeHelpText: 'TODO: Stake Help Text',
   ageLabel: 'Age:',
   ageValue: '{epochCount, plural, =0 {# epochs} one {# epoch} other {# epochs}}',
+  disabledButton: 'You have reached maximum limit of stakepools',
 })
 
 const useHeaderStyles = makeStyles(({palette, spacing, breakpoints}) => ({
@@ -79,10 +62,6 @@ const useHeaderStyles = makeStyles(({palette, spacing, breakpoints}) => ({
 const useContentStyles = makeStyles(({palette, spacing, breakpoints}) => ({
   verticalBlock: {
     paddingRight: spacing(3),
-  },
-  label: {
-    color: palette.grey[500], // TODO: make fit any theme
-    textTransform: 'uppercase',
   },
   rowItem: {
     paddingTop: spacing(1),
@@ -117,7 +96,7 @@ const useContentStyles = makeStyles(({palette, spacing, breakpoints}) => ({
   },
 }))
 
-const AddPoolButton = ({onClick, label}) => {
+const AddPoolButton = ({onClick, label, disabled}) => {
   const classes = useHeaderStyles()
 
   return (
@@ -127,6 +106,7 @@ const AddPoolButton = ({onClick, label}) => {
           rounded
           gradient
           variant="contained"
+          disabled={disabled}
           gradientDegree={45}
           onClick={onClick}
           className={classes.mobileButton}
@@ -136,7 +116,14 @@ const AddPoolButton = ({onClick, label}) => {
       </MobileOnly>
 
       <DesktopOnly>
-        <Button rounded gradient variant="contained" onClick={onClick} className={classes.button}>
+        <Button
+          rounded
+          gradient
+          variant="contained"
+          disabled={disabled}
+          onClick={onClick}
+          className={classes.button}
+        >
           {label}
         </Button>
       </DesktopOnly>
@@ -173,8 +160,8 @@ const RemovePoolButton = ({onClick, label}) => {
 
 const Header = ({name, hash}) => {
   const classes = useHeaderStyles()
-  const {translate} = useI18n()
-  const {addPool, removePool, selectedPools} = useSelectedPoolsContext()
+  const {translate: tr} = useI18n()
+  const {addPool, removePool, selectedPools, isListFull} = useSelectedPoolsContext()
   const selected = selectedPools.includes(hash)
 
   const onAddPool = useCallback(() => addPool(hash), [addPool, hash])
@@ -193,140 +180,54 @@ const Header = ({name, hash}) => {
       </Grid>
       <Grid item>
         {selected ? (
-          <RemovePoolButton onClick={onRemovePool} label={translate(messages.removePool)} />
+          <RemovePoolButton onClick={onRemovePool} label={tr(messages.removePool)} />
         ) : (
-          <AddPoolButton onClick={onAddPool} label={translate(messages.addPool)} />
+          <Tooltip
+            title={tr(messages.disabledButton)}
+            placement="bottom"
+            disableHoverListener={!isListFull}
+            disableTouchListener={!isListFull}
+          >
+            <div>
+              <AddPoolButton
+                disabled={isListFull}
+                onClick={onAddPool}
+                label={tr(messages.addPool)}
+              />
+            </div>
+          </Tooltip>
         )}
       </Grid>
     </Grid>
   )
 }
 
-const DataGrid = ({items, leftSpan, rightSpan, alignRight = false}) => {
-  const classes = useContentStyles()
-
-  return (
-    // Note: when setting direction to `column` there is strange height misallignment
-    <Grid container direction="row" className={classes.verticalBlock}>
-      {items.map(({label, value}, index) => (
-        <Grid item key={index} xs={12}>
-          <Grid container direction="row">
-            <Grid xs={leftSpan} item className={classes.rowItem}>
-              <Typography className={classes.label}>{label}</Typography>
-            </Grid>
-            <Grid
-              xs={rightSpan}
-              item
-              className={cn(classes.rowItem, alignRight && classes.alignRight)}
-            >
-              {value}
-            </Grid>
-          </Grid>
-        </Grid>
-      ))}
-    </Grid>
-  )
-}
-
 const Content = ({data}) => {
-  const {translate: tr, formatPercent, formatTimestamp} = useI18n()
+  const formatters = useI18n()
+  const {translate: tr} = formatters
   const classes = useContentStyles()
-  const isMobile = useIsMobile()
-  const isDownLg = useIsBreakpointDown('lg')
+
+  const fields = useMemo(() => getStakepoolCardFields({formatters, data}), [formatters, data])
+  const leftSideItems = useMemo(
+    () => [fields.performance, fields.fullness, fields.margins, fields.createdAt],
+    [fields]
+  )
+  const rightSideItems = useMemo(
+    () => [fields.cost, fields.stake, fields.pledge, fields.estimatedRewards],
+    [fields]
+  )
+
   return (
     <div className={classes.innerWrapper}>
-      {!isMobile && (
+      <DesktopOnly className="d-flex">
         <div className={classes.revenueWrapper}>
           <ResponsiveCircularProgressBar label={tr(messages.revenue)} value={0.25} />
         </div>
-      )}
-      <Grid container>
-        <Grid item xs={12} lg={4} xl={5}>
-          <DataGrid
-            alignRight={isDownLg}
-            leftSpan={isDownLg ? 6 : 9}
-            rightSpan={isDownLg ? 6 : 3}
-            items={[
-              {
-                label: (
-                  <HelpTooltip text={tr(messages.performanceHelpText)}>
-                    {tr(messages.performance)}
-                  </HelpTooltip>
-                ),
-                value: <Typography>{formatPercent(data.performance)}</Typography>,
-              },
-              {
-                label: (
-                  <HelpTooltip text={tr(messages.fullnessHelpText)}>
-                    {tr(messages.fullness)}
-                  </HelpTooltip>
-                ),
-                value: <Typography>{formatPercent(data.fullness)}</Typography>,
-              },
-              {
-                label: (
-                  <HelpTooltip text={tr(messages.marginsHelpText)}>
-                    {tr(messages.margins)}
-                  </HelpTooltip>
-                ),
-                value: <Typography>{formatPercent(data.margins)}</Typography>,
-              },
-            ]}
-          />
-        </Grid>
-
-        <Grid item xs={12} lg={8} xl={7}>
-          <DataGrid
-            alignRight={isDownLg}
-            leftSpan={6}
-            rightSpan={6}
-            items={[
-              {
-                label: (
-                  <HelpTooltip text={tr(messages.createdAtHelpText)}>
-                    {tr(messages.createdAt)}
-                  </HelpTooltip>
-                ),
-                value: (
-                  <Typography>
-                    {formatTimestamp(data.createdAt, {format: formatTimestamp.FMT_MONTH_NUMERAL})}
-                  </Typography>
-                ),
-              },
-              {
-                label: (
-                  <HelpTooltip text={tr(messages.pledgeHelpText)}>
-                    {tr(messages.pledge)}
-                  </HelpTooltip>
-                ),
-                value: <AdaValue value={data.pledge} />,
-              },
-              {
-                label: (
-                  <HelpTooltip text={tr(messages.stakeHelpText)}>{tr(messages.stake)}</HelpTooltip>
-                ),
-                value: <AdaValue value={data.stake} />,
-              },
-            ]}
-          />
-        </Grid>
-      </Grid>
+      </DesktopOnly>
+      <DataGrid {...{leftSideItems, rightSideItems}} />
     </div>
   )
 }
-
-const usePoolFooterStyles = makeStyles((theme) => ({
-  wrapper: {
-    position: 'relative',
-    paddingTop: theme.spacing(1.5),
-    paddingBottom: theme.spacing(1.5),
-  },
-  defaultFooterWrapper: {
-    position: 'absolute',
-    right: 0,
-    bottom: 0,
-  },
-}))
 
 const DesktopPoolFooter = ({expanded}) => {
   const {translate: tr} = useI18n()
@@ -335,22 +236,7 @@ const DesktopPoolFooter = ({expanded}) => {
   return <ExpandableCardFooter {...{label, expanded}} />
 }
 
-const MobilePoolFooter = ({expanded}) => {
-  const {translate: tr} = useI18n()
-  const classes = usePoolFooterStyles()
-
-  const label = tr(expanded ? messages.hideDetails : messages.showDetails)
-  return (
-    <Grid container alignContent="center" wrap="nowrap" className={classes.wrapper}>
-      <ResponsiveCircularProgressBar label={tr(messages.revenue)} value={0.25} />
-      <div className={classes.defaultFooterWrapper}>
-        <ExpandableCardFooter {...{label, expanded}} />
-      </div>
-    </Grid>
-  )
-}
-
-const MobileStakePool = ({isOpen, toggle, data}) => {
+const AdvancedMobileStakepoolCard = ({isOpen, toggle, data}) => {
   const renderExpandedArea = () => <Content data={data} />
   const renderHeader = () => <Header name={data.name} hash={data.hash} />
   const renderFooter = (expanded) => <MobilePoolFooter expanded={expanded} />
@@ -386,7 +272,7 @@ const Age = ({epochCount}: AgeProps) => {
   )
 }
 
-const DesktopStakePool = ({isOpen, toggle, data}) => {
+const AdvancedDesktopStakepoolCard = ({isOpen, toggle, data}) => {
   const classes = useContentStyles()
 
   const renderExpandedArea = () => (
@@ -420,18 +306,22 @@ type Props = {
   data: Object, // TODO: type better
 }
 
-const StakePool = ({data}: Props) => {
-  const isMobile = useIsMobile()
+const AdvancedStakepoolCard = ({data}: Props) => (
+  <WithModalState>
+    {({isOpen, toggle}) => {
+      const props = {isOpen, toggle, data}
+      return (
+        <React.Fragment>
+          <MobileOnly>
+            <AdvancedMobileStakepoolCard {...props} />
+          </MobileOnly>
+          <DesktopOnly>
+            <AdvancedDesktopStakepoolCard {...props} />
+          </DesktopOnly>
+        </React.Fragment>
+      )
+    }}
+  </WithModalState>
+)
 
-  return (
-    <WithModalState>
-      {({isOpen, toggle}) => {
-        const props = {isOpen, toggle, data}
-        const PoolComponent = isMobile ? MobileStakePool : DesktopStakePool
-        return <PoolComponent {...props} />
-      }}
-    </WithModalState>
-  )
-}
-
-export default StakePool
+export default AdvancedStakepoolCard

@@ -101,8 +101,7 @@ const useStyles = makeStyles((theme) => {
     },
     disabledOutlinedGradient: {
       backgroundImage: ({gradientDegree}) => `${REFERENCE_GRADIENT},
-      ${theme.palette.buttons.getOutlinedGradient(gradientDegree).hover}
-    } !important`,
+      ${theme.palette.buttons.getOutlinedGradient(gradientDegree).hover} !important`,
       color: `${theme.palette.primary.main} !important`,
       opacity: 0.25,
     },

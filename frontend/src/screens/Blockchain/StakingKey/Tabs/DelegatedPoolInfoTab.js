@@ -55,10 +55,10 @@ const DelegatedPoolInfoTab = ({stakePool, epochsInCurrentStakepool}) => {
       <Row>
         <Label>{translate(delegatedPoolMessages.currentTopStakePool)}</Label>
         <Value>
-          <Typography variant="body1" color="textSecondary" align="right">
+          <Typography variant="body1" color="textSecondary">
             {stakePool.topPoolComparison.topPool.name}
           </Typography>
-          <Typography variant="body1" align="right">
+          <Typography variant="body1">
             <Link monospace to={routeTo.stakepool(stakePool.topPoolComparison.topPool.hash)}>
               {stakePool.topPoolComparison.topPool.hash}
             </Link>

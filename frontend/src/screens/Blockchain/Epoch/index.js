@@ -1,7 +1,7 @@
 // @flow
 import React, {useRef} from 'react'
 import {defineMessages} from 'react-intl'
-import moment from 'moment-timezone'
+import dayjs from '@/dayjs'
 import gql from 'graphql-tag'
 import idx from 'idx'
 import {MetadataOverrides, seoMessages} from '@/pages/_meta'
@@ -277,7 +277,7 @@ const EpochNavigation = ({currentEpochNumber}) => {
   )
 }
 
-const getIsInFuture = (ts) => (ts ? moment(ts).isAfter(moment()) : false)
+const getIsInFuture = (ts) => (ts ? dayjs(ts).isAfter(dayjs()) : false)
 
 const EpochEntityCard = ({epochNumber, startTime, endTime}) => {
   const {translate: tr, formatTimestamp} = useI18n()

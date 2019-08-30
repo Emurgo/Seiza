@@ -7,6 +7,7 @@ import {GraphQLError} from 'graphql'
 import {FormatErrorWithContextExtension} from 'graphql-format-error-context-extension'
 import uuidv1 from 'uuid/v1'
 import _ from 'lodash'
+import responseCachePlugin from 'apollo-server-plugin-response-cache'
 
 // TODO: how to distinguish between _logger and logger with request id closured in it?
 import _logger from './logger'
@@ -96,6 +97,10 @@ const handleError = (error, {logger, reporter}) => {
 
 const createServer = () =>
   new ApolloServer({
+    cacheControl: {
+      defaultMaxAge: 20,
+    },
+    plugins: [responseCachePlugin()],
     typeDefs: schema,
     resolvers,
     engine: {

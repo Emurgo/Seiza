@@ -1,5 +1,6 @@
 import React from 'react'
 import {defineMessages} from 'react-intl'
+import cn from 'classnames'
 import {Typography, Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
@@ -9,7 +10,7 @@ import {useI18n} from '@/i18n/helpers'
 import EpochIcon from '@/static/assets/icons/epoch.svg'
 import CertificateActionList from '@/screens/Blockchain/Certificates/ActionList'
 
-const useStyles = makeStyles(({palette, spacing}) => ({
+const useStyles = makeStyles(({palette, spacing, breakpoints, getContentSpacing}) => ({
   headerWrapper: {
     marginBottom: spacing(3),
   },
@@ -17,6 +18,16 @@ const useStyles = makeStyles(({palette, spacing}) => ({
     'backgroundColor': palette.unobtrusiveContentHighlight,
     '& > *': {
       paddingRight: spacing(1),
+    },
+  },
+  spacings: {
+    paddingLeft: getContentSpacing(0.5),
+    paddingRight: getContentSpacing(0.5),
+    paddingBottom: getContentSpacing(0.5),
+    paddingTop: getContentSpacing(0.5),
+    [breakpoints.up('sm')]: {
+      paddingLeft: getContentSpacing(),
+      paddingRight: getContentSpacing(),
     },
   },
 }))
@@ -49,32 +60,36 @@ const EpochHeader = ({epochNumber, currentEpochNumber}) => {
   const epochLabel = tr(epochNumber === currentEpochNumber ? messages.currentEpoch : messages.epoch)
 
   return (
-    <ContentSpacing top={0.5} bottom={0.5} className={classes.header}>
-      <Grid container direction="row" alignItems="center" className={classes.header}>
-        <img alt="" src={EpochIcon} />{' '}
-        <Typography variant="overline" component="span" color="textSecondary">
-          {epochLabel}
-        </Typography>
-        <Typography variant="overline" component="span">
-          <EpochValue epochNumber={epochNumber} currentEpochNumber={currentEpochNumber} />
-        </Typography>
-      </Grid>
-    </ContentSpacing>
+    <Grid
+      container
+      direction="row"
+      alignItems="center"
+      className={cn(classes.header, classes.spacings)}
+    >
+      <img alt="" src={EpochIcon} />{' '}
+      <Typography variant="overline" component="span" color="textSecondary">
+        {epochLabel}
+      </Typography>
+      <Typography variant="overline" component="span">
+        <EpochValue epochNumber={epochNumber} currentEpochNumber={currentEpochNumber} />
+      </Typography>
+    </Grid>
   )
 }
 
 const CertificatesCount = ({count}) => {
   const {translate: tr} = useI18n()
+  const classes = useStyles()
 
   return (
-    <ContentSpacing top={0.5} bottom={0.5}>
+    <div className={classes.spacings}>
       <Typography variant="overline" component="span" color="textSecondary">
         {tr(messages.actions)}
       </Typography>{' '}
       <Typography variant="overline" component="span">
         {count}
       </Typography>
-    </ContentSpacing>
+    </div>
   )
 }
 

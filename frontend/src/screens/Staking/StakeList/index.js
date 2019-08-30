@@ -9,8 +9,6 @@ import {defineMessages} from 'react-intl'
 import {useI18n} from '@/i18n/helpers'
 import {Button, Overlay, LoadingInProgress} from '@/components/visual'
 import {LoadingError, LoadingOverlay} from '@/components/common'
-import StakePool from './StakePool'
-import SearchAndFilterBar from './SearchAndFilterBar'
 import SortByBar from './SortByBar'
 
 import {useLoadPagedStakePoolList} from './dataLoaders'
@@ -22,7 +20,10 @@ const messages = defineMessages({
 
 const useStyles = makeStyles((theme) => ({
   rowWrapper: {
-    padding: '15px 30px',
+    padding: `${theme.spacing(1.6)}px ${theme.spacing(1)}px`,
+    [theme.breakpoints.up('sm')]: {
+      padding: `${theme.spacing(1.6)}px ${theme.spacing(3)}px`,
+    },
     width: '100%',
   },
   wrapper: {
@@ -48,10 +49,9 @@ const useStyles = makeStyles((theme) => ({
   lastItemSpace: {
     padding: theme.spacing(5),
   },
-})
-)
+}))
 
-const StakeList = ({onLoadMore, stakePools, hasMore, loading}) => {
+const StakeList = ({onLoadMore, stakePools, hasMore, loading, StakepoolCard}) => {
   const {translate: tr} = useI18n()
   const classes = useStyles()
 
@@ -61,7 +61,7 @@ const StakeList = ({onLoadMore, stakePools, hasMore, loading}) => {
     <Overlay.Wrapper className="w-100">
       {stakePools.map((pool) => (
         <Grid item key={pool.hash} className={classes.rowWrapper}>
-          <StakePool data={pool} />
+          <StakepoolCard data={pool} />
         </Grid>
       ))}
       {hasMore ? (
@@ -98,12 +98,11 @@ const stakePoolFacade = (data) => ({
   // TODO: distinguish between `declared` and `actual` pledge?
   pledge: data.summary.ownerPledge.declared,
   stake: data.summary.adaStaked,
+  cost: data.summary.cost,
+  estimatedRewards: data.summary.estimatedRewards,
 })
 
-const StakeListWrapper = () => {
-  const {translate: tr} = useI18n()
-  const classes = useStyles()
-
+const useGetStakeListData = () => {
   const {loading, error, pagedStakePoolList, onLoadMore} = useLoadPagedStakePoolList()
 
   const notNullPagedData = useMemo(
@@ -120,12 +119,34 @@ const StakeListWrapper = () => {
   const stakePools = notNullPagedData.stakePools.map(stakePoolFacade)
   const shownPoolsCount = notNullPagedData.stakePools.length
   const {hasMore, totalCount} = notNullPagedData
+  return {hasMore, totalCount, shownPoolsCount, stakePools, loading, error, onLoadMore}
+}
+
+export const StakeListLayout = ({
+  StakepoolCard,
+  TopBar,
+}: {
+  StakepoolCard: React$ComponentType<any>,
+  TopBar: React$ComponentType<any>,
+}) => {
+  const {translate: tr} = useI18n()
+  const classes = useStyles()
+
+  const {
+    hasMore,
+    totalCount,
+    shownPoolsCount,
+    stakePools,
+    loading,
+    error,
+    onLoadMore,
+  } = useGetStakeListData()
 
   return (
     <React.Fragment>
       <Grid container direction="column" alignItems="flex-start" className={classes.wrapper}>
         <Grid item className={classes.rowWrapper}>
-          <SearchAndFilterBar />
+          <TopBar />
         </Grid>
         {loading || error || totalCount > 0 ? (
           <Grid item className={classnames(classes.rowWrapper, classes.sortByBar)}>
@@ -146,11 +167,12 @@ const StakeListWrapper = () => {
             <LoadingError error={error} />
           </Grid>
         ) : (
-          <StakeList {...{loading, stakePools, onLoadMore, hasMore}} />
+          <StakeList
+            StakepoolCard={StakepoolCard}
+            {...{loading, stakePools, onLoadMore, hasMore}}
+          />
         )}
       </Grid>
     </React.Fragment>
   )
 }
-
-export default StakeListWrapper
