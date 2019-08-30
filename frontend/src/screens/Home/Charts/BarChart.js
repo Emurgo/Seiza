@@ -167,80 +167,82 @@ type BarChartProps = {|
 |}
 
 // Note: can not use `Typography` inside `Label`, children must be a string
-export default ({
-  data,
-  xLabel,
-  yLabel,
-  formatX,
-  formatYAxis,
-  formatYTooltip,
-  barSize,
-  lastTooltipText,
-}: BarChartProps) => {
-  const [activeBar, setActiveBar] = useState(null)
-  const theme = useTheme()
+export default React.memo<any>(
+  ({
+    data,
+    xLabel,
+    yLabel,
+    formatX,
+    formatYAxis,
+    formatYTooltip,
+    barSize,
+    lastTooltipText,
+  }: BarChartProps) => {
+    const [activeBar, setActiveBar] = useState(null)
+    const theme = useTheme()
 
-  const [labelColor, activeLabelColor] = getBarColors(theme)
-  const textColor = theme.palette.text.primary
+    const [labelColor, activeLabelColor] = getBarColors(theme)
+    const textColor = theme.palette.text.primary
 
-  const breakpoint = useCurrentBreakpoint()
-  const isExtraSM = breakpoint === 'xs'
+    const breakpoint = useCurrentBreakpoint()
+    const isExtraSM = breakpoint === 'xs'
 
-  const chartMargin = getChartMargin(isExtraSM)
+    const chartMargin = getChartMargin(isExtraSM)
 
-  // https://github.com/recharts/recharts/issues/444
-  // onClick={null} fixes iOS touch events
-  return (
-    <ResponsiveContainer width="100%" height="100%">
-      <BarChart
-        onClick={null}
-        onMouseLeave={() => setActiveBar(null)}
-        margin={chartMargin}
-        {...{data}}
-      >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis
-          dataKey="x"
-          height={50}
-          tickFormatter={formatX}
-          label={{value: xLabel, fill: textColor, position: 'insideBottom'}}
-        />
-        {/* // use tickFormatter also for yAxis */}
-        <YAxis width={!isExtraSM ? 100 : 70} dataKey="y" tickFormatter={formatYAxis}>
-          {!isExtraSM && (
-            <Label
-              angle={-90}
-              offset={-5}
-              value={yLabel}
-              position="insideLeft"
-              style={{textAnchor: 'middle', fill: textColor}}
-            />
-          )}
-        </YAxis>
-        <Tooltip
-          enterTouchDelay={100}
-          isAnimationActive
-          // $FlowFixMe recharts pass other props using some `magic`
-          cursor={<CustomCursor setActiveBar={setActiveBar} />}
-          content={
-            // $FlowFixMe recharts pass other props using some `magic`
-            <CustomTooltip
-              {...{xLabel, yLabel, formatX, formatYTooltip, lastTooltipText}}
-              lastItem={data[data.length - 1]}
-            />
-          }
-        />
-        <Bar
-          barSize={barSize}
-          dataKey="y"
-          shape={<CustomBar activeBar={activeBar} itemsCount={data.length} />}
-          label={false}
+    // https://github.com/recharts/recharts/issues/444
+    // onClick={null} fixes iOS touch events
+    return (
+      <ResponsiveContainer width="100%" height="100%">
+        <BarChart
+          onClick={null}
+          onMouseLeave={() => setActiveBar(null)}
+          margin={chartMargin}
+          {...{data}}
         >
-          {data.map((entry, index) => (
-            <Cell key={entry.x} fill={entry.x === activeBar ? activeLabelColor : labelColor} />
-          ))}
-        </Bar>
-      </BarChart>
-    </ResponsiveContainer>
-  )
-}
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis
+            dataKey="x"
+            height={50}
+            tickFormatter={formatX}
+            label={{value: xLabel, fill: textColor, position: 'insideBottom'}}
+          />
+          {/* // use tickFormatter also for yAxis */}
+          <YAxis width={!isExtraSM ? 100 : 70} dataKey="y" tickFormatter={formatYAxis}>
+            {!isExtraSM && (
+              <Label
+                angle={-90}
+                offset={-5}
+                value={yLabel}
+                position="insideLeft"
+                style={{textAnchor: 'middle', fill: textColor}}
+              />
+            )}
+          </YAxis>
+          <Tooltip
+            enterTouchDelay={100}
+            isAnimationActive
+            // $FlowFixMe recharts pass other props using some `magic`
+            cursor={<CustomCursor setActiveBar={setActiveBar} />}
+            content={
+              // $FlowFixMe recharts pass other props using some `magic`
+              <CustomTooltip
+                {...{xLabel, yLabel, formatX, formatYTooltip, lastTooltipText}}
+                lastItem={data[data.length - 1]}
+              />
+            }
+          />
+          <Bar
+            barSize={barSize}
+            dataKey="y"
+            shape={<CustomBar activeBar={activeBar} itemsCount={data.length} />}
+            label={false}
+          >
+            {data.map((entry, index) => (
+              <Cell key={entry.x} fill={entry.x === activeBar ? activeLabelColor : labelColor} />
+            ))}
+          </Bar>
+        </BarChart>
+      </ResponsiveContainer>
+    )
+  }
+)

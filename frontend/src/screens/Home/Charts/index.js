@@ -99,7 +99,7 @@ const TabsHeader = () => {
   )
 
   return (
-    <LiteTabs defaultBottomOffset value={currentTabIndex} onChange={onChange}>
+    <LiteTabs value={currentTabIndex} onChange={onChange}>
       {tabs.map(({id, label}) => (
         <LiteTab key={id} label={label} />
       ))}
@@ -178,31 +178,35 @@ const filterDataBasedOnWidth = (data, breakpoint, groupBy) => {
   return data.slice(-breakpointToItemsCount[groupBy][breakpoint])
 }
 
+const DATE_INTERVAL = {
+  from: dayjs
+    .utc()
+    .startOf('day')
+    .subtract(X_AXIS_WINDOW.DAY, 'days')
+    .toISOString(),
+}
+
+const EMPTY_INTERVAL = {}
+
 const Chart = ({seriesType, xAxisProps, currentEpoch, ...restProps}) => {
   const {translate: tr} = useI18n()
   const breakpoint = useCurrentBreakpoint()
 
   const groupBy = xAxisProps.value
-  const epochInterval = {from: Math.max((currentEpoch || 0) - X_AXIS_WINDOW.EPOCH, 0)}
-  const dateInterval = {
-    from: dayjs
-      .utc()
-      .startOf('day')
-      .subtract(X_AXIS_WINDOW.DAY, 'days')
-      .toISOString(),
-  }
 
-  const {error, loading, data} = useLoadData(seriesType, groupBy, epochInterval, dateInterval)
+  const epochInterval = useMemo(() => {
+    // To avoid refetching the data, when xAxis does not show epoch
+    return seriesType === X_AXIS.EPOCH
+      ? {from: Math.max((currentEpoch || 0) - X_AXIS_WINDOW.EPOCH, 0)}
+      : EMPTY_INTERVAL
+  }, [currentEpoch, seriesType])
+
+  const {error, loading, data} = useLoadData(seriesType, groupBy, epochInterval, DATE_INTERVAL)
 
   // Note: `recharts` animation stops working when changing reference to data, therefore
   // using `useMemo` to memoize it
-  // TODO: remove when backend is fixed
-  const dataFix = useMemo(() => (groupBy === X_AXIS.DAY ? data.slice(-X_AXIS_WINDOW.DAY) : data), [
+  const _data = useMemo(() => filterDataBasedOnWidth(data, breakpoint, groupBy), [
     data,
-    groupBy,
-  ])
-  const _data = useMemo(() => filterDataBasedOnWidth(dataFix, breakpoint, groupBy), [
-    dataFix,
     breakpoint,
     groupBy,
   ])
