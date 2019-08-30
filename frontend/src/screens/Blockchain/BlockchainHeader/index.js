@@ -38,7 +38,7 @@ const useStyles = makeStyles(({palette, spacing}) => ({
 const BlockchainHeader = () => {
   const classes = useStyles()
   const {translate: tr} = useI18n()
-  const searchbarRef = useSearchbarRef()
+  const searchBarRef = useSearchbarRef()
   const {isCrawler} = useUserAgent()
 
   return (
@@ -54,7 +54,7 @@ const BlockchainHeader = () => {
           <React.Fragment>
             <Hidden mdUp>
               <Grid item>
-                <div ref={searchbarRef} />
+                <div ref={searchBarRef.callbackRef} />
               </Grid>
             </Hidden>
 
