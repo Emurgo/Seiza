@@ -5,7 +5,7 @@ import {Typography, Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
 import {Card} from '@/components/visual'
-import {PoolEntityContent} from '@/components/common'
+import {PoolEntityContent, SeparatorWithLabel} from '@/components/common'
 import {useI18n} from '@/i18n/helpers'
 import EpochIcon from '@/static/assets/icons/epoch.svg'
 import CertificateActionList from '@/screens/Blockchain/Certificates/ActionList'
@@ -33,11 +33,6 @@ const useStyles = makeStyles(({palette, spacing, breakpoints, getContentSpacing}
   poolHistory: {
     marginTop: spacing(2),
     marginBottom: spacing(2),
-  },
-  separatorLine: {
-    borderBottom: `1px solid ${palette.contentUnfocus}`,
-    flexGrow: 1,
-    margin: spacing(1),
   },
 }))
 
@@ -120,23 +115,22 @@ const PoolEntityContentHeader = ({children}) => {
 
 const EpochSeparator = ({epochNumber, currentEpochNumber}) => {
   const {translate: tr} = useI18n()
-  const classes = useStyles()
 
   const epochLabel = tr(epochNumber === currentEpochNumber ? messages.currentEpoch : messages.epoch)
 
   return (
     <Grid container alignItems="center">
-      <div className={classes.separatorLine} />
-      <img alt="" src={EpochIcon} />
-      &nbsp;
-      <Typography variant="overline" component="span" color="textSecondary">
-        {epochLabel}
-      </Typography>
-      &nbsp;
-      <Typography variant="overline" component="span">
-        <EpochValue epochNumber={epochNumber} currentEpochNumber={currentEpochNumber} />
-      </Typography>
-      <div className={classes.separatorLine} />
+      <SeparatorWithLabel>
+        <img alt="" src={EpochIcon} />
+        &nbsp;
+        <Typography variant="overline" component="span" color="textSecondary">
+          {epochLabel}
+        </Typography>
+        &nbsp;
+        <Typography variant="overline" component="span">
+          <EpochValue epochNumber={epochNumber} currentEpochNumber={currentEpochNumber} />
+        </Typography>
+      </SeparatorWithLabel>
     </Grid>
   )
 }
