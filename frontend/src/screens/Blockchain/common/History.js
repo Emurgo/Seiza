@@ -4,7 +4,7 @@ import cn from 'classnames'
 import {Typography, Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
-import {ContentSpacing, Card, Divider} from '@/components/visual'
+import {Card} from '@/components/visual'
 import {PoolEntityContent} from '@/components/common'
 import {useI18n} from '@/i18n/helpers'
 import EpochIcon from '@/static/assets/icons/epoch.svg'
@@ -29,6 +29,15 @@ const useStyles = makeStyles(({palette, spacing, breakpoints, getContentSpacing}
       paddingLeft: getContentSpacing(),
       paddingRight: getContentSpacing(),
     },
+  },
+  poolHistory: {
+    marginTop: spacing(2),
+    marginBottom: spacing(2),
+  },
+  separatorLine: {
+    borderBottom: `1px solid ${palette.contentUnfocus}`,
+    flexGrow: 1,
+    margin: spacing(1),
   },
 }))
 
@@ -104,28 +113,50 @@ const History = ({history}) => {
   ))
 }
 
-const DoubleDivider = () => (
-  <React.Fragment>
-    <Divider />
-    <Divider />
-  </React.Fragment>
-)
+const PoolEntityContentHeader = ({children}) => {
+  const classes = useStyles()
+  return <div className={cn(classes.header, classes.spacings)}>{children}</div>
+}
+
+const EpochSeparator = ({epochNumber, currentEpochNumber}) => {
+  const {translate: tr} = useI18n()
+  const classes = useStyles()
+
+  const epochLabel = tr(epochNumber === currentEpochNumber ? messages.currentEpoch : messages.epoch)
+
+  return (
+    <Grid container alignItems="center">
+      <div className={classes.separatorLine} />
+      <img alt="" src={EpochIcon} />
+      &nbsp;
+      <Typography variant="overline" component="span" color="textSecondary">
+        {epochLabel}
+      </Typography>
+      &nbsp;
+      <Typography variant="overline" component="span">
+        <EpochValue epochNumber={epochNumber} currentEpochNumber={currentEpochNumber} />
+      </Typography>
+      <div className={classes.separatorLine} />
+    </Grid>
+  )
+}
 
 export const HistoryMultiplePools = ({poolsHistory, currentEpochNumber}) => {
+  const classes = useStyles()
   return poolsHistory.map(({epochNumber, poolHistories}) => (
-    <Card key={epochNumber}>
-      <EpochHeader epochNumber={epochNumber} currentEpochNumber={currentEpochNumber} />
-      {poolHistories.map(({name, poolHash, history: [{certificateActions}]}, index) => (
-        <React.Fragment key={poolHash}>
-          {index > 0 && <DoubleDivider />}
-          <ContentSpacing bottom={0.5} top={1.5}>
+    <div key={epochNumber}>
+      <EpochSeparator epochNumber={epochNumber} currentEpochNumber={currentEpochNumber} />
+      {poolHistories.map(({name, poolHash, history: [{certificateActions}]}) => (
+        <Card key={poolHash} className={classes.poolHistory}>
+          <PoolEntityContentHeader>
             <PoolEntityContent hash={poolHash} name={name} />
-          </ContentSpacing>
+          </PoolEntityContentHeader>
+
           <CertificatesCount count={certificateActions.length} />
           <CertificateActionList showTxHash actions={certificateActions} />
-        </React.Fragment>
+        </Card>
       ))}
-    </Card>
+    </div>
   ))
 }
 
