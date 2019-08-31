@@ -5,7 +5,7 @@ const useStyles = makeStyles(({spacing, palette}) => ({
   separatorLine: {
     borderBottom: `1px solid ${palette.contentUnfocus}`,
     flexGrow: 1,
-    margin: spacing(1),
+    margin: spacing(1.5),
   },
 }))
 
