@@ -3,7 +3,8 @@ require('dotenv').config()
 const path = require('path')
 const Dotenv = require('dotenv-webpack')
 const SentryCliPlugin = require('@sentry/webpack-plugin')
-const withPlugins = require('next-compose-plugins')
+const {withPlugins, optional} = require('next-compose-plugins')
+const {PHASE_DEVELOPMENT_SERVER} = require('next-server/constants')
 const withCSS = require('@zeit/next-css')
 const withSourceMaps = require('@zeit/next-source-maps')
 const withTranspileModules = require('next-transpile-modules')
@@ -59,12 +60,24 @@ const addSvgFilesHandling = (config) => {
   return config
 }
 
-const withBundleAnalyzer = require('@next/bundle-analyzer')({
-  enabled: process.env.ANALYZE_BUNDLE === 'true',
-})
+const withBundleAnalyzer = [
+  optional(() =>
+    require('@next/bundle-analyzer')({
+      enabled: process.env.ANALYZE_BUNDLE === 'true',
+    })
+  ),
+  {},
+  [PHASE_DEVELOPMENT_SERVER],
+]
+
 
 module.exports = withPlugins(
-  [[withTranspileModules, {transpileModules: ['@react-google-maps/api']}], withCSS, withSourceMaps, withBundleAnalyzer],
+  [
+    [withTranspileModules, {transpileModules: ['@react-google-maps/api']}],
+    withCSS,
+    withSourceMaps,
+    withBundleAnalyzer,
+  ],
   {
     webpack: (config, {buildId, dev, isServer, defaultLoaders, webpack}) => {
       // Note: we provide webpack above so you should not `require` it
