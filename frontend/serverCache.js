@@ -1,5 +1,5 @@
 const LRU = require('lru-cache')
-const isSupportedBrowser = require('./shared/userAgent').isSupportedBrowser
+const {isSupportedBrowser, isCrawler} = require('./shared/userAgent')
 
 // 1 char in JS string is 2 bytes
 // See: https://kevin.burke.dev/kevin/node-js-string-encoding/
@@ -43,6 +43,7 @@ const requestToKey = (req) => {
 
 // Note: called 'render' to have compatible naming with nextjs app.render
 const render = async (req, res, {getData}) => {
+  const userAgent = req.headers['user-agent']
   const route = req.url
   const cacheKey = requestToKey(req)
   let data = cache.get(cacheKey)
@@ -52,7 +53,7 @@ const render = async (req, res, {getData}) => {
   } else {
     debugLogger(`No cache for route ${route} with key: ${cacheKey}`)
     data = await getData()
-    cache.set(cacheKey, data)
+    !isCrawler(userAgent) && cache.set(cacheKey, data)
   }
   return res.send(data)
 }
