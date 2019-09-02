@@ -78,6 +78,7 @@ const useStyles = makeStyles((theme) => ({
   autoSaveBar: {
     ...getSidePaddings(theme),
     ...getTopBottomPaddings(theme),
+    height: 80,
   },
   mobileAutoSaveBar: {
     padding: getMobilePaddings(theme),
