@@ -51,8 +51,8 @@ export const StakingKeyLinkEllipsized = ({stakingKey}) => {
   )
 }
 
-const DESKTOP_CHARS_COUNT_SHOWN = 16
-const MOBILE_CHARS_COUNT_SHOWN = 8
+const DESKTOP_CHARS_COUNT_SHOWN = 8
+const MOBILE_CHARS_COUNT_SHOWN = 6
 export const EllipsizeMiddleFixed = ({value}) => {
   // Note(bigamasta): We're not using <MobileOnly> and <DesktopOnly>
   // because EllipsizeMiddleFixed is initially hidden in ExpansionPanel
