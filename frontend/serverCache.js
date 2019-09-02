@@ -1,7 +1,8 @@
 const LRU = require('lru-cache')
 const isSupportedBrowser = require('./shared/userAgent').isSupportedBrowser
 
-// 1 char in JS should be 2 bytes
+// 1 char in JS string is 2 bytes
+// See: https://kevin.burke.dev/kevin/node-js-string-encoding/
 const CHAR_SIZE = 2
 const MAX_CACHE_SIZE = 75 * 1024 * 1024 * CHAR_SIZE // 150MB
 
@@ -9,7 +10,8 @@ const options = {
   max: MAX_CACHE_SIZE,
   length: (n, key) => {
     // This function is used to determine size of cache for every item
-    // 1 char in JS should be 2 bytes
+    // 1 char in JS string is 2 bytes
+    // // See: https://kevin.burke.dev/kevin/node-js-string-encoding/
     return n.length
   },
   maxAge: 1000 * 60, // 1 minute
