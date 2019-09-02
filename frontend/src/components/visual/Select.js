@@ -53,6 +53,7 @@ const NoBorderInput = withStyles({
     },
   },
   input: {
+    color: 'red',
     ...commonPadding,
   },
 })(OutlinedInput)
