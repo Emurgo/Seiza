@@ -1,6 +1,9 @@
 const LRU = require('lru-cache')
+const isSupportedBrowser = require('./shared/userAgent').isSupportedBrowser
 
-const MAX_CACHE_SIZE = 150 * 1024 * 1024 // 150MB
+// 1 char in JS should be 2 bytes
+const CHAR_SIZE = 2
+const MAX_CACHE_SIZE = 75 * 1024 * 1024 * CHAR_SIZE // 150MB
 
 const options = {
   max: MAX_CACHE_SIZE,
@@ -9,7 +12,7 @@ const options = {
     // 1 char in JS should be 2 bytes
     return n.length
   },
-  maxAge: 1000 * 60 * 60 * 24 * 30, // 1 month
+  maxAge: 1000 * 60, // 1 minute
 }
 
 const cache = new LRU(options)
@@ -19,24 +22,37 @@ const dev = process.env.NODE_ENV !== 'production'
 // eslint-disable-next-line
 const debugLogger = (...args) => dev ? console.log(...args) : null
 
-const routeToKey = (route, c) => `${route}__currency:${c.currency}__locale:${c.locale}__theme:${c.theme}`
+const getCookiesKey = (req) => {
+  const c = req.cookies
+  return `__currency:${c.currency}__locale:${c.locale}__theme:${c.theme}`
+}
 
-const render = async (req, res, {getData, route}) => {
-  const cacheKey = routeToKey(route, req.cookies)
+const getSupportedBrowserKey = (req) => {
+  const userAgent = req.headers['user-agent']
+  const isSupported = isSupportedBrowser(userAgent)
+  return `__supported:${isSupported}`
+}
+
+const getUrlKey = (req) => `__route:${req.url}`
+
+const requestToKey = (req) => {
+  return `${getUrlKey(req)}${getCookiesKey(req)}${getSupportedBrowserKey(req)}`
+}
+
+// Note: called 'render' to have compatible naming with nextjs app.render
+const render = async (req, res, {getData}) => {
+  const route = req.url
+  const cacheKey = requestToKey(req)
   let data = cache.get(cacheKey)
+
   if (data) {
-    debugLogger(`Serving ${route} from cache with key ${cacheKey}`)
-    return res.send(data)
+    debugLogger(`Serving ${route} from cache with key: ${cacheKey}`)
   } else {
-    debugLogger(`No cache for route ${route} with key ${cacheKey}`)
+    debugLogger(`No cache for route ${route} with key: ${cacheKey}`)
     data = await getData()
-    if (cacheKey) {
-      cache.set(cacheKey, data)
-    } else {
-      debugLogger(`No cache key for ${route}`)
-    }
-    return res.send(data)
+    cache.set(cacheKey, data)
   }
+  return res.send(data)
 }
 
 module.exports = {
