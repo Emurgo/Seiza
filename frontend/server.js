@@ -6,7 +6,7 @@ const next = require('next')
 const Sentry = require('@sentry/node')
 const compression = require('compression')
 const cookieParser = require('cookie-parser')
-const serverCache = require('./serverCache')
+const cachedApp = require('./serverCache')
 
 const port = parseInt(process.env.PORT, 10) || 3000
 const dev = process.env.NODE_ENV !== 'production'
@@ -68,9 +68,8 @@ app.prepare().then(() => {
     if (req.url.startsWith('/static') || req.url.startsWith('/_next')) {
       return app.render(req, res, '/', req.query)
     } else {
-      return serverCache.render(req, res, {
+      return cachedApp.render(req, res, {
         getData: () => app.renderToHTML(req, res, '/', req.query),
-        route: req.url,
       })
     }
   })
