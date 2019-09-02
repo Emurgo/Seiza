@@ -207,13 +207,12 @@ const Share = () => {
     <ActionButton
       label={tr(messages.share)}
       icon={
-        // Note(ppershing): this is a temporary workaround
-        // as tooltip somehow messes up line height
-        <div style={{height: '1em'}}>
-          <CopyToClipboard value={currentUrl}>
+        <CopyToClipboard value={currentUrl}>
+          {/* Note: flex wrapper is needed */}
+          <div className="d-flex">
             <ShareIcon />
-          </CopyToClipboard>
-        </div>
+          </div>
+        </CopyToClipboard>
       }
     />
   )
