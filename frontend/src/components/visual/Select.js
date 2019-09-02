@@ -18,11 +18,15 @@ const StyledArrowDropDownIcon = withStyles(({palette}) => ({
   },
 }))(ArrowDropDown)
 
+const commonPadding = {
+  paddingTop: '10px !important',
+  paddingBottom: '10px !important',
+  paddingRight: '32px !important',
+}
+
 const StyledSelect = withStyles({
   select: {
-    paddingTop: '10px',
-    paddingBottom: '10px',
-    paddingRight: '32px',
+    ...commonPadding,
   },
 })(SelectMUI)
 
@@ -47,6 +51,9 @@ const NoBorderInput = withStyles({
     '& fieldset': {
       border: 'none',
     },
+  },
+  input: {
+    ...commonPadding,
   },
 })(OutlinedInput)
 
