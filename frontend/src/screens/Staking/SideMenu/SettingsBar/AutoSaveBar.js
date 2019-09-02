@@ -32,9 +32,6 @@ const Markdown = ({source}: {source: string}) => (
 )
 
 const useStyles = makeStyles((theme) => ({
-  panel: {
-    height: 80,
-  },
   autoSync: {
     background: theme.palette.background.paper,
   },
@@ -52,7 +49,7 @@ const AutoSaveBar = ({className}: {+className?: ?string}) => {
   const {translate: tr} = useI18n()
   const {autoSync, toggleAutoSync} = useAutoSyncContext()
   return (
-    <Grid container className={cn(classes.autoSync, classes.panel, className)} alignItems="center">
+    <Grid container className={cn(classes.autoSync, className)} alignItems="center">
       <Tooltip
         title={<Markdown source={tr(messages.autoSaveTooltip)} />}
         placement="bottom"
