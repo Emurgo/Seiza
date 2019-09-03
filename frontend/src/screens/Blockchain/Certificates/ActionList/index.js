@@ -1,7 +1,7 @@
-import React from 'react'
+import React, {useMemo} from 'react'
 import _ from 'lodash'
 import {defineMessages} from 'react-intl'
-import {Typography} from '@material-ui/core'
+import {Typography, Collapse} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
 import {AdaValue, Link} from '@/components/common'
@@ -19,7 +19,7 @@ import {useI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
 
 import {CERT_ACTIONS_TYPES} from '../actionTypes'
-import ExpandButton from './ExpandButton'
+import {ExpandIconButton, ShowMoreButton} from './ExpandButtons'
 import {
   FormattedCost,
   FormattedMargin,
@@ -386,7 +386,7 @@ const OwnersValue = ({owners}) => {
         footerClasses={{root: classes.expandableCardFooter}}
       />
       {owners.length > DEFAULT_OWNERS_COUNT_SHOWN && (
-        <ExpandButton expanded={isOpen} onClick={toggle} />
+        <ShowMoreButton expanded={isOpen} onClick={toggle} />
       )}
     </React.Fragment>
   )
@@ -461,7 +461,9 @@ const poolUpdateMessages = defineMessages({
   pledgeChange: 'Pledge changed:',
   prevValue: '(was {prevValue})',
   owners: 'Owners changed:',
-  ownersValue: 'Added owners: {addedCnt}, Removed owners: {removedCnt}, Total owners: {totalCnt}',
+  addedOwners: 'Added owners: {count}',
+  removedOwners: 'Removed owners: {count}',
+  totalOwners: 'Total owners: {count}',
 })
 
 const genericUpdatedPropValueMsg = ({i18n, value, prevValue}) => {
@@ -476,8 +478,68 @@ const genericUpdatedPropValueMsg = ({i18n, value, prevValue}) => {
   )
 }
 
-const getAddedOwnersCount = ({prevOwners, owners}) => _.difference(owners, prevOwners).length
-const getRemovedOwnersCount = ({prevOwners, owners}) => _.difference(prevOwners, owners).length
+const getAddedOwners = ({prevOwners, owners}) => _.difference(owners, prevOwners)
+const getRemovedOwners = ({prevOwners, owners}) => _.difference(prevOwners, owners)
+
+const UpdatedOwners = ({prevValue, value, i18n: {translate: tr}}) => {
+  const {isOpen: isAddedOwnersExpanded, toggle: toggleAddedOwners} = useModalState()
+  const {isOpen: isRemovedOwnersExpanded, toggle: toggleRemovedOwners} = useModalState()
+  const {isOpen: isTotalOwnersExpanded, toggle: toggleTotalOwners} = useModalState()
+
+  const addedOwners = useMemo(
+    () =>
+      getAddedOwners({
+        prevOwners: prevValue,
+        owners: value,
+      }),
+    [prevValue, value]
+  )
+  const removedOwners = useMemo(
+    () =>
+      getRemovedOwners({
+        prevOwners: prevValue,
+        owners: value,
+      }),
+    [prevValue, value]
+  )
+  const totalOwners = value
+
+  return (
+    <React.Fragment>
+      {addedOwners.length > 0 && (
+        <React.Fragment>
+          {tr(poolUpdateMessages.addedOwners, {
+            count: addedOwners.length,
+          })}
+          <ExpandIconButton expanded={isAddedOwnersExpanded} onClick={toggleAddedOwners} />
+          <Collapse in={isAddedOwnersExpanded}>
+            <StakingKeyLinks links={addedOwners} />
+          </Collapse>
+        </React.Fragment>
+      )}
+
+      {removedOwners.length > 0 && (
+        <React.Fragment>
+          {tr(poolUpdateMessages.removedOwners, {
+            count: removedOwners.length,
+          })}
+          <ExpandIconButton expanded={isRemovedOwnersExpanded} onClick={toggleRemovedOwners} />
+          <Collapse in={isRemovedOwnersExpanded}>
+            <StakingKeyLinks links={removedOwners} />
+          </Collapse>
+        </React.Fragment>
+      )}
+
+      {tr(poolUpdateMessages.totalOwners, {
+        count: totalOwners.length,
+      })}
+      <ExpandIconButton expanded={isTotalOwnersExpanded} onClick={toggleTotalOwners} />
+      <Collapse in={isTotalOwnersExpanded}>
+        <StakingKeyLinks links={totalOwners} />
+      </Collapse>
+    </React.Fragment>
+  )
+}
 
 const POOL_UPDATE_UPDATED_PROP_ROW = {
   COST: ({prevValue, value, i18n, i18n: {translate: tr}}) => ({
@@ -506,17 +568,7 @@ const POOL_UPDATE_UPDATED_PROP_ROW = {
   }),
   OWNERS: ({prevValue, value, i18n, i18n: {translate: tr}}) => ({
     label: tr(poolUpdateMessages.owners),
-    value: tr(poolUpdateMessages.ownersValue, {
-      addedCnt: getAddedOwnersCount({
-        prevOwners: prevValue,
-        owners: value,
-      }),
-      removedCnt: getRemovedOwnersCount({
-        prevOwners: prevValue,
-        owners: value,
-      }),
-      totalCnt: value.length,
-    }),
+    value: <UpdatedOwners {...{prevValue, value, i18n}} />,
   }),
 }
 
