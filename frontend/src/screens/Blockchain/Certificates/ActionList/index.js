@@ -30,6 +30,7 @@ import {
   TxHashLinkEllipsized,
   StakingKeyLinkEllipsized,
   HashWithCopyToClipboard,
+  MonospaceTypography,
 } from './utils'
 import DesktopAction from './DesktopAction'
 import MobileAction from './MobileAction'
@@ -642,7 +643,9 @@ const transactionRow = ({tx, i18n}) => {
     value: (
       <React.Fragment>
         <Typography variant="body1">
-          <TxHashLink txHash={<Typography noWrap>{tx.txHash}</Typography>} />
+          <TxHashLink txHash={tx.txHash}>
+            <MonospaceTypography noWrap>{tx.txHash}</MonospaceTypography>
+          </TxHashLink>
         </Typography>
         <Typography variant="caption" color="textSecondary">
           {formatTimestamp(tx.timestamp)}
