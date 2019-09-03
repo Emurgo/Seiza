@@ -1,14 +1,15 @@
 // @flow
 import _ from 'lodash'
-import React from 'react'
+import React, {useMemo} from 'react'
 import {Typography, Hidden, Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
 
 import {AdaValue, HelpTooltip, ResponsiveCircularProgressBar} from '@/components/common'
-import {ExpandableCardFooter, Tooltip} from '@/components/visual'
+import {ExpandableCardFooter, Tooltip, SimpleExpandableCard} from '@/components/visual'
 import {useI18n} from '@/i18n/helpers'
 import EstimatedRewardsValue from './EstimatedRewards'
+import epochIcon from '@/static/assets/icons/epoch.svg'
 import type {Formatters} from '@/i18n/helpers'
 import type {EstimatedRewardsType} from './EstimatedRewards'
 
@@ -37,6 +38,11 @@ const footerMessages = defineMessages({
   revenue: 'Revenue',
   hideDetails: 'Hide details',
   showDetails: 'Show details',
+})
+
+const ageMessages = defineMessages({
+  ageLabel: 'Age:',
+  ageValue: '{epochCount, plural, =0 {# epochs} one {# epoch} other {# epochs}}',
 })
 
 const useStyles = makeStyles((theme) => ({
@@ -245,11 +251,13 @@ export const getStakepoolCardFields = ({
 const usePoolFooterStyles = makeStyles((theme) => ({
   wrapper: {
     position: 'relative',
-    paddingTop: theme.spacing(1.5),
-    paddingBottom: theme.spacing(1.5),
+    padding: theme.spacing(1.5),
   },
   mobileFooterIcon: {
-    padding: theme.spacing(0.7),
+    padding: theme.spacing(0.75),
+  },
+  showDetailsWrapper: {
+    marginRight: -theme.spacing(0.5),
   },
 }))
 
@@ -267,8 +275,7 @@ export const MobilePoolFooter = ({expanded}: {expanded: boolean}) => {
       className={classes.wrapper}
     >
       <ResponsiveCircularProgressBar label={tr(footerMessages.revenue)} value={0.25} />
-      {/* Yes this <div> is needed */}
-      <div>
+      <div className={classes.showDetailsWrapper}>
         <Hidden smUp>
           <ExpandableCardFooter
             expanded={expanded}
@@ -277,9 +284,104 @@ export const MobilePoolFooter = ({expanded}: {expanded: boolean}) => {
           />
         </Hidden>
         <Hidden xsDown>
-          <ExpandableCardFooter expanded={expanded} label={label} />
+          <ExpandableCardFooter
+            iconClassName={classes.mobileFooterIcon}
+            expanded={expanded}
+            label={label}
+          />
         </Hidden>
       </div>
+    </Grid>
+  )
+}
+
+const useStakepoolMobileCardClasses = makeStyles((theme) => ({
+  wrapper: {
+    // We should set `expanded` class, but for some reason it is not working
+    padding: '0 !important',
+    margin: '0 !important',
+    width: '100%', // Needed for proper ellipsize
+  },
+}))
+
+type StakepoolMobileCardProps = {|
+  expanded: boolean,
+  onChange: Function,
+  renderExpandedArea: Function,
+  renderHeader: Function,
+|}
+
+export const StakepoolMobileCard = ({
+  expanded,
+  onChange,
+  renderExpandedArea,
+  renderHeader,
+}: StakepoolMobileCardProps) => {
+  const classes = useStakepoolMobileCardClasses()
+
+  const cardClasses = useMemo(() => ({root: classes.wrapper, content: classes.wrapper}), [classes])
+
+  return (
+    <SimpleExpandableCard
+      {...{expanded, onChange, renderExpandedArea, renderHeader}}
+      hideDefaultIcon
+      headerClasses={cardClasses}
+      detailsClasses={cardClasses}
+    />
+  )
+}
+
+export const useCommonContentStyles: any = makeStyles(({palette, spacing, breakpoints}) => ({
+  innerWrapper: {
+    display: 'flex',
+    width: '100%',
+    justifyContent: 'space-between',
+    flexDirection: 'column',
+    padding: `${spacing(3)}px ${spacing(1.5)}px`,
+    paddingTop: spacing(1),
+    [breakpoints.up('md')]: {
+      padding: spacing(3),
+      paddingTop: spacing(1),
+    },
+    [breakpoints.up('lg')]: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+  },
+  revenueWrapper: {
+    minWidth: 90,
+    marginRight: spacing(2),
+    display: 'flex',
+    height: '100%',
+    alignItems: 'center',
+  },
+}))
+
+type AgeProps = {|
+  +epochCount: number,
+|}
+
+const useAgeClasses = makeStyles((theme) => ({
+  ageWrapper: {
+    'paddingTop': theme.spacing(1),
+    '& > *': {
+      paddingRight: theme.spacing(1),
+    },
+  },
+}))
+
+export const Age = ({epochCount}: AgeProps) => {
+  const {translate: tr} = useI18n()
+  const classes = useAgeClasses()
+  return (
+    <Grid container alignItems="center" className={classes.ageWrapper}>
+      <img alt="" src={epochIcon} />
+      <Typography component="span" variant="overline" color="textSecondary">
+        {tr(ageMessages.ageLabel)}
+      </Typography>
+      <Typography component="span" variant="overline">
+        {tr(ageMessages.ageValue, {epochCount})}
+      </Typography>
     </Grid>
   )
 }

@@ -159,7 +159,9 @@ type SimpleExpandableCardProps = {|
   onChange: (event: any, expanded: boolean) => any,
   renderExpandedArea: (expanded: boolean) => Node,
   renderHeader: (expanded: boolean) => Node,
-  headerClasses: {},
+  headerClasses?: {},
+  detailsClasses?: {},
+  hideDefaultIcon?: boolean,
 |}
 
 // TODO: could be reused for TransactionCard?
@@ -169,17 +171,21 @@ export const SimpleExpandableCard = ({
   renderHeader,
   renderExpandedArea,
   headerClasses = {},
+  detailsClasses = {},
+  hideDefaultIcon = false,
 }: SimpleExpandableCardProps) => {
   return (
     <Card>
       <ExpansionPanel onChange={onChange} expanded={expanded}>
         <ExpansionPanelSummary
-          expandIcon={<ExpandMoreIcon color="primary" />}
+          expandIcon={hideDefaultIcon ? null : <ExpandMoreIcon color="primary" />}
           classes={headerClasses}
         >
           {renderHeader(expanded)}
         </ExpansionPanelSummary>
-        <ExpansionPanelDetails>{renderExpandedArea(expanded)}</ExpansionPanelDetails>
+        <ExpansionPanelDetails classes={detailsClasses}>
+          {renderExpandedArea(expanded)}
+        </ExpansionPanelDetails>
       </ExpansionPanel>
     </Card>
   )
