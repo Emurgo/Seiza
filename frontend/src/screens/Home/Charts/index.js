@@ -211,7 +211,7 @@ const Chart = ({seriesType, xAxisProps, currentEpoch, ...restProps}) => {
       <Alert type="warning" title={tr(messages.noDataTitle)} message={tr(messages.noDataMsg)} />
     )
   }
-  return <BarChart data={_data} {...restProps} />
+  return <div>CHART</div>
 }
 
 const ChartTab = ({loading, error, xAxisProps, commonChartProps, ...restProps}) => {
