@@ -11,6 +11,7 @@ const cachedApp = require('./serverCache')
 const port = parseInt(process.env.PORT, 10) || 3000
 const dev = process.env.NODE_ENV !== 'production'
 const SITEMAP_ROOT = process.env.SITEMAP_ROOT
+const DISABLE_CACHING = process.env.DISABLE_CACHING === 'true'
 
 // project location (where pages/ directory lives) is ./src
 const app = next({dev, dir: './src'})
@@ -67,7 +68,7 @@ app.prepare().then(() => {
   })
 
   server.get('*', (req, res) => {
-    if (req.url.startsWith('/static') || req.url.startsWith('/_next')) {
+    if (DISABLE_CACHING || req.url.startsWith('/static') || req.url.startsWith('/_next')) {
       return app.render(req, res, '/', req.query)
     } else {
       return cachedApp.render(req, res, {
