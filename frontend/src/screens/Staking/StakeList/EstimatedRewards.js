@@ -169,15 +169,18 @@ type Props = {|
   estimatedRewards: EstimatedRewardsType,
 |}
 
+const rewardsVariant1Breakpoints = ['sm', 'md']
+const rewardsVariant2Breakpoints = ['xs', 'lg', 'xl']
+
 export default ({estimatedRewards}: Props) => {
   const classes = useClasses()
   return (
     <div className={classes.rewardsRowWrapper}>
-      <Hidden mdDown>
+      <Hidden only={rewardsVariant1Breakpoints}>
         <EstimatedRewards estimatedRewards={estimatedRewards} />
         <RewardsMenu estimatedRewards={estimatedRewards} />
       </Hidden>
-      <Hidden lgUp>
+      <Hidden only={rewardsVariant2Breakpoints}>
         <RewardsMenu estimatedRewards={estimatedRewards} />
         <EstimatedRewards estimatedRewards={estimatedRewards} />
       </Hidden>
