@@ -25,7 +25,6 @@ export default () => {
         <Charts />
       </div>
       {config.showStakingData && <StakePoolsInfo />}
-      <GeneralInfo />
     </React.Fragment>
   )
 }
