@@ -30,7 +30,10 @@ const messages = defineMessages({
 // TODO: margin/padding theme unit
 const useStyles = makeStyles((theme) => ({
   wrapper: {
-    marginTop: '20px',
+    marginTop: theme.spacing(2.5),
+    [theme.breakpoints.up('md')]: {
+      marginTop: 0,
+    },
   },
   searchWrapper: {
     flex: 1,
