@@ -77,10 +77,6 @@ const MuiProviders = ({children}) => {
     }
   }, [currentTheme, forceClientReload])
 
-  useEffect(() => {
-    setForceClientReload(true)
-  }, [])
-
   return (
     <MuiThemeProvider theme={theme}>
       {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
