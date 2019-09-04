@@ -8,6 +8,7 @@ import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
 import {matchPath} from 'react-router'
 
+import {NAV_HEADER_HEIGHT} from '@/components/hooks/useScrollFromBottom'
 import {routeTo, combinedBlockchainPath} from './helpers/routes'
 import Footer from './screens/Footer'
 import {useI18n} from '@/i18n/helpers'
@@ -74,6 +75,7 @@ const useAppStyles = makeStyles((theme) => ({
     top: 0,
     zIndex: 30,
     position: 'sticky',
+    height: NAV_HEADER_HEIGHT,
     [theme.breakpoints.up('md')]: {
       position: 'relative',
     },
