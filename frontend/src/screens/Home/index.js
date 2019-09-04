@@ -24,7 +24,6 @@ export default () => {
       <div ref={scrollToRef}>
         <Charts />
       </div>
-      {config.showStakingData && <StakePoolsInfo />}
       <GeneralInfo />
     </React.Fragment>
   )
