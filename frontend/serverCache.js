@@ -14,7 +14,7 @@ const options = {
     // // See: https://kevin.burke.dev/kevin/node-js-string-encoding/
     return n.length
   },
-  maxAge: 1000 * 60, // 1 minute
+  maxAge: 1000 * 60 * 60, // 1 hour
 }
 
 const cache = new LRU(options)
