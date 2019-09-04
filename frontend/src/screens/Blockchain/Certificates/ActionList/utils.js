@@ -1,4 +1,5 @@
 import React from 'react'
+import cn from 'classnames'
 import {Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
@@ -20,24 +21,32 @@ export const FormattedMargin = ({value}) => {
 export const FormattedPledge = ({value}) => <AdaValue showCurrency value={value} />
 
 export const StakingKeyLink = ({stakingKey}) => {
-  return <Link to={routeTo.stakingKey(stakingKey)}>{stakingKey}</Link>
+  return (
+    <Link monospace to={routeTo.stakingKey(stakingKey)}>
+      {stakingKey}
+    </Link>
+  )
 }
 
 export const TxHashLinkEllipsized = ({txHash}) => {
   return (
-    <Link to={routeTo.transaction(txHash)}>
+    <Link monospace to={routeTo.transaction(txHash)}>
       <EllipsizeMiddleFixed value={txHash} />
     </Link>
   )
 }
 
-export const TxHashLink = ({txHash}) => {
-  return <Link to={routeTo.transaction(txHash)}>{txHash}</Link>
+export const TxHashLink = ({txHash, children}) => {
+  return (
+    <Link monospace to={routeTo.transaction(txHash)}>
+      {children}
+    </Link>
+  )
 }
 
 export const PoolHashLinkEllipsized = ({poolHash}) => {
   return (
-    <Link to={routeTo.stakingKey(poolHash)}>
+    <Link monospace to={routeTo.stakingKey(poolHash)}>
       <EllipsizeMiddleFixed value={poolHash} />
     </Link>
   )
@@ -45,14 +54,14 @@ export const PoolHashLinkEllipsized = ({poolHash}) => {
 
 export const StakingKeyLinkEllipsized = ({stakingKey}) => {
   return (
-    <Link to={routeTo.stakingKey(stakingKey)}>
+    <Link monospace to={routeTo.stakingKey(stakingKey)}>
       <EllipsizeMiddleFixed value={stakingKey} />
     </Link>
   )
 }
 
-const DESKTOP_CHARS_COUNT_SHOWN = 16
-const MOBILE_CHARS_COUNT_SHOWN = 8
+const DESKTOP_CHARS_COUNT_SHOWN = 8
+const MOBILE_CHARS_COUNT_SHOWN = 6
 export const EllipsizeMiddleFixed = ({value}) => {
   // Note(bigamasta): We're not using <MobileOnly> and <DesktopOnly>
   // because EllipsizeMiddleFixed is initially hidden in ExpansionPanel
@@ -75,7 +84,7 @@ export const StakingKeyLinks = ({links}) => {
   ))
 }
 
-const useStyles = makeStyles(({spacing}) => ({
+const useStyles = makeStyles(({spacing, typography}) => ({
   wrapper: {
     display: 'flex',
     alignItems: 'center',
@@ -83,13 +92,23 @@ const useStyles = makeStyles(({spacing}) => ({
     marginTop: -8,
     marginBottom: -8,
   },
+  monospace: typography._monospace,
 }))
+
+export const MonospaceTypography = ({children, className, ...props}) => {
+  const classes = useStyles()
+  return (
+    <Typography {...props} className={cn(className, classes.monospace)}>
+      {children}
+    </Typography>
+  )
+}
 
 export const HashWithCopyToClipboard = ({hash}) => {
   const classes = useStyles()
   return (
     <div className={classes.wrapper}>
-      <Typography noWrap>{hash}</Typography>
+      <MonospaceTypography noWrap>{hash}</MonospaceTypography>
       <CopyToClipboard value={hash} />
     </div>
   )

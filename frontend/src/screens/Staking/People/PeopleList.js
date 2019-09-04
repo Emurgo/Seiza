@@ -5,8 +5,7 @@ import {Grid, Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
 
-import {VisualHash} from '@/components/visual'
-import {AdaValue, Link, EntityCardContent} from '@/components/common'
+import {AdaValue, Link, PoolEntityContent} from '@/components/common'
 import {routeTo} from '@/helpers/routes'
 import {useI18n} from '@/i18n/helpers'
 
@@ -52,17 +51,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const RowHeader = ({poolHash, poolName}) => {
-  return (
-    <EntityCardContent
-      label={poolName}
-      value={poolHash}
-      showCopyIcon={false}
-      iconRenderer={<VisualHash value={poolHash} size={48} />}
-    />
-  )
-}
-
 const Owner = ({stakingKey, pledge}) => {
   const classes = useStyles()
   return (
@@ -82,7 +70,7 @@ const Row = ({poolData}) => {
   const classes = useStyles()
   return (
     <div className={classes.row}>
-      <RowHeader poolHash={poolData.poolHash} poolName={poolData.name} />
+      <PoolEntityContent name={poolData.poolHash} hash={poolData.name} />
       <div className={classes.ownersWrapper}>
         <Grid container>
           <Typography variant="overline" color="textSecondary">

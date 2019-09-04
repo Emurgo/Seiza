@@ -6,11 +6,12 @@ const next = require('next')
 const Sentry = require('@sentry/node')
 const compression = require('compression')
 const cookieParser = require('cookie-parser')
-const serverCache = require('./serverCache')
+const cachedApp = require('./serverCache')
 
 const port = parseInt(process.env.PORT, 10) || 3000
 const dev = process.env.NODE_ENV !== 'production'
 const SITEMAP_ROOT = process.env.SITEMAP_ROOT
+const DISABLE_CACHING = process.env.DISABLE_CACHING === 'true'
 
 // project location (where pages/ directory lives) is ./src
 const app = next({dev, dir: './src'})
@@ -28,16 +29,10 @@ const fixCssCache = (server) => {
   // This should be fixed in next.js v9, however there are other babel issues in nextjs v9,
   // so update when nextjs v9 is finally fixed
   if (!dev) {
-    server.get(
-      /^\/_next\/static\/css\//,
-      (_, res, nextHandler) => {
-        res.setHeader(
-          'Cache-Control',
-          'public, max-age=31536000, immutable',
-        )
-        nextHandler()
-      },
-    )
+    server.get(/^\/_next\/static\/css\//, (_, res, nextHandler) => {
+      res.setHeader('Cache-Control', 'public, max-age=31536000, immutable')
+      nextHandler()
+    })
   }
 }
 
@@ -56,6 +51,14 @@ app.prepare().then(() => {
   server.use(cookieParser())
   server.use(compression())
 
+  // https://github.com/zeit/next.js/issues/1791
+  server.use(
+    '/static',
+    express.static(`${__dirname}/src/static`, {
+      maxAge: '1d',
+    })
+  )
+
   // ***** BEGIN TAKEN FROM: https://github.com/zeit/next.js/blob/master/examples/with-sentry/server.js
   // This attaches request information to sentry errors
   server.use(Sentry.Handlers.requestHandler())
@@ -65,12 +68,11 @@ app.prepare().then(() => {
   })
 
   server.get('*', (req, res) => {
-    if (req.url.startsWith('/static') || req.url.startsWith('/_next')) {
+    if (DISABLE_CACHING || req.url.startsWith('/static') || req.url.startsWith('/_next')) {
       return app.render(req, res, '/', req.query)
     } else {
-      return serverCache.render(req, res, {
+      return cachedApp.render(req, res, {
         getData: () => app.renderToHTML(req, res, '/', req.query),
-        route: req.url,
       })
     }
   })
