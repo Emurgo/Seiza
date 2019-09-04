@@ -17,7 +17,7 @@ import {fade} from '@material-ui/core/styles/colorManipulator'
 
 import {Card, KeyValueCard, Overlay, MobileOnly, DesktopOnly} from '@/components/visual'
 import {useI18n} from '@/i18n/helpers'
-import {LoadingOverlay, ErrorOverlay} from '@/components/common'
+import {LoadingOverlay, ErrorOverlay, SeparatorWithLabel} from '@/components/common'
 
 export const ROW_TYPE = {
   DATA: 'data',
@@ -71,11 +71,6 @@ const useTableStyles = makeStyles(({hover, palette, breakpoints}) => ({
     height: '20px',
     padding: '0px',
     borderTop: '1px solid transparent',
-  },
-  separatorLine: {
-    borderBottom: '1px solid #aaa',
-    flexGrow: 1,
-    margin: '10px 10px 10px 10px',
   },
   mobileTable: {
     minHeight: '100px',
@@ -142,9 +137,9 @@ const DesktopSeparator = ({fieldsConfig, row: {text}}) => {
   return (
     <td colSpan="8" className={classes.separatorContainerDesktop}>
       <Grid container>
-        <div className={classes.separatorLine} />
-        <Typography>{text}</Typography>
-        <div className={classes.separatorLine} />
+        <SeparatorWithLabel>
+          <Typography>{text}</Typography>
+        </SeparatorWithLabel>
       </Grid>
     </td>
   )
@@ -213,12 +208,11 @@ const MobileBodyData = ({fieldsConfig, row, headerData, hoverable}) => {
 }
 
 const MobileSeparator = ({fieldsConfig, row: {text}, hoverable}) => {
-  const classes = useTableStyles()
   return (
     <Grid container>
-      <div className={classes.separatorLine} />
-      <span>{text}</span>
-      <div className={classes.separatorLine} />
+      <SeparatorWithLabel>
+        <span>{text}</span>
+      </SeparatorWithLabel>
     </Grid>
   )
 }
