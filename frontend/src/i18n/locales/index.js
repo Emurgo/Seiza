@@ -3,11 +3,11 @@
 //$FlowFixMe fix json imports
 import en from './en.json'
 //$FlowFixMe fix json imports
-import ja from './ja-JP.json'
+// import ja from './ja-JP.json'
 //$FlowFixMe fix json imports
-import ru from './ru-RU.json'
+// import ru from './ru-RU.json'
 //$FlowFixMe fix json imports
-import es from './es-ES.json'
+//import es from './es-ES.json'
 
 import _ from 'lodash' // eslint-disable-line no-unused-vars
 
@@ -56,4 +56,4 @@ const dummyTranslate = (targetChars: string) => (msg: string): string => {
 // Demonstration of dummy translate
 // const ru = _.mapValues(en, dummyTranslate('абвгдеёжзийклмнопрстуфхцчшщъыьэюя'))
 
-export default {en, ja, ru, es}
+export default {en}
