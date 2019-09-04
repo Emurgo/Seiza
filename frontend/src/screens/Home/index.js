@@ -21,9 +21,7 @@ export default () => {
   return (
     <React.Fragment>
       <SyncIssuesBar />
-      <div ref={scrollToRef}>
-        <Charts />
-      </div>
+      <div ref={scrollToRef} />
       {config.showStakingData && <StakePoolsInfo />}
       <GeneralInfo />
     </React.Fragment>
