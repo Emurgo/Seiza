@@ -8,7 +8,7 @@ import {makeStyles} from '@material-ui/styles'
 import {fade} from '@material-ui/core/styles/colorManipulator'
 
 import useBooleanState from '@/components/hooks/useBooleanState'
-import {NavTypography, NavLink as Link} from '@/components/common'
+import {NavTypography, NavLink as Link, WithPathActive} from '@/components/common'
 import {Tooltip, Card} from '@/components/visual'
 
 const useStyles = makeStyles(({palette, spacing}) => ({
@@ -145,7 +145,7 @@ const Sublinks = ({sublinks, onClick}) => {
   )
 }
 
-const _WithSublinks = ({children, sublinks}) => {
+const SublinksMenu = ({sublinks, getIsActive, to, label, activeClassName}) => {
   const classes = useSublinksStyles()
   const tooltipClasses = useTooltipClasses()
   const [open, setOpen, setClosed] = useBooleanState(false)
@@ -166,13 +166,17 @@ const _WithSublinks = ({children, sublinks}) => {
       title={<Sublinks onClick={setClosed} sublinks={sublinks} />}
     >
       <div className={classes.tooltipChildren} onMouseEnter={setOpen}>
-        {children}
+        <WithPathActive path={to} getIsActive={getIsActive}>
+          {(isActive) => (
+            <NavbarLink isActive={isActive || open} className={cn(isActive && activeClassName)}>
+              {label}
+            </NavbarLink>
+          )}
+        </WithPathActive>
       </div>
     </PopoverMenu>
   )
 }
-
-const WithSublinks = (props) => (props.sublinks ? <_WithSublinks {...props} /> : props.children)
 
 type SublinksType = Array<{link: string, label: string, getIsActive?: Function}>
 
@@ -196,28 +200,31 @@ const NavMenuItem = ({
   const classes = useStyles()
   return !link ? (
     <DisabledLink {...{label, disabledText}} className={cn(isMobile && classes.mobileLink)} />
+  ) : sublinks ? (
+    <SublinksMenu
+      {...{sublinks, getIsActive, to: link, label}}
+      activeClassName={classes.underlineActive}
+    />
   ) : (
-    <WithSublinks sublinks={sublinks}>
-      <Link
-        getIsActive={getIsActive}
-        className={cn(
-          classes.link,
-          isMobile && classes.mobileLink,
-          sublinks && classes.disabledEvents
-        )}
-        to={link}
-      >
-        {(isActive) => (
-          <NavbarLink
-            isActive={isActive}
-            className={!isMobile && isActive ? classes.underlineActive : ''}
-            hasArrow={!!sublinks}
-          >
-            {label}
-          </NavbarLink>
-        )}
-      </Link>
-    </WithSublinks>
+    <Link
+      getIsActive={getIsActive}
+      className={cn(
+        classes.link,
+        isMobile && classes.mobileLink,
+        sublinks && classes.disabledEvents
+      )}
+      to={link}
+    >
+      {(isActive) => (
+        <NavbarLink
+          isActive={isActive}
+          className={!isMobile && isActive ? classes.underlineActive : ''}
+          hasArrow={!!sublinks}
+        >
+          {label}
+        </NavbarLink>
+      )}
+    </Link>
   )
 }
 
