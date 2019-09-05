@@ -13,7 +13,6 @@ import alertIcon from '@/static/assets/icons/alert.svg'
 import noResultsIcon from '@/static/assets/icons/sad-smile.svg'
 import {useI18n} from '@/i18n/helpers'
 import {CloseIconButton} from '@/components/visual'
-import {getDefaultSpacing} from '@/components/visual/ContentSpacing'
 
 const TYPES = Object.freeze({
   EMPHASIS: 'emphasis',
@@ -37,15 +36,15 @@ const getBorderColorStyle = (backgroundColor) => darken(backgroundColor, 0.05)
 
 const useAppStyles = makeStyles((theme) => ({
   wrapper: {
-    paddingTop: getDefaultSpacing(theme) * 0.25,
-    paddingBottom: getDefaultSpacing(theme) * 0.25,
-    paddingLeft: getDefaultSpacing(theme) * 0.5,
-    paddingRight: getDefaultSpacing(theme) * 0.5,
+    paddingTop: theme.getContentSpacing(0.25),
+    paddingBottom: theme.getContentSpacing(0.25),
+    paddingLeft: theme.getContentSpacing(0.5),
+    paddingRight: theme.getContentSpacing(0.5),
     [theme.breakpoints.up('md')]: {
-      paddingTop: getDefaultSpacing(theme) * 0.75,
-      paddingBottom: getDefaultSpacing(theme) * 0.75,
-      paddingLeft: getDefaultSpacing(theme),
-      paddingRight: getDefaultSpacing(theme),
+      paddingTop: theme.getContentSpacing(0.75),
+      paddingBottom: theme.getContentSpacing(0.75),
+      paddingLeft: theme.getContentSpacing(),
+      paddingRight: theme.getContentSpacing(),
     },
   },
   label: {
@@ -79,7 +78,7 @@ const useAppStyles = makeStyles((theme) => ({
   icon: {
     display: 'flex',
     alignItems: 'center',
-    paddingRight: getDefaultSpacing(theme) * 0.5,
+    paddingRight: theme.getContentSpacing(0.5),
   },
 }))
 

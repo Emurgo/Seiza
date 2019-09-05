@@ -20,7 +20,6 @@ import {routeTo} from '@/helpers/routes'
 import * as urlHelpers from '@/helpers/url'
 import {useAnalytics} from '@/components/context/googleAnalytics'
 import {APOLLO_CACHE_OPTIONS} from '@/constants'
-import {getDefaultSpacing} from '@/components/visual/ContentSpacing'
 
 const text = defineMessages({
   searchPlaceholder: 'Search addresses, transactions, epochs & slots on the Cardano network',
@@ -105,9 +104,9 @@ const useStyles = makeStyles((theme) => ({
     position: 'absolute',
     width: '100%',
     zIndex: 1,
-    padding: getDefaultSpacing(theme) * 0.5,
-    paddingTop: getDefaultSpacing(theme) * 0.25,
-    paddingBottom: getDefaultSpacing(theme) * 0.25,
+    padding: theme.getContentSpacing(0.5),
+    paddingTop: theme.getContentSpacing(0.25),
+    paddingBottom: theme.getContentSpacing(0.25),
   },
   helpText: {
     marginLeft: theme.spacing(4),
