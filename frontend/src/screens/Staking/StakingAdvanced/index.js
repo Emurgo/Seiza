@@ -9,6 +9,7 @@ import useReactRouter from 'use-react-router'
 import * as urlUtils from '@/helpers/url'
 import {routeTo} from '@/helpers/routes'
 import {MobileOnly, DesktopOnly} from '@/components/visual'
+import config from '@/config'
 import {
   StakingContextProvider,
   useSetListScreenStorageFromQuery,
@@ -242,9 +243,11 @@ export default () => {
     <StakingContextProvider autoSync={autoSync}>
       <EstimatedRewardsModeProvider>
         <Grid container direction="column">
-          <DesktopOnly>
-            <StakePoolHeader />
-          </DesktopOnly>
+          {!config.isYoroi && (
+            <DesktopOnly>
+              <StakePoolHeader />
+            </DesktopOnly>
+          )}
           <MobileOnly className="w-100">
             <SideMenu />
           </MobileOnly>

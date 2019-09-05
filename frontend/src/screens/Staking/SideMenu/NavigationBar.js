@@ -1,5 +1,4 @@
 // @flow
-
 import React, {useCallback} from 'react'
 import cn from 'classnames'
 import useReactRouter from 'use-react-router'
@@ -8,12 +7,14 @@ import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
 import {fade} from '@material-ui/core/styles/colorManipulator'
 
-import NavLink from '@/components/common/NavLink'
-import {routeTo} from '@/helpers/routes'
+import {routeTo, getExternalSeizaUrl} from '@/helpers/routes'
 import {useI18n} from '@/i18n/helpers'
 import {LiteTabs, LiteTab, MobileOnly, DesktopOnly} from '@/components/visual'
 import useTabState from '@/components/hooks/useTabState'
 import {NavbarLink} from '@/components/common/Navbar'
+import {NavLink} from '@/components/common'
+
+import config from '@/config'
 
 import {ReactComponent as ListIcon} from '@/static/assets/icons/staking-simulator/list.svg'
 import {ReactComponent as ComparisonMatrixIcon} from '@/static/assets/icons/staking-simulator/comparison-matrix.svg'
@@ -79,8 +80,11 @@ const MenuItem = ({active, label, icon}) => {
 
 const useNavigationBarStyles = makeStyles((theme) => ({
   href: {
-    textDecoration: 'none',
-    color: theme.palette.text.secondary,
+    'textDecoration': 'none',
+    '&:hover': {
+      textDecoration: 'none',
+    },
+    'color': theme.palette.text.secondary,
   },
   // Note: parent can't have `overflow: hidden` and must span full height
   navBar: {
@@ -105,42 +109,51 @@ type NavItems = Array<{|
   id: string,
 |}>
 
+const NAV_ITEMS_IDS = {
+  POOL_LIST: 'POOL_LIST',
+  COMPARISON_MATRIX: 'COMPARISON_MATRIX',
+  HISTORY: 'HISTORY',
+  CHARTS: 'CHARTS',
+  LOCATION: 'LOCATION',
+  PEOPLE: 'PEOPLE',
+}
+
 const navItems: NavItems = [
   {
     link: routeTo.stakingCenter.poolList(),
     i18nLabel: navigationMessages.list,
     icon: <ListIcon color="inherit" />,
-    id: 'POOL_LIST',
+    id: NAV_ITEMS_IDS.POOL_LIST,
   },
   {
     link: routeTo.stakingCenter.poolComparison(),
     i18nLabel: navigationMessages.comparison,
     icon: <ComparisonMatrixIcon color="inherit" />,
-    id: 'COMPARISON_MATRIX',
+    id: NAV_ITEMS_IDS.COMPARISON_MATRIX,
   },
   {
     link: routeTo.stakingCenter.history(),
     i18nLabel: navigationMessages.history,
     icon: <HistoryIcon color="inherit" />,
-    id: 'HISTORY',
+    id: NAV_ITEMS_IDS.HISTORY,
   },
   {
     link: routeTo.stakingCenter.charts(),
     i18nLabel: navigationMessages.charts,
     icon: <ChartsIcon color="inherit" />,
-    id: 'CHARTS',
+    id: NAV_ITEMS_IDS.CHARTS,
   },
   {
     link: routeTo.stakingCenter.location(),
     i18nLabel: navigationMessages.location,
     icon: <LocationIcon color="inherit" />,
-    id: 'LOCATION',
+    id: NAV_ITEMS_IDS.LOCATION,
   },
   {
     link: routeTo.stakingCenter.people(),
     i18nLabel: navigationMessages.people,
     icon: <PeopleIcon color="inherit" />,
-    id: 'PEOPLE',
+    id: NAV_ITEMS_IDS.PEOPLE,
   },
 ]
 
@@ -151,6 +164,15 @@ const useTabStateFromUrl = () => {
   const initialTabName = navItems.find(({link}) => location.pathname === link)
   const tabState = useTabState(TAB_NAMES, initialTabName && initialTabName.id)
   return tabState
+}
+
+const getSideMenuNavLink = (linkId, link, location) => {
+  if (config.isYoroi) {
+    // only pool list url links to itself in yoroi
+    return linkId === NAV_ITEMS_IDS.POOL_LIST ? link + location.search : getExternalSeizaUrl(link)
+  } else {
+    return link
+  }
 }
 
 const TabsHeader = () => {
@@ -164,10 +186,17 @@ const TabsHeader = () => {
     (...args) => {
       // TODO: can we do better?
       const navItem = navItems[args[1]]
-      setTabByEventIndex(...args)
-      location.pathname !== navItem.link && history.push(navItem.link)
+      // for yoroi, we must forbid tab navigation
+      const link = getSideMenuNavLink(navItem.id, navItem.link, location)
+      const pathChanged = location.pathname !== navItem.link
+      if (config.isYoroi) {
+        pathChanged && window.open(link, '_blank')
+      } else {
+        setTabByEventIndex(...args)
+        pathChanged && history.push(link)
+      }
     },
-    [history, location.pathname, setTabByEventIndex]
+    [history, location, setTabByEventIndex]
   )
 
   return (
@@ -192,17 +221,25 @@ const MobileNavigation = () => {
 const DesktopNavigation = () => {
   const classes = useNavigationBarStyles()
   const {translate: tr} = useI18n()
+  const {location} = useReactRouter()
 
   return (
     <div className={classes.navBar}>
-      {navItems.map(
-        ({link, i18nLabel, icon}) =>
+      {navItems.map(({link, i18nLabel, icon, id}) => {
+        return (
           link && (
-            <NavLink key={link} to={link} className={classes.href}>
+            <NavLink
+              key={link}
+              type={config.isYoroi && id !== NAV_ITEMS_IDS.POOL_LIST ? 'external' : 'internal'}
+              to={getSideMenuNavLink(id, link, location)}
+              target={config.isYoroi && id !== NAV_ITEMS_IDS.POOL_LIST ? '_blank' : '_self'}
+              className={classes.href}
+            >
               {(isActive) => <MenuItem active={isActive} label={tr(i18nLabel)} icon={icon} />}
             </NavLink>
           )
-      )}
+        )
+      })}
     </div>
   )
 }

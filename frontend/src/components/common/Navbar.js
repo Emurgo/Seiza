@@ -3,12 +3,11 @@ import React from 'react'
 import cn from 'classnames'
 
 import {MenuList, MenuItem, Typography} from '@material-ui/core'
-
 import {makeStyles} from '@material-ui/styles'
 import {fade} from '@material-ui/core/styles/colorManipulator'
 
 import useBooleanState from '@/components/hooks/useBooleanState'
-import {NavTypography, NavLink as Link} from '@/components/common'
+import {NavTypography, NavLink} from '@/components/common'
 import {Tooltip, Card} from '@/components/visual'
 
 const useStyles = makeStyles(({palette, spacing}) => ({
@@ -112,7 +111,7 @@ const Sublink = ({children, to}) => {
   const sublinkClasses = useSublinksStyles()
   const navBarClasses = useNavbarLinkStyles()
   return (
-    <Link to={to} className={sublinkClasses.link}>
+    <NavLink to={to} className={sublinkClasses.link}>
       {(isActive) => (
         <Typography
           variant="body1"
@@ -125,7 +124,7 @@ const Sublink = ({children, to}) => {
           {children}
         </Typography>
       )}
-    </Link>
+    </NavLink>
   )
 }
 
@@ -198,7 +197,7 @@ const NavMenuItem = ({
     <DisabledLink {...{label, disabledText}} className={cn(isMobile && classes.mobileLink)} />
   ) : (
     <WithSublinks sublinks={sublinks}>
-      <Link
+      <NavLink
         getIsActive={getIsActive}
         className={cn(
           classes.link,
@@ -216,7 +215,7 @@ const NavMenuItem = ({
             {label}
           </NavbarLink>
         )}
-      </Link>
+      </NavLink>
     </WithSublinks>
   )
 }

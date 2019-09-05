@@ -255,7 +255,7 @@ const useBreakdownItemStyles = makeStyles((theme) => ({
   },
 }))
 
-const IMG_DIMENSIONS = {width: 20, height: 20}
+const COPY_TO_CLIPBOARD_DIMENSIONS = {width: 20, height: 20}
 const BreakdownItem = (props) => {
   const {valuePrefix, target, hasHighlight, isLink, timestamp, showDivider} = props
   const {address58, amount} = target
@@ -276,7 +276,11 @@ const BreakdownItem = (props) => {
             <AddressHash {...{hasHighlight, isLink, address58}} />
 
             <div className={breakdownClasses.copy}>
-              <CopyToClipboard value={address58} imgDimensions={IMG_DIMENSIONS} outlineSize={4} />
+              <CopyToClipboard
+                value={address58}
+                dimensions={COPY_TO_CLIPBOARD_DIMENSIONS}
+                outlineSize={4}
+              />
             </div>
           </Grid>
         </Grid>

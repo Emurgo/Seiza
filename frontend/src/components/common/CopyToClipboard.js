@@ -3,15 +3,14 @@ import {IconButton} from '@material-ui/core'
 import {defineMessages} from 'react-intl'
 
 import {withI18n} from '@/i18n/helpers'
-import WithCopyToClipboard from '../headless/copyToClipboard'
+import WithCopyToClipboard from '@/components/headless/copyToClipboard'
 import {Tooltip} from '@/components/visual'
 
-import copyIcon from '@/static/assets/icons/copy.svg'
-import copiedIcon from '@/static/assets/icons/copied.svg'
+import {ReactComponent as CopyIcon} from '@/static/assets/icons/copy.svg'
+import {ReactComponent as CopiedIcon} from '@/static/assets/icons/copied.svg'
 import {makeStyles} from '@material-ui/styles'
 
 const messages = defineMessages({
-  altText: 'Copy to clipboard',
   tooltipCopy: 'Copy to clipboard',
   tooltipCopied: 'Copied!',
 })
@@ -22,15 +21,7 @@ const useTooltipStyles = makeStyles(() => ({
   },
 }))
 
-/* TODO: [Next] icon dimensions */
-
-const _CopyToClipboard = ({
-  value,
-  i18n,
-  children = null,
-  imgDimensions = {},
-  outlineSize = null,
-}) => {
+const _CopyToClipboard = ({value, i18n, children = null, dimensions = {}, outlineSize = null}) => {
   const {translate} = i18n
   const tooltipClasses = useTooltipStyles()
   return (
@@ -52,11 +43,7 @@ const _CopyToClipboard = ({
                 color="primary"
                 style={outlineSize ? {padding: outlineSize} : {}}
               >
-                <img
-                  alt={messages.altText}
-                  {...imgDimensions}
-                  src={isCopied ? copiedIcon : copyIcon}
-                />
+                {isCopied ? <CopiedIcon style={dimensions} /> : <CopyIcon style={dimensions} />}
               </IconButton>
             )}
           </Tooltip>

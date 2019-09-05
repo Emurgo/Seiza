@@ -1,5 +1,4 @@
 // @flow
-
 import React from 'react'
 import {
   Grid,
@@ -14,12 +13,14 @@ import {makeStyles} from '@material-ui/styles'
 
 import {CloseIconButton, Divider, MobileOnly, DesktopOnly} from '@/components/visual'
 import WithModalState from '@/components/headless/modalState'
+import config from '@/config'
 import {useMobileStakingSettingsRef} from '@/components/context/refs'
 
 import {useSelectedPoolsContext} from '../../context/selectedPools'
 import {LoadingError} from '@/components/common'
 
 import ResetButton from './ResetButton'
+import DelegateButton from './DelegateButton'
 import PoolsToCompare, {PoolsToCompareCount} from './PoolsToCompare'
 import ActionsBar from './ActionsBar'
 import AutoSaveBar from './AutoSaveBar'
@@ -113,6 +114,12 @@ const useStyles = makeStyles((theme) => ({
     ...getSidePaddings(theme),
     ...getTopBottomPaddings(theme),
   },
+  stakingSettingsPortal: {
+    // width and height need to be defined, why??
+    height: 40,
+    width: 28,
+    marginRight: 20,
+  },
 }))
 
 const useDialogStyles = makeStyles((theme) => ({
@@ -149,6 +156,7 @@ const MobileSettingsBar = ({selectedPools, error}: Props) => {
       {({closeModal, isOpen, toggle}) => (
         <React.Fragment>
           <MobileSettingsButton onClick={toggle} value={selectedPools.length} />
+
           <Dialog classes={modalClasses} open={isOpen} onClose={closeModal}>
             <DialogTitle className={classes.modalTitle}>
               <Grid container justify="flex-end" alignItems="center">
@@ -156,7 +164,7 @@ const MobileSettingsBar = ({selectedPools, error}: Props) => {
               </Grid>
             </DialogTitle>
             <DialogContent className={classes.modalContent}>
-              <AutoSaveBar className={classes.mobileAutoSaveBar} />
+              {!config.isYoroi && <AutoSaveBar className={classes.mobileAutoSaveBar} />}
               <ResetButton className={classes.mobileResetButton} />
               <div className={classes.mobilePools}>
                 <PoolsToCompare selectedPools={selectedPools} />
@@ -172,11 +180,23 @@ const MobileSettingsBar = ({selectedPools, error}: Props) => {
   )
 }
 
+const YoroiDelegate = ({selectedPools}) => {
+  // {/* TODO: open link _blank with a delegation form in yoroi */}
+  return <DelegateButton onClick={() => null} disabled={selectedPools.length === 0} />
+}
+
 const DesktopSettingsBar = ({selectedPools, error}: Props) => {
   const classes = useStyles()
   return (
     <React.Fragment>
-      <AutoSaveBar className={classes.autoSaveBar} />
+      {config.isYoroi ? (
+        <Grid container>
+          <YoroiDelegate selectedPools={selectedPools} />
+        </Grid>
+      ) : (
+        <AutoSaveBar className={classes.autoSaveBar} />
+      )}
+
       <Divider />
       <ResetButton className={classes.resetButton} />
       <Divider />
@@ -191,6 +211,7 @@ const DesktopSettingsBar = ({selectedPools, error}: Props) => {
 }
 
 const SettingsBar = () => {
+  const classes = useStyles()
   const {htmlNode} = useMobileStakingSettingsRef()
 
   const {selectedPools: selectedPoolsHashes} = useSelectedPoolsContext()
@@ -199,9 +220,19 @@ const SettingsBar = () => {
   return (
     <React.Fragment>
       <MobileOnly>
-        <Portal container={htmlNode}>
-          <MobileSettingsBar {...{selectedPools, error}} />
-        </Portal>
+        {config.isYoroi ? (
+          // NoSSR is needed, otherwise content is broken (WHY???)
+          <Grid container alignItems="center">
+            <YoroiDelegate selectedPools={selectedPools} />
+            <div className={classes.stakingSettingsPortal}>
+              <MobileSettingsBar {...{selectedPools, error}} />
+            </div>
+          </Grid>
+        ) : (
+          <Portal container={htmlNode}>
+            <MobileSettingsBar {...{selectedPools, error}} />
+          </Portal>
+        )}
       </MobileOnly>
       <DesktopOnly>
         <DesktopSettingsBar {...{selectedPools, error}} />

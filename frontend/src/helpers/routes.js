@@ -38,12 +38,17 @@ const enableSectionIf: _Ident = (x, section) => {
   return _.mapValues(section, (fn) => (...args) => enableIf(x, fn(...args)))
 }
 
+export const getExternalSeizaUrl = (href: string) => {
+  return `${config.seizaUrl}${href}`
+}
+
+// Note(bigamasta): Cannot put IS_YOROI into these conditions
+// because if we disable to route, we still need to have it
+// available in routeTo, so that we could open links in new window
 export const routeTo = {
   home: () => '/',
   subscribeConfirmation: () => '/subscribe-confirmation',
   // staking key is under blockchain!
-  // FIXME: how to deal with this in Yoroi where we want staking but don't want
-  // blockchain section?
   blockchain: () => enableIf(HAVE_BLOCKCHAIN || HAVE_STAKING_CENTER, BLOCKCHAIN_ROUTE),
   ...enableSectionIf(HAVE_BLOCKCHAIN, {
     transaction: (txHash: string) => `${BLOCKCHAIN_ROUTE}/transaction/${txHash}`,
