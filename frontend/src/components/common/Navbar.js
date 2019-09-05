@@ -168,7 +168,11 @@ const SublinksMenu = ({sublinks, getIsActive, to, label, activeClassName}) => {
       <div className={classes.tooltipChildren} onMouseEnter={setOpen}>
         <WithPathActive path={to} getIsActive={getIsActive}>
           {(isActive) => (
-            <NavbarLink isActive={isActive || open} className={cn(isActive && activeClassName)}>
+            <NavbarLink
+              hasArrow
+              isActive={isActive || open}
+              className={cn(isActive && activeClassName)}
+            >
               {label}
             </NavbarLink>
           )}
@@ -219,7 +223,6 @@ const NavMenuItem = ({
         <NavbarLink
           isActive={isActive}
           className={!isMobile && isActive ? classes.underlineActive : ''}
-          hasArrow={!!sublinks}
         >
           {label}
         </NavbarLink>
