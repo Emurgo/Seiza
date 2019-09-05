@@ -174,7 +174,7 @@ const _WithSublinks = ({children, sublinks}) => {
 
 const WithSublinks = (props) => (props.sublinks ? <_WithSublinks {...props} /> : props.children)
 
-type SublinksType = Array<{link: string, label: string}>
+type SublinksType = Array<{link: string, label: string, getIsActive?: Function}>
 
 type NavMenuItemProps = {
   disabledText?: ?string,
@@ -274,11 +274,11 @@ export const NavbarLink = ({
   )
 }
 
-const MobileMenuItem = ({label, link, onClose, disabledText}) => {
+const MobileMenuItem = ({label, link, onClose, disabledText, getIsActive}) => {
   const classes = useStyles()
   return (
     <MenuItem key={label} disabled={!link} onClick={onClose} className={classes.menuItem}>
-      <NavMenuItem {...{disabledText, link, label}} isMobile />
+      <NavMenuItem {...{disabledText, link, label, getIsActive}} isMobile />
     </MenuItem>
   )
 }
@@ -293,18 +293,18 @@ export const MobileNavMenuItems = ({
   currentPathname: string,
 }) => (
   <MenuList>
-    {items.map(({link, label, disabledText, sublinks}) =>
+    {items.map(({link, label, disabledText, sublinks, getIsActive}) =>
       sublinks ? (
-        sublinks.map(({link: sublinkLink, label: sublinkLabel}) => (
+        sublinks.map(({link: sublinkLink, label: sublinkLabel, getIsActive}) => (
           <MobileMenuItem
             key={sublinkLabel}
             link={sublinkLink}
             label={sublinkLabel}
-            {...{onClose, disabledText}}
+            {...{onClose, disabledText, getIsActive}}
           />
         ))
       ) : (
-        <MobileMenuItem key={label} {...{label, link, onClose, disabledText}} />
+        <MobileMenuItem key={label} {...{label, link, onClose, disabledText, getIsActive}} />
       )
     )}
   </MenuList>
