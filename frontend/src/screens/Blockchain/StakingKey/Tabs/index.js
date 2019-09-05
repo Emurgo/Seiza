@@ -39,7 +39,7 @@ const TABS_CONTENT = {
     )
   },
   [TAB_NAMES.TRANSACTIONS]: ({stakingKey}) => (
-    <Transactions transactions={stakingKey.currentStakepool.transactions} />
+    <Transactions transactions={stakingKey.transactions} />
   ),
 }
 
@@ -58,7 +58,7 @@ const StakingKeyTabs = ({stakingKey, pagination, tabState}) => {
               label={
                 <React.Fragment>
                   {tr(messages.historyTabName, {
-                    count: stakingKey.currentStakepool.timeActive.epochs,
+                    count: stakingKey.timeActive.epochs,
                   })}{' '}
                 </React.Fragment>
               }
@@ -67,7 +67,7 @@ const StakingKeyTabs = ({stakingKey, pagination, tabState}) => {
               label={
                 <React.Fragment>
                   {tr(messages.transactionsTabName, {
-                    count: stakingKey.currentStakepool.transactions.length,
+                    count: stakingKey.transactions.length,
                   })}
                 </React.Fragment>
               }
