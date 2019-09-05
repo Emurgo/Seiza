@@ -97,3 +97,14 @@ Updating localisation:
 Note: React fragments in form of `<></>` are not parsable by `react-intl` scripts above. You can however use `<React.Fragment>` which works.
 
 Note: `try {...} catch {}` will also not work. You must use `try {...} catch (err) {}` even if you do not handle the error.
+
+## Local testing of subdomains
+
+If you want to test different testnets localy, you need to setup local subdomains (for cookies to work properly).
+On linux you can open `/etc/hosts` and add those lines:
+
+    127.0.0.1 local-seiza.com
+    127.0.0.1 test1.local-seiza.com
+   
+Now open http://local-seiza.com:port or http://test1.local-seiza.com:port and you are ready to go. Exchange `port` for whatever you use (probably 3000).
+

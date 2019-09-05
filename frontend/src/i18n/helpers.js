@@ -29,15 +29,13 @@ BigNumber.config({
   FORMAT: defaultNumberFmt,
 })
 
-export const formatMsg = (message: Msg, values?: Object) => {
-  return (
-    <FormattedMessage
-      // $FlowFixMe
-      id={message.id}
-      values={values}
-    />
-  )
-}
+const formatMsg = (message: Msg, values?: Object) => (
+  <FormattedMessage
+    // $FlowFixMe
+    id={message.id}
+    values={values}
+  />
+)
 
 // https://momentjscom.readthedocs.io/en/latest/moment-timezone/01-using-timezones/06-guessing-user-timezone/
 const CURRENT_TIMEZONE = Intl.DateTimeFormat().resolvedOptions().timeZone

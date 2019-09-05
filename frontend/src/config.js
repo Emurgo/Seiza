@@ -40,6 +40,8 @@ const env = {
   IS_YOROI: process.env.IS_YOROI,
   SEIZA_URL: process.env.SEIZA_URL,
   YOROI_EXTENSION_HASH: process.env.YOROI_EXTENSION_HASH,
+  REACT_APP_INSTANCES: process.env.REACT_APP_INSTANCES,
+  REACT_APP_COMMON_COOKIES_DOMAIN: process.env.REACT_APP_COMMON_COOKIES_DOMAIN,
 }
 
 export const origEnv = {...env}
@@ -63,6 +65,7 @@ export const OVERRIDABLE_ENV = [
   'REACT_APP_WATCH_RENDER_PERFORMANCE',
   'IS_YOROI',
   'SEIZA_URL',
+  'REACT_APP_INSTANCES',
 ]
 
 const envOverridesEnabled = env.REACT_APP_ENABLE_ENV_OVERRIDES === 'true'
@@ -102,6 +105,12 @@ const checkYoroiEnvs = () => {
 }
 
 isYoroi && checkYoroiEnvs()
+// Note: for now same domain for all common cookies, we can set it per cookie
+// later if ever needed
+const commonCookiesDomain = env.REACT_APP_COMMON_COOKIES_DOMAIN
+assert(commonCookiesDomain)
+
+const instances = env.REACT_APP_INSTANCES ? JSON.parse(env.REACT_APP_INSTANCES) : []
 
 export default {
   isProduction,
@@ -129,4 +138,7 @@ export default {
   isYoroi,
   seizaUrl,
   yoroiExtensionHash,
+  instances,
+  enableTestnet: instances.length > 1,
+  commonCookiesDomain,
 }
