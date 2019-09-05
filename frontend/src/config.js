@@ -37,6 +37,8 @@ const env = {
   REACT_SHOW_STAKE_POOLS_LIST_DATA: process.env.REACT_SHOW_STAKE_POOLS_LIST_DATA,
   REACT_APP_ENABLE_ENV_OVERRIDES: process.env.REACT_APP_ENABLE_ENV_OVERRIDES,
   REACT_APP_WATCH_RENDER_PERFORMANCE: process.env.REACT_APP_WATCH_RENDER_PERFORMANCE,
+  IS_YOROI: process.env.IS_YOROI,
+  SEIZA_URL: process.env.SEIZA_URL,
 }
 
 export const origEnv = {...env}
@@ -58,6 +60,8 @@ export const OVERRIDABLE_ENV = [
   'REACT_APP_FEATURE_ENABLE_RUSSIAN',
   'REACT_APP_FEATURE_ENABLE_SPANISH',
   'REACT_APP_WATCH_RENDER_PERFORMANCE',
+  'IS_YOROI',
+  'SEIZA_URL',
 ]
 
 const envOverridesEnabled = env.REACT_APP_ENABLE_ENV_OVERRIDES === 'true'
@@ -109,4 +113,6 @@ export default {
   featureEnableSpanish: env.REACT_APP_FEATURE_ENABLE_SPANISH === 'true',
 
   watchRenderPerformance: env.REACT_APP_WATCH_RENDER_PERFORMANCE === 'true',
+  isYoroi: env.IS_YOROI === 'true',
+  seizaUrl: env.SEIZA_URL,
 }

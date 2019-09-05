@@ -5,8 +5,9 @@ import ReactMarkdown from 'react-markdown'
 import {Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
-import {SimpleLayout, ExpansionPanel, ExternalLink} from '@/components/visual'
+import {SimpleLayout, ExpansionPanel} from '@/components/visual'
 import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
+import {Link} from '@/components/common'
 
 import {routeTo} from '@/helpers/routes'
 import {useI18n} from '@/i18n/helpers'
@@ -45,9 +46,9 @@ const MdParagraph = ({children}) => {
 const LinkRenderer = (props) => {
   // We treat all links as external
   return (
-    <ExternalLink target="_blank" to={props.href}>
+    <Link to={props.href} target="_blank" bold external>
       {props.children}
-    </ExternalLink>
+    </Link>
   )
 }
 

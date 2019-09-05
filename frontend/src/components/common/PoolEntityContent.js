@@ -4,13 +4,15 @@ import cn from 'classnames'
 import {Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
-import {VisualHash} from '@/components/visual'
+import {VisualHash, Tooltip} from '@/components/visual'
 import {Link, CopyToClipboard, NavTypography} from '@/components/common'
 import {routeTo} from '@/helpers/routes'
+import config from '@/config'
 
 type Props = {
   name: string,
   hash: string,
+  hashTooltip: React$Node,
 }
 
 const useStyles = makeStyles(({spacing, typography}) => ({
@@ -33,13 +35,36 @@ const useStyles = makeStyles(({spacing, typography}) => ({
   },
 }))
 
-const COPY_DIMENSIONS = {width: 20, height: 20}
+const COPY_TO_CLIPBOARD_DIMENSIONS = {width: 20, height: 20}
+
+const EllipsizedHash = ({hash, hashTooltip}) => {
+  return (
+    <Tooltip
+      title={hashTooltip}
+      placement="bottom"
+      disableHoverListener={!hashTooltip}
+      disableTouchListener={!hashTooltip}
+    >
+      <Typography noWrap>
+        <Link
+          monospace
+          target={config.isYoroi ? '_blank' : '_self'}
+          external={config.isYoroi}
+          to={`${config.isYoroi ? config.seizaUrl : ''}${routeTo.stakepool(hash)}`}
+        >
+          {hash}
+        </Link>
+      </Typography>
+    </Tooltip>
+  )
+}
 
 // Note: not using `EntityCardContent` as it would need to be customized to
 // ellipsize pool name (that component is already complicated enough) and
 // also PoolEntityContent is specific enough
-const PoolEntityContent = ({name, hash}: Props) => {
+const PoolEntityContent = ({name, hash, hashTooltip}: Props) => {
   const classes = useStyles()
+
   return (
     <div className={cn(classes.flexEllipsize, 'd-flex')}>
       <VisualHash value={hash} size={48} />
@@ -48,12 +73,9 @@ const PoolEntityContent = ({name, hash}: Props) => {
           <NavTypography className={classes.name}>{name}</NavTypography>
         </div>
         <div className={classes.hashWrapper}>
-          <Typography noWrap>
-            <Link monospace to={routeTo.stakepool(hash)}>
-              {hash}
-            </Link>
-          </Typography>
-          <CopyToClipboard value={hash} imgDimensions={COPY_DIMENSIONS} outlineSize={4} />
+          <EllipsizedHash hash={hash} hashTooltip={hashTooltip} />
+
+          <CopyToClipboard value={hash} dimensions={COPY_TO_CLIPBOARD_DIMENSIONS} outlineSize={4} />
         </div>
       </div>
     </div>

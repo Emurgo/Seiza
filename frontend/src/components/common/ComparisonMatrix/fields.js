@@ -8,8 +8,7 @@ import {fade} from '@material-ui/core/styles/colorManipulator'
 import {defineMessages} from 'react-intl'
 
 import {useI18n} from '@/i18n/helpers'
-import {ExternalLink} from '@/components/visual'
-import {CopyToClipboard} from '@/components/common'
+import {CopyToClipboard, Link} from '@/components/common'
 
 import {getBodyBackground, PADDING} from './utils'
 
@@ -28,11 +27,11 @@ export const EllipsizedLinkFieldWithTooltip = ({text}: {text: string}) => {
     <Tooltip title={<CustomTooltip text={text} />} placement="top" interactive>
       {/* Note: Without this extra `div` tooltip is not working */}
       <div>
-        <ExternalLink to={text}>
+        <Link external bold to={text}>
           <Typography variant="body1" className={classes.ellipsis}>
             {text}
           </Typography>
-        </ExternalLink>
+        </Link>
       </div>
     </Tooltip>
   )

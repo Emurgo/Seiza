@@ -6,7 +6,6 @@ import React, {useCallback, useState} from 'react'
 import useReactRouter from 'use-react-router'
 import dayjs from '@/dayjs'
 import {defineMessages} from 'react-intl'
-
 import {
   IconButton,
   Grid,
@@ -26,6 +25,7 @@ import useModalState from '@/components/hooks/useModalState'
 import {Button, DesktopOnly, MobileOnly} from '@/components/visual'
 import {download} from '@/helpers/utils'
 import {useI18n} from '@/i18n/helpers'
+import config from '@/config'
 
 import {useSelectedPoolsContext} from '../../context/selectedPools'
 
@@ -210,11 +210,16 @@ const ExportPools = ({selectedPools}) => {
 }
 
 const CopyToClipboardWrapper = ({children}) => {
-  const {history} = useReactRouter()
+  const {history, location} = useReactRouter()
 
   // Note: not using `window.location.href` as then the component would not properly
   // listen to changes in url query
-  const currentUrl = process.browser ? window.location.origin + history.createHref(location) : ''
+  const currentHref = history.createHref(location)
+  const currentUrl = process.browser
+    ? config.isYoroi
+      ? config.seizaUrl + currentHref
+      : window.location.origin + currentHref
+    : ''
 
   return (
     <CopyToClipboard value={currentUrl}>

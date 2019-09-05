@@ -1,21 +1,45 @@
+// @flow
 import React from 'react'
+import cn from 'classnames'
 import {Link as RouterLink} from 'react-router-dom'
 import {Link as MuiLink} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
 const useStyles = makeStyles(({typography}) => ({
   monospace: typography._monospace,
+  bold: {
+    fontWeight: '500',
+  },
 }))
 
-const Link = ({to, children, target = '_self', underline, monospace = false}) => {
+type Props = {
+  to: string,
+  target?: string,
+  children: React$Node,
+  onClick?: Function,
+  monospace?: boolean,
+  underline?: boolean,
+  external?: boolean,
+  bold?: boolean,
+}
+
+const Link = ({
+  to,
+  children,
+  target = '_self',
+  underline,
+  external,
+  monospace = false,
+  bold = false,
+}: Props) => {
   const classes = useStyles()
+  const linkProps = external ? {component: 'a', href: to} : {component: RouterLink, to}
   return to ? (
     <MuiLink
-      component={RouterLink}
-      to={to}
+      {...linkProps}
       target={target}
       underline={underline}
-      className={monospace ? classes.monospace : ''}
+      className={cn(monospace && classes.monospace, bold && classes.bold)}
     >
       {children}
     </MuiLink>

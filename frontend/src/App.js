@@ -163,7 +163,7 @@ const AppLayout = () => {
 
       <Grid item className={classes.navHeaderWrapper}>
         <CssBaseline />
-        <TopBar navItems={getTranslatedNavItems(translate)} />
+        {!config.isYoroi && <TopBar navItems={getTranslatedNavItems(translate)} />}
       </Grid>
       <DefaultErrorBoundary>
         <React.Fragment>
@@ -178,8 +178,14 @@ const AppLayout = () => {
                   )}
                 </Route>
               )}
-              {renderRouteDef({path: routeTo.stakingCenter.home(), component: StakingAdvanced})}
-              {renderRouteDef({path: routeTo.stakingCenterSimple(), component: StakingSimple})}
+              {renderRouteDef({
+                path: routeTo.stakingCenter.home(),
+                component: StakingAdvanced,
+              })}
+              {renderRouteDef({
+                path: routeTo.stakingCenterSimple(),
+                component: StakingSimple,
+              })}
               {renderRouteDef({path: routeTo.stakingPoolsList(), component: StakingPools})}
               {renderRouteDef({exact: true, path: routeTo.more(), component: More})}
               {renderRouteDef({exact: true, path: routeTo.termsOfUse(), component: Terms})}
@@ -197,9 +203,11 @@ const AppLayout = () => {
               <Route component={PageNotFound} />
             </Switch>
           </Grid>
-          <Grid item>
-            <Footer navItems={getTranslatedFooterNavItems(translate)} />
-          </Grid>
+          {!config.isYoroi && (
+            <Grid item>
+              <Footer navItems={getTranslatedFooterNavItems(translate)} />
+            </Grid>
+          )}
         </React.Fragment>
       </DefaultErrorBoundary>
     </Grid>
