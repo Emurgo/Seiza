@@ -33,14 +33,18 @@ const DESKTOP_TITLE_WIDTH = 180
 const HEADER_HEIGHT = 80
 
 const useStyles = makeStyles((theme) => {
+  const cellMdBreakpoint = {
+    paddingLeft: theme.spacing(2.5),
+    paddingRight: theme.spacing(2.5),
+  }
+
   const cell = {
     border: 'none',
     padding: 0,
     paddingLeft: theme.spacing(1.5),
     paddingRight: theme.spacing(1.5),
     [theme.breakpoints.up('md')]: {
-      paddingLeft: theme.spacing(2.5),
-      paddingRight: theme.spacing(2.5),
+      ...cellMdBreakpoint,
     },
 
     // ellipsize properties
@@ -106,6 +110,7 @@ const useStyles = makeStyles((theme) => {
       maxWidth: MOBILE_TITLE_WIDTH,
       [theme.breakpoints.up('md')]: {
         maxWidth: DESKTOP_TITLE_WIDTH,
+        ...cellMdBreakpoint,
       },
     },
     titleHeader: {
@@ -115,6 +120,7 @@ const useStyles = makeStyles((theme) => {
       maxWidth: MOBILE_TITLE_WIDTH,
       [theme.breakpoints.up('md')]: {
         maxWidth: DESKTOP_TITLE_WIDTH,
+        ...cellMdBreakpoint,
       },
     },
     headerCell: {

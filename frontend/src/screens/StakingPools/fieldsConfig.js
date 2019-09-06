@@ -159,6 +159,7 @@ export const fieldsConfig: Array<Config> = [
         </div>
       </Tooltip>
     ),
+    align: ALIGN.LEFT,
     filter: textFieldFilterConfig,
   },
   {
@@ -176,21 +177,21 @@ export const fieldsConfig: Array<Config> = [
     getLabel: ({tr}: GetLabelParams) => tr(fieldsMessages.fullness),
     getValue: ({data, formatPercent}: GetValueParams) => formatPercent(data.fullness),
     filter: percentageFieldFilterConfig,
-    align: ALIGN.CENTER,
+    align: ALIGN.RIGHT,
   },
   {
     field: 'margins',
     getLabel: ({tr}: GetLabelParams) => tr(fieldsMessages.margins),
     getValue: ({data, formatPercent}: GetValueParams) => formatPercent(data.margins),
     filter: percentageFieldFilterConfig,
-    align: ALIGN.CENTER,
+    align: ALIGN.RIGHT,
   },
   {
     field: 'performance',
     getLabel: ({tr}: GetLabelParams) => tr(fieldsMessages.performance),
     getValue: ({data, formatPercent}: GetValueParams) => formatPercent(data.performance),
     filter: percentageFieldFilterConfig,
-    align: ALIGN.CENTER,
+    align: ALIGN.RIGHT,
   },
   {
     field: 'rewards',
@@ -213,7 +214,7 @@ export const fieldsConfig: Array<Config> = [
     field: 'createdAt',
     getLabel: ({tr}: GetLabelParams) => tr(fieldsMessages.createdAt),
     getValue: ({data, NA, formatTimestamp}: GetValueParams) => formatTimestamp(data.keysDelegating),
-    align: ALIGN.LEFT,
+    align: ALIGN.RIGHT,
   },
   {
     field: 'stakersCount',
