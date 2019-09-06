@@ -6,7 +6,7 @@ import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
 
 import {AdaValue, HelpTooltip, ResponsiveCircularProgressBar} from '@/components/common'
-import {ExpandableCardFooter, Tooltip, SimpleExpandableCard} from '@/components/visual'
+import {ExpandableCardFooter, Tooltip, SimpleExpandableCard, Card} from '@/components/visual'
 import {useI18n} from '@/i18n/helpers'
 import EstimatedRewardsValue from './EstimatedRewards'
 import epochIcon from '@/static/assets/icons/epoch.svg'
@@ -300,7 +300,9 @@ const useStakepoolMobileCardClasses = makeStyles((theme) => ({
     // We should set `expanded` class, but for some reason it is not working
     padding: '0 !important',
     margin: '0 !important',
-    width: '100%', // Needed for proper ellipsize
+    width: '100%', // Needed for proper ellipsize,
+    borderRadius: '0 !important',
+    boxShadow: 'unset',
   },
 }))
 
@@ -309,6 +311,7 @@ type StakepoolMobileCardProps = {|
   onChange: Function,
   renderExpandedArea: Function,
   renderHeader: Function,
+  nonExpandableHeader: React$Node,
 |}
 
 export const StakepoolMobileCard = ({
@@ -316,18 +319,23 @@ export const StakepoolMobileCard = ({
   onChange,
   renderExpandedArea,
   renderHeader,
+  nonExpandableHeader,
 }: StakepoolMobileCardProps) => {
   const classes = useStakepoolMobileCardClasses()
 
   const cardClasses = useMemo(() => ({root: classes.wrapper, content: classes.wrapper}), [classes])
 
   return (
-    <SimpleExpandableCard
-      {...{expanded, onChange, renderExpandedArea, renderHeader}}
-      hideDefaultIcon
-      headerClasses={cardClasses}
-      detailsClasses={cardClasses}
-    />
+    <Card>
+      {nonExpandableHeader}
+      <SimpleExpandableCard
+        {...{expanded, onChange, renderExpandedArea, renderHeader}}
+        hideDefaultIcon
+        headerClasses={cardClasses}
+        detailsClasses={cardClasses}
+        cardClasses={cardClasses}
+      />
+    </Card>
   )
 }
 

@@ -161,6 +161,7 @@ type SimpleExpandableCardProps = {|
   renderHeader: (expanded: boolean) => Node,
   headerClasses?: {},
   detailsClasses?: {},
+  cardClasses?: {},
   hideDefaultIcon?: boolean,
 |}
 
@@ -172,10 +173,11 @@ export const SimpleExpandableCard = ({
   renderExpandedArea,
   headerClasses = {},
   detailsClasses = {},
+  cardClasses = {},
   hideDefaultIcon = false,
 }: SimpleExpandableCardProps) => {
   return (
-    <Card>
+    <Card classes={cardClasses}>
       <ExpansionPanel onChange={onChange} expanded={expanded}>
         <ExpansionPanelSummary
           expandIcon={hideDefaultIcon ? null : <ExpandMoreIcon color="primary" />}
