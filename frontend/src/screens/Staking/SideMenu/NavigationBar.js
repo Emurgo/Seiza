@@ -91,15 +91,6 @@ const useNavigationBarStyles = makeStyles((theme) => ({
     top: 0,
     position: 'sticky',
   },
-  mobileNavBar: {
-    position: 'sticky',
-    top: 67, // TODO: figure out how to keep in sync with main navigation bar height
-    background: theme.palette.background.paper,
-    zIndex: 10,
-    paddingTop: theme.spacing(1),
-    paddingLeft: theme.spacing(3),
-    maxWidth: '100%',
-  },
 }))
 
 type NavItems = Array<{|
@@ -209,16 +200,6 @@ const TabsHeader = () => {
   )
 }
 
-const MobileNavigation = () => {
-  const classes = useNavigationBarStyles()
-
-  return (
-    <div className={classes.mobileNavBar}>
-      <TabsHeader />
-    </div>
-  )
-}
-
 const DesktopNavigation = () => {
   const classes = useNavigationBarStyles()
   const {translate: tr} = useI18n()
@@ -246,7 +227,7 @@ const DesktopNavigation = () => {
 const NavigationBar = () => (
   <React.Fragment>
     <MobileOnly>
-      <MobileNavigation />
+      <TabsHeader />
     </MobileOnly>
     <DesktopOnly className="h-100">
       <DesktopNavigation />
