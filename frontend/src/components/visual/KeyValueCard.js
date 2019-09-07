@@ -6,20 +6,19 @@ import {Card, ContentSpacing} from '@/components/visual'
 
 import {makeStyles} from '@material-ui/styles'
 import type {Node} from 'react'
-import {getDefaultSpacing} from '@/components/visual/ContentSpacing'
 
 const useHeaderStyles = makeStyles((theme) => ({
   wrapper: {
     display: 'flex',
     minHeight: 60,
     backgroundColor: theme.palette.unobtrusiveContentHighlight,
-    paddingLeft: getDefaultSpacing(theme) * 1.5,
-    paddingRight: getDefaultSpacing(theme) * 1.5,
-    paddingTop: getDefaultSpacing(theme) * 0.25,
-    paddingBottom: getDefaultSpacing(theme) * 0.25,
+    paddingLeft: theme.getContentSpacing(1.5),
+    paddingRight: theme.getContentSpacing(1.5),
+    paddingTop: theme.getContentSpacing(0.25),
+    paddingBottom: theme.getContentSpacing(0.25),
     [theme.breakpoints.down('xs')]: {
-      paddingLeft: getDefaultSpacing(theme) * 0.5,
-      paddingRight: getDefaultSpacing(theme) * 0.5,
+      paddingLeft: theme.getContentSpacing(0.5),
+      paddingRight: theme.getContentSpacing(0.5),
     },
   },
   leftOffset: {
@@ -29,20 +28,20 @@ const useHeaderStyles = makeStyles((theme) => ({
 
 const useBodyStyles = makeStyles((theme) => ({
   wrapper: {
-    marginLeft: getDefaultSpacing(theme) * 1.5,
-    marginRight: getDefaultSpacing(theme) * 1.5,
+    marginLeft: theme.getContentSpacing(1.5),
+    marginRight: theme.getContentSpacing(1.5),
     [theme.breakpoints.down('xs')]: {
-      marginLeft: getDefaultSpacing(theme) * 0.5,
-      marginRight: getDefaultSpacing(theme) * 0.5,
+      marginLeft: theme.getContentSpacing(0.5),
+      marginRight: theme.getContentSpacing(0.5),
     },
   },
   rowWrapper: {
     borderBottom: `1px solid ${theme.palette.unobtrusiveContentHighlight}`,
-    paddingTop: getDefaultSpacing(theme) * 0.5,
-    paddingBottom: getDefaultSpacing(theme) * 0.5,
+    paddingTop: theme.getContentSpacing(0.5),
+    paddingBottom: theme.getContentSpacing(0.5),
     [theme.breakpoints.down('xs')]: {
-      paddingTop: getDefaultSpacing(theme) * 0.25,
-      paddingBottom: getDefaultSpacing(theme) * 0.25,
+      paddingTop: theme.getContentSpacing(0.25),
+      paddingBottom: theme.getContentSpacing(0.25),
     },
   },
   lastRow: {

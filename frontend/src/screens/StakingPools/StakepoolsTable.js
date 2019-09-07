@@ -204,7 +204,7 @@ type Props = {|
   noColumnsMsg: string,
   scrollRef: any,
   scrollNode: any,
-  options: Array<{align?: 'right' | 'left'}>,
+  options: Array<{align?: 'right' | 'left' | 'center'}>,
 |}
 
 const StakepoolsTable = ({data, headers, noColumnsMsg, scrollRef, scrollNode, options}: Props) => {

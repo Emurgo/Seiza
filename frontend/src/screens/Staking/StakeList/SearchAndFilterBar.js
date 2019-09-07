@@ -1,18 +1,22 @@
 // @flow
+import _ from 'lodash'
+import cn from 'classnames'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
-import React, {useCallback, useState} from 'react'
+import React, {useCallback, useState, useMemo} from 'react'
 import {defineMessages} from 'react-intl'
-import {Grid, Collapse} from '@material-ui/core'
+import {Grid, Collapse, Hidden} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
 import {useI18n} from '@/i18n/helpers'
-import {Searchbar, ToggleButton, Button} from '@/components/visual'
+import {Searchbar, ToggleButton, Button, SearchbarTextField} from '@/components/visual'
 import {useStateWithChangingDefault} from '@/components/hooks/useStateWithChangingDefault'
 import {useIsMobile} from '@/components/hooks/useBreakpoints'
+import {isInteger} from '@/helpers/validators'
 
 import Filters from './Filters'
 import {useSearchTextContext} from '../context/searchText'
 import {usePerformanceContext} from '../context/performance'
+import {useUserAdaContext} from '../context/userAda'
 
 import {ReactComponent as CloseFilters} from '@/static/assets/icons/close-filter.svg'
 import {ReactComponent as OpenFilters} from '@/static/assets/icons/filter.svg'
@@ -20,19 +24,34 @@ import {ReactComponent as OpenFilters} from '@/static/assets/icons/filter.svg'
 const messages = defineMessages({
   searchPlaceholder: 'Search for a Stake Pool by name',
   filters: 'Filters',
+  userAdaToStake: 'Your ADA',
 })
 
 // TODO: margin/padding theme unit
 const useStyles = makeStyles((theme) => ({
   wrapper: {
-    marginTop: '20px',
+    marginTop: theme.spacing(2.5),
+    [theme.breakpoints.up('md')]: {
+      marginTop: 0,
+    },
   },
   searchWrapper: {
     flex: 1,
     marginRight: '20px',
   },
+  topSearchWrapper: {
+    flex: 1,
+    marginBottom: theme.spacing(1),
+  },
   filtersWrapper: {
     marginTop: '20px',
+  },
+  userAdaInput: {
+    width: '100%',
+  },
+  userAdaWrapper: {
+    maxWidth: 200,
+    marginRight: theme.spacing(2),
   },
 }))
 
@@ -71,6 +90,50 @@ const Search = () => {
   )
 }
 
+const UserAdaInput = () => {
+  const classes = useStyles()
+  const {translate: tr} = useI18n()
+  const {userAda, setUserAda} = useUserAdaContext()
+  const [currentUserAda, setCurrentUserAda] = useStateWithChangingDefault(userAda)
+
+  const debouncedOnChange = useMemo(() => _.debounce(setUserAda, 1000), [setUserAda])
+
+  const onChange = useCallback(
+    (e: any) => {
+      // TODO: flow event
+      const newValue = e.target.value
+      if ((isInteger(newValue) && newValue > 0) || newValue === '') {
+        debouncedOnChange(newValue)
+        setCurrentUserAda(newValue)
+      }
+    },
+    [debouncedOnChange, setCurrentUserAda]
+  )
+
+  const onSubmit = useCallback(
+    (e) => {
+      e.preventDefault()
+      setUserAda(currentUserAda)
+    },
+    [currentUserAda, setUserAda]
+  )
+
+  const onReset = useCallback(() => setUserAda(''), [setUserAda])
+
+  return (
+    <form onSubmit={onSubmit}>
+      <SearchbarTextField
+        value={currentUserAda}
+        onChange={onChange}
+        placeholder={tr(messages.userAdaToStake)}
+        className={classes.userAdaInput}
+        onReset={onReset}
+        rounded
+      />
+    </form>
+  )
+}
+
 const useFiltersButtonClasses = makeStyles((theme) => ({
   enter: {
     opacity: 0,
@@ -93,7 +156,10 @@ const useFiltersButtonClasses = makeStyles((theme) => ({
     position: 'relative',
   },
   icon: {
-    verticalAlign: 'middle',
+    // Note: without position: absolute causes bugs in animation
+    position: 'absolute',
+    bottom: 19,
+    right: 21,
   },
 }))
 
@@ -132,20 +198,61 @@ const FiltersButton = ({open, onClick}) => {
   )
 }
 
-export default () => {
+const CommonTopBarLayout = ({rightSideElem}: {rightSideElem?: React$Node}) => {
+  const classes = useStyles()
+  return (
+    <React.Fragment>
+      <Hidden lgUp implementation="css">
+        <Grid item>
+          <div className={classes.topSearchWrapper}>
+            <Search />
+          </div>
+        </Grid>
+        <Grid item>
+          <Grid container justify="space-between" wrap="nowrap">
+            <div className={classes.userAdaWrapper}>
+              <UserAdaInput />
+            </div>
+            {rightSideElem}
+          </Grid>
+        </Grid>
+      </Hidden>
+      <Hidden mdDown>
+        <Grid item>
+          <Grid container justify="space-between">
+            <div className={classes.userAdaWrapper}>
+              <UserAdaInput />
+            </div>
+            <div className={cn(classes.searchWrapper, 'flex-grow-1')}>
+              <Search />
+            </div>
+            {rightSideElem}
+          </Grid>
+        </Grid>
+      </Hidden>
+    </React.Fragment>
+  )
+}
+
+export const SimpleStakingTopBar = () => {
+  const classes = useStyles()
+
+  return (
+    <Grid container direction="column" justify="space-between" className={classes.wrapper}>
+      <CommonTopBarLayout />
+    </Grid>
+  )
+}
+
+export const AdvancedStakingTopBar = () => {
   const classes = useStyles()
   const [showFilters, onToggleShowFilters] = useToggleFilters()
 
   return (
     <Grid container direction="column" justify="space-between" className={classes.wrapper}>
-      <Grid item>
-        <Grid container justify="space-between">
-          <div className={classes.searchWrapper}>
-            <Search />
-          </div>
-          <FiltersButton open={showFilters} onClick={onToggleShowFilters} />
-        </Grid>
-      </Grid>
+      <CommonTopBarLayout
+        rightSideElem={<FiltersButton open={showFilters} onClick={onToggleShowFilters} />}
+      />
       <Collapse in={showFilters}>
         <Grid item className={classes.filtersWrapper}>
           <Filters />

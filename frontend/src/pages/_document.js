@@ -5,6 +5,9 @@
 import React from 'react'
 import Document, {Html, Main, NextScript, Head} from 'next/document'
 import {ServerStyleSheets} from '@material-ui/styles'
+import config from '@/config'
+
+import fontFaces from '@/loadFonts'
 
 class MyDocument extends Document {
   static async getInitialProps(ctx) {
@@ -73,9 +76,12 @@ class MyDocument extends Document {
           />
           {/* We remove auto translate as it causes React apps to fail */}
           <meta name="google" content="notranslate" />
-          <link href="/static/assets/css/loadFonts.css" rel="stylesheet" />
+          <link rel="preconnect" href={config.graphQLServerUrl} />
           <link rel="shortcut icon" href="/static/favicon.ico" />
-          <script src="https://polyfill.io/v3/polyfill.js?features=es6,es7,es2017" />
+          {process.browser && (
+            <script src="https://polyfill.io/v3/polyfill.js?features=es6,es7,es2017" />
+          )}
+          <style dangerouslySetInnerHTML={{__html: fontFaces}} />
         </Head>
         <body className="notranslate">
           <noscript>You need to enable JavaScript to run this app.</noscript>

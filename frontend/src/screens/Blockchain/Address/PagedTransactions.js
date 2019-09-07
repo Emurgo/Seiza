@@ -15,7 +15,6 @@ import {
   Link,
   TabsPaginationLayout,
 } from '@/components/common'
-import {getDefaultSpacing} from '@/components/visual/ContentSpacing'
 import {useI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
 import {TabsProvider as Tabs, TabItem as Tab, useTabContext} from '@/components/common/Tabs'
@@ -36,7 +35,7 @@ const messages = defineMessages({
 
 const useStyles = makeStyles((theme) => ({
   txCard: {
-    padding: `${getDefaultSpacing(theme) * 0.5}px ${getDefaultSpacing(theme)}px`,
+    padding: `${theme.getContentSpacing(0.5)}px ${theme.getContentSpacing()}px`,
     borderBottom: `1px solid ${theme.palette.unobtrusiveContentHighlight}`,
   },
   leftSide: {

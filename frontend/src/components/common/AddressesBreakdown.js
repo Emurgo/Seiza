@@ -14,11 +14,11 @@ import {
   ContentSpacing,
   Card,
 } from '@/components/visual'
+import {AdaValue, Link, CopyToClipboard, SeparatorWithLabel} from '@/components/common'
 import WithModalState from '@/components/headless/modalState'
 import {useIsMobile} from '@/components/hooks/useBreakpoints'
 import {useI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
-import {AdaValue, Link, CopyToClipboard} from '@/components/common'
 
 import type {Transaction} from '@/__generated__/schema.flow'
 
@@ -126,22 +126,17 @@ const useSeparatorStyles = makeStyles((theme) => ({
     width: '100%',
     display: 'flex',
   },
-  separatorLine: {
-    borderBottom: `1px solid ${theme.palette.contentUnfocus}`,
-    flexGrow: 1,
-    margin: '10px 10px 10px 10px',
-  },
 }))
 
 const AddressSeparator = ({text}) => {
   const classes = useSeparatorStyles()
   return (
     <div className={classes.container}>
-      <div className={classes.separatorLine} />
-      <Typography variant="body1" inline color="textSecondary">
-        {text}
-      </Typography>
-      <div className={classes.separatorLine} />
+      <SeparatorWithLabel>
+        <Typography variant="body1" inline color="textSecondary">
+          {text}
+        </Typography>
+      </SeparatorWithLabel>
     </div>
   )
 }

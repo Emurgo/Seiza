@@ -2,21 +2,20 @@
 import React from 'react'
 
 import CircularProgressBar from '@/components/visual/CircularProgressBar'
-import {useIsMobile} from '@/components/hooks/useBreakpoints'
+import {DesktopOnly, MobileOnly} from '@/components/visual'
 
 import type {ExternalProps} from '@/components/visual/CircularProgressBar'
 import type {ComponentType} from 'react'
 
-const ResponsiveCircularProgressBar: ComponentType<ExternalProps> = (props) => {
-  const isMobile = useIsMobile()
-  return (
-    <CircularProgressBar
-      height={isMobile ? 40 : 85}
-      width={isMobile ? 100 : 85}
-      textAlign={isMobile ? 'left' : 'middle'}
-      {...props}
-    />
-  )
-}
+const ResponsiveCircularProgressBar: ComponentType<ExternalProps> = (props) => (
+  <React.Fragment>
+    <MobileOnly>
+      <CircularProgressBar height={40} width={100} textAlign="left" {...props} />
+    </MobileOnly>
+    <DesktopOnly>
+      <CircularProgressBar height={85} width={85} textAlign="middle" {...props} />
+    </DesktopOnly>
+  </React.Fragment>
+)
 
 export default ResponsiveCircularProgressBar

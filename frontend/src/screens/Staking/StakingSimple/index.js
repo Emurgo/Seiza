@@ -1,12 +1,15 @@
 // @flow
-
-import React from 'react'
+import React, {useRef} from 'react'
 
 import {makeStyles} from '@material-ui/styles'
 
+import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
 import Header from './Header'
-import StakeList from '../StakeList'
+import {StakeListLayout} from '../StakeList'
+import {SimpleStakingTopBar} from '../StakeList/SearchAndFilterBar'
+import StakepoolCard from './StakepoolCard'
 import {StakingContextProvider} from '../context'
+import {CARD_WIDTH} from '../StakeList/stakepoolCardUtils'
 
 const useStyles = makeStyles((theme) => ({
   centerWrapper: {
@@ -16,26 +19,30 @@ const useStyles = makeStyles((theme) => ({
     minWidth: 0, // needed for proper ellipsize in children components with flex
   },
   centeredItem: {
-    maxWidth: 1000,
+    maxWidth: CARD_WIDTH,
     width: '100%',
-    padding: `${theme.spacing(6)}px ${theme.spacing(2)}px`,
+    padding: `${theme.spacing(6)}px 0px`,
   },
 }))
 
-// TODO: decide how links to that screen should look like (mobile)
-// TODO: use different stake pool cards with StakeList
 export default () => {
   const classes = useStyles()
+  const scrollToRef = useRef(null)
+
+  useScrollFromBottom(scrollToRef, true)
+
   return (
     <React.Fragment>
       <Header />
-      <StakingContextProvider autoSync={false}>
-        <div className={classes.centerWrapper}>
-          <div className={classes.centeredItem}>
-            <StakeList />
+      <div ref={scrollToRef}>
+        <StakingContextProvider autoSync={false}>
+          <div className={classes.centerWrapper}>
+            <div className={classes.centeredItem}>
+              <StakeListLayout StakepoolCard={StakepoolCard} TopBar={SimpleStakingTopBar} />
+            </div>
           </div>
-        </div>
-      </StakingContextProvider>
+        </StakingContextProvider>
+      </div>
     </React.Fragment>
   )
 }

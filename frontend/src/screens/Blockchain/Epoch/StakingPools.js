@@ -27,8 +27,10 @@ export default () => {
 
   // TODO: try to reuse this function and Providers from 'StakingPools' folder,
   // but wait till requirements are specified
-  // Note: we also reset page when sortBy changes
-  const onSortByChange = useCallback(() => setPage(1), [setPage])
+  // Note: we also reset page when sortBy/filter changes
+  const resetPage = useCallback(() => setPage(1), [setPage])
+  const onSortByChange = resetPage
+  const onFilterChange = resetPage
 
   return (
     <SimpleLayout title={tr(messages.screenTitle)}>
@@ -40,7 +42,7 @@ export default () => {
         )
       ) : (
         <SortOptionsProvider onChange={onSortByChange}>
-          <FiltersProvider allPools={stakepools}>
+          <FiltersProvider allPools={stakepools} onChange={onFilterChange}>
             <StakingPools {...{page, setPage, stakepools}} />
           </FiltersProvider>
         </SortOptionsProvider>

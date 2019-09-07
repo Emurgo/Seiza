@@ -1,6 +1,6 @@
 //@flow
 import React from 'react'
-import moment from 'moment-timezone'
+import dayjs from '@/dayjs'
 import gql from 'graphql-tag'
 import cn from 'classnames'
 import idx from 'idx'
@@ -52,7 +52,7 @@ const useHistoricalPrice = (currency, timestamp, shouldFetch) => {
     {
       variables: {
         currency,
-        timestamp: moment(timestamp)
+        timestamp: dayjs(timestamp)
           .utc()
           .startOf('day')
           .toISOString(),
@@ -101,11 +101,11 @@ const AdaFiatTooltip = ({value, timestamp}) => {
 
   // Note: we need to compare UTC start of days as server gives us
   // UTC-day averages
-  const isHistoricalTimestamp = moment(timestamp)
+  const isHistoricalTimestamp = dayjs(timestamp)
     .utc()
     .startOf('day')
     .isBefore(
-      moment()
+      dayjs()
         .utc()
         .startOf('day')
     )
@@ -156,6 +156,7 @@ type Props = {|
   +showSign?: ShowSign,
   +colorful?: boolean,
   +timestamp?: any,
+  +disableFiatTooltip?: boolean,
 |}
 
 const usePlusStyles = makeStyles(({palette}) => ({
@@ -240,6 +241,7 @@ const AdaValue = ({
   showSign = 'auto',
   colorful = false,
   timestamp,
+  disableFiatTooltip = false,
 }: Props) => {
   const {formatAdaSplit} = useI18n()
 
@@ -257,38 +259,44 @@ const AdaValue = ({
 
   const {integral, fractional} = formatAdaSplit(value, {showSign})
 
-  return (
+  const _adaValue = (
+    <span className={classes.noWrapWhiteSpace}>
+      <Typography
+        variant="body1"
+        component="span"
+        className={cn(adaValueClasses.integral, fontClasses.thick)}
+      >
+        {integral}
+      </Typography>
+      <Typography
+        variant="caption"
+        color="textSecondary"
+        component="span"
+        className={cn(adaValueClasses.fractional, fontClasses.thin)}
+      >
+        {fractional}
+      </Typography>
+      {showCurrency && (
+        <Typography
+          variant="body1"
+          component="span"
+          className={cn(adaValueClasses.adaSymbol, fontClasses.thick)}
+        >
+          &nbsp;ADA
+        </Typography>
+      )}
+    </span>
+  )
+
+  return disableFiatTooltip ? (
+    _adaValue
+  ) : (
     <Tooltip
       enterDelay={250}
       title={<AdaFiatTooltip value={value} timestamp={timestamp} />}
       placement="top"
     >
-      <span className={classes.noWrapWhiteSpace}>
-        <Typography
-          variant="body1"
-          component="span"
-          className={cn(adaValueClasses.integral, fontClasses.thick)}
-        >
-          {integral}
-        </Typography>
-        <Typography
-          variant="caption"
-          color="textSecondary"
-          component="span"
-          className={cn(adaValueClasses.fractional, fontClasses.thin)}
-        >
-          {fractional}
-        </Typography>
-        {showCurrency && (
-          <Typography
-            variant="body1"
-            component="span"
-            className={cn(adaValueClasses.adaSymbol, fontClasses.thick)}
-          >
-            &nbsp;ADA
-          </Typography>
-        )}
-      </span>
+      {_adaValue}
     </Tooltip>
   )
 }

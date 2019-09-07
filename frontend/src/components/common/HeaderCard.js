@@ -22,10 +22,28 @@ import {fade} from '@material-ui/core/styles/colorManipulator'
 import {Card} from '@/components/visual'
 import WithModalState from '@/components/headless/modalState'
 
+// Placed here, so that "ad-hoc/hacky" shadows related logic is in one file.
+// As we apply shadow for cards in 'lg' we need to disable wrapper overflow,
+// otherwise shadows would be cut off.
+export const useScrollableWrapperStyles: any = makeStyles((theme) => ({
+  wrapperOverflow: {
+    'overflow-x': 'auto',
+    [theme.breakpoints.up('lg')]: {
+      'overflow-x': 'visible',
+    },
+  },
+}))
+
+const disabledBoxShadow = {
+  'boxShadow': 'none',
+  '&:hover': {
+    boxShadow: 'none !important',
+  },
+}
+
 const styles = (theme) => ({
   contentWrapper: {
     padding: theme.spacing(1),
-    paddingLeft: theme.spacing(1),
     [theme.breakpoints.up('md')]: {
       paddingLeft: theme.spacing(2),
     },
@@ -34,10 +52,16 @@ const styles = (theme) => ({
     border: '0px solid transparent !important',
     display: 'flex',
     flexDirection: 'row',
+    // Note: using mobile-first with box-shadow is tricky
+    [theme.breakpoints.down('md')]: disabledBoxShadow,
   },
   clickableCard: {
-    '&:hover': {
-      boxShadow: `0px 20px 40px 0px ${fade(theme.palette.shadowBase, 0.3)} !important`,
+    // Note: using mobile-first with box-shadow is tricky
+    [theme.breakpoints.down('md')]: disabledBoxShadow,
+    [theme.breakpoints.up('lg')]: {
+      '&:hover': {
+        boxShadow: `0px 20px 40px 0px ${fade(theme.palette.shadowBase, 0.3)} !important`,
+      },
     },
   },
   dropdownArrow: {
@@ -88,9 +112,11 @@ const styles = (theme) => ({
   },
   primaryText: {
     paddingBottom: theme.spacing(0.5),
+    whiteSpace: 'nowrap',
   },
   secondaryText: {
     lineHeight: 1,
+    whiteSpace: 'nowrap',
   },
 })
 

@@ -10,7 +10,11 @@ import {Link} from 'react-router-dom'
 
 import {LoadingDots} from '@/components/visual'
 import {useI18n} from '@/i18n/helpers'
-import {HeaderCard, HeaderCardContainer as MetricsCardContainer} from '@/components/common'
+import {
+  HeaderCard,
+  HeaderCardContainer as MetricsCardContainer,
+  ScrollableCardsWrapper,
+} from '@/components/common'
 import {routeTo} from '@/helpers/routes'
 import config from '@/config'
 import useCurrency, {CURRENCIES} from '@/components/hooks/useCurrency'
@@ -167,54 +171,59 @@ const OverviewMetrics = () => {
   }
 
   return (
-    <Grid container justify="center" wrap="wrap" direction="row">
+    <React.Fragment>
       <PreloadFont />
-      <MetricsCardContainer>
-        <MetricsCardWithLink
-          className={classes.card}
-          icon={<img alt="" src={epochIcon} />}
-          value={epochNumber}
-          metric={translate(text.epochLabel)}
-          to={epochLink}
-        />
-      </MetricsCardContainer>
-      <MetricsCardContainer>
-        <MetricsCardWithLink
-          className={classes.card}
-          icon={<img alt="" src={blocksIcon} />}
-          value={blockCount}
-          metric={translate(text.slotsLabel)}
-          to={blockLink}
-        />
-      </MetricsCardContainer>
-      {config.showStakingData && (
-        <MetricsCardContainer>
-          <MetricsCard
-            className={classes.card}
-            icon={<img alt="" src={decentralizationIcon} />}
-            value={decentralization}
-            metric={translate(text.decentralizationLabel)}
-          />
-        </MetricsCardContainer>
-      )}
-      <MetricsCardContainer>
-        <MetricsCardWithLink
-          {...commonMarketDataProps}
-          to={config.showStakingData ? marketDataLink : null}
-        />
-      </MetricsCardContainer>
-      {config.showStakingData && (
-        <MetricsCardContainer>
-          <MetricsCardWithLink
-            className={classes.card}
-            icon={<img alt="" src={poolsIcon} />}
-            value={pools}
-            metric={translate(text.poolsLabel)}
-            to={stakePoolsLink}
-          />
-        </MetricsCardContainer>
-      )}
-    </Grid>
+
+      <ScrollableCardsWrapper>
+        <Grid container wrap="nowrap" direction="row" justify="center">
+          <MetricsCardContainer>
+            <MetricsCardWithLink
+              className={classes.card}
+              icon={<img alt="" src={epochIcon} />}
+              value={epochNumber}
+              metric={translate(text.epochLabel)}
+              to={epochLink}
+            />
+          </MetricsCardContainer>
+          <MetricsCardContainer>
+            <MetricsCardWithLink
+              className={classes.card}
+              icon={<img alt="" src={blocksIcon} />}
+              value={blockCount}
+              metric={translate(text.slotsLabel)}
+              to={blockLink}
+            />
+          </MetricsCardContainer>
+          {config.showStakingData && (
+            <MetricsCardContainer>
+              <MetricsCard
+                className={classes.card}
+                icon={<img alt="" src={decentralizationIcon} />}
+                value={decentralization}
+                metric={translate(text.decentralizationLabel)}
+              />
+            </MetricsCardContainer>
+          )}
+          <MetricsCardContainer>
+            <MetricsCardWithLink
+              {...commonMarketDataProps}
+              to={config.showStakingData ? marketDataLink : null}
+            />
+          </MetricsCardContainer>
+          {config.showStakingData && (
+            <MetricsCardContainer>
+              <MetricsCardWithLink
+                className={classes.card}
+                icon={<img alt="" src={poolsIcon} />}
+                value={pools}
+                metric={translate(text.poolsLabel)}
+                to={stakePoolsLink}
+              />
+            </MetricsCardContainer>
+          )}
+        </Grid>
+      </ScrollableCardsWrapper>
+    </React.Fragment>
   )
 }
 

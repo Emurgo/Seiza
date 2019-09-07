@@ -13,19 +13,23 @@ import {
   StakingContextProvider,
   useSetListScreenStorageFromQuery,
   useSetBasicScreenStorageFromQuery,
-} from './context'
-import {useAutoSyncContext} from './context/autoSync'
-import SideMenu from './SideMenu'
-import StakePoolListScreen from './StakeList'
-import ComparisonMatrixScreen from './ComparisonMatrix'
-import PeopleScreen from './People'
+} from '../context'
+import {useAutoSyncContext} from '../context/autoSync'
+import SideMenu from '../SideMenu'
+import {StakeListLayout} from '../StakeList'
+import {AdvancedStakingTopBar} from '../StakeList/SearchAndFilterBar'
+import StakepoolCard from './StakepoolCard'
+import ComparisonMatrixScreen from '../ComparisonMatrix'
+import PeopleScreen from '../People'
 import StakePoolHeader from './Header'
-import PageNotFound from '../PageNotFound'
-import LocationMapScreen from './LocationMap'
-import HistoryScreen from './History'
-import ChartsScreen from './Charts'
+import PageNotFound from '@/screens/PageNotFound'
+import LocationMapScreen from '../LocationMap'
+import HistoryScreen from '../History'
+import ChartsScreen from '../Charts'
+import {CARD_WIDTH} from '../StakeList/stakepoolCardUtils'
+import {EstimatedRewardsModeProvider} from '../StakeList/estimatedRewardsModeUtils'
 
-const DEFAULT_MAX_WIDTH = '1000px'
+const DEFAULT_MAX_WIDTH = CARD_WIDTH
 
 const useStyles = makeStyles((theme) => {
   // Note: we use `width` instead of `flex: 0 0 width` as it is causing spaces at the bottom of div
@@ -58,7 +62,7 @@ const useStyles = makeStyles((theme) => {
     centeredItem: {
       maxWidth: ({maxWidth}) => maxWidth,
       width: '100%',
-      padding: `${theme.spacing(6)}px ${theme.spacing(2)}px`,
+      padding: `${theme.spacing(3)}px ${theme.spacing(2)}px`,
     },
     rightSideWrapper: {
       width: 0,
@@ -165,7 +169,7 @@ const FullWidthLayout = ({children}) => {
 
 const LayoutedStakePoolList = () => (
   <CenteredLayout>
-    <StakePoolListScreen />
+    <StakeListLayout StakepoolCard={StakepoolCard} TopBar={AdvancedStakingTopBar} />
   </CenteredLayout>
 )
 const LayoutedComparisonMatrix = () => (
@@ -236,34 +240,36 @@ export default () => {
   const stakingRoutes = routeTo.stakingCenter
   return (
     <StakingContextProvider autoSync={autoSync}>
-      <Grid container direction="column">
-        <DesktopOnly>
-          <StakePoolHeader />
-        </DesktopOnly>
-        <MobileOnly>
-          <SideMenu />
-        </MobileOnly>
+      <EstimatedRewardsModeProvider>
+        <Grid container direction="column">
+          <DesktopOnly>
+            <StakePoolHeader />
+          </DesktopOnly>
+          <MobileOnly className="w-100">
+            <SideMenu />
+          </MobileOnly>
 
-        <div className={classes.mainWrapper}>
-          <Switch>
-            {/* Default redirect */}
-            {stakingRoutes.poolList() && (
-              <Redirect exact from={stakingRoutes.home()} to={stakingRoutes.poolList()} />
-            )}
+          <div className={classes.mainWrapper}>
+            <Switch>
+              {/* Default redirect */}
+              {stakingRoutes.poolList() && (
+                <Redirect exact from={stakingRoutes.home()} to={stakingRoutes.poolList()} />
+              )}
 
-            {/* Routes */}
-            {renderRouteDef(stakingRoutes.poolList(), PoolListQuerySynchronizer)}
-            {renderRouteDef(stakingRoutes.poolComparison(), PoolComparisonQuerySynchronizer)}
-            {renderRouteDef(stakingRoutes.history(), HistoryQuerySynchronizer)}
-            {renderRouteDef(stakingRoutes.charts(), ChartsQuerySynchronizer)}
-            {renderRouteDef(stakingRoutes.location(), LocationQuerySynchronizer)}
-            {renderRouteDef(stakingRoutes.people(), PeopleQuerySynchronizer)}
+              {/* Routes */}
+              {renderRouteDef(stakingRoutes.poolList(), PoolListQuerySynchronizer)}
+              {renderRouteDef(stakingRoutes.poolComparison(), PoolComparisonQuerySynchronizer)}
+              {renderRouteDef(stakingRoutes.history(), HistoryQuerySynchronizer)}
+              {renderRouteDef(stakingRoutes.charts(), ChartsQuerySynchronizer)}
+              {renderRouteDef(stakingRoutes.location(), LocationQuerySynchronizer)}
+              {renderRouteDef(stakingRoutes.people(), PeopleQuerySynchronizer)}
 
-            {/* Fallback */}
-            <Route component={StakingPageNotFound} />
-          </Switch>
-        </div>
-      </Grid>
+              {/* Fallback */}
+              <Route component={StakingPageNotFound} />
+            </Switch>
+          </div>
+        </Grid>
+      </EstimatedRewardsModeProvider>
     </StakingContextProvider>
   )
 }

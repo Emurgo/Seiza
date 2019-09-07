@@ -6,7 +6,7 @@ import {MobilePaginationDivider} from '@/components/common'
 import {useIsMobile} from '@/components/hooks/useBreakpoints'
 
 const useStyles = makeStyles((theme) => ({
-  headerWrapper: {
+  wrapper: {
     alignItems: 'center',
     justifyContent: 'space-between',
     flexDirection: 'column',
@@ -14,13 +14,17 @@ const useStyles = makeStyles((theme) => ({
       flexDirection: 'row',
     },
   },
-  headerPagination: {
+  pagination: {
     marginTop: theme.spacing(2),
+    marginLeft: 'auto',
     width: '100%',
     [theme.breakpoints.up('md')]: {
       marginTop: 0,
       width: 'auto',
     },
+  },
+  tabs: {
+    maxWidth: '100%',
   },
 }))
 
@@ -28,9 +32,11 @@ const TabsPaginationLayout = ({tabs, pagination}) => {
   const classes = useStyles()
   const isMobile = useIsMobile()
   return (
-    <Grid container className={classes.headerWrapper}>
-      <Grid item>{tabs}</Grid>
-      <Grid item className={classes.headerPagination}>
+    <Grid container className={classes.wrapper}>
+      <Grid item className={classes.tabs}>
+        <div className="flex-grow-1">{tabs}</div>
+      </Grid>
+      <Grid item className={classes.pagination}>
         {isMobile && <MobilePaginationDivider />}
         {pagination}
       </Grid>

@@ -1,8 +1,6 @@
 // @flow
 import Router from 'next/router'
 import {reportError} from '@/helpers/errorReporting'
-import '@/App.css'
-import '@/utils.css'
 import '@/polyfills'
 
 import React, {useMemo, useState, useEffect} from 'react'
@@ -23,7 +21,7 @@ import CssBaseline from '@material-ui/core/CssBaseline'
 
 import config from '@/config'
 import {ThemeProvider, useTheme} from '@/components/context/theme'
-import {CookiesProvider} from '@/components/context/cookies'
+import {CookiesStorageProvider} from '@/components/context/cookies'
 import {
   IntlProvider,
   useLocale,
@@ -114,10 +112,7 @@ const getSetCookieArgs = (key, value, options = {}) => {
 }
 
 const getCookiesProps = (ctx) => {
-  // Note: this is returned for both client and server
-  const cookies = parseCookies(ctx || {})
-
-  // Note: this function is returned only when rendered server-side as it is not
+  // Note: those functions are returned only when rendered server-side as they are not
   // seriazable
   const _setCookie = (...args) => {
     setCookie(ctx, ...getSetCookieArgs(...args))
@@ -127,7 +122,9 @@ const getCookiesProps = (ctx) => {
     destroyCookie(ctx, name)
   }
 
-  return {cookies, setCookie: _setCookie, destroyCookie: _destroyCookie}
+  const _getCookies = () => parseCookies(ctx)
+
+  return {setCookie: _setCookie, destroyCookie: _destroyCookie, getCookies: _getCookies}
 }
 
 // NOTE!!!
@@ -206,8 +203,9 @@ class MyApp extends App {
   }
   // ***** END TAKEN FROM: https://github.com/mui-org/material-ui/blob/master/examples/nextjs/pages/_app.js
 
-  // setCookie and destroyCookie (functions in general) can be passed from `getInitialProps`
-  // only on server. On client we use "browser" version where we do not need `ctx`.
+  // getCookies, setCookie and destroyCookie (functions in general) can be passed
+  // from `getInitialProps` only on server.
+  // On client we use "browser" version where we do not need `ctx`.
   getHackedCookieHandlers(cookiesProps) {
     const _setCookie = (key, value, options) => {
       const args = getSetCookieArgs(key, value, options)
@@ -226,7 +224,15 @@ class MyApp extends App {
       }
     }
 
-    return {setCookie: _setCookie, destroyCookie: _destroyCookie}
+    const _getCookies = () => {
+      if (!process.browser) {
+        return cookiesProps.getCookies()
+      } else {
+        return parseCookies({})
+      }
+    }
+
+    return {setCookie: _setCookie, destroyCookie: _destroyCookie, getCookies: _getCookies}
   }
 
   render() {
@@ -258,12 +264,7 @@ class MyApp extends App {
 
     return (
       <Container>
-        <CookiesProvider
-          {...{
-            cookies: cookiesProps.cookies,
-            ...this.getHackedCookieHandlers(cookiesProps),
-          }}
-        >
+        <CookiesStorageProvider {...this.getHackedCookieHandlers(cookiesProps)}>
           <ApolloProviders client={apolloClient}>
             <ThemeProvider>
               <MuiProviders>
@@ -282,7 +283,7 @@ class MyApp extends App {
               </MuiProviders>
             </ThemeProvider>
           </ApolloProviders>
-        </CookiesProvider>
+        </CookiesStorageProvider>
       </Container>
     )
   }

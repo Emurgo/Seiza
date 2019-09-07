@@ -5,12 +5,25 @@ type OwnerPledge {
   actual: AdaAmount
 }
 
+type EstimatedReward {
+  percentage: Float
+  ada: AdaAmount
+}
+
+type EstimatedRewards {
+  perYear: EstimatedReward
+  perMonth: EstimatedReward
+  perEpoch: EstimatedReward
+}
+
 #TODO: make sure that `stakersCount` does not include owners
 type StakePoolSummary {
   performance: Float
   adaStaked: AdaAmount
   rewards: AdaAmount
+  estimatedRewards: EstimatedRewards
   keysDelegating: Int
+  cost: AdaAmount
   fullness: Float
   margins: Float
   pledge: AdaAmount

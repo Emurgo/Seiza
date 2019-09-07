@@ -9,19 +9,18 @@ import cn from 'classnames'
 import {Card} from '@/components/visual'
 import {CopyToClipboard} from '@/components/common'
 import {useIsMobile} from '@/components/hooks/useBreakpoints'
-import {getDefaultSpacing} from '@/components/visual/ContentSpacing'
 
-const useEntityCardShellStyles = makeStyles((theme) => ({
+const useEntityCardShellStyles = makeStyles(({breakpoints, getContentSpacing}) => ({
   card: {
-    paddingTop: getDefaultSpacing(theme) * 0.25,
-    paddingBottom: getDefaultSpacing(theme) * 0.25,
-    paddingLeft: getDefaultSpacing(theme) * 0.5,
-    paddingRight: getDefaultSpacing(theme) * 0.5,
-    [theme.breakpoints.up('md')]: {
-      paddingTop: getDefaultSpacing(theme) * 0.75,
-      paddingBottom: getDefaultSpacing(theme) * 0.75,
-      paddingLeft: getDefaultSpacing(theme),
-      paddingRight: getDefaultSpacing(theme),
+    paddingTop: getContentSpacing(0.25),
+    paddingBottom: getContentSpacing(0.25),
+    paddingLeft: getContentSpacing(0.5),
+    paddingRight: getContentSpacing(0.5),
+    [breakpoints.up('md')]: {
+      paddingTop: getContentSpacing(0.75),
+      paddingBottom: getContentSpacing(0.75),
+      paddingLeft: getContentSpacing(),
+      paddingRight: getContentSpacing(),
     },
   },
 }))

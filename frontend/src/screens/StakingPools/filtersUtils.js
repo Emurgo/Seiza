@@ -71,7 +71,7 @@ const decode = (arr) => {
   }, {})
 }
 
-const _useFilters = (ranges) => {
+const _useFilters = (ranges, onChange) => {
   const initialState = useMemo(() => getInitialFiltersState(ranges), [ranges])
 
   const [filtersUrlState, setFiltersUrlState] = useManageQueryValue('filters', encode(), decode)
@@ -85,11 +85,15 @@ const _useFilters = (ranges) => {
     (filterName, value) => {
       const newState = {...filters, [filterName]: {...filters[filterName], value}}
       setFiltersUrlState(encode(newState))
+      onChange()
     },
-    [filters, setFiltersUrlState]
+    [filters, onChange, setFiltersUrlState]
   )
 
-  const resetFilters = useCallback(() => setFiltersUrlState(encode()), [setFiltersUrlState])
+  const resetFilters = useCallback(() => {
+    setFiltersUrlState(encode())
+    onChange()
+  }, [onChange, setFiltersUrlState])
 
   const resetFilter = useCallback((filterName) => setFilter(filterName, null), [setFilter])
 
@@ -120,16 +124,17 @@ export const useFilteredPools = (stakepools: Array<{}>, filters: {[key: string]:
 type ProviderProps = {|
   children: React$Node,
   allPools: Array<{}>,
+  onChange: Function,
 |}
 
-export const FiltersProvider = ({children, allPools}: ProviderProps) => {
+export const FiltersProvider = ({children, allPools, onChange}: ProviderProps) => {
   const ranges = useMemo(
     () =>
       rangeFields.reduce((acc, field) => ({...acc, [field]: getFilterRange(field, allPools)}), {}),
     [allPools]
   )
 
-  const {filters, setFilter, resetFilters, resetFilter} = _useFilters(ranges)
+  const {filters, setFilter, resetFilters, resetFilter} = _useFilters(ranges, onChange)
 
   return (
     <Context.Provider value={{filters, setFilter, resetFilters, resetFilter}}>

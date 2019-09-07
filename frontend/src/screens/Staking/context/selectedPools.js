@@ -6,16 +6,17 @@ import {useManageSimpleContextValue} from './utils'
 
 import type {ProviderProps} from './utils'
 
-// TODO: dont allow adding more than 'n' pools
-
 const STORAGE_KEY = 'selectedPools'
 const DEFAULT_VALUE = []
+
+const MAX_POOLS_SELECTED = 5
 
 type ContextType = {
   selectedPools: Array<string>,
   addPool: Function,
   removePool: Function,
   setPools: Function,
+  isListFull: boolean,
   _setSelectedPoolsStorageFromQuery: Function,
   _selectedPoolsStorageToQuery: Function,
   _setSelectedPoolsStorageToDefault: Function,
@@ -26,6 +27,7 @@ const Context = React.createContext<ContextType>({
   addPool: null,
   removePool: null,
   setPools: null,
+  isListFull: false,
   _setSelectedPoolsStorageFromQuery: null,
   _selectedPoolsStorageToQuery: null,
   _setSelectedPoolsStorageToDefault: null,
@@ -39,6 +41,8 @@ export const SelectedPoolsProvider = ({children, autoSync}: ProviderProps) => {
     _storageToQuery: _selectedPoolsStorageToQuery,
     _setStorageToDefault: _setSelectedPoolsStorageToDefault,
   } = useManageSimpleContextValue(autoSync, STORAGE_KEY, DEFAULT_VALUE)
+
+  const isListFull = selectedPools.length >= MAX_POOLS_SELECTED
 
   const removePool = useCallback(
     (poolHash) => {
@@ -56,10 +60,13 @@ export const SelectedPoolsProvider = ({children, autoSync}: ProviderProps) => {
       if (selectedPools.includes(poolHash)) {
         throw new Error(`Pool ${poolHash} is already added.`)
       }
+      if (isListFull) {
+        return
+      }
       const newSelectedPools = [...selectedPools, poolHash]
       setPools(newSelectedPools)
     },
-    [selectedPools, setPools]
+    [selectedPools, setPools, isListFull]
   )
 
   return (
@@ -69,6 +76,7 @@ export const SelectedPoolsProvider = ({children, autoSync}: ProviderProps) => {
         addPool,
         removePool,
         setPools,
+        isListFull,
         _setSelectedPoolsStorageFromQuery,
         _selectedPoolsStorageToQuery,
         _setSelectedPoolsStorageToDefault,

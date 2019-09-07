@@ -28,6 +28,9 @@ const useStyles = makeStyles(({spacing, typography}) => ({
     alignItems: 'center',
   },
   ellipsize: typography._ellipsize,
+  name: {
+    display: 'inline!important',
+  },
 }))
 
 const COPY_DIMENSIONS = {width: 20, height: 20}
@@ -42,7 +45,7 @@ const PoolEntityContent = ({name, hash}: Props) => {
       <VisualHash value={hash} size={48} />
       <div className={cn(classes.info, classes.flexEllipsize, 'flex-grow-1')}>
         <div className={cn(classes.ellipsize, classes.flexEllipsize)}>
-          <NavTypography>{name}</NavTypography>
+          <NavTypography className={classes.name}>{name}</NavTypography>
         </div>
         <div className={classes.hashWrapper}>
           <Typography noWrap>

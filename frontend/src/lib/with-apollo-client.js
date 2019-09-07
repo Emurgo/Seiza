@@ -7,6 +7,8 @@ import {getMarkupFromTree} from 'react-apollo-hooks'
 import {renderToString} from 'react-dom/server'
 import {ServerStyleSheets} from '@material-ui/styles'
 
+import {isCrawler} from '@/helpers/userAgent'
+
 // router sets ctx.url after <Redirect>
 const shouldRedirect = (routerCtx) => routerCtx.url
 
@@ -31,10 +33,12 @@ export default (App) => {
         appProps = await App.getInitialProps(ctx)
       }
 
+      const renderDataOnServer = !process.browser && isCrawler(appProps.userAgent)
+
       // Run all GraphQL queries in the component tree
       // and extract the resulting data
-      const apollo = initApollo()
-      if (!process.browser) {
+      const apollo = initApollo(null, renderDataOnServer)
+      if (renderDataOnServer) {
         try {
           // Warning(ppershing):
           // routerCtx might be mutated during render!
@@ -97,12 +101,13 @@ export default (App) => {
         },
         ...appProps,
         apolloState,
+        renderDataOnServer,
       }
     }
 
     constructor(props) {
       super(props)
-      this.apolloClient = initApollo(props.apolloState)
+      this.apolloClient = initApollo(props.apolloState, props.renderDataOnServer)
     }
 
     render() {

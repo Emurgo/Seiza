@@ -1,7 +1,7 @@
 // @flow
 import _ from 'lodash'
 import cn from 'classnames'
-import React, {useMemo, useCallback} from 'react'
+import React, {useMemo, useCallback, useRef} from 'react'
 import {defineMessages} from 'react-intl'
 import {Grid, Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
@@ -18,6 +18,7 @@ import {
 import {useManageQueryValue} from '@/components/hooks/useManageQueryValue'
 import {toIntOrNull, getPageCount} from '@/helpers/utils'
 import {useI18n} from '@/i18n/helpers'
+import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
 
 import StakepoolsTable from './StakepoolsTable'
 import Header from './Header'
@@ -139,9 +140,17 @@ const useGetSortedPools = (stakepools) => {
   const filteredPools = useFilteredPools(stakepools, filters)
 
   const {sortOptions} = useSortOptions()
+
+  const {getSortableFunction} = fieldsConfigMap[sortOptions.field]
+
+  const getItem = useCallback((d) => d[sortOptions.field], [sortOptions.field])
+
   const sortedPools = useMemo(
-    () => _.orderBy(filteredPools, (d) => d[sortOptions.field], [sortOptions.order]),
-    [filteredPools, sortOptions.field, sortOptions.order]
+    () =>
+      getSortableFunction
+        ? filteredPools.sort(getSortableFunction(sortOptions.order, getItem))
+        : _.orderBy(filteredPools, getItem, [sortOptions.order]),
+    [filteredPools, getItem, getSortableFunction, sortOptions.order]
   )
 
   return sortedPools
@@ -270,27 +279,34 @@ export default () => {
   const {stakepools, loading, error} = useLoadStakepools()
   const [page, setPage] = useManageQueryValue('page', 1, toIntOrNull)
 
-  // Note: we also reset page when sortBy changes
-  const onSortByChange = useCallback(() => setPage(1), [setPage])
+  // Note: we also reset page when sortBy/filter changes
+  const resetPage = useCallback(() => setPage(1), [setPage])
+  const onSortByChange = resetPage
+  const onFilterChange = resetPage
+
+  const scrollToRef = useRef(null)
+  useScrollFromBottom(scrollToRef, stakepools.length > 0)
 
   return (
     <React.Fragment>
       <Header />
-      <SimpleLayout title={tr(messages.screenTitle)}>
-        {error || loading ? (
-          error ? (
-            <LoadingError error={error} />
+      <div ref={scrollToRef}>
+        <SimpleLayout title={tr(messages.screenTitle)}>
+          {error || loading ? (
+            error ? (
+              <LoadingError error={error} />
+            ) : (
+              <LoadingInProgress />
+            )
           ) : (
-            <LoadingInProgress />
-          )
-        ) : (
-          <SortOptionsProvider onChange={onSortByChange}>
-            <FiltersProvider allPools={stakepools}>
-              <StakingPools {...{page, setPage, stakepools}} />
-            </FiltersProvider>
-          </SortOptionsProvider>
-        )}
-      </SimpleLayout>
+            <SortOptionsProvider onChange={onSortByChange}>
+              <FiltersProvider allPools={stakepools} onChange={onFilterChange}>
+                <StakingPools {...{page, setPage, stakepools}} />
+              </FiltersProvider>
+            </SortOptionsProvider>
+          )}
+        </SimpleLayout>
+      </div>
     </React.Fragment>
   )
 }

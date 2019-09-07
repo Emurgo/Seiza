@@ -4,7 +4,7 @@ import idx from 'idx'
 import Measure from 'react-measure'
 import gql from 'graphql-tag'
 import {useQuery} from 'react-apollo-hooks'
-import moment from 'moment-timezone'
+import dayjs from '@/dayjs'
 import React, {useState, useCallback, useMemo} from 'react'
 import {defineMessages} from 'react-intl'
 import {FormControl, RadioGroup, FormControlLabel, Radio, Grid} from '@material-ui/core'
@@ -182,7 +182,7 @@ const Chart = ({seriesType, xAxisProps, currentEpoch, ...restProps}) => {
   const groupBy = xAxisProps.value
   const epochInterval = {from: Math.max((currentEpoch || 0) - X_AXIS_WINDOW.EPOCH, 0)}
   const dateInterval = {
-    from: moment
+    from: dayjs
       .utc()
       .startOf('day')
       .subtract(X_AXIS_WINDOW.DAY + 300, 'days') // TODO: remove `300` when backend is fixed

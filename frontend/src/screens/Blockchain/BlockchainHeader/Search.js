@@ -20,7 +20,6 @@ import {routeTo} from '@/helpers/routes'
 import * as urlHelpers from '@/helpers/url'
 import {useAnalytics} from '@/components/context/googleAnalytics'
 import {APOLLO_CACHE_OPTIONS} from '@/constants'
-import {getDefaultSpacing} from '@/components/visual/ContentSpacing'
 
 const text = defineMessages({
   searchPlaceholder: 'Search addresses, transactions, epochs & slots on the Cardano network',
@@ -105,9 +104,9 @@ const useStyles = makeStyles((theme) => ({
     position: 'absolute',
     width: '100%',
     zIndex: 1,
-    padding: getDefaultSpacing(theme) * 0.5,
-    paddingTop: getDefaultSpacing(theme) * 0.25,
-    paddingBottom: getDefaultSpacing(theme) * 0.25,
+    padding: theme.getContentSpacing(0.5),
+    paddingTop: theme.getContentSpacing(0.25),
+    paddingBottom: theme.getContentSpacing(0.25),
   },
   helpText: {
     marginLeft: theme.spacing(4),
@@ -130,6 +129,11 @@ const useStyles = makeStyles((theme) => ({
   alertLeaveActive: {
     opacity: 0,
     transition: 'opacity 500ms',
+  },
+  mobileHelpText: {
+    height: '35px',
+    // Hack: So that the header height does not increase
+    marginBottom: '-35px',
   },
 }))
 
@@ -215,7 +219,7 @@ const Search = ({isMobile = false}: SearchProps) => {
 
   const showAlert = searchQuery && !error && !loading && !searchResult
 
-  const searchbarRef = useSearchbarRef()
+  const searchBarRef = useSearchbarRef()
 
   const {isFocused: isSearchbarFocused, onFocus, onBlur} = useTextfieldFocus(false)
 
@@ -258,9 +262,12 @@ const Search = ({isMobile = false}: SearchProps) => {
         )}
       </ReactCSSTransitionGroup>
       {isMobile ? (
-        <Portal container={searchbarRef.current}>
+        <Portal container={searchBarRef.htmlNode}>
           <SearchHelpText
-            className={!isSearchbarFocused || showAlert ? classes.helpTextHidden : ''}
+            className={cn(
+              classes.mobileHelpText,
+              !isSearchbarFocused || showAlert ? classes.helpTextHidden : ''
+            )}
           />
         </Portal>
       ) : (

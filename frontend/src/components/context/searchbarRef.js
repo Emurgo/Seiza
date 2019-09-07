@@ -1,5 +1,7 @@
 // @flow
-import React, {useRef, useContext} from 'react'
+import React, {useContext} from 'react'
+
+import {useCallbackRef} from '@/components/hooks/useCallbackRef'
 
 type ContextType = any
 export const Context = React.createContext<ContextType>({})
@@ -9,8 +11,8 @@ type Props = {|
 |}
 
 export const SearchbarRefProvider = ({children}: Props) => {
-  const ref = useRef(null)
-  return <Context.Provider value={ref}>{children}</Context.Provider>
+  const {htmlNode, callbackRef} = useCallbackRef()
+  return <Context.Provider value={{htmlNode, callbackRef}}>{children}</Context.Provider>
 }
 
 export const useSearchbarRef = () => useContext(Context)

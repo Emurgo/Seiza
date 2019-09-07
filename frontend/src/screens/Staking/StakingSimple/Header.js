@@ -6,7 +6,7 @@ import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
 
 import {useI18n} from '@/i18n/helpers'
-import {HeaderCard, HeaderCardContainer} from '@/components/common'
+import {HeaderCard, HeaderCardContainer, ScrollableCardsWrapper} from '@/components/common'
 
 import searchForStakepoolIcon from '@/static/assets/icons/staking-simulator/search-for-stakepool.svg'
 
@@ -35,15 +35,17 @@ const Header = () => {
       alignItems="center"
     >
       <Typography variant="h1">{tr(messages.header)}</Typography>
-      <Grid container direction="row" justify="center" alignItems="center">
-        <HeaderCardContainer>
-          <HeaderCard
-            smallPrimaryText
-            secondaryText={tr(messages.card1Value)}
-            primaryText={tr(messages.card1Title)}
-            icon={<img alt="" src={searchForStakepoolIcon} />}
-          />
-        </HeaderCardContainer>
+      <Grid container direction="row" justify="center" alignItems="center" wrap="nowrap">
+        <ScrollableCardsWrapper>
+          <HeaderCardContainer>
+            <HeaderCard
+              smallPrimaryText
+              secondaryText={tr(messages.card1Value)}
+              primaryText={tr(messages.card1Title)}
+              icon={<img alt="" src={searchForStakepoolIcon} />}
+            />
+          </HeaderCardContainer>
+        </ScrollableCardsWrapper>
       </Grid>
     </Grid>
   )

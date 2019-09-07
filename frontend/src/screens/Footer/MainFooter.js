@@ -1,5 +1,5 @@
 // @flow
-import React, {useCallback} from 'react'
+import React, {useCallback, useMemo} from 'react'
 import cn from 'classnames'
 import {Link} from 'react-router-dom'
 import {defineMessages} from 'react-intl'
@@ -63,9 +63,6 @@ const useMainFooterStyles = makeStyles(({spacing, palette, typography, breakpoin
     'display': 'flex',
     'justifyContent': 'space-between',
     'flexDirection': 'column',
-    [breakpoints.up('sm')]: {
-      flexDirection: 'row',
-    },
     '& > *': {
       marginTop: spacing(1.2),
       marginRight: spacing(2),
@@ -75,6 +72,7 @@ const useMainFooterStyles = makeStyles(({spacing, palette, typography, breakpoin
     },
     [breakpoints.up('md')]: {
       'marginTop': 0,
+      'flexDirection': 'row',
       '& > *': {
         marginRight: spacing(4),
       },
@@ -198,6 +196,14 @@ const MainFooter = ({navItems}: Props) => {
     )
   }, [showSubscribe])
 
+  const flattenLinks = useMemo(
+    () =>
+      navItems.reduce((result, link) => {
+        return link.sublinks ? [...result, ...link.sublinks] : [...result, link]
+      }, []),
+    [navItems]
+  )
+
   return (
     <div className={classes.wrapper}>
       <Grid container className={classes.innerWrapper}>
@@ -212,7 +218,7 @@ const MainFooter = ({navItems}: Props) => {
           <Grid container direction="column" justify="center">
             <Grid item>
               <ul className={classes.nav}>
-                {navItems.map(({link, label, disabledText}) => (
+                {flattenLinks.map(({link, label, disabledText}) => (
                   <li key={label}>
                     {!link ? (
                       <DisabledLink {...{label, disabledText}} />

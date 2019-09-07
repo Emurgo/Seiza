@@ -1,26 +1,45 @@
 // @flow
 
-import React, {useContext} from 'react'
+import React, {useContext, useMemo} from 'react'
 
-type ContextType = {
-  cookies: {},
-  setCookie: Function,
-  destroyCookie: Function,
-}
+import {_getStorage} from '@/helpers/storage'
 
-export const Context = React.createContext<ContextType>({})
+import type {Storage} from '@/helpers/storage'
+
+type ContextType = Storage
+
+export const Context = React.createContext<ContextType>({
+  getItem: () => null,
+  setItem: () => {
+    // do nothing
+  },
+  removeItem: () => {
+    // do nothing
+  },
+})
 
 type Props = {|
   children: React$Node,
-  cookies: {},
   setCookie: Function,
   destroyCookie: Function,
+  getCookies: Function,
 |}
 
-// Note: just redirects cookies from next.js `ctx` object, so they can be accessed
-// from any component
-export const CookiesProvider = ({children, cookies, setCookie, destroyCookie}: Props) => {
-  return <Context.Provider value={{cookies, setCookie, destroyCookie}}>{children}</Context.Provider>
+// Note: just redirects cookies from next.js `ctx` object wrapped in "cookieStorage".
+// Storage is used by `useCookieState`, which should be used for state related stuff
+export const CookiesStorageProvider = ({children, setCookie, destroyCookie, getCookies}: Props) => {
+  const _cookieStorage = useMemo(
+    () => ({
+      getItem: (key) => getCookies()[key],
+      setItem: setCookie,
+      removeItem: destroyCookie,
+    }),
+    [getCookies, setCookie, destroyCookie]
+  )
+
+  const cookieStorage = useMemo(() => _getStorage(_cookieStorage, 'cookie'), [_cookieStorage])
+
+  return <Context.Provider value={cookieStorage}>{children}</Context.Provider>
 }
 
-export const useCookies = () => useContext(Context)
+export const useCookiesStorage = () => useContext(Context)

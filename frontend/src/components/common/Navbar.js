@@ -1,13 +1,14 @@
 // @flow
-import React, {useEffect, useRef} from 'react'
-import ReactDOM from 'react-dom'
+import React from 'react'
 import cn from 'classnames'
 
 import {MenuList, MenuItem, Typography} from '@material-ui/core'
+
 import {makeStyles} from '@material-ui/styles'
 import {fade} from '@material-ui/core/styles/colorManipulator'
 
-import {NavTypography, NavLink as Link} from '@/components/common'
+import useBooleanState from '@/components/hooks/useBooleanState'
+import {NavTypography, NavLink as Link, WithPathActive} from '@/components/common'
 import {Tooltip, Card} from '@/components/visual'
 
 const useStyles = makeStyles(({palette, spacing}) => ({
@@ -84,7 +85,8 @@ const useNavbarLinkStyles = makeStyles(({palette}) => ({
 
 const useSublinksStyles = makeStyles((theme) => ({
   tooltipChildren: {
-    display: 'inline-block',
+    display: 'inline-flex',
+    alignItems: 'center',
   },
   linkText: {
     color: theme.palette.text.secondary,
@@ -96,14 +98,6 @@ const useSublinksStyles = makeStyles((theme) => ({
   menuItem: {
     padding: 0,
     minHeight: 0,
-  },
-  hackyInput: {
-    width: 0,
-    height: 0,
-    border: 'none',
-    padding: 0,
-    margin: 0,
-    display: 'block',
   },
 }))
 
@@ -135,27 +129,14 @@ const Sublink = ({children, to}) => {
   )
 }
 
-const Sublinks = ({sublinks}) => {
+const Sublinks = ({sublinks, onClick}) => {
   const classes = useSublinksStyles()
-  const hackyInputRef = useRef(null)
-
-  useEffect(() => {
-    // We force "focus" on non-visible input so that Tooltip
-    // is hidden immediatelly after some link is clicked
-    const el = hackyInputRef.current
-    if (el) {
-      const node = ReactDOM.findDOMNode(el)
-      // $FlowFixMe
-      node && node.focus()
-    }
-  }, [])
 
   return (
     <Card>
-      <input ref={hackyInputRef} className={classes.hackyInput} />
       <MenuList>
         {sublinks.map(({link, label}) => (
-          <MenuItem key={link} className={classes.menuItem}>
+          <MenuItem key={link} className={classes.menuItem} onClick={onClick}>
             <Sublink to={link}>{label}</Sublink>
           </MenuItem>
         ))}
@@ -164,10 +145,10 @@ const Sublinks = ({sublinks}) => {
   )
 }
 
-const WithSublinks = ({children, sublinks}) => {
+const SublinksMenu = ({sublinks, getIsActive, to, label, activeClassName}) => {
   const classes = useSublinksStyles()
   const tooltipClasses = useTooltipClasses()
-  if (!sublinks) return children
+  const [open, setOpen, setClosed] = useBooleanState(false)
 
   const PopoverMenu = Tooltip
 
@@ -176,14 +157,32 @@ const WithSublinks = ({children, sublinks}) => {
       classes={tooltipClasses}
       placement="bottom"
       interactive
-      title={<Sublinks sublinks={sublinks} />}
+      open={open}
+      leaveDelay={100}
+      onClose={setClosed}
+      PopperProps={{
+        disablePortal: true,
+      }}
+      title={<Sublinks onClick={setClosed} sublinks={sublinks} />}
     >
-      <div className={classes.tooltipChildren}>{children}</div>
+      <div className={classes.tooltipChildren} onMouseEnter={setOpen}>
+        <WithPathActive path={to} getIsActive={getIsActive}>
+          {(isActive) => (
+            <NavbarLink
+              hasArrow
+              isActive={isActive || open}
+              className={cn(isActive && activeClassName)}
+            >
+              {label}
+            </NavbarLink>
+          )}
+        </WithPathActive>
+      </div>
     </PopoverMenu>
   )
 }
 
-type SublinksType = Array<{link: string, label: string}>
+type SublinksType = Array<{link: string, label: string, getIsActive?: Function}>
 
 type NavMenuItemProps = {
   disabledText?: ?string,
@@ -205,27 +204,30 @@ const NavMenuItem = ({
   const classes = useStyles()
   return !link ? (
     <DisabledLink {...{label, disabledText}} className={cn(isMobile && classes.mobileLink)} />
+  ) : sublinks ? (
+    <SublinksMenu
+      {...{sublinks, getIsActive, to: link, label}}
+      activeClassName={classes.underlineActive}
+    />
   ) : (
-    <WithSublinks sublinks={sublinks}>
-      <Link
-        getIsActive={getIsActive}
-        className={cn(
-          classes.link,
-          isMobile && classes.mobileLink,
-          sublinks && classes.disabledEvents
-        )}
-        to={link}
-      >
-        {(isActive) => (
-          <NavbarLink
-            isActive={isActive}
-            className={!isMobile && isActive ? classes.underlineActive : ''}
-          >
-            {label}
-          </NavbarLink>
-        )}
-      </Link>
-    </WithSublinks>
+    <Link
+      getIsActive={getIsActive}
+      className={cn(
+        classes.link,
+        isMobile && classes.mobileLink,
+        sublinks && classes.disabledEvents
+      )}
+      to={link}
+    >
+      {(isActive) => (
+        <NavbarLink
+          isActive={isActive}
+          className={!isMobile && isActive ? classes.underlineActive : ''}
+        >
+          {label}
+        </NavbarLink>
+      )}
+    </Link>
   )
 }
 
@@ -263,27 +265,30 @@ export const NavbarLink = ({
   isActive,
   children,
   className,
+  hasArrow,
 }: {
   isActive?: boolean,
   children: any,
   className?: string,
+  hasArrow?: boolean,
 }) => {
   const classes = useNavbarLinkStyles()
   return (
     <NavTypography
       className={cn(classes.link, isActive && classes.active, className)}
       variant="body1"
+      hasArrow={hasArrow}
     >
       {children}
     </NavTypography>
   )
 }
 
-const MobileMenuItem = ({label, link, onClose, disabledText}) => {
+const MobileMenuItem = ({label, link, onClose, disabledText, getIsActive}) => {
   const classes = useStyles()
   return (
     <MenuItem key={label} disabled={!link} onClick={onClose} className={classes.menuItem}>
-      <NavMenuItem {...{disabledText, link, label}} isMobile />
+      <NavMenuItem {...{disabledText, link, label, getIsActive}} isMobile />
     </MenuItem>
   )
 }
@@ -298,18 +303,18 @@ export const MobileNavMenuItems = ({
   currentPathname: string,
 }) => (
   <MenuList>
-    {items.map(({link, label, disabledText, sublinks}) =>
+    {items.map(({link, label, disabledText, sublinks, getIsActive}) =>
       sublinks ? (
-        sublinks.map(({link: sublinkLink, label: sublinkLabel}) => (
+        sublinks.map(({link: sublinkLink, label: sublinkLabel, getIsActive}) => (
           <MobileMenuItem
             key={sublinkLabel}
             link={sublinkLink}
             label={sublinkLabel}
-            {...{onClose, disabledText}}
+            {...{onClose, disabledText, getIsActive}}
           />
         ))
       ) : (
-        <MobileMenuItem key={label} {...{label, link, onClose, disabledText}} />
+        <MobileMenuItem key={label} {...{label, link, onClose, disabledText, getIsActive}} />
       )
     )}
   </MenuList>

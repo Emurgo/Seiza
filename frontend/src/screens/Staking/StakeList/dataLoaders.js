@@ -37,6 +37,7 @@ export const useLoadPagedStakePoolList = () => {
             createdAt
             age
             summary {
+              cost
               adaStaked
               fullness
               margins
@@ -44,6 +45,20 @@ export const useLoadPagedStakePoolList = () => {
               adaStaked
               ownerPledge {
                 declared
+              }
+              estimatedRewards {
+                perYear {
+                  percentage
+                  ada
+                }
+                perMonth {
+                  percentage
+                  ada
+                }
+                perEpoch {
+                  percentage
+                  ada
+                }
               }
             }
           }

@@ -1,7 +1,7 @@
 // @flow
 import idx from 'idx'
 import gql from 'graphql-tag'
-import moment from 'moment-timezone'
+import dayjs from '@/dayjs'
 import {useQuery} from 'react-apollo-hooks'
 
 export const useBackendSyncingStatus = () => {
@@ -22,9 +22,9 @@ export const useBackendSyncingStatus = () => {
   const status = idx(data, (_) => _.currentStatus)
 
   const isBehind = status
-    ? moment(status.currentTime)
+    ? dayjs(status.currentTime)
       .subtract(1, 'minute')
-      .isAfter(moment(status.dataAvailableUpTo))
+      .isAfter(dayjs(status.dataAvailableUpTo))
     : null
 
   const syncedUpTo = status ? status.dataAvailableUpTo : null

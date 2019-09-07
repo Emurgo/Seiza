@@ -18,13 +18,13 @@ const StyledArrowDropDownIcon = withStyles(({palette}) => ({
   },
 }))(ArrowDropDown)
 
-const StyledSelect = withStyles({
+const StyledSelect = withStyles((theme) => ({
   select: {
     paddingTop: '10px',
     paddingBottom: '10px',
     paddingRight: '32px',
   },
-})(SelectMUI)
+}))(SelectMUI)
 
 const StyledMenuItem = withStyles(({palette}) => ({
   selected: {
@@ -42,13 +42,13 @@ const styles = (theme) => ({
   },
 })
 
-const NoBorderInput = withStyles({
+const NoBorderInput = withStyles((theme) => ({
   root: {
     '& fieldset': {
       border: 'none',
     },
   },
-})(OutlinedInput)
+}))(OutlinedInput)
 
 const StyledOutlinedInput = withStyles(({palette}) => ({
   root: {
