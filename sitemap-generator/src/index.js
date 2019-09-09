@@ -107,7 +107,7 @@ const main = async () => {
 
       pages[`epoch-${slot.epoch}`] = {
         shard: 'epochs',
-        url: `${PAGE_ROOT}/epoch/${slot.epoch}`,
+        url: `${PAGE_ROOT}/blockchain/epoch/${slot.epoch}`,
         timestamp: _max((pages[`epoch-${slot.epoch}`] || {}).timestamp, slot.time),
         // There are only a few epochs so it isn't worth specifying
         // "never" for old ones
@@ -117,7 +117,7 @@ const main = async () => {
 
       pages[slot.hash] = {
         shard: `epoch_${slot.epoch}-blocks`,
-        url: `${PAGE_ROOT}/block/${slot.hash}`,
+        url: `${PAGE_ROOT}/blockchain/block/${slot.hash}`,
         timestamp: slot.time,
         changeFreq: 'never',
         priority: 0.5,
@@ -127,7 +127,7 @@ const main = async () => {
         slot.tx.forEach((tx) => {
           pages[tx.hash] = {
             shard: `epoch_${slot.epoch}-txs_${Math.floor(slot.slot / 5000)}`,
-            url: `${PAGE_ROOT}/txs/${tx.hash}`,
+            url: `${PAGE_ROOT}/blockchain/transaction/${tx.hash}`,
             timestamp: slot.time,
             changeFreq: 'never',
             priority: 0.5,
@@ -138,7 +138,7 @@ const main = async () => {
               pages[address] = {
                 // Note: last 2 characters should be semi-random
                 shard: `addresses_${address.slice(-2)}`,
-                url: `${PAGE_ROOT}/address/${address}`,
+                url: `${PAGE_ROOT}/blockchain/address/${address}`,
                 timestamp: _max((pages[address] || {}).timestamp, slot.time),
                 // TODO: maybe estimate on address activity?
                 changeFreq: 'daily',
