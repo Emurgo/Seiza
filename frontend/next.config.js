@@ -54,7 +54,22 @@ const addSvgFilesHandling = (config) => {
     ...(config.module.rules || []),
     {
       test: /\.svg$/,
-      use: ['@svgr/webpack', 'url-loader'],
+      use: [
+        {
+          loader: '@svgr/webpack',
+          // @svgr/webpack removes viewBox from svgs by default
+          // in order to scale properly, it needs not to be removed
+          // https://github.com/smooth-code/svgr/issues/18
+          options: {
+            svgoConfig: {
+              plugins: {
+                removeViewBox: false,
+              },
+            },
+          },
+        },
+        'url-loader',
+      ],
     },
   ]
   return config

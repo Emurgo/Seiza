@@ -1,7 +1,7 @@
 // @flow
 import React, {useCallback, useMemo} from 'react'
 import cn from 'classnames'
-import {Link} from 'react-router-dom'
+import {Link as RouterLink} from 'react-router-dom'
 import {defineMessages} from 'react-intl'
 import {Grid, Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
@@ -9,7 +9,8 @@ import {darken} from '@material-ui/core/styles/colorManipulator'
 
 import {useI18n} from '@/i18n/helpers'
 import {useAnalytics} from '@/components/context/googleAnalytics'
-import {ExternalLink, Tooltip} from '@/components/visual'
+import {Tooltip} from '@/components/visual'
+import {Link} from '@/components/common'
 import logo from '@/static/assets/icons/logo-seiza-white.svg'
 import {useSubscribe} from './context/subscribe'
 
@@ -156,9 +157,9 @@ const SocialIcon = ({to, icon, className, iconName}) => {
 
   return (
     <span className={classes.socialIconWrapper}>
-      <ExternalLink to={to} target="_blank" onClick={onClick}>
+      <Link external to={to} target="_blank" onClick={onClick}>
         <img src={icon} alt="" />
-      </ExternalLink>
+      </Link>
     </span>
   )
 }
@@ -223,11 +224,11 @@ const MainFooter = ({navItems}: Props) => {
                     {!link ? (
                       <DisabledLink {...{label, disabledText}} />
                     ) : (
-                      <Link className={classes.link} to={link}>
+                      <RouterLink className={classes.link} to={link}>
                         <Typography variant="caption" className={classes.navText}>
                           {label}
                         </Typography>
-                      </Link>
+                      </RouterLink>
                     )}
                   </li>
                 ))}

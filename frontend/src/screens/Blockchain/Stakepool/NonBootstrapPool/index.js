@@ -9,13 +9,7 @@ import {useManageQueryValue} from '@/components/hooks/useManageQueryValue'
 import useTabState from '@/components/hooks/useTabState'
 import {toIntOrNull, getPageCount} from '@/helpers/utils'
 
-import {
-  SummaryCard,
-  ExternalLink,
-  SimpleLayout,
-  Alert,
-  LoadingInProgress,
-} from '@/components/visual'
+import {SummaryCard, SimpleLayout, Alert, LoadingInProgress} from '@/components/visual'
 import {
   AdaValue,
   LoadingError,
@@ -147,9 +141,9 @@ const Stakepool = () => {
             <Row>
               <Label>{tr(messages.webpage)}</Label>
               <Value>
-                <ExternalLink to={stakepool.webpage}>
+                <Link external bold to={stakepool.webpage}>
                   <Typography noWrap>{stakepool.webpage}</Typography>
-                </ExternalLink>
+                </Link>
               </Value>
             </Row>
             <Row>

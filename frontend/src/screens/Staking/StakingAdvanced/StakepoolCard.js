@@ -16,6 +16,8 @@ import {PoolEntityContent, ResponsiveCircularProgressBar} from '@/components/com
 import WithModalState from '@/components/headless/modalState'
 import {useI18n} from '@/i18n/helpers'
 import {useSelectedPoolsContext} from '../context/selectedPools'
+import config from '@/config'
+
 import {ReactComponent as AddPoolIcon} from '@/static/assets/icons/staking-simulator/add-stakepool.svg'
 import {ReactComponent as RemovePoolIcon} from '@/static/assets/icons/close.svg'
 
@@ -37,6 +39,7 @@ const messages = defineMessages({
   // Note(bigamasta): If needed to be reused on Stake pools screens,
   // we can create something like helpers/helpMessages.js
   disabledButton: 'You have reached maximum limit of stakepools',
+  yoroi__seeMoreInSeiza: 'See More in Seiza',
 })
 
 const useHeaderStyles = makeStyles(({palette, spacing, breakpoints}) => ({
@@ -162,7 +165,11 @@ const Header = ({name, hash}) => {
       className={classes.wrapper}
     >
       <Grid item className={classes.flexEllipsize}>
-        <PoolEntityContent name={name} hash={hash} />
+        <PoolEntityContent
+          name={name}
+          hash={hash}
+          hashTooltip={config.isYoroi && tr(messages.yoroi__seeMoreInSeiza)}
+        />
       </Grid>
       <Grid item>
         {selected ? (

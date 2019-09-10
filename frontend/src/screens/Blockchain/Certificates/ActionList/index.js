@@ -10,7 +10,6 @@ import {
   Divider,
   DesktopOnly,
   MobileOnly,
-  ExternalLink,
   ExpandableCardContent,
 } from '@/components/visual'
 import useModalState from '@/components/hooks/useModalState'
@@ -405,9 +404,9 @@ const poolCreationAdditionalRows = ({action, i18n}) => {
     {
       label: tr(poolCreationMessages.webpageLabel),
       value: (
-        <ExternalLink to={webpage}>
+        <Link external bold to={webpage}>
           <Typography noWrap>{webpage}</Typography>
-        </ExternalLink>
+        </Link>
       ),
     },
     {

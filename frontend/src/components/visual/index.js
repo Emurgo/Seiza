@@ -11,7 +11,6 @@ export {
   SimpleExpandableCard,
 } from './ExpandableCard'
 export {default as KeyValueCard} from './KeyValueCard'
-export {default as ExternalLink} from './ExternalLink'
 export {default as CircularProgressBar} from './CircularProgressBar'
 export {default as Select} from './Select'
 export {default as Slider} from './Slider'

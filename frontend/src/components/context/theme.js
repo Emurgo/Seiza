@@ -5,6 +5,7 @@ import React, {useContext} from 'react'
 import {useCookieState} from '@/components/hooks/useStorageState'
 
 import {THEMES} from '@/themes'
+import config from '@/config'
 
 type ContextType = {
   setTheme: Function,
@@ -17,6 +18,14 @@ type Props = {|
   children: React$Node,
 |}
 
+const getTheme = (themeFromCookies) => {
+  if (config.isYoroi) {
+    return THEMES.YOROI
+  } else {
+    return Object.values(THEMES).includes(themeFromCookies) ? themeFromCookies : THEMES._default
+  }
+}
+
 export const ThemeProvider = ({children}: Props) => {
   const [currentTheme, setTheme] = useCookieState<string>('theme', THEMES._default)
 
@@ -24,7 +33,7 @@ export const ThemeProvider = ({children}: Props) => {
     <Context.Provider
       value={{
         setTheme,
-        currentTheme: Object.values(THEMES).includes(currentTheme) ? currentTheme : THEMES._default,
+        currentTheme: getTheme(currentTheme),
       }}
     >
       {children}
