@@ -1,6 +1,7 @@
 // @flow
 
 import React from 'react'
+import cn from 'classnames'
 import {Grid, Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
@@ -17,6 +18,9 @@ const messages = defineMessages({
 const useStyles = makeStyles((theme) => ({
   item: {
     marginTop: theme.spacing(3),
+  },
+  image: {
+    maxWidth: '100%',
   },
 }))
 
@@ -39,14 +43,14 @@ export const DefaultErrorScreen = () => {
     <Grid container alignItems="center" justify="center" className="h-100">
       <Grid item>
         <Grid container direction="column" alignItems="center">
-          <Typography className={classes.item} variant="h1">
+          <Typography className={classes.item} variant="h2">
             {tr(messages.errorTitle)}
           </Typography>
-          <Typography className={classes.item} variant="h2">
+          <Typography className={classes.item} variant="h4">
             {tr(messages.errorMsg)}
           </Typography>
 
-          <img className={classes.item} alt="" src={errorImage} />
+          <img className={cn(classes.item, classes.image)} alt="" src={errorImage} />
         </Grid>
       </Grid>
     </Grid>
