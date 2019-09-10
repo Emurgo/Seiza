@@ -17,7 +17,8 @@ import {makeStyles} from '@material-ui/styles'
 import {CloseIconButton, Divider, MobileOnly, DesktopOnly} from '@/components/visual'
 import WithModalState from '@/components/headless/modalState'
 import config from '@/config'
-import {useMobileStakingSettingsRef} from '@/components/context/refs'
+import {useMobileStakingSettingsRef, useTopBarRef} from '@/components/context/refs'
+import {useIsMobile} from '@/components/hooks/useBreakpoints'
 
 import {useSelectedPoolsContext} from '../../context/selectedPools'
 import {LoadingError} from '@/components/common'
@@ -123,6 +124,9 @@ const useStyles = makeStyles((theme) => ({
     height: 40,
     width: 28,
     marginRight: 20,
+  },
+  yoroiTopBarWrapper: {
+    background: theme.palette.background.paper,
   },
 }))
 
@@ -239,8 +243,37 @@ const DesktopSettingsBar = ({selectedPools, error}: Props) => {
   )
 }
 
-const SettingsBar = () => {
+const MobileYoroiTopBar = ({selectedPools, error}) => {
   const classes = useStyles()
+  const {htmlNode} = useTopBarRef()
+  const isMobile = useIsMobile()
+  return (
+    <NoSSR>
+      {/* otherwise I would need to apply sticky className all the way up the DOM */}
+      {/* Note(bigamasta): Using Portal to make code clean */}
+      {isMobile && (
+        <Portal container={htmlNode}>
+          <Grid container alignItems="center" className={classes.yoroiTopBarWrapper}>
+            <YoroiDelegate selectedPools={selectedPools} />
+            <div className={classes.stakingSettingsPortal}>
+              <MobileSettingsBar {...{selectedPools, error}} />
+            </div>
+          </Grid>
+        </Portal>
+      )}
+    </NoSSR>
+  )
+}
+
+type SettingsBarProps = {
+  yoroiTopBarPortal: boolean,
+  mobileSettingsBarPortal: boolean,
+}
+
+const SettingsBar = ({
+  yoroiTopBarPortal = true,
+  mobileSettingsBarPortal = true,
+}: SettingsBarProps) => {
   const {htmlNode} = useMobileStakingSettingsRef()
 
   const {selectedPools: selectedPoolsHashes} = useSelectedPoolsContext()
@@ -249,20 +282,15 @@ const SettingsBar = () => {
   return (
     <React.Fragment>
       <MobileOnly>
-        {config.isYoroi ? (
+        {config.isYoroi && yoroiTopBarPortal ? (
           // NoSSR is needed, otherwise content is broken (WHY???)
-          <NoSSR>
-            <Grid container alignItems="center">
-              <YoroiDelegate selectedPools={selectedPools} />
-              <div className={classes.stakingSettingsPortal}>
-                <MobileSettingsBar {...{selectedPools, error}} />
-              </div>
-            </Grid>
-          </NoSSR>
+          <MobileYoroiTopBar {...{selectedPools, error}} />
         ) : (
-          <Portal container={htmlNode}>
-            <MobileSettingsBar {...{selectedPools, error}} />
-          </Portal>
+          mobileSettingsBarPortal && (
+            <Portal container={htmlNode}>
+              <MobileSettingsBar {...{selectedPools, error}} />
+            </Portal>
+          )
         )}
       </MobileOnly>
       <DesktopOnly>

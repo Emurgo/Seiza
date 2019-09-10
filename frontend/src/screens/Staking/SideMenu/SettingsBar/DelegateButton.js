@@ -9,7 +9,7 @@ const useStyles = makeStyles((theme) => ({
   panel: {
     position: 'relative',
     flexGrow: 1,
-    margin: '20px 30px',
+    margin: '14px 30px',
     [theme.breakpoints.up('md')]: {
       marginLeft: 60,
       marginRight: 40,

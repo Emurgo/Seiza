@@ -16,18 +16,25 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const SideMenu = () => {
+type SideMenuProps = {
+  yoroiTopBarPortal: boolean,
+  mobileSettingsBarPortal: boolean,
+}
+const SideMenu = ({yoroiTopBarPortal = true, mobileSettingsBarPortal = true}: SideMenuProps) => {
   const classes = useStyles()
 
   return (
     <React.Fragment>
       <MobileOnly>
-        <SettingsBar />
+        <SettingsBar
+          yoroiTopBarPortal={yoroiTopBarPortal}
+          mobileSettingsBarPortal={mobileSettingsBarPortal}
+        />
         <NavigationBar />
       </MobileOnly>
       <DesktopOnly className="h-100">
         <Card className={classes.wrapper}>
-          <SettingsBar />
+          <SettingsBar yoroiTopBarPortal={false} mobileSettingsBarPortal={false} />
           <NavigationBar />
         </Card>
       </DesktopOnly>

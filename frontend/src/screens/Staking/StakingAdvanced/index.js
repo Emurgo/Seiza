@@ -142,7 +142,7 @@ const CenteredLayout = ({children, maxWidth = DEFAULT_MAX_WIDTH}: CenteredLayout
       <DesktopOnly>
         <div className={classes.layoutWrapper}>
           <div className={classes.sidebarWrapper}>
-            <SideMenu />
+            <SideMenu yoroiTopBarPortal={false} mobileSettingsBarPortal={false} />
           </div>
           <div className={classes.centerWrapper}>
             <div className={classes.centeredItem}>{children}</div>
@@ -168,7 +168,7 @@ const FullWidthLayout = ({children}) => {
       <DesktopOnly>
         <div className={classes.layoutWrapper}>
           <div className={classes.sidebarWrapper}>
-            <SideMenu />
+            <SideMenu yoroiTopBarPortal={false} mobileSettingsBarPortal={false} />
           </div>
           <div className={classes.fullWidthWrapper}>{children}</div>
         </div>
@@ -259,7 +259,7 @@ export default () => {
           )}
           <div className={classes.mobileSideMenu}>
             <MobileOnly className="w-100">
-              <SideMenu />
+              <SideMenu yoroiTopBarPortal mobileSettingsBarPortal />
             </MobileOnly>
           </div>
 
