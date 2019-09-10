@@ -3,6 +3,7 @@
 import React from 'react'
 import dynamic from 'next/dynamic'
 import {BrowserRouter, StaticRouter, Route, Switch} from 'react-router-dom'
+import cn from 'classnames'
 import {CssBaseline, Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
@@ -75,10 +76,12 @@ const useAppStyles = makeStyles((theme) => ({
     top: 0,
     zIndex: 30,
     position: 'sticky',
-    height: NAV_HEADER_HEIGHT,
     [theme.breakpoints.up('md')]: {
       position: 'relative',
     },
+  },
+  navHeaderWrapperHeight: {
+    height: NAV_HEADER_HEIGHT,
   },
 }))
 
@@ -163,7 +166,10 @@ const AppLayout = () => {
       <UnsupportedBrowserBanner />
       <CookiesBanner />
 
-      <Grid item className={classes.navHeaderWrapper}>
+      <Grid
+        item
+        className={cn(classes.navHeaderWrapper, !config.isYoroi && classes.navHeaderWrapperHeight)}
+      >
         <CssBaseline />
         {!config.isYoroi && <TopBar navItems={getTranslatedNavItems(translate)} />}
       </Grid>
