@@ -22,6 +22,9 @@ const CustomAvatar = withStyles(({spacing, palette}) => ({
     background: palette.background.paper,
     marginLeft: `${spacing(0.5)}px !important`,
     marginRight: spacing(0.5),
+    // Needed, because on heroku styles are applied in different order
+    width: `${spacing(4)}px !important`,
+    height: `${spacing(4)}px !important`,
   },
 }))(Avatar)
 
