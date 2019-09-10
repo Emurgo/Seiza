@@ -70,7 +70,7 @@ const Row = ({poolData}) => {
   const classes = useStyles()
   return (
     <div className={classes.row}>
-      <PoolEntityContent name={poolData.poolHash} hash={poolData.name} />
+      <PoolEntityContent name={poolData.name} hash={poolData.poolHash} />
       <div className={classes.ownersWrapper}>
         <Grid container>
           <Typography variant="overline" color="textSecondary">
