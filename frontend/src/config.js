@@ -39,6 +39,7 @@ const env = {
   REACT_APP_WATCH_RENDER_PERFORMANCE: process.env.REACT_APP_WATCH_RENDER_PERFORMANCE,
   IS_YOROI: process.env.IS_YOROI,
   SEIZA_URL: process.env.SEIZA_URL,
+  YOROI_EXTENSION_HASH: process.env.YOROI_EXTENSION_HASH,
 }
 
 export const origEnv = {...env}
@@ -115,4 +116,5 @@ export default {
   watchRenderPerformance: env.REACT_APP_WATCH_RENDER_PERFORMANCE === 'true',
   isYoroi: env.IS_YOROI === 'true',
   seizaUrl: env.SEIZA_URL,
+  yoroiExtensionHash: env.YOROI_EXTENSION_HASH,
 }
