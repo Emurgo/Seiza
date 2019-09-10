@@ -14,8 +14,6 @@ import useTabState from '@/components/hooks/useTabState'
 import {NavbarLink} from '@/components/common/Navbar'
 import {NavLink} from '@/components/common'
 
-import config from '@/config'
-
 import {ReactComponent as ListIcon} from '@/static/assets/icons/staking-simulator/list.svg'
 import {ReactComponent as ComparisonMatrixIcon} from '@/static/assets/icons/staking-simulator/comparison-matrix.svg'
 import {ReactComponent as HistoryIcon} from '@/static/assets/icons/staking-simulator/history.svg'
@@ -157,16 +155,6 @@ const useTabStateFromUrl = () => {
   return tabState
 }
 
-const getSideMenuNavLink = (linkId, link, location) => {
-  if (config.isYoroi) {
-    // only pool list url links to itself in yoroi
-    const path = linkId === NAV_ITEMS_IDS.POOL_LIST ? link : config.seizaUrl + link
-    return path + location.search
-  } else {
-    return link
-  }
-}
-
 const TabsHeader = () => {
   const {translate: tr} = useI18n()
   const {history, location} = useReactRouter()
@@ -178,15 +166,9 @@ const TabsHeader = () => {
     (...args) => {
       // TODO: can we do better?
       const navItem = navItems[args[1]]
-      // for yoroi, we must forbid tab navigation
-      const link = getSideMenuNavLink(navItem.id, navItem.link, location)
       const pathChanged = location.pathname !== navItem.link
-      if (config.isYoroi) {
-        pathChanged && window.open(link, '_blank')
-      } else {
-        setTabByEventIndex(...args)
-        pathChanged && history.push(link)
-      }
+      pathChanged && history.push(navItem.link)
+      setTabByEventIndex(...args)
     },
     [history, location, setTabByEventIndex]
   )
@@ -203,19 +185,12 @@ const TabsHeader = () => {
 const DesktopNavigation = () => {
   const classes = useNavigationBarStyles()
   const {translate: tr} = useI18n()
-  const {location} = useReactRouter()
 
   return (
     <div className={classes.navBar}>
       {navItems.map(({link, i18nLabel, icon, id}) => {
         return (
-          <NavLink
-            key={link}
-            type={config.isYoroi && id !== NAV_ITEMS_IDS.POOL_LIST ? 'external' : 'internal'}
-            to={getSideMenuNavLink(id, link, location)}
-            target={config.isYoroi && id !== NAV_ITEMS_IDS.POOL_LIST ? '_blank' : '_self'}
-            className={classes.href}
-          >
+          <NavLink key={link} to={link} className={classes.href}>
             {(isActive) => <MenuItem active={isActive} label={tr(i18nLabel)} icon={icon} />}
           </NavLink>
         )

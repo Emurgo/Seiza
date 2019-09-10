@@ -20,10 +20,6 @@ const messages = defineMessages({
 })
 
 const useStyles = makeStyles((theme) => ({
-  'wrapper': {
-    height: '100%',
-    overflow: 'visible', // Note: sticky navigation is not working without this
-  },
   'panel': {
     paddingTop: theme.spacing(2),
     paddingBottom: theme.spacing(2),
