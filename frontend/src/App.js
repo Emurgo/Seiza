@@ -16,16 +16,8 @@ import {useI18n} from '@/i18n/helpers'
 import {setupWhyDidYouRender} from '@/helpers/performance'
 import {AutoSyncProvider} from './screens/Staking/context/autoSync'
 
-import Terms from './screens/Legal/Terms'
-import Privacy from './screens/Legal/Privacy'
-import Home from './screens/Home'
-import Blockchain from './screens/Blockchain'
 import BlockchainHeader from './screens/Blockchain/BlockchainHeader'
-import StakingAdvanced from './screens/Staking/StakingAdvanced'
-import StakingSimple from './screens/Staking/StakingSimple'
-import StakingPools from './screens/StakingPools'
 import PageNotFound from './screens/PageNotFound'
-import SubscribeConfirmation from './screens/SubscribeConfirmation'
 import CookiesBanner from '@/components/common/CookiesBanner'
 import UnsupportedBrowserBanner from '@/components/common/UnsupportedBrowserBanner'
 
@@ -35,7 +27,6 @@ import {AnalyticsProvider} from '@/components/context/googleAnalytics'
 import {RefProviders} from '@/components/context/refs'
 import {SearchbarRefProvider} from '@/components/context/searchbarRef'
 import {CurrencyProvider} from '@/components/hooks/useCurrency'
-import EnvOverrides from './screens/EnvOverrides'
 import TopBar from './TopBar'
 
 import {useGlobalStyles} from './globalStyles'
@@ -45,6 +36,15 @@ import config from '@/config'
 // Quick workaround to avoid adding 'nivo' package to main bundle as
 // "More" page is by default not used
 const More = dynamic(() => import('./screens/More'))
+const Home = dynamic(() => import('./screens/Home'))
+const Blockchain = dynamic(() => import('./screens/Blockchain'))
+const StakingAdvanced = dynamic(() => import('./screens/Staking/StakingAdvanced'))
+const StakingSimple = dynamic(() => import('./screens/Staking/StakingSimple'))
+const StakingPools = dynamic(() => import('./screens/StakingPools'))
+const Terms = dynamic(() => import('./screens/Legal/Terms'))
+const Privacy = dynamic(() => import('./screens/Legal/Privacy'))
+const SubscribeConfirmation = dynamic(() => import('./screens/SubscribeConfirmation'))
+const EnvOverrides = dynamic(() => import('./screens/EnvOverrides'))
 
 if (!config.isProduction && config.watchRenderPerformance) {
   setupWhyDidYouRender()
