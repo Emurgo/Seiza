@@ -29,6 +29,7 @@ import HistoryScreen from '../History'
 import ChartsScreen from '../Charts'
 import {CARD_WIDTH} from '../StakeList/stakepoolCardUtils'
 import {EstimatedRewardsModeProvider} from '../StakeList/estimatedRewardsModeUtils'
+import {NAV_HEADER_HEIGHT} from '@/components/hooks/useScrollFromBottom'
 
 const DEFAULT_MAX_WIDTH = CARD_WIDTH
 
@@ -70,6 +71,14 @@ const useStyles = makeStyles((theme) => {
       [theme.breakpoints.up('xl')]: {
         width: sidebarWidth,
       },
+    },
+    mobileSideMenu: {
+      position: 'sticky',
+      top: NAV_HEADER_HEIGHT,
+      background: theme.palette.background.paper,
+      zIndex: 10,
+      paddingLeft: theme.spacing(3),
+      maxWidth: '100%',
     },
   }
 })
@@ -248,9 +257,11 @@ export default () => {
               <StakePoolHeader />
             </DesktopOnly>
           )}
-          <MobileOnly className="w-100">
-            <SideMenu />
-          </MobileOnly>
+          <div className={classes.mobileSideMenu}>
+            <MobileOnly className="w-100">
+              <SideMenu />
+            </MobileOnly>
+          </div>
 
           <div className={classes.mainWrapper}>
             <Switch>
