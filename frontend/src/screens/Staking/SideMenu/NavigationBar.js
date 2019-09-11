@@ -155,7 +155,7 @@ const navItems: NavItems = [
     icon: <PeopleIcon color="inherit" />,
     id: NAV_ITEMS_IDS.PEOPLE,
   },
-]
+].filter(({link}) => link)
 
 const TAB_NAMES = navItems.filter(({link}) => link).map(({id}) => id)
 
@@ -228,17 +228,15 @@ const DesktopNavigation = () => {
     <div className={classes.navBar}>
       {navItems.map(({link, i18nLabel, icon, id}) => {
         return (
-          link && (
-            <NavLink
-              key={link}
-              type={config.isYoroi && id !== NAV_ITEMS_IDS.POOL_LIST ? 'external' : 'internal'}
-              to={getSideMenuNavLink(id, link, location)}
-              target={config.isYoroi && id !== NAV_ITEMS_IDS.POOL_LIST ? '_blank' : '_self'}
-              className={classes.href}
-            >
-              {(isActive) => <MenuItem active={isActive} label={tr(i18nLabel)} icon={icon} />}
-            </NavLink>
-          )
+          <NavLink
+            key={link}
+            type={config.isYoroi && id !== NAV_ITEMS_IDS.POOL_LIST ? 'external' : 'internal'}
+            to={getSideMenuNavLink(id, link, location)}
+            target={config.isYoroi && id !== NAV_ITEMS_IDS.POOL_LIST ? '_blank' : '_self'}
+            className={classes.href}
+          >
+            {(isActive) => <MenuItem active={isActive} label={tr(i18nLabel)} icon={icon} />}
+          </NavLink>
         )
       })}
     </div>
