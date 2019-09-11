@@ -166,7 +166,6 @@ const SimpleMobileStakepoolCard = React.memo(({isOpen, toggle, data}) => {
 
   const renderHeader = (expanded) => (
     <Grid container direction="column">
-      <Header name={data.name} hash={data.hash} estimatedRewards={data.estimatedRewards} />
       <MobilePoolFooter expanded={expanded} />
     </Grid>
   )
@@ -175,6 +174,9 @@ const SimpleMobileStakepoolCard = React.memo(({isOpen, toggle, data}) => {
     <StakepoolMobileCard
       expanded={isOpen}
       onChange={toggle}
+      nonExpandableHeader={
+        <Header name={data.name} hash={data.hash} estimatedRewards={data.estimatedRewards} />
+      }
       renderHeader={renderHeader}
       renderExpandedArea={renderExpandedArea}
     />
