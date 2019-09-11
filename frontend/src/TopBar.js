@@ -36,6 +36,7 @@ const useTopBarStyles = makeStyles((theme) => ({
       padding: `${theme.spacing(1)}px ${theme.spacing(5)}px`,
     },
     justifyContent: 'space-between',
+    height: '100%',
   }),
   mobileSearch: {
     flex: 1,
@@ -149,7 +150,7 @@ const TopBar = ({navItems}: TopBarProps) => {
           </Grid>
         </Grid>
       </DesktopOnly>
-      <MobileOnly>
+      <MobileOnly className="h-100">
         <div className={cn(classes.topBar, 'd-flex')}>
           <MobileMenu currentPathname={pathname} items={navItems} />
           {routeTo.stakingCenter.home() && (
