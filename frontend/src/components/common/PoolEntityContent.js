@@ -12,7 +12,7 @@ import config from '@/config'
 type Props = {
   name: string,
   hash: string,
-  hashTooltip: React$Node,
+  hashTooltip?: React$Node,
 }
 
 const useStyles = makeStyles(({spacing, typography}) => ({
@@ -40,7 +40,7 @@ const COPY_TO_CLIPBOARD_DIMENSIONS = {width: 20, height: 20}
 const EllipsizedHash = ({hash, hashTooltip}) => {
   return (
     <Tooltip
-      title={hashTooltip}
+      title={hashTooltip || ''}
       placement="bottom"
       disableHoverListener={!hashTooltip}
       disableTouchListener={!hashTooltip}
