@@ -23,6 +23,14 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(0.8),
     paddingLeft: theme.spacing(0.8), // Note: controls icon size
     cursor: 'pointer',
+    // We align "title" header to left and icon has some "empty" space in it
+    // that prevents it to visualy align left, so this makes the trick
+    marginLeft: -5,
+  },
+  sortIcon: {
+    // We align headers to right, and icon has some "empty" space in it
+    // that prevents it to visualy align right, so this makes the trick
+    marginRight: -10,
   },
 }))
 
@@ -128,6 +136,13 @@ type Props = {
   field: string,
 }
 
+const getContainerAlignment = (conf) =>
+  ({
+    right: 'flex-end',
+    left: 'flex-start',
+    center: 'center',
+  }[conf.align || 'right'])
+
 const ColumnHeader = ({field}: Props) => {
   const classes = useStyles()
   const {translate: tr} = useI18n()
@@ -141,7 +156,7 @@ const ColumnHeader = ({field}: Props) => {
   const label = conf.getLabel({tr})
 
   return (
-    <Grid container alignItems="center" wrap="nowrap">
+    <Grid container alignItems="center" wrap="nowrap" justify={getContainerAlignment(conf)}>
       {hasFilter && <GeneralFilter {...{field, label}} />}
 
       <Grid item onClick={onSortByChange} className={classes.sortWrapper}>
@@ -150,7 +165,7 @@ const ColumnHeader = ({field}: Props) => {
             {label}
           </Typography>
 
-          <Grid container alignItems="center">
+          <Grid container alignItems="center" className={classes.sortIcon}>
             {sortActive ? (
               sortOptions.order === ORDER.DESC ? (
                 <ArrowDropDown color="primary" />
