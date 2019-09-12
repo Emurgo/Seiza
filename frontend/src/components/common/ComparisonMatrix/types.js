@@ -17,4 +17,5 @@ export type ComparisonMatrixProps = {|
     categoryLabel?: string,
   }>,
   getIdentifier: (Object) => string,
+  expandedColumnsStorageKey: string,
 |}

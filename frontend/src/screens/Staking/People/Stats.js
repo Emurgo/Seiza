@@ -79,6 +79,7 @@ const Stats = ({data}: StatsProps) => {
         categoryConfigs={[{config}]}
         data={data}
         getIdentifier={(data) => data.poolHash}
+        expandedColumnsStorageKey="cm-expanded-people-screen"
       />
     </div>
   )

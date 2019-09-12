@@ -157,6 +157,7 @@ const ComparisonMatrixScreen = () => {
           categoryConfigs={categoryConfigs}
           data={stakePools}
           getIdentifier={getIdentifier}
+          expandedColumnsStorageKey="cm-expanded-cm-screen"
         />
       )}
     </WithEnsureStakePoolsLoaded>
