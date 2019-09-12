@@ -17,17 +17,7 @@ const makeFontFamilies = (fontFamilies) => fontFamilies.map((ff) => `"${ff}"`).j
 // TODO: Which font families to fallback to?
 
 const FF = {
-  normal: [
-    'Roboto',
-    'Roboto Self',
-    '-apple-system',
-    'BlinkMacSystemFont',
-    'Segoe UI',
-    'Roboto',
-    'Helvetica Neue',
-    'Arial',
-    'sans-serif',
-  ],
+  normal: ['Roboto', 'Roboto Self', 'Arial', 'Helvetica Neue'],
   monospace: ['Roboto Mono', 'Roboto Mono Self', 'Monaco', 'monospace'],
 }
 
