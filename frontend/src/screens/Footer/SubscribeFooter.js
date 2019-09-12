@@ -1,5 +1,5 @@
 // @flow
-import React, {useCallback, useState} from 'react'
+import React, {useCallback, useState, useMemo} from 'react'
 import cn from 'classnames'
 import {defineMessages, FormattedMessage} from 'react-intl'
 import gql from 'graphql-tag'
@@ -99,15 +99,18 @@ const useOutlinedInputStyles = makeStyles((theme) => ({
 const RoundedInput = ({errorMessage, ...props}) => {
   const classes = useRoundedInputStyles()
   const outlinedInputClasses = useOutlinedInputStyles()
+  const inputProps = useMemo(() => ({className: classes.input}), [classes.input])
+  const endAdornment = useMemo(
+    () => (errorMessage ? <img alt="" src={alertIcon} className={classes.errorIcon} /> : null),
+    [classes.errorIcon, errorMessage]
+  )
   return (
     <FormControl className={classes.formControl}>
       <OutlinedInput
         labelWidth={0}
-        inputProps={{className: classes.input}}
+        inputProps={inputProps}
         classes={outlinedInputClasses}
-        endAdornment={
-          errorMessage ? <img alt="" src={alertIcon} className={classes.errorIcon} /> : null
-        }
+        endAdornment={endAdornment}
         {...props}
       />
       <FormHelperText error className={classes.errorLabel}>
@@ -281,6 +284,8 @@ const useUIState = (initialUIState: UiState) => {
 const checkInvalidEmailError = (error) =>
   idx(error, (_) => _.graphQLErrors[0].extensions.code === 'BAD_USER_INPUT')
 
+const showSubscribeStates = ['error', 'loading', 'init']
+
 const SubscribeFooter = () => {
   const classes = useSubscribeFooterStyles()
   const {translate: tr} = useI18n()
@@ -347,14 +352,49 @@ const SubscribeFooter = () => {
     ]
   )
 
+  const mainTransitionName = useMemo(
+    () => ({
+      enter: classes.enterSubscribe,
+      enterActive: classes.enterSubscribeActive,
+      leave: classes.leaveSubscribe,
+      leaveActive: classes.leaveSubscribeActive,
+    }),
+    [
+      classes.enterSubscribe,
+      classes.enterSubscribeActive,
+      classes.leaveSubscribe,
+      classes.leaveSubscribeActive,
+    ]
+  )
+
+  const enterTransitionName = useMemo(
+    () => ({
+      enter: classes.successUIEnter,
+      enterActive: classes.successUIEnterActive,
+      appear: classes.successUIEnter,
+      appearActive: classes.successUIEnterActive,
+    }),
+    [classes.successUIEnter, classes.successUIEnterActive]
+  )
+
+  const leaveTransitionName = useMemo(
+    () => ({
+      leave: classes.initUILeave,
+      leaveActive: classes.initUILeaveActive,
+    }),
+    [classes.initUILeave, classes.initUILeaveActive]
+  )
+
+  const subscribeInfoFormatted = useMemo(
+    () => ({
+      privacyLink: <CustomLink to={routeTo.privacy()}>{tr(messages.privacyLink)}</CustomLink>,
+    }),
+    [tr]
+  )
+
   return (
     <ReactCSSTransitionGroup
-      transitionName={{
-        enter: classes.enterSubscribe,
-        enterActive: classes.enterSubscribeActive,
-        leave: classes.leaveSubscribe,
-        leaveActive: classes.leaveSubscribeActive,
-      }}
+      transitionName={mainTransitionName}
       transitionLeave
       transitionLeaveTimeout={1500}
       transitionEnter
@@ -371,12 +411,7 @@ const SubscribeFooter = () => {
           alignItems="center"
         >
           <ReactCSSTransitionGroup
-            transitionName={{
-              enter: classes.successUIEnter,
-              enterActive: classes.successUIEnterActive,
-              appear: classes.successUIEnter,
-              appearActive: classes.successUIEnterActive,
-            }}
+            transitionName={enterTransitionName}
             transitionLeave={false}
             transitionEnter
             transitionEnterTimeout={500}
@@ -404,16 +439,13 @@ const SubscribeFooter = () => {
             )}
           </ReactCSSTransitionGroup>
           <ReactCSSTransitionGroup
-            transitionName={{
-              leave: classes.initUILeave,
-              leaveActive: classes.initUILeaveActive,
-            }}
+            transitionName={leaveTransitionName}
             transitionLeave
             transitionLeaveTimeout={1000}
             transitionEnter={false}
             transitionAppear={false}
           >
-            {['error', 'loading', 'init'].includes(uiState) && (
+            {showSubscribeStates.includes(uiState) && (
               <div>
                 <Grid item className={classes.row}>
                   <Grid container direction="column" alignItems="center">
@@ -432,11 +464,7 @@ const SubscribeFooter = () => {
                     <FormattedMessage
                       // $FlowFixMe
                       id={messages.subscribeInfo.id}
-                      values={{
-                        privacyLink: (
-                          <CustomLink to={routeTo.privacy()}>{tr(messages.privacyLink)}</CustomLink>
-                        ),
-                      }}
+                      values={subscribeInfoFormatted}
                     />
                   </Typography>
                 </Grid>
