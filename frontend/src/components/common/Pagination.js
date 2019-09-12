@@ -37,7 +37,6 @@ const useStyles = makeStyles(({palette, typography, breakpoints, spacing}) => ({
     padding: spacing(0.25),
     fontSize: '14px',
     [breakpoints.up('md')]: {
-      padding: spacing(1),
       fontSize: '18px',
     },
   },
