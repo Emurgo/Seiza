@@ -1,5 +1,5 @@
 // @flow
-import React, {useCallback} from 'react'
+import React, {useCallback, useMemo} from 'react'
 import cn from 'classnames'
 import {InputAdornment, TextField} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
@@ -13,13 +13,15 @@ import type {ElementRef} from 'react'
 const BORDER_RADIUS = 5
 
 const useStyles = makeStyles((theme) => ({
-  container: {
-    'display': 'flex',
-    'flex': 1,
+  shadow: {
     'boxShadow': `0px 10px 20px 0px ${fade(theme.palette.shadowBase, 0.08)}`,
     '&:hover': {
       boxShadow: `0px 10px 30px 0px ${fade(theme.palette.shadowBase, 0.12)}`,
     },
+  },
+  container: {
+    display: 'flex',
+    flex: 1,
   },
   searchButton: {
     borderBottomLeftRadius: ({rounded}) => (rounded ? BORDER_RADIUS : 0),
@@ -86,11 +88,16 @@ type SearchbarTextFieldExternalProps = {
 type SearchbarTextFieldProps = {
   ...$Exact<SearchbarTextFieldExternalProps>,
   classes: any,
+  hasShadow?: boolean,
 }
 
 // TODO: use hooks
 class _SearchbarTextField extends React.Component<SearchbarTextFieldProps> {
   inputRef: {current: null | ElementRef<'input'>}
+
+  static defaultProps = {
+    hasShadow: true,
+  }
 
   constructor(props: SearchbarTextFieldProps) {
     super(props)
@@ -112,12 +119,13 @@ class _SearchbarTextField extends React.Component<SearchbarTextFieldProps> {
       inputProps,
       className,
       onReset,
+      hasShadow,
     } = this.props
 
     return (
       <TextField
         type="text"
-        className={cn(classes.textField, className)}
+        className={cn(classes.textField, hasShadow && classes.shadow, className)}
         variant="outlined"
         value={value}
         placeholder={placeholder}
@@ -147,7 +155,12 @@ class _SearchbarTextField extends React.Component<SearchbarTextFieldProps> {
 }
 
 export const SearchbarTextField = ({rounded, ...props}: SearchbarTextFieldExternalProps) => {
-  const classes = useTextFieldStyles({rounded})
+  const textFieldClasses = useTextFieldStyles({rounded})
+  const wrapperClasses = useStyles()
+  const classes = useMemo(() => ({...textFieldClasses, shadow: wrapperClasses.shadow}), [
+    textFieldClasses,
+    wrapperClasses,
+  ])
   return <_SearchbarTextField {...props} classes={classes} />
 }
 
@@ -161,8 +174,11 @@ const Searchbar = ({
   inputProps,
   onReset,
 }: Props) => (
-  <form className={classes.container} onSubmit={onSubmit}>
-    <SearchbarTextField {...{value, placeholder, onReset, loading, inputProps, onChange}} />
+  <form className={cn(classes.container, classes.shadow)} onSubmit={onSubmit}>
+    <SearchbarTextField
+      hasShadow={false}
+      {...{value, placeholder, onReset, loading, inputProps, onChange}}
+    />
     <Button type="submit" variant="contained" className={classes.searchButton}>
       <Search fontSize="large" />
     </Button>
