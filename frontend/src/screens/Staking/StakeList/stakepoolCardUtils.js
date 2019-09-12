@@ -323,7 +323,10 @@ export const StakepoolMobileCard = ({
 }: StakepoolMobileCardProps) => {
   const classes = useStakepoolMobileCardClasses()
 
-  const cardClasses = useMemo(() => ({root: classes.wrapper, content: classes.wrapper}), [classes])
+  const commonClasses = useMemo(() => ({root: classes.wrapper}), [classes])
+  const headerClasses = useMemo(() => ({root: classes.wrapper, content: classes.wrapper}), [
+    classes,
+  ])
 
   return (
     <Card>
@@ -331,9 +334,9 @@ export const StakepoolMobileCard = ({
       <SimpleExpandableCard
         {...{expanded, onChange, renderExpandedArea, renderHeader}}
         hideDefaultIcon
-        headerClasses={cardClasses}
-        detailsClasses={cardClasses}
-        cardClasses={cardClasses}
+        headerClasses={headerClasses}
+        detailsClasses={commonClasses}
+        cardClasses={commonClasses}
       />
     </Card>
   )
