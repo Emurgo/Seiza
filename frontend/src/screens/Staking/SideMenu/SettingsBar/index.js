@@ -1,6 +1,7 @@
 // @flow
-import React from 'react'
+import React, {useCallback} from 'react'
 import NoSSR from 'react-no-ssr'
+import _ from 'lodash'
 import {
   Grid,
   Dialog,
@@ -181,9 +182,19 @@ const MobileSettingsBar = ({selectedPools, error}: Props) => {
   )
 }
 
+const relevantDataForYoroi = (selectedPools) => {
+  return _.map(selectedPools, _.partialRight(_.pick, ['name', 'poolHash']))
+}
+
 const YoroiDelegate = ({selectedPools}) => {
-  // {/* TODO: open link _blank with a delegation form in yoroi */}
-  return <DelegateButton onClick={() => null} disabled={selectedPools.length === 0} />
+  const delegate = useCallback(() => {
+    window.parent.postMessage(
+      relevantDataForYoroi(selectedPools),
+      `chrome-extension://${config.yoroiExtensionHash}/main_window.html#/staking`
+    )
+  }, [selectedPools])
+
+  return <DelegateButton onClick={delegate} disabled={selectedPools.length === 0} />
 }
 
 const DesktopSettingsBar = ({selectedPools, error}: Props) => {
