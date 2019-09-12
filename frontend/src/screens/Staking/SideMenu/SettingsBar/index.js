@@ -2,6 +2,7 @@
 import React, {useCallback} from 'react'
 import NoSSR from 'react-no-ssr'
 import _ from 'lodash'
+import useReactRouter from 'use-react-router'
 import {
   Grid,
   Dialog,
@@ -26,6 +27,7 @@ import DelegateButton from './DelegateButton'
 import PoolsToCompare, {PoolsToCompareCount} from './PoolsToCompare'
 import ActionsBar from './ActionsBar'
 import AutoSaveBar from './AutoSaveBar'
+import OpenInSeiza from './OpenInSeiza'
 import {useLoadSelectedPoolsData} from './dataLoaders'
 
 const useMobileSettingsButtonStyles = makeStyles((theme) => ({
@@ -197,14 +199,29 @@ const YoroiDelegate = ({selectedPools}) => {
   return <DelegateButton onClick={delegate} disabled={selectedPools.length === 0} />
 }
 
+const MenuItemWrapper = ({children}) => {
+  const classes = useStyles()
+  return <div className={classes.resetButton}>{children}</div>
+}
+
 const DesktopSettingsBar = ({selectedPools, error}: Props) => {
   const classes = useStyles()
+  const {history, location} = useReactRouter()
+
+  const openInSeizaLink = config.seizaUrl + history.createHref(location)
+
   return (
     <React.Fragment>
       {config.isYoroi ? (
-        <Grid container>
-          <YoroiDelegate selectedPools={selectedPools} />
-        </Grid>
+        <React.Fragment>
+          <Grid container>
+            <YoroiDelegate selectedPools={selectedPools} />
+          </Grid>
+          <Divider />
+          <MenuItemWrapper>
+            <OpenInSeiza link={openInSeizaLink} />
+          </MenuItemWrapper>
+        </React.Fragment>
       ) : (
         <AutoSaveBar className={classes.autoSaveBar} />
       )}
