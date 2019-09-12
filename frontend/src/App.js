@@ -164,7 +164,7 @@ const AppLayout = () => {
   return (
     <Grid container direction="column" className={classes.mainWrapper} wrap="nowrap">
       <UnsupportedBrowserBanner />
-      <CookiesBanner />
+      {!config.isYoroi && <CookiesBanner />}
 
       <Grid
         item
