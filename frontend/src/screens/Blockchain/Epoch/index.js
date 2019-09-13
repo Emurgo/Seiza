@@ -31,6 +31,7 @@ import {useAnalytics} from '@/components/context/googleAnalytics'
 
 import NavigationButtons from '../NavigationButtons'
 import {APOLLO_CACHE_OPTIONS} from '@/constants'
+import {useManageQueryValue} from '@/components/hooks/useManageQueryValue'
 
 const messages = defineMessages({
   notAvailable: 'N/A',
@@ -369,8 +370,9 @@ const EpochScreen = () => {
 
   useScrollFromBottom(scrollToRef, epochData)
 
-  const {setTabByEventIndex, currentTabIndex, currentTab} = useTabState(TABS.ORDER)
-  const TabContent = TABS.CONTENT[currentTab]
+  const [currentTab, setTab] = useManageQueryValue('tab', TABS.ORDER[0])
+  const tabState = useTabState(TABS.ORDER, null, currentTab, setTab)
+  const TabContent = TABS.CONTENT[tabState.currentTab]
 
   return (
     <div ref={scrollToRef}>
@@ -391,7 +393,10 @@ const EpochScreen = () => {
               <React.Fragment>
                 <TabsPaginationLayout
                   tabs={
-                    <LiteTabs value={currentTabIndex} onChange={setTabByEventIndex}>
+                    <LiteTabs
+                      value={tabState.currentTabIndex}
+                      onChange={tabState.setTabByEventIndex}
+                    >
                       <LiteTab label={tr(messages.blocksTab)} />
                       <LiteTab label={tr(messages.stakingPoolsTab)} />
                     </LiteTabs>
