@@ -22,8 +22,23 @@ const MobileStakingSettingsRefProvider = ({children}: Props) => {
 
 export const useMobileStakingSettingsRef = () => useContext(MobileStakingSettingsContext)
 
+type TopBarRefContextType = any
+
+const TopBarRefContext = React.createContext<TopBarRefContextType>({})
+
+const TopBarRefProvider = ({children}: Props) => {
+  const {htmlNode, callbackRef} = useCallbackRef()
+  return (
+    <TopBarRefContext.Provider value={{htmlNode, callbackRef}}>
+      {children}
+    </TopBarRefContext.Provider>
+  )
+}
+
+export const useTopBarRef = () => useContext(TopBarRefContext)
+
 export const RefProviders = ({children}: Props) => (
-  <React.Fragment>
+  <TopBarRefProvider>
     <MobileStakingSettingsRefProvider>{children}</MobileStakingSettingsRefProvider>
-  </React.Fragment>
+  </TopBarRefProvider>
 )

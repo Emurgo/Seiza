@@ -10,10 +10,12 @@ import {makeStyles} from '@material-ui/styles'
 import {fade} from '@material-ui/core/styles/colorManipulator'
 import cn from 'classnames'
 
+import {NAV_HEADER_HEIGHT} from '@/components/hooks/useScrollFromBottom'
+import {useIsMobile} from '@/components/hooks/useBreakpoints'
 import useBooleanState from '@/components/hooks/useBooleanState'
 import {routeTo, combinedBlockchainPath} from './helpers/routes'
 import BlockchainSearch from './screens/Blockchain/BlockchainHeader/Search'
-import {useMobileStakingSettingsRef} from '@/components/context/refs'
+import {useMobileStakingSettingsRef, useTopBarRef} from '@/components/context/refs'
 import {Link} from '@/components/common'
 import {NavMenuItems, MobileNavMenuItems} from '@/components/common/Navbar'
 import LanguageSelect, {MobileLanguage} from '@/components/common/LanguageSelect'
@@ -50,6 +52,18 @@ const useTopBarStyles = makeStyles((theme) => ({
     // Note: for portal flex positioning does not seem to work that good
     right: 25,
     top: 7,
+  },
+
+  navHeaderWrapper: {
+    top: 0,
+    zIndex: 30,
+    position: 'sticky',
+    [theme.breakpoints.up('md')]: {
+      position: 'relative',
+    },
+  },
+  navHeaderWrapperHeight: {
+    height: NAV_HEADER_HEIGHT,
   },
 }))
 
@@ -111,10 +125,30 @@ const MobileMenu = ({items = [], currentPathname}: any) => {
     </React.Fragment>
   )
 }
+
+type TopBarContainerProps = {
+  children: React$Node,
+}
+
+const TopBarContainer = ({children}: TopBarContainerProps) => {
+  const isMobile = useIsMobile()
+  const classes = useTopBarStyles()
+  return (
+    <Grid
+      item
+      className={cn(
+        classes.navHeaderWrapper,
+        (!config.isYoroi || isMobile) && classes.navHeaderWrapperHeight
+      )}
+    >
+      {children}
+    </Grid>
+  )
+}
+
 type TopBarProps = {
   navItems: Array<NavItem>,
 }
-
 const TopBar = ({navItems}: TopBarProps) => {
   const {
     location: {pathname},
@@ -125,9 +159,18 @@ const TopBar = ({navItems}: TopBarProps) => {
   const addShadow = !matchPath(pathname, routeTo.stakingCenter.home())
   const classes = useTopBarStyles({addShadow})
   const {callbackRef: mobileStakingSettingsRef} = useMobileStakingSettingsRef()
+  const {callbackRef: topBarRef} = useTopBarRef()
+
+  if (config.isYoroi) {
+    return (
+      <TopBarContainer>
+        <div ref={topBarRef} />
+      </TopBarContainer>
+    )
+  }
 
   return (
-    <React.Fragment>
+    <TopBarContainer>
       <DesktopOnly>
         <Grid
           container
@@ -179,7 +222,7 @@ const TopBar = ({navItems}: TopBarProps) => {
           )}
         </div>
       </MobileOnly>
-    </React.Fragment>
+    </TopBarContainer>
   )
 }
 

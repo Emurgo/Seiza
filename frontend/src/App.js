@@ -3,13 +3,11 @@
 import React from 'react'
 import dynamic from 'next/dynamic'
 import {BrowserRouter, StaticRouter, Route, Switch} from 'react-router-dom'
-import cn from 'classnames'
-import {CssBaseline, Grid} from '@material-ui/core'
+import {Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
 import {matchPath} from 'react-router'
 
-import {NAV_HEADER_HEIGHT} from '@/components/hooks/useScrollFromBottom'
 import {routeTo, combinedBlockchainPath} from './helpers/routes'
 import Footer from './screens/Footer'
 import {useI18n} from '@/i18n/helpers'
@@ -71,17 +69,6 @@ const useAppStyles = makeStyles((theme) => ({
   },
   contentWrapper: {
     flex: 1,
-  },
-  navHeaderWrapper: {
-    top: 0,
-    zIndex: 30,
-    position: 'sticky',
-    [theme.breakpoints.up('md')]: {
-      position: 'relative',
-    },
-  },
-  navHeaderWrapperHeight: {
-    height: NAV_HEADER_HEIGHT,
   },
 }))
 
@@ -166,13 +153,8 @@ const AppLayout = () => {
       <UnsupportedBrowserBanner />
       {!config.isYoroi && <CookiesBanner />}
 
-      <Grid
-        item
-        className={cn(classes.navHeaderWrapper, !config.isYoroi && classes.navHeaderWrapperHeight)}
-      >
-        <CssBaseline />
-        {!config.isYoroi && <TopBar navItems={getTranslatedNavItems(translate)} />}
-      </Grid>
+      <TopBar navItems={getTranslatedNavItems(translate)} />
+
       <DefaultErrorBoundary>
         <React.Fragment>
           <Grid item className={classes.contentWrapper}>
