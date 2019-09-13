@@ -56,6 +56,11 @@ const useTextFieldStyles = makeStyles((theme) => ({
       borderWidth: '1px !important',
     },
   },
+  closeButton: {
+    // Note: applied only to Close button, not loading, as the button "padding/shadow"
+    // makes it wider
+    left: 10,
+  },
 }))
 
 type ExternalProps = {
@@ -139,7 +144,11 @@ class _SearchbarTextField extends React.Component<SearchbarTextFieldProps> {
               {loading ? (
                 <LoadingInProgress size={30} />
               ) : onReset ? (
-                <CloseIconButton aria-label="Clear-search" onClick={this.clearInput} />
+                <CloseIconButton
+                  className={classes.closeButton}
+                  aria-label="Clear-search"
+                  onClick={this.clearInput}
+                />
               ) : null}
             </InputAdornment>
           ),
