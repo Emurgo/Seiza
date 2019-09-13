@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => {
     padding: 0,
     paddingLeft: theme.spacing(1.5),
     paddingRight: theme.spacing(1.5),
-    [theme.breakpoints.up('md')]: {
+    [theme.breakpoints.up('sm')]: {
       ...cellMdBreakpoint,
     },
 
