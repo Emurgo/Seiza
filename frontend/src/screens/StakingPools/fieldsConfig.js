@@ -150,7 +150,7 @@ export const fieldsConfig: Array<Config> = [
     getValue: ({data}: GetValueParams) => (
       <Tooltip
         interactive
-        placement="top"
+        placement="bottom"
         title={<NameTooltip data={data} />}
         leaveTouchDelay={3000}
       >
