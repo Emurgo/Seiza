@@ -20,8 +20,12 @@ export const DEFAULT_LOCALE = 'en'
 
 export const LOCALE_KEY = 'locale'
 
-export const getValidatedLocale = (locale: string) =>
-  LANGUAGES.some((conf) => conf.value === locale) ? locale : DEFAULT_LOCALE
+export const getValidatedLocale = (locale: string) => {
+  // we accept also long version of locale
+  // which is passed from yoroi
+  const localeShort = locale.includes('-') ? locale.split('-')[0] : locale
+  return LANGUAGES.some((conf) => conf.value === localeShort) ? localeShort : DEFAULT_LOCALE
+}
 
 export const IntlProvider = ({children}: Props) => {
   const [locale, setLocale] = useCookieState(LOCALE_KEY, DEFAULT_LOCALE)
