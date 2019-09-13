@@ -11,7 +11,7 @@ const messages = defineMessages({
 const OpenInSeiza = ({link}) => {
   const {translate: tr} = useI18n()
   return (
-    <Link external underline="always" to={link}>
+    <Link external underline="always" target="_blank" to={link}>
       {tr(messages.openInSeiza)}
     </Link>
   )
