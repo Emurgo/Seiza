@@ -139,32 +139,32 @@ const poolUpdateRelatedMessages = ({
   retirementTxHash,
   i18n,
 }) => {
-  const {translate: tr, formatMsgById} = i18n
+  const {translate: tr, formatMsg} = i18n
   return [
     wasRetiringDuringUpdate && tr(messages.poolUpdate__poolWasRetiring),
     poolExistsMessage({poolExists, i18n}),
     isInRetirement &&
-      formatMsgById(messages.poolUpdate__retirementAnnouncement.id, {
+      formatMsg(messages.poolUpdate__retirementAnnouncement, {
         txHash: <TxHashLinkEllipsized txHash={retirementTxHash} />,
       }),
   ]
 }
 
 const keyRegistration = ({action, i18n}) => {
-  const {translate: tr, formatMsgById} = i18n
+  const {translate: tr, formatMsg} = i18n
   const {stakingKey, previousDeregistrationTx, nextDeregistrationTx} = action
   return {
     label: tr(messages.registration__label),
     values: [
-      formatMsgById(messages.registration__value.id, {
+      formatMsg(messages.registration__value, {
         stakingKey: <StakingKeyLinkEllipsized stakingKey={stakingKey} />,
       }),
       previousDeregistrationTx &&
-        formatMsgById(messages.registration__previousDeregistration.id, {
+        formatMsg(messages.registration__previousDeregistration, {
           txHash: <TxHashLinkEllipsized txHash={previousDeregistrationTx.txHash} />,
         }),
       nextDeregistrationTx &&
-        formatMsgById(messages.registration__nextDeregistration.id, {
+        formatMsg(messages.registration__nextDeregistration, {
           txHash: <TxHashLinkEllipsized txHash={nextDeregistrationTx.txHash} />,
         }),
     ],
@@ -172,20 +172,20 @@ const keyRegistration = ({action, i18n}) => {
 }
 
 const keyDeregistration = ({action, i18n}) => {
-  const {translate: tr, formatMsgById} = i18n
+  const {translate: tr, formatMsg} = i18n
   const {previousRegistrationTx, nextRegistrationTx, stakingKey} = action
   return {
     label: tr(messages.deregistration__label),
     values: [
-      formatMsgById(messages.deregistration__value.id, {
+      formatMsg(messages.deregistration__value, {
         stakingKey: <Link to={routeTo.stakingKey(stakingKey)}>{stakingKey}</Link>,
       }),
       previousRegistrationTx &&
-        formatMsgById(messages.deregistration__previousRegistration.id, {
+        formatMsg(messages.deregistration__previousRegistration, {
           txHash: <TxHashLinkEllipsized txHash={previousRegistrationTx.txHash} />,
         }),
       nextRegistrationTx &&
-        formatMsgById(messages.deregistration__nextRegistration.id, {
+        formatMsg(messages.deregistration__nextRegistration, {
           txHash: <TxHashLinkEllipsized txHash={nextRegistrationTx.txHash} />,
         }),
     ],
@@ -193,22 +193,22 @@ const keyDeregistration = ({action, i18n}) => {
 }
 
 const keyRewardReception = ({action, i18n}) => {
-  const {translate: tr, formatMsgById, formatPercent} = i18n
+  const {translate: tr, formatMsg, formatPercent} = i18n
   const {stakingKey, reward, poolHash, performance, maxReward} = action
 
   return {
     label: tr(messages.rewardPaid__label),
     values: [
-      formatMsgById(messages.rewardPaid__value.id, {
+      formatMsg(messages.rewardPaid__value, {
         amount: <AdaValue showCurrency value={reward} />,
         stakingKey: <StakingKeyLinkEllipsized stakingKey={stakingKey} />,
         poolHash: <PoolHashLinkEllipsized poolHash={poolHash} />,
       }),
-      formatMsgById(messages.rewardPaid__poolMisperformance.id, {
+      formatMsg(messages.rewardPaid__poolMisperformance, {
         poolHash: <PoolHashLinkEllipsized poolHash={poolHash} />,
         percent: formatPercent(1 - performance),
       }),
-      formatMsgById(messages.rewardPaid__maximumReward.id, {
+      formatMsg(messages.rewardPaid__maximumReward, {
         amount: <AdaValue showCurrency value={maxReward} />,
       }),
     ],
@@ -216,7 +216,7 @@ const keyRewardReception = ({action, i18n}) => {
 }
 
 const keyRegistrationAsPoolOwner = ({action, i18n}) => {
-  const {translate: tr, formatMsgById} = i18n
+  const {translate: tr, formatMsg} = i18n
   const {
     stakingKey,
     poolHash,
@@ -228,7 +228,7 @@ const keyRegistrationAsPoolOwner = ({action, i18n}) => {
   return {
     label: tr(messages.keyRegisteredAsPoolOwner__label),
     values: [
-      formatMsgById(messages.keyRegisteredAsPoolOwner__value.id, {
+      formatMsg(messages.keyRegisteredAsPoolOwner__value, {
         stakingKey: <StakingKeyLinkEllipsized stakingKey={stakingKey} />,
         poolHash: <PoolHashLinkEllipsized poolHash={poolHash} />,
       }),
@@ -244,7 +244,7 @@ const keyRegistrationAsPoolOwner = ({action, i18n}) => {
 }
 
 const keyDeregistrationAsPoolOwner = ({action, i18n}) => {
-  const {translate: tr, formatMsgById} = i18n
+  const {translate: tr, formatMsg} = i18n
   const {
     stakingKey,
     poolHash,
@@ -257,7 +257,7 @@ const keyDeregistrationAsPoolOwner = ({action, i18n}) => {
   return {
     label: tr(messages.keyDeregisteredAsPoolOwner__label),
     values: [
-      formatMsgById(messages.keyDeregisteredAsPoolOwner__value.id, {
+      formatMsg(messages.keyDeregisteredAsPoolOwner__value, {
         stakingKey: <StakingKeyLinkEllipsized stakingKey={stakingKey} />,
         poolHash: <PoolHashLinkEllipsized poolHash={poolHash} />,
       }),
@@ -273,20 +273,20 @@ const keyDeregistrationAsPoolOwner = ({action, i18n}) => {
 }
 
 const keyRegistrationAsPoolRewardTarget = ({action, i18n}) => {
-  const {translate: tr, formatMsgById} = i18n
+  const {translate: tr, formatMsg} = i18n
   const {stakingKey, poolHash, prevRewardTarget, currentRewardTarget} = action
   return {
     label: tr(messages.keyRegisteredAsPoolRewardTarget__label),
     values: [
-      formatMsgById(messages.keyRegisteredAsPoolRewardTarget__value.id, {
+      formatMsg(messages.keyRegisteredAsPoolRewardTarget__value, {
         stakingKey: <StakingKeyLinkEllipsized stakingKey={stakingKey} />,
         poolHash: <PoolHashLinkEllipsized poolHash={poolHash} />,
       }),
       prevRewardTarget &&
-        formatMsgById(messages.keyRegisteredAsPoolRewardTarget__previousRewardTarget.id, {
+        formatMsg(messages.keyRegisteredAsPoolRewardTarget__previousRewardTarget, {
           stakingKey: <StakingKeyLinkEllipsized stakingKey={prevRewardTarget} />,
         }),
-      formatMsgById(messages.keyRegisteredAsPoolRewardTarget__currentRewardTarget.id, {
+      formatMsg(messages.keyRegisteredAsPoolRewardTarget__currentRewardTarget, {
         stakingKey: <StakingKeyLinkEllipsized stakingKey={currentRewardTarget} />,
       }),
     ],
@@ -294,20 +294,20 @@ const keyRegistrationAsPoolRewardTarget = ({action, i18n}) => {
 }
 
 const keyDeregistrationAsPoolRewardTarget = ({action, i18n}) => {
-  const {translate: tr, formatMsgById} = i18n
+  const {translate: tr, formatMsg} = i18n
   const {stakingKey, poolHash, prevRewardTarget, currentRewardTarget} = action
   return {
     label: tr(messages.keyDeregisteredAsPoolRewardTarget__label),
     values: [
-      formatMsgById(messages.keyDeregisteredAsPoolRewardTarget__value.id, {
+      formatMsg(messages.keyDeregisteredAsPoolRewardTarget__value, {
         stakingKey: <StakingKeyLinkEllipsized stakingKey={stakingKey} />,
         poolHash: <PoolHashLinkEllipsized poolHash={poolHash} />,
       }),
       prevRewardTarget &&
-        formatMsgById(messages.keyRegisteredAsPoolRewardTarget__previousRewardTarget.id, {
+        formatMsg(messages.keyRegisteredAsPoolRewardTarget__previousRewardTarget, {
           stakingKey: <StakingKeyLinkEllipsized stakingKey={prevRewardTarget} />,
         }),
-      formatMsgById(messages.keyRegisteredAsPoolRewardTarget__currentRewardTarget.id, {
+      formatMsg(messages.keyRegisteredAsPoolRewardTarget__currentRewardTarget, {
         stakingKey: <StakingKeyLinkEllipsized stakingKey={currentRewardTarget} />,
       }),
     ],
@@ -315,7 +315,7 @@ const keyDeregistrationAsPoolRewardTarget = ({action, i18n}) => {
 }
 
 const keyDelegation = ({action, i18n}) => {
-  const {translate: tr, formatMsgById} = i18n
+  const {translate: tr, formatMsg} = i18n
   const {
     stakingKey,
     stakingKeyExists,
@@ -332,24 +332,24 @@ const keyDelegation = ({action, i18n}) => {
     values: [
       tr(stakingKeyExists ? messages.keyExists : messages.keyNotExists),
       previousDelegatedToTxHash &&
-        formatMsgById(messages.keyDelegation__previouslyReplacedAtTx.id, {
+        formatMsg(messages.keyDelegation__previouslyReplacedAtTx, {
           txHash: <TxHashLinkEllipsized txHash={txHash} />,
           stakingKey: <StakingKeyLinkEllipsized stakingKey={stakingKey} />,
           poolHash: <PoolHashLinkEllipsized poolHash={poolHash} />,
         }),
       previousDelegatedToTxHash &&
-        formatMsgById(messages.keyDelegation__nextReplacedAtTx.id, {
+        formatMsg(messages.keyDelegation__nextReplacedAtTx, {
           txHash: <TxHashLinkEllipsized txHash={nextDelegatedToTxHash} />,
         }),
-      formatMsgById(messages.keyDelegation__delegationBalance.id, {
+      formatMsg(messages.keyDelegation__delegationBalance, {
         balance: <AdaValue showCurrency value={delegationBalance} />,
       }),
 
-      formatMsgById(messages.keyDelegation__currentDelegationBalance.id, {
+      formatMsg(messages.keyDelegation__currentDelegationBalance, {
         balance: <AdaValue showCurrency value={currentDelegationBalance} />,
       }),
 
-      formatMsgById(messages.keyDelegation__currentDelegation.id, {
+      formatMsg(messages.keyDelegation__currentDelegation, {
         poolHash: <PoolHashLinkEllipsized poolHash={currentPoolHashDelegatedTo} />,
       }),
     ],
@@ -441,12 +441,12 @@ const poolCreationAdditionalRows = ({action, i18n}) => {
 }
 
 const poolCreation = ({action, i18n}) => {
-  const {translate: tr, formatMsgById} = i18n
+  const {translate: tr, formatMsg} = i18n
   const {poolHash} = action
   return {
     label: tr(messages.poolCreation__label),
     values: [
-      formatMsgById(messages.poolCreation__value.id, {
+      formatMsg(messages.poolCreation__value, {
         poolHash: <PoolHashLinkEllipsized poolHash={poolHash} />,
       }),
     ],
@@ -466,12 +466,12 @@ const poolUpdateMessages = defineMessages({
 })
 
 const genericUpdatedPropValueMsg = ({i18n, value, prevValue}) => {
-  const {formatMsgById} = i18n
+  const {formatMsg} = i18n
   return (
     <React.Fragment>
       {value}&nbsp;
       <Typography component="span" color="textSecondary">
-        {formatMsgById(poolUpdateMessages.prevValue.id, {prevValue})}
+        {formatMsg(poolUpdateMessages.prevValue, {prevValue})}
       </Typography>
     </React.Fragment>
   )
@@ -580,11 +580,11 @@ const poolUpdate = ({action, i18n}) => {
     retirementTxHash,
     updatedProperties,
   } = action
-  const {translate: tr, formatMsgById} = i18n
+  const {translate: tr, formatMsg} = i18n
   return {
     label: tr(messages.poolUpdate__label),
     values: [
-      formatMsgById(messages.poolUpdate__value.id, {
+      formatMsg(messages.poolUpdate__value, {
         poolHash: <PoolHashLinkEllipsized poolHash={poolHash} />,
       }),
       ...poolUpdateRelatedMessages({
@@ -602,12 +602,12 @@ const poolUpdate = ({action, i18n}) => {
 }
 
 const poolDeletion = ({action, i18n}) => {
-  const {translate: tr, formatMsgById} = i18n
+  const {translate: tr, formatMsg} = i18n
   const {rewardsEpoch} = action
   return {
     label: tr(messages.poolDeletion__label),
     values: [
-      formatMsgById(messages.poolDeletion__value.id, {
+      formatMsg(messages.poolDeletion__value, {
         epoch: <Link to={routeTo.epoch(rewardsEpoch)}>{rewardsEpoch}</Link>,
       }),
     ],
@@ -615,7 +615,7 @@ const poolDeletion = ({action, i18n}) => {
 }
 
 const poolRetirement = ({action, i18n}) => {
-  const {translate: tr, formatMsgById} = i18n
+  const {translate: tr, formatMsg} = i18n
   const {
     poolExists,
     retiring,
@@ -628,21 +628,21 @@ const poolRetirement = ({action, i18n}) => {
   return {
     label: tr(messages.poolRetiring__label),
     values: [
-      formatMsgById(messages.poolRetirement__value.id, {
+      formatMsg(messages.poolRetirement__value, {
         poolHash: <PoolHashLinkEllipsized poolHash={poolHash} />,
         epoch,
       }),
       poolExistsMessage({poolExists, i18n}),
       retiring && tr(messages.poolRetiring),
-      formatMsgById(messages.poolCreatedAtTxHash.id, {
+      formatMsg(messages.poolCreatedAtTxHash, {
         txHash: <TxHashLinkEllipsized txHash={createdAtTxHash} />,
       }),
       previousUpdatedAtTxHash &&
-        formatMsgById(messages.poolPreviousUpdatedAtTxHash.id, {
+        formatMsg(messages.poolPreviousUpdatedAtTxHash, {
           txHash: <TxHashLinkEllipsized txHash={previousUpdatedAtTxHash} />,
         }),
       nextUpdatedAtTxHash &&
-        formatMsgById(messages.poolNextUpdatedAtTxHash.id, {
+        formatMsg(messages.poolNextUpdatedAtTxHash, {
           txHash: <TxHashLinkEllipsized txHash={nextUpdatedAtTxHash} />,
         }),
     ],
@@ -651,12 +651,12 @@ const poolRetirement = ({action, i18n}) => {
 
 const poolRetirementCancellation = ({action, i18n}) => {
   const {poolHash, epochNumber} = action
-  const {translate: tr, formatMsgById} = i18n
+  const {translate: tr, formatMsg} = i18n
 
   return {
     label: tr(messages.poolRetirementCancellation__label),
     values: [
-      formatMsgById(messages.poolRetirementCancellation__value.id, {
+      formatMsg(messages.poolRetirementCancellation__value, {
         poolHash: <PoolHashLinkEllipsized poolHash={poolHash} />,
         epochNumber,
       }),
