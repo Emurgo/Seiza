@@ -101,6 +101,14 @@ const useStyles = makeStyles((theme) => ({
   },
   mobilePools: {
     padding: getMobilePaddings(theme),
+    paddingTop: 0,
+    paddingBottom: theme.spacing(2),
+    marginTop: -theme.spacing(1),
+  },
+  poolsCount: {
+    padding: getMobilePaddings(theme),
+    paddingTop: theme.spacing(2),
+    paddingBottom: 0,
   },
   title: {
     textTransform: 'uppercase',
@@ -174,6 +182,9 @@ const MobileSettingsBar = ({selectedPools, error}: Props) => {
             <DialogContent className={classes.modalContent}>
               {!config.isYoroi && <AutoSaveBar className={classes.mobileAutoSaveBar} />}
               <ResetButton className={classes.mobileResetButton} />
+              <div className={classes.poolsCount}>
+                <PoolsToCompareCount selectedPools={selectedPools} />
+              </div>
               <div className={classes.mobilePools}>
                 <PoolsToCompare selectedPools={selectedPools} />
               </div>
