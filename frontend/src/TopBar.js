@@ -50,7 +50,7 @@ const useTopBarStyles = makeStyles((theme) => ({
   stakingSettingsPortal: {
     position: 'relative',
     // Note: for portal flex positioning does not seem to work that good
-    right: 25,
+    right: 35,
     top: 7,
   },
 

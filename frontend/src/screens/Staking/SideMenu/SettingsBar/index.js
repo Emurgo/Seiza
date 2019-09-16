@@ -41,16 +41,16 @@ const useMobileSettingsButtonStyles = makeStyles((theme) => ({
     border: `1px solid ${theme.palette.primary.main}`,
     borderRadius: 5,
     color: 'transparent',
-    padding: theme.spacing(0.7),
-    left: 2,
-    top: 2,
+    padding: `${theme.spacing(0.7)}px ${theme.spacing(1)}px`,
+    left: 3,
+    top: 3,
   },
   upperCard: {
     position: 'absolute',
     background: theme.palette.primary.main,
     color: theme.palette.background.paper,
     borderRadius: 5,
-    padding: theme.spacing(0.7),
+    padding: `${theme.spacing(0.7)}px ${theme.spacing(1)}px`,
   },
 }))
 
