@@ -7,6 +7,13 @@ import {compose} from 'redux'
 import _ from 'lodash'
 import assert from 'assert'
 
+type Msg =
+  | {
+      id: string,
+      defaultMessage?: string,
+    }
+  | string
+
 const defaultNumberFmt = {
   prefix: '',
   decimalSeparator: '.',
@@ -22,11 +29,11 @@ BigNumber.config({
   FORMAT: defaultNumberFmt,
 })
 
-export const formatMsgById = (id: string, values?: Object) => {
+export const formatMsg = (message: Msg, values?: Object) => {
   return (
     <FormattedMessage
       // $FlowFixMe
-      id={id}
+      id={message.id}
       values={values}
     />
   )
@@ -115,15 +122,9 @@ const _withSign = (x: string, showSign: ShowSign): string => {
   return `${GET_SIGN[showSign](x)}${_stripSign(x)}`
 }
 
-type Msg =
-  | {
-      id: string,
-      defaultMessage?: string,
-    }
-  | string
-
 export type Formatters = {
   translate: (msg: Msg, args?: any) => string,
+  formatMsg: (msg: Msg, values?: {}) => React$Node,
   formatNumber: (x: ?number, options?: any) => string,
   formatInt: (x: ?number, options?: any) => string,
   formatPercent: (x: ?number, options?: any) => string,
@@ -239,7 +240,7 @@ export const getIntlFormatters = (intl: any): Formatters => {
 
   return {
     translate,
-    formatMsgById,
+    formatMsg,
     formatNumber,
     formatInt,
     formatPercent,
