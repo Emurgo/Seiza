@@ -150,11 +150,9 @@ const useGetInitialExpandState = (categoryConfigs) =>
     [categoryConfigs]
   )
 
-const LS_KEY = 'mobile-comparison-matrix-fields'
-
-const useToggleCardsState = (categoryConfigs) => {
+const useToggleCardsState = (categoryConfigs, storageKey) => {
   const initialState = useGetInitialExpandState(categoryConfigs)
-  const [expandedFields, setExpandedFields] = useLocalStorageState<{}>(LS_KEY, initialState)
+  const [expandedFields, setExpandedFields] = useLocalStorageState<{}>(storageKey, initialState)
 
   const toggle = useCallback(
     (field) => setExpandedFields((state) => ({...state, [field]: !state[field]})),
@@ -193,7 +191,8 @@ const useWrapperStyles = makeStyles((theme) => ({
 
 const MobileComparisonMatrix = (props: ComparisonMatrixProps) => {
   const {expandAll, collapseAll, expandedAll, toggle, expandedFields} = useToggleCardsState(
-    props.categoryConfigs
+    props.categoryConfigs,
+    props.expandedColumnsStorageKey
   )
   const classes = useWrapperStyles()
 

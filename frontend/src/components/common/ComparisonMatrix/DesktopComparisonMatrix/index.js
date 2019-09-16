@@ -311,6 +311,7 @@ type ComparisonMatrixLayoutProps = {|
   getIdentifier: (Object) => string,
   scrollRef: any,
   fullScreenScrollRef?: any,
+  expandedColumnsStorageKey: string,
 |}
 
 const ComparisonMatrixLayout = ({
