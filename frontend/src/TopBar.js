@@ -16,11 +16,12 @@ import useBooleanState from '@/components/hooks/useBooleanState'
 import {routeTo, combinedBlockchainPath} from './helpers/routes'
 import BlockchainSearch from './screens/Blockchain/BlockchainHeader/Search'
 import {useMobileStakingSettingsRef, useTopBarRef} from '@/components/context/refs'
-import {Link} from '@/components/common'
 import {NavMenuItems, MobileNavMenuItems} from '@/components/common/Navbar'
 import LanguageSelect, {MobileLanguage} from '@/components/common/LanguageSelect'
-import ThemeSelect from '@/components/common/ThemeSelect'
+import {BlockchainNetworkSelect, ThemeSelect, Link} from '@/components/common'
 import {MobileOnly, DesktopOnly} from '@/components/visual'
+import {useUrlInfo} from '@/components/context/urlInfo'
+import {getCurrentBlockchainNetwork} from '@/helpers/testnet'
 import config from '@/config'
 
 import seizaLogoDesktop from '@/static/assets/icons/logo-seiza.svg'
@@ -87,11 +88,22 @@ const useMobileMenuStyles = makeStyles(({palette, spacing}) => ({
   popper: {
     zIndex: 40,
   },
+  tmpSelectWrapper: {
+    // Note: tmp till we use whole Selects in mobile menu for upcoming features
+    marginLeft: -5,
+  },
 }))
+
+const useGetEnableThemes = () => {
+  const {origin} = useUrlInfo()
+  const isMainnet = config.enableTestnet ? getCurrentBlockchainNetwork(origin).isMainnet : false
+  return isMainnet && config.featureEnableThemes
+}
 
 const MobileMenu = ({items = [], currentPathname}: any) => {
   const classes = useMobileMenuStyles()
   const [isOpen, setIsOpen, setIsClosed] = useBooleanState(false)
+  const enableThemes = useGetEnableThemes()
 
   /* Note: not using IconButton as its hover does not look good when it wraps both icons,
      and also on mobile that hover will not be visible anyway. */
@@ -119,7 +131,10 @@ const MobileMenu = ({items = [], currentPathname}: any) => {
           <div className={classes.languageWrapper}>
             <MobileLanguage />
           </div>
-          {config.featureEnableThemes && <ThemeSelect />}
+          <div className={classes.tmpSelectWrapper}>{enableThemes && <ThemeSelect />}</div>
+          <div className={classes.tmpSelectWrapper}>
+            {config.enableTestnet && <BlockchainNetworkSelect />}
+          </div>
         </div>
       </SwipeableDrawer>
     </React.Fragment>
@@ -159,6 +174,9 @@ const TopBar = ({navItems}: TopBarProps) => {
   const addShadow = !matchPath(pathname, routeTo.stakingCenter.home())
   const classes = useTopBarStyles({addShadow})
   const {callbackRef: mobileStakingSettingsRef} = useMobileStakingSettingsRef()
+
+  const enableThemes = useGetEnableThemes()
+
   const {callbackRef: topBarRef} = useTopBarRef()
 
   if (config.isYoroi) {
@@ -188,7 +206,8 @@ const TopBar = ({navItems}: TopBarProps) => {
             <Grid container direction="row" alignItems="center">
               <NavMenuItems currentPathname={pathname} items={navItems} />
               <LanguageSelect />
-              {config.featureEnableThemes && <ThemeSelect />}
+              {enableThemes && <ThemeSelect />}
+              {config.enableTestnet && <BlockchainNetworkSelect />}
             </Grid>
           </Grid>
         </Grid>

@@ -10,7 +10,8 @@ import type {Storage} from '@/helpers/storage'
 export const useStorageState = <T>(
   storage: Storage,
   key: string,
-  initialState: T
+  initialState: T,
+  options?: {}
 ): [T, (newState: T) => void | ((state: T) => T)] => {
   const savedState = storage.getItem(key)
   const [state, setState] = useState<T>(savedState || initialState)
@@ -22,9 +23,13 @@ export const useStorageState = <T>(
   // Also useEffect might be proper place to do side-effect action
   useEffect(() => {
     if (storage.getItem(key) !== state) {
-      storage.setItem(key, state)
+      if (options) {
+        storage.setItem(key, state, options)
+      } else {
+        storage.setItem(key, state)
+      }
     }
-  }, [key, state, storage])
+  }, [key, options, state, storage])
 
   return [state, setState]
 }
@@ -38,8 +43,9 @@ export const useLocalStorageState = <T>(
 
 export const useCookieState = <T>(
   key: string,
-  initialState: T
+  initialState: T,
+  options?: {} = {}
 ): [T, (newState: T) => void | ((state: T) => T)] => {
   const cookieStorage = useCookiesStorage()
-  return useStorageState<T>(cookieStorage, key, initialState)
+  return useStorageState<T>(cookieStorage, key, initialState, options)
 }

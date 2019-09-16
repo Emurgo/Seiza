@@ -2,7 +2,7 @@
 
 export type Storage = {|
   getItem: (key: string) => any,
-  setItem: (key: string, value: any) => void,
+  setItem: (key: string, value: any, ...restParams: any) => void,
   removeItem: (key: string) => void,
 |}
 
@@ -13,8 +13,8 @@ export const toStorageFormat = JSON.stringify
 export const parseStorageFormat = JSON.parse
 
 export const _getStorage = (storage: Object, type: StorageType): Storage => {
-  const setItem = (key: string, item: any) => {
-    storage.setItem(key, toStorageFormat(item))
+  const setItem = (key: string, item: any, ...restParams) => {
+    storage.setItem(key, toStorageFormat(item), ...restParams)
   }
 
   const getItem = (key: string): any => {

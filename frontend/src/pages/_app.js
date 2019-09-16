@@ -30,6 +30,7 @@ import {
   LOCALE_KEY,
 } from '@/components/context/intl'
 import {UserAgentProvider} from '@/components/context/userAgent'
+import {UrlInfoProvider} from '@/components/context/urlInfo'
 
 import {THEME_DEFINITIONS, THEMES} from '@/themes'
 import translations from '@/i18n/locales'
@@ -165,11 +166,17 @@ class MyApp extends App {
       // Note: this can set cookie and redirect
       handleLocaleParam(ctx, cookiesProps)
 
+      const urlInfo = {
+        domain: ctx.req ? ctx.req.headers.host : window.location.host,
+        origin: ctx.req ? `${ctx.req.protocol}://${ctx.req.headers.host}` : window.location.origin,
+      }
+
       // what is returned here, gets injected into __NEXT_DATA__
       return {
         pageProps,
         cookiesProps,
         userAgent: ctx.req ? ctx.req.headers['user-agent'] : navigator.userAgent,
+        urlInfo,
       }
       // ***** BEGIN INSPIRED BY: https://github.com/zeit/next.js/blob/master/examples/with-sentry/pages/_app.js
     } catch (error) {
@@ -244,6 +251,7 @@ class MyApp extends App {
       cookiesProps,
       hasError,
       userAgent,
+      urlInfo,
     } = this.props
 
     if (hasError) {
@@ -264,26 +272,28 @@ class MyApp extends App {
 
     return (
       <Container>
-        <CookiesStorageProvider {...this.getHackedCookieHandlers(cookiesProps)}>
-          <ApolloProviders client={apolloClient}>
-            <ThemeProvider>
-              <MuiProviders>
-                <IntlProvider>
-                  <Intl>
-                    <InjectHookIntlContext>
-                      <UserAgentProvider userAgent={userAgent}>
-                        <TwitterMetadata />
-                        <FacebookMetadata />
-                        <CrawlerMetadata />
-                        <Component {...pageProps} routerCtx={routerCtx} />
-                      </UserAgentProvider>
-                    </InjectHookIntlContext>
-                  </Intl>
-                </IntlProvider>
-              </MuiProviders>
-            </ThemeProvider>
-          </ApolloProviders>
-        </CookiesStorageProvider>
+        <UrlInfoProvider urlInfo={urlInfo}>
+          <CookiesStorageProvider {...this.getHackedCookieHandlers(cookiesProps)}>
+            <ApolloProviders client={apolloClient}>
+              <ThemeProvider>
+                <MuiProviders>
+                  <IntlProvider>
+                    <Intl>
+                      <InjectHookIntlContext>
+                        <UserAgentProvider userAgent={userAgent}>
+                          <TwitterMetadata />
+                          <FacebookMetadata />
+                          <CrawlerMetadata />
+                          <Component {...pageProps} routerCtx={routerCtx} />
+                        </UserAgentProvider>
+                      </InjectHookIntlContext>
+                    </Intl>
+                  </IntlProvider>
+                </MuiProviders>
+              </ThemeProvider>
+            </ApolloProviders>
+          </CookiesStorageProvider>
+        </UrlInfoProvider>
       </Container>
     )
   }

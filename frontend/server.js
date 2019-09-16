@@ -51,6 +51,9 @@ app.prepare().then(() => {
   server.use(cookieParser())
   server.use(compression())
 
+  // To get https:// from req.protocol when running on heroku
+  server.enable('trust proxy')
+
   // https://github.com/zeit/next.js/issues/1791
   server.use(
     '/static',

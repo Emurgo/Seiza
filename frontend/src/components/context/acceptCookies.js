@@ -2,6 +2,7 @@
 import React, {useContext, useCallback} from 'react'
 
 import {useCookieState} from '@/components/hooks/useStorageState'
+import config from '@/config'
 
 type ContextType = {
   cookiesAccepted: boolean,
@@ -14,8 +15,14 @@ type Props = {|
   children: React$Node,
 |}
 
+const options = {domain: config.commonCookiesDomain}
+
 export const AcceptCookiesProvider = ({children}: Props) => {
-  const [cookiesAccepted, setCookiesAccepted] = useCookieState<boolean>('acceptCookies', false)
+  const [cookiesAccepted, setCookiesAccepted] = useCookieState<boolean>(
+    'acceptCookies-domain-cookie',
+    false,
+    options
+  )
 
   const acceptCookies = useCallback(() => {
     setCookiesAccepted(true)

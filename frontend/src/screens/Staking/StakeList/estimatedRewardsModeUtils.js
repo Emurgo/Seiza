@@ -3,6 +3,7 @@
 import React, {useContext} from 'react'
 
 import {useCookieState} from '@/components/hooks/useStorageState'
+import config from '@/config'
 
 export const ESTIMATED_REWARDS_MODES = {
   PERCENTAGE: 'percentage',
@@ -21,10 +22,13 @@ type Props = {|
   children: React$Node,
 |}
 
+const options = {domain: config.commonCookiesDomain}
+
 export const EstimatedRewardsModeProvider = ({children}: Props) => {
   const [estimatedRewardsMode, setEstimatedRewardsMode] = useCookieState(
-    'rewards-mode',
-    ESTIMATED_REWARDS_MODES.YEAR
+    'rewards-mode-domain-cookie',
+    ESTIMATED_REWARDS_MODES.YEAR,
+    options
   )
 
   return (

@@ -85,6 +85,7 @@ const Select = ({
   renderValue,
   hasBorder = true,
   multiple = false,
+  IconComponent,
 }) => {
   const InputComponent = hasBorder ? StyledOutlinedInput : NoBorderInput
 
@@ -100,7 +101,7 @@ const Select = ({
         value={value}
         onChange={onChange}
         input={<InputComponent labelWidth={0} />}
-        IconComponent={StyledArrowDropDownIcon}
+        IconComponent={IconComponent || StyledArrowDropDownIcon}
         renderValue={renderValue}
       >
         {multiple

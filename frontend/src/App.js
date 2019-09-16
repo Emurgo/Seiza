@@ -35,6 +35,7 @@ import {SearchbarRefProvider} from '@/components/context/searchbarRef'
 import {CurrencyProvider} from '@/components/hooks/useCurrency'
 import EnvOverrides from './screens/EnvOverrides'
 import TopBar from './TopBar'
+import {TestnetPanel} from '@/components/common'
 
 import {useGlobalStyles} from './globalStyles'
 
@@ -157,6 +158,7 @@ const AppLayout = () => {
 
       <DefaultErrorBoundary>
         <React.Fragment>
+          <TestnetPanel />
           <Grid item className={classes.contentWrapper}>
             <Switch>
               {combinedBlockchainPath && (

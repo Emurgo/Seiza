@@ -21,6 +21,7 @@ type Props = {
   underline?: boolean,
   external?: boolean,
   bold?: boolean,
+  className?: string,
 }
 
 const Link = ({
@@ -31,6 +32,7 @@ const Link = ({
   external,
   monospace = false,
   bold = false,
+  className,
 }: Props) => {
   const classes = useStyles()
   const linkProps = external ? {component: 'a', href: to} : {component: RouterLink, to}
@@ -39,7 +41,7 @@ const Link = ({
       {...linkProps}
       target={target}
       underline={underline}
-      className={cn(monospace && classes.monospace, bold && classes.bold)}
+      className={cn(monospace && classes.monospace, bold && classes.bold, className)}
     >
       {children}
     </MuiLink>

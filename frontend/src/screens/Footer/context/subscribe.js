@@ -2,6 +2,7 @@
 import React, {useContext, useCallback} from 'react'
 
 import {useCookieState} from '@/components/hooks/useStorageState'
+import config from '@/config'
 
 type ContextType = {
   hidden: boolean,
@@ -16,8 +17,14 @@ type Props = {|
   children: React$Node,
 |}
 
+const options = {domain: config.commonCookiesDomain}
+
 export const SubscribeProvider = ({children}: Props) => {
-  const [hidden, setHidden] = useCookieState<boolean>('subscribedToNewsletter', false)
+  const [hidden, setHidden] = useCookieState<boolean>(
+    'subscribedToNewsletter-domain-cookie',
+    false,
+    options
+  )
 
   const hideSubscribe = useCallback(() => {
     setHidden(true)

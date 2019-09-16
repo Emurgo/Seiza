@@ -20,9 +20,6 @@ export const themeMessages = defineMessages({
 })
 
 const useStyles = makeStyles((theme) => ({
-  select: {
-    marginRight: '40px',
-  },
   themeLabelWrapper: {
     display: 'flex',
   },
@@ -82,12 +79,10 @@ export const themeLabels = {
 }
 
 const ThemeSelect = () => {
-  const classes = useStyles()
   const {currentTheme, setTheme} = useTheme()
   return (
     <Select
       hasBorder={false}
-      className={classes.select}
       value={currentTheme}
       onChange={(e) => setTheme(e.target.value)}
       options={THEME_NAMES.map((theme) => ({
