@@ -1,26 +1,36 @@
 // @flow
 
 import React, {useCallback} from 'react'
-import {defineMessages} from 'react-intl'
+import {makeStyles} from '@material-ui/styles'
 
-import {LoadingInProgress, SimpleLayout} from '@/components/visual'
+import {LoadingInProgress} from '@/components/visual'
 import {LoadingError} from '@/components/common'
 import {useManageQueryValue} from '@/components/hooks/useManageQueryValue'
 import {toIntOrNull} from '@/helpers/utils'
-import {useI18n} from '@/i18n/helpers'
 
 // TODO: load custom pools here, temporarily reused
 import {useLoadStakepools} from '@/screens/StakingPools/dataLoaders'
 import {FiltersProvider} from '@/screens/StakingPools/filtersUtils'
 import {SortOptionsProvider} from '@/screens/StakingPools/sortUtils'
-import {StakingPools} from '@/screens/StakingPools'
+import {
+  StakingPools,
+  LEFT_ARROW_OFFSET,
+  RIGHT_ARROW_OFFSET,
+  ARROWS_BREAKPOINT,
+} from '@/screens/StakingPools'
 
-const messages = defineMessages({
-  screenTitle: 'Stake pools',
-})
+const useStyles = makeStyles((theme) => ({
+  tableWrapper: {
+    margin: 0,
+    [theme.breakpoints.up(ARROWS_BREAKPOINT)]: {
+      marginLeft: -LEFT_ARROW_OFFSET,
+      marginRight: -RIGHT_ARROW_OFFSET,
+    },
+  },
+}))
 
 export default () => {
-  const {translate: tr} = useI18n()
+  const classes = useStyles()
 
   const {stakepools, loading, error} = useLoadStakepools()
   const [page, setPage] = useManageQueryValue('stake-pools-page', 1, toIntOrNull)
@@ -33,7 +43,7 @@ export default () => {
   const onFilterChange = resetPage
 
   return (
-    <SimpleLayout title={tr(messages.screenTitle)}>
+    <React.Fragment>
       {error || loading ? (
         error ? (
           <LoadingError error={error} />
@@ -41,12 +51,14 @@ export default () => {
           <LoadingInProgress />
         )
       ) : (
-        <SortOptionsProvider onChange={onSortByChange}>
-          <FiltersProvider allPools={stakepools} onChange={onFilterChange}>
-            <StakingPools {...{page, setPage, stakepools}} />
-          </FiltersProvider>
-        </SortOptionsProvider>
+        <div className={classes.tableWrapper}>
+          <SortOptionsProvider onChange={onSortByChange}>
+            <FiltersProvider allPools={stakepools} onChange={onFilterChange}>
+              <StakingPools {...{page, setPage, stakepools}} />
+            </FiltersProvider>
+          </SortOptionsProvider>
+        </div>
       )}
-    </SimpleLayout>
+    </React.Fragment>
   )
 }

@@ -15,6 +15,7 @@ import {toIntOrNull, getPageCount} from '@/helpers/utils'
 import BlocksTable, {COLUMNS_MAP} from '../PagedBlocks/BlocksTable'
 import {getPageAndBoundaryFromCursor} from '../PagedBlocks/util'
 import {useIsMobile} from '@/components/hooks/useBreakpoints'
+import config from '@/config'
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {
@@ -22,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'flex-end',
     alignItems: 'center',
     marginTop: theme.spacing(1),
-    marginBottom: theme.spacing(3),
+    marginBottom: theme.spacing(1),
     [theme.breakpoints.down('sm')]: {
       flexDirection: 'column',
       justifyContent: 'center',
@@ -170,15 +171,17 @@ const Blocks = ({blocksCount, epochNumber}) => {
 
   return (
     <Grid container direction="column">
-      <Grid item className={classes.heading}>
-        <Grid container justify="center">
-          <EntityHeading>{tr(messages.blocks, {count: formatInt(blocksCount)})}</EntityHeading>
+      {!config.showStakingData && (
+        <Grid item className={classes.heading}>
+          <Grid container justify="center">
+            <EntityHeading>{tr(messages.blocks, {count: formatInt(blocksCount)})}</EntityHeading>
+          </Grid>
         </Grid>
-      </Grid>
+      )}
       <Grid item>
         <Grid container className={classes.wrapper}>
           <Grid item className={classes.paginationWrapper}>
-            {isMobile && <MobilePaginationDivider />}
+            {isMobile && !config.showStakingData && <MobilePaginationDivider />}
             {pagination}
           </Grid>
         </Grid>
