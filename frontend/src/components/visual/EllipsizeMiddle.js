@@ -8,9 +8,9 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'hidden',
     // Used to disallow text selection. This component should be used together
     // with `CopyToClipboard` component to allow copying of the content.
-    // The reason is that having content in two <span> leads to unwanted space character when
+    // The reason is that having content in two <d> leads to unwanted space character when
     // copying directly.
-    userSelect: ({isFixed}) => (isFixed ? 'auto' : 'none'),
+    userSelect: ({isFixed}) => (isFixed ? 'auto' : 'all'),
     display: ({isFixed}) => (isFixed ? 'inline' : 'flex'),
   },
   ellipsizedSpan: {
@@ -38,7 +38,13 @@ const EllipsizeMiddle = ({value, startCharsCnt = null, endCharsCnt = 15}) => {
   }
 
   return typeof value === 'string' && value.length > endCharsCnt ? (
-    <span className={classes.wrapper}>
+    <span
+      className={classes.wrapper}
+      onCopy={(e) => {
+        e.clipboardData.setData('text/plain', value)
+        e.preventDefault()
+      }}
+    >
       {isFixed ? (
         <React.Fragment>
           {`${value.substring(0, startCharsCnt)}...${value.substring(value.length - endCharsCnt)}`}

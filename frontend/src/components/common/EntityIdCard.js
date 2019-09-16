@@ -6,7 +6,7 @@ import {fade} from '@material-ui/core/styles/colorManipulator'
 import {makeStyles} from '@material-ui/styles'
 import cn from 'classnames'
 
-import {Card} from '@/components/visual'
+import {Card, EllipsizeMiddle} from '@/components/visual'
 import {CopyToClipboard} from '@/components/common'
 import {useIsMobile} from '@/components/hooks/useBreakpoints'
 
@@ -161,11 +161,10 @@ export const EntityCardContent = ({
                 key={rawValue}
               >
                 <Typography
-                  noWrap={ellipsizeValue}
                   variant="body1"
                   className={cn(classes.value, monospaceValue && classes.monospace)}
                 >
-                  {value}
+                  <EllipsizeMiddle value={value} />
                 </Typography>
               </ReactCSSTransitionGroup>
 
