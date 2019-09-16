@@ -50,7 +50,7 @@ const messages = defineMessages({
   stakingKeysDelegating: 'Total Staking Keys Delegating',
   stakingPoolsCount: 'Total Pools Count',
   blocksTab: 'Blocks',
-  stakingPoolsTab: 'Staking Pools',
+  stakingPoolsTab: 'Stake Pools',
   future: 'Future',
   current: 'Current',
 })
@@ -72,6 +72,9 @@ const useStyles = makeStyles((theme) => ({
   },
   date: {
     display: 'inline-block',
+  },
+  tabs: {
+    marginTop: theme.spacing(9),
   },
 }))
 
@@ -359,6 +362,7 @@ const EpochMetadata = ({epochNumber, epochData}) => {
 }
 
 const EpochScreen = () => {
+  const classes = useStyles()
   const {epochNumber} = useScreenParams()
   const {epochData, error, loading} = useEpochData(epochNumber)
   const scrollToRef = useRef()
@@ -390,10 +394,11 @@ const EpochScreen = () => {
           <React.Fragment>
             <EpochSummaryCard epoch={epochData} loading={loading} />
             {config.showStakingData ? (
-              <React.Fragment>
+              <div className={classes.tabs}>
                 <TabsPaginationLayout
                   tabs={
                     <LiteTabs
+                      defaultBottomOffset
                       value={tabState.currentTabIndex}
                       onChange={tabState.setTabByEventIndex}
                     >
@@ -405,7 +410,7 @@ const EpochScreen = () => {
                 />
 
                 <TabContent epochNumber={epochNumber} />
-              </React.Fragment>
+              </div>
             ) : (
               blocksInEpoch != null &&
               blocksInEpoch > 0 && <Blocks epochNumber={epochNumber} blocksCount={blocksInEpoch} />

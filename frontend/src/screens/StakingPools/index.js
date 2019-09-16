@@ -44,11 +44,15 @@ const messages = defineMessages({
 
 const ROWS_PER_PAGE = 20
 
+export const LEFT_ARROW_OFFSET = 100
+export const RIGHT_ARROW_OFFSET = 100
+export const ARROWS_BREAKPOINT = 'lg'
+
 const useStyles = makeStyles((theme) => ({
   wrapper: {
-    [theme.breakpoints.up('lg')]: {
-      paddingRight: 100,
-      paddingLeft: 100,
+    [theme.breakpoints.up(ARROWS_BREAKPOINT)]: {
+      paddingRight: LEFT_ARROW_OFFSET,
+      paddingLeft: RIGHT_ARROW_OFFSET,
     },
     marginBottom: 0,
   },
