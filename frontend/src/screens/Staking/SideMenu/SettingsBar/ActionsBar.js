@@ -16,6 +16,7 @@ import {
   DialogContent,
   DialogContentText,
 } from '@material-ui/core'
+import {makeStyles} from '@material-ui/styles'
 import {ReactComponent as ShareIcon} from '@/static/assets/icons/staking-simulator/share.svg'
 import {ReactComponent as ImportIcon} from '@/static/assets/icons/staking-simulator/import.svg'
 import {ReactComponent as ExportIcon} from '@/static/assets/icons/staking-simulator/export.svg'
@@ -42,6 +43,12 @@ const messages = defineMessages({
   confirmButton: 'Import',
 })
 
+const useActionButtonStyles = makeStyles((theme) => ({
+  mobileLabel: {
+    paddingLeft: theme.spacing(0.75),
+  },
+}))
+
 const ActionButton = ({
   label,
   icon,
@@ -50,36 +57,39 @@ const ActionButton = ({
   label: string,
   icon: React$Node,
   onClick?: Function,
-}) => (
-  <React.Fragment>
-    <DesktopOnly>
-      <Grid container direction="row" alignItems="center">
-        <Grid item>
-          {/* Note: `component="span"` is required so that this can be used
+}) => {
+  const classes = useActionButtonStyles()
+  return (
+    <React.Fragment>
+      <DesktopOnly>
+        <Grid container direction="row" alignItems="center">
+          <Grid item>
+            {/* Note: `component="span"` is required so that this can be used
           as a children of `ReadFile` */}
-          <IconButton component="span" aria-label={label} color="primary" onClick={onClick}>
+            <IconButton component="span" aria-label={label} color="primary" onClick={onClick}>
+              {icon}
+            </IconButton>
+          </Grid>
+          <Grid item>
+            <Typography color="textSecondary" variant="overline">
+              {label}
+            </Typography>
+          </Grid>
+        </Grid>
+      </DesktopOnly>
+      <MobileOnly>
+        <Button component="span" onClick={onClick}>
+          <Grid container alignItems="center">
             {icon}
-          </IconButton>
-        </Grid>
-        <Grid item>
-          <Typography color="textSecondary" variant="overline">
-            {label}
-          </Typography>
-        </Grid>
-      </Grid>
-    </DesktopOnly>
-    <MobileOnly>
-      <Button component="span" onClick={onClick}>
-        <Grid container alignItems="center">
-          {icon}
-          <Typography color="textSecondary" variant="overline">
-            {label}
-          </Typography>
-        </Grid>
-      </Button>
-    </MobileOnly>
-  </React.Fragment>
-)
+            <Typography color="textSecondary" variant="overline" className={classes.mobileLabel}>
+              {label}
+            </Typography>
+          </Grid>
+        </Button>
+      </MobileOnly>
+    </React.Fragment>
+  )
+}
 
 const toPrettyJSON = (data) => JSON.stringify(data, null, 4)
 
