@@ -29,7 +29,7 @@ import HistoryScreen from '../History'
 import ChartsScreen from '../Charts'
 import {CARD_WIDTH} from '../StakeList/stakepoolCardUtils'
 import {EstimatedRewardsModeProvider} from '../StakeList/estimatedRewardsModeUtils'
-import {NAV_HEADER_HEIGHT} from '@/components/hooks/useScrollFromBottom'
+import {NAV_HEADER_HEIGHT, useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
 
 const DEFAULT_MAX_WIDTH = CARD_WIDTH
 
@@ -248,10 +248,15 @@ export default () => {
   const {autoSync} = useAutoSyncContext()
   const classes = useStyles()
   const stakingRoutes = routeTo.stakingCenter
+
+  const scrollToRef = React.useRef(null)
+  // Note: this is not smooth due to redirect
+  useScrollFromBottom(scrollToRef, true)
+
   return (
     <StakingContextProvider autoSync={autoSync}>
       <EstimatedRewardsModeProvider>
-        <Grid container direction="column">
+        <Grid container direction="column" ref={scrollToRef}>
           {!config.isYoroi && (
             <DesktopOnly>
               <StakePoolHeader />
