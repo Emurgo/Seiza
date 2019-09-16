@@ -91,6 +91,18 @@ isProduction && assert(sentryDSN)
 const sentryRelease = env.REACT_APP_SENTRY_RELEASE_VERSION
 isProduction && assert(sentryRelease)
 
+const isYoroi = env.IS_YOROI === 'true'
+
+const seizaUrl = env.SEIZA_URL
+const yoroiExtensionHash = env.YOROI_EXTENSION_HASH
+
+const checkYoroiEnvs = () => {
+  assert(seizaUrl, 'SEIZA_URL must be defined in env for Yoroi')
+  assert(yoroiExtensionHash, 'YOROI_EXTENSION_HASH must be defined in env for Yoroi')
+}
+
+isYoroi && checkYoroiEnvs()
+
 export default {
   isProduction,
   envOverridesEnabled,
@@ -114,7 +126,7 @@ export default {
   featureEnableSpanish: env.REACT_APP_FEATURE_ENABLE_SPANISH === 'true',
 
   watchRenderPerformance: env.REACT_APP_WATCH_RENDER_PERFORMANCE === 'true',
-  isYoroi: env.IS_YOROI === 'true',
-  seizaUrl: env.SEIZA_URL,
-  yoroiExtensionHash: env.YOROI_EXTENSION_HASH,
+  isYoroi,
+  seizaUrl,
+  yoroiExtensionHash,
 }
