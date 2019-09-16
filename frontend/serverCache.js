@@ -35,10 +35,14 @@ const getSupportedBrowserKey = (req) => {
   return `__supported:${isSupported}`
 }
 
+// Needed in case there is "testnet" error for http, or some
+// error related to instance that testnet is proxied into
+const getOriginKey = (req) => `__origin:${req.protocol}://${req.headers.host}`
+
 const getUrlKey = (req) => `__route:${req.url}`
 
 const requestToKey = (req) => {
-  return `${getUrlKey(req)}${getCookiesKey(req)}${getSupportedBrowserKey(req)}`
+  return `${getOriginKey(req)}${getUrlKey(req)}${getCookiesKey(req)}${getSupportedBrowserKey(req)}`
 }
 
 // Note: called 'render' to have compatible naming with nextjs app.render
