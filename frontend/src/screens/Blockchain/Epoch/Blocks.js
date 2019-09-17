@@ -44,6 +44,9 @@ const useStyles = makeStyles((theme) => ({
       width: 'auto',
     },
   },
+  alignEnd: {
+    alignSelf: 'flex-end',
+  },
 }))
 
 const messages = defineMessages({
@@ -178,7 +181,8 @@ const Blocks = ({blocksCount, epochNumber}) => {
           </Grid>
         </Grid>
       )}
-      <Grid item>
+      {/* alignEnd needed, because otherwise pagination jumps on chrome */}
+      <Grid item className={classes.alignEnd}>
         <Grid container className={classes.wrapper}>
           <Grid item className={classes.paginationWrapper}>
             {isMobile && !config.showStakingData && <MobilePaginationDivider />}
