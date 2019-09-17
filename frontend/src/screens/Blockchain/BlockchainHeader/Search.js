@@ -112,6 +112,7 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: theme.spacing(4),
     marginRight: theme.spacing(4),
     marginTop: theme.spacing(2),
+    color: theme.palette.mainSearchHelpText || theme.palette.text.secondary,
   },
   helpTextHidden: {
     visibility: 'hidden',
@@ -147,7 +148,6 @@ export const SearchHelpText = ({className}: SearchHelpTextProps) => {
   return (
     <Typography
       variant="caption"
-      color="textSecondary"
       className={cn(classes.helpText, className)}
       align="center"
       component="div"
