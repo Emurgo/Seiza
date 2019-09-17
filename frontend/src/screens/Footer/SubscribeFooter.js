@@ -23,8 +23,6 @@ import {routeTo} from '@/helpers/routes'
 import {useAnalytics} from '@/components/context/googleAnalytics'
 import {Button, CloseIconButton} from '@/components/visual'
 import {LoadingOverlay, Link as CustomLink} from '@/components/common'
-import alertIcon from '@/static/assets/icons/alert.svg'
-import subscribedIcon from '@/static/assets/icons/subscribed.svg'
 import {ReactComponent as Rocket} from '@/static/assets/icons/emoji/rocket.svg'
 import {useSubscribe} from './context/subscribe'
 
@@ -106,7 +104,9 @@ const RoundedInput = ({errorMessage, ...props}) => {
         inputProps={{className: classes.input}}
         classes={outlinedInputClasses}
         endAdornment={
-          errorMessage ? <img alt="" src={alertIcon} className={classes.errorIcon} /> : null
+          errorMessage ? (
+            <img alt="" src="/static/assets/icons/alert.svg" className={classes.errorIcon} />
+          ) : null
         }
         {...props}
       />
@@ -398,7 +398,7 @@ const SubscribeFooter = () => {
                   </Typography>
                 </Grid>
                 <Grid item>
-                  <img alt="" src={subscribedIcon} />
+                  <img alt="" src="/static/assets/icons/subscribed.svg" />
                 </Grid>
               </Grid>
             )}

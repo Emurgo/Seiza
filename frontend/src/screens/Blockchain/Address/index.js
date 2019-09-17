@@ -27,8 +27,6 @@ import {
   Pagination,
 } from '@/components/common'
 
-import qrCodeIcon from '@/static/assets/icons/qrcode.svg'
-
 import {FILTER_TYPES} from './constants'
 import {useLoadAddressTransactions, useLoadAddressSummary} from './dataLoaders'
 
@@ -193,7 +191,7 @@ const AddressIconWithModal = ({address58}) => {
         <React.Fragment>
           <Tooltip title={tr(messages.showQRCode)} enterTouchDelay={100}>
             <IconButton className={classes.alignIconButton} onClick={openModal} color="primary">
-              <img alt="show qr code" src={qrCodeIcon} />
+              <img alt="show qr code" src="/static/assets/icons/qrcode.svg" />
             </IconButton>
           </Tooltip>
           <QRDialog

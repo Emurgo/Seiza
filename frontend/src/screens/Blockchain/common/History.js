@@ -7,7 +7,6 @@ import {makeStyles} from '@material-ui/styles'
 import {Card} from '@/components/visual'
 import {PoolEntityContent, SeparatorWithLabel} from '@/components/common'
 import {useI18n} from '@/i18n/helpers'
-import EpochIcon from '@/static/assets/icons/epoch.svg'
 import CertificateActionList from '@/screens/Blockchain/Certificates/ActionList'
 
 const useStyles = makeStyles(({palette, spacing, breakpoints, getContentSpacing}) => ({
@@ -70,7 +69,7 @@ const EpochHeader = ({epochNumber, currentEpochNumber}) => {
       alignItems="center"
       className={cn(classes.header, classes.spacings)}
     >
-      <img alt="" src={EpochIcon} />{' '}
+      <img alt="" src="/static/assets/icons/epoch.svg" />{' '}
       <Typography variant="overline" component="span" color="textSecondary">
         {epochLabel}
       </Typography>
@@ -121,7 +120,7 @@ const EpochSeparator = ({epochNumber, currentEpochNumber}) => {
   return (
     <Grid container alignItems="center">
       <SeparatorWithLabel>
-        <img alt="" src={EpochIcon} />
+        <img alt="" src="/static/assets/icons/epoch.svg" />
         &nbsp;
         <Typography variant="overline" component="span" color="textSecondary">
           {epochLabel}

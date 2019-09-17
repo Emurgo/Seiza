@@ -2,8 +2,6 @@
 import React from 'react'
 import {makeStyles} from '@material-ui/styles'
 
-import emphasisIcon from '@/static/assets/icons/emphasis.svg'
-
 const useStyles = makeStyles(({palette, spacing, getContentSpacing, breakpoints}) => ({
   wrapper: {
     backgroundColor: palette.emphasis.background,
@@ -34,7 +32,7 @@ const EmphasizedMessage = ({children}: Props) => {
   const classes = useStyles()
   return (
     <div className={classes.wrapper}>
-      <img alt="" src={emphasisIcon} className={classes.image} />
+      <img alt="" src="/static/assets/icons/emphasis.svg" className={classes.image} />
       {children}
     </div>
   )

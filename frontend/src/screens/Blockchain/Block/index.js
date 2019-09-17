@@ -12,7 +12,6 @@ import {SummaryCard, SimpleLayout, LoadingDots, LoadingInProgress} from '@/compo
 import {AdaValue, LoadingError, EntityIdCard, Link} from '@/components/common'
 
 import {MetadataOverrides, seoMessages} from '@/pages/_meta'
-import blockIcon from '@/static/assets/icons/metrics-blocks.svg'
 import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
 import {useAnalytics} from '@/components/context/googleAnalytics'
 
@@ -271,7 +270,7 @@ const BlockScreen = () => {
         <EntityIdCard
           label={translate(blockMessages.blockHash)}
           value={blockHash}
-          iconRenderer={<img alt="" src={blockIcon} />}
+          iconRenderer={<img alt="" src="/static/assets/icons/metrics-blocks.svg" />}
         />
         {error ? (
           <LoadingError error={error} />

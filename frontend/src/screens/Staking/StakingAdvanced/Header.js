@@ -8,10 +8,6 @@ import {defineMessages} from 'react-intl'
 import {useI18n} from '@/i18n/helpers'
 import {HeaderCard, HeaderCardContainer, ScrollableCardsWrapper} from '@/components/common'
 
-import searchForStakepoolIcon from '@/static/assets/icons/staking-simulator/search-for-stakepool.svg'
-import downloadOrShareIcon from '@/static/assets/icons/staking-simulator/download-or-share.svg'
-import compareIcon from '@/static/assets/icons/staking-simulator/compare.svg'
-
 const messages = defineMessages({
   header: 'Staking Center Simulator',
   card1Title: 'Search',
@@ -57,7 +53,9 @@ const Header = () => {
               smallPrimaryText
               secondaryText={tr(messages.card1Value)}
               primaryText={tr(messages.card1Title)}
-              icon={<img alt="" src={searchForStakepoolIcon} />}
+              icon={
+                <img alt="" src="/static/assets/icons/staking-simulator/search-for-stakepool.svg" />
+              }
             />
           </HeaderCardContainer>
           <HeaderCardContainer>
@@ -65,7 +63,9 @@ const Header = () => {
               smallPrimaryText
               secondaryText={tr(messages.card2Value)}
               primaryText={tr(messages.card2Title)}
-              icon={<img alt="" src={downloadOrShareIcon} />}
+              icon={
+                <img alt="" src="/static/assets/icons/staking-simulator/download-or-share.svg" />
+              }
             />
           </HeaderCardContainer>
           <HeaderCardContainer>
@@ -73,7 +73,7 @@ const Header = () => {
               smallPrimaryText
               secondaryText={tr(messages.card3Value)}
               primaryText={tr(messages.card3Title)}
-              icon={<img alt="" src={compareIcon} />}
+              icon={<img alt="" src="/static/assets/icons/staking-simulator/compare.svg" />}
             />
           </HeaderCardContainer>
         </Grid>

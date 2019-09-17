@@ -13,9 +13,6 @@ import {toIntOrNull, getPageCount} from '@/helpers/utils'
 import {routeTo} from '@/helpers/routes'
 import {useI18n} from '@/i18n/helpers'
 import {ObjectValues} from '@/helpers/flow'
-import AdaIcon from '@/static/assets/icons/transaction-id.svg'
-import CertificateActionIcon from '@/static/assets/icons/reward-address.svg'
-import RewardAddressIcon from '@/static/assets/icons/certificate.svg'
 import Tabs, {TAB_NAMES} from './Tabs'
 import {useLoadStakingKeyData} from './dataLoaders'
 
@@ -133,12 +130,12 @@ const StakingKey = () => {
           <EntityIdCard
             label={translate(messages.stakingKey)}
             value={stakingKey.hash}
-            iconRenderer={<img alt="" src={AdaIcon} />}
+            iconRenderer={<img alt="" src="/static/assets/icons/transaction-id.svg" />}
           />
           <EntityIdCard
             label={translate(messages.currentStatusLabel)}
             value={<CurrentStatus />}
-            iconRenderer={<img alt="" src={RewardAddressIcon} />}
+            iconRenderer={<img alt="" src="/static/assets/icons/certificate.svg" />}
             showCopyIcon={false}
             monospaceValue={false}
           />
@@ -188,7 +185,7 @@ const StakingKey = () => {
                 {stakingKey.rewardAddress}
               </Link>
             }
-            iconRenderer={<img alt="" src={RewardAddressIcon} />}
+            iconRenderer={<img alt="" src="/static/assets/icons/certificate.svg" />}
           />
           <EntityIdCard
             label={null}
@@ -234,7 +231,7 @@ const StakingKey = () => {
                 </div>
               </div>
             }
-            iconRenderer={<img alt="" src={CertificateActionIcon} />}
+            iconRenderer={<img alt="" src="/static/assets/icons/reward-address.svg" />}
             showCopyIcon={false}
           />
           <Tabs

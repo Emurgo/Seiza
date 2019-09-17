@@ -14,7 +14,6 @@ import {SummaryCard, SimpleLayout, LoadingInProgress, Overlay} from '@/component
 import {AdaValue, LoadingError, LoadingOverlay, EntityIdCard, Link} from '@/components/common'
 import AddressesBreakdown from '@/components/common/AddressesBreakdown'
 import AssuranceChip from '@/components/common/AssuranceChip'
-import AdaIcon from '@/static/assets/icons/transaction-id.svg'
 
 import {ASSURANCE_LEVELS_VALUES, APOLLO_CACHE_OPTIONS} from '@/constants'
 import {useI18n} from '@/i18n/helpers'
@@ -206,7 +205,7 @@ const TransactionScreen = () => {
         <EntityIdCard
           label={translate(messages.transactionId)}
           value={txHash}
-          iconRenderer={<img alt="" src={AdaIcon} />}
+          iconRenderer={<img alt="" src="/static/assets/icons/transaction-id.svg" />}
         />
         {error ? (
           <LoadingError error={error} />
