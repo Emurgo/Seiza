@@ -10,6 +10,7 @@ const cachedApp = require('./serverCache')
 
 const port = parseInt(process.env.PORT, 10) || 3000
 const dev = process.env.NODE_ENV !== 'production'
+const forceHttps = process.env.FORCE_HTTPS === 'true'
 const SITEMAP_ROOT = process.env.SITEMAP_ROOT
 const DISABLE_CACHING = process.env.DISABLE_CACHING === 'true'
 
@@ -53,6 +54,15 @@ app.prepare().then(() => {
 
   // To get https:// from req.protocol when running on heroku
   server.enable('trust proxy')
+
+  // https://stackoverflow.com/questions/7450940/automatic-https-connection-redirect-with-node-js-express
+  server.use ((req, res, next) => {
+    if (req.secure || !forceHttps) {
+      next()
+    } else {
+      res.redirect(301, `https://${req.headers.host}${req.url}`)
+    }
+  })
 
   // https://github.com/zeit/next.js/issues/1791
   server.use(
