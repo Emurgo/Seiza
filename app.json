@@ -41,9 +41,6 @@
     "REACT_APP_COMMON_COOKIES_DOMAIN": {
       "required": true
     },
-    "REACT_APP_INSTANCES": {
-      "required": true
-    },
     "REACT_SHOW_STAKE_POOLS_LIST_DATA": {
       "required": true
     },
