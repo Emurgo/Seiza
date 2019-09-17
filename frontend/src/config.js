@@ -108,7 +108,6 @@ isYoroi && checkYoroiEnvs()
 // Note: for now same domain for all common cookies, we can set it per cookie
 // later if ever needed
 const commonCookiesDomain = env.REACT_APP_COMMON_COOKIES_DOMAIN
-assert(commonCookiesDomain)
 
 const instances = env.REACT_APP_INSTANCES ? JSON.parse(env.REACT_APP_INSTANCES) : []
 
