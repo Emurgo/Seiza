@@ -60,7 +60,7 @@ const useAreFiltersChanged = () => {
   return !performanceEqualsDefault
 }
 
-const useToggleFilters = () => {
+const useFiltersState = () => {
   const areFiltersChanged = useAreFiltersChanged()
   const [showFilters, setShowFilters] = useState(areFiltersChanged)
 
@@ -68,16 +68,20 @@ const useToggleFilters = () => {
     setShowFilters(!showFilters)
   }, [showFilters])
 
-  return [showFilters, onToggleShowFilters]
+  return {showFilters, onToggleShowFilters, setShowFilters}
 }
 
-const Search = () => {
+const Search = ({onSearch}) => {
   const searchTextContext = useSearchTextContext()
   const [searchText, setSearchText] = useStateWithChangingDefault(searchTextContext.searchText)
 
-  const onSearch = useCallback((query) => searchTextContext.setSearchText(query), [
-    searchTextContext,
-  ])
+  const _onSearch = useCallback(
+    (query) => {
+      searchTextContext.setSearchText(query)
+      onSearch && onSearch()
+    },
+    [onSearch, searchTextContext]
+  )
 
   const {translate: tr} = useI18n()
   return (
@@ -85,7 +89,7 @@ const Search = () => {
       placeholder={tr(messages.searchPlaceholder)}
       value={searchText}
       onChange={setSearchText}
-      onSearch={onSearch}
+      onSearch={_onSearch}
     />
   )
 }
@@ -198,14 +202,20 @@ const FiltersButton = ({open, onClick}) => {
   )
 }
 
-const CommonTopBarLayout = ({rightSideElem}: {rightSideElem?: React$Node}) => {
+const CommonTopBarLayout = ({
+  rightSideElem,
+  onSearch,
+}: {
+  rightSideElem?: React$Node,
+  onSearch?: Function,
+}) => {
   const classes = useStyles()
   return (
     <React.Fragment>
       <Hidden lgUp implementation="css">
         <Grid item>
           <div className={classes.topSearchWrapper}>
-            <Search />
+            <Search onSearch={onSearch} />
           </div>
         </Grid>
         <Grid item>
@@ -224,7 +234,7 @@ const CommonTopBarLayout = ({rightSideElem}: {rightSideElem?: React$Node}) => {
               <UserAdaInput />
             </div>
             <div className={cn(classes.searchWrapper, 'flex-grow-1')}>
-              <Search />
+              <Search onSearch={onSearch} />
             </div>
             {rightSideElem}
           </Grid>
@@ -246,11 +256,18 @@ export const SimpleStakingTopBar = () => {
 
 export const AdvancedStakingTopBar = () => {
   const classes = useStyles()
-  const [showFilters, onToggleShowFilters] = useToggleFilters()
+  const areFiltersChanged = useAreFiltersChanged()
+  const {showFilters, onToggleShowFilters, setShowFilters} = useFiltersState()
+
+  const onSearch = useCallback(() => areFiltersChanged && setShowFilters(true), [
+    areFiltersChanged,
+    setShowFilters,
+  ])
 
   return (
     <Grid container direction="column" justify="space-between" className={classes.wrapper}>
       <CommonTopBarLayout
+        onSearch={onSearch}
         rightSideElem={<FiltersButton open={showFilters} onClick={onToggleShowFilters} />}
       />
       <Collapse in={showFilters}>
