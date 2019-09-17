@@ -4,6 +4,10 @@ import {makeStyles} from '@material-ui/styles'
 
 export const useGlobalStyles: any = makeStyles({
   '@global': {
+    'html': {
+      // https://stackoverflow.com/questions/2710764/preserve-html-font-size-when-iphone-orientation-changes-from-portrait-to-landsca
+      '-webkit-text-size-adjust': '100%',
+    },
     'html, body, #__next': {
       height: '100%',
     },
