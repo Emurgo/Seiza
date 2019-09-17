@@ -43,6 +43,9 @@ const getTrackStyle = (theme) => ({
 const getHandleStyle = (theme) => ({
   backgroundColor: theme.palette.secondary.main,
   border: 'none',
+  width: 20,
+  height: 20,
+  marginTop: -8,
 })
 
 const estimateTooltipWidth = (value) => `${value}`.length * 10 + PADDING * 2
