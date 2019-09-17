@@ -114,7 +114,7 @@ export const MOCKED_POOL_CREATION_ACTION = {
     webpage: 'https://www.warrenbuffettstakepool.com',
     pledge: '10000003723742',
     margin: 0.08,
-    cost: '500000000',
+    fee: '500000000',
   },
   stakepoolOwners: [
     '6e3d7c58ec9dae7689e7febd25708b69d3c0ae3dcd81e2923f7efe5c',
@@ -137,7 +137,7 @@ export const MOCKED_POOL_UPDATE_ACTION = {
   poolExists: true,
   updatedProperties: [
     {type: 'MARGIN', prevValue: 0.12, value: 0.1},
-    {type: 'COST', prevValue: 214434551, value: 255689111},
+    {type: 'FEE', prevValue: 214434551, value: 255689111},
     {type: 'PLEDGE', prevValue: 697276019, value: 821234400},
     {
       type: 'OWNERS',

@@ -20,7 +20,7 @@ import {routeTo} from '@/helpers/routes'
 import {CERT_ACTIONS_TYPES} from '../actionTypes'
 import {ExpandIconButton, ShowMoreButton} from './ExpandButtons'
 import {
-  FormattedCost,
+  FormattedFee,
   FormattedMargin,
   FormattedPledge,
   PoolHashLinkEllipsized,
@@ -363,7 +363,7 @@ const poolCreationMessages = defineMessages({
   vrfKeyLabel: 'VRF Key:',
   hotKeyLabel: 'Hot Key:',
   coldKeyLabel: 'Cold Key:',
-  costLabel: 'Cost:',
+  feeLabel: 'Fee:',
   marginLabel: 'Margin:',
   pledgeLabel: 'Pledge:',
 })
@@ -394,7 +394,7 @@ const OwnersValue = ({owners}) => {
 const poolCreationAdditionalRows = ({action, i18n}) => {
   const {translate: tr} = i18n
   const {stakepoolOwners, stakepool} = action
-  const {name, cost, margin, pledge, webpage, vrfKey, hotKey, coldKey} = stakepool
+  const {name, fee, margin, pledge, webpage, vrfKey, hotKey, coldKey} = stakepool
 
   return [
     {
@@ -426,8 +426,8 @@ const poolCreationAdditionalRows = ({action, i18n}) => {
       value: <HashWithCopyToClipboard hash={coldKey} />,
     },
     {
-      label: tr(poolCreationMessages.costLabel),
-      value: <FormattedCost value={cost} />,
+      label: tr(poolCreationMessages.feeLabel),
+      value: <FormattedFee value={fee} />,
     },
     {
       label: tr(poolCreationMessages.marginLabel),
@@ -455,7 +455,7 @@ const poolCreation = ({action, i18n}) => {
 }
 
 const poolUpdateMessages = defineMessages({
-  costChange: 'Cost changed:',
+  feeChange: 'Fee changed:',
   marginChange: 'Margin changed:',
   pledgeChange: 'Pledge changed:',
   prevValue: '(was {prevValue})',
@@ -541,12 +541,12 @@ const UpdatedOwners = ({prevValue, value, i18n: {translate: tr}}) => {
 }
 
 const POOL_UPDATE_UPDATED_PROP_ROW = {
-  COST: ({prevValue, value, i18n, i18n: {translate: tr}}) => ({
-    label: tr(poolUpdateMessages.costChange),
+  FEE: ({prevValue, value, i18n, i18n: {translate: tr}}) => ({
+    label: tr(poolUpdateMessages.feeChange),
     value: genericUpdatedPropValueMsg({
       i18n,
-      value: <FormattedCost value={value} />,
-      prevValue: <FormattedCost value={prevValue} />,
+      value: <FormattedFee value={value} />,
+      prevValue: <FormattedFee value={prevValue} />,
     }),
   }),
   MARGIN: ({prevValue, value, i18n, i18n: {translate: tr}}) => ({

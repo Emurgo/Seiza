@@ -39,7 +39,7 @@ const useStyles = makeStyles(({palette, spacing, breakpoints, getContentSpacing}
 const messages = defineMessages({
   epoch: 'Epoch: ',
   currentEpoch: 'Current epoch:',
-  COST: 'Stake Pool cost:',
+  FEE: 'Stake Pool fee:',
   MARGIN: 'Stake Pool margins:',
   PLEDGE_CHANGE: 'Stake Pool pledge change:',
   WITHDRAWAL: 'Stake Pool moved out funds:',

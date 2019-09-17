@@ -17,7 +17,7 @@ const messages = defineMessages({
   performance: 'Performance:',
   pledge: 'Pledge:',
   margins: 'Margins:',
-  cost: 'Cost:',
+  fee: 'Fee:',
   fullness: 'Fullness:',
   createdAt: 'Created:',
   stake: 'Stake:',
@@ -27,7 +27,7 @@ const messages = defineMessages({
   performanceHelpText: 'TODO: Performance Help Text',
   pledgeHelpText: 'TODO: Pledge Help Text',
   marginsHelpText: 'TODO: Margins Help Text',
-  costHelpText: 'TODO: Cost Help Text',
+  feeHelpText: 'TODO: Fee Help Text',
   fullnessHelpText: 'TODO: Fullness Help Text',
   createdAtHelpText: 'TODO: CreatedAt Help Text',
   stakeHelpText: 'TODO: Stake Help Text',
@@ -174,7 +174,7 @@ type FieldProps = {|
   formatters: Formatters,
   data: {
     performance: number,
-    cost: string,
+    fee: string,
     pledge: string,
     margins: number,
     fullness: number,
@@ -201,9 +201,9 @@ export const getStakepoolCardFields = ({
     ),
     value: <Typography>{formatPercent(data.performance)}</Typography>,
   },
-  cost: {
-    label: <HelpTooltip text={tr(messages.costHelpText)}>{tr(messages.cost)}</HelpTooltip>,
-    value: <AdaValue showCurrency value={data.cost} />,
+  fee: {
+    label: <HelpTooltip text={tr(messages.feeHelpText)}>{tr(messages.fee)}</HelpTooltip>,
+    value: <AdaValue showCurrency value={data.fee} />,
   },
   pledge: {
     label: <HelpTooltip text={tr(messages.pledgeHelpText)}>{tr(messages.pledge)}</HelpTooltip>,
