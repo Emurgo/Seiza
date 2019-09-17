@@ -2,16 +2,21 @@
 
 import _ from 'lodash'
 import React, {useCallback, useMemo, useEffect} from 'react'
-import {Typography, Grid, ClickAwayListener} from '@material-ui/core'
+import {Typography, Grid, ClickAwayListener, IconButton} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
-import {ArrowDropDown, ArrowDropUp, FilterList as FilterIcon} from '@material-ui/icons'
+import {
+  ArrowDropDown,
+  ArrowDropUp,
+  MoreHoriz as DefaultFilterIcon,
+  Search as TextFilterIcon,
+} from '@material-ui/icons'
 
 import {Tooltip} from '@/components/visual'
 import {useI18n} from '@/i18n/helpers'
 import useBooleanState from '@/components/hooks/useBooleanState'
 
 import {useScrollableWrapperRef} from './scrollableWrapperUtils'
-import {fieldsConfigMap} from './fieldsConfig'
+import {fieldsConfigMap, FILTER_TYPES} from './fieldsConfig'
 import {useFilters} from './filtersUtils'
 import {ORDER, useSortOptions} from './sortUtils'
 
@@ -19,10 +24,9 @@ const useStyles = makeStyles((theme) => ({
   sortWrapper: {
     cursor: 'pointer',
   },
-  filterIcon: {
+  filterIconButton: {
     marginRight: theme.spacing(0.8),
-    paddingLeft: theme.spacing(0.8), // Note: controls icon size
-    cursor: 'pointer',
+    padding: theme.spacing(0.2),
     // We align "title" header to left and icon has some "empty" space in it
     // that prevents it to visualy align left, so this makes the trick
     marginLeft: -5,
@@ -40,6 +44,7 @@ const useTooltipStyles = makeStyles((theme) => ({
     margin: 0, // Note: because it blocks "onClickAway"
     top: -25,
     position: 'relative',
+    borderRadius: 15,
   },
 }))
 
@@ -105,6 +110,8 @@ const GeneralFilter = ({field, label}) => {
 
   const filterActive = isFilterActive(filterConfig)
 
+  const FilterIcon = conf.filter.type === FILTER_TYPES.text ? TextFilterIcon : DefaultFilterIcon
+
   return (
     <ClickAwayListener onClickAway={onClickAway}>
       <div className="d-flex">
@@ -121,11 +128,9 @@ const GeneralFilter = ({field, label}) => {
           onClose={closeTooltip}
           open={tooltipOpen}
         >
-          <FilterIcon
-            color={filterActive ? 'primary' : 'disabled'}
-            className={classes.filterIcon}
-            onClick={toggleTooltip}
-          />
+          <IconButton onClick={toggleTooltip} color="primary" className={classes.filterIconButton}>
+            <FilterIcon color={filterActive ? 'primary' : 'disabled'} />
+          </IconButton>
         </Tooltip>
       </div>
     </ClickAwayListener>
