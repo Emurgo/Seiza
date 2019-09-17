@@ -1,6 +1,6 @@
 // @flow
 
-import {useState, useLayoutEffect} from 'react'
+import {useState, useEffect} from 'react'
 import idx from 'idx'
 
 import {useIsMobile} from '@/components/hooks/useBreakpoints'
@@ -29,7 +29,7 @@ export const useScrollFromBottom = (refTo: any, data: any) => {
 
   const stickyOffset = isMobile ? NAV_HEADER_HEIGHT : 0
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     // To avoid rescrolling on data refetch
     if (dataLoaded) return
     if (data) setDataLoaded(true)
