@@ -7,6 +7,7 @@ const Sentry = require('@sentry/node')
 const compression = require('compression')
 const cookieParser = require('cookie-parser')
 const cachedApp = require('./serverCache')
+const helmet = require('helmet')
 
 const port = parseInt(process.env.PORT, 10) || 3000
 const dev = process.env.NODE_ENV !== 'production'
@@ -38,6 +39,7 @@ const fixCssCache = (server) => {
 
 app.prepare().then(() => {
   const server = express()
+  server.use(helmet())
 
   // https://stackoverflow.com/questions/15119760/what-is-the-smartest-way-to-handle-robots-txt-in-express
   // TODO: not sure whether it is worth to consider sophisticated approach
