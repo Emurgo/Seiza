@@ -1,6 +1,6 @@
 import dayjs from 'dayjs-ext'
 
-import timeZonePlugin from 'dayjs-ext/plugin/timeZone-2012-2022'
+import timeZonePlugin from 'dayjs-ext/plugin/timeZone-1970-2038'
 import localizableFormat from 'dayjs-ext/plugin/localizableFormat'
 
 import 'dayjs-ext/locale/ja'

@@ -40,6 +40,8 @@ const formatMsg = (message: Msg, values?: Object) => (
 // https://momentjscom.readthedocs.io/en/latest/moment-timezone/01-using-timezones/06-guessing-user-timezone/
 const CURRENT_TIMEZONE = Intl.DateTimeFormat().resolvedOptions().timeZone
 
+console.log('TIMEZONE', CURRENT_TIMEZONE)
+
 const STANDARD_READABLE_FORMAT = 'LL LTS z'
 
 const MICRO = 1000000
