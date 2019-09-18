@@ -5,7 +5,7 @@ import {Grid, Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
 
-import {AdaValue, Link, PoolEntityContent} from '@/components/common'
+import {AdaValue, Link, PoolEntityContent, Ellipsize} from '@/components/common'
 import {routeTo} from '@/helpers/routes'
 import {useI18n} from '@/i18n/helpers'
 
@@ -55,9 +55,10 @@ const Owner = ({stakingKey, pledge}) => {
   const classes = useStyles()
   return (
     <Grid key={stakingKey} container justify="space-between" wrap="nowrap">
-      <Typography variant="body1" className={classes.stakeKeyLink} noWrap>
-        <Link to={routeTo.stakingKey(stakingKey)}>{stakingKey}</Link>
-      </Typography>
+      <Link className={classes.stakeKeyLink} to={routeTo.stakingKey(stakingKey)}>
+        <Ellipsize value={stakingKey} />
+      </Link>
+
       <div>
         <AdaValue value={pledge} showCurrency />
       </div>

@@ -17,6 +17,7 @@ import {
   Link,
   ResponsiveCircularProgressBar,
   Pagination,
+  EntityEllipsize,
 } from '@/components/common'
 import {useI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
@@ -264,10 +265,12 @@ const Stakepool = () => {
             label={tr(messages.rewardAddress)}
             value={
               <Link monospace to={routeTo.address(stakepool.rewardsAddress)}>
-                {stakepool.rewardsAddress}
+                <EntityEllipsize value={stakepool.rewardsAddress} />
               </Link>
             }
             iconRenderer={<img alt="" src={RewardAddressIcon} />}
+            rawValue={stakepool.rewardAddress}
+            ellipsizeValue={false}
           />
           <EntityIdCard
             label={tr(messages.stakePoolCertificate)}

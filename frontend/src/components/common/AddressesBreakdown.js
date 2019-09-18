@@ -10,11 +10,10 @@ import {
   ExpandableCardContent,
   ExpandableCardFooter,
   Divider,
-  EllipsizeMiddle,
   ContentSpacing,
   Card,
 } from '@/components/visual'
-import {AdaValue, Link, CopyToClipboard, SeparatorWithLabel} from '@/components/common'
+import {AdaValue, Link, CopyToClipboard, SeparatorWithLabel, Ellipsize} from '@/components/common'
 import WithModalState from '@/components/headless/modalState'
 import {useIsMobile} from '@/components/hooks/useBreakpoints'
 import {useI18n} from '@/i18n/helpers'
@@ -192,9 +191,6 @@ const BreakdownList = ({transaction, targetAddress}) => {
 }
 
 const useAddressHashStyles = makeStyles((theme) => ({
-  spaced: {
-    width: '95%',
-  },
   typographyWrapper: {
     fontWeight: ({hasHighlight}) => (hasHighlight ? 700 : 'initial'),
   },
@@ -215,7 +211,7 @@ const useAddressHashStyles = makeStyles((theme) => ({
 const AddressHash = ({address58, isLink, hasHighlight}) => {
   const breakdownClasses = useAddressHashStyles({hasHighlight})
 
-  const ellipsizedAddress58 = <EllipsizeMiddle value={address58} />
+  const ellipsizedAddress58 = <Ellipsize value={address58} />
   const content = isLink ? (
     <Link to={routeTo.address(address58)} underline="none">
       <div className={cn(breakdownClasses.underlineHover, breakdownClasses.monospace)}>
@@ -227,16 +223,14 @@ const AddressHash = ({address58, isLink, hasHighlight}) => {
   )
 
   return (
-    <div className={breakdownClasses.spaced}>
-      <Typography
-        variant="body1"
-        color="textPrimary"
-        component="div"
-        className={breakdownClasses.typographyWrapper}
-      >
-        {content}
-      </Typography>
-    </div>
+    <Typography
+      variant="body1"
+      color="textPrimary"
+      component="div"
+      className={breakdownClasses.typographyWrapper}
+    >
+      {content}
+    </Typography>
   )
 }
 

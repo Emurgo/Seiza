@@ -6,7 +6,14 @@ import useReactRouter from 'use-react-router'
 import {makeStyles} from '@material-ui/styles'
 
 import {SummaryCard, SimpleLayout, LoadingInProgress} from '@/components/visual'
-import {AdaValue, LoadingError, EntityIdCard, Link, Pagination} from '@/components/common'
+import {
+  AdaValue,
+  LoadingError,
+  EntityIdCard,
+  Link,
+  Pagination,
+  EntityEllipsize,
+} from '@/components/common'
 import {useManageQueryValue} from '@/components/hooks/useManageQueryValue'
 import useTabState from '@/components/hooks/useTabState'
 import {toIntOrNull, getPageCount} from '@/helpers/utils'
@@ -185,10 +192,12 @@ const StakingKey = () => {
             label={translate(messages.rewardAddress)}
             value={
               <Link monospace to={routeTo.address(stakingKey.rewardAddress)}>
-                {stakingKey.rewardAddress}
+                <EntityEllipsize value={stakingKey.rewardAddress} />
               </Link>
             }
             iconRenderer={<img alt="" src={RewardAddressIcon} />}
+            rawValue={stakingKey.rewardAddress}
+            ellipsizeValue={false}
           />
           <EntityIdCard
             label={null}
@@ -212,7 +221,7 @@ const StakingKey = () => {
                     noWrap
                   >
                     <Link monospace to={routeTo.stakepool(stakingKey.delegation.stakePoolHash)}>
-                      {stakingKey.delegation.stakePoolHash}
+                      <EntityEllipsize value={stakingKey.delegation.stakePoolHash} />
                     </Link>
                   </Typography>
                 </div>
@@ -228,7 +237,7 @@ const StakingKey = () => {
                   &nbsp;
                   <Typography component="span" variant="body1" color="textPrimary" noWrap>
                     <Link monospace to={routeTo.transaction(stakingKey.delegation.tx)}>
-                      {stakingKey.delegation.tx}
+                      <EntityEllipsize value={stakingKey.delegation.tx} />
                     </Link>
                   </Typography>
                 </div>

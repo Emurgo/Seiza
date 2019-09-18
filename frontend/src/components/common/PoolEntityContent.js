@@ -1,11 +1,10 @@
 // @flow
 import React from 'react'
 import cn from 'classnames'
-import {Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
 import {VisualHash, Tooltip} from '@/components/visual'
-import {Link, CopyToClipboard, NavTypography} from '@/components/common'
+import {Link, CopyToClipboard, NavTypography, Ellipsize} from '@/components/common'
 import {routeTo} from '@/helpers/routes'
 import config from '@/config'
 
@@ -33,11 +32,17 @@ const useStyles = makeStyles(({spacing, typography}) => ({
   name: {
     display: 'inline!important',
   },
+  link: {
+    // need to have in order to have correct ellipsis
+    display: 'flex',
+    minWidth: 0,
+  },
 }))
 
 const COPY_TO_CLIPBOARD_DIMENSIONS = {width: 20, height: 20}
 
 const EllipsizedHash = ({hash, hashTooltip}) => {
+  const classes = useStyles()
   return (
     <Tooltip
       title={hashTooltip || ''}
@@ -45,16 +50,15 @@ const EllipsizedHash = ({hash, hashTooltip}) => {
       disableHoverListener={!hashTooltip}
       disableTouchListener={!hashTooltip}
     >
-      <Typography noWrap>
-        <Link
-          monospace
-          target={config.isYoroi ? '_blank' : '_self'}
-          external={config.isYoroi}
-          to={`${config.isYoroi ? config.seizaUrl : ''}${routeTo.stakepool(hash)}`}
-        >
-          {hash}
-        </Link>
-      </Typography>
+      <Link
+        className={classes.link}
+        monospace
+        target={config.isYoroi ? '_blank' : '_self'}
+        external={config.isYoroi}
+        to={`${config.isYoroi ? config.seizaUrl : ''}${routeTo.stakepool(hash)}`}
+      >
+        <Ellipsize lg="auto" value={hash} />
+      </Link>
     </Tooltip>
   )
 }

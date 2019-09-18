@@ -7,7 +7,7 @@ import {makeStyles} from '@material-ui/styles'
 import cn from 'classnames'
 
 import {Card} from '@/components/visual'
-import {CopyToClipboard} from '@/components/common'
+import {CopyToClipboard, Ellipsize} from '@/components/common'
 import {useIsMobile} from '@/components/hooks/useBreakpoints'
 
 const useEntityCardShellStyles = makeStyles(({breakpoints, getContentSpacing}) => ({
@@ -104,6 +104,10 @@ const useContentStyles = makeStyles((theme) => {
   }
 })
 
+export const EntityEllipsize = ({value, monospace = true, className}) => {
+  return <Ellipsize value={value} xs={6} sm={8} md={10} lg="auto" xl="auto" className={className} />
+}
+
 // Note: User is unable to select whole text at once
 // due to cutting the text into different HTML elements
 export const EntityCardContent = ({
@@ -160,13 +164,17 @@ export const EntityCardContent = ({
                 transitionAppearTimeout={2000}
                 key={rawValue}
               >
-                <Typography
-                  noWrap={ellipsizeValue}
-                  variant="body1"
-                  className={cn(classes.value, monospaceValue && classes.monospace)}
-                >
-                  {value}
-                </Typography>
+                {ellipsizeValue ? (
+                  <EntityEllipsize
+                    className={cn(classes.value, monospaceValue && classes.monospace)}
+                    value={value}
+                    monospace={monospaceValue}
+                  />
+                ) : (
+                  <span className={cn(classes.value, monospaceValue && classes.monospace)}>
+                    {value}
+                  </span>
+                )}
               </ReactCSSTransitionGroup>
 
               {showCopyIcon && (

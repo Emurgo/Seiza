@@ -1,4 +1,5 @@
 import React from 'react'
+import cn from 'classnames'
 import assert from 'assert'
 import {makeStyles} from '@material-ui/styles'
 
@@ -10,7 +11,7 @@ const useStyles = makeStyles((theme) => ({
     // with `CopyToClipboard` component to allow copying of the content.
     // The reason is that having content in two <span> leads to unwanted space character when
     // copying directly.
-    userSelect: ({isFixed}) => (isFixed ? 'auto' : 'none'),
+    userSelect: ({isFixed}) => (isFixed ? 'auto' : 'all'),
     display: ({isFixed}) => (isFixed ? 'inline' : 'flex'),
   },
   ellipsizedSpan: {
@@ -28,7 +29,7 @@ const validateParams = ({startCharsCnt, endCharsCnt}) => {
   assert(endCharsCnt > 0)
 }
 
-const EllipsizeMiddle = ({value, startCharsCnt = null, endCharsCnt = 15}) => {
+const EllipsizeMiddle = ({value, className, startCharsCnt = null, endCharsCnt = 15}) => {
   const isFixed = startCharsCnt !== null
   const classes = useStyles({isFixed})
 
@@ -38,7 +39,13 @@ const EllipsizeMiddle = ({value, startCharsCnt = null, endCharsCnt = 15}) => {
   }
 
   return typeof value === 'string' && value.length > endCharsCnt ? (
-    <span className={classes.wrapper}>
+    <span
+      className={cn(classes.wrapper, className)}
+      onCopy={(e) => {
+        e.clipboardData.setData('text/plain', value)
+        e.preventDefault()
+      }}
+    >
       {isFixed ? (
         <React.Fragment>
           {`${value.substring(0, startCharsCnt)}...${value.substring(value.length - endCharsCnt)}`}
