@@ -1,11 +1,8 @@
 import React from 'react'
-import cn from 'classnames'
 import {Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
-import {AdaValue, Link, CopyToClipboard} from '@/components/common'
-import {EllipsizeMiddle} from '@/components/visual'
-import {useIsMobile} from '@/components/hooks/useBreakpoints'
+import {AdaValue, Link, CopyToClipboard, Ellipsize} from '@/components/common'
 
 import {useI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
@@ -20,10 +17,16 @@ export const FormattedMargin = ({value}) => {
 
 export const FormattedPledge = ({value}) => <AdaValue showCurrency value={value} />
 
-export const StakingKeyLink = ({stakingKey}) => {
+const DESKTOP_CHARS_COUNT_SHOWN = 8
+const MOBILE_CHARS_COUNT_SHOWN = 6
+export const EllipsizeMiddleFixed = ({value}) => {
+  return <Ellipsize value={value} xs={MOBILE_CHARS_COUNT_SHOWN} md={DESKTOP_CHARS_COUNT_SHOWN} />
+}
+
+const StakingKeyLink = ({stakingKey, children}) => {
   return (
     <Link monospace to={routeTo.stakingKey(stakingKey)}>
-      {stakingKey}
+      {children}
     </Link>
   )
 }
@@ -60,27 +63,13 @@ export const StakingKeyLinkEllipsized = ({stakingKey}) => {
   )
 }
 
-const DESKTOP_CHARS_COUNT_SHOWN = 8
-const MOBILE_CHARS_COUNT_SHOWN = 6
-export const EllipsizeMiddleFixed = ({value}) => {
-  // Note(bigamasta): We're not using <MobileOnly> and <DesktopOnly>
-  // because EllipsizeMiddleFixed is initially hidden in ExpansionPanel
-  // (see MobileAction for details)
-  const isMobile = useIsMobile()
-  return (
-    <EllipsizeMiddle
-      value={value}
-      startCharsCnt={isMobile ? MOBILE_CHARS_COUNT_SHOWN : DESKTOP_CHARS_COUNT_SHOWN}
-      endCharsCnt={isMobile ? MOBILE_CHARS_COUNT_SHOWN : DESKTOP_CHARS_COUNT_SHOWN}
-    />
-  )
-}
-
 export const StakingKeyLinks = ({links}) => {
-  return links.map((link, index) => (
-    <Typography key={index} noWrap component="div">
-      <StakingKeyLink stakingKey={link} />
-    </Typography>
+  return links.map((link) => (
+    <div key={link}>
+      <StakingKeyLink stakingKey={link}>
+        <EllipsizeMiddleFixed value={link} />
+      </StakingKeyLink>
+    </div>
   ))
 }
 
@@ -95,20 +84,13 @@ const useStyles = makeStyles(({spacing, typography}) => ({
   monospace: typography._monospace,
 }))
 
-export const MonospaceTypography = ({children, className, ...props}) => {
-  const classes = useStyles()
-  return (
-    <Typography {...props} className={cn(className, classes.monospace)}>
-      {children}
-    </Typography>
-  )
-}
-
 export const HashWithCopyToClipboard = ({hash}) => {
   const classes = useStyles()
   return (
     <div className={classes.wrapper}>
-      <MonospaceTypography noWrap>{hash}</MonospaceTypography>
+      <Typography className={classes.monospace}>
+        <EllipsizeMiddleFixed value={hash} />
+      </Typography>
       <CopyToClipboard value={hash} />
     </div>
   )

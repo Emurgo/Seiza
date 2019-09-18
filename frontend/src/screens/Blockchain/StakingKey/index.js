@@ -1,12 +1,21 @@
 import React from 'react'
 import {defineMessages, FormattedMessage} from 'react-intl'
 import _ from 'lodash'
+import cn from 'classnames'
 import {Typography} from '@material-ui/core'
 import useReactRouter from 'use-react-router'
 import {makeStyles} from '@material-ui/styles'
 
 import {SummaryCard, SimpleLayout, LoadingInProgress} from '@/components/visual'
-import {AdaValue, LoadingError, EntityIdCard, Link, Pagination} from '@/components/common'
+import {
+  AdaValue,
+  LoadingError,
+  EntityIdCard,
+  Link,
+  Pagination,
+  EntityEllipsize,
+  Ellipsize,
+} from '@/components/common'
 import {useManageQueryValue} from '@/components/hooks/useManageQueryValue'
 import useTabState from '@/components/hooks/useTabState'
 import {toIntOrNull, getPageCount} from '@/helpers/utils'
@@ -41,7 +50,7 @@ const messages = defineMessages({
   statusNotDelegating: 'Currently active, but not delegating to any pool',
 })
 
-const useStyles = makeStyles(({spacing}) => ({
+const useStyles = makeStyles(({spacing, breakpoints}) => ({
   resetTextTransform: {
     textTransform: 'none',
   },
@@ -53,8 +62,16 @@ const useStyles = makeStyles(({spacing}) => ({
     display: 'flex',
     alignItems: 'center',
   },
+  rowWrapper: {
+    flexDirection: 'column',
+    [breakpoints.up('sm')]: {
+      flexDirection: 'row',
+    },
+  },
 }))
 
+// TODO: get mocked tx hash status
+const mockedTxHashStatus = '177e9b5d7ddc5c73e58e8bb092985973ff54bcf29fe5dcef4ea8ad551f'
 const CurrentStatus = () => {
   // TODO: add logic to pick the right status message
   const pick = _.random(0, 2)
@@ -64,7 +81,11 @@ const CurrentStatus = () => {
       <FormattedMessage
         id={messages.statusDeregistered.id}
         values={{
-          txHash: <Link to={routeTo.transaction('0x1234')}>0x1234</Link>,
+          txHash: (
+            <Link to={routeTo.transaction(mockedTxHashStatus)}>
+              <Ellipsize value={mockedTxHashStatus} />
+            </Link>
+          ),
         }}
       />
     )
@@ -73,7 +94,11 @@ const CurrentStatus = () => {
       <FormattedMessage
         id={messages.statusDelegating.id}
         values={{
-          poolHash: <Link to={routeTo.stakepool('0x1234')}>0x1234</Link>,
+          poolHash: (
+            <Link to={routeTo.stakepool(mockedTxHashStatus)}>
+              <Ellipsize value={mockedTxHashStatus} />
+            </Link>
+          ),
         }}
       />
     )
@@ -141,6 +166,7 @@ const StakingKey = () => {
             iconRenderer={<img alt="" src={RewardAddressIcon} />}
             showCopyIcon={false}
             monospaceValue={false}
+            ellipsizeValue={false}
           />
 
           <SummaryCard>
@@ -185,25 +211,29 @@ const StakingKey = () => {
             label={translate(messages.rewardAddress)}
             value={
               <Link monospace to={routeTo.address(stakingKey.rewardAddress)}>
-                {stakingKey.rewardAddress}
+                <EntityEllipsize value={stakingKey.rewardAddress} />
               </Link>
             }
             iconRenderer={<img alt="" src={RewardAddressIcon} />}
+            rawValue={stakingKey.rewardAddress}
+            ellipsizeValue={false}
           />
           <EntityIdCard
             label={null}
             value={
               <div className={classes.valueContainer}>
-                <div className="d-flex">
-                  <Typography
-                    component="span"
-                    variant="overline"
-                    color="textSecondary"
-                    className={classes.label}
-                  >
-                    {translate(messages.delegatedTo)}
-                  </Typography>
-                  &nbsp;
+                <div className={cn(classes.rowWrapper, 'd-flex')}>
+                  <span className="d-flex">
+                    <Typography
+                      component="span"
+                      variant="overline"
+                      color="textSecondary"
+                      className={classes.label}
+                    >
+                      {translate(messages.delegatedTo)}
+                    </Typography>
+                    &nbsp;
+                  </span>
                   <Typography
                     component="span"
                     variant="body1"
@@ -212,23 +242,25 @@ const StakingKey = () => {
                     noWrap
                   >
                     <Link monospace to={routeTo.stakepool(stakingKey.delegation.stakePoolHash)}>
-                      {stakingKey.delegation.stakePoolHash}
+                      <EntityEllipsize value={stakingKey.delegation.stakePoolHash} />
                     </Link>
                   </Typography>
                 </div>
-                <div className="d-flex">
-                  <Typography
-                    component="span"
-                    variant="overline"
-                    color="textSecondary"
-                    className={classes.label}
-                  >
-                    {translate(messages.inTransaction)}
-                  </Typography>
-                  &nbsp;
+                <div className={cn(classes.rowWrapper, 'd-flex')}>
+                  <span className="d-flex">
+                    <Typography
+                      component="span"
+                      variant="overline"
+                      color="textSecondary"
+                      className={classes.label}
+                    >
+                      {translate(messages.inTransaction)}
+                    </Typography>
+                    &nbsp;
+                  </span>
                   <Typography component="span" variant="body1" color="textPrimary" noWrap>
                     <Link monospace to={routeTo.transaction(stakingKey.delegation.tx)}>
-                      {stakingKey.delegation.tx}
+                      <EntityEllipsize value={stakingKey.delegation.tx} />
                     </Link>
                   </Typography>
                 </div>
