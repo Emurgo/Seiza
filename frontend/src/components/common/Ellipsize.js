@@ -1,5 +1,6 @@
 import React from 'react'
 import cn from 'classnames'
+import {Hidden, Box} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
 import {useCurrentBreakpoint} from '@/components/hooks/useBreakpoints'
@@ -33,12 +34,63 @@ const EllipsisDecisionMaker = ({cnt, className, value}) => {
   )
 }
 
+const Show = ({only, children}) => {
+  if (only === 'xs') {
+    return (
+      <Box display={{xs: 'inherit', sm: 'none'}} implementation="css">
+        {children}
+      </Box>
+    )
+  } else if (only === 'sm') {
+    return (
+      <Box display={{xs: 'none', sm: 'inherit', md: 'none'}} implementation="css">
+        {children}
+      </Box>
+    )
+  } else if (only === 'md') {
+    return (
+      <Box display={{xs: 'none', md: 'inherit', lg: 'none'}} implementation="css">
+        {children}
+      </Box>
+    )
+  } else if (only === 'lg') {
+    return (
+      <Box display={{xs: 'none', lg: 'inherit', xl: 'none'}} implementation="css">
+        {children}
+      </Box>
+    )
+  } else if (only === 'xl') {
+    return (
+      <Box display={{xs: 'none', xl: 'inherit'}} implementation="css">
+        {children}
+      </Box>
+    )
+  }
+  return children
+}
+
 const Ellipsize = ({xs, sm, md, lg, xl, className, value}) => {
   const normalizedConfig = normalizeConfig({xs, sm, md, lg, xl})
-  const currentBreakpoint = useCurrentBreakpoint()
-  const cnt = normalizedConfig[currentBreakpoint]
 
-  return <EllipsisDecisionMaker {...{cnt, className, value}} />
+  return (
+    <React.Fragment>
+      <Show only="xs">
+        <EllipsisDecisionMaker {...{cnt: normalizedConfig.xs, className, value}} />
+      </Show>
+      <Show only="sm">
+        <EllipsisDecisionMaker {...{cnt: normalizedConfig.sm, className, value}} />
+      </Show>
+      <Show only="md">
+        <EllipsisDecisionMaker {...{cnt: normalizedConfig.md, className, value}} />
+      </Show>
+      <Show only="lg">
+        <EllipsisDecisionMaker {...{cnt: normalizedConfig.lg, className, value}} />
+      </Show>
+      <Show only="xl">
+        <EllipsisDecisionMaker {...{cnt: normalizedConfig.xl, className, value}} />
+      </Show>
+    </React.Fragment>
+  )
 }
 
 export default Ellipsize
