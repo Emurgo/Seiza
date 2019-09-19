@@ -207,7 +207,7 @@ const Content = ({data}) => {
     [fields]
   )
   const rightSideItems = useMemo(
-    () => [fields.cost, fields.stake, fields.pledge, fields.estimatedRewards],
+    () => [fields.fee, fields.stake, fields.pledge, fields.estimatedRewards],
     [fields]
   )
 

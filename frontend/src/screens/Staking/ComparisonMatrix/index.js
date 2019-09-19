@@ -34,7 +34,7 @@ const categoryOneMessages = defineMessages({
 
 const categoryTwoMessages = defineMessages({
   fullness: 'Fullness',
-  cost: 'Cost',
+  fee: 'Fee',
   ranking: 'Ranking',
   revenue: 'Revenue',
   website: 'Website',
@@ -85,7 +85,7 @@ const categoryTwoConfig = [
     getValue: (stakePool, {formatPercent}) => formatPercent(stakePool.summary.fullness),
   },
   {
-    i18nLabel: categoryTwoMessages.cost,
+    i18nLabel: categoryTwoMessages.fee,
     getValue: (stakePool, formatters) => 'N/A',
   },
   {

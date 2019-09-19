@@ -11,7 +11,7 @@ import {useI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
 import CertificateActionIcon from '../ActionIcon'
 
-export const FormattedCost = ({value}) => <AdaValue showCurrency value={value} />
+export const FormattedFee = ({value}) => <AdaValue showCurrency value={value} />
 
 export const FormattedMargin = ({value}) => {
   const {formatPercent} = useI18n()

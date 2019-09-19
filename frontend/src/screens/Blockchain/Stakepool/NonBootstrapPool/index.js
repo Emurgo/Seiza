@@ -49,7 +49,7 @@ const messages = defineMessages({
   stakersCount: '# Stakers:',
   stakers: '{count, plural, =0 {stakers} one {staker} other {stakers}}',
   margin: 'Margin:',
-  cost: 'Cost:',
+  fee: 'Fee:',
   fullness: 'Fullness:',
   revenue: 'Revenue:',
   description: 'Description:',
@@ -211,14 +211,14 @@ const Stakepool = () => {
               </Value>
             </Row>
             <Row>
-              <Label>{tr(messages.cost)}</Label>
+              <Label>{tr(messages.fee)}</Label>
               <Value>
                 <Typography variant="body1">
-                  <AdaValue value={stakepool.currentCost.cost} showCurrency />
+                  <AdaValue value={stakepool.currentFee.fee} showCurrency />
                   <FromTop1Message
                     value={
                       <AdaValue
-                        value={stakepool.topPoolComparison.cost}
+                        value={stakepool.topPoolComparison.fee}
                         showSign="always"
                         showCurrency
                       />
@@ -226,7 +226,7 @@ const Stakepool = () => {
                   />
                 </Typography>
                 <Typography variant="caption" color="textSecondary">
-                  {tr(messages.lastUpdate)} {formatTimestamp(stakepool.currentCost.updatedAt)}
+                  {tr(messages.lastUpdate)} {formatTimestamp(stakepool.currentFee.updatedAt)}
                 </Typography>
               </Value>
             </Row>

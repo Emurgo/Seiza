@@ -137,7 +137,7 @@ const Content = ({data}) => {
 
   const fields = useMemo(() => getStakepoolCardFields({formatters, data}), [formatters, data])
   const leftSideItems = useMemo(() => [fields.stake], [fields])
-  const rightSideItems = useMemo(() => [fields.cost], [fields])
+  const rightSideItems = useMemo(() => [fields.fee], [fields])
 
   return (
     <div className={commonClasses.innerWrapper}>

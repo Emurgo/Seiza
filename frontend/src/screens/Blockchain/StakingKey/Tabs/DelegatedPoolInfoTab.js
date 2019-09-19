@@ -24,7 +24,7 @@ const useStyles = makeStyles(({getContentSpacing, breakpoints}) => ({
 const delegatedPoolMessages = defineMessages({
   stakePoolPosition: 'Stake Pool Position',
   marginDiff: 'Stake Pool Margin Difference with Top #1',
-  costDiff: 'Stake Pool Cost Difference with Top #1',
+  feeDiff: 'Stake Pool Fee Difference with Top #1',
   perfDiff: 'Stake Pool Performance diff with Top #1',
   currentTopStakePool: 'Current Top Stake Pool',
   epochsLabel: 'Epochs in current stake pool',
@@ -54,10 +54,10 @@ const DelegatedPoolInfoTab = ({stakePool, epochsInCurrentStakepool}) => {
         </Value>
       </Row>
       <Row>
-        <Label>{translate(delegatedPoolMessages.costDiff)}</Label>
+        <Label>{translate(delegatedPoolMessages.feeDiff)}</Label>
         <Value>
-          <AdaValue value={stakePool.currentCost.cost} showCurrency /> (
-          <AdaValue value={stakePool.topPoolComparison.cost} showCurrency />)
+          <AdaValue value={stakePool.currentFee.fee} showCurrency /> (
+          <AdaValue value={stakePool.topPoolComparison.fee} showCurrency />)
         </Value>
       </Row>
       <Row>

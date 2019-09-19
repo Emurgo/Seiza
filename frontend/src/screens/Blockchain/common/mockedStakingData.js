@@ -58,14 +58,14 @@ const generateStakepool = (stakepoolHash) => ({
     margin: 0.08,
     updatedAt: '2019-02-13T10:58:31.000Z',
   },
-  currentCost: {
-    cost: '500000000',
+  currentFee: {
+    fee: '500000000',
     updatedAt: '2019-02-13T10:58:31.000Z',
   },
   topPoolComparison: {
     position: 2,
     margin: 0.03,
-    cost: '-100000000',
+    fee: '-100000000',
     fullness: -0.1,
     revenue: -0.05,
     performance: -0.01,

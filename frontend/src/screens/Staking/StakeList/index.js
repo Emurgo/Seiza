@@ -98,7 +98,7 @@ const stakePoolFacade = (data) => ({
   // TODO: distinguish between `declared` and `actual` pledge?
   pledge: data.summary.ownerPledge.declared,
   stake: data.summary.adaStaked,
-  cost: data.summary.cost,
+  fee: data.summary.cost,
   estimatedRewards: data.summary.estimatedRewards,
 })
 
