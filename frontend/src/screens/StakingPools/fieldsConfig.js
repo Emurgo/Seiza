@@ -4,6 +4,7 @@ import _ from 'lodash'
 import * as React from 'react'
 import {defineMessages} from 'react-intl'
 import BigNumber from 'bignumber.js'
+import {makeStyles} from '@material-ui/styles'
 
 import {AdaValue, Link} from '@/components/common'
 import {Tooltip} from '@/components/visual'
@@ -62,6 +63,12 @@ type Config = {
   align?: $Values<typeof ALIGN>,
   getSortableFunction?: (order: 'asc' | 'desc', getItem: Function) => Function,
 }
+
+const useNameTooltipStyles = makeStyles((theme) => ({
+  tooltip: {
+    margin: 0,
+  },
+}))
 
 const isRangeFilterActive = (filterConfig: RangeFilterConfig) => {
   const {value, range} = filterConfig
@@ -143,22 +150,28 @@ const NameTooltip = ({data}) => (
   </Link>
 )
 
+const NameField = ({data}) => {
+  const classes = useNameTooltipStyles()
+  return (
+    <Tooltip
+      interactive
+      placement="bottom"
+      title={<NameTooltip data={data} />}
+      leaveTouchDelay={3000}
+      classes={classes}
+    >
+      <div style={nameTooltipWrapperStyles}>
+        <ItemIdentifier title={data.name} identifier={data.poolHash} />
+      </div>
+    </Tooltip>
+  )
+}
+
 export const fieldsConfig: Array<Config> = [
   {
     field: 'name',
     getLabel: ({tr}: GetLabelParams) => tr(fieldsMessages.name),
-    getValue: ({data}: GetValueParams) => (
-      <Tooltip
-        interactive
-        placement="bottom"
-        title={<NameTooltip data={data} />}
-        leaveTouchDelay={3000}
-      >
-        <div style={nameTooltipWrapperStyles}>
-          <ItemIdentifier title={data.name} identifier={data.poolHash} />
-        </div>
-      </Tooltip>
-    ),
+    getValue: ({data}: GetValueParams) => <NameField data={data} />,
     align: ALIGN.LEFT,
     filter: textFieldFilterConfig,
   },
