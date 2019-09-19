@@ -34,11 +34,42 @@ const ActionIcon = ({type}: Props) => {
         src="/static/assets/icons/certificateActions/action-key-deregistered.svg"
       />
     ),
-    [CERT_ACTIONS_TYPES.KEY_REWARD_RECEIPT]: '<Icon>', // TODO: add icon
-    [CERT_ACTIONS_TYPES.KEY_REGISTRATION_AS_POOL_OWNER]: '<Icon>', // TODO: add icon
-    [CERT_ACTIONS_TYPES.KEY_DEREGISTRATION_AS_POOL_OWNER]: '<Icon>', // TODO: add icon
-    [CERT_ACTIONS_TYPES.KEY_REGISTRATION_AS_POOL_REWARD_TARGET]: '<Icon>', // TODO: add icon
-    [CERT_ACTIONS_TYPES.KEY_DEREGISTRATION_AS_POOL_REWARD_TARGET]: '<Icon>', // TODO: add icon
+    [CERT_ACTIONS_TYPES.KEY_REWARD_RECEIPT]: (
+      <img
+        className={classes.img}
+        alt=""
+        src="/static/assets/icons/certificateActions/action-key-reward-received.svg"
+      />
+    ),
+
+    [CERT_ACTIONS_TYPES.KEY_REGISTRATION_AS_POOL_OWNER]: (
+      <img
+        className={classes.img}
+        alt=""
+        src="/static/assets/icons/certificateActions/action-key-registered-as-pool-owner.svg"
+      />
+    ),
+    [CERT_ACTIONS_TYPES.KEY_DEREGISTRATION_AS_POOL_OWNER]: (
+      <img
+        className={classes.img}
+        alt=""
+        src="/static/assets/icons/certificateActions/action-key-deregistered-as-pool-owner.svg"
+      />
+    ),
+    [CERT_ACTIONS_TYPES.KEY_REGISTRATION_AS_POOL_REWARD_TARGET]: (
+      <img
+        className={classes.img}
+        alt=""
+        src="/static/assets/icons/certificateActions/action-key-registered-as-target.svg"
+      />
+    ),
+    [CERT_ACTIONS_TYPES.KEY_DEREGISTRATION_AS_POOL_REWARD_TARGET]: (
+      <img
+        className={classes.img}
+        alt=""
+        src="/static/assets/icons/certificateActions/action-key-deregistered-as-target.svg"
+      />
+    ),
     [CERT_ACTIONS_TYPES.KEY_DELEGATION]: (
       <img
         className={classes.img}
