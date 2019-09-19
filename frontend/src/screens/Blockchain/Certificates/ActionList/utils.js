@@ -20,7 +20,13 @@ export const FormattedPledge = ({value}) => <AdaValue showCurrency value={value}
 const DESKTOP_CHARS_COUNT_SHOWN = 8
 const MOBILE_CHARS_COUNT_SHOWN = 6
 export const EllipsizeMiddleFixed = ({value}) => {
-  return <Ellipsize value={value} xs={MOBILE_CHARS_COUNT_SHOWN} md={DESKTOP_CHARS_COUNT_SHOWN} />
+  return (
+    <Ellipsize
+      value={value}
+      xsCount={MOBILE_CHARS_COUNT_SHOWN}
+      mdCount={DESKTOP_CHARS_COUNT_SHOWN}
+    />
+  )
 }
 
 const StakingKeyLink = ({stakingKey, children}) => {

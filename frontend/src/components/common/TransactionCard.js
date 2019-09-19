@@ -4,7 +4,7 @@ import {defineMessages} from 'react-intl'
 import {makeStyles} from '@material-ui/styles'
 
 import {ExpansionPanel} from '@/components/visual'
-import {EntityCardContent, Link, EntityEllipsize} from '@/components/common'
+import {EntityCardContent, Link, DefaultEllipsizedEntity} from '@/components/common'
 import {useI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
 import useCutClickableArea from '@/components/hooks/useCutClickableArea'
@@ -58,7 +58,7 @@ const TransactionCard = ({txHash, children}: ExternalProps) => {
           value={
             <span className={classes.hash}>
               <Link to={routeTo.transaction(txHash)}>
-                <EntityEllipsize value={txHash} />
+                <DefaultEllipsizedEntity value={txHash} />
               </Link>
             </span>
           }

@@ -14,7 +14,7 @@ import {
   EntityCardContent,
   Link,
   TabsPaginationLayout,
-  EntityEllipsize,
+  DefaultEllipsizedEntity,
 } from '@/components/common'
 import {useI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
@@ -118,7 +118,7 @@ const TransactionCard = ({transaction: tx, targetAddress}) => {
               label={tr(messages.transactionEntity)}
               value={
                 <Link to={routeTo.transaction(tx.txHash)}>
-                  <EntityEllipsize value={tx.txHash} />
+                  <DefaultEllipsizedEntity value={tx.txHash} />
                 </Link>
               }
               rawValue={tx.txHash}

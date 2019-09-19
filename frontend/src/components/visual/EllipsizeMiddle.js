@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useCallback} from 'react'
 import cn from 'classnames'
 import assert from 'assert'
 import {makeStyles} from '@material-ui/styles'
@@ -33,19 +33,21 @@ const EllipsizeMiddle = ({value, className, startCharsCnt = null, endCharsCnt = 
   const isFixed = startCharsCnt !== null
   const classes = useStyles({isFixed})
 
+  const onCopy = useCallback(
+    (e) => {
+      e.clipboardData.setData('text/plain', value)
+      e.preventDefault()
+    },
+    [value]
+  )
+
   isFixed && validateParams({value, startCharsCnt, endCharsCnt})
   if (isFixed && (value.length < 3 || startCharsCnt + endCharsCnt >= value.length)) {
     return value
   }
 
   return typeof value === 'string' && value.length > endCharsCnt ? (
-    <span
-      className={cn(classes.wrapper, className)}
-      onCopy={(e) => {
-        e.clipboardData.setData('text/plain', value)
-        e.preventDefault()
-      }}
-    >
+    <span className={cn(classes.wrapper, className)} onCopy={onCopy}>
       {isFixed ? (
         <React.Fragment>
           {`${value.substring(0, startCharsCnt)}...${value.substring(value.length - endCharsCnt)}`}

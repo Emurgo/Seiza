@@ -8,7 +8,7 @@ export {
   default as EntityIdCard,
   EntityCardContent,
   EntityCardShell,
-  EntityEllipsize,
+  DefaultEllipsizedEntity,
 } from './EntityIdCard'
 export {default as ErrorOverlay} from './ErrorOverlay'
 export {default as FileInputHandler} from './FileInputHandler'

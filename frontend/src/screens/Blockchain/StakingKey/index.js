@@ -13,7 +13,7 @@ import {
   EntityIdCard,
   Link,
   Pagination,
-  EntityEllipsize,
+  DefaultEllipsizedEntity,
   Ellipsize,
 } from '@/components/common'
 import {useManageQueryValue} from '@/components/hooks/useManageQueryValue'
@@ -211,7 +211,7 @@ const StakingKey = () => {
             label={translate(messages.rewardAddress)}
             value={
               <Link monospace to={routeTo.address(stakingKey.rewardAddress)}>
-                <EntityEllipsize value={stakingKey.rewardAddress} />
+                <DefaultEllipsizedEntity value={stakingKey.rewardAddress} />
               </Link>
             }
             iconRenderer={<img alt="" src={RewardAddressIcon} />}
@@ -242,7 +242,7 @@ const StakingKey = () => {
                     noWrap
                   >
                     <Link monospace to={routeTo.stakepool(stakingKey.delegation.stakePoolHash)}>
-                      <EntityEllipsize value={stakingKey.delegation.stakePoolHash} />
+                      <DefaultEllipsizedEntity value={stakingKey.delegation.stakePoolHash} />
                     </Link>
                   </Typography>
                 </div>
@@ -260,7 +260,7 @@ const StakingKey = () => {
                   </span>
                   <Typography component="span" variant="body1" color="textPrimary" noWrap>
                     <Link monospace to={routeTo.transaction(stakingKey.delegation.tx)}>
-                      <EntityEllipsize value={stakingKey.delegation.tx} />
+                      <DefaultEllipsizedEntity value={stakingKey.delegation.tx} />
                     </Link>
                   </Typography>
                 </div>

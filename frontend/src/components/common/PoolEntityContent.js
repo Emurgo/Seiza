@@ -57,7 +57,7 @@ const EllipsizedHash = ({hash, hashTooltip}) => {
         external={config.isYoroi}
         to={`${config.isYoroi ? config.seizaUrl : ''}${routeTo.stakepool(hash)}`}
       >
-        <Ellipsize lg="auto" value={hash} />
+        <Ellipsize lgCount="ellipsizeEnd" value={hash} />
       </Link>
     </Tooltip>
   )

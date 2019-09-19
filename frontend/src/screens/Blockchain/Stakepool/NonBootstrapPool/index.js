@@ -17,7 +17,7 @@ import {
   Link,
   ResponsiveCircularProgressBar,
   Pagination,
-  EntityEllipsize,
+  DefaultEllipsizedEntity,
   Ellipsize,
 } from '@/components/common'
 import {useI18n} from '@/i18n/helpers'
@@ -118,7 +118,15 @@ const Stakepool = () => {
 
           <EntityIdCard
             label={tr(messages.stakepoolHash)}
-            value={<Ellipsize value={stakepool.hash} xs={2} sm={6} />}
+            value={
+              <Ellipsize
+                value={stakepool.hash}
+                xsCount={2}
+                smCount={6}
+                mdCount={8}
+                lgCount="ellipsizeEnd"
+              />
+            }
             iconRenderer={<img alt="" src={AdaIcon} />}
             badge={
               <ResponsiveCircularProgressBar
@@ -127,6 +135,7 @@ const Stakepool = () => {
               />
             }
             ellipsizeValue={false}
+            rawValue={stakepool.hash}
           />
           <SummaryCard>
             <Row>
@@ -267,7 +276,7 @@ const Stakepool = () => {
             label={tr(messages.rewardAddress)}
             value={
               <Link monospace to={routeTo.address(stakepool.rewardsAddress)}>
-                <EntityEllipsize value={stakepool.rewardsAddress} />
+                <DefaultEllipsizedEntity value={stakepool.rewardsAddress} />
               </Link>
             }
             iconRenderer={<img alt="" src={RewardAddressIcon} />}

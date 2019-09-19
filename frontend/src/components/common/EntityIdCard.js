@@ -104,8 +104,17 @@ const useContentStyles = makeStyles((theme) => {
   }
 })
 
-export const EntityEllipsize = ({value, monospace = true, className}) => {
-  return <Ellipsize value={value} xs={6} sm={8} md={10} lg="auto" xl="auto" className={className} />
+export const DefaultEllipsizedEntity = ({value, monospace = true, className}) => {
+  return (
+    <Ellipsize
+      value={value}
+      xsCount={6}
+      smCount={8}
+      mdCount={10}
+      lgCount="ellipsizeEnd"
+      className={className}
+    />
+  )
 }
 
 // Note: User is unable to select whole text at once
@@ -165,7 +174,7 @@ export const EntityCardContent = ({
                 key={rawValue}
               >
                 {ellipsizeValue ? (
-                  <EntityEllipsize
+                  <DefaultEllipsizedEntity
                     className={cn(classes.value, monospaceValue && classes.monospace)}
                     value={value}
                     monospace={monospaceValue}
