@@ -21,12 +21,6 @@ import useCurrency, {CURRENCIES} from '@/components/hooks/useCurrency'
 import useNavigateTo from '@/components/hooks/useNavigateTo'
 import {useAnalytics} from '@/components/context/googleAnalytics'
 
-import epochIcon from '@/static/assets/icons/metrics-epoch.svg'
-import blocksIcon from '@/static/assets/icons/metrics-blocks.svg'
-import decentralizationIcon from '@/static/assets/icons/metrics-decentralization.svg'
-import priceIcon from '@/static/assets/icons/metrics-currency.svg'
-import poolsIcon from '@/static/assets/icons/metrics-stakepools.svg'
-
 const PRELOAD_FONT_WEIGHT = 300
 
 const usePreloadStyles = makeStyles((theme) => ({
@@ -142,7 +136,7 @@ const OverviewMetrics = () => {
 
   const commonMarketDataProps = {
     className: classes.card,
-    icon: <img alt="" src={priceIcon} />,
+    icon: <img alt="" src="/static/assets/icons/metrics-currency.svg" />,
     secondaryText: translate(text.priceLabel),
     primaryText: price,
     options: [
@@ -179,7 +173,7 @@ const OverviewMetrics = () => {
           <MetricsCardContainer>
             <MetricsCardWithLink
               className={classes.card}
-              icon={<img alt="" src={epochIcon} />}
+              icon={<img alt="" src="/static/assets/icons/metrics-epoch.svg" />}
               value={epochNumber}
               metric={translate(text.epochLabel)}
               to={epochLink}
@@ -188,7 +182,7 @@ const OverviewMetrics = () => {
           <MetricsCardContainer>
             <MetricsCardWithLink
               className={classes.card}
-              icon={<img alt="" src={blocksIcon} />}
+              icon={<img alt="" src="/static/assets/icons/metrics-blocks.svg" />}
               value={blockCount}
               metric={translate(text.slotsLabel)}
               to={blockLink}
@@ -198,7 +192,7 @@ const OverviewMetrics = () => {
             <MetricsCardContainer>
               <MetricsCard
                 className={classes.card}
-                icon={<img alt="" src={decentralizationIcon} />}
+                icon={<img alt="" src="/static/assets/icons/metrics-decentralization.svg" />}
                 value={decentralization}
                 metric={translate(text.decentralizationLabel)}
               />
@@ -214,7 +208,7 @@ const OverviewMetrics = () => {
             <MetricsCardContainer>
               <MetricsCardWithLink
                 className={classes.card}
-                icon={<img alt="" src={poolsIcon} />}
+                icon={<img alt="" src="/static/assets/icons/metrics-stakepools.svg" />}
                 value={pools}
                 metric={translate(text.poolsLabel)}
                 to={stakePoolsLink}

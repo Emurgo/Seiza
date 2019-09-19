@@ -7,7 +7,6 @@ import {defineMessages} from 'react-intl'
 
 import {useI18n} from '@/i18n/helpers'
 import {reportError} from '@/helpers/errorReporting'
-import errorImage from '@/static/assets/error-screen.svg'
 
 const messages = defineMessages({
   errorTitle: 'Oops! Something went wrong',
@@ -46,7 +45,7 @@ export const DefaultErrorScreen = () => {
             {tr(messages.errorMsg)}
           </Typography>
 
-          <img className={classes.item} alt="" src={errorImage} />
+          <img className={classes.item} alt="" src="/static/assets/error-screen.svg" />
         </Grid>
       </Grid>
     </Grid>

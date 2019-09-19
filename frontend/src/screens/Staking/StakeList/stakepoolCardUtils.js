@@ -9,7 +9,6 @@ import {AdaValue, HelpTooltip, ResponsiveCircularProgressBar} from '@/components
 import {ExpandableCardFooter, Tooltip, SimpleExpandableCard, Card} from '@/components/visual'
 import {useI18n} from '@/i18n/helpers'
 import EstimatedRewardsValue from './EstimatedRewards'
-import epochIcon from '@/static/assets/icons/epoch.svg'
 import type {Formatters} from '@/i18n/helpers'
 import type {EstimatedRewardsType} from './EstimatedRewards'
 
@@ -386,7 +385,7 @@ export const Age = ({epochCount}: AgeProps) => {
   const classes = useAgeClasses()
   return (
     <Grid container alignItems="center" className={classes.ageWrapper}>
-      <img alt="" src={epochIcon} />
+      <img alt="" src="/static/assets/icons/epoch.svg" />
       <Typography component="span" variant="overline" color="textSecondary">
         {tr(ageMessages.ageLabel)}
       </Typography>

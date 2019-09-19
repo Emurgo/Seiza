@@ -7,10 +7,6 @@ import {Paper, Grid, Typography} from '@material-ui/core'
 import {darken} from '@material-ui/core/styles/colorManipulator'
 import {makeStyles} from '@material-ui/styles'
 
-import emphasisIcon from '@/static/assets/icons/emphasis.svg'
-import warningIcon from '@/static/assets/icons/warning.svg'
-import alertIcon from '@/static/assets/icons/alert.svg'
-import noResultsIcon from '@/static/assets/icons/sad-smile.svg'
 import {useI18n} from '@/i18n/helpers'
 import {CloseIconButton} from '@/components/visual'
 
@@ -83,10 +79,10 @@ const useAppStyles = makeStyles((theme) => ({
 }))
 
 const ICONS = {
-  [TYPES.EMPHASIS]: <img alt="" src={emphasisIcon} />,
-  [TYPES.WARNING]: <img alt="" src={warningIcon} />,
-  [TYPES.ALERT]: <img alt="" src={alertIcon} />,
-  [TYPES.NO_RESULTS]: <img alt="" src={noResultsIcon} />,
+  [TYPES.EMPHASIS]: <img alt="" src="/static/assets/icons/emphasis.svg" />,
+  [TYPES.WARNING]: <img alt="" src="/static/assets/icons/warning.svg" />,
+  [TYPES.ALERT]: <img alt="" src="/static/assets/icons/alert.svg" />,
+  [TYPES.NO_RESULTS]: <img alt="" src="/static/assets/icons/sad-smile.svg" />,
   [TYPES.NEUTRAL]: null,
 }
 

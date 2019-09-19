@@ -24,9 +24,6 @@ import {useUrlInfo} from '@/components/context/urlInfo'
 import {getCurrentBlockchainNetwork} from '@/helpers/testnet'
 import config from '@/config'
 
-import seizaLogoDesktop from '@/static/assets/icons/logo-seiza.svg'
-import seizaLogoMobile from '@/static/assets/icons/seiza-symbol.svg'
-
 import type {NavItem} from '@/components/common/Navbar'
 
 const useTopBarStyles = makeStyles((theme) => ({
@@ -110,7 +107,7 @@ const MobileMenu = ({items = [], currentPathname}: any) => {
   return (
     <React.Fragment>
       <div className={classes.mobileWrapper} onClick={setIsOpen}>
-        <img src={seizaLogoMobile} alt="logo" />
+        <img src="/static/assets/icons/seiza-symbol.svg" alt="logo" />
         <MenuIcon className={classes.dropdownIcon} />
       </div>
       {/* $FlowFixMe, flow complains about some Drawer props which are not used in examples */}
@@ -199,7 +196,7 @@ const TopBar = ({navItems}: TopBarProps) => {
         >
           <Grid item>
             <Link to={routeTo.home()}>
-              <img alt="" src={seizaLogoDesktop} />
+              <img alt="" src="/static/assets/icons/logo-seiza.svg" />
             </Link>
           </Grid>
           <Grid item>

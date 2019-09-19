@@ -19,8 +19,6 @@ import {
 } from '@/components/common'
 import useTabState from '@/components/hooks/useTabState'
 import {useI18n} from '@/i18n/helpers'
-import EpochNumberIcon from '@/static/assets/icons/epoch-number.svg'
-import EpochIcon from '@/static/assets/icons/metrics-epoch.svg'
 import Blocks from './Blocks'
 import StakingPoolsTab from './StakingPools'
 import {routeTo} from '@/helpers/routes'
@@ -308,7 +306,9 @@ const EpochEntityCard = ({epochNumber, startTime, endTime}) => {
             showCopyIcon={false}
             label={tr(messages.entityHeader)}
             value={epochNumber}
-            iconRenderer={<img alt="" src={EpochNumberIcon} width={48} height={48} />}
+            iconRenderer={
+              <img alt="" src="/static/assets/icons/epoch-number.svg" width={48} height={48} />
+            }
             appearAnimation
             rawValue={epochNumber}
           />
@@ -323,7 +323,9 @@ const EpochEntityCard = ({epochNumber, startTime, endTime}) => {
             }
             showCopyIcon={false}
             ellipsizeValue={false}
-            iconRenderer={<img alt="" src={EpochIcon} width={48} height={48} />}
+            iconRenderer={
+              <img alt="" src="/static/assets/icons/metrics-epoch.svg" width={48} height={48} />
+            }
             value={
               <span className={classes.date}>
                 {start} {' — '} {end}

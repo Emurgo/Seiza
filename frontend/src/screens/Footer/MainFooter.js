@@ -11,16 +11,7 @@ import {useI18n} from '@/i18n/helpers'
 import {useAnalytics} from '@/components/context/googleAnalytics'
 import {Tooltip} from '@/components/visual'
 import {Link} from '@/components/common'
-import logo from '@/static/assets/icons/logo-seiza-white.svg'
 import {useSubscribe} from './context/subscribe'
-
-import fbIcon from '@/static/assets/icons/social/fb.svg'
-import linkedInIcon from '@/static/assets/icons/social/linkedin.svg'
-import mediumIcon from '@/static/assets/icons/social/medium.svg'
-import redditIcon from '@/static/assets/icons/social/reddit.svg'
-import twitterEmurgoIcon from '@/static/assets/icons/social/twitter-emurgo.svg'
-import twitterSeizaIcon from '@/static/assets/icons/social/twitter-seiza.svg'
-import youtubeIcon from '@/static/assets/icons/social/youtube.svg'
 
 const messages = defineMessages({
   copyright: 'All rights reserved',
@@ -209,7 +200,7 @@ const MainFooter = ({navItems}: Props) => {
     <div className={classes.wrapper}>
       <Grid container className={classes.innerWrapper}>
         <Grid item>
-          <img alt="" src={logo} />
+          <img alt="" src="/static/assets/icons/logo-seiza-white.svg" />
           <Typography className={classes.copyright}>
             {tr(messages.copyright)} | &#169;2019 EMURGO PTE. Ltd
           </Typography>
@@ -250,23 +241,39 @@ const MainFooter = ({navItems}: Props) => {
 
                 <Grid item>
                   <Grid container alignItems="center">
-                    <SocialIcon to={SOCIAL_LINKS.FACEBOOK} icon={fbIcon} iconName="facebook" />
+                    <SocialIcon
+                      to={SOCIAL_LINKS.FACEBOOK}
+                      icon="/static/assets/icons/social/fb.svg"
+                      iconName="facebook"
+                    />
                     <SocialIcon
                       to={SOCIAL_LINKS.TWITTER_EMURGO}
-                      icon={twitterEmurgoIcon}
+                      icon="/static/assets/icons/social/twitter-emurgo.svg"
                       iconName="emurgo twitter"
                     />
                     <SocialIcon
                       to={SOCIAL_LINKS.TWITTER_SEIZA}
-                      icon={twitterSeizaIcon}
+                      icon="/static/assets/icons/social/twitter-seiza.svg"
                       iconName="seiza twitter"
                     />
-                    <SocialIcon to={SOCIAL_LINKS.YOUTUBE} icon={youtubeIcon} iconName="youtube" />
-                    <SocialIcon to={SOCIAL_LINKS.MEDIUM} icon={mediumIcon} iconName="medium" />
-                    <SocialIcon to={SOCIAL_LINKS.REDDIT} icon={redditIcon} iconName="reddit" />
+                    <SocialIcon
+                      to={SOCIAL_LINKS.YOUTUBE}
+                      icon="/static/assets/icons/social/youtube.svg"
+                      iconName="youtube"
+                    />
+                    <SocialIcon
+                      to={SOCIAL_LINKS.MEDIUM}
+                      icon="/static/assets/icons/social/medium.svg"
+                      iconName="medium"
+                    />
+                    <SocialIcon
+                      to={SOCIAL_LINKS.REDDIT}
+                      icon="/static/assets/icons/social/reddit.svg"
+                      iconName="reddit"
+                    />
                     <SocialIcon
                       to={SOCIAL_LINKS.LINKEDIN}
-                      icon={linkedInIcon}
+                      icon="/static/assets/icons/social/linkedin.svg"
                       iconName="linkedin"
                     />
                   </Grid>{' '}

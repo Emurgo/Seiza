@@ -5,8 +5,6 @@ import cn from 'classnames'
 import {Grid, Typography} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
-import AlertIcon from '@/static/assets/icons/syncing-alert.svg'
-
 const useStyles = makeStyles((theme) => ({
   wrapper: {
     backgroundImage: theme.palette.buttons.getContainedGradient().background,
@@ -42,7 +40,7 @@ export default ({title, message}: Props) => {
       justify="center"
       alignItems="center"
     >
-      <img alt="" src={AlertIcon} className={classes.paddedRight} />
+      <img alt="" src="/static/assets/icons/syncing-alert.svg" className={classes.paddedRight} />
 
       <Typography
         variant="overline"

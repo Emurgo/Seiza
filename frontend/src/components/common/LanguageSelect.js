@@ -3,15 +3,10 @@ import React from 'react'
 import cn from 'classnames'
 import {Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
+
 import {useLocale} from '@/components/context/intl'
 import {Select} from '@/components/visual'
 import {NavbarLink} from '@/components/common/Navbar'
-
-import EnglishFlag from '@/static/assets/icons/flags/english.svg'
-import JapaneseFlag from '@/static/assets/icons/flags/japanese.svg'
-import RussianFlag from '@/static/assets/icons/flags/russian.svg'
-// import ChineseFlag from '@/static/assets/icons/flags/chinese.svg'
-// import KoreanFlag from '@/static/assets/icons/flags/korean.svg'
 import config from '@/config'
 
 const useStyles = makeStyles((theme) => ({
@@ -56,32 +51,32 @@ const insertIf = (cond, value) => (cond ? [value] : [])
 export const LANGUAGES = [
   {
     locale: 'en',
-    label: <Label langCode="EN" flagSrc={EnglishFlag} />,
-    mobileLabel: <Label langCode="EN" flagSrc={EnglishFlag} mobile />,
+    label: <Label langCode="EN" flagSrc="/static/assets/icons/flags/english.svg" />,
+    mobileLabel: <Label langCode="EN" flagSrc="/static/assets/icons/flags/english.svg" mobile />,
   },
   {
     locale: 'ja',
-    label: <Label langCode="JA" flagSrc={JapaneseFlag} />,
-    mobileLabel: <Label langCode="JA" flagSrc={JapaneseFlag} mobile />,
+    label: <Label langCode="JA" flagSrc="/static/assets/icons/flags/japanese.svg" />,
+    mobileLabel: <Label langCode="JA" flagSrc="/static/assets/icons/flags/japanese.svg" mobile />,
   },
   ...insertIf(config.featureEnableRussian, {
     locale: 'ru',
-    label: <Label langCode="RU" flagSrc={RussianFlag} />,
-    mobileLabel: <Label langCode="RU" flagSrc={RussianFlag} mobile />,
+    label: <Label langCode="RU" flagSrc="/static/assets/icons/flags/russian.svg" />,
+    mobileLabel: <Label langCode="RU" flagSrc="/static/assets/icons/flags/russian.svg" mobile />,
   }),
   ...insertIf(config.featureEnableSpanish, {
     locale: 'es',
-    label: <Label langCode="ES" flagSrc={RussianFlag} />,
-    mobileLabel: <Label langCode="ES" flagSrc={RussianFlag} mobile />,
+    label: <Label langCode="ES" flagSrc="/static/assets/icons/flags/russian.svg" />, // TODO: Add spanish flag
+    mobileLabel: <Label langCode="ES" flagSrc="/static/assets/icons/flags/russian.svg" mobile />,
   }),
   /*
   {
     locale: 'cn',
-    label: <Label langCode="CN" flagSrc={ChineseFlag} />,
+    label: <Label langCode="CN" flagSrc="/static/assets/icons/flags/chinese.svg" />,
   },
   {
     locale: 'kr',
-    label: <Label langCode="KR" flagSrc={KoreanFlag} />,
+    label: <Label langCode="KR" flagSrc="/static/assets/icons/flags/korean.svg" />,
   },*/
 ].map<{value: string, label: React$Node, mobileLabel: React$Node}>(
   ({locale, label, mobileLabel}) => ({value: locale, label, mobileLabel})

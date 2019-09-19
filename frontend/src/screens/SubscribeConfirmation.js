@@ -5,7 +5,6 @@ import {defineMessages} from 'react-intl'
 
 import {useI18n} from '@/i18n/helpers'
 import {useAnalytics} from '@/components/context/googleAnalytics'
-import subscribedImage from '@/static/assets/icons/subscribed.svg'
 
 const messages = defineMessages({
   subscriptionConfirmedHeader: 'Thank you!',
@@ -46,7 +45,7 @@ const SubscribeConfirmation = () => {
       <Typography className={classes.message} variant="h4">
         {tr(messages.subscriptionConfirmedMessage)}
       </Typography>
-      <img src={subscribedImage} alt="" className={classes.image} />
+      <img src="/static/assets/icons/subscribed.svg" alt="" className={classes.image} />
     </Grid>
   )
 }

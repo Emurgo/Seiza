@@ -13,7 +13,6 @@ import {routeTo} from '@/helpers/routes'
 import {useI18n} from '@/i18n/helpers'
 import {useAcceptCookies} from '@/components/context/acceptCookies'
 import {useUserAgent} from '@/components/context/userAgent'
-import cookiesIcon from '@/static/assets/icons/cookies.svg'
 
 const messages = defineMessages({
   header: 'We use cookies!',
@@ -82,7 +81,7 @@ const CookiesBanner = () => {
           <Grid container alignItems="center" spacing={4}>
             <Grid item xs={12} md={2}>
               <Grid container justify="center">
-                <img src={cookiesIcon} alt="" />
+                <img src="/static/assets/icons/cookies.svg" alt="" />
               </Grid>
             </Grid>
             <Grid item xs={12} md={7}>

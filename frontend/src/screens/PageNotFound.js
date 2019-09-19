@@ -5,7 +5,6 @@ import {defineMessages} from 'react-intl'
 
 import {useI18n} from '@/i18n/helpers'
 import {useAnalytics} from '@/components/context/googleAnalytics'
-import errorImage from '@/static/assets/error-screen.svg'
 
 const messages = defineMessages({
   notFoundHeader: 'We are sorry!',
@@ -46,7 +45,7 @@ const PageNotFound = () => {
       <Typography className={classes.message} variant="h4">
         {tr(messages.notFound)}
       </Typography>
-      <img src={errorImage} alt="" className={classes.image} />
+      <img src="/static/assets/error-screen.svg" alt="" className={classes.image} />
     </Grid>
   )
 }

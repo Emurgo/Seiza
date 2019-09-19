@@ -20,9 +20,6 @@ import {
 } from '@/components/common'
 import {useI18n} from '@/i18n/helpers'
 import {routeTo} from '@/helpers/routes'
-import AdaIcon from '@/static/assets/icons/transaction-id.svg'
-import CertificateActionIcon from '@/static/assets/icons/reward-address.svg'
-import RewardAddressIcon from '@/static/assets/icons/certificate.svg'
 import {useLoadStakepoolData} from './dataLoaders'
 import Tabs, {TAB_NAMES} from './Tabs'
 
@@ -117,7 +114,7 @@ const Stakepool = () => {
           <EntityIdCard
             label={tr(messages.stakepoolHash)}
             value={stakepool.hash}
-            iconRenderer={<img alt="" src={AdaIcon} />}
+            iconRenderer={<img alt="" src="/static/assets/icons/transaction-id.svg" />}
             badge={
               <ResponsiveCircularProgressBar
                 label={tr(messages.entityBadge)}
@@ -267,12 +264,12 @@ const Stakepool = () => {
                 {stakepool.rewardsAddress}
               </Link>
             }
-            iconRenderer={<img alt="" src={RewardAddressIcon} />}
+            iconRenderer={<img alt="" src="/static/assets/icons/certificate.svg" />}
           />
           <EntityIdCard
             label={tr(messages.stakePoolCertificate)}
             value={stakepool.stakePoolCertificate}
-            iconRenderer={<img alt="" src={CertificateActionIcon} />}
+            iconRenderer={<img alt="" src="/static/assets/icons/reward-address.svg" />}
           />
           <Tabs
             stakepool={stakepool}
