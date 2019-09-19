@@ -60,9 +60,12 @@ const useHeaderStyles = makeStyles(({palette, spacing, breakpoints}) => ({
       display: 'initial',
     },
   },
-  profitability: {
-    fontSize: 18,
+  profitabilityValue: {
+    fontSize: 24,
     paddingLeft: spacing(0.5),
+  },
+  profitabilityIcon: {
+    fontSize: 24,
   },
 }))
 
@@ -84,8 +87,10 @@ const ProfitabilityPosition = ({value}) => {
   return (
     <Tooltip title={tr(messages.profitability)} placement="bottom">
       <div className="d-flex">
-        <img alt="" src="/static/assets/icons/staking-simulator/profitability-position.svg" />
-        <NavTypography className={classes.profitability}>{value}</NavTypography>
+        <Typography color="textSecondary" className={classes.profitabilityIcon}>
+          #
+        </Typography>
+        <NavTypography className={classes.profitabilityValue}>{value}</NavTypography>
       </div>
     </Tooltip>
   )
