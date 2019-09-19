@@ -4,7 +4,7 @@ const path = require('path')
 const Dotenv = require('dotenv-webpack')
 const SentryCliPlugin = require('@sentry/webpack-plugin')
 const {withPlugins, optional} = require('next-compose-plugins')
-const {PHASE_DEVELOPMENT_SERVER} = require('next-server/constants')
+const {PHASE_PRODUCTION_BUILD} = require('next-server/constants')
 const withCSS = require('@zeit/next-css')
 const withSourceMaps = require('@zeit/next-source-maps')
 const withTranspileModules = require('next-transpile-modules')
@@ -82,7 +82,7 @@ const withBundleAnalyzer = [
     })
   ),
   {},
-  [PHASE_DEVELOPMENT_SERVER],
+  [PHASE_PRODUCTION_BUILD],
 ]
 
 
