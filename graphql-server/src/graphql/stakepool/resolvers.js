@@ -35,7 +35,10 @@ const getPoolsData = (api) =>
   }))
 
 const filterData = (data, searchText, performance) => {
-  const _filtered = searchText ? data.filter((pool) => pool.name.includes(searchText)) : data
+  const searchTextLowerCase = searchText.toLowerCase()
+  const _filtered = searchText
+    ? data.filter((pool) => pool.name.toLowerCase().includes(searchTextLowerCase))
+    : data
   return performance
     ? _filtered.filter((pool) =>
       inRange(pool.summary.performance, performance.from, performance.to)
