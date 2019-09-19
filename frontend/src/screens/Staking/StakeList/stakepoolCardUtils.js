@@ -5,7 +5,7 @@ import {Typography, Hidden, Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
 
-import {AdaValue, HelpTooltip, ResponsiveCircularProgressBar} from '@/components/common'
+import {AdaValue, HelpTooltip} from '@/components/common'
 import {ExpandableCardFooter, Tooltip, SimpleExpandableCard, Card} from '@/components/visual'
 import {useI18n} from '@/i18n/helpers'
 import EstimatedRewardsValue from './EstimatedRewards'
@@ -34,7 +34,6 @@ const messages = defineMessages({
 })
 
 const footerMessages = defineMessages({
-  revenue: 'Revenue',
   hideDetails: 'Hide details',
   showDetails: 'Show details',
 })
@@ -65,6 +64,9 @@ const useStyles = makeStyles((theme) => ({
   },
   emptyCol: {
     width: '50%',
+  },
+  simpleGridWrapper: {
+    paddingTop: theme.spacing(1),
   },
 }))
 
@@ -111,6 +113,32 @@ const DesktopGrid = ({leftSideItems, rightSideItems}) => {
   )
 }
 
+const SimpleDesktopGrid = ({leftItem, centerItem, rightItem}) => {
+  const classes = useStyles()
+  return (
+    <Grid container className={classes.simpleGridWrapper}>
+      <Grid item xs={4}>
+        <Grid container justify="flex-start">
+          <DataGridLabel>{leftItem.label}</DataGridLabel>
+          {leftItem.value}
+        </Grid>
+      </Grid>
+      <Grid item xs={4}>
+        <Grid container justify="center">
+          <DataGridLabel>{centerItem.label}</DataGridLabel>
+          {centerItem.value}
+        </Grid>
+      </Grid>
+      <Grid item xs={4}>
+        <Grid container justify="flex-end">
+          <DataGridLabel>{rightItem.label}</DataGridLabel>
+          {rightItem.value}
+        </Grid>
+      </Grid>
+    </Grid>
+  )
+}
+
 const MobileGrid = ({leftSideItems, rightSideItems}) => {
   const classes = useStyles()
   const items = [...leftSideItems, ...rightSideItems]
@@ -149,7 +177,12 @@ const MobileGrid = ({leftSideItems, rightSideItems}) => {
   )
 }
 
-type Items = Array<{label: React$Node, value: React$Node}>
+type Item = {|
+  label: React$Node,
+  value: React$Node,
+|}
+
+type Items = Array<Item>
 
 // TODO: consider rendering only client side and using conditions instead of Hidden
 export const DataGrid = ({
@@ -168,6 +201,34 @@ export const DataGrid = ({
     </Hidden>
   </React.Fragment>
 )
+
+const EMPTY_ARRAY = []
+
+type SimpleDataGridProps = {|
+  leftItem: Item,
+  centerItem: Item,
+  rightItem: Item,
+|}
+
+// Note: there are exactly three items hardcoded for simplicity, as it is hard to create
+// good abstraction till we do not know how the layout may change
+export const SimpleDataGrid = ({leftItem, centerItem, rightItem}: SimpleDataGridProps) => {
+  const mobileGridItems = useMemo(() => [leftItem, centerItem, rightItem], [
+    centerItem,
+    leftItem,
+    rightItem,
+  ])
+  return (
+    <React.Fragment>
+      <Hidden lgUp>
+        <MobileGrid leftSideItems={mobileGridItems} rightSideItems={EMPTY_ARRAY} />
+      </Hidden>
+      <Hidden mdDown>
+        <SimpleDesktopGrid {...{leftItem, centerItem, rightItem}} />
+      </Hidden>
+    </React.Fragment>
+  )
+}
 
 type FieldProps = {|
   formatters: Formatters,
@@ -260,7 +321,13 @@ const usePoolFooterStyles = makeStyles((theme) => ({
   },
 }))
 
-export const MobilePoolFooter = ({expanded}: {expanded: boolean}) => {
+export const MobilePoolFooter = ({
+  rightSide,
+  expanded,
+}: {
+  rightSide: React$Node,
+  expanded: boolean,
+}) => {
   const {translate: tr} = useI18n()
   const classes = usePoolFooterStyles()
   const label = tr(expanded ? footerMessages.hideDetails : footerMessages.showDetails)
@@ -273,7 +340,7 @@ export const MobilePoolFooter = ({expanded}: {expanded: boolean}) => {
       wrap="nowrap"
       className={classes.wrapper}
     >
-      <ResponsiveCircularProgressBar label={tr(footerMessages.revenue)} value={0.25} />
+      {rightSide}
       <div className={classes.showDetailsWrapper}>
         <Hidden smUp>
           <ExpandableCardFooter

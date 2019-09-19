@@ -11,22 +11,19 @@ import {
   DesktopOnly,
   MobileOnly,
 } from '@/components/visual'
-import {PoolEntityContent, ResponsiveCircularProgressBar, AdaValue} from '@/components/common'
+import {PoolEntityContent, NavTypography} from '@/components/common'
 import WithModalState from '@/components/headless/modalState'
 import {useI18n} from '@/i18n/helpers'
 
-import {useUserAdaContext} from '../context/userAda'
 import {
-  DataGrid,
+  SimpleDataGrid,
   getStakepoolCardFields,
   MobilePoolFooter,
   StakepoolMobileCard,
   useCommonContentStyles,
-  Age,
 } from '../StakeList/stakepoolCardUtils'
 
 const messages = defineMessages({
-  revenue: 'Revenue',
   hideDesc: 'Hide description',
   showDesc: 'Full description',
   addPool: 'Add',
@@ -36,6 +33,7 @@ const messages = defineMessages({
   ageValue: '{epochCount, plural, =0 {# epochs} one {# epoch} other {# epochs}}',
   estimatedRewardsTooltip:
     'To also show estimate in ADA, please enter your ADA amount into the field besides Search field',
+  profitability: 'Profitability position',
 })
 
 const useHeaderStyles = makeStyles(({palette, spacing, breakpoints}) => ({
@@ -62,6 +60,10 @@ const useHeaderStyles = makeStyles(({palette, spacing, breakpoints}) => ({
       display: 'initial',
     },
   },
+  profitability: {
+    fontSize: 18,
+    paddingLeft: spacing(0.5),
+  },
 }))
 
 const useContentStyles = makeStyles(({palette, spacing, breakpoints}) => ({
@@ -73,40 +75,23 @@ const useContentStyles = makeStyles(({palette, spacing, breakpoints}) => ({
   },
 }))
 
-const EstimatedRewards = ({estimatedRewards}) => {
+// TODO: change in next PR together with graphQl schema
+const HARDCODED_PROFITABILITY = 9
+
+const ProfitabilityPosition = ({value}) => {
   const classes = useHeaderStyles()
-  const {translate: tr, formatPercent} = useI18n()
-  const {userAda} = useUserAdaContext()
-
-  const percentageRewards = formatPercent(estimatedRewards.perMonth.percentage)
-
+  const {translate: tr} = useI18n()
   return (
-    <Tooltip
-      placement="bottom"
-      title={tr(messages.estimatedRewardsTooltip)}
-      disableHoverListener={!!userAda}
-      disableTouchListener={!!userAda}
-    >
-      <div>
-        <Typography color="textSecondary" className={classes.estimatedRewardsLabel}>
-          {tr(messages.estimatedRewards)}
-        </Typography>
-        {userAda ? (
-          <div className="d-flex">
-            <AdaValue showCurrency value={estimatedRewards.perMonth.ada} />
-            <Typography className={classes.offsetPercentageRewards}>
-              ({percentageRewards})
-            </Typography>
-          </div>
-        ) : (
-          <Typography>{percentageRewards}</Typography>
-        )}
+    <Tooltip title={tr(messages.profitability)} placement="bottom">
+      <div className="d-flex">
+        <img alt="" src="/static/assets/icons/staking-simulator/profitability-position.svg" />
+        <NavTypography className={classes.profitability}>{value}</NavTypography>
       </div>
     </Tooltip>
   )
 }
 
-const Header = ({name, hash, estimatedRewards}) => {
+const Header = ({name, hash}) => {
   const classes = useHeaderStyles()
 
   return (
@@ -121,8 +106,8 @@ const Header = ({name, hash, estimatedRewards}) => {
         <PoolEntityContent name={name} hash={hash} />
       </Grid>
       <Grid item md={6} className={classes.headerRewards}>
-        <Grid container direction="column" alignItems="flex-end">
-          <EstimatedRewards estimatedRewards={estimatedRewards} />
+        <Grid container direction="row" justify="flex-end">
+          <ProfitabilityPosition value={HARDCODED_PROFITABILITY} />
         </Grid>
       </Grid>
     </Grid>
@@ -131,24 +116,20 @@ const Header = ({name, hash, estimatedRewards}) => {
 
 const Content = ({data}) => {
   const formatters = useI18n()
-  const {translate: tr} = formatters
   const classes = useContentStyles()
   const commonClasses = useCommonContentStyles()
 
   const fields = useMemo(() => getStakepoolCardFields({formatters, data}), [formatters, data])
-  const leftSideItems = useMemo(() => [fields.stake], [fields])
-  const rightSideItems = useMemo(() => [fields.fee], [fields])
 
   return (
     <div className={commonClasses.innerWrapper}>
-      <DesktopOnly>
-        <div className={commonClasses.revenueWrapper}>
-          <ResponsiveCircularProgressBar label={tr(messages.revenue)} value={0.25} />
-        </div>
-      </DesktopOnly>
-      <DataGrid {...{rightSideItems, leftSideItems}} />
+      <SimpleDataGrid
+        leftItem={fields.estimatedRewards}
+        centerItem={fields.fee} // TODO: change in next PR
+        rightItem={fields.fee} // TODO: change in next PR
+      />
       <MobileOnly className={classes.mobileRewards}>
-        <EstimatedRewards estimatedRewards={data.estimatedRewards} />
+        <Typography>{data.description}</Typography>
       </MobileOnly>
     </div>
   )
@@ -166,7 +147,10 @@ const SimpleMobileStakepoolCard = React.memo(({isOpen, toggle, data}) => {
 
   const renderHeader = (expanded) => (
     <Grid container direction="column">
-      <MobilePoolFooter expanded={expanded} />
+      <MobilePoolFooter
+        expanded={expanded}
+        rightSide={<ProfitabilityPosition value={HARDCODED_PROFITABILITY} />}
+      />
     </Grid>
   )
 
@@ -174,9 +158,7 @@ const SimpleMobileStakepoolCard = React.memo(({isOpen, toggle, data}) => {
     <StakepoolMobileCard
       expanded={isOpen}
       onChange={toggle}
-      nonExpandableHeader={
-        <Header name={data.name} hash={data.hash} estimatedRewards={data.estimatedRewards} />
-      }
+      nonExpandableHeader={<Header name={data.name} hash={data.hash} />}
       renderHeader={renderHeader}
       renderExpandedArea={renderExpandedArea}
     />
@@ -189,13 +171,12 @@ const SimpleDesktopStakepoolCard = ({isOpen, toggle, data}) => {
   const renderExpandedArea = () => (
     <div className={classes.extraContent}>
       <Typography>{data.description}</Typography>
-      <Age epochCount={data.age} />
     </div>
   )
 
   const renderHeader = () => (
     <React.Fragment>
-      <Header name={data.name} hash={data.hash} estimatedRewards={data.estimatedRewards} />
+      <Header name={data.name} hash={data.hash} />
       <Content data={data} />
     </React.Fragment>
   )
