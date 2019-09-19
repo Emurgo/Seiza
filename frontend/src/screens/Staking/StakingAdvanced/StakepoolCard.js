@@ -238,10 +238,14 @@ const DesktopPoolFooter = ({expanded}) => {
 
 const AdvancedMobileStakepoolCard = React.memo(({isOpen, toggle, data}) => {
   const renderExpandedArea = () => <Content data={data} />
+  const {translate: tr} = useI18n()
 
   const renderHeader = (expanded) => (
     <Grid container direction="column">
-      <MobilePoolFooter expanded={expanded} />
+      <MobilePoolFooter
+        expanded={expanded}
+        rightSide={<ResponsiveCircularProgressBar label={tr(messages.revenue)} value={0.25} />}
+      />
     </Grid>
   )
 
