@@ -6,20 +6,26 @@ import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
 
 import {useI18n} from '@/i18n/helpers'
-import {HeaderCard, HeaderCardContainer, ScrollableCardsWrapper} from '@/components/common'
-
-import searchForStakepoolIcon from '@/static/assets/icons/staking-simulator/search-for-stakepool.svg'
+import {DefaultNonClickableHeaderCard, ScrollableCardsWrapper} from '@/components/common'
 
 const messages = defineMessages({
-  header: 'Explore Stake Pools',
-  card1Title: 'Search',
-  card1Value: 'for most profitable stake pools for you.',
+  header: 'Simple Staking Simulator',
+  card1Title: 'Get the rewards',
+  card1Value: 'by delegating to a stake pool! Cardano is a Proof of Stake (PoS) Protocol.',
+  card2Title: 'The most profitable',
+  card2Value: 'stake pools you will find with our simulator help.',
+  card3Title: 'Share the rewards',
+  card3Value: 'with you proportionaly. Stake pools use ADA to participate in the Protocol.',
 })
 
 const useStyles = makeStyles(({palette, spacing}) => ({
   wrapper: {
     height: '250px',
     background: palette.gradient,
+  },
+  card: {
+    width: 300,
+    height: 100,
   },
 }))
 
@@ -35,18 +41,30 @@ const Header = () => {
       alignItems="center"
     >
       <Typography variant="h1">{tr(messages.header)}</Typography>
-      <Grid container direction="row" justify="center" alignItems="center" wrap="nowrap">
-        <ScrollableCardsWrapper>
-          <HeaderCardContainer>
-            <HeaderCard
-              smallPrimaryText
-              secondaryText={tr(messages.card1Value)}
-              primaryText={tr(messages.card1Title)}
-              icon={<img alt="" src={searchForStakepoolIcon} />}
-            />
-          </HeaderCardContainer>
-        </ScrollableCardsWrapper>
-      </Grid>
+      <ScrollableCardsWrapper>
+        <Grid container direction="row" justify="center" alignItems="center" wrap="nowrap">
+          <DefaultNonClickableHeaderCard
+            secondaryText={tr(messages.card1Value)}
+            primaryText={tr(messages.card1Title)}
+            icon={<img alt="" src="/static/assets/icons/staking-simulator/get-rewards.svg" />}
+            className={classes.card}
+          />
+          <DefaultNonClickableHeaderCard
+            secondaryText={tr(messages.card2Value)}
+            primaryText={tr(messages.card2Title)}
+            icon={
+              <img alt="" src="/static/assets/icons/staking-simulator/search-for-stakepool.svg" />
+            }
+            className={classes.card}
+          />
+          <DefaultNonClickableHeaderCard
+            secondaryText={tr(messages.card3Value)}
+            primaryText={tr(messages.card3Title)}
+            icon={<img alt="" src="/static/assets/icons/staking-simulator/share-rewards.svg" />}
+            className={classes.card}
+          />
+        </Grid>
+      </ScrollableCardsWrapper>
     </Grid>
   )
 }

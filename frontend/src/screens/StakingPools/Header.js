@@ -6,11 +6,7 @@ import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
 
 import {useI18n} from '@/i18n/helpers'
-import {HeaderCard, HeaderCardContainer, ScrollableCardsWrapper} from '@/components/common'
-
-import searchForStakepoolIcon from '@/static/assets/icons/staking-simulator/search-for-stakepool.svg'
-import downloadOrShareIcon from '@/static/assets/icons/staking-simulator/download-or-share.svg'
-import compareIcon from '@/static/assets/icons/staking-simulator/compare.svg'
+import {DefaultNonClickableHeaderCard, ScrollableCardsWrapper} from '@/components/common'
 
 // Note: (richard) For now same as Header component for StakingCenter.
 // I did not want to reuse StakingCenter Header or make it too generic as I assume the
@@ -18,12 +14,12 @@ import compareIcon from '@/static/assets/icons/staking-simulator/compare.svg'
 
 const messages = defineMessages({
   header: 'Stake pools list',
-  card1Title: 'Search',
-  card1Value: 'for stake pool you like',
-  card2Title: 'Download or share',
-  card2Value: 'your results in just a click',
+  card1Title: 'Research',
+  card1Value: 'the stake pools that are participating in the network.',
+  card2Title: 'Share',
+  card2Value: 'specific views and sorting of stake pools.',
   card3Title: 'Compare',
-  card3Value: 'stake pool details',
+  card3Value: 'stake pool details without other visualizations.',
 })
 
 const useStyles = makeStyles(({palette, spacing}) => ({
@@ -32,13 +28,8 @@ const useStyles = makeStyles(({palette, spacing}) => ({
     background: palette.gradient,
   },
   card: {
-    width: '270px',
-    marginLeft: '30px',
-    marginRight: '30px',
-    padding: spacing(1),
-  },
-  cardIcon: {
-    paddingRight: spacing(1),
+    width: 300,
+    height: 90,
   },
 }))
 
@@ -56,30 +47,26 @@ const Header = () => {
       <Typography variant="h1">{tr(messages.header)}</Typography>
       <ScrollableCardsWrapper>
         <Grid container direction="row" justify="center" alignItems="center" wrap="nowrap">
-          <HeaderCardContainer>
-            <HeaderCard
-              smallPrimaryText
-              secondaryText={tr(messages.card1Value)}
-              primaryText={tr(messages.card1Title)}
-              icon={<img alt="" src={searchForStakepoolIcon} />}
-            />
-          </HeaderCardContainer>
-          <HeaderCardContainer>
-            <HeaderCard
-              smallPrimaryText
-              secondaryText={tr(messages.card2Value)}
-              primaryText={tr(messages.card2Title)}
-              icon={<img alt="" src={downloadOrShareIcon} />}
-            />
-          </HeaderCardContainer>
-          <HeaderCardContainer>
-            <HeaderCard
-              smallPrimaryText
-              secondaryText={tr(messages.card3Value)}
-              primaryText={tr(messages.card3Title)}
-              icon={<img alt="" src={compareIcon} />}
-            />
-          </HeaderCardContainer>
+          <DefaultNonClickableHeaderCard
+            secondaryText={tr(messages.card1Value)}
+            primaryText={tr(messages.card1Title)}
+            icon={
+              <img alt="" src="/static/assets/icons/staking-simulator/search-for-stakepool.svg" />
+            }
+            className={classes.card}
+          />
+          <DefaultNonClickableHeaderCard
+            secondaryText={tr(messages.card2Value)}
+            primaryText={tr(messages.card2Title)}
+            icon={<img alt="" src="/static/assets/icons/share-specific-views.svg" />}
+            className={classes.card}
+          />
+          <DefaultNonClickableHeaderCard
+            secondaryText={tr(messages.card3Value)}
+            primaryText={tr(messages.card3Title)}
+            icon={<img alt="" src="/static/assets/icons/staking-simulator/compare.svg" />}
+            className={classes.card}
+          />
         </Grid>
       </ScrollableCardsWrapper>
     </Grid>

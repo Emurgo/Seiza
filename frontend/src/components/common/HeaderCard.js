@@ -4,7 +4,6 @@ import type {ElementRef} from 'react'
 import cn from 'classnames'
 import {withProps} from 'recompose'
 import {
-  withStyles,
   MenuList,
   MenuItem,
   Popper,
@@ -41,19 +40,34 @@ const disabledBoxShadow = {
   },
 }
 
-const styles = (theme) => ({
+const useStyles = makeStyles((theme) => ({
+  defaultNonClickableCard: {
+    paddingLeft: theme.spacing(1),
+    paddingRight: theme.spacing(1),
+    [theme.breakpoints.up('md')]: {
+      paddingLeft: theme.spacing(2),
+      paddingRight: theme.spacing(2),
+    },
+  },
+  defaultNonClickableCardColor: {
+    background: fade(theme.palette.background.paper, 0.75),
+  },
   contentWrapper: {
     padding: theme.spacing(1),
     [theme.breakpoints.up('md')]: {
       paddingLeft: theme.spacing(2),
     },
   },
-  card: {
-    border: '0px solid transparent !important',
-    display: 'flex',
-    flexDirection: 'row',
-    // Note: using mobile-first with box-shadow is tricky
-    [theme.breakpoints.down('md')]: disabledBoxShadow,
+  card: ({disableShadow}) => {
+    const shadow = disableShadow ? disabledBoxShadow : {}
+    return {
+      border: '0px solid transparent !important',
+      display: 'flex',
+      flexDirection: 'row',
+      ...shadow,
+      // Note: using mobile-first with box-shadow is tricky
+      [theme.breakpoints.down('md')]: disabledBoxShadow,
+    }
   },
   clickableCard: {
     // Note: using mobile-first with box-shadow is tricky
@@ -115,10 +129,9 @@ const styles = (theme) => ({
     whiteSpace: 'nowrap',
   },
   secondaryText: {
-    lineHeight: 1,
-    whiteSpace: 'nowrap',
+    lineHeight: 1.3,
   },
-})
+}))
 
 type Option = {
   label: string,
@@ -171,20 +184,21 @@ type HeaderCardProps = {
   primaryText: string,
   secondaryText: string,
   icon: React$Node,
-  className: any,
+  className?: string,
   options?: Array<Option>,
   onClick?: (() => any) | null,
   classes: Object,
   clickableWrapperProps?: any,
   smallPrimaryText: boolean,
+  hideShadow?: boolean,
 }
 
 // TODO: consider better naming
-class HeaderCard extends React.Component<HeaderCardProps> {
+class _HeaderCard extends React.Component<HeaderCardProps> {
   anchorRef: {current: null | ElementRef<'div'>}
   buttonRef: {current: null | ElementRef<'button'>}
 
-  constructor(props) {
+  constructor(props: HeaderCardProps) {
     super(props)
     this.anchorRef = React.createRef()
     this.buttonRef = React.createRef()
@@ -291,9 +305,50 @@ const useHeaderCardContainerStyles = makeStyles(({spacing, breakpoints}) => ({
   },
 }))
 
-export const HeaderCardContainer = ({children}: {children: React$Node}) => {
+export const HeaderCardContainer = ({
+  children,
+  className,
+}: {
+  children: React$Node,
+  className?: string,
+}) => {
   const classes = useHeaderCardContainerStyles()
-  return <div className={classes.root}>{children}</div>
+  return <div className={cn(classes.root, className)}>{children}</div>
 }
 
-export default withStyles(styles)(HeaderCard)
+const HeaderCard = (props: HeaderCardProps) => {
+  const classes = useStyles(props)
+  return <_HeaderCard {...props} classes={classes} />
+}
+
+type DefaultNonClickableHeaderCardProps = {|
+  primaryText: string,
+  secondaryText: string,
+  icon: React$Node,
+  className: any,
+|}
+
+const CARD_CLASSES = {}
+
+export const DefaultNonClickableHeaderCard = ({
+  primaryText,
+  secondaryText,
+  icon,
+  className,
+}: DefaultNonClickableHeaderCardProps) => {
+  const classes = useStyles()
+
+  return (
+    <HeaderCardContainer className={cn(classes.defaultNonClickableCard, className)}>
+      <HeaderCard
+        disableShadow
+        smallPrimaryText
+        classes={CARD_CLASSES}
+        className={cn('w-100', 'h-100', classes.defaultNonClickableCardColor)}
+        {...{secondaryText, primaryText, icon}}
+      />
+    </HeaderCardContainer>
+  )
+}
+
+export default HeaderCard

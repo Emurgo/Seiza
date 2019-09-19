@@ -3,6 +3,7 @@ import React, {useRef} from 'react'
 
 import {makeStyles} from '@material-ui/styles'
 
+import {DesktopOnly} from '@/components/visual'
 import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
 import Header from './Header'
 import {StakeListLayout} from '../StakeList'
@@ -33,7 +34,9 @@ export default () => {
 
   return (
     <React.Fragment>
-      <Header />
+      <DesktopOnly>
+        <Header />
+      </DesktopOnly>
       <div ref={scrollToRef}>
         <StakingContextProvider autoSync={false}>
           <div className={classes.centerWrapper}>

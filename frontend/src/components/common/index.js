@@ -10,7 +10,11 @@ export {default as FileInputHandler} from './FileInputHandler'
 export {default as Link} from './Link'
 export {default as LoadingError} from './LoadingError'
 export {default as LoadingOverlay} from './LoadingOverlay'
-export {default as HeaderCard, HeaderCardContainer} from './HeaderCard'
+export {
+  default as HeaderCard,
+  HeaderCardContainer,
+  DefaultNonClickableHeaderCard,
+} from './HeaderCard'
 export {default as Pagination, MobilePaginationDivider} from './Pagination'
 export {default as PoolEntityContent} from './PoolEntityContent'
 export {default as ConfirmationDialog} from './ConfirmationDialog'
