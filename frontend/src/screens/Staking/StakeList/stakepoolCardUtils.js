@@ -76,6 +76,9 @@ const useStyles = makeStyles((theme) => ({
       justifyContent: 'flex-end',
     },
   },
+  rightItem: {
+    paddingLeft: theme.spacing(3),
+  },
 }))
 
 export const CARD_WIDTH = '900px'
@@ -125,14 +128,14 @@ const SimpleDesktopGrid = ({leftItem, rightItem}) => {
   const classes = useStyles()
   return (
     <Grid container className={classes.simpleGridWrapper}>
-      <Grid item xs={4}>
+      <Grid item xs={6}>
         <Grid container justify="flex-start">
           <DataGridLabel>{leftItem.label}</DataGridLabel>
           {leftItem.value}
         </Grid>
       </Grid>
-      <Grid item xs={8}>
-        <Grid container justify="flex-end">
+      <Grid item xs={6} className={classes.rightItem}>
+        <Grid container justify="flex-start">
           <DataGridLabel>{rightItem.label}</DataGridLabel>
           {rightItem.value}
         </Grid>
