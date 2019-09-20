@@ -50,19 +50,30 @@ const useStyles = makeStyles((theme) => ({
   },
   reset: {
     'marginTop': theme.spacing(0.5),
-    'textTransform': 'uppercase',
     'cursor': 'pointer',
-    'textDecoration': 'underline',
     '&:hover': {
       color: theme.palette.primary.main,
     },
+    'fontWeight': 'bold',
   },
   resetText: {
     position: 'absolute',
     top: 0,
     right: 0,
   },
+  label: {
+    textTransform: 'uppercase',
+  },
 }))
+
+const Label = ({value}) => {
+  const classes = useStyles()
+  return (
+    <Typography color="textSecondary" className={classes.label}>
+      {value}:
+    </Typography>
+  )
+}
 
 const FilterSlider = ({
   label,
@@ -88,7 +99,7 @@ const FilterSlider = ({
       <Grid container wrap="nowrap" justify="space-between">
         <Grid item>
           <Grid container direction="column">
-            <Typography>{label}</Typography>
+            <Label value={label} />
             <Typography variant="caption">{`${tipFormatter(value[0])} - ${tipFormatter(
               value[1]
             )}`}</Typography>
@@ -239,8 +250,8 @@ export const TextFilter = ({
           {tr(messages.reset)}
         </Typography>
       )}
+      <Label value={label} />
       <TextField
-        label={label}
         margin="normal"
         onChange={_onChange}
         value={inputValue}
