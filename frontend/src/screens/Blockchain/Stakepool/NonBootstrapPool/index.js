@@ -277,7 +277,7 @@ const Stakepool = () => {
               </Link>
             }
             iconRenderer={<img alt="" src="/static/assets/icons/certificate.svg" />}
-            rawValue={stakepool.rewardAddress}
+            rawValue={stakepool.rewardsAddress}
             ellipsizeValue={false}
           />
           <EntityIdCard
