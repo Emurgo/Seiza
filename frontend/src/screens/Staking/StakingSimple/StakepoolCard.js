@@ -74,9 +74,6 @@ const useContentStyles = makeStyles(({palette, spacing, breakpoints}) => ({
   },
 }))
 
-// TODO: change in next PR together with graphQl schema
-const HARDCODED_PROFITABILITY = 9
-
 const ProfitabilityPosition = ({value}) => {
   const classes = useHeaderStyles()
   const {translate: tr} = useI18n()
@@ -92,7 +89,7 @@ const ProfitabilityPosition = ({value}) => {
   )
 }
 
-const Header = ({name, hash}) => {
+const Header = ({name, hash, profitabilityPosition}) => {
   const classes = useHeaderStyles()
 
   return (
@@ -108,7 +105,7 @@ const Header = ({name, hash}) => {
       </Grid>
       <Grid item md={6} className={classes.headerRewards}>
         <Grid container direction="row" justify="flex-end">
-          <ProfitabilityPosition value={HARDCODED_PROFITABILITY} />
+          <ProfitabilityPosition value={profitabilityPosition} />
         </Grid>
       </Grid>
     </Grid>
@@ -146,7 +143,7 @@ const SimpleMobileStakepoolCard = React.memo(({isOpen, toggle, data}) => {
     <Grid container direction="column">
       <MobilePoolFooter
         expanded={expanded}
-        rightSide={<ProfitabilityPosition value={HARDCODED_PROFITABILITY} />}
+        rightSide={<ProfitabilityPosition value={data.profitabilityPosition} />}
       />
     </Grid>
   )
@@ -155,7 +152,13 @@ const SimpleMobileStakepoolCard = React.memo(({isOpen, toggle, data}) => {
     <StakepoolMobileCard
       expanded={isOpen}
       onChange={toggle}
-      nonExpandableHeader={<Header name={data.name} hash={data.hash} />}
+      nonExpandableHeader={
+        <Header
+          name={data.name}
+          hash={data.hash}
+          profitabilityPosition={data.profitabilityPosition}
+        />
+      }
       renderHeader={renderHeader}
       renderExpandedArea={renderExpandedArea}
     />
@@ -173,7 +176,11 @@ const SimpleDesktopStakepoolCard = ({isOpen, toggle, data}) => {
 
   const renderHeader = () => (
     <React.Fragment>
-      <Header name={data.name} hash={data.hash} />
+      <Header
+        name={data.name}
+        hash={data.hash}
+        profitabilityPosition={data.profitabilityPosition}
+      />
       <Content data={data} />
     </React.Fragment>
   )

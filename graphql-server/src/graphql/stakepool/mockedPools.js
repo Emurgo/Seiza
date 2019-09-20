@@ -30,6 +30,7 @@ const generatePool = (index) => ({
       declared: '14243227',
       actual: '14243227',
     },
+    profitabilityPosition: index + 1,
   },
 })
 
@@ -68,6 +69,7 @@ const _BOOTSTRAP_POOLS = [
       margins: 0.3,
       revenue: 0.82,
       stakersCount: 3,
+      profitabilityPosition: 1,
       ownerPledge: {
         declared: '14243227',
         actual: '14243227',
@@ -91,6 +93,7 @@ const _BOOTSTRAP_POOLS = [
       margins: 0.31,
       revenue: 0.81,
       stakersCount: 4,
+      profitabilityPosition: 2,
       ownerPledge: {
         declared: '14243226',
         actual: '14243326',
@@ -114,6 +117,7 @@ const _BOOTSTRAP_POOLS = [
       margins: 0.32,
       revenue: 0.59,
       stakersCount: 5,
+      profitabilityPosition: 3,
       ownerPledge: {
         declared: '14243225',
         actual: '14243228',
@@ -137,6 +141,7 @@ const _BOOTSTRAP_POOLS = [
       margins: 0.33,
       revenue: 0.55,
       stakersCount: 6,
+      profitabilityPosition: 4,
       ownerPledge: {
         declared: '14243224',
         actual: '14243224',
@@ -160,6 +165,7 @@ const _BOOTSTRAP_POOLS = [
       margins: 0.34,
       revenue: 0.28,
       stakersCount: 7,
+      profitabilityPosition: 5,
       ownerPledge: {
         declared: '14243223',
         actual: '15243223',
@@ -183,6 +189,7 @@ const _BOOTSTRAP_POOLS = [
       margins: 0.35,
       revenue: 0.25,
       stakersCount: 8,
+      profitabilityPosition: 6,
       ownerPledge: {
         declared: '14243222',
         actual: '13243222',
@@ -206,6 +213,7 @@ const _BOOTSTRAP_POOLS = [
       margins: 0.36,
       revenue: 0.3,
       stakersCount: 9,
+      profitabilityPosition: 7,
       ownerPledge: {
         declared: '14243221',
         actual: '15243221',

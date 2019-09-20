@@ -32,6 +32,7 @@ type StakePoolSummary {
   ownerPledge: OwnerPledge
   usersAdaStaked: AdaAmount
   averageUserStaking: AdaAmount
+  profitabilityPosition: Int
 }
 
 type BootstrapEraStakePool {
