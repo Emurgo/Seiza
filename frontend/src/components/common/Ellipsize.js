@@ -1,6 +1,7 @@
 import React from 'react'
 import cn from 'classnames'
 import {makeStyles} from '@material-ui/styles'
+import {Tooltip} from '@/components/visual'
 
 import {useCurrentBreakpoint} from '@/components/hooks/useBreakpoints'
 import EllipsizeMiddle from '@/components/visual/EllipsizeMiddle'
@@ -9,6 +10,12 @@ const BREAKPOINTS = ['xs', 'sm', 'md', 'lg', 'xl']
 
 const useStyles = makeStyles(({typography}) => ({
   ellipsize: typography._ellipsize,
+}))
+
+const useTooltipStyles = makeStyles(() => ({
+  tooltip: {
+    wordBreak: 'break-all',
+  },
 }))
 
 const DEFAULT_XS_COUNT = 6
@@ -37,6 +44,8 @@ const EllipsisDecisionMaker = ({charactersCount, className, value}) => {
 }
 
 const Ellipsize = ({xsCount, smCount, mdCount, lgCount, xlCount, className, value}) => {
+  const tooltipClasses = useTooltipStyles()
+  const currentBreakpoint = useCurrentBreakpoint()
   const normalizedConfig = normalizeConfig({
     xs: xsCount,
     sm: smCount,
@@ -44,10 +53,15 @@ const Ellipsize = ({xsCount, smCount, mdCount, lgCount, xlCount, className, valu
     lg: lgCount,
     xl: xlCount,
   })
-  const currentBreakpoint = useCurrentBreakpoint()
   const charactersCount = normalizedConfig[currentBreakpoint]
 
-  return <EllipsisDecisionMaker {...{charactersCount, className, value}} />
+  return (
+    <Tooltip title={value} placement="top" interactive classes={tooltipClasses}>
+      <span>
+        <EllipsisDecisionMaker {...{charactersCount, className, value}} />
+      </span>
+    </Tooltip>
+  )
 }
 
 export default Ellipsize
