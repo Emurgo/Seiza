@@ -100,6 +100,7 @@ const stakePoolFacade = (data) => ({
   stake: data.summary.adaStaked,
   fee: data.summary.cost,
   estimatedRewards: data.summary.estimatedRewards,
+  profitabilityPosition: data.summary.profitabilityPosition,
 })
 
 const useGetStakeListData = () => {

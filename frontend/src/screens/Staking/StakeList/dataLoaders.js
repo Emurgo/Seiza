@@ -43,6 +43,7 @@ export const useLoadPagedStakePoolList = () => {
               margins
               performance
               adaStaked
+              profitabilityPosition
               ownerPledge {
                 declared
               }
