@@ -60,9 +60,8 @@ const useHeaderStyles = makeStyles(({palette, spacing, breakpoints}) => ({
       display: 'initial',
     },
   },
-  profitability: {
-    fontSize: 18,
-    paddingLeft: spacing(0.5),
+  profitabilityTypography: {
+    fontSize: 24,
   },
 }))
 
@@ -84,8 +83,10 @@ const ProfitabilityPosition = ({value}) => {
   return (
     <Tooltip title={tr(messages.profitability)} placement="bottom">
       <div className="d-flex">
-        <img alt="" src="/static/assets/icons/staking-simulator/profitability-position.svg" />
-        <NavTypography className={classes.profitability}>{value}</NavTypography>
+        <Typography color="textSecondary" className={classes.profitabilityTypography}>
+          #&nbsp;
+        </Typography>
+        <NavTypography className={classes.profitabilityTypography}>{value}</NavTypography>
       </div>
     </Tooltip>
   )
@@ -123,11 +124,7 @@ const Content = ({data}) => {
 
   return (
     <div className={commonClasses.innerWrapper}>
-      <SimpleDataGrid
-        leftItem={fields.estimatedRewards}
-        centerItem={fields.fee} // TODO: change in next PR
-        rightItem={fields.fee} // TODO: change in next PR
-      />
+      <SimpleDataGrid leftItem={fields.estimatedRewards} rightItem={fields.feeAndMargin} />
       <MobileOnly className={classes.mobileRewards}>
         <Typography>{data.description}</Typography>
       </MobileOnly>

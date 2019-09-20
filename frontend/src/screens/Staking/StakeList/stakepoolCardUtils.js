@@ -21,6 +21,7 @@ const messages = defineMessages({
   createdAt: 'Created:',
   stake: 'Stake:',
   rewards: 'Rewards:',
+  feeAndMargin: 'Cost + Fee:',
   // Note(bigamasta): If needed to be reused on Stake pools screens,
   // we can create something like helpers/helpMessages.js
   performanceHelpText: 'TODO: Performance Help Text',
@@ -31,6 +32,7 @@ const messages = defineMessages({
   createdAtHelpText: 'TODO: CreatedAt Help Text',
   stakeHelpText: 'TODO: Stake Help Text',
   rewardsHelpText: 'TODO: Rewards Help Text',
+  feeAndMarginHelpText: 'TODO: Cost and Fee Help Text',
 })
 
 const footerMessages = defineMessages({
@@ -67,6 +69,15 @@ const useStyles = makeStyles((theme) => ({
   },
   simpleGridWrapper: {
     paddingTop: theme.spacing(1),
+  },
+  feeAndMarginWrapper: {
+    display: 'flex',
+    [theme.breakpoints.up('sm')]: {
+      justifyContent: 'flex-end',
+    },
+  },
+  rightItem: {
+    paddingLeft: theme.spacing(3),
   },
 }))
 
@@ -113,24 +124,18 @@ const DesktopGrid = ({leftSideItems, rightSideItems}) => {
   )
 }
 
-const SimpleDesktopGrid = ({leftItem, centerItem, rightItem}) => {
+const SimpleDesktopGrid = ({leftItem, rightItem}) => {
   const classes = useStyles()
   return (
     <Grid container className={classes.simpleGridWrapper}>
-      <Grid item xs={4}>
+      <Grid item xs={6}>
         <Grid container justify="flex-start">
           <DataGridLabel>{leftItem.label}</DataGridLabel>
           {leftItem.value}
         </Grid>
       </Grid>
-      <Grid item xs={4}>
-        <Grid container justify="center">
-          <DataGridLabel>{centerItem.label}</DataGridLabel>
-          {centerItem.value}
-        </Grid>
-      </Grid>
-      <Grid item xs={4}>
-        <Grid container justify="flex-end">
+      <Grid item xs={6} className={classes.rightItem}>
+        <Grid container justify="flex-start">
           <DataGridLabel>{rightItem.label}</DataGridLabel>
           {rightItem.value}
         </Grid>
@@ -206,25 +211,20 @@ const EMPTY_ARRAY = []
 
 type SimpleDataGridProps = {|
   leftItem: Item,
-  centerItem: Item,
   rightItem: Item,
 |}
 
-// Note: there are exactly three items hardcoded for simplicity, as it is hard to create
+// Note: there are exactly two items hardcoded for simplicity, as it is hard to create
 // good abstraction till we do not know how the layout may change
-export const SimpleDataGrid = ({leftItem, centerItem, rightItem}: SimpleDataGridProps) => {
-  const mobileGridItems = useMemo(() => [leftItem, centerItem, rightItem], [
-    centerItem,
-    leftItem,
-    rightItem,
-  ])
+export const SimpleDataGrid = ({leftItem, rightItem}: SimpleDataGridProps) => {
+  const mobileGridItems = useMemo(() => [leftItem, rightItem], [leftItem, rightItem])
   return (
     <React.Fragment>
       <Hidden lgUp>
         <MobileGrid leftSideItems={mobileGridItems} rightSideItems={EMPTY_ARRAY} />
       </Hidden>
       <Hidden mdDown>
-        <SimpleDesktopGrid {...{leftItem, centerItem, rightItem}} />
+        <SimpleDesktopGrid {...{leftItem, rightItem}} />
       </Hidden>
     </React.Fragment>
   )
@@ -249,6 +249,18 @@ type FieldProps = {|
 const MinAdaFieldWidth = ({children}: {children: React$Node}) => {
   const classes = useStyles()
   return <div className={classes.adaField}>{children}</div>
+}
+
+// TODO: type
+const FeeAndMargin = ({data, formatPercent}: any) => {
+  const classes = useStyles()
+  return (
+    <div className={classes.feeAndMarginWrapper}>
+      <AdaValue showCurrency value={data.fee} />
+      &nbsp;+&nbsp;
+      <Typography>{formatPercent(data.margins)}</Typography>
+    </div>
+  )
 }
 
 export const getStakepoolCardFields = ({
@@ -305,6 +317,14 @@ export const getStakepoolCardFields = ({
         <EstimatedRewardsValue estimatedRewards={data.estimatedRewards} />
       </MinAdaFieldWidth>
     ),
+  },
+  feeAndMargin: {
+    label: (
+      <HelpTooltip text={tr(messages.feeAndMarginHelpText)}>
+        {tr(messages.feeAndMargin)}
+      </HelpTooltip>
+    ),
+    value: <FeeAndMargin {...{formatPercent, data}} />,
   },
 })
 
