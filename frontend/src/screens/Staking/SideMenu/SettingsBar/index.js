@@ -207,7 +207,11 @@ const YoroiDelegate = ({selectedPools}) => {
   const delegate = useCallback(() => {
     window.parent.postMessage(
       relevantDataForYoroi(selectedPools),
-      `chrome-extension://${config.yoroiExtensionHash}/main_window.html#/staking`
+      `chrome-extension://${config.yoroiChromeExtensionHash}/main_window.html#/staking`
+    )
+    window.parent.postMessage(
+      relevantDataForYoroi(selectedPools),
+      `moz-extension://${config.yoroiFirefoxExtensionHash}/main_window.html#/staking`
     )
   }, [selectedPools])
 
