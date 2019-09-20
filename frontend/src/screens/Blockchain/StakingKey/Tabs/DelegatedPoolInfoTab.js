@@ -5,7 +5,7 @@ import {makeStyles} from '@material-ui/styles'
 
 import {useI18n} from '@/i18n/helpers'
 import {SummaryCard, Card} from '@/components/visual'
-import {AdaValue, PoolEntityContent, Link} from '@/components/common'
+import {AdaValue, PoolEntityContent, Link, Ellipsize} from '@/components/common'
 import {routeTo} from '@/helpers/routes'
 
 const useStyles = makeStyles(({getContentSpacing, breakpoints}) => ({
@@ -75,7 +75,7 @@ const DelegatedPoolInfoTab = ({stakePool, epochsInCurrentStakepool}) => {
           </Typography>
           <Typography variant="body1">
             <Link monospace to={routeTo.stakepool(stakePool.topPoolComparison.topPool.hash)}>
-              <Typography noWrap>{stakePool.topPoolComparison.topPool.hash}</Typography>
+              <Ellipsize value={stakePool.topPoolComparison.topPool.hash} />
             </Link>
           </Typography>
         </Value>

@@ -29,7 +29,6 @@ import {
   TxHashLinkEllipsized,
   StakingKeyLinkEllipsized,
   HashWithCopyToClipboard,
-  MonospaceTypography,
 } from './utils'
 import DesktopAction from './DesktopAction'
 import MobileAction from './MobileAction'
@@ -178,7 +177,7 @@ const keyDeregistration = ({action, i18n}) => {
     label: tr(messages.deregistration__label),
     values: [
       formatMsg(messages.deregistration__value, {
-        stakingKey: <Link to={routeTo.stakingKey(stakingKey)}>{stakingKey}</Link>,
+        stakingKey: <StakingKeyLinkEllipsized stakingKey={stakingKey} />,
       }),
       previousRegistrationTx &&
         formatMsg(messages.deregistration__previousRegistration, {
@@ -695,7 +694,7 @@ const transactionRow = ({tx, i18n}) => {
       <React.Fragment>
         <Typography variant="body1">
           <TxHashLink txHash={tx.txHash}>
-            <MonospaceTypography noWrap>{tx.txHash}</MonospaceTypography>
+            <TxHashLinkEllipsized txHash={tx.txHash} />
           </TxHashLink>
         </Typography>
         <Typography variant="caption" color="textSecondary">

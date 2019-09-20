@@ -10,7 +10,7 @@ import {
   SummaryCard,
   Divider,
 } from '@/components/visual'
-import {EntityCardContent, Link} from '@/components/common'
+import {EntityCardContent, Link, DefaultEllipsizedEntity} from '@/components/common'
 import useToggle from '@/components/hooks/useToggle'
 import {useI18n} from '@/i18n/helpers'
 import CertificateActionList from '@/screens/Blockchain/Certificates/ActionList'
@@ -117,8 +117,13 @@ const TransactionCard = ({tx}) => {
             <div className={classes.spacings}>
               <EntityCardContent
                 label={tr(transactionMessages.transactionEntity)}
-                value={<Link to={routeTo.transaction(tx.txHash)}>{tx.txHash}</Link>}
+                value={
+                  <Link to={routeTo.transaction(tx.txHash)}>
+                    <DefaultEllipsizedEntity value={tx.txHash} />
+                  </Link>
+                }
                 rawValue={tx.txHash}
+                ellipsizeValue={false}
               />
               <CertificateActionsSummary actions={tx.certificateActions} />
             </div>
