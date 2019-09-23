@@ -39,7 +39,8 @@ const env = {
   REACT_APP_WATCH_RENDER_PERFORMANCE: process.env.REACT_APP_WATCH_RENDER_PERFORMANCE,
   IS_YOROI: process.env.IS_YOROI,
   SEIZA_URL: process.env.SEIZA_URL,
-  YOROI_EXTENSION_HASH: process.env.YOROI_EXTENSION_HASH,
+  YOROI_CHROME_EXTENSION_HASH: process.env.YOROI_CHROME_EXTENSION_HASH,
+  YOROI_FIREFOX_EXTENSION_HASH: process.env.YOROI_FIREFOX_EXTENSION_HASH,
   REACT_APP_INSTANCES: process.env.REACT_APP_INSTANCES,
   REACT_APP_COMMON_COOKIES_DOMAIN: process.env.REACT_APP_COMMON_COOKIES_DOMAIN,
 }
@@ -97,11 +98,13 @@ isProduction && assert(sentryRelease)
 const isYoroi = env.IS_YOROI === 'true'
 
 const seizaUrl = env.SEIZA_URL
-const yoroiExtensionHash = env.YOROI_EXTENSION_HASH
+const yoroiChromeExtensionHash = env.YOROI_CHROME_EXTENSION_HASH
+const yoroiFirefoxExtensionHash = env.YOROI_FIREFOX_EXTENSION_HASH
 
 const checkYoroiEnvs = () => {
   assert(seizaUrl, 'SEIZA_URL must be defined in env for Yoroi')
-  assert(yoroiExtensionHash, 'YOROI_EXTENSION_HASH must be defined in env for Yoroi')
+  assert(yoroiChromeExtensionHash, 'YOROI_CHROME_EXTENSION_HASH must be defined in env for Yoroi')
+  assert(yoroiFirefoxExtensionHash, 'YOROI_FIREFOX_EXTENSION_HASH must be defined in env for Yoroi')
 }
 
 isYoroi && checkYoroiEnvs()
@@ -136,7 +139,8 @@ export default {
   watchRenderPerformance: env.REACT_APP_WATCH_RENDER_PERFORMANCE === 'true',
   isYoroi,
   seizaUrl,
-  yoroiExtensionHash,
+  yoroiChromeExtensionHash,
+  yoroiFirefoxExtensionHash,
   instances,
   enableTestnet: instances.length > 1,
   commonCookiesDomain,
