@@ -1,7 +1,7 @@
 // @flow
 
 import idx from 'idx'
-import Measure from 'react-measure'
+import NoSSR from 'react-no-ssr'
 import gql from 'graphql-tag'
 import {useQuery} from 'react-apollo-hooks'
 import dayjs from '@/dayjs'
@@ -19,7 +19,6 @@ import useTabState from '@/components/hooks/useTabState'
 import {useCurrentBreakpoint} from '@/components/hooks/useBreakpoints'
 import {TabsProvider as Tabs, TabItem as Tab, useTabContext} from '@/components/common/Tabs'
 import BarChart from './BarChart'
-import {useCurrentEpoch} from '../common'
 
 const messages = defineMessages({
   header: 'Charts',
@@ -69,6 +68,9 @@ const useStyles = makeStyles((theme) => ({
   layout: {
     paddingBottom: theme.spacing(2.5),
   },
+  chartWrapper: {
+    height: 400,
+  },
 }))
 
 const TAB_NAMES = {
@@ -96,7 +98,7 @@ const TabsHeader = () => {
   )
 
   return (
-    <LiteTabs defaultBottomOffset value={currentTabIndex} onChange={onChange}>
+    <LiteTabs value={currentTabIndex} onChange={onChange}>
       {tabs.map(({id, label}) => (
         <LiteTab key={id} label={label} />
       ))}
@@ -151,7 +153,12 @@ const useLoadData = (seriesType, groupBy, epochInterval, dateInterval) => {
     }
   )
 
-  return {error, loading, data: idx(data, (_) => _.aggregateInfo[seriesType].data) || []}
+  const _data = useMemo(() => idx(data, (_) => _.aggregateInfo[seriesType].data) || [], [
+    data,
+    seriesType,
+  ])
+
+  return {error, loading, data: _data}
 }
 
 const filterDataBasedOnWidth = (data, breakpoint, groupBy) => {
@@ -175,31 +182,28 @@ const filterDataBasedOnWidth = (data, breakpoint, groupBy) => {
   return data.slice(-breakpointToItemsCount[groupBy][breakpoint])
 }
 
-const Chart = ({seriesType, xAxisProps, currentEpoch, ...restProps}) => {
+const DATE_INTERVAL = {
+  from: dayjs
+    .utc()
+    .startOf('day')
+    .subtract(X_AXIS_WINDOW.DAY, 'days')
+    .toISOString(),
+}
+
+const EPOCH_INTERVAL = {}
+
+const Chart = ({seriesType, xAxisProps, ...restProps}) => {
   const {translate: tr} = useI18n()
   const breakpoint = useCurrentBreakpoint()
 
   const groupBy = xAxisProps.value
-  const epochInterval = {from: Math.max((currentEpoch || 0) - X_AXIS_WINDOW.EPOCH, 0)}
-  const dateInterval = {
-    from: dayjs
-      .utc()
-      .startOf('day')
-      .subtract(X_AXIS_WINDOW.DAY + 300, 'days') // TODO: remove `300` when backend is fixed
-      .toISOString(),
-  }
 
-  const {error, loading, data} = useLoadData(seriesType, groupBy, epochInterval, dateInterval)
+  const {error, loading, data} = useLoadData(seriesType, groupBy, EPOCH_INTERVAL, DATE_INTERVAL)
 
   // Note: `recharts` animation stops working when changing reference to data, therefore
   // using `useMemo` to memoize it
-  // TODO: remove when backend is fixed
-  const dataFix = useMemo(() => (groupBy === X_AXIS.DAY ? data.slice(-X_AXIS_WINDOW.DAY) : data), [
+  const _data = useMemo(() => filterDataBasedOnWidth(data, breakpoint, groupBy), [
     data,
-    groupBy,
-  ])
-  const _data = useMemo(() => filterDataBasedOnWidth(dataFix, breakpoint, groupBy), [
-    dataFix,
     breakpoint,
     groupBy,
   ])
@@ -211,31 +215,25 @@ const Chart = ({seriesType, xAxisProps, currentEpoch, ...restProps}) => {
       <Alert type="warning" title={tr(messages.noDataTitle)} message={tr(messages.noDataMsg)} />
     )
   }
-  return <BarChart data={_data} {...restProps} />
+  // Charts needs absolute dimensions and it is hard to get them on server
+  return (
+    <NoSSR onSSR={<LoadingInProgress />}>
+      {loading ? <LoadingInProgress /> : <BarChart data={_data} {...restProps} />}
+    </NoSSR>
+  )
 }
 
-const ChartTab = ({loading, error, xAxisProps, commonChartProps, ...restProps}) => {
+const ChartTab = ({xAxisProps, commonChartProps, ...restProps}) => {
+  const classes = useStyles()
   return (
     <Card>
       <XAxisSwitch {...xAxisProps} />
-      <Grid
-        container
-        alignItems="center"
-        justify="center"
-        style={{width: commonChartProps.width, height: commonChartProps.height}}
-      >
-        {loading && <LoadingInProgress />}
-        {!loading && error && <LoadingError error={error} />}
-        {!loading && !error && <Chart {...{xAxisProps, ...commonChartProps, ...restProps}} />}
+      <Grid container alignItems="center" justify="center" className={classes.chartWrapper}>
+        <Chart {...{xAxisProps, ...commonChartProps, ...restProps}} />
       </Grid>
     </Card>
   )
 }
-
-const getChartDimensions = (dimensions) => ({
-  width: dimensions.width,
-  height: 400,
-})
 
 const Charts = () => {
   const classes = useStyles()
@@ -247,91 +245,84 @@ const Charts = () => {
   } = useI18n()
   const analytics = useAnalytics()
   const [xAxis, setXAxis] = useState(X_AXIS.DAY)
-  const [dimensions, setDimensions] = useState({width: -1, height: -1})
-
-  const {error, loading, currentEpoch} = useCurrentEpoch()
 
   const tabNames = ObjectValues(TAB_NAMES)
   const tabState = useTabState(tabNames)
 
   // Note: We currently receive number from backend instead of string for ada value
-  const formatAdaYAxis = (value) =>
-    tr(messages.adaInBillions, {count: formatAdaInUnits(`${value}`)})
+  const formatAdaYAxis = useCallback(
+    (value) => tr(messages.adaInBillions, {count: formatAdaInUnits(`${value}`)}),
+    [formatAdaInUnits, tr]
+  )
+
   // Note: For now not showing decimals, as then values are too long
-  const formatAdaYTooltip = (value) => formatAdaSplit(`${value}`).integral
+  const formatAdaYTooltip = useCallback((value) => formatAdaSplit(`${value}`).integral, [
+    formatAdaSplit,
+  ])
   const onXAxisChange = useCallback(
     (e) => {
       setXAxis(e.target.value)
       analytics.trackChartEvent()
     },
-    [analytics]
+    [analytics, setXAxis]
   )
 
-  const commonChartProps = {
-    xLabel: tr(xAxis === X_AXIS.DAY ? xLabels.day : xLabels.epoch),
-    formatX: xAxis === X_AXIS.DAY ? formatTimestampToUtcDayAndMonth : identity,
-    barSize: xAxis === X_AXIS.DAY ? 14 : 20,
-    lastTooltipText: tr(messages.lastTooltipText),
-    ...getChartDimensions(dimensions),
-  }
+  const commonChartProps = useMemo(
+    () => ({
+      xLabel: tr(xAxis === X_AXIS.DAY ? xLabels.day : xLabels.epoch),
+      formatX: xAxis === X_AXIS.DAY ? formatTimestampToUtcDayAndMonth : identity,
+      barSize: xAxis === X_AXIS.DAY ? 14 : 20,
+      lastTooltipText: tr(messages.lastTooltipText),
+    }),
+    [formatTimestampToUtcDayAndMonth, tr, xAxis]
+  )
 
-  const xAxisProps = {
-    value: xAxis,
-    onChange: onXAxisChange,
-  }
+  const xAxisProps = useMemo(
+    () => ({
+      value: xAxis,
+      onChange: onXAxisChange,
+    }),
+    [onXAxisChange, xAxis]
+  )
 
   return (
     <SimpleLayout title={tr(messages.header)} maxWidth="1200px" className={classes.layout}>
-      <Measure
-        bounds
-        onResize={(contentRect) => {
-          setDimensions(contentRect.bounds)
-        }}
-      >
-        {({measureRef}) => (
-          <div ref={measureRef}>
-            <Tabs {...tabState}>
-              <TabsHeader />
+      <Tabs {...tabState}>
+        <TabsHeader />
 
-              <Tab name={TAB_NAMES.TOTAL_ADA_SENT}>
-                <ChartTab
-                  seriesType="totalAdaTransferred"
-                  yLabel={tr(yLabels.adaSent)}
-                  formatYTooltip={formatAdaYTooltip}
-                  formatYAxis={formatAdaYAxis}
-                  commonChartProps={commonChartProps}
-                  xAxisProps={xAxisProps}
-                  {...{loading, error, currentEpoch}}
-                />
-              </Tab>
+        <Tab name={TAB_NAMES.TOTAL_ADA_SENT}>
+          <ChartTab
+            seriesType="totalAdaTransferred"
+            yLabel={tr(yLabels.adaSent)}
+            formatYTooltip={formatAdaYTooltip}
+            formatYAxis={formatAdaYAxis}
+            commonChartProps={commonChartProps}
+            xAxisProps={xAxisProps}
+          />
+        </Tab>
 
-              <Tab name={TAB_NAMES.TRANSACTIONS_COUNT}>
-                <ChartTab
-                  seriesType="txCount"
-                  yLabel={tr(yLabels.txCount)}
-                  formatYAxis={identity}
-                  formatYTooltip={identity}
-                  commonChartProps={commonChartProps}
-                  xAxisProps={xAxisProps}
-                  {...{loading, error, currentEpoch}}
-                />
-              </Tab>
+        <Tab name={TAB_NAMES.TRANSACTIONS_COUNT}>
+          <ChartTab
+            seriesType="txCount"
+            yLabel={tr(yLabels.txCount)}
+            formatYAxis={identity}
+            formatYTooltip={identity}
+            commonChartProps={commonChartProps}
+            xAxisProps={xAxisProps}
+          />
+        </Tab>
 
-              <Tab name={TAB_NAMES.TOTAL_UTXO}>
-                <ChartTab
-                  seriesType="totalUtxoCreated"
-                  yLabel={tr(yLabels.utxo)}
-                  formatYAxis={identity}
-                  formatYTooltip={identity}
-                  commonChartProps={commonChartProps}
-                  xAxisProps={xAxisProps}
-                  {...{loading, error, currentEpoch}}
-                />
-              </Tab>
-            </Tabs>
-          </div>
-        )}
-      </Measure>
+        <Tab name={TAB_NAMES.TOTAL_UTXO}>
+          <ChartTab
+            seriesType="totalUtxoCreated"
+            yLabel={tr(yLabels.utxo)}
+            formatYAxis={identity}
+            formatYTooltip={identity}
+            commonChartProps={commonChartProps}
+            xAxisProps={xAxisProps}
+          />
+        </Tab>
+      </Tabs>
     </SimpleLayout>
   )
 }
