@@ -83,6 +83,15 @@ const Search = ({onSearch}) => {
     [onSearch, searchTextContext]
   )
 
+  const onReset = useCallback(() => {
+    // Note: we also need to call `setSearchText` even when we use useStateWithChangingDefault
+    // because it will not work when resetting `searchText` before first search was run
+    // as the default state has not changed yet (is still equal ''), the useStateWithChangingDefault
+    // would not case `searchText` to change
+    setSearchText('')
+    searchTextContext.setSearchText('')
+  }, [searchTextContext, setSearchText])
+
   const {translate: tr} = useI18n()
   return (
     <Searchbar
@@ -90,6 +99,7 @@ const Search = ({onSearch}) => {
       value={searchText}
       onChange={setSearchText}
       onSearch={_onSearch}
+      onReset={onReset}
     />
   )
 }

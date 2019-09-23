@@ -68,6 +68,7 @@ type ExternalProps = {
   value: string,
   onSearch: (str: string) => any,
   onChange: (event: any) => any,
+  onReset?: Function, // TODO: make required
   loading?: boolean,
   inputProps?: Object,
 }
@@ -194,7 +195,7 @@ const Searchbar = ({
   </form>
 )
 
-export default ({onSearch, value, onChange, ...restProps}: ExternalProps) => {
+export default ({onSearch, value, onChange, onReset, ...restProps}: ExternalProps) => {
   const onSubmit = useCallback(
     (event) => {
       event.preventDefault()
@@ -207,13 +208,14 @@ export default ({onSearch, value, onChange, ...restProps}: ExternalProps) => {
   const handleOnChangeEvent = useCallback((event) => onChange(event.target.value), [onChange])
 
   // TODO: refactor in some PR, so that `onReset` is always passed from outside
-  const onReset = useCallback(() => onSearch(''), [onSearch])
+  const _onReset = useCallback(() => (onReset ? onReset() : onSearch('')), [onReset, onSearch])
 
   const classes = useStyles()
 
   return (
     <Searchbar
-      {...{classes, onReset, onSubmit, value, onSearch, ...restProps}}
+      {...{classes, onSubmit, value, onSearch, ...restProps}}
+      onReset={_onReset}
       onChange={handleOnChangeEvent}
     />
   )
