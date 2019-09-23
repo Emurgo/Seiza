@@ -69,7 +69,11 @@ const useContentStyles = makeStyles((theme) => {
     },
     value: {
       overflow: 'hidden',
+    },
+    valueWrapper: {
+      overflow: 'hidden',
       padding: animationSpacing,
+      display: 'flex',
     },
     correctureWrapper: {
       display: 'flex',
@@ -173,17 +177,20 @@ export const EntityCardContent = ({
                 transitionAppearTimeout={2000}
                 key={rawValue}
               >
-                {ellipsizeValue ? (
-                  <DefaultEllipsizedEntity
-                    className={cn(classes.value, monospaceValue && classes.monospace)}
-                    value={value}
-                    monospace={monospaceValue}
-                  />
-                ) : (
-                  <span className={cn(classes.value, monospaceValue && classes.monospace)}>
-                    {value}
-                  </span>
-                )}
+                {/* we need one child for ReactCSSTransitionGroup */}
+                <div className={classes.valueWrapper}>
+                  {ellipsizeValue ? (
+                    <DefaultEllipsizedEntity
+                      className={cn(classes.value, monospaceValue && classes.monospace)}
+                      value={value}
+                      monospace={monospaceValue}
+                    />
+                  ) : (
+                    <span className={cn(classes.value, monospaceValue && classes.monospace)}>
+                      {value}
+                    </span>
+                  )}
+                </div>
               </ReactCSSTransitionGroup>
 
               {showCopyIcon && (

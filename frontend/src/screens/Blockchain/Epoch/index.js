@@ -311,6 +311,7 @@ const EpochEntityCard = ({epochNumber, startTime, endTime}) => {
             }
             appearAnimation
             rawValue={epochNumber}
+            ellipsizeValue={false}
           />
         </Grid>
         <Grid item xs={12} md={8} lg={6} className={classes.timeHeader}>
