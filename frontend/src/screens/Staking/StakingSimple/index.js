@@ -11,6 +11,7 @@ import {SimpleStakingTopBar} from '../StakeList/SearchAndFilterBar'
 import StakepoolCard from './StakepoolCard'
 import {StakingContextProvider} from '../context'
 import {CARD_WIDTH} from '../StakeList/stakepoolCardUtils'
+import {EstimatedRewardsModeProvider} from '../StakeList/estimatedRewardsModeUtils'
 
 const useStyles = makeStyles((theme) => ({
   centerWrapper: {
@@ -39,11 +40,13 @@ export default () => {
       </DesktopOnly>
       <div ref={scrollToRef}>
         <StakingContextProvider autoSync={false}>
-          <div className={classes.centerWrapper}>
-            <div className={classes.centeredItem}>
-              <StakeListLayout StakepoolCard={StakepoolCard} TopBar={SimpleStakingTopBar} />
+          <EstimatedRewardsModeProvider>
+            <div className={classes.centerWrapper}>
+              <div className={classes.centeredItem}>
+                <StakeListLayout StakepoolCard={StakepoolCard} TopBar={SimpleStakingTopBar} />
+              </div>
             </div>
-          </div>
+          </EstimatedRewardsModeProvider>
         </StakingContextProvider>
       </div>
     </React.Fragment>
