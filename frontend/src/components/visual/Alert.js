@@ -6,6 +6,7 @@ import {defineMessages} from 'react-intl'
 import {Paper, Grid, Typography} from '@material-ui/core'
 import {darken} from '@material-ui/core/styles/colorManipulator'
 import {makeStyles} from '@material-ui/styles'
+import {NAV_HEADER_HEIGHT} from '@/components/hooks/useScrollFromBottom'
 
 import {useI18n} from '@/i18n/helpers'
 import {CloseIconButton} from '@/components/visual'
@@ -68,6 +69,9 @@ const useAppStyles = makeStyles((theme) => ({
       position: 'fixed !important',
       left: theme.spacing(2),
       right: theme.spacing(2),
+      // "top" need to be set, otherwise
+      // we get a glitch on safari iOS while scrolling
+      top: NAV_HEADER_HEIGHT,
     },
   },
   [TYPES.NEUTRAL]: {},

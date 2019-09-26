@@ -100,7 +100,7 @@ const useStyles = makeStyles((theme) => ({
     position: 'relative',
   },
   alert: {
-    marginTop: theme.spacing(1.5),
+    marginTop: theme.spacing(0.75),
     position: 'absolute',
     width: '100%',
     zIndex: 1,
