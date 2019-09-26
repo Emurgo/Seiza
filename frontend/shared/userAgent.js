@@ -15,9 +15,8 @@ const isSupportedBrowser = (userAgent) => {
     firefox: '>52',
     opera: '>39',
     edge: '>37',
+    safari: '>=10',
     // ie is not supported
-
-    // FIXME: safari?
 
     mobile: {
       safari: '>=10',
