@@ -184,8 +184,8 @@ const Chart = ({seriesType, xAxisProps, currentEpoch, ...restProps}) => {
   const dateInterval = {
     from: dayjs
       .utc()
-      .startOf('day')
       .subtract(X_AXIS_WINDOW.DAY + 300, 'days') // TODO: remove `300` when backend is fixed
+      .startOf('day')
       .toISOString(),
   }
 
