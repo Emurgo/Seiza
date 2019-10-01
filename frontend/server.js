@@ -57,7 +57,8 @@ app.prepare().then(() => {
 
   // https://stackoverflow.com/questions/7450940/automatic-https-connection-redirect-with-node-js-express
   server.use ((req, res, next) => {
-    if (req.secure || !forceHttps) {
+    // cf-visitor is a custom CloudFlare header we need to use to workaround heroku removing x-forwarded-proto...
+    if (req.secure || !forceHttps || req['headers']['cf-visitor']['scheme'] === 'https' ) {
       next()
     } else {
       res.redirect(301, `https://${req.headers.host}${req.url}`)
