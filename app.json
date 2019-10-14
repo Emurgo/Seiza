@@ -52,6 +52,24 @@
     },
     "SENTRY_LOG_LEVEL": {
       "required": true
+    },
+    "ELASTIC_INDEX": {
+      "required": false
+    },
+    "ELASTIC_URL": {
+      "required": false
+    },
+    "AWS_REGION": {
+      "required": false
+    },
+    "AWS_ACCESS_KEY_ID": {
+      "required": false
+    },
+    "AWS_SECRET_ACCESS_KEY": {
+      "required": false
+    },
+    "APOLLO_ENGINE_API_KEY": {
+      "required": false
     }
   },
   "formation": {
