@@ -70,6 +70,15 @@
     },
     "APOLLO_ENGINE_API_KEY": {
       "required": false
+    },
+    "ACTIVE_CAMPAIGN_URL": {
+      "required": false
+    },
+    "ACTIVE_CAMPAIGN_KEY": {
+      "required": false
+    },
+    "ACTIVE_CAMPAIGN_LIST": {
+      "required": false
     }
   },
   "formation": {
