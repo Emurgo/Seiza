@@ -77,7 +77,7 @@
     "ACTIVE_CAMPAIGN_KEY": {
       "required": false
     },
-    "ACTIVE_CAMPAIGN_LIST": {
+    "ACTIVE_CAMPAIGN_LIST_ID": {
       "required": false
     }
   },
