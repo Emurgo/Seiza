@@ -184,7 +184,7 @@ const getElastic = (logger: Function) => {
     const request = {
       // $FlowFixMe validated above using `validate`
       index: `${ELASTIC_INDEX}.${type}`,
-      type,
+      // type,
       body,
     }
 
