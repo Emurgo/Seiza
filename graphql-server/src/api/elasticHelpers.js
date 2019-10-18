@@ -88,6 +88,13 @@ const onlyActiveFork = () => ({
   },
 })
 
+// Seiza-specific
+const nonGenesis = () => ({
+  term: {
+    is_genesis: false,
+  },
+})
+
 const filter = (conditions: Array<any>): any => ({
   bool: {
     filter: conditions.filter((c) => !!c),
@@ -256,6 +263,7 @@ const e = {
   matchPhrase,
   match,
   onlyActiveFork,
+  nonGenesis,
   filter,
   q,
 }
