@@ -185,7 +185,10 @@ const getElastic = (logger: Function) => {
       // $FlowFixMe validated above using `validate`
       index: `${ELASTIC_INDEX}.${type}`,
       // type,
-      body,
+      body: {
+        ...body,
+        track_total_hits: true,
+      },
     }
 
     const currentTs = () => new Date().getTime()
@@ -199,6 +202,9 @@ const getElastic = (logger: Function) => {
       .then((response) => {
         const endTs = currentTs()
         logElasticTiming(request, response.took, endTs - startTs)
+        if (response.hits && response.hits.total && response.hits.total.value !== undefined) {
+          response.hits.total = response.hits.total.value
+        }
         return response
       })
     // Non-legacy version
@@ -212,7 +218,6 @@ const getElastic = (logger: Function) => {
       query,
       size: 0,
     })
-
     return hits.total
   }
 
