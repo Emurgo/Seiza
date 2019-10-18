@@ -29,21 +29,21 @@ const fetchTxCount = async ({elastic, E, runConsistencyCheck}, address58) => {
     )
     .getCount()
 
-  await runConsistencyCheck(async () => {
-    const hits = await elastic
-      .q('address')
-      .pickFields('tx_num')
-      .filter(E.matchPhrase('_id', address58))
-      .getHits(1)
-
-    const cnt = hits.hits.length ? hits.hits[0]._source.tx_num : 0
-
-    validate(cnt === txCount, 'Address tx_num inconsistency', {
-      address58,
-      via_address: cnt,
-      via_txs: txCount,
-    })
-  })
+  // await runConsistencyCheck(async () => {
+  //   const hits = await elastic
+  //     .q('address')
+  //     .pickFields('tx_num')
+  //     .filter(E.matchPhrase('_id', address58))
+  //     .getHits(1)
+  //
+  //   const cnt = hits.hits.length ? hits.hits[0]._source.tx_num : 0
+  //
+  //   validate(cnt === txCount, 'Address tx_num inconsistency', {
+  //     address58,
+  //     via_address: cnt,
+  //     via_txs: txCount,
+  //   })
+  // })
 
   return txCount
 }

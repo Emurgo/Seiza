@@ -76,7 +76,10 @@ const _getGeneralInfo = (
 
     // (expensive) sanity check
     await runConsistencyCheck(async () => {
-      const tmp = await elastic.q(txs).getCount()
+      const tmp = await elastic
+        .q(txs)
+        .filter(E.nonGenesis())
+        .getCount()
       validate(cnt === tmp, 'GeneralInfo.txCount inconsistency', {
         cnt_viaSlotAgg: cnt,
         cnt_viaTxCnt: tmp,
@@ -88,31 +91,33 @@ const _getGeneralInfo = (
   }
 
   const activeAddresses = async () => {
-    const precise = await elastic.q(addresses).getCount()
+    // const precise = await elastic.q(addresses).getCount()
+    //
+    // // (expensive) sanity check
+    // await runConsistencyCheck(async () => {
+    //   // allow up to 1% difference
+    //   const threshold = 0.01
+    //   const approx = await elastic
+    //     .q(txios)
+    //     .getAggregations({
+    //       addresses: E.agg.countDistinctApprox('address.keyword'),
+    //     })
+    //     .then(({addresses}) => addresses)
+    //
+    //   validate(
+    //     Math.abs((approx - precise) / (precise + 1e-6)) <= threshold,
+    //     'GeneralInfo.activeAddresses inconsistency',
+    //     {
+    //       precise_viaAddressesCnt: precise,
+    //       approx_viaTxioAgg: approx,
+    //       ...ctxToLog,
+    //     }
+    //   )
+    // })
+    //
+    // return precise
 
-    // (expensive) sanity check
-    await runConsistencyCheck(async () => {
-      // allow up to 1% difference
-      const threshold = 0.01
-      const approx = await elastic
-        .q(txios)
-        .getAggregations({
-          addresses: E.agg.countDistinctApprox('address.keyword'),
-        })
-        .then(({addresses}) => addresses)
-
-      validate(
-        Math.abs((approx - precise) / (precise + 1e-6)) <= threshold,
-        'GeneralInfo.activeAddresses inconsistency',
-        {
-          precise_viaAddressesCnt: precise,
-          approx_viaTxioAgg: approx,
-          ...ctxToLog,
-        }
-      )
-    })
-
-    return precise
+    return 0
   }
 
   return {
