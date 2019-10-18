@@ -49,7 +49,11 @@ const SLOT_DURATION_SEC = 20
 const EPOCH_DURATION_SEC = SLOT_COUNT * SLOT_DURATION_SEC
 // Note(ppershing): not sure why it started at such weird (not modulo 20) timestamp
 // Note: there is not `epoch - 1` as epochs starts from 0
-const GENESIS_UNIX_TIMESTAMP_SEC = 1506203091
+// default genesis time is for Byron mainnet
+const BYRON_MAINNET_START_TIME_SEC = 1506203091
+const GENESIS_UNIX_TIMESTAMP_SEC = parseInt(
+  process.env.GENESIS_UNIX_TIMESTAMP_SEC || BYRON_MAINNET_START_TIME_SEC
+)
 
 export const getEstimatedSlotTimestamp = (epoch: number, slot: number) => {
   assert(epoch >= 0)
