@@ -620,7 +620,7 @@
   "screens.StakingPools.index.resetAllFiltersMobile": "Сбросить фильтры",
   "screens.StakingPools.index.screenTitle": "Стейк-пулы",
   "screens.StakingPools.index.title": "Имя",
-  "screens.StakingPools.selectedFieldsUtils.fieldsCount": "Show {count, plural, =0 {# columns} one {# column} other {# columns}}",
+  "screens.StakingPools.selectedFieldsUtils.fieldsCount": "Показать {count, plural,\n=0 {# столбцов}\none {# столбец}\nfew {# столбца}\nother {# столбцов}\n}",
   "screens.StakingPools.selectedFieldsUtils.showAll": "Показать все",
   "screens.SubscribeConfirmation.subscriptionConfirmedHeader": "Спасибо!",
   "screens.SubscribeConfirmation.subscriptionConfirmedMessage": "Ваша подписка на нашу рассылку подтверждена."
