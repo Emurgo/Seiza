@@ -2,7 +2,12 @@ import _ from 'lodash'
 import moment from 'moment'
 import uuidv1 from 'uuid/v1'
 
-const BOOTSTRAP_TS = 1506203091 * 1000
+const BYRON_MAINNET_START_TIME_SEC = 1506203091
+const GENESIS_UNIX_TIMESTAMP_SEC = parseInt(
+  process.env.GENESIS_UNIX_TIMESTAMP_SEC || BYRON_MAINNET_START_TIME_SEC
+)
+
+const BOOTSTRAP_TS = GENESIS_UNIX_TIMESTAMP_SEC * 1000
 
 const genFloatInRange = (from, to) => from + Math.random() * (to - from)
 

@@ -43,7 +43,7 @@ const _resolvers = {
   Block: {
     isEmpty: (block) => block.blockHash == null,
     transactions: (block, args, context) => block._txs.map((id) => fetchTransaction(context, id)),
-    blockLeader: (block, args, context) => fetchBootstrapEraPool(null, block._blockLeader),
+    blockLeader: (block, args, context) => fetchBootstrapEraPool(context, block._blockLeader),
     previousBlock: (block, args, context) =>
       fetchPreviousBlock(context, {slot: block.slot, epoch: block.epoch}),
     nextBlock: (block, args, context) =>
@@ -58,7 +58,7 @@ const _resolvers = {
   },
   BootstrapEraStakePool: {
     summary: (pool, args, context) =>
-      fetchBootstrapEraPoolSummary(null, pool.poolHash, pool._epochNumber),
+      fetchBootstrapEraPoolSummary(context, pool.poolHash, pool._epochNumber),
   },
   Mutation: {
     subscribeToNewsletter: (root, args, context) => subscribe(context, args.email),

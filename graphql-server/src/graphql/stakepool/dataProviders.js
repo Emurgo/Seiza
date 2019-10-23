@@ -1,19 +1,25 @@
 import _ from 'lodash'
 import assert from 'assert'
 
-import BOOTSTRAP_POOLS from './mockedPools'
+import moment from 'moment'
 
-export const fetchBootstrapEraPoolSummary = (api, poolHash, epochNumber) => {
+const BYRON_MAINNET_START_TIME_SEC = 1506203091
+const GENESIS_UNIX_TIMESTAMP_SEC = parseInt(
+  process.env.GENESIS_UNIX_TIMESTAMP_SEC || BYRON_MAINNET_START_TIME_SEC
+)
+const BOOTSTRAP_TS = GENESIS_UNIX_TIMESTAMP_SEC * 1000
+
+export const fetchBootstrapEraPoolSummary = async (context, poolHash, epochNumber) => {
   // TODO: use epochNumber when live data is available if needed
   // to show something some info from summary after some certificate action
-  const pool = BOOTSTRAP_POOLS[poolHash]
+  const pool = await fetchPool(context, poolHash)
   assert(pool != null)
   return pool.summary
 }
 
-export const fetchBootstrapEraPool = (api, poolHash, epochNumber) => {
-  const pool = BOOTSTRAP_POOLS[poolHash]
-  assert(pool !== null)
+export const fetchBootstrapEraPool = async (context, poolHash, epochNumber) => {
+  const pool = await fetchPool(context, poolHash)
+  assert(pool != null)
   return {
     // Note: We currently behave like if we expected separate request for summary
     ..._.omit(pool, 'summary'),
@@ -21,8 +27,47 @@ export const fetchBootstrapEraPool = (api, poolHash, epochNumber) => {
   }
 }
 
-export const fetchBootstrapEraPoolList = (api, epochNumber) => {
-  return _.keys(BOOTSTRAP_POOLS).map((poolHash) =>
-    fetchBootstrapEraPool(api, poolHash, epochNumber)
-  )
+export const fetchBootstrapEraPoolList = async ({elastic, E}, epochNumber) => {
+  const res = await elastic.q('leader').getHits()
+  const pools = res.map(mapResToAPool)
+  assert(pools.length > 0)
+  return pools
+}
+
+const fetchPool = async ({elastic, E}, hash) => {
+  const res = await elastic
+    .q('leader')
+    .filter(E.eq('leadId', hash))
+    .getSingleHit()
+  return mapResToAPool(res)
+}
+
+const genFloatInRange = (from, to) => from + Math.random() * (to - from)
+const genIntInRange = (from, to) => Math.floor(genFloatInRange(from, to))
+const ADA_DECIMALS = 1000000
+
+const mapResToAPool = (res) => {
+  return {
+    poolHash: res._id,
+    createdAt: moment(BOOTSTRAP_TS),
+    name: res._source.name,
+    description: res._source.description,
+    website: 'https://www.cardano.org/en/home/',
+    summary: {
+      adaStaked: `${genIntInRange(0, 100000000 * ADA_DECIMALS)}`,
+      keysDelegating: 100 + genIntInRange(0, 100),
+      performance: 0.71 + genFloatInRange(-0.3, 0.2),
+      rewards: `${genIntInRange(0, 100000 * ADA_DECIMALS)}`,
+      cost: `${genIntInRange(0, 100000 * ADA_DECIMALS)}`,
+      fullness: 0.6 + genFloatInRange(-0.3, 0.2),
+      margins: 0.3 + genFloatInRange(-0.1, 0.1),
+      revenue: 0.82 + genFloatInRange(-0.1, 0.1),
+      stakersCount: 3 + genIntInRange(-2, 10),
+      ownerPledge: {
+        declared: '14243227',
+        actual: '14243227',
+      },
+      profitabilityPosition: 4,
+    },
+  }
 }

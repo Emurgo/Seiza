@@ -279,14 +279,15 @@ const getElastic = (logger: Function) => {
     }
 
     getHits = async (pageSize: number) => {
-      assert(pageSize)
       const {hits} = await _search(this.q._type, {
         query: this.q._query,
         size: pageSize,
         sort: E.orderBy(this.q._sort),
         ...(this.q._source ? {_source: this.q._source} : {}),
       })
-      assert(hits.hits.length <= pageSize)
+      if (pageSize) {
+        assert(hits.hits.length <= pageSize)
+      }
       return hits
     }
 

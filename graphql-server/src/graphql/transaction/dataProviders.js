@@ -151,7 +151,7 @@ export const fetchTransactionsOnAddress = async (
     .getCount()
 
   const [typeField] = GET_PAGINATION_FIELD[type].split('.').slice(-1)
-  await checkTxsCountConsistency({elastic, runConsistencyCheck}, address58, typeField, totalCount)
+  // await checkTxsCountConsistency({elastic, runConsistencyCheck}, address58, typeField, totalCount)
 
   assert(totalCount != null)
 

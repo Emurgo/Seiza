@@ -67,22 +67,22 @@ export const fetchAddress = async (context: any, address58: string) => {
 
   const balance = totalAdaReceived.minus(totalAdaSent)
 
-  await runConsistencyCheck(async () => {
-    const hits = await elastic
-      .q('address')
-      .pickFields('balance')
-      .filter(E.matchPhrase('_id', address58))
-      .getHits(1)
-
-    const balanceViaAddress = hits.hits.length ? parseAdaValue(hits.hits[0]._source.balance) : 0
-
-    validate(balance.eq(balanceViaAddress), 'Address.balance inconsistency', {
-      address58,
-      sent_viaTxio: totalAdaSent,
-      received_viaTxio: totalAdaReceived,
-      balanceViaAddress,
-    })
-  })
+  // await runConsistencyCheck(async () => {
+  //   const hits = await elastic
+  //     .q('address')
+  //     .pickFields('balance')
+  //     .filter(E.matchPhrase('_id', address58))
+  //     .getHits(1)
+  //
+  //   const balanceViaAddress = hits.hits.length ? parseAdaValue(hits.hits[0]._source.balance) : 0
+  //
+  //   validate(balance.eq(balanceViaAddress), 'Address.balance inconsistency', {
+  //     address58,
+  //     sent_viaTxio: totalAdaSent,
+  //     received_viaTxio: totalAdaReceived,
+  //     balanceViaAddress,
+  //   })
+  // })
 
   return {
     address58,

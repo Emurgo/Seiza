@@ -26,10 +26,6 @@ const _getGeneralInfo = ({elastic, runConsistencyCheck}, {slots, txs, txios}, ct
     slotsMissed: E.agg.countNull('hash.keyword'),
   })
 
-  const txAggregations = elastic.q(txs).getAggregations({
-    newAddressCount: E.agg.sum('new_addresses'),
-  })
-
   const blocksCount = async () => {
     const cnt = (await slotAggregations).blocks
 
@@ -96,7 +92,12 @@ const _getGeneralInfo = ({elastic, runConsistencyCheck}, {slots, txs, txios}, ct
 
     // (expensive) sanity check
     await runConsistencyCheck(async () => {
-      const tmp = (await txAggregations).newAddressCount
+      const {tmp} = await elastic
+        .q(txs)
+        .filter(E.nonGenesis())
+        .getAggregations({
+          tmp: E.agg.sum('new_addresses'),
+        })
       validate(precise === tmp, 'GeneralInfo.activeAddresses inconsistency', {
         precise_viaSlotAddressesSum: precise,
         tmp_viaTxAddressesSum: tmp,
