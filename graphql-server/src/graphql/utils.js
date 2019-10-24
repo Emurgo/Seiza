@@ -52,7 +52,8 @@ const EPOCH_DURATION_SEC = SLOT_COUNT * SLOT_DURATION_SEC
 // default genesis time is for Byron mainnet
 const BYRON_MAINNET_START_TIME_SEC = 1506203091
 const GENESIS_UNIX_TIMESTAMP_SEC = parseInt(
-  process.env.GENESIS_UNIX_TIMESTAMP_SEC || BYRON_MAINNET_START_TIME_SEC
+  process.env.GENESIS_UNIX_TIMESTAMP_SEC || BYRON_MAINNET_START_TIME_SEC,
+  10
 )
 
 export const getEstimatedSlotTimestamp = (epoch: number, slot: number) => {

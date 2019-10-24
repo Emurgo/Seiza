@@ -5,42 +5,10 @@ import moment from 'moment'
 
 const BYRON_MAINNET_START_TIME_SEC = 1506203091
 const GENESIS_UNIX_TIMESTAMP_SEC = parseInt(
-  process.env.GENESIS_UNIX_TIMESTAMP_SEC || BYRON_MAINNET_START_TIME_SEC
+  process.env.GENESIS_UNIX_TIMESTAMP_SEC || BYRON_MAINNET_START_TIME_SEC,
+  10
 )
 const BOOTSTRAP_TS = GENESIS_UNIX_TIMESTAMP_SEC * 1000
-
-export const fetchBootstrapEraPoolSummary = async (context, poolHash, epochNumber) => {
-  // TODO: use epochNumber when live data is available if needed
-  // to show something some info from summary after some certificate action
-  const pool = await fetchPool(context, poolHash)
-  assert(pool != null)
-  return pool.summary
-}
-
-export const fetchBootstrapEraPool = async (context, poolHash, epochNumber) => {
-  const pool = await fetchPool(context, poolHash)
-  assert(pool != null)
-  return {
-    // Note: We currently behave like if we expected separate request for summary
-    ..._.omit(pool, 'summary'),
-    _epochNumber: epochNumber,
-  }
-}
-
-export const fetchBootstrapEraPoolList = async ({elastic, E}, epochNumber) => {
-  const res = await elastic.q('leader').getHits()
-  const pools = res.map(mapResToAPool)
-  assert(pools.length > 0)
-  return pools
-}
-
-const fetchPool = async ({elastic, E}, hash) => {
-  const res = await elastic
-    .q('leader')
-    .filter(E.eq('leadId', hash))
-    .getSingleHit()
-  return mapResToAPool(res)
-}
 
 const genFloatInRange = (from, to) => from + Math.random() * (to - from)
 const genIntInRange = (from, to) => Math.floor(genFloatInRange(from, to))
@@ -70,4 +38,37 @@ const mapResToAPool = (res) => {
       profitabilityPosition: 4,
     },
   }
+}
+
+const fetchPool = async ({elastic, E}, hash) => {
+  const res = await elastic
+    .q('leader')
+    .filter(E.eq('leadId', hash))
+    .getSingleHit()
+  return mapResToAPool(res)
+}
+
+export const fetchBootstrapEraPoolSummary = async (context, poolHash, epochNumber) => {
+  // TODO: use epochNumber when live data is available if needed
+  // to show something some info from summary after some certificate action
+  const pool = await fetchPool(context, poolHash)
+  assert(pool != null)
+  return pool.summary
+}
+
+export const fetchBootstrapEraPool = async (context, poolHash, epochNumber) => {
+  const pool = await fetchPool(context, poolHash)
+  assert(pool != null)
+  return {
+    // Note: We currently behave like if we expected separate request for summary
+    ..._.omit(pool, 'summary'),
+    _epochNumber: epochNumber,
+  }
+}
+
+export const fetchBootstrapEraPoolList = async ({elastic, E}, epochNumber) => {
+  const res = await elastic.q('leader').getHits()
+  const pools = res.map(mapResToAPool)
+  assert(pools.length > 0)
+  return pools
 }
