@@ -99,15 +99,18 @@ const checkTxsCountConsistency = (
   totalTxsInTxIndex
 ) =>
   runConsistencyCheck(async () => {
-    const [totalTxsInAddressIndex, totalTxsInTxioIndex] = await Promise.all([
-      elastic
-        .q('address')
-        .filter(E.matchPhrase('_id', address58))
-        .getAggregations({
-          cnt: E.agg.max(`ios.${typeField}`),
-        })
-        // Note: empty addresses would return null
-        .then(({cnt}) => cnt || 0),
+    const [
+      // totalTxsInAddressIndex,
+      totalTxsInTxioIndex,
+    ] = await Promise.all([
+      // elastic
+      //   .q('address')
+      //   .filter(E.matchPhrase('_id', address58))
+      //   .getAggregations({
+      //     cnt: E.agg.max(`ios.${typeField}`),
+      //   })
+      //   // Note: empty addresses would return null
+      //   .then(({cnt}) => cnt || 0),
       elastic
         .q('txio')
         .filter(E.onlyActiveFork())
@@ -120,9 +123,18 @@ const checkTxsCountConsistency = (
     ])
 
     validate(
-      new Set([totalTxsInTxIndex, totalTxsInAddressIndex, totalTxsInTxioIndex]).size === 1,
+      new Set([
+        totalTxsInTxIndex,
+        // totalTxsInAddressIndex,
+        totalTxsInTxioIndex,
+      ]).size === 1,
       `Inconsistency with ${typeField}`,
-      {address: address58, totalTxsInTxIndex, totalTxsInAddressIndex, totalTxsInTxioIndex}
+      {
+        address: address58,
+        totalTxsInTxIndex,
+        // totalTxsInAddressIndex,
+        totalTxsInTxioIndex,
+      }
     )
   })
 
@@ -151,7 +163,7 @@ export const fetchTransactionsOnAddress = async (
     .getCount()
 
   const [typeField] = GET_PAGINATION_FIELD[type].split('.').slice(-1)
-  // await checkTxsCountConsistency({elastic, runConsistencyCheck}, address58, typeField, totalCount)
+  await checkTxsCountConsistency({elastic, runConsistencyCheck}, address58, typeField, totalCount)
 
   assert(totalCount != null)
 

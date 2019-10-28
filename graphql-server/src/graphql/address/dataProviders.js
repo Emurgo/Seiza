@@ -50,7 +50,7 @@ const fetchTxCount = async ({elastic, E, runConsistencyCheck}, address58) => {
 }
 
 export const fetchAddress = async (context: any, address58: string) => {
-  const {elastic, E, runConsistencyCheck} = context
+  // const {elastic, E, runConsistencyCheck} = context
   assert(address58)
   if (!isAddress(address58)) {
     throw new ApolloError('Not an address', 'NOT_FOUND', {address58})
@@ -66,6 +66,8 @@ export const fetchAddress = async (context: any, address58: string) => {
     fetchTxCount(context, address58),
   ])
 
+  // TODO: replace this with `balance_after_this_tx` field in the latest tx
+  // TODO: use this as consistency check instead
   const balance = totalAdaReceived.minus(totalAdaSent)
 
   // await runConsistencyCheck(async () => {
