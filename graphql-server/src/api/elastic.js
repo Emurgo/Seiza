@@ -180,6 +180,20 @@ const getElastic = (logger: Function) => {
     )
   }
 
+  /*
+   * Elastic v7 requires special parameter `track_total_hits` to be set to `true`
+   * in order to return exact number of hits. Previous version did not require this,
+   * in order to be compatible this function ALWAYS adds `track_total_hits: true`
+   * to the specified request body.
+   *
+   * NOTE: Elastic v7 also changed the format of the `hits.total` value,
+   * it is changed from being a simple number to being an object with a `.value` field.
+   * This function CHANGES the response so total hits look like it was in v6!
+   *
+   * So this function guarantees that:
+   * 1. Response will contain exact number of hits
+   * 2. Field `response.hits.total` will contain a plain number with the count of hits
+   */
   const _search = (type: string, body: any) => {
     const request = {
       // $FlowFixMe validated above using `validate`
