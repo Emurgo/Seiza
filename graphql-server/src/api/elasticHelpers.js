@@ -132,6 +132,14 @@ const agg = {
     }),
     decode: (x: any) => x.value,
   }),
+  cardinality: (field: string) => ({
+    encode: () => ({
+      cardinality: {
+        field,
+      },
+    }),
+    decode: (x: any) => x.value,
+  }),
   // This is a hack to create nested keys in
   // aggregation results
   // as elastic cannot be easily convinced
