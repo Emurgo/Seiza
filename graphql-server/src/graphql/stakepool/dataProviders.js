@@ -2,7 +2,6 @@ import _ from 'lodash'
 import assert from 'assert'
 
 import moment from 'moment'
-import {facadeElasticBlock} from '../block/dataProviders'
 
 const BYRON_MAINNET_START_TIME_SEC = 1506203091
 const GENESIS_UNIX_TIMESTAMP_SEC = parseInt(
