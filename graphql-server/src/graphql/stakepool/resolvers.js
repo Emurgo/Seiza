@@ -28,13 +28,19 @@ const DEFAULT_PAGE_SIZE = 10
 // Note: this does not do half-open interval intentionally
 const inRange = (v, from, to) => v >= from && v <= to
 
-const getPoolsData = (context) =>
-  fetchBootstrapEraPoolList(context).map((pool) => ({
-    ...pool,
-    summary: fetchBootstrapEraPoolSummary(context, pool.poolHash),
-  }))
+const getPoolsData = async (context) => {
+  return await fetchBootstrapEraPoolList(context)
+  // NOTE(Nico): I had to comment this because it would return `[ Promise { <pending> }, Promise { <pending> } ]`
+  // return await poolList.map(async (pool) => {
+  //   const summary = await fetchBootstrapEraPoolSummary(context, pool.poolHash)
+  //   return {
+  //     ...pool,
+  //     summary,
+  //   }
+  // })
+}
 
-const filterData = (data, searchText, performance) => {
+const filterData = async (data, searchText, performance) => {
   const searchTextLowerCase = searchText.toLowerCase()
   const _filtered = searchText
     ? data.filter((pool) => pool.name.toLowerCase().includes(searchTextLowerCase))
@@ -46,22 +52,24 @@ const filterData = (data, searchText, performance) => {
     : _filtered
 }
 
-const sortData = (data, sortBy) => _.orderBy(data, (d) => d.summary[sortBy], 'desc')
+const sortData = async (data, sortBy) => _.orderBy(data, (d) => d.summary[sortBy], 'desc')
 
-const getFilteredAndSortedPoolsData = (context, sortBy, searchText, performance) => {
-  const data = getPoolsData(context)
-  const filteredData = filterData(data, searchText, performance)
-  return sortData(filteredData, sortBy)
+const getFilteredAndSortedPoolsData = async (context, sortBy, searchText, performance) => {
+  const poolData = await getPoolsData(context)
+  const filteredData = await filterData(poolData, searchText, performance)
+  const sortedData = await sortData(filteredData, sortBy)
+
+  return sortedData
 }
 
-export const pagedStakePoolListResolver = (
+export const pagedStakePoolListResolver = async (
   context,
   cursor,
   pageSize = DEFAULT_PAGE_SIZE,
   searchOptions
 ) => {
   const {sortBy, searchText, performance} = searchOptions
-  const data = getFilteredAndSortedPoolsData(context, sortBy, searchText, performance)
+  const data = await getFilteredAndSortedPoolsData(context, sortBy, searchText, performance)
 
   if (!data.length) return NO_RESULTS
 

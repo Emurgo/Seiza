@@ -2,6 +2,7 @@ import _ from 'lodash'
 import assert from 'assert'
 
 import moment from 'moment'
+import {facadeElasticBlock} from '../block/dataProviders'
 
 const BYRON_MAINNET_START_TIME_SEC = 1506203091
 const GENESIS_UNIX_TIMESTAMP_SEC = parseInt(
@@ -13,10 +14,11 @@ const BOOTSTRAP_TS = GENESIS_UNIX_TIMESTAMP_SEC * 1000
 const genFloatInRange = (from, to) => from + Math.random() * (to - from)
 const genIntInRange = (from, to) => Math.floor(genFloatInRange(from, to))
 const ADA_DECIMALS = 1000000
+const PAGE_SIZE = 2
 
 const mapResToAPool = (res) => {
   return {
-    poolHash: res._id,
+    poolHash: res._source.leadId,
     createdAt: moment(BOOTSTRAP_TS),
     name: res._source.name,
     description: res._source.description,
@@ -67,8 +69,8 @@ export const fetchBootstrapEraPool = async (context, poolHash, epochNumber) => {
 }
 
 export const fetchBootstrapEraPoolList = async ({elastic, E}, epochNumber) => {
-  const res = await elastic.q('leader').getHits()
-  const pools = res.map(mapResToAPool)
+  const res = await elastic.q('leader').getHits(PAGE_SIZE)
+  const pools = res.hits.map(mapResToAPool)
   assert(pools.length > 0)
   return pools
 }
