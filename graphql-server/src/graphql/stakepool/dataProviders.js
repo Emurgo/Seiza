@@ -13,10 +13,11 @@ const BOOTSTRAP_TS = GENESIS_UNIX_TIMESTAMP_SEC * 1000
 const genFloatInRange = (from, to) => from + Math.random() * (to - from)
 const genIntInRange = (from, to) => Math.floor(genFloatInRange(from, to))
 const ADA_DECIMALS = 1000000
+const PAGE_SIZE = 10
 
 const mapResToAPool = (res) => {
   return {
-    poolHash: res._id,
+    poolHash: res._source.leadId,
     createdAt: moment(BOOTSTRAP_TS),
     name: res._source.name,
     description: res._source.description,
@@ -26,6 +27,20 @@ const mapResToAPool = (res) => {
       keysDelegating: 100 + genIntInRange(0, 100),
       performance: 0.71 + genFloatInRange(-0.3, 0.2),
       rewards: `${genIntInRange(0, 100000 * ADA_DECIMALS)}`,
+      estimatedRewards: {
+        perYear: {
+          percentage: 0.8232323,
+          ada: '432543',
+        },
+        perMonth: {
+          percentage: 0.2132323,
+          ada: '4321',
+        },
+        perEpoch: {
+          percentage: 0.1232323,
+          ada: '432',
+        },
+      },
       cost: `${genIntInRange(0, 100000 * ADA_DECIMALS)}`,
       fullness: 0.6 + genFloatInRange(-0.3, 0.2),
       margins: 0.3 + genFloatInRange(-0.1, 0.1),
@@ -67,8 +82,8 @@ export const fetchBootstrapEraPool = async (context, poolHash, epochNumber) => {
 }
 
 export const fetchBootstrapEraPoolList = async ({elastic, E}, epochNumber) => {
-  const res = await elastic.q('leader').getHits()
-  const pools = res.map(mapResToAPool)
+  const res = await elastic.q('leader').getHits(PAGE_SIZE)
+  const pools = res.hits.map(mapResToAPool)
   assert(pools.length > 0)
   return pools
 }

@@ -1,11 +1,7 @@
 import _ from 'lodash'
 import BigNumber from 'bignumber.js'
 
-import {
-  fetchBootstrapEraPool,
-  fetchBootstrapEraPoolList,
-  fetchBootstrapEraPoolSummary,
-} from './dataProviders'
+import {fetchBootstrapEraPool, fetchBootstrapEraPoolList} from './dataProviders'
 
 import {currentStatusResolver} from '../status/resolvers'
 import {MOCKED_STAKEPOOLS} from './mockedPools'
@@ -28,40 +24,47 @@ const DEFAULT_PAGE_SIZE = 10
 // Note: this does not do half-open interval intentionally
 const inRange = (v, from, to) => v >= from && v <= to
 
-const getPoolsData = (context) =>
-  fetchBootstrapEraPoolList(context).map((pool) => ({
-    ...pool,
-    summary: fetchBootstrapEraPoolSummary(context, pool.poolHash),
-  }))
+const getPoolsData = async (context) => {
+  return await fetchBootstrapEraPoolList(context)
+  // NOTE(Nico): I had to comment this because it would
+  // give me back `[ Promise { <pending> }, Promise { <pending> } ]`
+  // return await poolList.map(async (pool) => {
+  //   const summary = await fetchBootstrapEraPoolSummary(context, pool.poolHash)
+  //   return {
+  //     ...pool,
+  //     summary,
+  //   }
+  // })
+}
 
-const filterData = (data, searchText, performance) => {
+const filterData = async (data, searchText, performance) => {
   const searchTextLowerCase = searchText.toLowerCase()
   const _filtered = searchText
     ? data.filter((pool) => pool.name.toLowerCase().includes(searchTextLowerCase))
     : data
-  return performance
+  return (await performance)
     ? _filtered.filter((pool) =>
       inRange(pool.summary.performance, performance.from, performance.to)
     )
     : _filtered
 }
 
-const sortData = (data, sortBy) => _.orderBy(data, (d) => d.summary[sortBy], 'desc')
+const sortData = async (data, sortBy) => await _.orderBy(data, (d) => d.summary[sortBy], 'desc')
 
-const getFilteredAndSortedPoolsData = (context, sortBy, searchText, performance) => {
-  const data = getPoolsData(context)
-  const filteredData = filterData(data, searchText, performance)
-  return sortData(filteredData, sortBy)
+const getFilteredAndSortedPoolsData = async (context, sortBy, searchText, performance) => {
+  const poolData = await getPoolsData(context)
+  const filteredData = await filterData(poolData, searchText, performance)
+  return await sortData(filteredData, sortBy)
 }
 
-export const pagedStakePoolListResolver = (
+export const pagedStakePoolListResolver = async (
   context,
   cursor,
   pageSize = DEFAULT_PAGE_SIZE,
   searchOptions
 ) => {
   const {sortBy, searchText, performance} = searchOptions
-  const data = getFilteredAndSortedPoolsData(context, sortBy, searchText, performance)
+  const data = await getFilteredAndSortedPoolsData(context, sortBy, searchText, performance)
 
   if (!data.length) return NO_RESULTS
 
