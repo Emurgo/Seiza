@@ -66,8 +66,8 @@ export const LANGUAGES = [
   }),
   ...insertIf(config.featureEnableSpanish, {
     locale: 'es',
-    label: <Label langCode="ES" flagSrc="/static/assets/icons/flags/russian.svg" />, // TODO: Add spanish flag
-    mobileLabel: <Label langCode="ES" flagSrc="/static/assets/icons/flags/russian.svg" mobile />,
+    label: <Label langCode="ES" flagSrc="/static/assets/icons/flags/spanish.svg" />,
+    mobileLabel: <Label langCode="ES" flagSrc="/static/assets/icons/flags/spanish.svg" mobile />,
   }),
   /*
   {
