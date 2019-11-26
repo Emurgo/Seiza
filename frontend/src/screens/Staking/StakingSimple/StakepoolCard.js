@@ -5,6 +5,7 @@ import {makeStyles} from '@material-ui/styles'
 import {defineMessages} from 'react-intl'
 
 import {
+  Button,
   ExpandableCard,
   ExpandableCardFooter,
   Tooltip,
@@ -14,6 +15,8 @@ import {
 import {PoolEntityContent, NavTypography} from '@/components/common'
 import WithModalState from '@/components/headless/modalState'
 import {useI18n} from '@/i18n/helpers'
+
+import {YoroiCallback} from '../../../helpers/iframeToYoroiMessaging'
 
 import {
   SimpleDataGrid,
@@ -55,10 +58,10 @@ const useHeaderStyles = makeStyles(({palette, spacing, breakpoints}) => ({
     paddingLeft: spacing(1),
   },
   headerRewards: {
-    display: 'none',
-    [breakpoints.up('md')]: {
-      display: 'initial',
-    },
+    // display: 'none',
+    // [breakpoints.up('md')]: {
+    //   display: 'initial',
+    // },
   },
   profitabilityTypography: {
     fontSize: 24,
@@ -89,8 +92,12 @@ const ProfitabilityPosition = ({value}) => {
   )
 }
 
-const Header = ({name, hash, profitabilityPosition}) => {
+const Header = ({name, hash, profitabilityPosition, showDelegateButton}) => {
   const classes = useHeaderStyles()
+  const selectedPool = {
+    name,
+    poolHash: hash,
+  }
 
   return (
     <Grid
@@ -100,12 +107,19 @@ const Header = ({name, hash, profitabilityPosition}) => {
       alignItems="center"
       className={classes.wrapper}
     >
-      <Grid item xs={12} md={6} className={classes.flexEllipsize}>
+      <Grid item xs={6} md={6} className={classes.flexEllipsize}>
         <PoolEntityContent name={name} hash={hash} />
       </Grid>
-      <Grid item md={6} className={classes.headerRewards}>
+      <Grid item xs={6} md={6} className={classes.headerRewards}>
         <Grid container direction="row" justify="flex-end">
           <ProfitabilityPosition value={profitabilityPosition} />
+          {showDelegateButton ? (
+            <Button variant="primary" onClick={YoroiCallback([selectedPool])} block>
+              Delegate
+            </Button>
+          ) : (
+            <div />
+          )}
         </Grid>
       </Grid>
     </Grid>
@@ -136,18 +150,37 @@ const DesktopPoolFooter = ({expanded}) => {
   return <ExpandableCardFooter {...{label, expanded}} />
 }
 
-const SimpleMobileStakepoolCard = React.memo(({isOpen, toggle, data}) => {
-  const renderExpandedArea = () => <Content data={data} />
+const SimpleMobileStakepoolCard = React.memo(({isOpen, toggle, data, isYoroi}) => {
+  // const renderExpandedArea = () => <Content data={data} />
+  const classes = useContentStyles()
 
-  const renderHeader = (expanded) => (
-    <Grid container direction="column">
-      <MobilePoolFooter
-        expanded={expanded}
-        rightSide={<ProfitabilityPosition value={data.profitabilityPosition} />}
-      />
-    </Grid>
+  const renderExpandedArea = () => (
+    <div className={classes.extraContent}>
+      <Typography>{data.description}</Typography>
+    </div>
   )
 
+  // const renderHeader = (expanded) => (
+  //   <Grid container direction="column">
+  //     <MobilePoolFooter
+  //       expanded={expanded}
+  //     />
+  //   </Grid>
+  // )
+
+  const {description, ...dataNoDescription} = data
+  const renderHeader = () => (
+    <React.Fragment>
+      {/*<Header*/}
+      {/*    name={data.name}*/}
+      {/*    hash={data.hash}*/}
+      {/*    profitabilityPosition={data.profitabilityPosition}*/}
+      {/*/>*/}
+      <Content data={dataNoDescription} />
+    </React.Fragment>
+  )
+
+  // rightSide={<ProfitabilityPosition value={data.profitabilityPosition}/>}
   return (
     <StakepoolMobileCard
       expanded={isOpen}
@@ -157,6 +190,7 @@ const SimpleMobileStakepoolCard = React.memo(({isOpen, toggle, data}) => {
           name={data.name}
           hash={data.hash}
           profitabilityPosition={data.profitabilityPosition}
+          showDelegateButton={isYoroi}
         />
       }
       renderHeader={renderHeader}
@@ -165,7 +199,7 @@ const SimpleMobileStakepoolCard = React.memo(({isOpen, toggle, data}) => {
   )
 })
 
-const SimpleDesktopStakepoolCard = ({isOpen, toggle, data}) => {
+const SimpleDesktopStakepoolCard = ({isOpen, toggle, data, isYoroi}) => {
   const classes = useContentStyles()
 
   const renderExpandedArea = () => (
@@ -180,6 +214,7 @@ const SimpleDesktopStakepoolCard = ({isOpen, toggle, data}) => {
         name={data.name}
         hash={data.hash}
         profitabilityPosition={data.profitabilityPosition}
+        showDelegateButton={isYoroi}
       />
       <Content data={data} />
     </React.Fragment>
@@ -200,12 +235,13 @@ const SimpleDesktopStakepoolCard = ({isOpen, toggle, data}) => {
 
 type Props = {
   data: Object, // TODO: type better
+  isYoroi: boolean,
 }
 
-const SimpleStakepoolCard = ({data}: Props) => (
+const SimpleStakepoolCard = ({data, isYoroi}: Props) => (
   <WithModalState>
     {({isOpen, toggle}) => {
-      const props = {isOpen, toggle, data}
+      const props = {isOpen, toggle, data, isYoroi}
       return (
         <React.Fragment>
           <MobileOnly>

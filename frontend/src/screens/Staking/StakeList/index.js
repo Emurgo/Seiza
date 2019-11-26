@@ -51,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const StakeList = ({onLoadMore, stakePools, hasMore, loading, StakepoolCard}) => {
+const StakeList = ({onLoadMore, stakePools, hasMore, loading, StakepoolCard, isYoroi}) => {
   const {translate: tr} = useI18n()
   const classes = useStyles()
 
@@ -61,7 +61,7 @@ const StakeList = ({onLoadMore, stakePools, hasMore, loading, StakepoolCard}) =>
     <Overlay.Wrapper className="w-100">
       {stakePools.map((pool) => (
         <Grid item key={pool.hash} className={classes.rowWrapper}>
-          <StakepoolCard data={pool} />
+          <StakepoolCard data={pool} isYoroi={isYoroi} />
         </Grid>
       ))}
       {hasMore ? (
@@ -126,9 +126,11 @@ const useGetStakeListData = () => {
 export const StakeListLayout = ({
   StakepoolCard,
   TopBar,
+  isYoroi,
 }: {
   StakepoolCard: React$ComponentType<any>,
   TopBar: React$ComponentType<any>,
+  isYoroi: boolean,
 }) => {
   const {translate: tr} = useI18n()
   const classes = useStyles()
@@ -170,7 +172,7 @@ export const StakeListLayout = ({
         ) : (
           <StakeList
             StakepoolCard={StakepoolCard}
-            {...{loading, stakePools, onLoadMore, hasMore}}
+            {...{loading, stakePools, onLoadMore, hasMore, isYoroi}}
           />
         )}
       </Grid>

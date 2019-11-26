@@ -7,6 +7,7 @@ import {Typography} from '@material-ui/core'
 
 import {useI18n} from '@/i18n/helpers'
 import {useUserAgent} from '@/components/context/userAgent'
+import config from '@/config'
 
 const messages = defineMessages({
   unsupportedBrowser: 'You are using an unsupported browser.',
@@ -44,7 +45,7 @@ const UnsupportedBrowserBanner = () => {
 const UnsupportedBrowserBannerWrapper = () => {
   const {isCrawler, isSupportedBrowser} = useUserAgent()
 
-  if (isCrawler || isSupportedBrowser) return null
+  if (isCrawler || isSupportedBrowser || config.isYoroi) return null
 
   return <UnsupportedBrowserBanner />
 }

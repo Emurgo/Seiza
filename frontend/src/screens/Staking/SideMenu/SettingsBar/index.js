@@ -30,6 +30,7 @@ import ActionsBar from './ActionsBar'
 import AutoSaveBar from './AutoSaveBar'
 import OpenInSeiza from './OpenInSeiza'
 import {useLoadSelectedPoolsData} from './dataLoaders'
+import {YoroiCallback} from '../../../../helpers/iframeToYoroiMessaging'
 
 const useMobileSettingsButtonStyles = makeStyles((theme) => ({
   wrapper: {
@@ -199,28 +200,15 @@ const MobileSettingsBar = ({selectedPools, error}: Props) => {
   )
 }
 
-const relevantDataForYoroi = (selectedPools) => {
-  return _.map(selectedPools, _.partialRight(_.pick, ['name', 'poolHash']))
-}
-
-const YoroiDelegate = ({selectedPools}) => {
-  const delegate = useCallback(() => {
-    window.parent.postMessage(
-      relevantDataForYoroi(selectedPools),
-      `chrome-extension://${config.yoroiChromeExtensionHash}/main_window.html#/staking`
-    )
-    window.parent.postMessage(
-      relevantDataForYoroi(selectedPools),
-      `moz-extension://${config.yoroiFirefoxExtensionHash}/main_window.html#/staking`
-    )
-  }, [selectedPools])
-
-  return <DelegateButton onClick={delegate} disabled={selectedPools.length === 0} />
-}
-
 const MenuItemWrapper = ({children}) => {
   const classes = useStyles()
   return <div className={classes.resetButton}>{children}</div>
+}
+
+const YoroiDelegate = ({selectedPools}) => {
+  return (
+    <DelegateButton onClick={YoroiCallback(selectedPools)} disabled={selectedPools.length === 0} />
+  )
 }
 
 const DesktopSettingsBar = ({selectedPools, error}: Props) => {
