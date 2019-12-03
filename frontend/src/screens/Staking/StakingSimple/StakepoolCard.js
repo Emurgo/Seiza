@@ -37,6 +37,7 @@ const messages = defineMessages({
   estimatedRewardsTooltip:
     'To also show estimate in ADA, please enter your ADA amount into the field besides Search field',
   profitability: 'Profitability position',
+  delegate: 'Delegate',
 })
 
 const useHeaderStyles = makeStyles(({palette, spacing, breakpoints}) => ({
@@ -66,6 +67,14 @@ const useHeaderStyles = makeStyles(({palette, spacing, breakpoints}) => ({
   profitabilityTypography: {
     fontSize: 24,
   },
+  delegateButton: {
+    background: 'linear-gradient(225deg, #F14D78 0%, #1A44B7 100%)',
+    borderRadius: '23px',
+    boxShadow: '0 8px 25px 0 rgba(18,5,70,0.19)',
+    paddingLeft: spacing(3),
+    paddingRight: spacing(3),
+    color: '#ffffff',
+  },
 }))
 
 const useContentStyles = makeStyles(({palette, spacing, breakpoints}) => ({
@@ -94,6 +103,7 @@ const ProfitabilityPosition = ({value}) => {
 
 const Header = ({name, hash, profitabilityPosition, showDelegateButton}) => {
   const classes = useHeaderStyles()
+  const {translate: tr} = useI18n()
   const selectedPool = {
     name,
     poolHash: hash,
@@ -114,8 +124,8 @@ const Header = ({name, hash, profitabilityPosition, showDelegateButton}) => {
         <Grid container direction="row" justify="flex-end">
           <ProfitabilityPosition value={profitabilityPosition} />
           {showDelegateButton ? (
-            <Button variant="primary" onClick={YoroiCallback([selectedPool])} block>
-              Delegate
+            <Button variant="primary" onClick={YoroiCallback([selectedPool])} className={classes.delegateButton} block >
+              {tr(messages.delegate)}
             </Button>
           ) : (
             <div />
