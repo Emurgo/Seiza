@@ -64,6 +64,11 @@ const useHeaderStyles = makeStyles(({palette, spacing, breakpoints}) => ({
     //   display: 'initial',
     // },
   },
+  profitabilityTypographyBlock: {
+    display: 'flex',
+    alignItems: 'center',
+    marginRight: spacing(3),
+  },
   profitabilityTypography: {
     fontSize: 24,
   },
@@ -92,10 +97,12 @@ const ProfitabilityPosition = ({value}) => {
   return (
     <Tooltip title={tr(messages.profitability)} placement="bottom">
       <div className="d-flex">
-        <Typography color="textSecondary" className={classes.profitabilityTypography}>
-          #&nbsp;
-        </Typography>
-        <NavTypography className={classes.profitabilityTypography}>{value}</NavTypography>
+        <div className={classes.profitabilityTypographyBlock}>
+          <Typography color="textSecondary" className={classes.profitabilityTypography}>
+            #&nbsp;
+          </Typography>
+          <NavTypography className={classes.profitabilityTypography}>{value}</NavTypography>
+        </div>
       </div>
     </Tooltip>
   )
