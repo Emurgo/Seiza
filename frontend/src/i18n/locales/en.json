@@ -587,6 +587,7 @@
   "screens.Staking.StakingSimple.StakepoolCard.addPool": "Add",
   "screens.Staking.StakingSimple.StakepoolCard.ageLabel": "Age:",
   "screens.Staking.StakingSimple.StakepoolCard.ageValue": "{epochCount, plural, =0 {# epochs} one {# epoch} other {# epochs}}",
+  "screens.Staking.StakingSimple.StakepoolCard.delegate": "Delegate",
   "screens.Staking.StakingSimple.StakepoolCard.estimatedRewards": "Rewards (Month):",
   "screens.Staking.StakingSimple.StakepoolCard.estimatedRewardsTooltip": "To also show estimate in ADA, please enter your ADA amount into the field besides Search field",
   "screens.Staking.StakingSimple.StakepoolCard.hideDesc": "Hide description",
