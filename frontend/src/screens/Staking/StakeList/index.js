@@ -39,6 +39,9 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: theme.spacing(7),
     paddingRight: theme.spacing(7),
   },
+  loadMoreForYoroi: {
+    borderRadius: '8px',
+  },
   loadMoreWrapper: {
     width: '100%',
   },
@@ -67,15 +70,25 @@ const StakeList = ({onLoadMore, stakePools, hasMore, loading, StakepoolCard, isY
       {hasMore ? (
         <Grid item className={classes.loadMoreWrapper}>
           <Grid container justify="center" direction="row">
-            <Button
-              variant="contained"
-              rounded
-              gradient
-              className={classes.loadMore}
-              onClick={onLoadMore}
-            >
-              {tr(messages.loadMore)}
-            </Button>
+            {isYoroi ? (
+              <Button
+                variant="contained"
+                className={`${classes.loadMore} ${classes.loadMoreForYoroi}`}
+                onClick={onLoadMore}
+              >
+                {tr(messages.loadMore)}
+              </Button>
+            ) : (
+              <Button
+                variant="contained"
+                rounded
+                gradient
+                className={classes.loadMore}
+                onClick={onLoadMore}
+              >
+                {tr(messages.loadMore)}
+              </Button>
+            )}
           </Grid>
         </Grid>
       ) : (
