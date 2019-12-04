@@ -73,12 +73,17 @@ const useHeaderStyles = makeStyles(({palette, spacing, breakpoints}) => ({
     fontSize: 24,
   },
   delegateButton: {
-    background: 'linear-gradient(225deg, #F14D78 0%, #1A44B7 100%)',
-    borderRadius: '23px',
-    boxShadow: '0 8px 25px 0 rgba(18,5,70,0.19)',
-    paddingLeft: spacing(3),
-    paddingRight: spacing(3),
-    color: '#ffffff',
+    'background': 'linear-gradient(225deg, #F14D78 0%, #1A44B7 100%)',
+    'boxShadow': '0 8px 25px 0 rgba(18,5,70,0.19)',
+    'paddingLeft': spacing(3),
+    'paddingRight': spacing(3),
+    'color': '#ffffff',
+    '&:hover': {
+      backgroundColor: '#1A44B7',
+    },
+    '&:focus, &:active': {
+      backgroundColor: '#3154CB',
+    },
   },
 }))
 
@@ -131,7 +136,11 @@ const Header = ({name, hash, profitabilityPosition, showDelegateButton}) => {
         <Grid container direction="row" justify="flex-end">
           <ProfitabilityPosition value={profitabilityPosition} />
           {showDelegateButton ? (
-            <Button variant="primary" onClick={YoroiCallback([selectedPool])} className={classes.delegateButton} block >
+            <Button
+              onClick={YoroiCallback([selectedPool])}
+              className={classes.delegateButton}
+              rounded
+            >
               {tr(messages.delegate)}
             </Button>
           ) : (
