@@ -179,7 +179,11 @@ const FullWidthLayout = ({children}) => {
 
 const LayoutedStakePoolList = () => (
   <CenteredLayout>
-    <StakeListLayout StakepoolCard={StakepoolCard} TopBar={AdvancedStakingTopBar} />
+    <StakeListLayout
+      StakepoolCard={StakepoolCard}
+      TopBar={AdvancedStakingTopBar}
+      isYoroi={config.isYoroi}
+    />
   </CenteredLayout>
 )
 const LayoutedComparisonMatrix = () => (
