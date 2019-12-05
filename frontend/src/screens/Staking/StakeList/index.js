@@ -40,7 +40,13 @@ const useStyles = makeStyles((theme) => ({
     paddingRight: theme.spacing(7),
   },
   loadMoreForYoroi: {
-    borderRadius: '8px',
+    'borderRadius': '8px',
+    '&:hover': {
+      backgroundColor: '#1A44B7',
+    },
+    '&:focus, &:active': {
+      backgroundColor: '#3154CB',
+    },
   },
   loadMoreWrapper: {
     width: '100%',
