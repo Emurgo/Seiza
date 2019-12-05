@@ -96,6 +96,12 @@ const useContentStyles = makeStyles(({palette, spacing, breakpoints}) => ({
   },
 }))
 
+const useDelegateBlockStyles = makeStyles(({palette, spacing, breakpoints}) => ({
+  block: {
+    paddingBottom: spacing(4),
+  },
+}))
+
 const ProfitabilityPosition = ({value}) => {
   const classes = useHeaderStyles()
   const {translate: tr} = useI18n()
@@ -169,7 +175,7 @@ const Content = ({data}) => {
   )
 }
 
-const DesktopPoolFooter = ({expanded}) => {
+const PoolFooter = ({expanded}) => {
   const {translate: tr} = useI18n()
 
   const label = tr(expanded ? messages.hideDesc : messages.showDesc)
@@ -177,8 +183,14 @@ const DesktopPoolFooter = ({expanded}) => {
 }
 
 const SimpleMobileStakepoolCard = React.memo(({isOpen, toggle, data, isYoroi}) => {
-  // const renderExpandedArea = () => <Content data={data} />
   const classes = useContentStyles()
+  const classesH = useHeaderStyles()
+  const classesD = useDelegateBlockStyles()
+  const {translate: tr} = useI18n()
+  const selectedPool = {
+    name: data.name,
+    poolHash: data.poolHash,
+  }
 
   const renderExpandedArea = () => (
     <div className={classes.extraContent}>
@@ -186,41 +198,47 @@ const SimpleMobileStakepoolCard = React.memo(({isOpen, toggle, data, isYoroi}) =
     </div>
   )
 
-  // const renderHeader = (expanded) => (
-  //   <Grid container direction="column">
-  //     <MobilePoolFooter
-  //       expanded={expanded}
-  //     />
-  //   </Grid>
-  // )
-
   const {description, ...dataNoDescription} = data
   const renderHeader = () => (
     <React.Fragment>
-      {/*<Header*/}
-      {/*    name={data.name}*/}
-      {/*    hash={data.hash}*/}
-      {/*    profitabilityPosition={data.profitabilityPosition}*/}
-      {/*/>*/}
+      <Header
+        name={data.name}
+        hash={data.hash}
+        profitabilityPosition={data.profitabilityPosition}
+        showDelegateButton={false}
+      />
       <Content data={dataNoDescription} />
+      { isYoroi ? (
+        <Grid
+          container
+          direction="row"
+          justify="center"
+          alignItems="center"
+          className={classesD.block}
+        >
+          <Button
+            onClick={YoroiCallback([selectedPool])}
+            className={classesH.delegateButton}
+            rounded
+          >
+            {tr(messages.delegate)}
+          </Button>
+        </Grid>
+      ) : (
+        <div />
+      )}
     </React.Fragment>
   )
 
-  // rightSide={<ProfitabilityPosition value={data.profitabilityPosition}/>}
+  const renderFooter = (expanded) => <PoolFooter expanded={expanded} />
+
   return (
-    <StakepoolMobileCard
+    <ExpandableCard
       expanded={isOpen}
       onChange={toggle}
-      nonExpandableHeader={
-        <Header
-          name={data.name}
-          hash={data.hash}
-          profitabilityPosition={data.profitabilityPosition}
-          showDelegateButton={isYoroi}
-        />
-      }
       renderHeader={renderHeader}
       renderExpandedArea={renderExpandedArea}
+      renderFooter={renderFooter}
     />
   )
 })
@@ -246,7 +264,7 @@ const SimpleDesktopStakepoolCard = ({isOpen, toggle, data, isYoroi}) => {
     </React.Fragment>
   )
 
-  const renderFooter = (expanded) => <DesktopPoolFooter expanded={expanded} />
+  const renderFooter = (expanded) => <PoolFooter expanded={expanded} />
 
   return (
     <ExpandableCard
