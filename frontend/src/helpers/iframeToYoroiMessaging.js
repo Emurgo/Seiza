@@ -1,6 +1,7 @@
 // @flow
 import React, {useCallback} from 'react'
 import config from '@/config'
+import _ from 'lodash'
 
 const relevantDataForYoroi = (selectedPools) => {
   const pools = _.map(selectedPools, _.partialRight(_.pick, ['name', 'poolHash']))
