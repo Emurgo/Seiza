@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
   },
   searchWrapper: {
     flex: 1,
-    marginRight: config.isYoroi ? '0px' : '20px', // as we hide userAdaWrapper it looks weird to have right margin
+    marginRight: '20px',
   },
   topSearchWrapper: {
     flex: 1,
