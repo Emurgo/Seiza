@@ -62,7 +62,7 @@ const SortByBar = ({totalPoolsCount, shownPoolsCount, loading, error}: Props) =>
             {value: SORT_BY_OPTIONS.REVENUE, label: tr(messages.revenue)},
             {value: SORT_BY_OPTIONS.PERFORMANCE, label: tr(messages.performance)},
             {value: SORT_BY_OPTIONS.FULLNESS, label: tr(messages.fullness)},
-            {value: SORT_BY_OPTIONS.PLEDGE, label: tr(messages.pledge)},
+            // {value: SORT_BY_OPTIONS.PLEDGE, label: tr(messages.pledge)},
             {value: SORT_BY_OPTIONS.MARGINS, label: tr(messages.margins)},
             {value: SORT_BY_OPTIONS.STAKE, label: tr(messages.stake)},
           ]}
