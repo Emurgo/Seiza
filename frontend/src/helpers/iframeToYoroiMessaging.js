@@ -8,8 +8,8 @@ import {useManageSimpleContextValue} from '../screens/Staking/context/utils'
 type SelectedPools = Array<{name: string, poolHash: string}>
 
 export const Source = Object.freeze({
-  CHROME_EXTENSION: 'chrome-extension',
-  FIREFOX_EXTENSION: 'moz-extension',
+  CHROME_EXTENSION: 'chrome',
+  FIREFOX_EXTENSION: 'firefox',
   MOBILE: 'mobile',
 })
 export type SourceType = $Values<typeof Source>
@@ -38,18 +38,7 @@ export const YoroiCallback = (selectedPools: SelectedPools) => {
         )
         break
       case Source.MOBILE:
-        // TODO : test if this works on mobile
-        if (window.ReactNativeWebView) {
-          window.ReactNativeWebView.postMessage(
-            encodedDataForYoroi,
-            'yoroi://simple-staking/selection'
-          )
-        } else {
-          window.parent.postMessage(
-            encodedDataForYoroi,
-            'yoroi://simple-staking/selection'
-          )
-        }
+        window.parent.postMessage(encodedDataForYoroi, 'yoroi://simple-staking/selection')
         break
       default:
         throw new Error(`Unknown source: ${source}`)
