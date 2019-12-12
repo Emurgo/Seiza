@@ -9,7 +9,7 @@ import {fade} from '@material-ui/core/styles/colorManipulator'
 
 import {routeTo} from '@/helpers/routes'
 import {useI18n} from '@/i18n/helpers'
-import {LiteTabs, LiteTab, MobileOnly, DesktopOnly} from '@/components/visual'
+import {LiteTabs, LiteTab, MobileOnly, DesktopOnly, Tooltip} from '@/components/visual'
 import useTabState from '@/components/hooks/useTabState'
 import {NavbarLink} from '@/components/common/Navbar'
 import {NavLink} from '@/components/common'
@@ -28,6 +28,7 @@ const navigationMessages = defineMessages({
   charts: 'Charts',
   location: 'Location',
   people: 'People',
+  disabledText: 'Coming soon',
 })
 
 const useMenuItemStyles = makeStyles(({palette, spacing}) => {
@@ -52,24 +53,38 @@ const useMenuItemStyles = makeStyles(({palette, spacing}) => {
       color: palette.primary.main,
       boxShadow: shadow,
     },
+    comingSoon: {
+      'background': palette.background.paper,
+      'color': palette.contentUnfocus,
+      '&:hover': {
+        background: palette.background.paper,
+        boxShadow: 'none',
+      },
+    },
     menuItemText: {
       paddingLeft: spacing(2),
+    },
+    comingSoonText: {
+      color: palette.contentUnfocus,
     },
   }
 })
 
-const MenuItem = ({active, label, icon}) => {
+const MenuItem = ({active, comingSoon, label, icon}) => {
   const classes = useMenuItemStyles()
   return (
     <Grid
       container
       direction="row"
       alignItems="center"
-      className={cn(classes.link, active && classes.active)}
+      className={cn(classes.link, active && classes.active, comingSoon && classes.comingSoon)}
     >
       {icon}
 
-      <NavbarLink className={classes.menuItemText} isActive={active}>
+      <NavbarLink
+        className={cn(classes.menuItemText, comingSoon && classes.comingSoonText)}
+        isActive={active}
+      >
         {label}
       </NavbarLink>
     </Grid>
@@ -96,6 +111,7 @@ type NavItems = Array<{|
   i18nLabel: string,
   icon: React$Node,
   id: string,
+  isComingSoon: boolean,
 |}>
 
 const NAV_ITEMS_IDS = {
@@ -113,36 +129,42 @@ const navItems: NavItems = [
     i18nLabel: navigationMessages.list,
     icon: <ListIcon color="inherit" />,
     id: NAV_ITEMS_IDS.POOL_LIST,
+    isComingSoon: false,
   },
   {
     link: routeTo.stakingCenter.poolComparison(),
     i18nLabel: navigationMessages.comparison,
     icon: <ComparisonMatrixIcon color="inherit" />,
     id: NAV_ITEMS_IDS.COMPARISON_MATRIX,
+    isComingSoon: true,
   },
   {
     link: routeTo.stakingCenter.history(),
     i18nLabel: navigationMessages.history,
     icon: <HistoryIcon color="inherit" />,
     id: NAV_ITEMS_IDS.HISTORY,
+    isComingSoon: true,
   },
   {
     link: routeTo.stakingCenter.charts(),
     i18nLabel: navigationMessages.charts,
     icon: <ChartsIcon color="inherit" />,
     id: NAV_ITEMS_IDS.CHARTS,
+    isComingSoon: true,
   },
   {
     link: routeTo.stakingCenter.location(),
     i18nLabel: navigationMessages.location,
     icon: <LocationIcon color="inherit" />,
     id: NAV_ITEMS_IDS.LOCATION,
+    isComingSoon: true,
   },
   {
     link: routeTo.stakingCenter.people(),
     i18nLabel: navigationMessages.people,
     icon: <PeopleIcon color="inherit" />,
     id: NAV_ITEMS_IDS.PEOPLE,
+    isComingSoon: true,
   },
 ].filter(({link}) => link)
 
@@ -188,10 +210,19 @@ const DesktopNavigation = () => {
 
   return (
     <div className={classes.navBar}>
-      {navItems.map(({link, i18nLabel, icon, id}) => {
-        return (
+      {navItems.map(({link, i18nLabel, icon, id, isComingSoon}) => {
+        return isComingSoon ? (
+          <Tooltip title={tr(navigationMessages.disabledText)} placement="bottom">
+            {/* has to be wrapped in extra div to render properly */}
+            <div>
+              <MenuItem active={false} comingSoon label={tr(i18nLabel)} icon={icon} />
+            </div>
+          </Tooltip>
+        ) : (
           <NavLink key={link} to={link} className={classes.href}>
-            {(isActive) => <MenuItem active={isActive} label={tr(i18nLabel)} icon={icon} />}
+            {(isActive) => (
+              <MenuItem comingSoon={false} active={isActive} label={tr(i18nLabel)} icon={icon} />
+            )}
           </NavLink>
         )
       })}
