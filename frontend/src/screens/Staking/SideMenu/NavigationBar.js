@@ -232,9 +232,9 @@ const DesktopNavigation = () => {
 
 const NavigationBar = () => (
   <React.Fragment>
-    <MobileOnly>
+    {/* <MobileOnly>
       <TabsHeader />
-    </MobileOnly>
+    </MobileOnly> */}
     <DesktopOnly className="h-100">
       <DesktopNavigation />
     </DesktopOnly>
