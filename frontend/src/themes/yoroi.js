@@ -16,16 +16,16 @@ const theme = _.merge({}, common, {
     gradient: 'linear-gradient(97deg, #C5D9F5 0%, #CAF2ED 100%)',
     buttons: {
       getContainedGradient: (degree = 90) => ({
-        background: `linear-gradient(${degree}deg, #3154CB 0%, #17D1AA 100%)`,
-        hover: `linear-gradient(${degree}deg, #17D1AA 0%,  #17D1AA 100%)`,
+        background: `linear-gradient(${degree}deg, #F14D78 0%, #1A44B7 100%)`,
+        hover: `linear-gradient(${degree}deg, #1A44B7 0%,  #1A44B7 100%)`,
         textColor: '#FFFFFF',
         textHover: '#FFFFFF',
       }),
       getOutlinedGradient: (degree = 90) => ({
-        background: `linear-gradient(${degree}deg, #3154CB 0%, #17D1AA 100%)`,
-        hover: `linear-gradient(${degree}deg, #17D1AA 0%,  #17D1AA 100%)`,
-        textColor: '#3E60CD',
-        textHover: '#17D1AA',
+        background: `linear-gradient(${degree}deg, #F14D78 0%, #1A44B7 100%)`,
+        hover: `linear-gradient(${degree}deg, #1A44B7 0%,  #1A44B7 100%)`,
+        textColor: '#3154CB',
+        textHover: '#1A44B7',
       }),
     },
     // Note:

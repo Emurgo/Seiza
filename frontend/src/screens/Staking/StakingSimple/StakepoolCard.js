@@ -73,17 +73,8 @@ const useHeaderStyles = makeStyles(({palette, spacing, breakpoints}) => ({
     fontSize: 24,
   },
   delegateButton: {
-    'background': 'linear-gradient(225deg, #F14D78 0%, #1A44B7 100%)',
-    'boxShadow': '0 8px 25px 0 rgba(18,5,70,0.19)',
-    'paddingLeft': spacing(3),
-    'paddingRight': spacing(3),
-    'color': '#ffffff',
-    '&:hover': {
-      backgroundColor: '#1A44B7',
-    },
-    '&:focus, &:active': {
-      backgroundColor: '#3154CB',
-    },
+    paddingLeft: spacing(3),
+    paddingRight: spacing(3),
   },
 }))
 
@@ -143,9 +134,12 @@ const Header = ({name, hash, profitabilityPosition, showDelegateButton}) => {
           <ProfitabilityPosition value={profitabilityPosition} />
           {showDelegateButton ? (
             <Button
+              gradientDegree={225}
               onClick={YoroiCallback([selectedPool])}
-              className={classes.delegateButton}
               rounded
+              variant="contained"
+              gradient
+              className={classes.delegateButton}
             >
               {tr(messages.delegate)}
             </Button>
@@ -208,7 +202,7 @@ const SimpleMobileStakepoolCard = React.memo(({isOpen, toggle, data, isYoroi}) =
         showDelegateButton={false}
       />
       <Content data={dataNoDescription} />
-      { isYoroi ? (
+      {isYoroi ? (
         <Grid
           container
           direction="row"
@@ -220,6 +214,9 @@ const SimpleMobileStakepoolCard = React.memo(({isOpen, toggle, data, isYoroi}) =
             onClick={YoroiCallback([selectedPool])}
             className={classesH.delegateButton}
             rounded
+            gradient
+            gradientDegree={225}
+            variant="contained"
           >
             {tr(messages.delegate)}
           </Button>
