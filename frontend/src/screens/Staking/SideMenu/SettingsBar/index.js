@@ -190,9 +190,11 @@ const MobileSettingsBar = ({selectedPools, error}: Props) => {
                 <PoolsToCompare selectedPools={selectedPools} />
               </div>
             </DialogContent>
+            {/*
             <DialogActions>
               <ActionsBar selectedPools={selectedPools} />
             </DialogActions>
+            */}
           </Dialog>
         </React.Fragment>
       )}
@@ -242,7 +244,7 @@ const DesktopSettingsBar = ({selectedPools, error}: Props) => {
         {error && <Error error={error} />}
         <PoolsToCompareCount selectedPools={selectedPools} />
         <PoolsToCompare selectedPools={selectedPools} />
-        <ActionsBar selectedPools={selectedPools} />
+        {/* <ActionsBar selectedPools={selectedPools} /> */}
       </Grid>
     </React.Fragment>
   )
