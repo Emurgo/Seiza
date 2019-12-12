@@ -224,10 +224,12 @@ const DesktopSettingsBar = ({selectedPools, error}: Props) => {
           <Grid container>
             <YoroiDelegate selectedPools={selectedPools} />
           </Grid>
-          <Divider />
-          <MenuItemWrapper>
-            <OpenInSeiza link={openInSeizaLink} />
-          </MenuItemWrapper>
+          {/*
+            <Divider />
+            <MenuItemWrapper>
+              <OpenInSeiza link={openInSeizaLink} />
+            </MenuItemWrapper>
+          */}
         </React.Fragment>
       ) : (
         <AutoSaveBar className={classes.autoSaveBar} />
