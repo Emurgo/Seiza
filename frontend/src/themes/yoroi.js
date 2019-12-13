@@ -54,6 +54,10 @@ const theme = _.merge({}, common, {
       contrastText: '#FFFFFF',
       background: '#2845B5',
     },
+    card: {
+      textTitle: '#38393D',
+      textContent: '#676970',
+    },
     warning: {
       color: '#FF805D',
       background: '#FFE2DA',
