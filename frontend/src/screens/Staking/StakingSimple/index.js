@@ -6,6 +6,7 @@ import {makeStyles} from '@material-ui/styles'
 import {DesktopOnly} from '@/components/visual'
 import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
 import Header from './Header'
+import YoroiHeader from './YoroiHeader'
 import config from '@/config'
 import {StakeListLayout} from '../StakeList'
 import {SimpleStakingTopBar} from '../StakeList/SearchAndFilterBar'
@@ -37,9 +38,7 @@ export default () => {
 
   return (
     <React.Fragment>
-      <DesktopOnly>
-        <Header />
-      </DesktopOnly>
+      <DesktopOnly>{config.isYoroi ? <YoroiHeader /> : <Header />}</DesktopOnly>
       <div ref={scrollToRef}>
         <StakingContextProvider autoSync={false}>
           <EstimatedRewardsModeProvider>
