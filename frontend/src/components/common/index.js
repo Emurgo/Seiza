@@ -19,6 +19,7 @@ export {
   default as HeaderCard,
   HeaderCardContainer,
   DefaultNonClickableHeaderCard,
+  YoroiNonClickableHeaderCard,
 } from './HeaderCard'
 export {default as Pagination, MobilePaginationDivider} from './Pagination'
 export {default as PoolEntityContent} from './PoolEntityContent'

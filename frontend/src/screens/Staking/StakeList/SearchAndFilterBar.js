@@ -270,7 +270,11 @@ export const SimpleStakingTopBar = () => {
 export const AdvancedStakingTopBar = () => {
   const classes = useStyles()
   const areFiltersChanged = useAreFiltersChanged()
-  const {showFilters, onToggleShowFilters, setShowFilters} = useFiltersState()
+  const {
+    // showFilters,
+    // onToggleShowFilters,
+    setShowFilters,
+  } = useFiltersState()
 
   const onSearch = useCallback(() => areFiltersChanged && setShowFilters(true), [
     areFiltersChanged,
@@ -281,13 +285,15 @@ export const AdvancedStakingTopBar = () => {
     <Grid container direction="column" justify="space-between" className={classes.wrapper}>
       <CommonTopBarLayout
         onSearch={onSearch}
-        rightSideElem={<FiltersButton open={showFilters} onClick={onToggleShowFilters} />}
+        // rightSideElem={<FiltersButton open={showFilters} onClick={onToggleShowFilters} />}
       />
+      {/*
       <Collapse in={showFilters}>
         <Grid item className={classes.filtersWrapper}>
           <Filters />
         </Grid>
       </Collapse>
+      */}
     </Grid>
   )
 }
