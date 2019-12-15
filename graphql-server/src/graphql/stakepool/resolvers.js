@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import BigNumber from 'bignumber.js'
 
-import {fetchBootstrapEraPool, fetchBootstrapEraPoolList} from './dataProviders'
+import {fetchBootstrapEraPool, fetchPoolList} from './dataProviders'
 
 import {currentStatusResolver} from '../status/resolvers'
 import {MOCKED_STAKEPOOLS} from './mockedPools'
@@ -25,7 +25,7 @@ const DEFAULT_PAGE_SIZE = 10
 const inRange = (v, from, to) => v >= from && v <= to
 
 const getPoolsData = async (context) => {
-  return await fetchBootstrapEraPoolList(context)
+  return await fetchPoolList(context)
   // NOTE(Nico): I had to comment this because it would
   // give me back `[ Promise { <pending> }, Promise { <pending> } ]`
   // return await poolList.map(async (pool) => {
@@ -88,8 +88,10 @@ export const pagedStakePoolListResolver = async (
 }
 
 const ageResolver = async (pool, args, context) => {
-  const currentEpoch = await currentStatusResolver(null, args, context).epochNumber()
-  return calculateAge(pool.createdAt, currentEpoch)
+  // TODO: Fix this
+  // const currentEpoch = await currentStatusResolver(null, args, context).epochNumber()
+  // return calculateAge(pool.createdAt, currentEpoch)
+  return 0
 }
 
 export default {
@@ -119,11 +121,14 @@ export default {
     age: ageResolver,
   },
   Query: {
+    // TODO: needs update
     stakePool: (root, args, context) =>
       fetchBootstrapEraPool(context, args.poolHash, args.epochNumber),
+    // TODO: needs updaet
     stakePools: (root, args, context) =>
       args.poolHashes.map((poolHash) => fetchBootstrapEraPool(context, poolHash, args.epochNumber)),
-    stakePoolList: (root, args, context) => fetchBootstrapEraPoolList(context, args.epochNumber),
+    // TODO: needs update
+    stakePoolList: (root, args, context) => fetchPoolList(context, args.epochNumber),
     pagedStakePoolList: (_, args, context) =>
       pagedStakePoolListResolver(context, args.cursor, args.pageSize, args.searchOptions),
     mockedStakePools: (root, args, context) => MOCKED_STAKEPOOLS,
