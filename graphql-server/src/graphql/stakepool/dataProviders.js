@@ -15,9 +15,17 @@ const genIntInRange = (from, to) => Math.floor(genFloatInRange(from, to))
 const ADA_DECIMALS = 1000000
 const PAGE_SIZE = 10
 
+const JORMUNGANDER_UNIX_TIMESTAMP_SEC = 1576246417
+const JORMUNGANDER_TS = JORMUNGANDER_UNIX_TIMESTAMP_SEC * 1000
+// NOTE(Nico): Rewards estimates are from https://staking.cardano.org/en/calculator/
+const dailyRewardPerADA = 0.000197
+const delegationRewardPercentage = 0.019666
+
+// TODO: I also need the ADA that’s part of the URL
 const mapToStandarizedPool = (res) => {
   // console.log(`mapToStandarizedPool::${res.pool_id}`)
   // console.log(res)
+
   const name =
     res.github_info !== null
       ? `(${res.github_info.info.ticker}) ${res.github_info.info.name}`
@@ -25,9 +33,12 @@ const mapToStandarizedPool = (res) => {
   const website = res.github_info !== null ? res.github_info.info.homepage : null
   const description = res.github_info !== null ? res.github_info.info.description : null
 
+  const margin = Math.round((100.0 * res.rewards.ratio[0]) / res.rewards.ratio[1]) / 100.0
+  const cost = res.rewards.fixed
+
   return {
     poolHash: res.pool_id,
-    createdAt: moment(BOOTSTRAP_TS), // TODO: fix
+    createdAt: moment((JORMUNGANDER_UNIX_TIMESTAMP_SEC + res.start_validity) * 1000),
     name,
     description,
     website,
@@ -50,11 +61,11 @@ const mapToStandarizedPool = (res) => {
           ada: '432',
         },
       },
-      cost: res.rewards.fixed, // TODO: Check that’s in lovelace
+      cost,
       fullness: 0.6 + genFloatInRange(-0.3, 0.2), // TODO: fix
-      margins: 0.3 + genFloatInRange(-0.1, 0.1), // TODO: fix
+      margins: margin,
       revenue: 0.82 + genFloatInRange(-0.1, 0.1), // TODO: fix
-      stakersCount: 3 + genIntInRange(-2, 10), // TODO: fiix
+      stakersCount: res.owners.length,
       ownerPledge: {
         declared: '14243227',
         actual: '14243227',
@@ -64,35 +75,19 @@ const mapToStandarizedPool = (res) => {
   }
 }
 
-const fetchPool = async ({elastic, E}, hash) => {
-  // const res = await elastic
-  //   .q('leader')
-  //   .filter(E.eq('leadId', hash))
-  //   .getSingleHit()
-  // return mapResToAPool(res)
-  // TODO: Fix this
-  const pools = await fetchPoolList({elastic, E}, 0)
-  pools[0].poolHash = hash
-  return pools[0]
-}
-
-export const fetchBootstrapEraPoolSummary = async (context, poolHash, epochNumber) => {
-  // TODO: use epochNumber when live data is available if needed
-  // to show something some info from summary after some certificate action
-  const pool = await fetchPool(context, poolHash)
-  assert(pool != null)
-  return pool.summary
-}
-
-export const fetchBootstrapEraPool = async (context, poolHash, epochNumber) => {
-  const pool = await fetchPool(context, poolHash)
-  assert(pool != null)
-  return {
-    // Note: We currently behave like if we expected separate request for summary
-    ..._.omit(pool, 'summary'),
-    _epochNumber: epochNumber,
-  }
-}
+// TODO(Nico): Enable for Seiza
+// const fetchPool = async ({elastic, E}, hash) => {
+//   // const res = await elastic
+//   //   .q('leader')
+//   //   .filter(E.eq('leadId', hash))
+//   //   .getSingleHit()
+//   // return mapResToAPool(res)
+//   // TODO: Fix this
+//   // const pools = await fetchPoolList({elastic, E}, 0)
+//   // pools[0].poolHash = hash
+//   console.log("Fetch pool yaya")
+//   return null
+// }
 
 const getPoolInfo = async ({elastic, owners}) => {
   const extractData = (result) => (result.hits.total > 0 ? result.hits.hits[0]._source : null)

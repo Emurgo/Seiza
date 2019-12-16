@@ -8,7 +8,7 @@ import {usePerformanceContext} from '../context/performance'
 import {useSearchTextContext} from '../context/searchText'
 import {useSortByContext} from '../context/sortBy'
 
-const PAGE_SIZE = 3
+const PAGE_SIZE = 10
 
 const formatPerformancetoGQL = (performance) => ({
   from: performance[0] / 100,

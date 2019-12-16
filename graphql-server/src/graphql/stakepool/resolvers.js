@@ -26,22 +26,16 @@ const inRange = (v, from, to) => v >= from && v <= to
 
 const getPoolsData = async (context) => {
   return await fetchPoolList(context)
-  // NOTE(Nico): I had to comment this because it would
-  // give me back `[ Promise { <pending> }, Promise { <pending> } ]`
-  // return await poolList.map(async (pool) => {
-  //   const summary = await fetchBootstrapEraPoolSummary(context, pool.poolHash)
-  //   return {
-  //     ...pool,
-  //     summary,
-  //   }
-  // })
 }
 
 const filterData = async (data, searchText, performance) => {
   const searchTextLowerCase = searchText.toLowerCase()
   const _filtered = searchText
-    ? data.filter((pool) => pool.name.toLowerCase().includes(searchTextLowerCase))
+    ? data.filter((pool) =>
+      pool.name !== null ? pool.name.toLowerCase().includes(searchTextLowerCase) : false
+    )
     : data
+
   return (await performance)
     ? _filtered.filter((pool) =>
       inRange(pool.summary.performance, performance.from, performance.to)
@@ -125,8 +119,8 @@ export default {
     stakePool: (root, args, context) =>
       fetchBootstrapEraPool(context, args.poolHash, args.epochNumber),
     // TODO: needs updaet
-    stakePools: (root, args, context) =>
-      args.poolHashes.map((poolHash) => fetchBootstrapEraPool(context, poolHash, args.epochNumber)),
+    stakePools: (root, args, context) => fetchPoolList(context, args.epochNumber),
+    // args.poolHashes.map((poolHash) => fetchBootstrapEraPool(context, poolHash, args.epochNumber)),
     // TODO: needs update
     stakePoolList: (root, args, context) => fetchPoolList(context, args.epochNumber),
     pagedStakePoolList: (_, args, context) =>
