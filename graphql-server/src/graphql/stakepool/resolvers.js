@@ -43,7 +43,19 @@ const filterData = async (data, searchText, performance) => {
     : _filtered
 }
 
-const sortData = async (data, sortBy) => await _.orderBy(data, (d) => d.summary[sortBy], 'desc')
+const sortData = async (data, sortBy) => {
+  switch (sortBy) {
+    // TODO: use enum
+    case 'revenue':
+      return await _.orderBy(data, (d) => d.summary[sortBy], 'desc')
+    case 'margins':
+      return await _.orderBy(data, (d) => d.summary[sortBy], 'asc')
+    case 'random':
+      return await _.orderBy(data, (d) => d.poolHash, 'desc')
+    default:
+      return data
+  }
+}
 
 const getFilteredAndSortedPoolsData = async (context, sortBy, searchText, performance, userAda) => {
   const poolData = await getPoolsData(context, userAda)

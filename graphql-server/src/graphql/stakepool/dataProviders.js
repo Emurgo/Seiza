@@ -29,8 +29,9 @@ const dailyAdaRewards = (adaAmount, marginStakepool, costStakepool) => {
 
 const revenue = (adaAmount, marginStakepool, costStakepool) => {
   return (
-    (dailyRewardPercentage * (1 - marginStakepool) * adaAmount - costStakepool) /
-    (dailyRewardPercentage * adaAmount)
+    1.0 *
+    ((dailyRewardPercentage * (1 - marginStakepool) * adaAmount - costStakepool) /
+      (dailyRewardPercentage * adaAmount))
   )
 }
 

@@ -12,6 +12,7 @@ import {SORT_BY_OPTIONS, useSortByContext} from '../context/sortBy'
 const messages = defineMessages({
   sortBy: 'Sort by',
   revenue: 'Revenue',
+  random: 'Random',
   performance: 'Performance',
   fullness: 'Fullness',
   pledge: 'Pledge',
@@ -60,11 +61,12 @@ const SortByBar = ({totalPoolsCount, shownPoolsCount, loading, error}: Props) =>
           className={classes.select}
           options={[
             {value: SORT_BY_OPTIONS.REVENUE, label: tr(messages.revenue)},
+            {value: SORT_BY_OPTIONS.RANDOM, label: tr(messages.random)},
             // {value: SORT_BY_OPTIONS.PERFORMANCE, label: tr(messages.performance)},
             // {value: SORT_BY_OPTIONS.FULLNESS, label: tr(messages.fullness)},
             // {value: SORT_BY_OPTIONS.PLEDGE, label: tr(messages.pledge)},
             {value: SORT_BY_OPTIONS.MARGINS, label: tr(messages.margins)},
-            {value: SORT_BY_OPTIONS.STAKE, label: tr(messages.stake)},
+            // {value: SORT_BY_OPTIONS.STAKE, label: tr(messages.stake)},
           ]}
         />
       </Grid>
