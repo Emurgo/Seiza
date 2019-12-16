@@ -95,7 +95,7 @@ export const useLoadPagedStakePoolList = () => {
         pageSize: PAGE_SIZE,
         searchOptions: {
           sortBy,
-          userAda,
+          userAda: userAda !== '' ? userAda : 0,
           searchText,
           performance: formatPerformancetoGQL(performance),
         },
