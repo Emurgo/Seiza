@@ -177,7 +177,7 @@ export const fetchPoolList = async ({elastic, E}, adaAmount) => {
 }
 
 const poolsDelegationRequestBody = {
-  size: 10000,
+  size: 0,
   aggs: {
     tmp_nest: {
       nested: {
@@ -194,6 +194,7 @@ const poolsDelegationRequestBody = {
             tmp_group_by: {
               terms: {
                 field: 'delegation.pool_id.keyword',
+                size: 10000,
               },
               aggs: {
                 tmp_select_latest: {
@@ -216,7 +217,7 @@ const poolsDelegationRequestBody = {
 }
 
 const poolsRequestBody = {
-  size: 10000,
+  size: 0,
   aggs: {
     tmp_nest: {
       nested: {
@@ -233,6 +234,7 @@ const poolsRequestBody = {
             tmp_group_by: {
               terms: {
                 field: 'pools.pool_id.keyword',
+                size: 10000,
               },
               aggs: {
                 tmp_select_latest: {
