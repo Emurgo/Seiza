@@ -16,14 +16,21 @@ const ADA_DECIMALS = 1000000
 const PAGE_SIZE = 10
 
 const mapToStandarizedPool = (res) => {
-  console.log(`mapToStandarizedPool::${res.pool_id}`)
-  console.log(res)
+  // console.log(`mapToStandarizedPool::${res.pool_id}`)
+  // console.log(res)
+  const name =
+    res.github_info !== null
+      ? `(${res.github_info.info.ticker}) ${res.github_info.info.name}`
+      : null
+  const website = res.github_info !== null ? res.github_info.info.homepage : null
+  const description = res.github_info !== null ? res.github_info.info.description : null
+
   return {
     poolHash: res.pool_id,
     createdAt: moment(BOOTSTRAP_TS), // TODO: fix
-    name: res.pool_id.slice(0, 5), // TODO: fix
-    description: `${res.keys.kes_bech32} ${res.keys.vrf_bech32}`, // TODO: fix
-    website: 'https://www.cardano.org/en/home/', // TODO: fix
+    name,
+    description,
+    website,
     summary: {
       adaStaked: res.delegation_after_this_tx,
       keysDelegating: 100 + genIntInRange(0, 100), // TODO: fix
@@ -87,6 +94,19 @@ export const fetchBootstrapEraPool = async (context, poolHash, epochNumber) => {
   }
 }
 
+const getPoolInfo = async ({elastic, owners}) => {
+  const extractData = (result) => (result.hits.total > 0 ? result.hits.hits[0]._source : null)
+  const ownerToRequest = (owner) => {
+    return elastic.rawSearch('pool-owner-info', poolOwnerRequestBody(owner))
+  }
+
+  const ownersRequest = owners.map(ownerToRequest)
+  const res = await Promise.all(ownersRequest)
+
+  const poolInfoPerOwner = res.map(extractData)
+  return poolInfoPerOwner !== null && poolInfoPerOwner.length > 0 ? poolInfoPerOwner[0] : null
+}
+
 // TODO: Check for pagination
 export const fetchPoolList = async ({elastic, E}, epochNumber) => {
   const extractData = (aggregations) => {
@@ -105,33 +125,41 @@ export const fetchPoolList = async ({elastic, E}, epochNumber) => {
   const poolsDelegationPromise = await elastic.rawSearch('tx', poolsDelegationRequestBody)
 
   const res = await Promise.all([poolsPromise, poolsDelegationPromise])
-  // console.log(res)
 
   const poolsData = extractData(res[0].aggregations)
   const delegationData = extractData(res[1].aggregations)
-  // console.log(poolsData)
-  // console.log(delegationData)
 
   const delegationHashmap = delegationData.reduce((map, delegate) => {
-    map[delegate.pool_id.toString()] = delegate.delegation_after_this_tx.full
+    map[delegate.pool_id] = delegate.delegation_after_this_tx.full
     return map
   }, {})
 
-  // console.log("delegation hashmap")
-  // console.log(delegationHashmap)
+  const githubPoolsPromises = poolsData.map((pool) => getPoolInfo({elastic, owners: pool.owners}))
+
+  const githubPoolsInfoArray = await Promise.all(githubPoolsPromises)
+
+  const githubPoolsInfoHashmap = githubPoolsInfoArray.filter(Boolean).reduce((map, pool) => {
+    map[pool.owner] = pool
+    return map
+  }, {})
 
   const pools = poolsData
-    .map((pool) => ({
-      ...pool,
-      delegation_after_this_tx:
-        delegationHashmap && delegationHashmap[pool.pool_id] !== null
-          ? Number(delegationHashmap[pool.pool_id])
-          : 0,
-    }))
+    .map((pool) => {
+      const github_info = pool.owners.map((owner) => githubPoolsInfoHashmap[owner]).filter(Boolean)
+
+      return {
+        ...pool,
+        github_info: github_info.length > 0 ? github_info[0] : null,
+        delegation_after_this_tx:
+          delegationHashmap && delegationHashmap[pool.pool_id] !== null
+            ? Number(delegationHashmap[pool.pool_id])
+            : 0,
+      }
+    })
     .map(mapToStandarizedPool)
 
-  console.log('POOLS!!')
-  console.log(pools)
+  // console.log('POOLS!!')
+  // console.log(pools)
 
   assert(pools.length > 0)
   return pools
@@ -213,4 +241,19 @@ const poolsRequestBody = {
       },
     },
   },
+}
+
+const poolOwnerRequestBody = (ownerId) => {
+  return {
+    query: {
+      term: {
+        owner: ownerId,
+      },
+    },
+    sort: {
+      time: {
+        order: 'desc',
+      },
+    },
+  }
 }
