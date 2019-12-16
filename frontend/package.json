@@ -9,7 +9,7 @@
     "build:heroku": "sentry-cli releases new $SOURCE_VERSION; REACT_APP_SENTRY_RELEASE_VERSION=$SOURCE_VERSION yarn build; sentry-cli releases files $SOURCE_VERSION upload-sourcemaps --ext map ./build",
     "start": "if test ! -z $(echo $NODE_HOME | grep heroku); then yarn start:heroku; else yarn start:local; fi",
     "start:local": "REACT_APP_SENTRY_RELEASE_VERSION=`sentry-cli releases propose-version` NODE_ENV=production node server.js",
-    "start:heroku": "REACT_APP_SENTRY_RELEASE_VERSION=$HEROKU_SLUG_COMMIT NODE_ENV=production node server.js",
+    "start:heroku": "REACT_APP_SENTRY_RELEASE_VERSION=$HEROKU_SLUG_COMMIT node server.js",
     "heroku-postbuild": "yarn build:heroku",
     "eslint": "eslint src --max-warnings=0",
     "flow": "flow",
