@@ -66,7 +66,7 @@ const mapToStandarizedPool = (res, adaAmount) => {
           ada: Math.ceil(dailyToAnnualAdaRewards(adaAmount, margin, cost)),
         },
         perMonth: {
-          percentage: dailyRewardPercentage * (1 - margin) * 365,
+          percentage: dailyRewardPercentage * (1 - margin) * 30,
           ada: Math.ceil(dailyToMonthlyAdaRewards(adaAmount, margin, cost)),
         },
         perEpoch: {
@@ -167,7 +167,7 @@ export const fetchPoolList = async ({elastic, E}, adaAmount) => {
             : 0,
       }
     })
-    .map((pool) => mapToStandarizedPool(pool, adaAmount.toNumber()))
+    .map((pool) => mapToStandarizedPool(pool, adaAmount.toNumber() * ADA_DECIMALS))
 
   console.log('POOLS!!')
   console.log(pools)
