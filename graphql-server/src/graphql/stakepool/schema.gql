@@ -99,6 +99,7 @@ input StakePoolSearchOptions {
   sortBy: StakePoolSortByEnum!
   searchText: String
   performance: PerformanceInterval
+  userAda: AdaAmount
 }
 
 type Query {

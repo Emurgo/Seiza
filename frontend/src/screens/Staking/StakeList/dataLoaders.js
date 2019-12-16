@@ -7,6 +7,7 @@ import {useQuery} from 'react-apollo-hooks'
 import {usePerformanceContext} from '../context/performance'
 import {useSearchTextContext} from '../context/searchText'
 import {useSortByContext} from '../context/sortBy'
+import {useUserAdaContext} from '../context/userAda'
 
 const PAGE_SIZE = 10
 
@@ -19,6 +20,7 @@ export const useLoadPagedStakePoolList = () => {
   const {sortBy} = useSortByContext()
   const {performance} = usePerformanceContext()
   const {searchText} = useSearchTextContext()
+  const {userAda} = useUserAdaContext()
   const cursor = null
 
   const {
@@ -75,6 +77,7 @@ export const useLoadPagedStakePoolList = () => {
         pageSize: PAGE_SIZE,
         searchOptions: {
           sortBy,
+          userAda,
           searchText,
           performance: formatPerformancetoGQL(performance),
         },
@@ -92,6 +95,7 @@ export const useLoadPagedStakePoolList = () => {
         pageSize: PAGE_SIZE,
         searchOptions: {
           sortBy,
+          userAda,
           searchText,
           performance: formatPerformancetoGQL(performance),
         },
@@ -110,7 +114,7 @@ export const useLoadPagedStakePoolList = () => {
         }
       },
     })
-  }, [pagedStakePoolList, fetchMore, performance, searchText, sortBy])
+  }, [pagedStakePoolList, fetchMore, sortBy, userAda, searchText, performance])
 
   return {loading, error, pagedStakePoolList, onLoadMore}
 }

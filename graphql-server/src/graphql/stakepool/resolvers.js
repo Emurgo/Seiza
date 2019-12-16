@@ -24,8 +24,8 @@ const DEFAULT_PAGE_SIZE = 10
 // Note: this does not do half-open interval intentionally
 const inRange = (v, from, to) => v >= from && v <= to
 
-const getPoolsData = async (context) => {
-  return await fetchPoolList(context)
+const getPoolsData = async (context, userAda) => {
+  return await fetchPoolList(context, userAda)
 }
 
 const filterData = async (data, searchText, performance) => {
@@ -45,8 +45,8 @@ const filterData = async (data, searchText, performance) => {
 
 const sortData = async (data, sortBy) => await _.orderBy(data, (d) => d.summary[sortBy], 'desc')
 
-const getFilteredAndSortedPoolsData = async (context, sortBy, searchText, performance) => {
-  const poolData = await getPoolsData(context)
+const getFilteredAndSortedPoolsData = async (context, sortBy, searchText, performance, userAda) => {
+  const poolData = await getPoolsData(context, userAda)
   const filteredData = await filterData(poolData, searchText, performance)
   return await sortData(filteredData, sortBy)
 }
@@ -57,8 +57,14 @@ export const pagedStakePoolListResolver = async (
   pageSize = DEFAULT_PAGE_SIZE,
   searchOptions
 ) => {
-  const {sortBy, searchText, performance} = searchOptions
-  const data = await getFilteredAndSortedPoolsData(context, sortBy, searchText, performance)
+  const {sortBy, searchText, performance, userAda} = searchOptions
+  const data = await getFilteredAndSortedPoolsData(
+    context,
+    sortBy,
+    searchText,
+    performance,
+    userAda
+  )
 
   if (!data.length) return NO_RESULTS
 
@@ -119,10 +125,9 @@ export default {
     stakePool: (root, args, context) =>
       fetchBootstrapEraPool(context, args.poolHash, args.epochNumber),
     // TODO: needs updaet
-    stakePools: (root, args, context) => fetchPoolList(context, args.epochNumber),
-    // args.poolHashes.map((poolHash) => fetchBootstrapEraPool(context, poolHash, args.epochNumber)),
+    stakePools: (root, args, context) => fetchPoolList(context),
     // TODO: needs update
-    stakePoolList: (root, args, context) => fetchPoolList(context, args.epochNumber),
+    stakePoolList: (root, args, context) => fetchPoolList(context),
     pagedStakePoolList: (_, args, context) =>
       pagedStakePoolListResolver(context, args.cursor, args.pageSize, args.searchOptions),
     mockedStakePools: (root, args, context) => MOCKED_STAKEPOOLS,

@@ -1,14 +1,7 @@
 import _ from 'lodash'
 import assert from 'assert'
-
 import moment from 'moment'
-
-const BYRON_MAINNET_START_TIME_SEC = 1506203091
-const GENESIS_UNIX_TIMESTAMP_SEC = parseInt(
-  process.env.GENESIS_UNIX_TIMESTAMP_SEC || BYRON_MAINNET_START_TIME_SEC,
-  10
-)
-const BOOTSTRAP_TS = GENESIS_UNIX_TIMESTAMP_SEC * 1000
+import adaAmount from '../scalars/adaAmount'
 
 const genFloatInRange = (from, to) => from + Math.random() * (to - from)
 const genIntInRange = (from, to) => Math.floor(genFloatInRange(from, to))
@@ -16,13 +9,33 @@ const ADA_DECIMALS = 1000000
 const PAGE_SIZE = 10
 
 const JORMUNGANDER_UNIX_TIMESTAMP_SEC = 1576246417
-const JORMUNGANDER_TS = JORMUNGANDER_UNIX_TIMESTAMP_SEC * 1000
 // NOTE(Nico): Rewards estimates are from https://staking.cardano.org/en/calculator/
 const dailyRewardPerADA = 0.000197
-const delegationRewardPercentage = 0.019666
+const dailyRewardPercentage = 0.019666
+const daysPerEpoch = 1
+const yearlyRewards = 0.071783
+const yearlyRewardsPercentage = 7.178316
+
+// TODO: this is wrong, but IOHK did it this way -- not compounding
+const dailyToAnnualAdaRewards = (adaAmount, marginStakepool, costStakepool) => {
+  return dailyRewardPercentage * (1 - marginStakepool) * 365 * adaAmount - costStakepool
+}
+const dailyToMonthlyAdaRewards = (adaAmount, marginStakepool, costStakepool) => {
+  return dailyRewardPercentage * (1 - marginStakepool) * 30 * adaAmount - costStakepool
+}
+const dailyAdaRewards = (adaAmount, marginStakepool, costStakepool) => {
+  return dailyRewardPercentage * (1 - marginStakepool) * adaAmount - costStakepool
+}
+
+const revenue = (adaAmount, marginStakepool, costStakepool) => {
+  return (
+    (dailyRewardPercentage * (1 - marginStakepool) * adaAmount - costStakepool) /
+    (dailyRewardPercentage * adaAmount)
+  )
+}
 
 // TODO: I also need the ADA that’s part of the URL
-const mapToStandarizedPool = (res) => {
+const mapToStandarizedPool = (res, adaAmount) => {
   // console.log(`mapToStandarizedPool::${res.pool_id}`)
   // console.log(res)
 
@@ -49,22 +62,22 @@ const mapToStandarizedPool = (res) => {
       rewards: `${genIntInRange(0, 100000 * ADA_DECIMALS)}`,
       estimatedRewards: {
         perYear: {
-          percentage: 0.8232323,
-          ada: '432543',
+          percentage: dailyRewardPercentage * (1 - margin) * 365,
+          ada: Math.ceil(dailyToAnnualAdaRewards(adaAmount, margin, cost)),
         },
         perMonth: {
-          percentage: 0.2132323,
-          ada: '4321',
+          percentage: dailyRewardPercentage * (1 - margin) * 365,
+          ada: Math.ceil(dailyToMonthlyAdaRewards(adaAmount, margin, cost)),
         },
         perEpoch: {
-          percentage: 0.1232323,
-          ada: '432',
+          percentage: dailyRewardPercentage * (1 - margin),
+          ada: Math.ceil(dailyAdaRewards(adaAmount, margin, cost)),
         },
       },
       cost,
       fullness: 0.6 + genFloatInRange(-0.3, 0.2), // TODO: fix
       margins: margin,
-      revenue: 0.82 + genFloatInRange(-0.1, 0.1), // TODO: fix
+      revenue: revenue(adaAmount, margin, cost),
       stakersCount: res.owners.length,
       ownerPledge: {
         declared: '14243227',
@@ -103,7 +116,10 @@ const getPoolInfo = async ({elastic, owners}) => {
 }
 
 // TODO: Check for pagination
-export const fetchPoolList = async ({elastic, E}, epochNumber) => {
+export const fetchPoolList = async ({elastic, E}, adaAmount) => {
+  console.log('AdaAmount')
+  console.log(adaAmount)
+
   const extractData = (aggregations) => {
     const {buckets} = aggregations.tmp_nest.tmp_filter.tmp_group_by
     return buckets.map((buck) => {
@@ -151,10 +167,10 @@ export const fetchPoolList = async ({elastic, E}, epochNumber) => {
             : 0,
       }
     })
-    .map(mapToStandarizedPool)
+    .map((pool) => mapToStandarizedPool(pool, adaAmount.toNumber()))
 
-  // console.log('POOLS!!')
-  // console.log(pools)
+  console.log('POOLS!!')
+  console.log(pools)
 
   assert(pools.length > 0)
   return pools
