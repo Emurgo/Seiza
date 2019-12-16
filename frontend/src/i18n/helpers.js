@@ -126,6 +126,7 @@ export type Formatters = {
   formatNumber: (x: ?number, options?: any) => string,
   formatInt: (x: ?number, options?: any) => string,
   formatPercent: (x: ?number, options?: any) => string,
+  formatPercentMark: (x: ?number, options?: any) => string,
   formatFiat: (x: ?number, options?: any) => string,
   // Ada is always as string
   formatAda: (x: ?string, options?: any) => string,
@@ -148,6 +149,10 @@ export const getIntlFormatters = (intl: any): Formatters => {
     })
 
   const _formatPercent = (x, options) => formatNumber(x, {style: 'percent', ...options})
+  const _formatPercentMark = (x, options) => {
+    const value = new BigNumber(x, 10)
+    return `${value.decimalPlaces(2).toString(10)}%`
+  }
   const _formatFiat = (x, options = {}) => {
     const {currency, digits = 4, ...rest} = options
     return formatNumber(x, {
@@ -221,6 +226,7 @@ export const getIntlFormatters = (intl: any): Formatters => {
 
   const formatInt = withSignAndDefaultValue(_formatInt)
   const formatPercent = withSignAndDefaultValue(_formatPercent)
+  const formatPercentMark = withSignAndDefaultValue(_formatPercentMark)
   const formatAda = withSignAndDefaultValue(_formatAda)
   const formatAdaSplit = compose(
     withDefaultValue,
@@ -242,6 +248,7 @@ export const getIntlFormatters = (intl: any): Formatters => {
     formatNumber,
     formatInt,
     formatPercent,
+    formatPercentMark,
     formatFiat,
     formatAda,
     formatAdaSplit,
