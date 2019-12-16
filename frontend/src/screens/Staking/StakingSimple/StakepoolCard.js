@@ -131,7 +131,8 @@ const Header = ({name, hash, profitabilityPosition, showDelegateButton}) => {
       </Grid>
       <Grid item xs={6} md={6} className={classes.headerRewards}>
         <Grid container direction="row" justify="flex-end">
-          <ProfitabilityPosition value={profitabilityPosition} />
+          {/*// TODO: Add when we have ranking*/}
+          {/*<ProfitabilityPosition value={profitabilityPosition} />*/}
           {showDelegateButton ? (
             <Button
               gradientDegree={225}
