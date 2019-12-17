@@ -26,9 +26,10 @@ export const YoroiCallback = (selectedPools: SelectedPools) => {
     const encodedDataForYoroi = relevantDataForYoroi(selectedPools)
     switch (source) {
       case Source.CHROME_EXTENSION:
+        const {value: chromeId} = useManageSimpleContextValue(false, 'chromeId', '')
         window.parent.postMessage(
           encodedDataForYoroi,
-          `chrome-extension://${config.yoroiChromeExtensionHash}/main_window.html#/staking`
+          `chrome-extension://${chromeId}/main_window.html#/staking`
         )
         break
       case Source.FIREFOX_EXTENSION:
