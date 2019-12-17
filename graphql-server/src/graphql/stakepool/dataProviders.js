@@ -19,13 +19,13 @@ const yearlyRewardsPercentage = 7.178316
 
 // TODO: this is wrong, but IOHK did it this way -- not compounding
 const dailyToAnnualAdaRewards = (adaAmount, marginStakepool, costStakepool) => {
-  return dailyRewardPercentage * (1 - marginStakepool) * 365 * adaAmount // - costStakepool
+  return dailyAdaRewards(adaAmount, marginStakepool, costStakepool) * 365
 }
 const dailyToMonthlyAdaRewards = (adaAmount, marginStakepool, costStakepool) => {
-  return dailyRewardPercentage * (1 - marginStakepool) * 30 * adaAmount // - costStakepool
+  return dailyAdaRewards(adaAmount, marginStakepool, costStakepool) * 30
 }
 const dailyAdaRewards = (adaAmount, marginStakepool, costStakepool) => {
-  return dailyRewardPercentage * (1 - marginStakepool) * adaAmount // - costStakepool
+  return (dailyRewardPercentage * (1 - marginStakepool) * adaAmount) / 100
 }
 
 const revenue = (adaAmount, marginStakepool, costStakepool) => {
@@ -34,6 +34,18 @@ const revenue = (adaAmount, marginStakepool, costStakepool) => {
     ((dailyRewardPercentage * (1 - marginStakepool) * revenueBaseValue - costStakepool) /
       (dailyRewardPercentage * adaAmount))
   )
+}
+
+const appendWebsiteIfAvailable = (description, website) => {
+  if (description !== null) {
+    return `${description} website: ${website}`
+  } else {
+    if (website !== null) {
+      return `Website: ${website}`
+    } else {
+      return null
+    }
+  }
 }
 
 // TODO: I also need the ADA that’s part of the URL
@@ -46,7 +58,10 @@ const mapToStandarizedPool = (res, adaAmount) => {
       ? `(${res.github_info.info.ticker}) ${res.github_info.info.name}`
       : null
   const website = res.github_info !== null ? res.github_info.info.homepage : null
-  const description = res.github_info !== null ? res.github_info.info.description : null
+  const description =
+    res.github_info !== null
+      ? appendWebsiteIfAvailable(res.github_info.info.description, website)
+      : 'No description.'
 
   const margin = Math.round((100.0 * res.rewards.ratio[0]) / res.rewards.ratio[1]) / 100.0
   const cost = res.rewards.fixed
