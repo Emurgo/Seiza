@@ -184,7 +184,7 @@ const SimpleMobileStakepoolCard = React.memo(({isOpen, toggle, data, isYoroi}) =
   const {translate: tr} = useI18n()
   const selectedPool = {
     name: data.name,
-    poolHash: data.poolHash,
+    poolHash: data.hash,
   }
 
   const renderExpandedArea = () => (
