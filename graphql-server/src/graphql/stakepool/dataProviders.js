@@ -12,25 +12,26 @@ const JORMUNGANDER_UNIX_TIMESTAMP_SEC = 1576246417
 // NOTE(Nico): Rewards estimates are from https://staking.cardano.org/en/calculator/
 const dailyRewardPerADA = 0.000197
 const dailyRewardPercentage = 0.019666
+const revenueBaseValue = 100000
 const daysPerEpoch = 1
 const yearlyRewards = 0.071783
 const yearlyRewardsPercentage = 7.178316
 
 // TODO: this is wrong, but IOHK did it this way -- not compounding
 const dailyToAnnualAdaRewards = (adaAmount, marginStakepool, costStakepool) => {
-  return dailyRewardPercentage * (1 - marginStakepool) * 365 * adaAmount - costStakepool
+  return dailyRewardPercentage * (1 - marginStakepool) * 365 * adaAmount // - costStakepool
 }
 const dailyToMonthlyAdaRewards = (adaAmount, marginStakepool, costStakepool) => {
-  return dailyRewardPercentage * (1 - marginStakepool) * 30 * adaAmount - costStakepool
+  return dailyRewardPercentage * (1 - marginStakepool) * 30 * adaAmount // - costStakepool
 }
 const dailyAdaRewards = (adaAmount, marginStakepool, costStakepool) => {
-  return dailyRewardPercentage * (1 - marginStakepool) * adaAmount - costStakepool
+  return dailyRewardPercentage * (1 - marginStakepool) * adaAmount // - costStakepool
 }
 
 const revenue = (adaAmount, marginStakepool, costStakepool) => {
   return (
     1.0 *
-    ((dailyRewardPercentage * (1 - marginStakepool) * adaAmount - costStakepool) /
+    ((dailyRewardPercentage * (1 - marginStakepool) * revenueBaseValue - costStakepool) /
       (dailyRewardPercentage * adaAmount))
   )
 }
@@ -118,8 +119,8 @@ const getPoolInfo = async ({elastic, owners}) => {
 
 // TODO: Check for pagination
 export const fetchPoolList = async ({elastic, E}, adaAmount) => {
-  console.log('AdaAmount')
-  console.log(adaAmount)
+  // console.log('AdaAmount')
+  // console.log(adaAmount)
 
   const extractData = (aggregations) => {
     const {buckets} = aggregations.tmp_nest.tmp_filter.tmp_group_by
@@ -170,8 +171,8 @@ export const fetchPoolList = async ({elastic, E}, adaAmount) => {
     })
     .map((pool) => mapToStandarizedPool(pool, adaAmount.toNumber() * ADA_DECIMALS))
 
-  console.log('POOLS!!')
-  console.log(pools)
+  // console.log('POOLS!!')
+  // console.log(pools)
 
   assert(pools.length > 0)
   return pools
