@@ -26,6 +26,8 @@ import {
   useCommonContentStyles,
 } from '../StakeList/stakepoolCardUtils'
 
+import {useManageSimpleContextValue} from '../context/utils'
+
 const messages = defineMessages({
   hideDesc: 'Hide description',
   showDesc: 'Full description',
@@ -38,6 +40,7 @@ const messages = defineMessages({
     'To also show estimate in ADA, please enter your ADA amount into the field besides Search field',
   profitability: 'Profitability position',
   delegate: 'Delegate',
+  delegated: 'Delegated',
 })
 
 const useHeaderStyles = makeStyles(({palette, spacing, breakpoints}) => ({
@@ -93,6 +96,15 @@ const useDelegateBlockStyles = makeStyles(({palette, spacing, breakpoints}) => (
   },
 }))
 
+const isDelegated = (poolHash: string, delegatedPools: string): boolean => {
+  try {
+    const decodedPools: Array<string> = JSON.parse(decodeURIComponent(delegatedPools))
+    return decodedPools.includes(poolHash)
+  } catch (err) {
+    return false
+  }
+}
+
 const ProfitabilityPosition = ({value}) => {
   const classes = useHeaderStyles()
   const {translate: tr} = useI18n()
@@ -111,6 +123,8 @@ const ProfitabilityPosition = ({value}) => {
 }
 
 const Header = ({name, hash, profitabilityPosition, showDelegateButton}) => {
+  const {value: delegatedPools} = useManageSimpleContextValue(false, 'delegated', '')
+  const delegated = isDelegated(hash, delegatedPools)
   const classes = useHeaderStyles()
   const {translate: tr} = useI18n()
   const selectedPool = {
@@ -141,8 +155,9 @@ const Header = ({name, hash, profitabilityPosition, showDelegateButton}) => {
               variant="contained"
               gradient
               className={classes.delegateButton}
+              disabled={delegated}
             >
-              {tr(messages.delegate)}
+              {delegated ? tr(messages.delegated) : tr(messages.delegate)}
             </Button>
           ) : (
             <div />
@@ -178,6 +193,8 @@ const PoolFooter = ({expanded}) => {
 }
 
 const SimpleMobileStakepoolCard = React.memo(({isOpen, toggle, data, isYoroi}) => {
+  const {value: delegatedPools} = useManageSimpleContextValue(false, 'delegated', '')
+  const delegated = isDelegated(data.poolHash, delegatedPools)
   const classes = useContentStyles()
   const classesH = useHeaderStyles()
   const classesD = useDelegateBlockStyles()
@@ -218,8 +235,9 @@ const SimpleMobileStakepoolCard = React.memo(({isOpen, toggle, data, isYoroi}) =
             gradient
             gradientDegree={225}
             variant="contained"
+            disabled={delegated}
           >
-            {tr(messages.delegate)}
+            {delegated ? tr(messages.delegated) : tr(messages.delegate)}
           </Button>
         </Grid>
       ) : (
