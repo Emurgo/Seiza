@@ -21,12 +21,12 @@ const relevantDataForYoroi = (selectedPools) => {
 
 export const YoroiCallback = (selectedPools: SelectedPools) => {
   const {value: source} = useManageSimpleContextValue(false, 'source', Source.CHROME_EXTENSION)
+  const {value: chromeId} = useManageSimpleContextValue(false, 'chromeId', '')
 
   return useCallback(() => {
     const encodedDataForYoroi = relevantDataForYoroi(selectedPools)
     switch (source) {
       case Source.CHROME_EXTENSION:
-        const {value: chromeId} = useManageSimpleContextValue(false, 'chromeId', '')
         window.parent.postMessage(
           encodedDataForYoroi,
           `chrome-extension://${chromeId}/main_window.html#/staking`
@@ -44,5 +44,5 @@ export const YoroiCallback = (selectedPools: SelectedPools) => {
       default:
         throw new Error(`Unknown source: ${source}`)
     }
-  }, [selectedPools, source])
+  }, [chromeId, selectedPools, source])
 }
