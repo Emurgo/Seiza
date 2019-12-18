@@ -20,8 +20,9 @@ const relevantDataForYoroi = (selectedPools) => {
 }
 
 export const YoroiCallback = (selectedPools: SelectedPools) => {
-  const {value: source} = useManageSimpleContextValue(false, 'source', Source.CHROME_EXTENSION)
+  const {value: source} = useManageSimpleContextValue(false, 'source', 'Unknown')
   const {value: chromeId} = useManageSimpleContextValue(false, 'chromeId', '')
+  const {value: mozId} = useManageSimpleContextValue(false, 'mozId', '')
 
   return useCallback(() => {
     const encodedDataForYoroi = relevantDataForYoroi(selectedPools)
@@ -35,14 +36,15 @@ export const YoroiCallback = (selectedPools: SelectedPools) => {
       case Source.FIREFOX_EXTENSION:
         window.parent.postMessage(
           encodedDataForYoroi,
-          `moz-extension://${config.yoroiFirefoxExtensionHash}/main_window.html#/staking`
+          `moz-extension://${mozId}/main_window.html#/staking`
         )
         break
       case Source.MOBILE:
         window.parent.postMessage(encodedDataForYoroi, 'yoroi://simple-staking/selection')
         break
       default:
+        window.parent.postMessage(encodedDataForYoroi, 'http://localhost:3001')
         throw new Error(`Unknown source: ${source}`)
     }
-  }, [chromeId, selectedPools, source])
+  }, [chromeId, mozId, selectedPools, source])
 }
