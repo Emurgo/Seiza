@@ -37,10 +37,10 @@ const revenue = (adaAmount, marginStakepool, costStakepool) => {
 }
 
 const appendWebsiteIfAvailable = (description, website) => {
-  if (description !== null) {
-    return `${description} website: ${website}`
+  if (description != null) {
+    return `${description} Website: ${website}`
   } else {
-    if (website !== null) {
+    if (website != null) {
       return `Website: ${website}`
     } else {
       return null
