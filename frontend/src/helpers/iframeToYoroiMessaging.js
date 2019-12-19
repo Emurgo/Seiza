@@ -43,8 +43,8 @@ export const YoroiCallback = (selectedPools: SelectedPools) => {
         window.parent.postMessage(encodedDataForYoroi, 'yoroi://simple-staking/selection')
         break
       default:
-        window.parent.postMessage(encodedDataForYoroi, 'http://localhost:3001')
-        throw new Error(`Unknown source: ${source}`)
+        window.parent.postMessage(encodedDataForYoroi, source)
+        break
     }
   }, [chromeId, mozId, selectedPools, source])
 }
