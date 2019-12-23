@@ -43,15 +43,34 @@ const filterData = async (data, searchText, performance) => {
     : _filtered
 }
 
-const sortData = async (data, sortBy) => {
+const maybeGetuserIpAddress = (request) => {
+  const headers = request.headers
+  if (!headers) return null
+  const ipAddress = headers['x-forwarded-for']
+  if (!ipAddress) return null
+  return ipAddress
+}
+
+const sortData = async (data, sortBy, request) => {
   switch (sortBy) {
     // TODO: use enum
     case 'revenue':
       return await _.orderBy(data, (d) => d.summary[sortBy], 'desc')
     case 'margins':
       return await _.orderBy(data, (d) => d.summary[sortBy], 'asc')
-    case 'random':
-      return await _.orderBy(data, (d) => d.poolHash, 'desc')
+    case 'random': {
+      const ip = maybeGetuserIpAddress(request) || 'default_hash'
+      // sort the pool differently for each user in a deterministic way to avoid breaking pagination
+      // we do this by hashing the user's IP address with the poolHash
+      const hashCode = (s) =>
+        s // taken from Java
+          .split('')
+          .reduce(
+            (a, b) => ((a << 5) - a + b.charCodeAt(0)) | 0, // eslint-disable-line no-bitwise
+            0
+          )
+      return await _.orderBy(data, (d) => hashCode(d.poolHash + ip), 'desc')
+    }
     default:
       return data
   }
@@ -60,7 +79,7 @@ const sortData = async (data, sortBy) => {
 const getFilteredAndSortedPoolsData = async (context, sortBy, searchText, performance, userAda) => {
   const poolData = await getPoolsData(context, userAda)
   const filteredData = await filterData(poolData, searchText, performance)
-  return await sortData(filteredData, sortBy)
+  return await sortData(filteredData, sortBy, context.request)
 }
 
 export const pagedStakePoolListResolver = async (
