@@ -60,8 +60,8 @@ const SortByBar = ({totalPoolsCount, shownPoolsCount, loading, error}: Props) =>
           onChange={onSortByChange}
           className={classes.select}
           options={[
-            {value: SORT_BY_OPTIONS.REVENUE, label: tr(messages.revenue)},
             {value: SORT_BY_OPTIONS.RANDOM, label: tr(messages.random)},
+            {value: SORT_BY_OPTIONS.REVENUE, label: tr(messages.revenue)},
             // {value: SORT_BY_OPTIONS.PERFORMANCE, label: tr(messages.performance)},
             // {value: SORT_BY_OPTIONS.FULLNESS, label: tr(messages.fullness)},
             // {value: SORT_BY_OPTIONS.PLEDGE, label: tr(messages.pledge)},

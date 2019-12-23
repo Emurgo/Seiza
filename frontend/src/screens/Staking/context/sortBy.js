@@ -17,7 +17,7 @@ export const SORT_BY_OPTIONS = {
   RANDOM: 'RANDOM',
 }
 
-const DEFAULT_VALUE = SORT_BY_OPTIONS.REVENUE
+const DEFAULT_VALUE = SORT_BY_OPTIONS.RANDOM
 
 type ContextType = {
   sortBy: string,
