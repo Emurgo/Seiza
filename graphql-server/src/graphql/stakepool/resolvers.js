@@ -1,11 +1,21 @@
 import _ from 'lodash'
 import BigNumber from 'bignumber.js'
-
+// TODO: Fix fetchBootstrapEraPool import not found
 import {fetchBootstrapEraPool, fetchPoolList} from './dataProviders'
 
 import {currentStatusResolver} from '../status/resolvers'
 import {MOCKED_STAKEPOOLS} from './mockedPools'
 import {calculateAge} from '../utils'
+
+const StakePoolSortByEnum = Object.freeze({
+  RANDOM: 'randon',
+  REVENUE: 'revenue',
+  PERFORMANCE: 'performance',
+  FULLNESS: 'fullness',
+  PLEDGE: 'pledge',
+  MARGINS: 'margins',
+  STAKE: 'stake',
+})
 
 const EMPTY_RESPONSE = {
   cursor: null,
@@ -48,15 +58,25 @@ const filterData = async (data, searchText, performance) => {
     : _filtered
 }
 
-const sortData = async (data, sortBy) => {
+const sortData = async (data, sortBy, userIp) => {
   switch (sortBy) {
-    // TODO: use enum
-    case 'revenue':
+    case StakePoolSortByEnum.REVENUE:
       return await _.orderBy(data, (d) => d.summary[sortBy], 'desc')
-    case 'margins':
+    case StakePoolSortByEnum.MARGINS:
       return await _.orderBy(data, (d) => d.summary[sortBy], 'asc')
-    case 'random':
-      return await _.orderBy(data, (d) => d.poolHash, 'desc')
+    case StakePoolSortByEnum.RANDOM: {
+      const ip = userIp || 'default_hash'
+      // sort the pool differently for each user in a deterministic way to avoid breaking pagination
+      // we do this by hashing the user's IP address with the poolHash
+      const hashCode = (s) =>
+        s // taken from Java
+          .split('')
+          .reduce(
+            (a, b) => ((a << 5) - a + b.charCodeAt(0)) | 0, // eslint-disable-line no-bitwise
+            0
+          )
+      return await _.orderBy(data, (d) => hashCode(d.poolHash + ip), 'desc')
+    }
     default:
       return data
   }
@@ -65,7 +85,7 @@ const sortData = async (data, sortBy) => {
 const getFilteredAndSortedPoolsData = async (context, sortBy, searchText, performance, userAda) => {
   const poolData = await getPoolsData(context, userAda)
   const filteredData = await filterData(poolData, searchText, performance)
-  return await sortData(filteredData, sortBy)
+  return await sortData(filteredData, sortBy, context.userIp)
 }
 
 export const pagedStakePoolListResolver = async (
@@ -112,14 +132,7 @@ const ageResolver = async (pool, args, context) => {
 }
 
 export default {
-  StakePoolSortByEnum: {
-    REVENUE: 'revenue',
-    PERFORMANCE: 'performance',
-    FULLNESS: 'fullness',
-    PLEDGE: 'pledge',
-    MARGINS: 'margins',
-    STAKE: 'stake',
-  },
+  StakePoolSortByEnum,
   StakePoolSummary: {
     averageUserStaking: (stakepoolSummary) => {
       return new BigNumber(stakepoolSummary.adaStaked)

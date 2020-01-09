@@ -95,6 +95,16 @@ const handleError = (error, {logger, reporter}) => {
   return error
 }
 
+const maybeGetUserIpAddress = (request) => {
+  const headers = request.headers
+  if (!headers) return null
+  // Note: 'x-forwared-for' will not be there in headers if accessed as localhost
+  // Refer: https://www.prisma.io/forum/t/how-do-i-get-the-ip-address-from-the-client/4429/5
+  const ipAddress = headers['x-forwarded-for']
+  if (!ipAddress) return null
+  return ipAddress
+}
+
 const createServer = () =>
   new ApolloServer({
     cacheControl: {
@@ -115,6 +125,8 @@ const createServer = () =>
     context: ({req}) => {
       // Note: `req` seems not to be defined in integration test
       const reqId = (req && req.headers['x-request-id']) || uuidv1()
+
+      const userIp = maybeGetUserIpAddress(req)
 
       // Note: `req.body` could be batched, but even batched
       // query should be good enough to debug in case of error
@@ -141,6 +153,7 @@ const createServer = () =>
         logger,
         reporter,
         runConsistencyCheck,
+        userIp,
       }
     },
   })
