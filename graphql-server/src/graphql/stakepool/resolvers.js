@@ -7,6 +7,16 @@ import {currentStatusResolver} from '../status/resolvers'
 import {MOCKED_STAKEPOOLS} from './mockedPools'
 import {calculateAge} from '../utils'
 
+const StakePoolSortByEnum = Object.freeze({
+  RANDOM: 'randon',
+  REVENUE: 'revenue',
+  PERFORMANCE: 'performance',
+  FULLNESS: 'fullness',
+  PLEDGE: 'pledge',
+  MARGINS: 'margins',
+  STAKE: 'stake',
+})
+
 const EMPTY_RESPONSE = {
   cursor: null,
   stakePools: [],
@@ -50,12 +60,11 @@ const filterData = async (data, searchText, performance) => {
 
 const sortData = async (data, sortBy, userIp) => {
   switch (sortBy) {
-    // TODO: use enum
-    case 'revenue':
+    case StakePoolSortByEnum.REVENUE:
       return await _.orderBy(data, (d) => d.summary[sortBy], 'desc')
-    case 'margins':
+    case StakePoolSortByEnum.MARGINS:
       return await _.orderBy(data, (d) => d.summary[sortBy], 'asc')
-    case 'RANDOM': { // TODO: Find why it's in upper case and then FIX it
+    case StakePoolSortByEnum.RANDOM: {
       const ip = userIp || 'default_hash'
       // sort the pool differently for each user in a deterministic way to avoid breaking pagination
       // we do this by hashing the user's IP address with the poolHash
@@ -123,14 +132,7 @@ const ageResolver = async (pool, args, context) => {
 }
 
 export default {
-  StakePoolSortByEnum: {
-    REVENUE: 'revenue',
-    PERFORMANCE: 'performance',
-    FULLNESS: 'fullness',
-    PLEDGE: 'pledge',
-    MARGINS: 'margins',
-    STAKE: 'stake',
-  },
+  StakePoolSortByEnum,
   StakePoolSummary: {
     averageUserStaking: (stakepoolSummary) => {
       return new BigNumber(stakepoolSummary.adaStaked)
