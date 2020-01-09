@@ -28,13 +28,18 @@ const getPoolsData = async (context, userAda) => {
   return await fetchPoolList(context, userAda)
 }
 
+const filterByNameOrHash = (data, searchTextLowerCase) =>
+  data.filter((pool) => {
+    const nameFound =
+      pool.name !== null ? pool.name.toLowerCase().includes(searchTextLowerCase) : false
+    const hashFound =
+      pool.poolHash !== null ? pool.poolHash.toLowerCase().includes(searchTextLowerCase) : false
+    return nameFound || hashFound
+  })
+
 const filterData = async (data, searchText, performance) => {
   const searchTextLowerCase = searchText.toLowerCase()
-  const _filtered = searchText
-    ? data.filter((pool) =>
-      pool.name !== null ? pool.name.toLowerCase().includes(searchTextLowerCase) : false
-    )
-    : data
+  const _filtered = searchText ? filterByNameOrHash(data, searchTextLowerCase) : data
 
   return (await performance)
     ? _filtered.filter((pool) =>
