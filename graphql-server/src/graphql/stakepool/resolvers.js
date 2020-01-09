@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import BigNumber from 'bignumber.js'
-
+// TODO: Fix fetchBootstrapEraPool import not found
 import {fetchBootstrapEraPool, fetchPoolList} from './dataProviders'
 
 import {currentStatusResolver} from '../status/resolvers'
@@ -43,23 +43,15 @@ const filterData = async (data, searchText, performance) => {
     : _filtered
 }
 
-const maybeGetuserIpAddress = (request) => {
-  const headers = request.headers
-  if (!headers) return null
-  const ipAddress = headers['x-forwarded-for']
-  if (!ipAddress) return null
-  return ipAddress
-}
-
-const sortData = async (data, sortBy, request) => {
+const sortData = async (data, sortBy, userIp) => {
   switch (sortBy) {
     // TODO: use enum
     case 'revenue':
       return await _.orderBy(data, (d) => d.summary[sortBy], 'desc')
     case 'margins':
       return await _.orderBy(data, (d) => d.summary[sortBy], 'asc')
-    case 'random': {
-      const ip = maybeGetuserIpAddress(request) || 'default_hash'
+    case 'RANDOM': { // TODO: Find why it's in upper case and then FIX it
+      const ip = userIp || 'default_hash'
       // sort the pool differently for each user in a deterministic way to avoid breaking pagination
       // we do this by hashing the user's IP address with the poolHash
       const hashCode = (s) =>
@@ -79,7 +71,7 @@ const sortData = async (data, sortBy, request) => {
 const getFilteredAndSortedPoolsData = async (context, sortBy, searchText, performance, userAda) => {
   const poolData = await getPoolsData(context, userAda)
   const filteredData = await filterData(poolData, searchText, performance)
-  return await sortData(filteredData, sortBy, context.request)
+  return await sortData(filteredData, sortBy, context.userIp)
 }
 
 export const pagedStakePoolListResolver = async (
