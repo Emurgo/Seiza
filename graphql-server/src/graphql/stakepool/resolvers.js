@@ -8,7 +8,7 @@ import {MOCKED_STAKEPOOLS} from './mockedPools'
 import {calculateAge} from '../utils'
 
 const StakePoolSortByEnum = Object.freeze({
-  RANDOM: 'randon',
+  RANDOM: 'random',
   REVENUE: 'revenue',
   PERFORMANCE: 'performance',
   FULLNESS: 'fullness',
