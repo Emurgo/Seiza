@@ -45,7 +45,7 @@
   "components.common.LoadingError.NOT_FOUND__GENERIC": "We could not found what are you looking for",
   "components.common.LoadingError.NOT_FOUND__SLOT": "Slot does not exist",
   "components.common.LoadingError.NOT_FOUND__TRANSACTION": "Transaction does not exist",
-  "components.common.LoadingError.title": "Ooopsie",
+  "components.common.LoadingError.title": "Oopsie",
   "components.common.Pagination.firstPage": "First Page",
   "components.common.Pagination.lastPage": "Last Page",
   "components.common.Pagination.nextPage": "Next Page",
