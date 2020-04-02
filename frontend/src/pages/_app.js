@@ -164,7 +164,7 @@ class MyApp extends App {
       const cookiesProps = getCookiesProps(ctx)
 
       // Note: this can set cookie and redirect
-      handleLocaleParam(ctx, cookiesProps)
+      // handleLocaleParam(ctx, cookiesProps)
 
       const urlInfo = {
         domain: ctx.req ? ctx.req.headers.host : window.location.host,
