@@ -95,34 +95,40 @@ const makeAddressFilter = ({
 const checkTxsCountConsistency = (
   {elastic, runConsistencyCheck},
   address58,
-  typeField,
+  type,
   totalTxsInTxIndex
 ) =>
   runConsistencyCheck(async () => {
-    const [totalTxsInAddressIndex, totalTxsInTxioIndex] = await Promise.all([
-      elastic
-        .q('address')
-        .filter(E.matchPhrase('_id', address58))
-        .getAggregations({
-          cnt: E.agg.max(`ios.${typeField}`),
-        })
-        // Note: empty addresses would return null
-        .then(({cnt}) => cnt || 0),
-      elastic
-        .q('txio')
-        .filter(E.onlyActiveFork())
-        .filter(E.matchPhrase('address', address58))
-        .getAggregations({
-          cnt: E.agg.max(typeField),
-        })
-        // Note: empty addresses would return null
-        .then(({cnt}) => cnt || 0),
-    ])
+    const ioTypeFilter =
+      type === 'SENT'
+        ? E.match('type', 'input')
+        : type === 'RECEIVED'
+          ? E.match('type', 'output')
+          : null
+    const totalTxsInTxioIndex = await elastic
+      .q('txio')
+      .filter(E.onlyActiveFork())
+      .filter(E.match('address', address58))
+      .filter(ioTypeFilter)
+      .getAggregations({
+        cnt: E.agg.cardinality('tx_hash.keyword'),
+      })
+      // Note: empty addresses would return null
+      .then(({cnt}) => cnt || 0)
 
     validate(
-      new Set([totalTxsInTxIndex, totalTxsInAddressIndex, totalTxsInTxioIndex]).size === 1,
-      `Inconsistency with ${typeField}`,
-      {address: address58, totalTxsInTxIndex, totalTxsInAddressIndex, totalTxsInTxioIndex}
+      new Set([
+        totalTxsInTxIndex,
+        // totalTxsInAddressIndex,
+        totalTxsInTxioIndex,
+      ]).size === 1,
+      'Inconsistency in tx count between \'tx\' and \'txio\'',
+      {
+        address: address58,
+        totalTxsInTxIndex,
+        // totalTxsInAddressIndex,
+        totalTxsInTxioIndex,
+      }
     )
   })
 
@@ -150,8 +156,8 @@ export const fetchTransactionsOnAddress = async (
     .filter(filterReceived)
     .getCount()
 
-  const [typeField] = GET_PAGINATION_FIELD[type].split('.').slice(-1)
-  await checkTxsCountConsistency({elastic, runConsistencyCheck}, address58, typeField, totalCount)
+  // const [typeField] = GET_PAGINATION_FIELD[type].split('.').slice(-1)
+  await checkTxsCountConsistency({elastic, E, runConsistencyCheck}, address58, type, totalCount)
 
   assert(totalCount != null)
 

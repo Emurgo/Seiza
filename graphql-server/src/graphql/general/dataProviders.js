@@ -15,15 +15,12 @@ export type GeneralInfo = {|
   activeAddresses: string,
 |}
 
-const _getGeneralInfo = (
-  {elastic, runConsistencyCheck},
-  {slots, txs, addresses, txios},
-  ctxToLog
-) => {
+const _getGeneralInfo = ({elastic, runConsistencyCheck}, {slots, txs, txios}, ctxToLog) => {
   const slotAggregations = elastic.q(slots).getAggregations({
     sent: E.agg.sumAda('sent'),
     fees: E.agg.sumAda('fees'),
     txCount: E.agg.sum('tx_num'),
+    newAddressCount: E.agg.sum('new_addresses'),
     // Note: we cannot count on hash
     blocks: E.agg.countNotNull('hash.keyword'),
     slotsMissed: E.agg.countNull('hash.keyword'),
@@ -76,7 +73,10 @@ const _getGeneralInfo = (
 
     // (expensive) sanity check
     await runConsistencyCheck(async () => {
-      const tmp = await elastic.q(txs).getCount()
+      const tmp = await elastic
+        .q(txs)
+        .filter(E.nonGenesis())
+        .getCount()
       validate(cnt === tmp, 'GeneralInfo.txCount inconsistency', {
         cnt_viaSlotAgg: cnt,
         cnt_viaTxCnt: tmp,
@@ -88,28 +88,21 @@ const _getGeneralInfo = (
   }
 
   const activeAddresses = async () => {
-    const precise = await elastic.q(addresses).getCount()
+    const precise = (await slotAggregations).newAddressCount
 
     // (expensive) sanity check
     await runConsistencyCheck(async () => {
-      // allow up to 1% difference
-      const threshold = 0.01
-      const approx = await elastic
-        .q(txios)
+      const {tmp} = await elastic
+        .q(txs)
+        .filter(E.nonGenesis())
         .getAggregations({
-          addresses: E.agg.countDistinctApprox('address.keyword'),
+          tmp: E.agg.sum('new_addresses'),
         })
-        .then(({addresses}) => addresses)
-
-      validate(
-        Math.abs((approx - precise) / (precise + 1e-6)) <= threshold,
-        'GeneralInfo.activeAddresses inconsistency',
-        {
-          precise_viaAddressesCnt: precise,
-          approx_viaTxioAgg: approx,
-          ...ctxToLog,
-        }
-      )
+      validate(precise === tmp, 'GeneralInfo.activeAddresses inconsistency', {
+        precise_viaSlotAddressesSum: precise,
+        tmp_viaTxAddressesSum: tmp,
+        ...ctxToLog,
+      })
     })
 
     return precise
@@ -161,7 +154,7 @@ const epochInfoQ = (epoch) => ({
   slots: E.q('slot')
     .filter(E.onlyActiveFork())
     .filter(E.eq('epoch', epoch)),
-  addresses: E.q('address').filter(E.eq('ios.epoch', epoch)),
+  // addresses: E.q('address').filter(E.eq('ios.epoch', epoch)),
 })
 
 export const fetchEpochInfo = (context: any, epoch: number) => {

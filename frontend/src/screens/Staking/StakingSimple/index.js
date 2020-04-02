@@ -6,6 +6,8 @@ import {makeStyles} from '@material-ui/styles'
 import {DesktopOnly} from '@/components/visual'
 import {useScrollFromBottom} from '@/components/hooks/useScrollFromBottom'
 import Header from './Header'
+import YoroiHeader from './YoroiHeader'
+import config from '@/config'
 import {StakeListLayout} from '../StakeList'
 import {SimpleStakingTopBar} from '../StakeList/SearchAndFilterBar'
 import StakepoolCard from './StakepoolCard'
@@ -30,20 +32,23 @@ const useStyles = makeStyles((theme) => ({
 export default () => {
   const classes = useStyles()
   const scrollToRef = useRef(null)
+  const isYoroi = config.isYoroi
 
   useScrollFromBottom(scrollToRef, true)
 
   return (
     <React.Fragment>
-      <DesktopOnly>
-        <Header />
-      </DesktopOnly>
+      <DesktopOnly>{config.isYoroi ? <YoroiHeader /> : <Header />}</DesktopOnly>
       <div ref={scrollToRef}>
         <StakingContextProvider autoSync={false}>
           <EstimatedRewardsModeProvider>
             <div className={classes.centerWrapper}>
               <div className={classes.centeredItem}>
-                <StakeListLayout StakepoolCard={StakepoolCard} TopBar={SimpleStakingTopBar} />
+                <StakeListLayout
+                  StakepoolCard={StakepoolCard}
+                  TopBar={SimpleStakingTopBar}
+                  isYoroi={isYoroi}
+                />
               </div>
             </div>
           </EstimatedRewardsModeProvider>

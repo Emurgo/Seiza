@@ -59,7 +59,7 @@ const rewardsMessages = defineMessages({
 
 const RewardsMenu = ({estimatedRewards}) => {
   const classes = useClasses()
-  const {translate: tr, formatPercent} = useI18n()
+  const {translate: tr, formatPercentMark} = useI18n()
   const {userAda} = useUserAdaContext()
   const {estimatedRewardsMode, setEstimatedRewardsMode} = useEstimatedRewardsMode()
 
@@ -125,7 +125,7 @@ const RewardsMenu = ({estimatedRewards}) => {
         <RewardsMenuItem
           onClick={onPercentageModeClick}
           isActive={estimatedRewardsMode === ESTIMATED_REWARDS_MODES.PERCENTAGE}
-          label={formatPercent(estimatedRewards.perYear.percentage)}
+          label={formatPercentMark(estimatedRewards.perYear.percentage)}
           value={tr(rewardsMessages.perYear)}
         />
       </Menu>
@@ -134,12 +134,12 @@ const RewardsMenu = ({estimatedRewards}) => {
 }
 
 const EstimatedRewards = ({estimatedRewards}) => {
-  const {formatPercent} = useI18n()
+  const {formatPercentMark} = useI18n()
   const {userAda} = useUserAdaContext()
   const {estimatedRewardsMode} = useEstimatedRewardsMode()
 
   if (!userAda || estimatedRewardsMode === ESTIMATED_REWARDS_MODES.PERCENTAGE) {
-    return <Typography>{formatPercent(estimatedRewards.perYear.percentage)}</Typography>
+    return <Typography>{formatPercentMark(estimatedRewards.perYear.percentage)}</Typography>
   }
 
   if (estimatedRewardsMode === ESTIMATED_REWARDS_MODES.EPOCH) {

@@ -18,7 +18,7 @@ import {
 } from './block/dataProviders'
 
 import {fetchTransaction, fetchTransactionsOnAddress} from './transaction/dataProviders'
-import {fetchBootstrapEraPool, fetchBootstrapEraPoolSummary} from './stakepool/dataProviders'
+import {fetchBootstrapEraPool} from './stakepool/dataProviders'
 import {subscribe} from './activecampaign/dataProviders'
 
 import Timestamp from './scalars/timestamp'
@@ -43,7 +43,7 @@ const _resolvers = {
   Block: {
     isEmpty: (block) => block.blockHash == null,
     transactions: (block, args, context) => block._txs.map((id) => fetchTransaction(context, id)),
-    blockLeader: (block, args, context) => fetchBootstrapEraPool(null, block._blockLeader),
+    // blockLeader: (block, args, context) => fetchBootstrapEraPool(context, block._blockLeader),
     previousBlock: (block, args, context) =>
       fetchPreviousBlock(context, {slot: block.slot, epoch: block.epoch}),
     nextBlock: (block, args, context) =>
@@ -55,10 +55,6 @@ const _resolvers = {
   },
   BlockChainSearchItem: {
     __resolveType: (obj, context, info) => obj._type,
-  },
-  BootstrapEraStakePool: {
-    summary: (pool, args, context) =>
-      fetchBootstrapEraPoolSummary(null, pool.poolHash, pool._epochNumber),
   },
   Mutation: {
     subscribeToNewsletter: (root, args, context) => subscribe(context, args.email),

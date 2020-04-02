@@ -7,6 +7,8 @@ import {defineMessages} from 'react-intl'
 import {Grid, Collapse, Hidden} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 
+import config from '@/config'
+
 import {useI18n} from '@/i18n/helpers'
 import {Searchbar, ToggleButton, Button, SearchbarTextField} from '@/components/visual'
 import {useStateWithChangingDefault} from '@/components/hooks/useStateWithChangingDefault'
@@ -50,6 +52,7 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
   },
   userAdaWrapper: {
+    display: config.isYoroi ? 'none' : 'unset', // Temporarily hide for Yoroi
     maxWidth: 200,
     marginRight: theme.spacing(2),
   },
@@ -267,7 +270,11 @@ export const SimpleStakingTopBar = () => {
 export const AdvancedStakingTopBar = () => {
   const classes = useStyles()
   const areFiltersChanged = useAreFiltersChanged()
-  const {showFilters, onToggleShowFilters, setShowFilters} = useFiltersState()
+  const {
+    // showFilters,
+    // onToggleShowFilters,
+    setShowFilters,
+  } = useFiltersState()
 
   const onSearch = useCallback(() => areFiltersChanged && setShowFilters(true), [
     areFiltersChanged,
@@ -278,13 +285,15 @@ export const AdvancedStakingTopBar = () => {
     <Grid container direction="column" justify="space-between" className={classes.wrapper}>
       <CommonTopBarLayout
         onSearch={onSearch}
-        rightSideElem={<FiltersButton open={showFilters} onClick={onToggleShowFilters} />}
+        // rightSideElem={<FiltersButton open={showFilters} onClick={onToggleShowFilters} />}
       />
+      {/*
       <Collapse in={showFilters}>
         <Grid item className={classes.filtersWrapper}>
           <Filters />
         </Grid>
       </Collapse>
+      */}
     </Grid>
   )
 }

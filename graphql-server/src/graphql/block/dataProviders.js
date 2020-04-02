@@ -40,14 +40,17 @@ export const facadeElasticBlock = (data) => ({
 
 const facadeAndValidate = async (data, runConsistencyCheck) => {
   await runConsistencyCheck(() => {
+    const estimatedSlotTimestamp = getEstimatedSlotTimestamp(data.epoch, data.slot)
+    const elasticTimeMoment = moment(data.time).unix()
     validate(
-      getEstimatedSlotTimestamp(data.epoch, data.slot) === moment(data.time).unix(),
+      estimatedSlotTimestamp === elasticTimeMoment,
       'Slot.timestamp inconsistency (Slot timestamp vs estimated timestamp mismatch)',
       {
         epoch: data.epoch,
         slot: data.slot,
         time_viaElasticData: data.time,
-        time_viaMath: getEstimatedSlotTimestamp(data.epoch, data.slot),
+        time_viaElasticData_moment: elasticTimeMoment,
+        time_viaMath: estimatedSlotTimestamp,
       }
     )
   })

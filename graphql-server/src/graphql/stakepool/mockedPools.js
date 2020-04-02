@@ -2,7 +2,13 @@ import _ from 'lodash'
 import moment from 'moment'
 import uuidv1 from 'uuid/v1'
 
-const BOOTSTRAP_TS = 1506203091 * 1000
+const BYRON_MAINNET_START_TIME_SEC = 1506203091
+const GENESIS_UNIX_TIMESTAMP_SEC = parseInt(
+  process.env.GENESIS_UNIX_TIMESTAMP_SEC || BYRON_MAINNET_START_TIME_SEC,
+  10
+)
+
+const BOOTSTRAP_TS = GENESIS_UNIX_TIMESTAMP_SEC * 1000
 
 const genFloatInRange = (from, to) => from + Math.random() * (to - from)
 
@@ -53,7 +59,7 @@ const mockedEstimatedRewards = {
 
 const _BOOTSTRAP_POOLS = [
   {
-    poolHash: 'af2800c124e599d6dec188a75f8bfde397ebb778163a18240371f2d1',
+    poolHash: '938d890d29f86128ec6864cfc6921d37f45cb3a477a348ef87b5c9b18c82a050',
     name: 'Bootstrap era pool #1',
     description: 'Pool 1 used before decentralization.',
     createdAt: moment(BOOTSTRAP_TS),
@@ -77,7 +83,7 @@ const _BOOTSTRAP_POOLS = [
     },
   },
   {
-    poolHash: '1deb82908402c7ee3efeb16f369d97fba316ee621d09b32b8969e54b',
+    poolHash: '740d890d29f86128ec6864cfc6921d37f45cb3a477a348ef87b5c9b18c82a050',
     name: 'Bootstrap era pool #2',
     description: 'Pool 2 used before decentralization',
     createdAt: moment(BOOTSTRAP_TS),
@@ -101,7 +107,7 @@ const _BOOTSTRAP_POOLS = [
     },
   },
   {
-    poolHash: '43011479a595b300e0726910d0b602ffcdd20466a3b8ceeacd3fbc26',
+    poolHash: '310d890d29f86128ec6864cfc6921d37f45cb3a477a348ef87b5c9b18c82a050',
     name: 'Bootstrap era pool #3',
     description: 'Pool 3 used before decentralization',
     createdAt: moment(BOOTSTRAP_TS),
@@ -125,7 +131,7 @@ const _BOOTSTRAP_POOLS = [
     },
   },
   {
-    poolHash: '5071d8802ddd05c59f4db907bd1749e82e6242caf6512b20a8368fcf',
+    poolHash: '120d890d29f86128ec6864cfc6921d37f45cb3a477a348ef87b5c9b18c82a050',
     name: 'Bootstrap era pool #4',
     description: 'Pool 4 used before decentralization',
     createdAt: moment(BOOTSTRAP_TS),
@@ -149,7 +155,7 @@ const _BOOTSTRAP_POOLS = [
     },
   },
   {
-    poolHash: '5411c7bf87c252609831a337a713e4859668cba7bba70a9c3ef7c398',
+    poolHash: '123d890d29f86128ec6864cfc6921d37f45cb3a477a348ef87b5c9b18c82a050',
     name: 'Bootstrap era pool #5',
     description: 'Pool 5 used before decentralization',
     createdAt: moment(BOOTSTRAP_TS),
@@ -173,7 +179,7 @@ const _BOOTSTRAP_POOLS = [
     },
   },
   {
-    poolHash: '65904a89e6d0e5f881513d1736945e051b76f095eca138ee869d543d',
+    poolHash: '654d890d29f86128ec6864cfc6921d37f45cb3a477a348ef87b5c9b18c82a050',
     name: 'Bootstrap era pool #6',
     description: 'Pool 6 used before decentralization',
     createdAt: moment(BOOTSTRAP_TS),
@@ -197,7 +203,7 @@ const _BOOTSTRAP_POOLS = [
     },
   },
   {
-    poolHash: '6c9e14978b9d6629b8703f4f25e9df6ed4814b930b8403b0d45350ea',
+    poolHash: '737d890d29f86128ec6864cfc6921d37f45cb3a477a348ef87b5c9b18c82a050',
     name: 'Bootstrap era pool #7',
     description: 'Pool 7 used before decentralization',
     createdAt: moment(BOOTSTRAP_TS),

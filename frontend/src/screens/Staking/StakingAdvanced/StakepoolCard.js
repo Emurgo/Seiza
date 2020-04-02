@@ -96,7 +96,7 @@ const AddPoolButton = ({onClick, label, disabled}) => {
           gradient
           variant="contained"
           disabled={disabled}
-          gradientDegree={45}
+          gradientDegree={225}
           onClick={onClick}
           className={classes.mobileButton}
         >
@@ -106,6 +106,7 @@ const AddPoolButton = ({onClick, label, disabled}) => {
 
       <DesktopOnly>
         <Button
+          gradientDegree={225}
           rounded
           gradient
           variant="contained"
@@ -129,7 +130,7 @@ const RemovePoolButton = ({onClick, label}) => {
         <Button
           rounded
           gradient
-          gradientDegree={45}
+          gradientDegree={225}
           variant="outlined"
           onClick={onClick}
           className={classes.mobileButton}
@@ -139,7 +140,14 @@ const RemovePoolButton = ({onClick, label}) => {
       </MobileOnly>
 
       <DesktopOnly>
-        <Button rounded gradient variant="outlined" onClick={onClick} className={classes.button}>
+        <Button
+          rounded
+          gradient
+          variant="outlined"
+          onClick={onClick}
+          className={classes.button}
+          gradientDegree={225}
+        >
           {label}
         </Button>
       </DesktopOnly>

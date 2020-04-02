@@ -25,7 +25,7 @@ type StakePoolSummary {
   keysDelegating: Int
   cost: AdaAmount
   fullness: Float
-  margins: Float
+  margins: Float!
   pledge: AdaAmount
   revenue: Float
   stakersCount: Int
@@ -36,6 +36,16 @@ type StakePoolSummary {
 }
 
 type BootstrapEraStakePool {
+  poolHash: ID!
+  name: String
+  description: String
+  summary: StakePoolSummary
+  createdAt: Timestamp!
+  age: Int!
+  website: URL!
+}
+
+type StakePool {
   poolHash: ID!
   name: String
   description: String
@@ -57,6 +67,13 @@ type MockedStakePool {
   website: URL!
 }
 
+type BoostrapEraPagedStakePoolsResult {
+  cursor: String
+  hasMore: Boolean!
+  stakePools: [BootstrapEraStakePool]!
+  totalCount: Int!
+}
+
 type PagedStakePoolsResult {
   cursor: String
   hasMore: Boolean!
@@ -66,6 +83,7 @@ type PagedStakePoolsResult {
 
 enum StakePoolSortByEnum {
   REVENUE
+  RANDOM
   PERFORMANCE
   FULLNESS
   PLEDGE
@@ -82,13 +100,14 @@ input StakePoolSearchOptions {
   sortBy: StakePoolSortByEnum!
   searchText: String
   performance: PerformanceInterval
+  userAda: AdaAmount
 }
 
 type Query {
-  stakePoolList(epochNumber: Int): BootstrapEraStakePool!
+  stakePoolList(epochNumber: Int): StakePool!
   pagedStakePoolList(cursor: String, pageSize: Int, searchOptions: StakePoolSearchOptions!): PagedStakePoolsResult!
-  stakePool(poolHash: String!, epochNumber: Int): BootstrapEraStakePool,
-  stakePools(poolHashes: [String!]!, epochNumber: Int): [BootstrapEraStakePool],
+  stakePool(poolHash: String!, epochNumber: Int): StakePool,
+  stakePools(poolHashes: [String!]!, epochNumber: Int): [StakePool],
   # TODO: Unify later, for now only used so we can test new "Staking list" section, without
   # modifying current endpoints
   mockedStakePools: [MockedStakePool!]!,

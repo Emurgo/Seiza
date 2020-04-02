@@ -30,6 +30,7 @@ import ActionsBar from './ActionsBar'
 import AutoSaveBar from './AutoSaveBar'
 import OpenInSeiza from './OpenInSeiza'
 import {useLoadSelectedPoolsData} from './dataLoaders'
+import {YoroiCallback} from '../../../../helpers/iframeToYoroiMessaging'
 
 const useMobileSettingsButtonStyles = makeStyles((theme) => ({
   wrapper: {
@@ -189,9 +190,11 @@ const MobileSettingsBar = ({selectedPools, error}: Props) => {
                 <PoolsToCompare selectedPools={selectedPools} />
               </div>
             </DialogContent>
+            {/*
             <DialogActions>
               <ActionsBar selectedPools={selectedPools} />
             </DialogActions>
+            */}
           </Dialog>
         </React.Fragment>
       )}
@@ -199,28 +202,15 @@ const MobileSettingsBar = ({selectedPools, error}: Props) => {
   )
 }
 
-const relevantDataForYoroi = (selectedPools) => {
-  return _.map(selectedPools, _.partialRight(_.pick, ['name', 'poolHash']))
-}
-
-const YoroiDelegate = ({selectedPools}) => {
-  const delegate = useCallback(() => {
-    window.parent.postMessage(
-      relevantDataForYoroi(selectedPools),
-      `chrome-extension://${config.yoroiChromeExtensionHash}/main_window.html#/staking`
-    )
-    window.parent.postMessage(
-      relevantDataForYoroi(selectedPools),
-      `moz-extension://${config.yoroiFirefoxExtensionHash}/main_window.html#/staking`
-    )
-  }, [selectedPools])
-
-  return <DelegateButton onClick={delegate} disabled={selectedPools.length === 0} />
-}
-
 const MenuItemWrapper = ({children}) => {
   const classes = useStyles()
   return <div className={classes.resetButton}>{children}</div>
+}
+
+const YoroiDelegate = ({selectedPools}) => {
+  return (
+    <DelegateButton onClick={YoroiCallback(selectedPools)} disabled={selectedPools.length === 0} />
+  )
 }
 
 const DesktopSettingsBar = ({selectedPools, error}: Props) => {
@@ -236,10 +226,12 @@ const DesktopSettingsBar = ({selectedPools, error}: Props) => {
           <Grid container>
             <YoroiDelegate selectedPools={selectedPools} />
           </Grid>
-          <Divider />
-          <MenuItemWrapper>
-            <OpenInSeiza link={openInSeizaLink} />
-          </MenuItemWrapper>
+          {/*
+            <Divider />
+            <MenuItemWrapper>
+              <OpenInSeiza link={openInSeizaLink} />
+            </MenuItemWrapper>
+          */}
         </React.Fragment>
       ) : (
         <AutoSaveBar className={classes.autoSaveBar} />
@@ -252,7 +244,7 @@ const DesktopSettingsBar = ({selectedPools, error}: Props) => {
         {error && <Error error={error} />}
         <PoolsToCompareCount selectedPools={selectedPools} />
         <PoolsToCompare selectedPools={selectedPools} />
-        <ActionsBar selectedPools={selectedPools} />
+        {/* <ActionsBar selectedPools={selectedPools} /> */}
       </Grid>
     </React.Fragment>
   )

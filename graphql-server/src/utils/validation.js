@@ -5,7 +5,10 @@ export const validate = (cond: boolean, message: string, ctx: any) => {
   if (!cond) {
     const err = new ConsistencyError(message)
     // $FlowFixMe we are creating new property. That is fine ...
-    err.ctx = ctx
+    err.ctx = {
+      ...ctx,
+      msg: message,
+    }
     throw err
   }
 }

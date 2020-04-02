@@ -88,6 +88,13 @@ const onlyActiveFork = () => ({
   },
 })
 
+// Seiza-specific
+const nonGenesis = () => ({
+  term: {
+    is_genesis: false,
+  },
+})
+
 const filter = (conditions: Array<any>): any => ({
   bool: {
     filter: conditions.filter((c) => !!c),
@@ -120,6 +127,14 @@ const agg = {
   sum: (field: string) => ({
     encode: () => ({
       sum: {
+        field,
+      },
+    }),
+    decode: (x: any) => x.value,
+  }),
+  cardinality: (field: string) => ({
+    encode: () => ({
+      cardinality: {
         field,
       },
     }),
@@ -256,6 +271,7 @@ const e = {
   matchPhrase,
   match,
   onlyActiveFork,
+  nonGenesis,
   filter,
   q,
 }

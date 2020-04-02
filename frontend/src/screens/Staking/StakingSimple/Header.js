@@ -10,12 +10,12 @@ import {DefaultNonClickableHeaderCard, ScrollableCardsWrapper} from '@/component
 
 const messages = defineMessages({
   header: 'Simple Staking Simulator',
-  card1Title: 'Get the rewards',
-  card1Value: 'by delegating to a stake pool! Cardano is a Proof of Stake (PoS) Protocol.',
-  card2Title: 'The most profitable',
-  card2Value: 'stake pools you will find with our simulator help.',
-  card3Title: 'Share the rewards',
-  card3Value: 'with you proportionaly. Stake pools use ADA to participate in the Protocol.',
+  card1Title: 'Delegate ADA',
+  card1Value: 'to get rewards while helping securing the network.',
+  card2Title: 'How to participate?',
+  card2Value: 'find on our list the most profitable stake pool to delegate. It’s risk-free.',
+  card3Title: 'When do I get the rewards?',
+  card3Value: 'They are automatically delivered by the protocol at the end of a period (aka Epoch)',
 })
 
 const useStyles = makeStyles(({palette, spacing}) => ({

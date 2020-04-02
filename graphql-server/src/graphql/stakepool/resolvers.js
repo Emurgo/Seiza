@@ -1,15 +1,21 @@
 import _ from 'lodash'
 import BigNumber from 'bignumber.js'
-
-import {
-  fetchBootstrapEraPool,
-  fetchBootstrapEraPoolList,
-  fetchBootstrapEraPoolSummary,
-} from './dataProviders'
+// TODO: Fix fetchBootstrapEraPool import not found
+import {fetchBootstrapEraPool, fetchPoolList} from './dataProviders'
 
 import {currentStatusResolver} from '../status/resolvers'
 import {MOCKED_STAKEPOOLS} from './mockedPools'
 import {calculateAge} from '../utils'
+
+const StakePoolSortByEnum = Object.freeze({
+  RANDOM: 'random',
+  REVENUE: 'revenue',
+  PERFORMANCE: 'performance',
+  FULLNESS: 'fullness',
+  PLEDGE: 'pledge',
+  MARGINS: 'margins',
+  STAKE: 'stake',
+})
 
 const EMPTY_RESPONSE = {
   cursor: null,
@@ -28,40 +34,74 @@ const DEFAULT_PAGE_SIZE = 10
 // Note: this does not do half-open interval intentionally
 const inRange = (v, from, to) => v >= from && v <= to
 
-const getPoolsData = (api) =>
-  fetchBootstrapEraPoolList(api).map((pool) => ({
-    ...pool,
-    summary: fetchBootstrapEraPoolSummary(api, pool.poolHash),
-  }))
+const getPoolsData = async (context, userAda) => {
+  return await fetchPoolList(context, userAda)
+}
 
-const filterData = (data, searchText, performance) => {
+const filterByNameOrHash = (data, searchTextLowerCase) =>
+  data.filter((pool) => {
+    const nameFound =
+      pool.name !== null ? pool.name.toLowerCase().includes(searchTextLowerCase) : false
+    const hashFound =
+      pool.poolHash !== null ? pool.poolHash.toLowerCase().includes(searchTextLowerCase) : false
+    return nameFound || hashFound
+  })
+
+const filterData = async (data, searchText, performance) => {
   const searchTextLowerCase = searchText.toLowerCase()
-  const _filtered = searchText
-    ? data.filter((pool) => pool.name.toLowerCase().includes(searchTextLowerCase))
-    : data
-  return performance
+  const _filtered = searchText ? filterByNameOrHash(data, searchTextLowerCase) : data
+
+  return (await performance)
     ? _filtered.filter((pool) =>
       inRange(pool.summary.performance, performance.from, performance.to)
     )
     : _filtered
 }
 
-const sortData = (data, sortBy) => _.orderBy(data, (d) => d.summary[sortBy], 'desc')
-
-const getFilteredAndSortedPoolsData = (api, sortBy, searchText, performance) => {
-  const data = getPoolsData(api)
-  const filteredData = filterData(data, searchText, performance)
-  return sortData(filteredData, sortBy)
+const sortData = async (data, sortBy, userIp) => {
+  switch (sortBy) {
+    case StakePoolSortByEnum.REVENUE:
+      return await _.orderBy(data, (d) => d.summary[sortBy], 'desc')
+    case StakePoolSortByEnum.MARGINS:
+      return await _.orderBy(data, (d) => d.summary[sortBy], 'asc')
+    case StakePoolSortByEnum.RANDOM: {
+      const ip = userIp || 'default_hash'
+      // sort the pool differently for each user in a deterministic way to avoid breaking pagination
+      // we do this by hashing the user's IP address with the poolHash
+      const hashCode = (s) =>
+        s // taken from Java
+          .split('')
+          .reduce(
+            (a, b) => ((a << 5) - a + b.charCodeAt(0)) | 0, // eslint-disable-line no-bitwise
+            0
+          )
+      return await _.orderBy(data, (d) => hashCode(d.poolHash + ip), 'desc')
+    }
+    default:
+      return data
+  }
 }
 
-export const pagedStakePoolListResolver = (
-  api,
+const getFilteredAndSortedPoolsData = async (context, sortBy, searchText, performance, userAda) => {
+  const poolData = await getPoolsData(context, userAda)
+  const filteredData = await filterData(poolData, searchText, performance)
+  return await sortData(filteredData, sortBy, context.userIp)
+}
+
+export const pagedStakePoolListResolver = async (
+  context,
   cursor,
   pageSize = DEFAULT_PAGE_SIZE,
   searchOptions
 ) => {
-  const {sortBy, searchText, performance} = searchOptions
-  const data = getFilteredAndSortedPoolsData(api, sortBy, searchText, performance)
+  const {sortBy, searchText, performance, userAda} = searchOptions
+  const data = await getFilteredAndSortedPoolsData(
+    context,
+    sortBy,
+    searchText,
+    performance,
+    userAda
+  )
 
   if (!data.length) return NO_RESULTS
 
@@ -85,19 +125,14 @@ export const pagedStakePoolListResolver = (
 }
 
 const ageResolver = async (pool, args, context) => {
-  const currentEpoch = await currentStatusResolver(null, args, context).epochNumber()
-  return calculateAge(pool.createdAt, currentEpoch)
+  // TODO: Fix this
+  // const currentEpoch = await currentStatusResolver(null, args, context).epochNumber()
+  // return calculateAge(pool.createdAt, currentEpoch)
+  return 0
 }
 
 export default {
-  StakePoolSortByEnum: {
-    REVENUE: 'revenue',
-    PERFORMANCE: 'performance',
-    FULLNESS: 'fullness',
-    PLEDGE: 'pledge',
-    MARGINS: 'margins',
-    STAKE: 'stake',
-  },
+  StakePoolSortByEnum,
   StakePoolSummary: {
     averageUserStaking: (stakepoolSummary) => {
       return new BigNumber(stakepoolSummary.adaStaked)
@@ -116,13 +151,15 @@ export default {
     age: ageResolver,
   },
   Query: {
+    // TODO: needs update
     stakePool: (root, args, context) =>
-      fetchBootstrapEraPool(null, args.poolHash, args.epochNumber),
-    stakePools: (root, args, context) =>
-      args.poolHashes.map((poolHash) => fetchBootstrapEraPool(null, poolHash, args.epochNumber)),
-    stakePoolList: (root, args, context) => fetchBootstrapEraPoolList(null, args.epochNumber),
+      fetchBootstrapEraPool(context, args.poolHash, args.epochNumber),
+    // TODO: needs updaet
+    stakePools: (root, args, context) => fetchPoolList(context),
+    // TODO: needs update
+    stakePoolList: (root, args, context) => fetchPoolList(context),
     pagedStakePoolList: (_, args, context) =>
-      pagedStakePoolListResolver(null, args.cursor, args.pageSize, args.searchOptions),
+      pagedStakePoolListResolver(context, args.cursor, args.pageSize, args.searchOptions),
     mockedStakePools: (root, args, context) => MOCKED_STAKEPOOLS,
   },
 }

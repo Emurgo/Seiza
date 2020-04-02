@@ -37,6 +37,12 @@ const useStyles = makeStyles(({spacing, typography}) => ({
     display: 'flex',
     minWidth: 0,
   },
+  notLink: {
+    'pointer-events': 'none',
+    'cursor': 'default',
+    'display': 'flex',
+    'minWidth': 0,
+  },
 }))
 
 const COPY_TO_CLIPBOARD_DIMENSIONS = {width: 20, height: 20}
@@ -51,7 +57,7 @@ const EllipsizedHash = ({hash, hashTooltip}) => {
       disableTouchListener={!hashTooltip}
     >
       <Link
-        className={classes.link}
+        className={config.isYoroi ? classes.notLink : classes.link}
         monospace
         target={config.isYoroi ? '_blank' : '_self'}
         external={config.isYoroi}

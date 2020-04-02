@@ -39,6 +39,15 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: theme.spacing(7),
     paddingRight: theme.spacing(7),
   },
+  loadMoreForYoroi: {
+    'borderRadius': '8px',
+    '&:hover': {
+      backgroundColor: '#1A44B7',
+    },
+    '&:focus, &:active': {
+      backgroundColor: '#3154CB',
+    },
+  },
   loadMoreWrapper: {
     width: '100%',
   },
@@ -51,7 +60,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const StakeList = ({onLoadMore, stakePools, hasMore, loading, StakepoolCard}) => {
+const StakeList = ({onLoadMore, stakePools, hasMore, loading, StakepoolCard, isYoroi}) => {
   const {translate: tr} = useI18n()
   const classes = useStyles()
 
@@ -61,21 +70,31 @@ const StakeList = ({onLoadMore, stakePools, hasMore, loading, StakepoolCard}) =>
     <Overlay.Wrapper className="w-100">
       {stakePools.map((pool) => (
         <Grid item key={pool.hash} className={classes.rowWrapper}>
-          <StakepoolCard data={pool} />
+          <StakepoolCard data={pool} isYoroi={isYoroi} />
         </Grid>
       ))}
       {hasMore ? (
         <Grid item className={classes.loadMoreWrapper}>
           <Grid container justify="center" direction="row">
-            <Button
-              variant="contained"
-              rounded
-              gradient
-              className={classes.loadMore}
-              onClick={onLoadMore}
-            >
-              {tr(messages.loadMore)}
-            </Button>
+            {isYoroi ? (
+              <Button
+                variant="contained"
+                className={`${classes.loadMore} ${classes.loadMoreForYoroi}`}
+                onClick={onLoadMore}
+              >
+                {tr(messages.loadMore)}
+              </Button>
+            ) : (
+              <Button
+                variant="contained"
+                rounded
+                gradient
+                className={classes.loadMore}
+                onClick={onLoadMore}
+              >
+                {tr(messages.loadMore)}
+              </Button>
+            )}
           </Grid>
         </Grid>
       ) : (
@@ -126,9 +145,11 @@ const useGetStakeListData = () => {
 export const StakeListLayout = ({
   StakepoolCard,
   TopBar,
+  isYoroi,
 }: {
   StakepoolCard: React$ComponentType<any>,
   TopBar: React$ComponentType<any>,
+  isYoroi: boolean,
 }) => {
   const {translate: tr} = useI18n()
   const classes = useStyles()
@@ -170,7 +191,7 @@ export const StakeListLayout = ({
         ) : (
           <StakeList
             StakepoolCard={StakepoolCard}
-            {...{loading, stakePools, onLoadMore, hasMore}}
+            {...{loading, stakePools, onLoadMore, hasMore, isYoroi}}
           />
         )}
       </Grid>

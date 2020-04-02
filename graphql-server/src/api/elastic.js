@@ -180,12 +180,29 @@ const getElastic = (logger: Function) => {
     )
   }
 
+  /*
+   * Elastic v7 requires special parameter `track_total_hits` to be set to `true`
+   * in order to return exact number of hits. Previous version did not require this,
+   * in order to be compatible this function ALWAYS adds `track_total_hits: true`
+   * to the specified request body.
+   *
+   * NOTE: Elastic v7 also changed the format of the `hits.total` value,
+   * it is changed from being a simple number to being an object with a `.value` field.
+   * This function CHANGES the response so total hits look like it was in v6!
+   *
+   * So this function guarantees that:
+   * 1. Response will contain exact number of hits
+   * 2. Field `response.hits.total` will contain a plain number with the count of hits
+   */
   const _search = (type: string, body: any) => {
     const request = {
       // $FlowFixMe validated above using `validate`
       index: `${ELASTIC_INDEX}.${type}`,
-      type,
-      body,
+      // type,
+      body: {
+        ...body,
+        track_total_hits: true,
+      },
     }
 
     const currentTs = () => new Date().getTime()
@@ -199,6 +216,9 @@ const getElastic = (logger: Function) => {
       .then((response) => {
         const endTs = currentTs()
         logElasticTiming(request, response.took, endTs - startTs)
+        if (response.hits && response.hits.total && response.hits.total.value !== undefined) {
+          response.hits.total = response.hits.total.value
+        }
         return response
       })
     // Non-legacy version
@@ -212,7 +232,6 @@ const getElastic = (logger: Function) => {
       query,
       size: 0,
     })
-
     return hits.total
   }
 
@@ -274,14 +293,15 @@ const getElastic = (logger: Function) => {
     }
 
     getHits = async (pageSize: number) => {
-      assert(pageSize)
       const {hits} = await _search(this.q._type, {
         query: this.q._query,
         size: pageSize,
         sort: E.orderBy(this.q._sort),
         ...(this.q._source ? {_source: this.q._source} : {}),
       })
-      assert(hits.hits.length <= pageSize)
+      if (pageSize) {
+        assert(hits.hits.length <= pageSize)
+      }
       return hits
     }
 

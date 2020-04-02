@@ -11,7 +11,7 @@ type Props = {
 }
 
 const text = defineMessages({
-  title: 'Ooopsie',
+  title: 'Oopsie',
   NETWORK_ERROR: 'We have trouble communicating with the backend',
   NOT_FOUND__GENERIC: 'We could not found what are you looking for',
   NOT_FOUND__ADDRESS: 'Address does not exist',

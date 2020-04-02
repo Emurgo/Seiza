@@ -133,6 +133,29 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
+const useYoroiStyles = makeStyles((theme) => ({
+  noButton: {
+    padding: 0,
+    width: '100%',
+    display: 'flex',
+  },
+  contentWrapper: {
+    paddingRight: theme.spacing(2),
+    paddingLeft: theme.spacing(2),
+  },
+  primaryText: {
+    color: theme.palette.card.textTitle,
+    fontSize: theme.typography.fontSize,
+    fontWeight: 400,
+    lineHeight: 1.3,
+  },
+  secondaryText: {
+    color: theme.palette.card.textContent,
+    fontSize: theme.typography.fontSize * 0.75,
+    lineHeight: 1.3,
+  },
+}))
+
 type Option = {
   label: string,
   onClick: () => any,
@@ -321,6 +344,12 @@ const HeaderCard = (props: HeaderCardProps) => {
   return <_HeaderCard {...props} classes={classes} />
 }
 
+const YoroiHeaderCard = (props: HeaderCardProps) => {
+  const classes = useStyles(props)
+  const yoroiClasses = useYoroiStyles(props)
+  return <_HeaderCard {...props} classes={{...classes, ...yoroiClasses}} />
+}
+
 type DefaultNonClickableHeaderCardProps = {|
   primaryText: string,
   secondaryText: string,
@@ -344,6 +373,31 @@ export const DefaultNonClickableHeaderCard = ({
         disableShadow
         smallPrimaryText
         classes={CARD_CLASSES}
+        className={cn('w-100', 'h-100', classes.defaultNonClickableCardColor)}
+        {...{secondaryText, primaryText, icon}}
+      />
+    </HeaderCardContainer>
+  )
+}
+
+type YoroiNonClickableHeaderCardProps = DefaultNonClickableHeaderCardProps
+
+const YOROI_CARD_CLASSES = {}
+
+export const YoroiNonClickableHeaderCard = ({
+  primaryText,
+  secondaryText,
+  icon,
+  className,
+}: YoroiNonClickableHeaderCardProps) => {
+  const classes = useStyles()
+
+  return (
+    <HeaderCardContainer className={cn(classes.defaultNonClickableCard, className)}>
+      <YoroiHeaderCard
+        disableShadow
+        smallPrimaryText
+        classes={YOROI_CARD_CLASSES}
         className={cn('w-100', 'h-100', classes.defaultNonClickableCardColor)}
         {...{secondaryText, primaryText, icon}}
       />

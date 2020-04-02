@@ -30,18 +30,19 @@ const fetchTxCount = async ({elastic, E, runConsistencyCheck}, address58) => {
     .getCount()
 
   await runConsistencyCheck(async () => {
-    const hits = await elastic
-      .q('address')
-      .pickFields('tx_num')
-      .filter(E.matchPhrase('_id', address58))
-      .getHits(1)
+    const tmpCount = await elastic
+      .q('txio')
+      .filter(E.onlyActiveFork())
+      .filter(E.match('address', address58))
+      .getAggregations({
+        cnt: E.agg.cardinality('tx_hash.keyword'),
+      })
+      .then(({cnt}) => cnt)
 
-    const cnt = hits.hits.length ? hits.hits[0]._source.tx_num : 0
-
-    validate(cnt === txCount, 'Address tx_num inconsistency', {
+    validate(tmpCount === txCount, 'Address tx_num inconsistency', {
       address58,
-      via_address: cnt,
       via_txs: txCount,
+      via_tmp_txio: tmpCount,
     })
   })
 
@@ -49,7 +50,7 @@ const fetchTxCount = async ({elastic, E, runConsistencyCheck}, address58) => {
 }
 
 export const fetchAddress = async (context: any, address58: string) => {
-  const {elastic, E, runConsistencyCheck} = context
+  // const {elastic, E, runConsistencyCheck} = context
   assert(address58)
   if (!isAddress(address58)) {
     throw new ApolloError('Not an address', 'NOT_FOUND', {address58})
@@ -65,24 +66,26 @@ export const fetchAddress = async (context: any, address58: string) => {
     fetchTxCount(context, address58),
   ])
 
+  // TODO: replace this with `balance_after_this_tx` field in the latest tx
+  // TODO: use this as consistency check instead
   const balance = totalAdaReceived.minus(totalAdaSent)
 
-  await runConsistencyCheck(async () => {
-    const hits = await elastic
-      .q('address')
-      .pickFields('balance')
-      .filter(E.matchPhrase('_id', address58))
-      .getHits(1)
-
-    const balanceViaAddress = hits.hits.length ? parseAdaValue(hits.hits[0]._source.balance) : 0
-
-    validate(balance.eq(balanceViaAddress), 'Address.balance inconsistency', {
-      address58,
-      sent_viaTxio: totalAdaSent,
-      received_viaTxio: totalAdaReceived,
-      balanceViaAddress,
-    })
-  })
+  // await runConsistencyCheck(async () => {
+  //   const hits = await elastic
+  //     .q('address')
+  //     .pickFields('balance')
+  //     .filter(E.matchPhrase('_id', address58))
+  //     .getHits(1)
+  //
+  //   const balanceViaAddress = hits.hits.length ? parseAdaValue(hits.hits[0]._source.balance) : 0
+  //
+  //   validate(balance.eq(balanceViaAddress), 'Address.balance inconsistency', {
+  //     address58,
+  //     sent_viaTxio: totalAdaSent,
+  //     received_viaTxio: totalAdaReceived,
+  //     balanceViaAddress,
+  //   })
+  // })
 
   return {
     address58,
