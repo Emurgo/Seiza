@@ -25,13 +25,8 @@ export const YoroiCallback = (selectedPools: SelectedPools) => {
   const {value: mozId} = useManageSimpleContextValue(false, 'mozId', '')
 
   return useCallback(() => {
+    let postMessage
     const encodedDataForYoroi = relevantDataForYoroi(selectedPools)
-    let postMessage = window.parent.postMessage
-    if (window.ReactNativeWebView) {
-      postMessage = function(data) {
-        window.ReactNativeWebView.postMessage(data)
-      }
-    }
     switch (source) {
       case Source.CHROME_EXTENSION:
         window.parent.postMessage(
@@ -46,6 +41,12 @@ export const YoroiCallback = (selectedPools: SelectedPools) => {
         )
         break
       case Source.MOBILE:
+        postMessage = window.parent.postMessage
+        if (window.ReactNativeWebView) {
+          postMessage = function(data) {
+            window.ReactNativeWebView.postMessage(data)
+          }
+        }
         postMessage(encodedDataForYoroi, 'yoroi://simple-staking/selection')
         break
       default:
