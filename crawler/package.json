@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "graphql-request": "^1.8.2",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.19",
     "minimist": "^1.2.0",
     "ora": "^3.4.0",
     "p-queue": "^6.0.2"
