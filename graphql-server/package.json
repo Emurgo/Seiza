@@ -26,7 +26,7 @@
     "apollo-server-plugin-response-cache": "^0.3.2",
     "apollo-server-testing": "^2.5.1",
     "aws-sdk": "^2.437.0",
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "axios-cache-adapter": "^2.3.0",
     "babel-plugin-import-graphql": "^2.7.0",
     "babel-polyfill": "^6.26.0",
