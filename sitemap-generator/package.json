@@ -17,7 +17,7 @@
     "glob": "^7.1.4",
     "googleapis": "^43.0.0",
     "http-aws-es": "^6.0.0",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.21",
     "xmlbuilder": "^13.0.2",
     "xmlsplit": "1.2.8"
   },
