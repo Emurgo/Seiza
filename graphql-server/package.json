@@ -47,7 +47,7 @@
     "http-aws-es": "^6.0.0",
     "isemail": "^3.2.0",
     "merge-graphql-schemas": "^1.5.8",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "uuid": "^3.3.2",
     "winston": "^3.2.1"
   },
